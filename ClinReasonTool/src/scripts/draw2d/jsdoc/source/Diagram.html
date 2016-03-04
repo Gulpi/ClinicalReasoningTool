@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js">
+<span id='draw2d-shape-diagram-Diagram'>/**
+</span> * @class draw2d.shape.diagram.Diagram
+ * 
+ * Base class for all diagrams.
+ * 
+ * @extends draw2d.SetFigure
+ */
+draw2d.shape.diagram.Diagram = draw2d.SetFigure.extend({
+    
+<span id='draw2d-shape-diagram-Diagram-method-constructor'>    /**
+</span>     * @constructor
+     * 
+     * @param {Object} [attr] the configuration of the shape
+     */
+    init: function( attr, setter, getter)
+    {
+        this.data = [];
+        this.cache = {}; 
+        
+        this._super(
+            $.extend({data:[], bgColor:&quot;#8dabf2&quot;, stroke:1, color:&quot;#f0f0f0&quot;,radius:2, resizeable:true},attr),
+            $.extend({},{
+<span id='draw2d-shape-diagram-Diagram-attr-data'>                /** @attr {Array} data the data to display in the diagram */
+</span>                data  : this.setData
+            }, setter),
+            $.extend({},{
+                data : this.getData
+            }, getter)
+        );
+    },
+    
+<span id='draw2d-shape-diagram-Diagram-method-setData'>    /**
+</span>     * @method
+     * Set the data for the chart/diagram element
+     * 
+     * @param {Array} data
+     * 
+     */
+    setData:function( data)
+    {
+        this.data = data;
+        this.cache={};
+        
+
+       if (this.svgNodes !== null) {
+            this.svgNodes.remove();
+            this.svgNodes = this.createSet();
+        }
+        
+       this.repaint();
+       this.fireEvent(&quot;change:data&quot;);
+
+    },
+
+<span id='draw2d-shape-diagram-Diagram-method-getData'>    /**
+</span>     * @method
+     * Return the data of the diagram
+     * 
+     * @since 5.0.0
+     */
+    getData: function()
+    {
+    	return this.data;
+    },
+    
+    
+<span id='draw2d-shape-diagram-Diagram-method-setDimension'>    /**
+</span>     * @method
+     * Set the dimension of the diagram and reset the cached calculation
+     * 
+     * @since 5.0.0
+     */
+    setDimension:function(w,h)
+    {
+        this.cache={};
+        this._super(w,h);
+        
+        return this;
+    },
+
+    
+<span id='draw2d-shape-diagram-Diagram-method-getWidth'>    /**
+</span>     * @method
+     * Return the calculate width of the set. This calculates the bounding box of all elements.
+     * 
+     * @return {Number} the calculated width of the label
+     **/
+    getWidth:function() 
+    {
+        return this.width;
+    },
+    
+<span id='draw2d-shape-diagram-Diagram-method-getHeight'>    /**
+</span>     * @method
+     * Return the calculated height of the set. This calculates the bounding box of all elements.
+     * 
+     * @return {Number} the calculated height of the label
+     */
+    getHeight:function()
+    {
+       return this.height;
+    },
+    
+<span id='draw2d-shape-diagram-Diagram-method-repaint'>    /**
+</span>     * 
+     * @param attributes
+     */
+    repaint:function(attributes)
+    {
+        if(this.repaintBlocked===true || this.shape==null){
+            return;
+        }
+        
+        attributes= attributes || {};
+
+        if(typeof attributes.fill ===&quot;undefined&quot;){
+            attributes.fill= &quot;none&quot;;
+        }
+         
+        this._super(attributes);
+        
+        return this;
+    },
+    
+    applyTransformation:function()
+    {
+        if (this.isResizeable()===true) {
+            this.svgNodes.transform(&quot;S&quot;+this.scaleX+&quot;,&quot;+this.scaleY+&quot;,&quot;+this.getAbsoluteX()+&quot;,&quot;+this.getAbsoluteY()+ &quot;t&quot;+ this.getAbsoluteX() + &quot;,&quot; + this.getAbsoluteY());
+        }
+        else {
+            this.svgNodes.transform(&quot;T&quot; + this.getAbsoluteX() + &quot;,&quot; + this.getAbsoluteY());
+        }
+        
+        return this;
+    }
+    
+
+});</pre>
+</body>
+</html>

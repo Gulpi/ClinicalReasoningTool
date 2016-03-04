@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js">
+<span id='draw2d-command-CommandReplaceVertices'>/**
+</span> * @class draw2d.command.CommandReplaceVertices
+ * 
+ * Replace the vertices of a polyline.
+ *
+ * @inheritable
+ * @author Andreas Herz
+ * 
+ * @extends draw2d.command.Command
+ */
+draw2d.command.CommandReplaceVertices = draw2d.command.Command.extend({
+    NAME : &quot;draw2d.command.CommandReplaceVertices&quot;, 
+  
+<span id='draw2d-command-CommandReplaceVertices-method-constructor'>    /**
+</span>     * @constructor
+     * Create a new Command objects which add a segment to a PolyLine / Polygon.
+     *
+     * @param {draw2d.shape.basic.PolyLine} line the related line
+     * @param {draw2d.util.ArrayList} originalVertices the original vertices of the polyline
+     * @param {draw2d.util.ArrayList} newVertices the new vertices of the polyline
+     */
+    init: function(line, originalVertices, newVertices)
+    {
+        this._super(draw2d.Configuration.i18n.command.addSegment);
+        
+        this.line = line;
+        this.originalVertices = originalVertices;
+        this.newVertices = newVertices;
+    },
+    
+  
+<span id='draw2d-command-CommandReplaceVertices-method-canExecute'>    /**
+</span>     * @method
+     * Returns [true] if the command can be execute and the execution of the
+     * command modify the model. A CommandMove with [startX,startX] == [endX,endY] should
+     * return false. &lt;br&gt;
+     * the execution of the Command doesn&#39;t modify the model.
+     *
+     * @return {boolean}
+     **/
+    canExecute:function()
+    {
+      // return false if we doesn&#39;t modify the model =&gt; NOP Command
+      return true;
+    },
+    
+<span id='draw2d-command-CommandReplaceVertices-method-execute'>    /**
+</span>     * @method
+     * Execute the command the first time
+     * 
+     **/
+    execute:function()
+    {
+       this.redo();
+    },
+    
+<span id='draw2d-command-CommandReplaceVertices-method-undo'>    /**
+</span>     * @method
+     *
+     * Undo the move command
+     *
+     **/
+    undo:function()
+    {
+        this.line.setVertices(this.originalVertices);
+    },
+    
+<span id='draw2d-command-CommandReplaceVertices-method-redo'>    /**
+</span>     * @method
+     * 
+     * Redo the move command after the user has undo this command
+     *
+     **/
+    redo:function()
+    {
+        this.line.setVertices(this.newVertices);
+    }
+});</pre>
+</body>
+</html>

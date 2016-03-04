@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js">
+<span id='draw2d-util-spline-Spline'>/**
+</span> * @class draw2d.util.spline.Spline
+ * 
+ *  An abstract class defining a general spline object.
+ */
+draw2d.util.spline.Spline = Class.extend({
+
+    NAME : &quot;draw2d.util.spline.Spline&quot;,
+    
+<span id='draw2d-util-spline-Spline-method-constructor'>    /**
+</span>     * @constructor 
+     */
+    init: function()
+    {
+    },
+    
+<span id='draw2d-util-spline-Spline-method-generate'>   /**
+</span>    * Create a spline based on the given control points.
+    * The generated curve starts in the first control point and ends
+    * in the last control point.
+    * 
+    * @param {Array} controlPoints  Control points of spline (x0,y0,z0,x1,y1,z1,...).
+    * @param {Number} parts Number of parts to divide each leg into.
+    **/
+    generate: function(controlPoints, parts){
+        throw &quot;inherit classes must implement the method &#39;draw2d.util.spline.Spline.generate()&#39;&quot;;
+    }
+
+});</pre>
+</body>
+</html>

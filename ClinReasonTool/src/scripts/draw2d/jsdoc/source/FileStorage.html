@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js">
+<span id='draw2d-storage-FileStorage'>/**
+</span> * @class draw2d.storage.FileStorage
+ * 
+ * &lt;b&gt;BETA: changes can happen without notice&lt;/b&gt;
+ * &lt;br&gt;
+ * &lt;br&gt;
+ * FileStorage is an file storage abstraction library for Draw2D. It allows you to easily 
+ * read and write files to any supported file storage backends with a simple an consistent 
+ * API. FileStorage also supports storing metadata if the storage backend supports it.
+ * 
+ * There are a number of different ways to store your files when you&#39;re building an application 
+ * with Draw2D. There&#39;s the local file system of the server, Databases and of course there are 
+ * cloud-based CDN solutions such as Google Drive, Amazon S3 and many more.
+ * 
+ * From application point of view, it&#39;s not optimal to deeply bind your implementation to any single 
+ * storage backend, as there might be a need to be able to change that later. For example, you might 
+ * first use a local filesystem when you start developing but the change to a more advanced solution 
+ * when the application matures. This is when FileStorage becomes handy. Using the simple API of 
+ * FileStorage you are able to change the storage backend without needing to change the code using it.
+ * 
+ * 
+ */
+draw2d.storage.FileStorage = Class.extend({
+    NAME : &quot;draw2d.storage.FileStorage&quot;,
+
+<span id='draw2d-storage-FileStorage-method-constructor'>    /**
+</span>     * @constructor
+     * 
+     */
+    init:function(){
+    },
+
+    requiresLogin: function(){
+        return false;
+    },
+    
+    isLoggedIn: function(callback){
+        callback(false);
+    },
+    
+<span id='draw2d-storage-FileStorage-method-pickFileAndLoad'>    /**
+</span>     * @method
+     * 
+     * @param {String} filenameFilter the file picker set a file name filter with the given pattern. Only files which contains the given string will be loaded    
+     * @param {Function} successCallback callback method if the user select a file and the content is loaded
+     * @param {Function} errorCallback method to call if any error happens
+     * 
+     * @since 4.0.0
+     */
+    pickFileAndLoad: function(filenameFilter, successCallback, errorCallback, abortCallback) {    
+    },
+    
+    
+<span id='draw2d-storage-FileStorage-method-promptForFilename'>    /**
+</span>     * @method
+     * Request a filename for a new file. The application can use this platform depending
+     * filename selector before the saveFile function is called.
+     * 
+     * @since 4.2.0
+     */
+    promptForFilename: function(successCallback, abortCallback){
+        var fileName = prompt(draw2d.Configuration.i18n.dialog.filenamePrompt);
+        if(!fileName){
+            if(abortCallback){
+                abortCallback();
+            }
+        }
+        else{
+            successCallback(fileName);
+        }
+    },
+    
+<span id='draw2d-storage-FileStorage-method-saveFile'>    /**
+</span>     * @method
+     * Save a file to the google drive bakcend. Either &lt;b&gt;file&lt;/b&gt; is a string or a fileHandle.&lt;br&gt;
+     * If it is a fileHnadle a &lt;b&gt;updateFile&lt;/b&gt; is called.
+     * 
+     * @param {String} fileName the filename of the file
+     * @param {String} content the content of the file base64 decoded
+     * @param {boolean} contentIsBase64 indicates if the provided content base64 encoded
+     * @param {Function} successCallback callback method if the save operation finished
+     * @param {Function} errorCallback method to call if any error happens
+     * @since 4.0.0
+     */
+    saveFile: function(fileName, content, contentIsBase64, base64Thumbnail, successCallback, errorCallback) {    
+    },
+    
+<span id='draw2d-storage-FileStorage-method-updateFile'>    /**
+</span>     * @method
+     * Save a already loaded file.
+     * 
+     * 
+     * @param {Object} fileHandle the file handle of the pickFileAndLoad method
+     * @param {String} content the file content as base64 coded content
+     * @param {boolean} contentIsBase64 indicates if the provided content base64 encoded
+     * @param {Function} successCallback the callback method if the file has been saved successfully.
+     * @param {Function} errorCallback method to call if any error happens
+     * 
+     * @since 4.0.0
+     */
+    updateFile: function(fileHandle, content, contentIsBase64, successCallback, errorCallback) {
+    },
+    
+<span id='draw2d-storage-FileStorage-method-insertFile'>    /**
+</span>     * @method
+     * Save a new file in the storage provider.
+     * 
+     * 
+     * @param {String} fileName the file name if the new file
+     * @param {String} content the content of the file as base64 encoded
+     * @param {boolean} contentIsBase64 indicates if the provided content base64 encoded
+     * @param {Function} successCallback the callback method after a successful save operation
+     * @param {Function} errorCallback method to call if any error happens
+     * 
+     * @since 4.0.0
+     */
+    insertFile: function(fileName, content, contentIsBase64, successCallback, errorCallback){
+    }
+});</pre>
+</body>
+</html>

@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js">
+<span id='draw2d-policy-canvas-ZoomPolicy'>/**
+</span> * @class draw2d.policy.canvas.ZoomPolicy
+ * Generic zoom policy installable into a canvas object.
+ * This is the legacy implementation of the very first zooming in
+ * Draw2D. You can use this implementation if you want backward compatible.
+ * 
+ *
+ * @author Andreas Herz
+ * @extends draw2d.policy.canvas.CanvasPolicy
+ * @since 5.8.0
+ */
+draw2d.policy.canvas.ZoomPolicy = draw2d.policy.canvas.CanvasPolicy.extend({
+
+    NAME : &quot;draw2d.policy.canvas.ZoomPolicy&quot;,
+    
+<span id='draw2d-policy-canvas-ZoomPolicy-method-constructor'>    /**
+</span>     * @constructor 
+     */
+    init: function(){
+        this._super();
+    },
+
+    onInstall: function(canvas)
+    {
+        this._super(canvas);
+        canvas.setZoom(1);
+    },
+
+    onUninstall: function(canvas)
+    {
+        this._super(canvas);
+    },
+
+<span id='draw2d-policy-canvas-ZoomPolicy-method-setZoom'>    /** @method
+</span>    * Set the new zoom factor for the canvas. The value must be between [0.01..10]
+    *
+    *      // you can register an eventhandler to listen to the zoom factor of the canvas.
+     *     //
+    *      canvas.on(&quot;zoom&quot;, function(emitterFigure, zoomData){
+    *          alert(&quot;canvas zoomed to:&quot;+zoomData.factor);
+    *      });
+    *
+    * @param {Number} zoomFactor new zoom factor.
+    * @param {boolean} [animated] set it to true for smooth zoom in/out
+    **/
+    setZoom:function( zoomFactor, animated){
+        var canvas = this.canvas;
+
+        var _zoom = function(z){
+            canvas.zoomFactor = Math.min(Math.max(0.01,z),10);
+
+            var viewBoxWidth  = (canvas.initialWidth*(canvas.zoomFactor))|0;
+            var viewBoxHeight = (canvas.initialHeight*(canvas.zoomFactor))|0;
+
+            canvas.paper.setViewBox(0, 0, viewBoxWidth, viewBoxHeight);
+
+            canvas.fireEvent(&quot;zoom&quot;, {factor:canvas.zoomFactor});
+        };
+
+        if(animated){
+            var myTweenable = new Tweenable();
+            myTweenable.tween({
+                from:     { &#39;x&#39;: canvas.zoomFactor  },
+                to:       { &#39;x&#39;: zoomFactor },
+                duration: 300,
+                easing : &quot;easeOutSine&quot;,
+                step: function (params) {
+                    _zoom(params.x);
+                }
+            });
+        }
+        else{
+            _zoom(zoomFactor);
+        }
+    }
+});
+</pre>
+</body>
+</html>

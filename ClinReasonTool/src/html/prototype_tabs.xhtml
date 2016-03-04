@@ -1,0 +1,238 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:f="http://java.sun.com/jsf/core"      
+      xmlns:h="http://java.sun.com/jsf/html">
+<head><title>Patient Illness Script</title>
+ <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+
+<link rel="stylesheet" type="text/css" href="../scripts/jquery112/ui-lightness/jquery-ui.css" /> 
+<link rel="stylesheet" type="text/css" href="../scripts/draw2d/css/contextmenu.css"  />
+<!--  <link rel="stylesheet" type="text/css" href="<PMW fcache>files/html/scripts/draw2d/css/contextmenu.css"  />-->
+<link rel="stylesheet" href="../styles/clinreason.css" />
+
+<script type="text/javascript" src="../scripts/jquery112/jquery.js"></script>
+<script type="text/javascript" src="../scripts/jquery112/jquery-ui.min.js"></script>
+<script type="text/javascript" src="../scripts/jquery112/jquery-ui.js"></script>
+<script src="../scripts/draw2d/lib/shifty.js"></script>	
+<script src="../scripts/draw2d/lib/raphael.js"></script>			
+<script src="../scripts/draw2d/lib/jquery.autoresize.js"></script>	
+<script src="../scripts/draw2d/lib/jquery-touch_punch.js"></script>	
+<script src="../scripts/draw2d/lib/jquery.contextmenu.js"></script>	
+<script src="../scripts/draw2d/lib/rgbcolor.js"></script>	
+<script src="../scripts/draw2d/lib/canvg.js"></script>	
+<script src="../scripts/draw2d/lib/Class.js"></script>	
+<script src="../scripts/draw2d/lib/json2.js"></script>	
+<script src="../scripts/draw2d/lib/pathfinding-browser.min.js"></script>
+<script src="../scripts/draw2d/src/draw2d.js"></script>	
+<script src="../scripts/draw2d/src/LabelConnection.js"></script>	
+<script src="../scripts/draw2d/src/LabelRectangle.js"></script>	
+<script src="../scripts/draw2d/src/LabelLMEditor.js"></script>	
+
+<script src="../scripts/draw2d/lib/jquery.browser.js"></script>
+<script src="../scripts/draw2d/lib/jquery.layout.js"></script>
+<script src="../scripts/draw2d/src/mydraw2d.js"></script>
+<script src="../scripts/crt_pis.js"></script>
+<script language="JavaScript">
+
+//var $j = jQuery.noConflict();
+var msg2="Please connect the hypotheses with the findings";
+var numHyps = 1;
+var numFinds = 0;
+var numDiagnSteps = 0;
+var numMng = 0;
+
+ var my_canvas = null;
+ draw2d.Configuration.factory.createConnection=function(sourcePort, targetPort, callback, dropTarget){
+	    return new LabelConnection();
+ };
+ 
+
+$(function() {
+    $( "#tabs" ).tabs({
+    	//active = $( ".selector" ).tabs( "option", "active" ),
+        event: "mouseover"
+      });
+   /* $( "#tabs").tabs({
+    	  active: 2
+    	});
+    $( "#tabs" ).mouseover(function() {
+    	  alert(this.active);
+    	});*/
+    $( document ).tooltip();
+    $( ".draggable" ).draggable();	
+    //$("#canvascontainer").draggable();
+    $( "#list_diagnoses" ).sortable();
+    $( "#list_diagnoses" ).disableSelection();
+    $( "#list_mngs" ).sortable();
+    $( "#list_mngs" ).disableSelection();
+    $( "#list_problems" ).sortable();
+    $( "#list_problems" ).disableSelection();
+    $( "#trashbindiv" ).droppable({
+    	/*accept: ".sortable",*/
+        drop: function( event, ui ) {
+          $( this ) //this.id = id of trashbin
+              removeItemFromList(ui.draggable);        
+        }
+      });
+
+    $( "#confidence_slider" ).slider({
+       orientation: "vertical",
+    	min: 0,
+    	max: 100,
+    	step: 1,
+    });
+	$("#jdialog").dialog({
+		autoOpen: false,
+		modal: true,
+		width: "auto",
+		height: "auto"
+	});
+	
+	my_canvas  = new draw2d.Canvas("canvas");
+	 /*for testing */
+	 createAndAddHyp("Pneumonia",90,5,"cmddx_2");
+	/*createAndAddHyp("Acute Bronchitis",170,50);
+	 createAndAddFind("Cough", 100, 200);
+	 createAndAddDiagnStep("Chest X-Ray", 170, 200);
+	 createAndAddMng("Do nothing", 200, 50);*/
+	/* testing end */
+	  updatePreview();
+	  my_canvas.getCommandStack().addEventListener(function(e){
+	      if(e.isPostChangeEvent()){
+	          updatePreview();
+	  } 
+	  });
+	initAddHyp();
+	initAddFind();
+	initAddMng();
+	initAddDiagnStep();
+	/*$("#jdialogCanvas").dialog({
+		autoOpen: false,
+		modal: false,
+		width: "auto",
+		height: "auto"
+	});	*/
+	my_canvas.on("figure:remove", function(emitter, event){
+	    //alert("figure removed:");
+	 });
+
+	toggleSubmit();
+	//$("#canvascontainer").hide();
+});
+
+
+</script>
+</head>
+<body style="font-family:arial;">
+<!--   <div id="canvascontainer" class="canvascontainer">
+	<div id="canvas" class="canvas"> </div>
+	<span id="hypcontainer"></span><div id="addhyp" class=" newElem newHyp">Hypothesis</div>
+    <span id="findcontainer"></span><div id="addfind" class=" newElem newFind">Problem</div>
+   	<span id="dscontainer"></span> <div id="adddiagnstep" class=" newElem newDiagnStep">Diagn. Step</div>
+    <span id="mngcontainer"></span> <div id="addmng" class=" newElem  newMng">Managment</div> 
+ </div> -->
+ <div id="case_story" style="float:left;width:60%;border:1px;">
+
+"Good morning Dr. Epstein" says the practice administrator as she puts your cup of tea down in front of you. "I think you have a busy surgery this morning".
+Your eyes are drawn to the window behind and the glorious view over the rooftops of Buckden and Wharfdale to the hills behind. Maybe there would be time later.....
+"Oh Dr Epstein, I think you'd better see the young gentleman that's just come in - he doesn't look so good. I've popped him in the treatment room."
+<br/><br/>
+
+Waiting for you on the couch is Henry Rodin, who has been brought in by his friends by taxi. He is visibly ill and distressed.
+
+He can barely stand or speak, is flushed, hot, short of breath, and coughing frequently. He complains of severe pain in the right side of the chest when he breathes. The practise nurse has measured his temperature, at 39.6°C. 
+<br/><br/>
+
+Henry is having some difficulty answering your questions now. You note that he is breathing a little fast too.
+Nevertheless, you are able to find out that is no history of significant serious illness during adult life.
+Henry's works in an insurance brokers, but works out regularly, and he is fit and active. For the previous 4 years their group had spent a fortnight or so each autumn hiking.
+Henry a non-smoker is married, with no children, who drinks alcohol socially. There is no history of allergy, medications, or chest problems. No significant family history. Just before undertaking this hike there had been a mild episode of a cold or flu-like illness, but not enough to abandon the hike.
+His respiratory rate 45/min, Pulse 116 /min, blood pressure 109/55, temperature 39.6 C, Saturation 79% in air.
+On examination his chest expansion seems somewhat limited on the right, and there is an area of altered breath sounds, with bronchial breathing and coarse rales over the upper right quadrant. This area is dull to percussion. A pleural friction rub is present.
+What would you like to do now?
+
+</div>
+
+	<div id="tabs" class="cr-tabs">
+	  <ul>
+	    <li><a href="#tabs-1">Patient</a></li>
+	    <li><a href="#tabs-2">Problems</a></li>
+	     <li><a href="#tabs-4">Summary</a></li>
+	    
+	    <li><a href="#tabs-3">DDX</a></li>
+	    <li><a href="#tabs-5">Diagn. Steps</a></li>
+	    <li><a href="#tabs-6">Therapy</a></li>
+	    <li><a href="#tabs-7">CM</a></li>
+	  </ul>
+		  <div id="tabs-1">
+		  <div id="patimg" style="position:relative;right:0px; top:0px; float:right;"><img src="patient.png" width="150px" /></div>
+		  	<div id="descr">
+		  		Name: Henry Rodin<br/>
+				Age: 30, Gender: M<br/>
+				Course of Time: <select class="f_select" id="courseTime"><option value="-1">-</option><option value="1">acute</option><option value="2">chronic</option></select>
+			</div>
+		  </div>
+		  <div id="tabs-2">	<div class="ddx_left"><!--  <select id="problems" onchange="addProblem();" class="custom-combobox f_select">-->
+ <!--  <span id="problem_input">	<input onclick="openProblemsList();" class="f_text"></input></span>-->
+<input class="f_text" id="problems"></input>
+<!--  		  	<select class="f_select" onchange="addProblem();" id="problems"><option value="-1">-</option><option value="1">Cough</option><option value="2">Fever</option><option value="3">Cyanosis</option><option value="4">Dyspnea</option><option value="5">Chest pain</option></select>-->
+			<br/><ol id="list_problems" class="sortable"><li id="selprob_6">Shortness of Breath<a href="javascript:chgProblem('6','4');"><i class="icon-ok1"></i></a></li></ol>
+			</div>
+		  </div>
+		  <div id="tabs-4">	<textarea class="f_textarea" name="summSt" cols="50" rows="10"></textarea>
+		  </div>
+		  <div id="tabs-3">	
+		  	<div class="ddx_left"><input class="f_text" id="ddx"></input>
+				<!-- <select class="f_select" onchange="addDiagnosis();" id="ddx"><option value="-1">-</option><option value="1">Pneumonia</option><option value="2">Acute Bronchitis</option><option value="4">Flu</option><option value="3">COPD</option></select>--><br/>
+				<ol id="list_diagnoses" class="sortable">
+					<li id="selddx_2"><a href="javascript:toggleMnM('1');" title="Is this a Must-Not-Miss diagnosis? E.g. because it is lethal?"><i id="mnmicon_1" class="icon-attention0"></i></a>Pneumonia<a href="javascript:changeTier('1');" id="tiera_1" title="How likely is this diagnosis?"><i id="tiericon_1" class="icon-circle-tier0"></i></a></li>
+				</ol>
+			</div>
+			<div id="confidence_slider" class="conf_slider" title="Level of confidence"></div>
+	
+		  </div>
+		  <div id="tabs-5"><div class="ddx_left"><input class="f_text" id="tests"></input>
+		  		<!-- <select id="tests"  onchange="addTest();" class="f_select"><option>-</option><option value="1">Chest X-Ray</option></select>-->
+				<br/><ul id="list_tests" class="sortable"><li id="selds_1">Chest X-ray <select class="f_select"><option value="-1">scanning</option><option>r/c Pneumonia</option></select></li></ul>
+		  </div></div>
+		  <div id="tabs-6"><div class="ddx_left"><input class="f_text" id="mng"></input>
+		  		<!-- <select id="mng" class="f_select" onchange="addManagement();"><option value="-1">-</option><option value="0">do nothing</option><option value="1">antibiotics</option></select>-->
+		   		<br/><ol id="list_mngs" class="sortable"></ol>	   	
+		  </div> </div>
+		   <div id="tabs-7">
+				<div id="canvas" class="canvas"> </div>
+				 <div class="newElemContainer">
+				 	<span id="findcontainer"></span><div id="addfind" class=" newElem newFind">Problem</div><br/>
+					<span id="hypcontainer"></span><div id="addhyp" class=" newElem newHyp">Diagnosis</div><br/>
+			   		<span id="dscontainer"></span> <div id="adddiagnstep" class=" newElem newDiagnStep">Diagn. Step</div><br/>
+			    	<span id="mngcontainer"></span> <div id="addmng" class=" newElem  newMng">Managment</div> 
+			    </div>
+		   </div>
+		    <div id="trashbindiv" class="trashbindiv"><i class="icon-trash-1"></i></div>
+			  	<div class="navfooter"><a href="" title="take notes"><i class="icon-edit"></i></a>
+			  	<a href="javascript:getProblemFedback();" title="See an experts problems"><i class="icon-user-md"></i></a> 
+				<a href="javascript:getProblemPeerFedback();" title="See problems listed by your peers"><i class="icon-users"></i></a>
+				<a href="javascript:doSubmitDDX();" title="Submit your final diagnoses and differentials"><i id="uploadddx" class="icon-upload-off"></i></a>
+				<a href="javascript:doDisplayIS();" title="open illness script"><i id="is_icon" class="icon-list-alt"></i></a></div>
+		  	<!--  </div>-->
+		  	<!--  <div class="cm-preview"><a href="javascript:openCanvas();" title="click to open concept map"><img id="preview_img" style="border-radius:5px;overflow:auto; width:50px; height:50px;"/> </a></div> -->
+		 <!--   </div>-->
+	</div>   
+	
+	<!-- 
+	open questions/issues: 
+		- do we want to keep lists and CP in sync all the time or leave it up to the user and ask if deleting in list or cm?
+		- tabs or accordion display?
+		- how to implement the notes? 
+		- CM preview needed? 
+		- display of rect/label not correct
+		- connection labels just on contextmenu?
+	 --> 
+
+<div id="jdialog">Are you sure you want to submit Pneumonia as your final diagnosis without any further work-up?<br/>
+<a href="javascript:submitDDXConfirmed();">Yes</a><br/></div>
+	
+</body>
+</html>

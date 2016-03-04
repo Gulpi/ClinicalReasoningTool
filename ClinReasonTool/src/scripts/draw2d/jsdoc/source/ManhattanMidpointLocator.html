@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js">
+<span id='draw2d-layout-locator-ManhattanMidpointLocator'>/**
+</span> * @class draw2d.layout.locator.ManhattanMidpointLocator
+ * 
+ * A ManhattanMidpointLocator that is used to place figures at the midpoint of a Manhatten routed
+ * connection. The midpoint is always in the center of an edge.
+ *
+ *
+ * See the example:
+ *
+ *     @example preview small frame
+ *     //create and add two Node which contains Ports (In and OUT)
+ *     var start = new draw2d.shape.node.Start({x:50,y:50});
+ *     var end   = new draw2d.shape.node.End({x:230,y:100});
+ *     
+ *     canvas.add( start);
+ *     canvas.add( end);
+ *         
+ *     // Create a Connection and connect he Start and End node
+ *     //
+ *     var c = new draw2d.Connection();
+ *     c.setSource(start.getOutputPort(0));
+ *     c.setTarget(end.getInputPort(0));
+ *     canvas.add(c);
+ *
+ *     // create a label which should attach to the connection
+ *     //
+ *     var label = new draw2d.shape.basic.Label({text:&quot;I&#39;m a Label&quot;});
+ *     label.setColor(&quot;#0d0d0d&quot;);
+ *     label.setFontColor(&quot;#0d0d0d&quot;);
+ *     label.setBackgroundColor(&quot;#f0f0f0&quot;);
+ *
+ *     // add the decoration to the connection with a ManhattanMidpointLocator.
+ *     //
+ *     c.add(label, new draw2d.layout.locator.ManhattanMidpointLocator());
+ *     
+ * @author Andreas Herz
+ * @extend draw2d.layout.locator.ConnectionLocator
+ */
+draw2d.layout.locator.ManhattanMidpointLocator= draw2d.layout.locator.ConnectionLocator.extend({
+    NAME : &quot;draw2d.layout.locator.ManhattanMidpointLocator&quot;,
+    
+<span id='draw2d-layout-locator-ManhattanMidpointLocator-method-constructor'>    /**
+</span>     * @constructor
+     * Constructs a ManhattanMidpointLocator with associated Connection c.
+     * 
+     * @param {draw2d.Connection} c the connection associated with the locator
+     */
+    init: function()
+    {
+      this._super();
+    },
+    
+    
+<span id='draw2d-layout-locator-ManhattanMidpointLocator-method-relocate'>    /**
+</span>     * @method
+     * Relocates the given Figure always in the center of an edge.
+     *
+     * @param {Number} index child index of the target
+     * @param {draw2d.Figure} target The figure to relocate
+     **/
+    relocate:function(index, target)
+    {
+       var conn = target.getParent();
+       var points = conn.getVertices();
+       
+       var segmentIndex = Math.floor((points.getSize() -2) / 2);
+       if (points.getSize() &lt;= segmentIndex+1)
+          return; 
+    
+       var p1 = points.get(segmentIndex);
+       var p2 = points.get(segmentIndex + 1);
+    
+       var x = ((p2.x - p1.x) / 2 + p1.x - target.getWidth()/2)|0;
+       var y = ((p2.y - p1.y) / 2 + p1.y - target.getHeight()/2)|0;
+    
+       target.setPosition(x,y);
+    }
+});
+</pre>
+</body>
+</html>

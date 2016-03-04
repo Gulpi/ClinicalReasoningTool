@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='draw2d-layout-connection-SplineConnectionRouter'>/**
+</span> * @class draw2d.layout.connection.SplineConnectionRouter 
+ * 
+ * A MannhattanConnectionRouter with an spline interpolation between the bend points.
+ * 
+ * @inheritable
+ * @author Andreas Herz
+ * @extends draw2d.layout.connection.ManhattanConnectionRouter
+ */
+draw2d.layout.connection.SplineConnectionRouter = draw2d.layout.connection.ManhattanConnectionRouter.extend({
+
+	NAME : &quot;draw2d.layout.connection.SplineConnectionRouter&quot;,
+
+<span id='draw2d-layout-connection-SplineConnectionRouter-method-constructor'>    /**
+</span>     * @constructor Creates a new Router object
+     */
+    init: function()
+    {
+        this._super();
+
+//        this.spline = new draw2d.util.spline.CatmullRomSpline();
+        this.spline = new draw2d.util.spline.CubicSpline();
+//        this.spline = new draw2d.util.spline.BezierSpline();
+        
+        this.MINDIST = 50,
+        this.cheapRouter = null;
+    },
+
+    
+<span id='draw2d-layout-connection-SplineConnectionRouter-method-onInstall'>    /**
+</span>     * @method
+     * Callback method if the router has been assigned to a connection.
+     * 
+     * @param {draw2d.Connection} connection The assigned connection
+     * @template
+     * @since 2.7.2
+     */
+    onInstall: function(connection){
+        connection.installEditPolicy(new draw2d.policy.line.LineSelectionFeedbackPolicy());
+    },
+ 
+<span id='draw2d-layout-connection-SplineConnectionRouter-method-route'>	/**
+</span>	 * @method
+	 * Layout the hands over connection with the cubic spline calculation and manhattan routing
+	 * 
+	 * @param {draw2d.Connection} conn
+     * @param {draw2d.util.ArrayList} oldVertices old/existing vertices of the Connection
+	 */
+    route : function(conn, oldVertices)
+    {
+    	var i=0;
+		var fromPt  = conn.getStartPoint();
+		var fromDir = conn.getSource().getConnectionDirection(conn, conn.getTarget());
+
+		var toPt  = conn.getEndPoint();
+		var toDir = conn.getTarget().getConnectionDirection(conn, conn.getSource());
+
+		// calculate the manhatten bend points between start/end.
+		//
+		this._route(conn, toPt, toDir, fromPt, fromDir);
+
+        var ps = conn.getVertices();
+
+        conn.oldPoint=null;
+        conn.lineSegments = new draw2d.util.ArrayList();
+        conn.vertices     = new draw2d.util.ArrayList();
+ 
+        var splinePoints = this.spline.generate(ps,8);
+        splinePoints.each(function(i,e){
+            conn.addPoint(e);
+        });
+        
+        // calculate the path string for the SVG rendering
+        //
+        var ps = conn.getVertices();
+        length = ps.getSize();
+        var p = ps.get(0);
+        var path = [&quot;M&quot;,p.x,&quot; &quot;,p.y];
+        for( i=1;i&lt;length;i++){
+              p = ps.get(i);
+              path.push(&quot;L&quot;, p.x, &quot; &quot;, p.y);
+        }
+        conn.svgPathString = path.join(&quot;&quot;);
+    }
+});</pre>
+</body>
+</html>

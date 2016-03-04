@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='draw2d-util-spline-CatmullRomSpline'>/**
+</span> * @class draw2d.util.spline.CatmullRomSpline
+ * 
+ * A catmull-rom spline object.
+ * 
+ * @inheritable
+ * @author Andreas Herz
+ * 
+ * @extends draw2d.util.spline.CubicSpline
+ */
+draw2d.util.spline.CatmullRomSpline = draw2d.util.spline.CubicSpline.extend(
+{
+    NAME : &quot;draw2d.util.spline.CatmullRomSpline&quot;,
+    
+<span id='draw2d-util-spline-CatmullRomSpline-method-constructor'>    /**
+</span>     * @constructor 
+     */
+    init: function()
+    {
+        this._super();
+    },
+
+    
+    blend : function(i, t) {
+        if (i == -2)
+            return ((-t + 2) * t - 1) * t / 2;
+        else if (i == -1)
+            return (((3 * t - 5) * t) * t + 2) / 2;
+        else if (i == 0)
+            return ((-3 * t + 4) * t + 1) * t / 2;
+        else
+            return ((t - 1) * t * t) / 2;
+    }
+  
+});
+</pre>
+</body>
+</html>

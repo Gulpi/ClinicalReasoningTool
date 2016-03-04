@@ -1,0 +1,378 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html>
+<head><title>Patient Illness Script</title>
+ <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+
+<link rel="stylesheet" type="text/css" href="../../html/dhtml/jquery112/ui-lightness/jquery-ui.css" /> 
+<link rel="stylesheet" type="text/css" href="../../html/scripts/draw2d/css/contextmenu.css"  />
+<link rel="stylesheet" type="text/css" href="<PMW fcache>files/html/scripts/draw2d/css/contextmenu.css"  />
+<link rel="stylesheet" href="../../styles/clinreason.css" />
+
+<script type="text/javascript" src="../../html/dhtml/jquery112/jquery.js"></script>
+<script type="text/javascript" src="../../html/dhtml/jquery112/jquery-ui.min.js"></script>
+<script type="text/javascript" src="../../html/dhtml/jquery112/jquery-ui.js"></script>
+<script src="../../html/scripts/draw2d/lib/shifty.js"></script>	
+<script src="../../html/scripts/draw2d/lib/raphael.js"></script>			
+<script src="../../html/scripts/draw2d/lib/jquery.autoresize.js"></script>	
+<script src="../../html/scripts/draw2d/lib/jquery-touch_punch.js"></script>	
+<script src="../../html/scripts/draw2d/lib/jquery.contextmenu.js"></script>	
+<script src="../../html/scripts/draw2d/lib/rgbcolor.js"></script>	
+<script src="../../html/scripts/draw2d/lib/canvg.js"></script>	
+<script src="../../html/scripts/draw2d/lib/Class.js"></script>	
+<script  src="../../html/scripts/draw2d/lib/json2.js"></script>	
+<script src="../../html/scripts/draw2d/lib/pathfinding-browser.min.js"></script>
+<script src="../../html/scripts/draw2d/src/draw2d.js"></script>	
+<script src="../../html/scripts/draw2d/src/LabelConnection.js"></script>	
+<script src="../../html/scripts/draw2d/lib/jquery.browser.js"></script>
+<script src="../../html/scripts/draw2d/lib/jquery.layout.js"></script>
+<script src="../../html/scripts/draw2d/io/png/Writer.js"></script>	
+<script src="../../html/scripts/draw2d/io/json/Writer.js"></script>	
+<script src="../../html/scripts/draw2d/io/json/Reader.js"></script>
+<script src="../../html/scripts/draw2d/src/mydraw2d.js"></script>	
+<script language="JavaScript">
+
+//var $j = jQuery.noConflict();
+var msg2="Please connect the hypotheses with the findings";
+var hypLabel="Hypothese";
+var findLabel = "Befund";
+ var my_canvas = null;
+ draw2d.Configuration.factory.createConnection=function(sourcePort, targetPort, callback, dropTarget){
+	    return new LabelConnection();
+ };
+ 
+$(function() {
+    $( ".draggable" ).draggable();	
+    $( "#list_diagnoses" ).sortable();
+    $( "#list_diagnoses" ).disableSelection();
+    $( "#list_problems" ).sortable();
+    //$j( "#list_problems" ).draggable();
+    $( "#list_problems" ).disableSelection();
+    $( ".trashbindiv" ).droppable({
+    	//accept: ".sortable",
+        drop: function( event, ui ) {
+          $( this ) //this.id = id of trashbin
+              removeItemFromList(ui.draggable);        
+        }
+      });
+
+    $( "#confidence_slider" ).slider({
+       orientation: "vertical",
+    	min: 0,
+    	max: 100,
+    	step: 1,
+    });
+	$("#jdialog").dialog({
+		autoOpen: false,
+		modal: true,
+		width: "auto",
+		height: "auto"
+	});
+	$("#jdialogCanvas").dialog({
+		autoOpen: false,
+		modal: true,
+		width: "auto",
+		height: "auto"
+	});	
+	 my_canvas  = new draw2d.Canvas("canvas");
+	 createAndAddHyp("Pneumonia",100,50);
+	 createAndAddHyp("Acute Bronchitis",170,50);
+	 createAndAddFind("Cough", 100, 200);
+	 createAndAddDiagnStep("Chest X-Ray", 170, 200);
+	 createAndAddMng("Do nothing", 200, 50);
+
+	  updatePreview();
+	  my_canvas.getCommandStack().addEventListener(function(e){
+	      if(e.isPostChangeEvent()){
+	          updatePreview();
+	  } 
+	  });
+	  $( "#addhyp" ).draggable({ //add a new hypothesis
+		  start: function( event, ui ) {
+			 $("#addhyp").clone().prependTo($("#hypcontainer")); 
+		  } , 
+		  stop: function( event, ui ) {	
+			  this.remove();	  
+		  	createAndAddHyp("neue hyp", ui.offset.left, ui.offset.top);	  	
+		  	updatePreview();
+		  }
+	  });	
+	 $( "#addfind" ).draggable({ //add a new hypothesis
+		  start: function( event, ui ) {
+			 $("#addfind").clone().prependTo($("#findcontainer")); 
+		  } , 
+		  stop: function( event, ui ) {	
+			  this.remove();	  
+		  	createAndAddFind("new find", ui.offset.left, ui.offset.top);	  	
+		  	updatePreview();
+		  }
+	  });	
+	 $( "#addmng" ).draggable({ //add a new hypothesis
+		  start: function( event, ui ) {
+			 $("#addmng").clone().prependTo($("#mngcontainer")); 
+		  } , 
+		  stop: function( event, ui ) {	
+			  this.remove();	  
+		  	createAndAddMng("new mng", ui.offset.left, ui.offset.top);	  	
+		  	updatePreview();
+		  }
+	 });	
+	 $( "#adddiagnstep" ).draggable({ //add a new hypothesis
+		  start: function( event, ui ) {
+			 $("#adddiagnstep").clone().prependTo($("#dscontainer")); 
+		  } , 
+		  stop: function( event, ui ) {	
+			  this.remove();	  
+			  createAndAddDiagnStep("new test", ui.offset.left, ui.offset.top);	  	
+		  	updatePreview();
+		  }
+	}); 
+
+});
+
+/*an item has been dragged onto the trash bin, so, we remove it from the list*/
+function removeItemFromList(draggable){
+	var itemIdToDel = draggable.attr("id"); //e.g. problems_2, ddx_67
+	//trigger ajax call here....
+	removeItemFromListCallback(draggable);
+}
+/* back from ajax call, remoce item from list*/
+function removeItemFromListCallback(draggable){
+	alert("delete " + draggable.attr("id"));
+	draggable.remove();
+}
+
+/*
+ * a problem is added to the list of the already added problems:
+ */
+function addProblem(){
+	//here we have to trigger an ajax call... 
+	var problemId = $("#problems").val();
+	if(problemId>-1) addProblemCallBack(problemId);
+}
+
+function addProblemCallBack(problemId){
+	//we get the problemId and name and a rating via ajax...
+	
+	var selProblem = $("#problems option:selected").text();
+	var isCorr = tmpHelperGetCorrect(problemId);
+	
+	if(isCorr==2) $("#list_problems").append("<li id='selProb="+problemId+"'>"+selProblem+"<i class=\"icon-ok2\"></i></li>");
+	else if(isCorr==1) $("#list_problems").append("<li id='selProb="+problemId+"'>"+selProblem+"<i class=\"icon-ok1\"></i></li>");
+	else $("#list_problems").append("<li id='selProb="+problemId+"'>"+selProblem+"</li>");
+
+	$("#problems").val("-1");
+}
+/* if the answer was correct, but there is a better choice we offer the learner to change it by clicking on the checkmark*/
+function chgProblem(orgId, toChgId){
+	var confirmMsg = confirm("The term you have chosen is correct, however, a better choice would have been Dyspnea. Do you want to change your choice?");
+	if(confirmMsg){
+		$("#selProb_"+orgId).html("Dyspnea<i class=\"icon-ok2\"></i>");
+		$("#selProb_"+orgId).attr("id","selProb_"+toChgId);
+		//also trigger an ajax call to store the change....
+	}
+}
+
+/* this is no longer needed with ajax */
+function tmpHelperGetCorrect(problemId){
+	//alert(problemId);
+	var exp_problems_ids = [2,5]; //this comes then from ajax, rating can be 0 (wrong), 1(partly correct), 2 (correct)
+	for(i=0; i<exp_problems_ids.length; i++){
+		if(problemId==exp_problems_ids[i]) return 2;
+	}
+	return 0;
+}
+
+/*
+ * a diagnosis is added to the list of the already added diagnoses:
+ */
+function addDiagnosis(){
+	//here we have to trigger an ajax call... 
+	var diagnId = $("#ddx").val();
+	if(diagnId>-1) addDiagnosisCallBack(diagnId);
+}
+
+function addDiagnosisCallBack(diagnId){
+	//we get the problemId and name via ajax...
+	var selDiagnosis = $("#ddx option:selected").text();
+	$("#list_diagnoses").append("<li id='selDDX="+diagnId+"'>"+selDiagnosis+"</li>");
+	$("#ddx").val("-1");
+}
+
+/*
+ * a test is added to the list of the already added tests:
+ */
+function addTest(){
+	//here we have to trigger an ajax call... 
+	var testId = $("#tests").val();
+	if(testId>-1) addTestCallBack(testId);
+}
+
+function addTestCallBack(testId){
+	//we get the problemId and name via ajax...
+	var selTest = $("#tests option:selected").text();
+	$("#list_tests").append("<li id='selTest="+testId+"'>"+selTest+"</li>");
+	$("#tests").val("-1");
+}
+/* we submit the DDX (or only final diagnoses?) and ask for certainity*/
+function doSubmitDDX(){
+	//we check whether there is a final diagnosis, if so we submit, else we display a hint
+	//if()
+	$("#jdialog").dialog( "option", "position", ['center',50] );
+	$("#jdialog").dialog( "option", "width", ['200'] );
+	$("#jdialog").dialog( "option", "height", ['200'] );
+	$("div[id=jdialog]").html("hallo");
+	$("#jdialog").dialog( "option", "buttons", [ ] );
+	$("#jdialog" ).dialog( "open" );
+}
+
+/* We open a jdialog for the concept map*/
+function openCanvas(){
+	//we check whether there is a final diagnosis, if so we submit, else we display a hint
+	//if()
+	//$("#canvas").show();
+	$("#jdialogCanvas").dialog( "option", "position", ['center',50] );
+	$("#jdialogCanvas").dialog( "option", "width", ['400'] );
+	$("#jdialogCanvas").dialog( "option", "height", ['400'] );
+	//$("div[id=jdialogCanvas]").html("hallo");
+	$("#jdialogCanvas").dialog( "option", "buttons", [ ] );
+	$("#jdialogCanvas" ).dialog( "open" );
+}
+var tiermsg=["I do not now","Clinically high likelyhood","Clinically moderate likelyhood","Clinically low likelyhood","My final diagnosis"];
+
+/* we change the tier-color of the corresponding diagnosis*/
+function changeTier(id){
+	var id2 = "tiericon_"+id;
+	var actClass = $("#"+id2).attr("class");
+	var num = Number(actClass.charAt( actClass.length-1 )) +1;
+	if(num>=5) num=0;
+	$("#"+id2).removeClass(actClass);
+	$("#"+id2).addClass("icon-circle-tier"+num);
+	$("#tiera_"+id).prop("title",tiermsg[num]);
+	toggleSubmit();	
+}
+
+/* we activate the upload button to submit DDX*/ 
+function toggleSubmit(){
+	var hasFinalDiagnosis = hasAFinalDiagnosis();
+	if(hasFinalDiagnosis){
+		if($("#uploadddx").attr("class")=="icon-upload-on") return;
+		$("#uploadddx").removeClass("icon-upload-off");
+		$("#uploadddx").addClass("icon-upload-on");
+	}
+	else{
+		if($("#uploadddx").attr("class")=="icon-upload-off") return;
+		$("#uploadddx").removeClass("icon-upload-on");
+		$("#uploadddx").addClass("icon-upload-off");
+	}
+}
+
+function hasAFinalDiagnosis(){
+	//tiericon_1
+	var numFinDiagn = $(".icon-circle-tier4").length;
+	if(numFinDiagn>0) return true;
+	return false;
+	//alert(numFinDiagn);
+}
+
+/* a diagnosis is changed to must not missed -red icon or toggled back*/
+function toggleMnM(id){
+	var id = "mnmicon_"+id;
+	var actClass = $("#"+id).attr("class");
+	$("#"+id).removeClass(actClass);
+	if(actClass=="icon-attention0") $("#"+id).addClass("icon-attention1");
+	else  $("#"+id).addClass("icon-attention0");
+}
+
+</script>
+</head>
+<body>
+<div id="case_story" style="float:left;width:60%">
+
+"Good morning Dr. Epstein" says the practice administrator as she puts your cup of tea down in front of you. "I think you have a busy surgery this morning".
+Your eyes are drawn to the window behind and the glorious view over the rooftops of Buckden and Wharfdale to the hills behind. Maybe there would be time later.....
+"Oh Dr Epstein, I think you'd better see the young gentleman that's just come in - he doesn't look so good. I've popped him in the treatment room."
+<br><br>
+
+Waiting for you on the couch is Henry Rodin, who has been brought in by his friends by taxi. He is visibly ill and distressed.
+
+He can barely stand or speak, is flushed, hot, short of breath, and coughing frequently. He complains of severe pain in the right side of the chest when he breathes. The practise nurse has measured his temperature, at 39.6°C. 
+<br><br>
+
+Henry is having some difficulty answering your questions now. You note that he is breathing a little fast too.
+Nevertheless, you are able to find out that is no history of significant serious illness during adult life.
+Henry's works in an insurance brokers, but works out regularly, and he is fit and active. For the previous 4 years their group had spent a fortnight or so each autumn hiking.
+Henry a non-smoker is married, with no children, who drinks alcohol socially. There is no history of allergy, medications, or chest problems. No significant family history. Just before undertaking this hike there had been a mild episode of a cold or flu-like illness, but not enough to abandon the hike.
+His respiratory rate 45/min, Pulse 116 /min, blood pressure 109/55, temperature 39.6 C, Saturation 79% in air.
+On examination his chest expansion seems somewhat limited on the right, and there is an area of altered breath sounds, with bronchial breathing and coarse rales over the upper right quadrant. This area is dull to percussion. A pleural friction rub is present.
+What would you like to do now?
+
+</div>
+<div class="draggable"> 
+	<div style="float:left;position:relative;width:90px"><b>Patient data</b> <!-- (automat. populated)--><br/>
+		Name: Henry Rodin<br/>
+		Age: 8 sy<br/>
+		Gender: M<br/><br/>
+		C. of Time: <select class="f_select" id="courseTime"><option value="-1">-</option><option value="1">actute</option><option value="2">chronic</option></select>
+	</div>
+	<div style="float:right;position:relative;width:50px;"><img src="DSC_0170.JPG" width="50"/></div>
+	<div id="footer6" class="footer"><div style="float:right;width:150px;position:relative;"> <a href=""><i class="icon-edit"></i></a></div></div>
+</div>
+<div class="draggable"><h1>Problems</h1> 
+	<div class="ddx_left">
+		<select class="f_select" onchange="addProblem();" id="problems"><option value="-1">-</option><option value="1">Cough</option><option value="2">Fever</option><option value="3">Cyanosis</option><option value="4">Dyspnea</option><option value="5">Chest pain</option></select>
+		<br/><ol id="list_problems" class="sortable"><li id="selProb_6">Shortness of Breath<a href="javascript:chgProblem('6','4');"><i class="icon-ok1"></i></a></li></ol>
+	</div>
+	<div id ="footer1" class="footer"><span class="trashbindiv"><i class="icon-trash-1"></i></span>
+	<a href="javascript:getProblemFedback();" title="See an experts problems"><i class="icon-user-md"></i></a> 
+	<a href="javascript:getProblemPeerFedback();" title="See problems listed by your peers"><i class="icon-users"></i></a>
+	</div>
+</div>
+<div  class="draggable">Summary Statement<br/> <textarea class="f_textarea" name="summSt"></textarea><br/>
+	<div id="footer4" class="footer"><a href="javascript:getSumStFedback();" title="See an experts statement"><i class="icon-user-md"></i></a></div>
+</div>
+
+<div class="draggable">
+	<div class="ddx_left">DDX<br/> 
+		<select class="f_select" onchange="addDiagnosis();" id="ddx"><option value="-1">-</option><option value="1">Pneumonia</option><option value="2">Acute Bronchitis</option><option value="4">Flu</option><option value="3">COPD</option></select><br>
+		<ol id="list_diagnoses" class="sortable">
+		<li id="ddx_2"><a href="javascript:toggleMnM('1');" title="Is this a Must-Not-Miss diagnosis? E.g. because it is lethal?"><i id="mnmicon_1" class="icon-attention0"></i></a>Pneumonia<a href="javascript:changeTier('1');" id="tiera_1" title="How likely is this diagnosis?"><i id="tiericon_1" class="icon-circle-tier0"></i></a></li>
+		
+		</ol>
+	</div>
+	<div id="confidence_slider" class="conf_slider" title="Level of confidence">
+	</div>
+	<div id ="footer2" class="footer"><span class="trashbindiv" title="Drag & drop ddx to removve from your list"><i class="icon-trash-1"></i></span> 
+	<a href="javascript:doSubmitDDX();" title="Submit your final diagnoses and differentials"><i id="uploadddx" class="icon-upload-off"></i></a></div>
+</div>
+<div  class="draggable">
+	Diagnostic steps (partly autom. populated)<select id="tests"  onchange="addTest();" class="f_select"><option>-</option><option value="1">Chest X-Ray</option></select>
+	<br/><ul id="list_tests" class="sortable"><li>Chest X-ray <select class="f_select"><option value="-1">scanning</option><option>r/c Pneumonia</option></select></li></ul>
+	<div id ="footer3" class="footer"><span class="trashbindiv"><i class="icon-trash-1"></i></span> </div>
+</div>
+
+<div  class="draggable">after diagnoses have been submitted we display the following management section:<br/><br/>
+Management <select class="f_select" name="management"><option>-</option><option>do nothing</option><option>antibiotics</option></select>
+<div id ="footer5" class="footer"><span class="trashbindiv"><i class="icon-trash-1"></i></span>
+	<a href="javascript:getMngFedback();" title="See an experts management suggestions"><i class="icon-user-md"></i></a>
+	</div>
+</div>
+<div  class="draggable">Concept Map<br/>
+<a href="javascript:openCanvas();"><img id="preview_img" style="border-radius:5px;overflow:auto; width:150px; height:200px;"/> </a> 	
+
+</div>
+<br/><br clear=all/>
+
+
+<br clear=all />
+
+     
+  
+<div id="jdialogCanvas"><div id="canvas" class="canvas"> </div><span id="hypcontainer"></span>
+	<div id="addhyp" class="newHyp">Hypothesis</div>
+    <span id="findcontainer"></span><div id="addfind" class="newFind">Problem</div>
+   <span id="dscontainer"></span> <div id="adddiagnstep" class="newDiagnStep">Diagn. Step</div>
+    <span id="mngcontainer"></span> <div id="addmng" class="newMng">Managment</div></div>
+  <h1>hallo</h1>  
+</body>
+</html>

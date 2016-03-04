@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js">draw2d.Configuration = {
+    version : &quot;@VERSION@&quot;,
+    i18n : {
+        command : {
+            move : &quot;Move Shape&quot;,
+            assignShape : &quot;Add Shapes to Composite&quot;,
+            groupShapes : &quot;Group Shapes&quot;,
+            ungroupShapes : &quot;Ungroup Shapes&quot;,
+            deleteShape : &quot;Delete Shape&quot;,
+            moveShape : &quot;Move Shape&quot;,
+            moveLine : &quot;Move Line&quot;,
+            addShape : &quot;Add Shape&quot;,
+            moveVertex : &quot;Move Vertex&quot;,
+            moveVertices : &quot;Move Vertices&quot;,
+            deleteVertex : &quot;Delete Vertex&quot;,
+            resizeShape : &quot;Resize Shape&quot;,
+            collection : &quot;Execute Commands&quot;,
+            addVertex : &quot;Add Vertex&quot;,
+            changeAttributes:&quot;Change Attributes&quot;,
+            connectPorts : &quot;Connect Ports&quot;
+        },
+        menu : {
+            deleteSegment : &quot;Delete Segment&quot;,
+            addSegment : &quot;Add Segment&quot;
+        },
+        dialog : {
+            filenamePrompt : &quot;Enter Filename:&quot;
+        }
+    },
+
+    factory:{
+    	// all selection policies calles this method to create a ResizeHandle.
+    	// It is possible to replace this method with a custom implementation
+    	// @since 5.2.0
+    	createResizeHandle: function(forShape, type){
+    		return new draw2d.ResizeHandle(forShape, type);
+    	},
+    	// The commands an canvas calles this method to create a new connection.
+    	// all parameters are optional.
+    	// @since 5.3.0
+    	createConnection: function(sourcePort, targetPort, callback, dropTarget){
+    	    return new draw2d.Connection();
+    	},
+        // @since 5.3.0
+    	createInputPort: function(relatedFigure){
+    	    return new draw2d.InputPort();
+    	},
+        // @since 5.3.0
+        createOutputPort: function(relatedFigure){
+            return new draw2d.OutputPort();
+        },
+        // @since 5.3.0
+        createHybridPort: function(relatedFigure){
+            return new draw2d.HybridPort();
+        }
+    }
+};</pre>
+</body>
+</html>

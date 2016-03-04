@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js">
+<span id='draw2d-command-CommandAattr'>/**
+</span> * @class draw2d.command.CommandAattr
+ * 
+ * Add a vertex to a polyline or polygon
+ *
+ * @inheritable
+ * @author Andreas Herz
+ * 
+ * @extends draw2d.command.Command
+ */
+draw2d.command.CommandAttr = draw2d.command.Command.extend({
+    NAME : &quot;draw2d.command.CommandAttr&quot;,
+  
+<span id='draw2d-command-CommandAattr-method-constructor'>    /**
+</span>     * @constructor
+     * Create a new Command objects which provides undo/redo for attributes.
+     *
+     * @param {draw2d.shape.basic.Figure} figure the figure to handle
+     * @param {Number} x the x coordinate for the new vertex
+     * @param {Number} y the y coordinate for the new vertex
+     */
+    init: function(figure, newAttributes)
+    {
+        var _this = this;
+
+        this._super(draw2d.Configuration.i18n.command.changeAttributes);
+        
+        this.figure = figure;
+        this.newAttributes = newAttributes;
+        this.oldAttributes = {};
+        $.each(newAttributes, function(key, value){
+            _this.oldAttributes[key] = figure.attr(key);
+        });
+    },
+    
+  
+<span id='draw2d-command-CommandAattr-method-canExecute'>    /**
+</span>     * @method
+     * Returns [true] if the command can be execute and the execution of the
+     * command modify the model. A CommandMove with [startX,startX] == [endX,endY] should
+     * return false. &lt;br&gt;
+     * the execution of the Command doesn&#39;t modify the model.
+     *
+     * @return {boolean}
+     **/
+    canExecute:function()
+    {
+      // return false if we doesn&#39;t modify the model =&gt; NOP Command
+      return true;
+    },
+    
+<span id='draw2d-command-CommandAattr-method-execute'>    /**
+</span>     * @method
+     * Execute the command the first time
+     * 
+     **/
+    execute:function()
+    {
+       this.redo();
+    },
+    
+<span id='draw2d-command-CommandAattr-method-undo'>    /**
+</span>     * @method
+     *
+     * Undo the move command
+     *
+     **/
+    undo:function()
+    {
+        this.figure.attr(this.oldAttributes);
+    },
+    
+<span id='draw2d-command-CommandAattr-method-redo'>    /**
+</span>     * @method
+     * 
+     * Redo the move command after the user has undo this command
+     *
+     **/
+    redo:function()
+    {
+        this.figure.attr(this.newAttributes);
+    }
+});</pre>
+</body>
+</html>

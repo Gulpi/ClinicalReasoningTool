@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='draw2d-shape-composite-WeakComposite'>/**
+</span> * @class draw2d.shape.composite.WeakComposite
+ * A WeakComposite is a composite figure with loose coupling of the children and the composite.
+ * The child didn&#39;t know anything about the assigned composite nor did they receive any events
+ * about assignment to a composite.
+ * 
+ * Assignment without obligation.
+ * 
+ *     
+ * @author Andreas Herz
+ * @extends draw2d.shape.composite.Composite
+ * @since 4.8.0
+ */
+draw2d.shape.composite.WeakComposite = draw2d.shape.composite.Composite.extend({
+    NAME : &quot;draw2d.shape.composite.WeakComposite&quot;,
+
+<span id='draw2d-shape-composite-WeakComposite-method-constructor'>    /**
+</span>     * @constructor
+     * Creates a new weak composite element which are not assigned to any canvas.
+     * 
+     * @param {Object} [attr] the configuration of the shape
+     */
+    init: function( attr, setter, getter) {
+       this._super(attr, setter, getter);
+    }
+});
+
+
+
+
+
+
+</pre>
+</body>
+</html>

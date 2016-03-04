@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js">
+<span id='draw2d-storage-TideSDKStorage'>/**
+</span> * @class draw2d.storage.TideSDKStorage
+ * 
+ * &lt;b&gt;BETA: changes can happen without notice&lt;/b&gt;
+ * &lt;br&gt;
+ * &lt;br&gt;
+ * TideSDK’s versatility allows you to couple your favorite web technologies, e.g. Draw2D,  with TideSDK’s powerful API to build native cross-platform desktop apps.
+ * &lt;br&gt;
+ * This storage provider contains methods that help a TideSDK application manage files and read/write data to them. 
+ * &lt;br&gt;
+ * &lt;br&gt;
+ * &lt;b&gt;Ensure that you have cut&amp;past this method below to your index.html file. Additional you must pack your
+ * TideSDK app with PHP runtime.&lt;/b&gt;&lt;br&gt;
+ * &lt;br&gt;
+ * This is so because the native TideSDK is unable to write binary data or resources to the filesystem.
+ * 
+ *             &lt;script type=&quot;text/php&quot;&gt;  
+ *             function tideSDK_writeBase64AsBinaryData($fileName, $base64){
+ *               $binary=base64_decode($base64);
+ *               $file = fopen($fileName, &quot;w&quot;);
+ *               fwrite($file, $binary);
+ *               fclose($file);
+ *             }        
+ *             &lt;/script&gt;
+ *
+ * @author Andreas Herz
+ * @extends draw2d.storage.FileStorage
+ */
+draw2d.storage.TideSDKStorage = draw2d.storage.FileStorage.extend({
+    NAME : &quot;draw2d.storage.TideSDKStorage&quot;,
+
+<span id='draw2d-storage-TideSDKStorage-method-constructor'>    /**
+</span>     * @constructor
+     * 
+     */
+    init:function(){
+        this._super();
+        
+        this.initDone = false;
+        // Check for the various File API support.
+        if (typeof Ti!==&quot;undefined&quot; &amp;&amp; typeof Ti.UI !==&quot;undefined&quot; &amp;&amp; typeof Ti.UI.openFileChooserDialog!==&quot;undefined&quot;) {
+            // Great success! TideSDK are supported.
+            // check now of the user has cut&amp;paste the PHP method to write binary data to the desktop
+            // This is required because TideSDK supports only &quot;String&quot;
+            if(typeof &quot;tideSDK_writeBase64AsBinaryData&quot; ===&quot;undefined&quot;){
+                throw &quot;TideSDK binding for writing binary data not available. Please read documentation and cut&amp;paste the PHP method &#39;tideSDK_writeBase64AsBinaryData&#39; from there&quot;;
+            }
+        } else {
+          throw &quot;Application didn&#39;t run in the TideSDK desktop enviroment. TideSDKStorage is not available.&quot;;
+        }
+        
+        this.initDone = true;
+        
+    },
+    
+<span id='draw2d-storage-TideSDKStorage-method-pickFileAndLoad'>    /**
+</span>     * @method
+     * 
+     * Open the file picker and load the selected file.&lt;br&gt;
+     * 
+     * Example usage:
+     * 
+     *      this.openButton.on(&quot;click&quot;,$.proxy(function(){
+     *         this.filePicker.pickFileAndLoad($.proxy(function(file, fileData){
+     *            // save the fileHandle for further save operations
+     *            this.file = file;
+     *          
+     *            // cleanup the canvas 
+     *            this.canvas.clear();
+     *          
+     *            // load the JSON into the canvas
+     *            var reader = new draw2d.io.json.Reader();
+     *            reader.unmarshal(canvas, JSON.parse(fileData));
+     *        },this),
+     *        function(){
+     *          alert(&quot;loading file is not possible&quot;);
+     *        });
+     *     },this));
+     *     
+     * @param {String} filenameFilter the file picker set a file name filter with the given pattern. Only files which contains the given string will be loaded    
+     * @param {Function} successCallback callback method if the user select a file and the content is loaded
+     * @param {Function} errorCallback method to call if any error happens
+     * 
+     * @since 4.0.0
+     */
+    pickFileAndLoad: function(filenameFilter, successCallback, errorCallback) {    
+        try{
+            var callbackFunc = function(filenames){  
+                try{
+                    fileSelected = filenames[0];
+                 
+                    var readfi= Ti.Filesystem.getFile(fileSelected);      
+                    if (readfi.exists())
+                    {    
+                       var Stream = Ti.Filesystem.getFileStream(readfi);    
+                       Stream.open(Ti.Filesystem.MODE_READ);     
+                       contents =Stream.read();  
+                       Stream.close();  
+                       successCallback({title:fileSelected}, contents.toString());
+                    } 
+                    else{
+                        errorCallback(&quot;unable to read file&quot;);
+                    }
+                }
+                catch(e){
+                    errorCallback(e);
+                }
+            };
+            var options = {  
+               multiple: false,  
+               title: &quot;Select files to open...&quot;,
+               types : [filenameFilter],
+               typesDescription: &quot;Documents&quot;,  
+               path: Ti.Filesystem.getUserDirectory()  
+            };
+            Ti.UI.openFileChooserDialog(callbackFunc, options);
+        }
+        catch(e){
+            errorCallback(e);
+        }
+    },
+    
+    
+    
+<span id='draw2d-storage-TideSDKStorage-method-promptForFilename'>    /**
+</span>     * @method
+     * Request a filename for a new file. The application can use this platform depending
+     * filename selector before the saveFile function is called.
+     * 
+     * @since 4.2.0
+     */
+    promptForFilename: function(successCallback, abortCallback){
+        var uw = Ti.UI.getCurrentWindow();
+        uw.openSaveAsDialog(function(fn){
+
+          if(fn.length===0){
+              abortCallback();
+          } 
+          else{
+              successCallback(fn[0]);
+          }
+        },{
+          &quot;title&quot;: &quot;Demo&quot;,
+
+          &quot;path&quot;: Ti.Filesystem.getApplicationDataDirectory(),
+          &quot;types&quot;: [&quot;draw2d&quot;],
+          &quot;multiple&quot;: false,
+          &quot;defaultFile&quot;: &quot;newFile.draw2d&quot;
+        });
+    },
+
+<span id='draw2d-storage-TideSDKStorage-method-saveFile'>    /**
+</span>     * @method
+     * Save a file to the local file system. Either &lt;b&gt;file&lt;/b&gt; is a string or a fileHandle.&lt;br&gt;
+     * If it is a fileHandle a &lt;b&gt;updateFile&lt;/b&gt; is called.
+     * 
+     * @param {String} fileName the filename of the file
+     * @param {String} content the content of the file base64 decoded
+     * @param {String} contentIsBase64 indicates if the content already base64 encoded
+     * @param {Function} successCallback callback method if the save operation finished
+     * @param {Function} errorCallback callback method if any error happens
+     * @since 4.0.0
+     */
+    saveFile: function(fileName, content, contentIsBase64,  successCallback, errorCallback) {
+        try{
+          if(contentIsBase64){
+              tideSDK_writeBase64AsBinaryData(fileName, content);
+          }
+          else{
+              //Doesn&#39;t have to exist yet.
+              var fileHandle = Ti.Filesystem.getFile(fileName);
+              var stream =  Ti.Filesystem.getFileStream(fileHandle);
+              stream.open(Ti.Filesystem.MODE_WRITE,false);
+              stream.write(content);
+              stream.close();
+          }
+
+          successCallback({title: fileName});
+        }
+        catch(e){
+            errorCallback();
+        }
+    },
+    
+<span id='draw2d-storage-TideSDKStorage-method-updateFile'>    /**
+</span>     * @method
+     * Save a already loaded file.
+     * 
+     * 
+     * @param {Object} fileHandle the file handle of the pickFileAndLoad method
+     * @param {String} content the file content
+     * @param {String} contentIsBase64 indicates if the content already base64 encoded
+     * @param {Function} successCallback the callback method if the file has been saved successfully.
+     * @param {Function} errorCallback method to call if any error happens
+     * 
+     * @since 4.0.0
+     */
+    updateFile: function(fileHandle, content, contentIsBase64, successCallback, errorCallback) {
+        this.saveFile(fileHandle.title, content, contentIsBase64,successCallback, errorCallback);
+    },
+    
+<span id='draw2d-storage-TideSDKStorage-method-insertFile'>    /**
+</span>     * @method
+     * Save a new file in the storage provider.
+     * 
+     * 
+     * @param {String} fileName the file name if the new file
+     * @param {String} content the content of the file
+     * @param {String} [contentIsBase64] indicates if the content already base64 encoded
+     * @param {Function} successCallback the callback method after a successful save operation
+     * @param {Function} errorCallback method to call if any error happens
+     * 
+     * @since 4.0.0
+     */
+    insertFile: function(fileName, content, contentIsBase64, successCallback, errorCallback){
+        this.saveFile(fileName, content, contentIsBase64, successCallback, errorCallback);
+    }
+});</pre>
+</body>
+</html>

@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='draw2d-HybridPort'>/**
+</span> * @class draw2d.HybridPort
+ * A HybridPort can work as Input and as Output port in the same way for a {@link draw2d.Connection}.
+ * 
+ * @author Andreas Herz
+ * @extends draw2d.Port
+ */ 
+draw2d.HybridPort = draw2d.Port.extend({
+
+    NAME : &quot;draw2d.HybridPort&quot;,
+
+<span id='draw2d-HybridPort-method-constructor'>    /**
+</span>     * @constructor
+     * Create a new HybridPort element
+     * 
+     * @param {Object} [attr] the configuration of the shape
+     */
+    init: function(attr, setter, getter)
+    {
+        this._super(attr, setter, getter);
+
+        // responsive for the arrangement of the port 
+        // calculates the x/y coordinates in relation to the parent node
+        this.locator=new draw2d.layout.locator.InputPortLocator();
+    },
+
+    
+<span id='draw2d-HybridPort-method-onDragEnter'>    /**
+</span>     * @inheritdoc
+     * 
+     * @param {draw2d.Figure} figure The figure which is currently dragging
+     * @return {draw2d.Figure} the figure which should receive the drop event or null if the element didnt want a drop event
+     */
+    onDragEnter : function (figure)
+    {
+    	// Accept any kind of port
+        if (figure instanceof draw2d.Port) {
+            return this._super(figure);
+        }
+        
+        return null;
+    },
+    
+<span id='draw2d-HybridPort-method-onDragLeave'>    /**
+</span>     * @inheritdoc
+     * 
+     */
+    onDragLeave : function (figure)
+    {
+	  // Ports accepts only Ports as DropTarget
+	  //
+	  if(!(figure instanceof draw2d.Port)){
+		 return;
+	  }
+
+	  // accept any kind of port
+      if(figure instanceof draw2d.Port){
+        this._super( figure);
+      }
+      
+    },
+
+<span id='draw2d-HybridPort-method-createCommand'>    /**
+</span>     * @inheritdoc
+     */
+    createCommand:function(request)
+    {
+       // Connect request between two ports
+       //
+       if(request.getPolicy() === draw2d.command.CommandType.CONNECT) {
+           
+         if(request.source.getParent().getId() === request.target.getParent().getId()){
+            return null;
+         }    
+
+         if (request.source instanceof draw2d.InputPort) {
+            // This is the difference to the InputPort implementation of createCommand.
+            return new draw2d.command.CommandConnect(request.canvas, request.target, request.source, request.source);
+         }
+         else if (request.source instanceof draw2d.OutputPort) {
+            // This is the different to the OutputPort implementation of createCommand
+            return new draw2d.command.CommandConnect(request.canvas, request.source, request.target, request.source);
+         }
+         else if (request.source instanceof draw2d.HybridPort) {
+            // This is the different to the OutputPort implementation of createCommand
+            return new draw2d.command.CommandConnect(request.canvas, request.target,request.source, request.source);
+         }
+         
+         return null;
+       }
+    
+       // ...else call the base class
+       return this._super(request);
+    }
+});</pre>
+</body>
+</html>

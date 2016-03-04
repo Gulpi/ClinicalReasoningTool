@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js">
+<span id='draw2d-command-CommandReconnect'>/**
+</span> * @class draw2d.command.CommandReconnect
+ * 
+ * Reconnects two ports. This command is used during the DragDrop operation of a draw2d.Connection.
+ *
+ * @inheritable
+ * @author Andreas Herz
+ * 
+ * @extends draw2d.command.Command
+ */
+draw2d.command.CommandReconnect = draw2d.command.Command.extend({
+    NAME : &quot;draw2d.command.CommandReconnect&quot;, 
+
+
+<span id='draw2d-command-CommandReconnect-method-constructor'>    /**
+</span>     * @constructor
+     * Create a new Command objects which can be execute via the CommandStack.
+     *
+     * @param {draw2d.Connection} con the related Connection which is currently in the drag&amp;drop operation
+     */
+    init: function(con){
+       this._super(draw2d.Configuration.i18n.command.connectPorts);
+       this.con      = con;
+       this.oldSourcePort  = con.getSource();
+       this.oldTargetPort  = con.getTarget();
+//      this.oldRouter      = con.getRouter();
+   },
+    
+<span id='draw2d-command-CommandReconnect-method-canExecute'>    /**
+</span>     * @method
+     * Returns [true] if the command can be execute and the execution of the
+     * command modify the model. A CommandMove with [startX,startX] == [endX,endY] should
+     * return false. &lt;br&gt;
+     * the execution of the Command doesn&#39;t modify the model.
+     *
+     * @return {boolean}
+     **/
+    canExecute:function()
+    {
+      // return false if we doesn&#39;t modify the model =&gt; NOP Command
+      return true;
+    },
+    
+<span id='draw2d-command-CommandReconnect-method-setNewPorts'>    /**
+</span>     * @method
+     * The new ports to use during the execute of this command.
+     * 
+     * @param {draw2d.Port} source
+     * @param {draw2d.Port} target
+     */
+    setNewPorts:function(source,  target)
+    {
+      this.newSourcePort = source;
+      this.newTargetPort = target;
+    },
+    
+<span id='draw2d-command-CommandReconnect-method-execute'>    /**
+</span>     * @method
+     * Execute the command the first time
+     * 
+     **/
+    execute:function()
+    {
+       this.redo();
+    },
+    
+<span id='draw2d-command-CommandReconnect-method-cancel'>    /**
+</span>     * @method
+     * Execute the command the first time
+     * 
+     **/
+    cancel:function()
+    {
+        this.con.setSource(this.oldSourcePort);
+        this.con.setTarget(this.oldTargetPort);
+        
+        // force a routing of the connection and DON&#39;T set the old reouter again because this reset all manual added
+        // vertices
+        this.con.routingRequired =true;
+        this.con.repaint();
+        
+//       this.con.setRouter(this.oldRouter);
+    },
+    
+<span id='draw2d-command-CommandReconnect-method-undo'>    /**
+</span>     * @method
+     * Undo the command
+     *
+     **/
+    undo:function()
+    {
+      this.con.setSource(this.oldSourcePort);
+      this.con.setTarget(this.oldTargetPort);
+      // force a routing of the connection and DON&#39;T set the old reouter again because this reset all manual added
+      // vertices
+      this.con.routingRequired =true;
+      this.con.repaint();
+//      this.con.setRouter(this.oldRouter);
+    },
+    
+<span id='draw2d-command-CommandReconnect-method-redo'>    /** 
+</span>     * @method
+     * Redo the command after the user has undo this command
+     *
+     **/
+    redo:function()
+    {
+      this.con.setSource(this.newSourcePort);
+      this.con.setTarget(this.newTargetPort);
+      // force a routing of the connection and DON&#39;T set the old reouter again because this reset all manual added
+      // vertices
+      this.con.routingRequired =true;
+      this.con.repaint();
+//      this.con.setRouter(this.oldRouter);
+    }
+
+});
+</pre>
+</body>
+</html>

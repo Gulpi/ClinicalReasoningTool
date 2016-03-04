@@ -1,0 +1,8 @@
+@startuml
+
+actor user
+participant canvas
+participant ports
+
+
+@enduml

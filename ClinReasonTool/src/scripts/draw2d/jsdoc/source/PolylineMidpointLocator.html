@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js">
+<span id='draw2d-layout-locator-PolylineMidpointLocator'>/**
+</span> * @class draw2d.layout.locator.PolylineMidpointLocator
+ * 
+ * A PolylineMidpointLocator is used to place figures at the midpoint of a routed
+ * connection. &lt;br&gt;
+ * If the connection did have an odd count of points the figure is located in the center vertex of the polyline.&lt;br&gt;
+ * On an even count of junction point, the figure will be center on the middle segment of the ploy line. 
+ *
+ * @author Andreas Herz
+ * @extend draw2d.layout.locator.ManhattanMidpointLocator
+ */
+draw2d.layout.locator.PolylineMidpointLocator= draw2d.layout.locator.ManhattanMidpointLocator.extend({
+    NAME : &quot;draw2d.layout.locator.PolylineMidpointLocator&quot;,
+    
+<span id='draw2d-layout-locator-PolylineMidpointLocator-method-constructor'>    /**
+</span>     * @constructor
+     * Constructs a ManhattanMidpointLocator with associated Connection c.
+     * 
+     */
+    init: function()
+    {
+      this._super();
+    },
+    
+    
+<span id='draw2d-layout-locator-PolylineMidpointLocator-method-relocate'>    /**
+</span>     * @method
+     * Relocates the given Figure.
+     *
+     * @param {Number} index child index of the target
+     * @param {draw2d.Figure} target The figure to relocate
+     **/
+    relocate:function(index, target)
+    {
+       var conn = target.getParent();
+       var points = conn.getVertices();
+       
+       // it has an event count of points -&gt; use the manhattan algorithm...this is working 
+       // well in this case
+       if(points.getSize()%2===0){
+           this._super(index, target);
+       }
+       // odd count of points. take the center point as fulcrum
+       else{
+
+           var index = Math.floor(points.getSize() / 2);
+        
+           var p1 = points.get(index);
+        
+           
+           target.setPosition(p1.x- (target.getWidth()/2),p1.y-(target.getHeight()/2));
+       }      
+    }
+});
+</pre>
+</body>
+</html>

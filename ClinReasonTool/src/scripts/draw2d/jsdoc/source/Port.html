@@ -1,0 +1,887 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js">
+<span id='draw2d-Port'>/**
+</span> * @class draw2d.Port
+ * A port is an object that is used to establish a connection between a node and a {@link draw2d.Connection}. The port can 
+ * be placed anywhere within a node ( see {@link draw2d.layout.locator.PortLocator} for details)
+ * 
+ * 
+ * @author Andreas Herz
+ * @extends draw2d.shape.basic.Circle
+ */ 
+draw2d.Port = draw2d.shape.basic.Circle.extend({
+    NAME : &quot;draw2d.Port&quot;,
+
+    DEFAULT_BORDER_COLOR:new draw2d.util.Color(&quot;#1B1B1B&quot;),
+
+    MAX_SAFE_INTEGER : 9007199254740991,
+
+<span id='draw2d-Port-method-constructor'>    /**
+</span>     * @constructor
+     * Creates a new Node element which are not assigned to any canvas.
+     * 
+     * @param {Object} [attr] the configuration of the shape
+     */
+    init: function( attr, setter, getter)
+    {
+        var _this = this;
+
+        this.locator = null;
+        this.lighterBgColor =null;
+        
+        this._super($.extend({
+                bgColor: &quot;#4f6870&quot;,
+                stroke:1,
+                diameter:draw2d.isTouchDevice?25:10,
+                color:&quot;#1B1B1B&quot;,
+                selectable:false
+            },attr),
+            setter,
+            getter);
+        
+
+        // status var for user interaction
+        //
+        this.ox = this.x;
+        this.oy = this.y;
+        this.coronaWidth = 5; // the corona width for the hitTest method. Useful during drag&amp;drop of ports. Better SnapTo behavior.
+        this.corona = null; // Circle
+        this.useGradient = true;
+        
+        this.currentTarget = null; // Figure
+        this.preferredConnectionDirection = null;
+        
+        // current attached connections
+        this.connections = new draw2d.util.ArrayList();
+        
+    
+        // avoid &quot;undefined&quot; values. This breaks the code on iOS.
+        if(typeof name ===&quot;undefined&quot;){
+            this.name = null;
+        }
+        else{
+            this.name = name;
+        }
+        
+        this.moveListener = function( figure){
+            _this.repaint();
+            // Falls sich der parent bewegt hat, dann muss der Port dies seinen
+            // Connections mitteilen
+            _this.fireEvent(&quot;move&quot;);
+        };
+        
+        this.connectionAnchor = new draw2d.layout.anchor.ConnectionAnchor(this);
+
+        // for dynamic diagrams. A Port can have a value which is set by a connector
+        //
+        this.value = null; 
+        this.maxFanOut = this.MAX_SAFE_INTEGER;
+        
+        this.setCanSnapToHelper(false);
+        
+        this.installEditPolicy(new draw2d.policy.port.IntrusivePortsFeedbackPolicy());
+    //    this.installEditPolicy(new draw2d.policy.port.ElasticStrapFeedbackPolicy());
+    },
+
+<span id='draw2d-Port-method-setMaxFanOut'>    /**
+</span>     * @method
+     * set the maximal possible count of connections for this port.&lt;br&gt;
+     * This method din&#39;t delete any connection if you reduce the number and a bunch of
+     * connection are bounded already.
+     * 
+     * @param {Number} count the maximal number of connection related to this port
+     */
+    setMaxFanOut: function(count)
+    {
+        this.maxFanOut = Math.max(1,count);
+        this.fireEvent(&quot;change:maxFanOut&quot;);
+        
+        return this;
+    },
+    
+<span id='draw2d-Port-method-getMaxFanOut'>    /**
+</span>     * @method
+     * return the maximal possible connections (in+out) for this port.
+     * 
+     * @returns
+     */
+    getMaxFanOut: function()
+    {
+        return this.maxFanOut;
+    },
+    
+<span id='draw2d-Port-method-setConnectionAnchor'>    /**
+</span>     * @method
+     * Set the Anchor for this object. An anchor is responsible for the endpoint calculation
+     * of an connection. just visible representation.
+     *
+     * @param {draw2d.layout.anchor.ConnectionAnchor} [anchor] the new source anchor for the connection
+     **/
+    setConnectionAnchor:function( anchor)
+    {
+        // set some good defaults.
+        if(typeof anchor ===&quot;undefined&quot; || anchor===null)
+        {
+    		anchor = new draw2d.layout.anchor.ConnectionAnchor( );
+    	}
+    	
+        this.connectionAnchor = anchor;
+        this.connectionAnchor.setOwner(this);
+
+        // the anchor has changed. In this case all connections needs an change event to recalculate
+        // the anchor and the routing itself
+        this.fireEvent(&quot;move&quot;);
+
+        return this;
+    },
+ 
+    getConnectionAnchorLocation:function(referencePoint, inquiringConnection)
+    {
+    	return this.connectionAnchor.getLocation(referencePoint, inquiringConnection);
+    },
+    
+    getConnectionAnchorReferencePoint:function(inquiringConnection)
+    {
+    	return this.connectionAnchor.getReferencePoint(inquiringConnection);
+    },
+ 
+    
+<span id='draw2d-Port-method-getConnectionDirection'>    /**
+</span>     * @method
+     * Returns the **direction** for the connection in relation to the given port and it&#39;s parent.
+     * 
+     * &lt;p&gt;
+     * Possible values:
+     * &lt;ul&gt;
+     *   &lt;li&gt;up -&amp;gt; 0&lt;/li&gt;
+     *   &lt;li&gt;right -&amp;gt; 1&lt;/li&gt;
+     *   &lt;li&gt;down -&amp;gt; 2&lt;/li&gt;
+     *   &lt;li&gt;left -&amp;gt; 3&lt;/li&gt;
+     * &lt;/ul&gt;
+     * &lt;p&gt;
+     * 
+     * @param {draw2d.Connection} conn the related Connection
+     * @param {draw2d.Port} relatedPort the counterpart port
+     * @return {Number} the direction.
+     */
+    getConnectionDirection:function(conn, relatedPort)
+    {
+        // return the calculated connection direction if the port didn&#39;t have set any 
+        //
+        if(typeof this.preferredConnectionDirection===&quot;undefined&quot; || this.preferredConnectionDirection===null){
+            return this.getParent().getBoundingBox().getDirection(this.getAbsolutePosition());
+        }
+        
+        return this.preferredConnectionDirection;
+    },
+    
+ 
+    
+<span id='draw2d-Port-method-setConnectionDirection'>    /**
+</span>     * @method
+     * Set the **direction** for the connection in relation to the given port and it&#39;s parent.
+     * 
+     * &lt;p&gt;
+     * Possible values:
+     * &lt;ul&gt;
+     *   &lt;li&gt;up -&amp;gt; 0&lt;/li&gt;
+     *   &lt;li&gt;right -&amp;gt; 1&lt;/li&gt;
+     *   &lt;li&gt;down -&amp;gt; 2&lt;/li&gt;
+     *   &lt;li&gt;left -&amp;gt; 3&lt;/li&gt;
+     *   &lt;li&gt;calculated -&amp;gt; null&lt;/li&gt;
+     * &lt;/ul&gt;
+     * &lt;p&gt;
+     * 
+     * @since 5.2.1
+     * @param {Number} direction the preferred connection direction.
+     */
+    setConnectionDirection:function(direction)
+    {
+        this.preferredConnectionDirection = direction;
+
+        // needs an change event to recalculate the route
+        this.fireEvent(&quot;move&quot;);
+
+        return this;
+    },
+
+<span id='draw2d-Port-method-setLocator'>    /**
+</span>     * @method
+     * Set the locator/layouter of the port. A locator is responsive for the x/y arrangement of the 
+     * port in relation to the parent node.
+     * 
+     * @param {draw2d.layout.locator.Locator} locator
+     */
+    setLocator: function(locator)
+    {
+        this.locator = locator;
+
+        return this;
+    },
+    
+<span id='draw2d-Port-method-getLocator'>    /**
+</span>     * @method
+     * Get the locator/layouter of the port. A locator is responsive for the x/y arrangement of the 
+     * port in relation to the parent node.
+     * 
+     * @since 4.2.0
+     */
+    getLocator: function()
+    {
+        return this.locator;
+    },
+    
+
+<span id='draw2d-Port-method-setBackgroundColor'>    /**
+</span>     * @method
+     * Set the new background color of the figure. It is possible to hands over
+     * &lt;code&gt;null&lt;/code&gt; to set the background transparent.
+     *
+     * @param {draw2d.util.Color} color The new background color of the figure
+     **/
+     setBackgroundColor : function(color)
+     {
+        this._super(color);
+        this.lighterBgColor=this.bgColor.lighter(0.3).hash();;
+
+        return this;
+     },
+
+<span id='draw2d-Port-method-setValue'>    /**
+</span>     * @method
+     * Set a value for the port. This is useful for interactive/dynamic diagrams like circuits, simulator,...
+     *  
+     * @param {Object} value the new value for the port 
+     */
+    setValue:function(value)
+    {
+        this.value = value;
+        if(this.getParent()!==null){
+           this.getParent().onPortValueChanged(this);
+        }
+
+        return this;
+    },
+    
+<span id='draw2d-Port-method-getValue'>    /**
+</span>     * @method
+     * Return the user defined value of the port.
+     * 
+     * @returns {Object}
+     */
+    getValue:function()
+    {
+        return this.value;
+    },
+    
+<span id='draw2d-Port-method-repaint'>    /**
+</span>     * @inheritdoc
+     */
+     repaint:function(attributes)
+     {
+         if(this.repaintBlocked===true || this.shape===null){
+             return;
+         }
+
+         attributes= attributes || {};
+      
+         
+         // a port did have the 0/0 coordinate in the center and not in the top/left corner
+         //
+         attributes.cx = this.getAbsoluteX();
+         attributes.cy = this.getAbsoluteY();
+         attributes.rx = this.width/2;
+         attributes.ry = attributes.rx;
+         attributes.cursor = &quot;move&quot;;
+         
+         if(this.getAlpha()&lt;0.9 || this.useGradient===false){
+             attributes.fill=this.bgColor.hash();
+         }
+         else{
+             attributes.fill = [&quot;90&quot;,this.bgColor.hash(),this.lighterBgColor].join(&quot;-&quot;);
+         }
+         
+         this._super(attributes);
+     },
+     
+    
+<span id='draw2d-Port-method-onMouseEnter'>    /**
+</span>     * @inheritdoc
+     *
+     **/
+    onMouseEnter:function()
+    {
+        this._oldstroke = this.getStroke();
+        this.setStroke(2);
+    },
+    
+    
+<span id='draw2d-Port-method-onMouseLeave'>    /**
+</span>     * @inheritdoc
+     * 
+     **/
+    onMouseLeave:function()
+    {
+        this.setStroke(this._oldstroke);
+    },
+
+
+<span id='draw2d-Port-method-getConnections'>    /**
+</span>     * @method
+     * Returns a {@link draw2d.util.ArrayList} of {@link draw2d.Connection}s of all related connections to this port.
+     *
+     * @type {draw2d.util.ArrayList}
+     **/
+    getConnections:function()
+    {
+      return this.connections;
+    },
+    
+    
+<span id='draw2d-Port-method-setParent'>    /**
+</span>     * @inheritdoc
+     */
+    setParent:function(parent)
+    {
+      this._super(parent);
+      
+      if(this.parent!==null){
+        this.parent.off(this.moveListener);
+      }
+      
+      if(this.parent!==null) {
+        this.parent.on(&quot;move&quot;,this.moveListener);
+      }
+    },
+    
+
+<span id='draw2d-Port-method-getCoronaWidth'>    /**
+</span>     * @method
+     * Returns the corona width of the Port. The corona width will be used during the
+     * drag&amp;drop of a port.
+     *
+     * @return {Number}
+     **/
+    getCoronaWidth:function()
+    {
+       return this.coronaWidth;
+    },
+    
+    
+<span id='draw2d-Port-method-setCoronaWidth'>    /**
+</span>     * @method
+     * Set the corona width of the Port. The corona width will be used during the
+     * drag&amp;drop of a port. You can drop a port in the corona of this port to create
+     * a connection. It is not neccessary to drop exactly on the port.
+     *
+     * @param {Number} width The new corona width of the port
+     **/
+    setCoronaWidth:function( width)
+    {
+       this.coronaWidth = width;
+    },
+    
+<span id='draw2d-Port-method-onDragStart'>    /**
+</span>     * @inheritdoc
+     * 
+     * @param {Number} x the x-coordinate of the mouse event
+     * @param {Number} y the y-coordinate of the mouse event
+     * @param {Boolean} shiftKey true if the shift key has been pressed during this event
+     * @param {Boolean} ctrlKey true if the ctrl key has been pressed during the event
+     * 
+     * @return {boolean}
+     **/
+    onDragStart : function(x, y, shiftKey, ctrlKey)
+    {
+        // just allow the DragOperation if the port didn&#39;t have reached the max fanOut
+        // limit.
+        if(this.getConnections().getSize() &gt;= this.maxFanOut){
+            return false;
+        }
+
+        var _this = this;
+        
+        // this can happen if the user release the mouse button outside the window during a drag&amp;drop
+        // operation
+        if(this.isInDragDrop ===true){
+            this.onDragEnd( x, y, shiftKey, ctrlKey);
+        }
+                
+        this.getShapeElement().insertAfter(this.parent.getShapeElement());
+       // don&#39;t call the super method. This creates a command and this is not necessary for a port
+       this.ox = this.x;
+       this.oy = this.y;
+
+        // notify all installed policies
+        //
+        this.editPolicy.each(function(i,e){
+            if(e instanceof draw2d.policy.figure.DragDropEditPolicy){
+                e.onDragStart(_this.canvas, _this, x, y, shiftKey, ctrlKey);
+            }
+        });
+
+        // fire an event
+        // @since 5.3.3
+        this.fireEvent(&quot;dragstart&quot;,{x:x, y:y, shiftKey:shiftKey, ctrlKey:ctrlKey});
+
+        return true;
+    },
+    
+<span id='draw2d-Port-method-onDrag'>    /**
+</span>     * @inheritdoc
+     * 
+     * @param {Number} dx the x difference between the start of the drag drop operation and now
+     * @param {Number} dy the y difference between the start of the drag drop operation and now
+     * @param {Number} dx2 The x diff since the last call of this dragging operation
+     * @param {Number} dy2 The y diff since the last call of this dragging operation
+     **/
+    onDrag:function(dx, dy, dx2, dy2)
+    {
+      this.isInDragDrop = true;
+
+      this._super( dx, dy);
+
+      var _this = this;
+
+      var target=this.getCanvas().getBestFigure(this.getAbsoluteX(),this.getAbsoluteY(), this);
+      
+      // the hovering element has been changed
+      if(target!==this.currentTarget){
+          if(this.currentTarget!==null){
+              this.currentTarget.onDragLeave(this);
+              this.currentTarget.fireEvent(&quot;dragLeave&quot;,{draggingElement:this});
+              this.editPolicy.each(function(i,e){
+                  if(e instanceof draw2d.policy.port.PortFeedbackPolicy){
+                      e.onHoverLeave(_this.canvas, _this, _this.currentTarget);
+                  }
+              });
+          }
+          
+          // possible hoverEnter event
+          //
+          if(target!==null){
+              this.currentTarget= target.onDragEnter(this);
+              if(this.currentTarget!==null){
+                  this.currentTarget.fireEvent(&quot;dragEnter&quot;,{draggingElement:this});
+                  this.editPolicy.each(function(i,e){
+                      if(e instanceof draw2d.policy.port.PortFeedbackPolicy){
+                          e.onHoverEnter(_this.canvas, _this, _this.currentTarget);
+                      }
+                  });
+              }
+          }
+          else{
+        	  this.currentTarget = null;
+          }
+      }
+
+        // fire an event
+        // @since 5.3.3
+        this.isInDragDrop =false;
+        this.fireEvent(&quot;drag&quot;,{dx:dx, dy:dy, dx2:dx2, dy2:dy2});
+        this.isInDragDrop =true;
+    },
+    
+    
+<span id='draw2d-Port-method-onDragEnd'>    /**
+</span>     * @param {Number} x the x-coordinate of the mouse event
+     * @param {Number} y the y-coordinate of the mouse event
+     * @param {Boolean} shiftKey true if the shift key has been pressed during this event
+     * @param {Boolean} ctrlKey true if the ctrl key has been pressed during the event
+     **/
+    onDragEnd:function(x, y, shiftKey, ctrlKey)
+    {
+      // Don&#39;t call the parent implementation. This will create an CommandMove object
+      // and store them o the CommandStack for the undo operation. This makes no sense for a
+      // port.
+      // draw2d.shape.basic.Rectangle.prototype.onDragEnd.call(this); DON&#39;T call the super implementation!!!
+    
+      this.setAlpha(1.0);
+    
+      // 1.) Restore the old Position of the node
+      //
+      this.setPosition(this.ox,this.oy);
+    
+      this.isInDragDrop =false;
+      
+      var _this = this;
+   
+      // notify all installed policies
+      //
+      if(this.currentTarget){
+	      this.editPolicy.each(function(i,e){
+	          if(e instanceof draw2d.policy.port.PortFeedbackPolicy){
+	              e.onHoverLeave(_this.canvas, _this, _this.currentTarget);
+	          }
+	      });
+      }
+      
+      this.editPolicy.each(function(i,e){
+          if(e instanceof draw2d.policy.figure.DragDropEditPolicy){
+              e.onDragEnd(_this.canvas, _this, x, y, shiftKey, ctrlKey);
+          }
+      });
+
+      // Reset the drag&amp;drop flyover information 
+      //
+      this.currentTarget = null;
+      
+      // fire an event
+      // @since 5.3.3
+      this.fireEvent(&quot;dragend&quot;,{x:x, y:y, shiftKey:shiftKey, ctrlKey:ctrlKey});
+    },
+    
+<span id='draw2d-Port-method-onDragEnter'>    /**
+</span>     * @method
+     * 
+     * @param {draw2d.Figure} draggedFigure The figure which is currently dragging
+     * 
+     * @return {draw2d.Figure} the figure which should receive the drop event or null if the element didn&#39;t want a drop event
+     * @private
+     **/
+    onDragEnter : function( draggedFigure )
+    {
+    	var delegate = null;
+    	var _this = this;
+    	this.getCanvas().getInterceptorPolicies().each(function(i, policy){
+    		delegate = policy.delegateDrop(draggedFigure, _this);
+    		if(delegate!==null){
+    			return false; // break the loop
+    		}
+    	});
+
+    	if(delegate===null){
+    		return null;
+    	}
+    	
+        // Create a CONNECT Command to determine if we can show a Corona. 
+    	//
+        var request = new draw2d.command.CommandType(draw2d.command.CommandType.CONNECT);
+        request.canvas = this.getCanvas();
+        request.source = delegate;
+        request.target = draggedFigure;
+        var command = draggedFigure.createCommand(request);
+
+        if (command === null) {
+            return null;
+        }
+
+        return delegate;
+    },
+    
+<span id='draw2d-Port-method-onDragLeave'>    /**
+</span>     * @method
+     * 
+     * @param {draw2d.Figure} figure The figure which is currently dragging
+     * @private
+     **/
+    onDragLeave:function( figure )
+    {
+		// Ports accepts only Ports as DropTarget
+		//
+		if(!(figure instanceof draw2d.Port)){
+			return;
+		}
+    },
+    
+<span id='draw2d-Port-method-onDrop'>    /**
+</span>     * @method
+     * Called if the user drop this element onto the dropTarget
+     * 
+     * @param {draw2d.Figure} dropTarget The drop target.
+     * @param {Number} x the x-coordinate of the mouse up event
+     * @param {Number} y the y-coordinate of the mouse up event
+     * @param {Boolean} shiftKey true if the shift key has been pressed during this event
+     * @param {Boolean} ctrlKey true if the ctrl key has been pressed during the event
+     * @private
+     **/
+    onDrop:function(dropTarget, x, y, shiftKey, ctrlKey)
+    {
+        
+    	// Ports accepts only Ports as DropTarget
+    	//
+    	if(!(dropTarget instanceof draw2d.Port)){
+    		return;
+    	}
+ 
+    	var request = new draw2d.command.CommandType(draw2d.command.CommandType.CONNECT);
+        request.canvas = this.parent.getCanvas();
+        request.source = dropTarget;
+        request.target = this;
+        var command = this.createCommand(request);
+        
+        if(command!==null){
+           this.parent.getCanvas().getCommandStack().execute(command);
+        }
+        this.setGlow(false);
+    },
+   
+
+<span id='draw2d-Port-method-onConnect'>    /**
+</span>     * @method
+     * Callback method if a new connection has created with this port
+     * 
+     *      // Alternatively you register for this event with:
+     *      port.on(&quot;connect&quot;, function(emitterPort, connection){
+     *          alert(&quot;port connected&quot;);
+     *      });
+     * 
+     * @param {draw2d.Connection} connection The connection which has been created
+     * @since 2.5.1
+     * @template
+     **/
+    onConnect: function(connection){
+    },
+    
+<span id='draw2d-Port-method-onDisconnect'>    /**
+</span>     * @method
+     * Callback method if a new connection has created with this port
+     * 
+     *      // Alternatively you register for this event with:
+     *      port.on(&quot;connect&quot;, function(emitterPort, connection){
+     *          alert(&quot;port disconnected&quot;);
+     *      });
+     * 
+     * @param {draw2d.Connection} connection The connection which has been deleted
+     * @since 2.5.1
+     * @template
+     **/
+    onDisconnect: function(connection){
+    },
+    
+ 
+<span id='draw2d-Port-method-getName'>    /**
+</span>     * @method
+     * Return the name of this port.
+     *
+     * @return {String}
+     **/
+    getName:function()
+    {
+      return this.name;
+    },
+    
+<span id='draw2d-Port-method-setName'>    /**
+</span>     * @method
+     * Set the name of this port. The name of the port can be referenced by the lookup of
+     * ports in the node.
+     * 
+     *
+     * @param {String} name The new name of this port.
+     **/
+    setName:function( name)
+    {
+      this.name=name;
+    },
+
+
+<span id='draw2d-Port-method-hitTest'>    /**
+</span>     * @method
+     * Hit test for ports. This method respect the corona diameter of the port for the hit test.
+     * The corona width can be set with {@link draw2d.Port#setCoronaWidth}
+     * @param {Number} iX
+     * @param {Number} iY
+     * @returns {Boolean}
+     */
+    hitTest:function ( iX , iY)
+    {
+        var x   = this.getAbsoluteX()-this.coronaWidth-this.getWidth()/2;
+        var y   = this.getAbsoluteY()-this.coronaWidth-this.getHeight()/2;
+        var iX2 = x + this.getWidth()  + (this.coronaWidth*2);
+        var iY2 = y + this.getHeight() + (this.coronaWidth*2);
+
+        return (iX &gt;= x &amp;&amp; iX &lt;= iX2 &amp;&amp; iY &gt;= y &amp;&amp; iY &lt;= iY2);
+    },
+    
+<span id='draw2d-Port-method-setGlow'>    /**
+</span>     * @method
+     * Highlight this port
+     * 
+     * @param {boolean} flag indicator if the figure should glow.
+     */
+    setGlow:function( flag)
+    {
+      if(flag===true &amp;&amp; this.corona===null)
+      {
+    	  this.corona = new draw2d.Corona();
+    	  this.corona.setDimension(this.getWidth()+(this.getCoronaWidth()*2),this.getWidth()+(this.getCoronaWidth()*2));
+          this.corona.setPosition(this.getAbsoluteX()-this.getCoronaWidth()-this.getWidth()/2, this.getAbsoluteY()-this.getCoronaWidth()-this.getHeight()/2);
+          
+          this.corona.setCanvas(this.getCanvas());
+
+          // important inital 
+          this.corona.getShapeElement();
+          this.corona.repaint();
+          
+          // DON&#39;T add them to the document. The corona is just a visual feedback and not part
+          // of the canvas document.
+         // this.parent.getCanvas().add(this.corona,this.getAbsoluteX()-this.getCoronaWidth()-this.getWidth()/2, this.getAbsoluteY()-this.getCoronaWidth()-this.getHeight()/2);
+      }
+      else if(flag===false &amp;&amp; this.corona!==null)
+      {
+//    	  this.parent.getCanvas().remove(this.corona);
+    	  this.corona.setCanvas(null);
+    	  this.corona = null;
+      }
+      
+      return this;
+    },
+    
+<span id='draw2d-Port-method-createCommand'>    /**
+</span>     * @inheritdoc
+     */
+    createCommand:function(request)
+    {
+       // the port has its own implementation of the CommandMove
+       //
+       if(request.getPolicy() === draw2d.command.CommandType.MOVE) {
+         if(!this.isDraggable()){
+            return null;
+         }
+         return new draw2d.command.CommandMovePort(this);
+       }
+       
+       // Connect request between two ports
+       //
+       if(request.getPolicy() === draw2d.command.CommandType.CONNECT) {
+         return new draw2d.command.CommandConnect(request.canvas,request.source,request.target, request.source);
+       }
+    
+       return null;
+    },
+
+
+
+<span id='draw2d-Port-method-fireEvent'>    /**
+</span>     * @method
+     * Called from the figure itself when any position changes happens. All listener
+     * will be informed.
+     * &lt;br&gt;
+     * DON&#39;T fire this event if the Port is during a Drag&amp;Drop operation. This can happen
+     * if we try to connect two ports
+     * 
+     * @private
+     **/
+    fireEvent : function(event, args)
+    {
+        if (this.isInDragDrop === true) {
+            return;
+        }
+
+        this._super(event,args);
+    },
+    
+<span id='draw2d-Port-method-getPersistentAttributes'>    /**
+</span>     * @method 
+     * Return an objects with all important attributes for XML or JSON serialization
+     * 
+     * @return
+     */
+    getPersistentAttributes : function(){
+       var memento= this._super();
+
+        memento.maxFanOut = this.maxFanOut;
+        memento.name      = this.name;
+
+        // defined by the locator. Don&#39;t persist
+        //
+        delete memento.x;
+        delete memento.y;
+
+        // ports didn&#39;T have children ports. In this case we
+        // delete this attribute as well to avoid confusions.
+        //
+        delete memento.ports;
+
+        return memento;
+    },
+    
+<span id='draw2d-Port-method-setPersistentAttributes'>    /**
+</span>     * @method 
+     * Read all attributes from the serialized properties and transfer them into the shape.
+     * 
+     * @param {Object} memento
+     */
+    setPersistentAttributes : function(memento)
+    {
+        this._super(memento);
+
+        if(typeof memento.maxFanOut !== &quot;undefined&quot;){
+            // Big bug in the past.
+            // I used Number.MAX_VALUE as maxFanOut which is 1.7976931348623157e+308
+            // parseInt creates &quot;1&quot; during the reading of the JSON - which is crap.
+            // BIG BIG BUG!!! my fault.
+            // Now check if the memenot.maxFanOut is a number and take this without crappy parsing.
+            if(typeof memento.maxFanOut ===&quot;number&quot;){
+                this.maxFanOut = memento.maxFanOut;
+            }
+            else {
+                this.maxFanOut = Math.max(1, parseInt(memento.maxFanOut));
+            }
+        }
+        if(typeof memento.name !== &quot;undefined&quot;) {
+            this.setName( memento.name);
+        }
+
+        return this;
+    }
+});
+
+
+<span id='draw2d-Corona'>/**
+</span> * @class draw2d.Corona
+ * Glow effect for ports. Just for internal use.
+ * 
+ * @extend draw2d.shape.basic.Circle
+ */
+draw2d.Corona = draw2d.shape.basic.Circle.extend({
+
+<span id='draw2d-Corona-method-constructor'>    /**
+</span>     * @constructor
+     * Creates a new Node element which are not assigned to any canvas.
+     * 
+     */
+    init: function()
+    {
+        this._super();
+        this.setAlpha(0.3);
+        this.setBackgroundColor(new  draw2d.util.Color(178,225,255));
+        this.setColor(new draw2d.util.Color(102,182,252));
+    },
+    
+<span id='draw2d-Corona-method-setAlpha'>    /**
+</span>     * @method
+     * the the opacity of the element.
+     * 
+     * @param {Number} percent
+     */
+    setAlpha : function(percent)
+    {
+        this._super(Math.min(0.3, percent));
+        this.setDeleteable(false);
+        this.setDraggable(false);
+        this.setResizeable(false);
+        this.setSelectable(false);
+        
+        return this;
+    }
+});
+</pre>
+</body>
+</html>

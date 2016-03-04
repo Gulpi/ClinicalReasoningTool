@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js">
+<span id='draw2d-policy-figure-VBusSelectionFeedbackPolicy'>/**
+</span> * @class draw2d.policy.figure.VBusSelectionFeedbackPolicy
+ *  
+ * Selection feedback policy for vertical bus figures. 
+ *
+ * @author Andreas Herz
+ * @extends draw2d.policy.figure.BusSelectionFeedbackPolicy
+ */
+draw2d.policy.figure.VBusSelectionFeedbackPolicy = draw2d.policy.figure.BusSelectionFeedbackPolicy.extend({
+
+    NAME : &quot;draw2d.policy.figure.VBusSelectionFeedbackPolicy&quot;,
+<span id='draw2d-policy-figure-VBusSelectionFeedbackPolicy-method-constructor'>    /**
+</span>     * @constructor 
+     * Creates a new Router object
+     */
+    init: function( attr, setter, getter)
+    {
+        this._super( attr, setter, getter);
+    },
+    
+
+<span id='draw2d-policy-figure-VBusSelectionFeedbackPolicy-method-moved'>    /**
+</span>     * @method
+     * Callback if the figure has been moved
+     * 
+     * @param figure
+     * 
+     **/
+    moved: function(canvas,figure){
+        if(figure.selectionHandles.isEmpty()){
+            return; // silently
+        }
+        var r2= figure.selectionHandles.find(function(handle){return handle.type===2});
+        var r6= figure.selectionHandles.find(function(handle){return handle.type===6});
+
+        var objWidth    = figure.getWidth();
+        // adjust the resize handles on the left/right to the new dimension of the shape
+        //
+        r2.setDimension(objWidth, r2.getHeight());
+        r6.setDimension(objWidth, r6.getHeight());
+        
+        this._super(canvas,figure);
+     }
+
+    
+});
+</pre>
+</body>
+</html>

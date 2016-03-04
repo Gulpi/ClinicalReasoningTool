@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js">
+<span id='draw2d-policy-canvas-KeyboardPolicy'>/**
+</span> * @class draw2d.policy.canvas.KeyboardPolicy
+ * Default interface for keyboard interaction with the canvas.
+ * 
+ *
+ * @author Andreas Herz
+ * @extends draw2d.policy.canvas.CanvasPolicy
+ */
+draw2d.policy.canvas.KeyboardPolicy = draw2d.policy.canvas.CanvasPolicy.extend({
+
+    NAME : &quot;draw2d.policy.canvas.KeyboardPolicy&quot;,
+    
+<span id='draw2d-policy-canvas-KeyboardPolicy-method-constructor'>    /**
+</span>     * @constructor 
+     */
+    init: function(){
+        this._super();
+    },
+    
+<span id='draw2d-policy-canvas-KeyboardPolicy-method-onKeyUp'>    /**
+</span>     * @method
+     * Callback if the user release a key
+     * 
+     * @param {draw2d.Canvas} canvas the related canvas
+     * @param {Number} keyCode the pressed key
+     * @param {Boolean} shiftKey true if the shift key has been pressed during this event
+     * @param {Boolean} ctrlKey true if the ctrl key has been pressed during the event
+     * @private
+     **/
+    onKeyUp:function(canvas, keyCode, shiftKey, ctrlKey){
+        // do nothing per default
+    },
+
+<span id='draw2d-policy-canvas-KeyboardPolicy-method-onKeyDown'>    /**
+</span>     * @method
+     * Callback if the user press a key down
+     * 
+     * @param {draw2d.Canvas} canvas the related canvas
+     * @param {Number} keyCode the pressed key
+     * @param {Boolean} shiftKey true if the shift key has been pressed during this event
+     * @param {Boolean} ctrlKey true if the ctrl key has been pressed during the event
+     * @private
+     **/
+    onKeyDown:function(canvas, keyCode, shiftKey, ctrlKey){
+        // do nothing per default
+    }
+
+
+});
+</pre>
+</body>
+</html>

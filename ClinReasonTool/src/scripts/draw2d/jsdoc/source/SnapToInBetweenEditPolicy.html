@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js">
+
+<span id='draw2d-policy-canvas-SnapToInBetweenEditPolicy'>/**
+</span> * @class draw2d.policy.canvas.SnapToInBetweenEditPolicy
+ * 
+ * Snapping is based on the existing children of a container. When snapping a shape, 
+ * the edges of the bounding box will snap to edges of other rectangles generated 
+ * from the children of the given canvas. 
+ * 
+ * 
+ * @author Andreas Herz
+ * 
+ * @extends draw2d.policy.canvas.SnapToEditPolicy
+ * @since 5.6.4
+ */
+draw2d.policy.canvas.SnapToInBetweenEditPolicy = draw2d.policy.canvas.SnapToEditPolicy.extend({
+
+    NAME : &quot;draw2d.policy.canvas.SnapToInBetweenEditPolicy&quot;,
+    
+    SNAP_THRESHOLD   : 5,
+    FADEOUT_DURATION : 500,
+    
+<span id='draw2d-policy-canvas-SnapToInBetweenEditPolicy-method-constructor'>    /**
+</span>     * @constructor 
+     * Creates a new constraint policy for snap to geometry
+     * 
+     */
+    init: function( attr, setter, getter){
+        this.lineColor = null;
+
+        this._super(
+            $.extend({
+                lineColor: &quot;#1387E6&quot;
+            },attr),
+            $.extend({
+<span id='draw2d-policy-canvas-SnapToInBetweenEditPolicy-attr-color'>                /** @attr {draw2d.util.Color} color the line color of the snapTo lines */
+</span>                lineColor : this.setLineColor
+            }, setter),
+            $.extend({
+                lineColor : this.getLineColor
+            }, getter));
+
+        this.bounds=null;
+
+        this.horizontalGuideLines = null;
+        this.verticalGuideLines = null;
+    },
+
+
+<span id='draw2d-policy-canvas-SnapToInBetweenEditPolicy-method-setLineColor'>    /**
+</span>     * @method
+     * Set the color of the snap line.
+     *
+     *      // Alternatively you can use the attr method:
+     *      policy.attr({
+     *        lineColor: color
+     *      });
+     *
+     * @param {draw2d.util.Color|String} color The new color of the line.
+     **/
+    setLineColor:function( color)
+    {
+        this.lineColor = new draw2d.util.Color(color);
+        return this;
+    },
+
+<span id='draw2d-policy-canvas-SnapToInBetweenEditPolicy-method-getLineColor'>    /**
+</span>     * @method
+     * Return the current paint color.
+     *
+     * @return {draw2d.util.Color} The paint color of the line.
+     * @since 5.6.1
+     **/
+    getLineColor:function()
+    {
+        return this.lineColor;
+    },
+
+<span id='draw2d-policy-canvas-SnapToInBetweenEditPolicy-method-onMouseUp'>    /**
+</span>     * @method
+     * 
+     * @param {draw2d.Canvas} canvas
+     * @param {Number} x the x-coordinate of the mouse down event
+     * @param {Number} y the y-coordinate of the mouse down event
+     * @param {Boolean} shiftKey true if the shift key has been pressed during this event
+     * @param {Boolean} ctrlKey true if the ctrl key has been pressed during the event
+     * @template
+     */
+    onMouseUp: function(figure, x, y, shiftKey, ctrlKey)
+    {
+        this.bounds=null;
+        this.hideHorizontalGuides(false);
+        this.hideVerticalGuides(false);
+    },
+    
+<span id='draw2d-policy-canvas-SnapToInBetweenEditPolicy-method-snap'>    /**
+</span>     * @method
+     * Adjust the coordinates to the canvas neighbours
+     *
+     * @param canvas the related canvas
+     * @param figure the figure to snap
+     * @param {draw2d.geo.Point} pos
+     *
+     * @returns {draw2d.geo.Point} the constraint position of the figure
+     */
+    snap: function(canvas, figure, modifiedPos, originalPos)
+    {
+        // do nothing for resize handles
+        if(figure instanceof draw2d.ResizeHandle) {
+           return modifiedPos;
+        }
+
+
+        var allowXChanges = modifiedPos.x=== originalPos.x;
+        var allowYChanges = modifiedPos.y=== originalPos.y;
+
+        var inputBounds = new draw2d.geo.Rectangle(modifiedPos.x,modifiedPos.y, figure.getWidth(), figure.getHeight());
+
+        modifiedPos = modifiedPos.clone();
+
+        if(allowXChanges===true) {
+            var horizontal = this.snapHorizontal(inputBounds);
+
+            // Show a horizontal line if the snapper has modified the inputPoint
+            //
+            if (horizontal.snapped) {
+                // show the snap lines..
+                this.showHorizontalGuides(figure, horizontal);
+
+                // and snap the x coordinate
+                modifiedPos.x += horizontal.diff;
+            }
+            else {
+                this.hideHorizontalGuides(true);
+            }
+        }
+        else{
+            this.hideHorizontalGuides(true);
+        }
+
+        if(allowYChanges===true) {
+            var vertical = this.snapVertical(inputBounds);
+
+            // Show a vertical guides if the snapper has modified the inputPoint
+            //
+            if (vertical.snapped) {
+                // show the snap lines..
+                this.showVerticalGuides(figure, vertical);
+
+                // and snap the x coordinate
+                modifiedPos.y += vertical.diff;
+            }
+            else {
+                this.hideVerticalGuides(true);
+            }
+        }
+        else{
+            this.hideVerticalGuides(true);
+        }
+
+        return modifiedPos;
+    },
+
+
+    snapHorizontal:function( boundingBox    )
+    {
+        var center = boundingBox.getCenter();
+        if(this.bounds===null)
+         this.populateBounds();
+
+        var result = {
+            point:center,
+            snapped:false,
+            snappedBox : boundingBox.clone()
+        };
+
+
+        var intersectionPoint=null;
+
+        // Calculate the intersections points p(i) of all left side edges of the bounding boxes
+        // and the ray from the center of the drag&amp;drop object to the left edge of the canva
+        //
+        // BBox of          Drag&amp;Drop
+        // any Figure       Figure
+        //
+        // ....+           ........
+        //     |           .      .
+        // .   |p(i)       .      .
+        // .   X&lt;-------------&gt;+  .
+        // .   |           .      .
+        // ....+           .      .
+        //                 ........
+        //
+        //
+        var leftIntersections = [];
+        var leftInputPoint = center.clone();
+        leftInputPoint.x=0;
+        this.bounds.forEach(function( bbox,index){
+            intersectionPoint =  draw2d.shape.basic.Line.intersection(bbox.getTopRight(), bbox.getBottomRight(), center, leftInputPoint);
+            if (intersectionPoint !== null) {
+                intersectionPoint.causedBBox = bbox;
+                leftIntersections.push(intersectionPoint);
+            }
+        });
+        // we can abort if we didn&#39;t find an intersection on the left hand side
+        if(leftIntersections.length===0){
+            return result;
+        }
+
+        // sort the intersection point and get the closest point to the tested inputPoint
+        // In this case it is the point with the greates X coordinate
+        //
+        leftIntersections.sort(function(a, b) {
+            return b.x - a.x;
+        });
+
+
+
+        // Calculate the intersections points p(i) of all right hand side edges of the
+        // bounding boxes and the ray from the center of the drag&amp;drop object to the
+        // left edge of the canvas
+        //
+        //                 Drag&amp;Drop             bbox of any
+        //                 Figure                figure
+        //
+        //                 ........
+        //                 .      .
+        //                 .      .             ...........
+        //                 .   +&lt;--------------&gt;X         |
+        //                 .      .         p(i)|         |
+        //                 .      .             |         |
+        //                 ........             |         |
+        //                                      ...........
+        //
+        var rightIntersections= [];
+        var rightInputPoint = center.clone();
+        rightInputPoint.x= Number.MAX_SAFE_INTEGER;
+        this.bounds.forEach(function( bbox,index){
+            intersectionPoint =  draw2d.shape.basic.Line.intersection(bbox.getTopLeft(), bbox.getBottomLeft(), center, rightInputPoint);
+            if (intersectionPoint !== null) {
+                intersectionPoint.causedBBox = bbox;
+                rightIntersections.push(intersectionPoint);
+            }
+        });
+        // we can abort if we didn&#39;t find an intersection on the right hand side
+        if(rightIntersections.length===0){
+            return result;
+        }
+
+        // sort the intersection point and get the closest point to the tested inputPoint
+        // In this case it is the point with the greates X coordinate
+        //
+        rightIntersections.sort(function(a, b) {
+            return a.x - b.x;
+        });
+
+
+
+        // Snap the point (S) between the two founded intersections
+        // p(i1) and p(i2)
+        //
+        // BBox FigureA     Drag&amp;Drop           BBox of FigureB
+        //                  Figure
+        //
+        // ....+           ........
+        //     |           .      .
+        // .   |p(i1)      .   S  .             ...........
+        // .   X&lt;-------------&gt;X&lt;--------------&gt;X         |
+        // .   |           .      .        p(i2)|         |
+        // ....+           .      .             |         |
+        //                 ........             |         |
+        //                                      ...........
+        //
+        var snappedRect = boundingBox.clone();
+        var diff = ((leftIntersections[0].x + rightIntersections[0].x)/2)-center.x;
+
+        snappedRect.x +=diff;
+
+        return {snapped: Math.abs(diff)&lt;this.SNAP_THRESHOLD, snappedRect:snappedRect, diff:diff, leftSide:leftIntersections[0], rightSide:rightIntersections[0]};
+    },
+
+
+    snapVertical:function( boundingBox )
+    {
+        var center = boundingBox.getCenter();
+
+        if(this.bounds===null) {
+            this.populateBounds();
+        }
+
+        var result = {
+            point:center,
+            snapped:false,
+            snappedBox : boundingBox.clone()
+        };
+
+
+        var intersectionPoint=null;
+
+        // Calculate the intersections points p(i) of all left side edges of the bounding boxes
+        // and the ray from the center of the drag&amp;drop object to the left edge of the canva
+        //
+        // BBox of          Drag&amp;Drop
+        // any Figure       Figure
+        //
+        // ....+           ........
+        //     |           .      .
+        // .   |p(i)       .      .
+        // .   X&lt;-------------&gt;+  .
+        // .   |           .      .
+        // ....+           .      .
+        //                 ........
+        //
+        //
+        var topIntersections = [];
+        var topInputPoint = center.clone();
+        topInputPoint.y=0;
+        this.bounds.forEach(function( bbox){
+            intersectionPoint =  draw2d.shape.basic.Line.intersection(bbox.getBottomLeft(), bbox.getBottomRight(), center, topInputPoint);
+            if (intersectionPoint !== null) {
+                intersectionPoint.causedBBox = bbox;
+                topIntersections.push(intersectionPoint);
+            }
+        });
+        // we can abort if we didn&#39;t find an intersection on the left hand side
+        if(topIntersections.length===0){
+            return result;
+        }
+
+        // sort the intersection point and get the closest point to the tested inputPoint
+        // In this case it is the point with the greates X coordinate
+        //
+        topIntersections.sort(function(a, b) {
+            return b.y - a.y;
+        });
+
+
+
+        // Calculate the intersections points p(i) of all right hand side edges of the
+        // bounding boxes and the ray from the center of the drag&amp;drop object to the
+        // left edge of the canvas
+        //
+        //                 Drag&amp;Drop             bbox of any
+        //                 Figure                figure
+        //
+        //                 ........
+        //                 .      .
+        //                 .      .             ...........
+        //                 .   +&lt;--------------&gt;X         |
+        //                 .      .         p(i)|         |
+        //                 .      .             |         |
+        //                 ........             |         |
+        //                                      ...........
+        //
+        var bottomIntersections= [];
+        var bottomInputPoint = center.clone();
+        bottomInputPoint.y= Number.MAX_SAFE_INTEGER;
+        this.bounds.forEach(function( bbox){
+            intersectionPoint =  draw2d.shape.basic.Line.intersection(bbox.getTopLeft(), bbox.getTopRight(), center, bottomInputPoint);
+            if (intersectionPoint !== null) {
+                intersectionPoint.causedBBox = bbox;
+                bottomIntersections.push(intersectionPoint);
+            }
+        });
+        // we can abort if we didn&#39;t find an intersection on the right hand side
+        if(bottomIntersections.length===0){
+            return result;
+        }
+
+        // sort the intersection point and get the closest point to the tested inputPoint
+        // In this case it is the point with the greates X coordinate
+        //
+        bottomIntersections.sort(function(a, b) {
+            return a.y - b.y;
+        });
+
+
+
+        // Snap the point (S) between the two founded intersections
+        // p(i1) and p(i2)
+        //
+        // BBox FigureA     Drag&amp;Drop           BBox of FigureB
+        //                  Figure
+        //
+        // ....+           ........
+        //     |           .      .
+        // .   |p(i1)      .   S  .             ...........
+        // .   X&lt;-------------&gt;X&lt;--------------&gt;X         |
+        // .   |           .      .        p(i2)|         |
+        // ....+           .      .             |         |
+        //                 ........             |         |
+        //                                      ...........
+        //
+        var snappedRect = boundingBox.clone();
+        var diff = ((topIntersections[0].y + bottomIntersections[0].y)/2)-center.y;
+
+        snappedRect.y +=diff;
+
+        return {snapped: Math.abs(diff)&lt;this.SNAP_THRESHOLD, snappedRect:snappedRect, diff:diff, topSide:topIntersections[0], bottomSide:bottomIntersections[0]};
+    },
+
+    populateBounds:function()
+    {
+       var selection = this.canvas.getSelection().getAll(true);
+       var bounds = this.bounds = [];
+       
+       var figures = this.canvas.getFigures();
+       figures.each(function(index,figure){
+          if(!selection.contains(figure)){
+             bounds.push(figure.getBoundingBox());
+         }
+       });
+    },
+
+    showHorizontalGuides:function(causedFigure, constraint)
+    {
+        if(this.horizontalGuideLines!=null){
+            this.horizontalGuideLines.stop();
+            this.horizontalGuideLines.remove();
+        }
+
+        var snapTopLeft  = constraint.snappedRect.getTopLeft();
+        var snapTopRight = constraint.snappedRect.getTopRight();
+        var y = ((Math.min(constraint.leftSide.causedBBox.getTopRight().y,Math.min(constraint.rightSide.causedBBox.y,causedFigure.getY()))-50)|0)+0.5;
+
+        this.canvas.paper.setStart();
+
+        // Vertical lines from left to the right order
+        //
+        this.canvas.paper.path(&quot;M &quot; + ((constraint.leftSide.x|0)+0.5)   + &quot; &quot;+y+&quot; L &quot;+((constraint.leftSide.x|0)+0.5) + &quot; &quot;  + constraint.leftSide.y)
+            .attr({&quot;stroke&quot;:this.lineColor.hash(),&quot;stroke-width&quot;:1, &quot;stroke-dasharray&quot;:&quot;. &quot;});;
+        this.canvas.paper.path(&quot;M &quot; + ((snapTopLeft.x |0)+0.5)  + &quot; &quot;+y+&quot; L &quot;+((snapTopLeft.x|0)+0.5) + &quot; &quot;  + snapTopLeft.y)
+            .attr({&quot;stroke&quot;:this.lineColor.hash(),&quot;stroke-width&quot;:1, &quot;stroke-dasharray&quot;:&quot;. &quot;});;
+        this.canvas.paper.path(&quot;M &quot; + ((snapTopRight.x|0)+0.5)   + &quot; &quot;+y+&quot; L &quot;+((snapTopRight.x|0)+0.5) + &quot; &quot;  + snapTopRight.y)
+            .attr({&quot;stroke&quot;:this.lineColor.hash(),&quot;stroke-width&quot;:1, &quot;stroke-dasharray&quot;:&quot;. &quot;});;
+        this.canvas.paper.path(&quot;M &quot; + ((constraint.rightSide.x|0)+0.5)  + &quot; &quot;+y+&quot; L &quot;+((constraint.rightSide.x|0)+0.5)+ &quot; &quot;  + constraint.rightSide.y)
+            .attr({&quot;stroke&quot;:this.lineColor.hash(),&quot;stroke-width&quot;:1, &quot;stroke-dasharray&quot;:&quot;. &quot;});;
+
+        // horizontal lines
+        //
+        this.canvas.paper.path(&quot;M &quot; + (constraint.leftSide.x)   + &quot; &quot;+(y+5)+&quot; L &quot;+(snapTopLeft.x)+ &quot; &quot;  + (y+5)).attr({&quot;stroke&quot;:this.lineColor.hash(),&quot;stroke-width&quot;:1});
+        this.canvas.paper.path(&quot;M &quot; + (constraint.rightSide.x)  + &quot; &quot;+(y+5)+&quot; L &quot;+(snapTopRight.x)+ &quot; &quot;  + (y+5)).attr({&quot;stroke&quot;:this.lineColor.hash(),&quot;stroke-width&quot;:1});
+
+        // 4 arrow heads starting on the left side and add one by one
+        //
+        this.canvas.paper.path(
+              &quot; M &quot; + (constraint.leftSide.x+5) + &quot; &quot;+(y)
+             +&quot; L &quot; + (constraint.leftSide.x) + &quot; &quot;+(y+5)
+             +&quot; L &quot; + (constraint.leftSide.x+5) + &quot; &quot;+(y+10))
+            .attr({&quot;stroke&quot;:this.lineColor.hash(),&quot;stroke-width&quot;:1});
+
+        this.canvas.paper.path(
+             &quot; M &quot; + (snapTopLeft.x-5) + &quot; &quot;+(y)
+            +&quot; L &quot; + (snapTopLeft.x) + &quot; &quot;+(y+5)
+            +&quot; L &quot; + (snapTopLeft.x-5) + &quot; &quot;+(y+10))
+            .attr({&quot;stroke&quot;:this.lineColor.hash(),&quot;stroke-width&quot;:1});
+
+
+        this.canvas.paper.path(
+             &quot; M &quot; + (snapTopRight.x+5) + &quot; &quot;+(y)
+            +&quot; L &quot; + (snapTopRight.x) + &quot; &quot;+(y+5)
+            +&quot; L &quot; + (snapTopRight.x+5) + &quot; &quot;+(y+10))
+            .attr({&quot;stroke&quot;:this.lineColor.hash(),&quot;stroke-width&quot;:1});
+
+
+        this.canvas.paper.path(
+             &quot; M &quot; + (constraint.rightSide.x-5) + &quot; &quot;+(y)
+            +&quot; L &quot; + (constraint.rightSide.x) + &quot; &quot;+(y+5)
+            +&quot; L &quot; + (constraint.rightSide.x-5) + &quot; &quot;+(y+10))
+            .attr({&quot;stroke&quot;:this.lineColor.hash(),&quot;stroke-width&quot;:1});
+
+
+        this.horizontalGuideLines = this.canvas.paper.setFinish();
+        this.horizontalGuideLines.toFront();
+    },
+
+<span id='draw2d-policy-canvas-SnapToInBetweenEditPolicy-method-hideHorizontalGuides'>    /**
+</span>     * @method
+     * Hide the horizontal snapüing guides
+     *
+     * @param soft
+     */
+    hideHorizontalGuides:function( fast)
+    {
+        if(this.horizontalGuideLines==null){
+            return;
+        }
+
+        if(fast===true) {
+            if (this.horizontalGuideLines !== null) {
+                this.horizontalGuideLines.remove();
+                this.horizontalGuideLines = null;
+            }
+        }
+        else {
+            this.horizontalGuideLines.animate(
+                {opacity: 0.1},
+                this.FADEOUT_DURATION,
+                $.proxy(function () {
+                    if (this.horizontalGuideLines !== null) {
+                        this.horizontalGuideLines.remove();
+                        this.horizontalGuideLines = null;
+                    }
+                }, this)
+            );
+        }
+    },
+
+    showVerticalGuides:function(causedFigure, constraint)
+    {
+        if(this.verticalGuideLines!=null){
+            this.verticalGuideLines.stop();
+            this.verticalGuideLines.remove();
+        }
+
+        var snapTopRight    = constraint.snappedRect.getTopRight();
+        var snapBottomRight = constraint.snappedRect.getBottomRight();
+        var x = ((Math.max(constraint.topSide.causedBBox.getRight(),Math.max(constraint.bottomSide.causedBBox.getRight(),causedFigure.getX()))+40)|0)+0.5;
+
+        this.canvas.paper.setStart();
+
+        // Vertical lines from left to the right order
+        //
+        this.canvas.paper.path(&quot;M &quot; + x + &quot; &quot;+((constraint.topSide.y|0)+0.5)+&quot; L &quot;+((constraint.topSide.x|0)+0.5) + &quot; &quot;  + ((constraint.topSide.y|0)+0.5))
+            .attr({&quot;stroke&quot;:this.lineColor.hash(),&quot;stroke-width&quot;:1, &quot;stroke-dasharray&quot;:&quot;. &quot;});
+        this.canvas.paper.path(&quot;M &quot; + x + &quot; &quot;+((snapTopRight.y|0)+0.5)+&quot; L &quot;+((snapTopRight.x|0)+0.5) + &quot; &quot;  + ((snapTopRight.y|0)+0.5))
+            .attr({&quot;stroke&quot;:this.lineColor.hash(),&quot;stroke-width&quot;:1, &quot;stroke-dasharray&quot;:&quot;. &quot;});
+        this.canvas.paper.path(&quot;M &quot; + x + &quot; &quot;+((snapBottomRight.y|0)+0.5)+&quot; L &quot;+((snapBottomRight.x|0)+0.5) + &quot; &quot;  + ((snapBottomRight.y|0)+0.5))
+            .attr({&quot;stroke&quot;:this.lineColor.hash(),&quot;stroke-width&quot;:1, &quot;stroke-dasharray&quot;:&quot;. &quot;});
+        this.canvas.paper.path(&quot;M &quot; + x   + &quot; &quot;+((constraint.bottomSide.y|0)+0.5)+&quot; L &quot;+((constraint.bottomSide.x|0)+0.5) + &quot; &quot;  + ((constraint.bottomSide.y|0)+0.5))
+            .attr({&quot;stroke&quot;:this.lineColor.hash(),&quot;stroke-width&quot;:1, &quot;stroke-dasharray&quot;:&quot;. &quot;});
+
+        // horizontal lines
+        //
+        this.canvas.paper.path(&quot;M &quot; + (x-5)  + &quot; &quot;+(((constraint.topSide.y|0)+0.5))+&quot; L &quot;+(x-5)+ &quot; &quot;  +((snapTopRight.y|0)+0.5))
+            .attr({&quot;stroke&quot;:this.lineColor.hash(),&quot;stroke-width&quot;:1});
+        this.canvas.paper.path(&quot;M &quot; + (x-5)  + &quot; &quot;+(((constraint.bottomSide.y|0)+0.5))+&quot; L &quot;+(x-5)+ &quot; &quot;  +((snapBottomRight.y|0)+0.5))
+            .attr({&quot;stroke&quot;:this.lineColor.hash(),&quot;stroke-width&quot;:1});
+
+
+        // 4 arrow heads starting on the left side and add one by one
+        //
+        this.canvas.paper.path(
+             &quot; M &quot; + (x-10)+ &quot; &quot;+(constraint.topSide.y+5)
+            +&quot; L &quot; + (x-5) + &quot; &quot;+(constraint.topSide.y)
+            +&quot; L &quot; + (x)   + &quot; &quot;+(constraint.topSide.y+5))
+            .attr({&quot;stroke&quot;:this.lineColor.hash(),&quot;stroke-width&quot;:1});
+
+        this.canvas.paper.path(
+             &quot; M &quot; + (x-10)+ &quot; &quot;+(snapTopRight.y-5)
+            +&quot; L &quot; + (x-5) + &quot; &quot;+(snapTopRight.y)
+            +&quot; L &quot; + (x)   + &quot; &quot;+(snapTopRight.y-5))
+            .attr({&quot;stroke&quot;:this.lineColor.hash(),&quot;stroke-width&quot;:1});
+
+        this.canvas.paper.path(
+             &quot; M &quot; + (x-10)+ &quot; &quot;+(snapBottomRight.y+5)
+            +&quot; L &quot; + (x-5) + &quot; &quot;+(snapBottomRight.y)
+            +&quot; L &quot; + (x)   + &quot; &quot;+(snapBottomRight.y+5))
+            .attr({&quot;stroke&quot;:this.lineColor.hash(),&quot;stroke-width&quot;:1});
+
+        this.canvas.paper.path(
+             &quot; M &quot; + (x-10)+ &quot; &quot;+(constraint.bottomSide.y-5)
+            +&quot; L &quot; + (x-5) + &quot; &quot;+(constraint.bottomSide.y)
+            +&quot; L &quot; + (x)   + &quot; &quot;+(constraint.bottomSide.y-5))
+            .attr({&quot;stroke&quot;:this.lineColor.hash(),&quot;stroke-width&quot;:1});
+
+        this.verticalGuideLines = this.canvas.paper.setFinish();
+        this.verticalGuideLines.toFront();
+    },
+
+    hideVerticalGuides:function()
+    {
+        if(this.verticalGuideLines==null){
+            return; //silently
+        }
+
+        this.verticalGuideLines.animate(
+            {opacity: 0.1},
+            this.FADEOUT_DURATION,
+            $.proxy(function(){
+                if(this.verticalGuideLines!==null) {
+                    this.verticalGuideLines.remove();
+                    this.verticalGuideLines = null;
+                }
+            },this)
+        );
+    }
+    
+});</pre>
+</body>
+</html>

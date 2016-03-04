@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+  <html>
+  <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+      <title>'Draw2D touch' Examples</title>
+	<SCRIPT src="./draw2d/lib/shifty.js"></SCRIPT>
+	<SCRIPT src="./draw2d/lib/raphael.js"></SCRIPT>
+    <SCRIPT src="./draw2d/lib/jquery-1.10.2.min.js"></SCRIPT>
+	<SCRIPT src="./draw2d/lib/jquery.autoresize.js"></SCRIPT>
+	<SCRIPT src="./draw2d/lib/jquery-touch_punch.js"></SCRIPT>
+	<SCRIPT src="./draw2d/lib/jquery.contextmenu.js"></SCRIPT>
+	<SCRIPT src="./draw2d/lib/rgbcolor.js"></SCRIPT>
+	<SCRIPT src="./draw2d/lib/canvg.js"></SCRIPT>
+	<SCRIPT src="./draw2d/lib/Class.js"></SCRIPT>
+	<SCRIPT src="./draw2d/lib/json2.js"></SCRIPT>
+	<SCRIPT src='./draw2d/src/draw2d.js'></SCRIPT>
+
+ <script type="text/javascript">
+   var canvas = null;
+   function loadInlineExample(code, options) {
+      try {
+          canvas = new draw2d.Canvas("gfx_holder");
+          eval(code);
+      } catch (e) {
+         alert( e);
+      }
+   }
+  </script>
+  </head>
+  <body style="overflow:scroll">
+  <div id="gfx_holder" style="width:500px; height:350px;-webkit-tap-highlight-color: rgba(0,0,0,0); ">
+ </div>
+  
+  </body>
+  </html>
+  
+  

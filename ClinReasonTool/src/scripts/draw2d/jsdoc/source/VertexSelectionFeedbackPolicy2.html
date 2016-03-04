@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js">
+<span id='draw2d-policy-line-VertexSelectionFeedbackPolicy'>/**
+</span> * @class draw2d.policy.line.VertexSelectionFeedbackPolicy
+ * 
+ * Feedback and edit policy for the VertexRouter.
+ * 
+ * @author  Andreas Herz
+ * @extends draw2d.policy.line.LineSelectionFeedbackPolicy
+ */
+draw2d.policy.line.VertexSelectionFeedbackPolicy = draw2d.policy.line.LineSelectionFeedbackPolicy.extend({
+
+    NAME : &quot;draw2d.policy.line.VertexSelectionFeedbackPolicy&quot;,
+
+<span id='draw2d-policy-line-VertexSelectionFeedbackPolicy-method-constructor'>    /**
+</span>     * @constructor 
+     * 
+     */
+    init: function()
+    {
+        this._super();
+    },
+    
+
+<span id='draw2d-policy-line-VertexSelectionFeedbackPolicy-method-onSelect'>    /**
+</span>     * @method
+     * 
+     * @template
+     * @param {draw2d.Connection} connection the selected figure
+     * @param {boolean} isPrimarySelection
+     */
+    onSelect: function(canvas, figure, isPrimarySelection)
+    {
+    	
+        var startHandle =  new draw2d.shape.basic.LineStartResizeHandle(figure);
+        var endHandle = new draw2d.shape.basic.LineEndResizeHandle(figure);
+        figure.selectionHandles.add(startHandle);
+        figure.selectionHandles.add( endHandle);
+
+    	var points = figure.getVertices();
+    	var count = points.getSize()-1;
+    	var i=1;
+    	for( ; i&lt;count; i++){
+    	    figure.selectionHandles.add( new draw2d.shape.basic.VertexResizeHandle(figure, i));         
+    	    figure.selectionHandles.add( new draw2d.shape.basic.GhostVertexResizeHandle(figure, i-1));         
+        }
+    	
+    	figure.selectionHandles.add( new draw2d.shape.basic.GhostVertexResizeHandle(figure, i-1));         
+
+    	figure.selectionHandles.each(function(i,e){
+            e.setDraggable(figure.isResizeable());
+            e.show(canvas);
+        });
+        
+        this.moved(canvas, figure);
+    }   
+
+});</pre>
+</body>
+</html>

@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js">
+<span id='draw2d-policy-canvas-ShowChessboardEditPolicy'>/**
+</span> * @class draw2d.policy.canvas.ShowChessboardEditPolicy
+ * 
+ * Just to paint a grid in the background. 
+ * 
+ * 
+ * @author Andreas Herz
+ * 
+ * @extends draw2d.policy.canvas.CanvasPolicy
+ */
+draw2d.policy.canvas.ShowChessboardEditPolicy = draw2d.policy.canvas.CanvasPolicy.extend({
+
+    NAME : &quot;draw2d.policy.canvas.ShowChessboardEditPolicy&quot;,
+    
+    GRID_COLOR  : &quot;#e0e0e0&quot;,
+    GRID_WIDTH  :20,
+    
+<span id='draw2d-policy-canvas-ShowChessboardEditPolicy-method-constructor'>    /**
+</span>     * @constructor 
+     * Creates a new constraint policy for snap to grid
+     * 
+     * @param {Number} grid the grid width of the canvas
+     */
+    init: function( grid)
+    {
+        this._super();
+        this.cells  = null;
+        if(grid){
+            this.grid = grid;
+        }
+        else{
+            this.grid = this.GRID_WIDTH;
+        }
+    },
+
+    onInstall: function(canvas)
+    {
+        this._super(canvas);
+        this.showGrid();
+    },
+    
+    onUninstall: function(canvas)
+    {
+        this.cells.remove();
+        this._super(canvas);
+    },
+    
+<span id='draw2d-policy-canvas-ShowChessboardEditPolicy-method-showGrid'>    /**
+</span>     * @method
+     * paint the grid into the canvas
+     * 
+     * @private
+     * @since 2.3.0
+     */
+    showGrid: function()
+    {
+        // vertical lines
+        var w = this.canvas.initialWidth;
+        var h = this.canvas.initialHeight;
+        this.cells = this.canvas.paper.set();
+        
+        var even = false;
+        var xEven = even;
+        for(var x = 0; x &lt; w; x += this.grid) {
+           for(var y = 0; y &lt; h; y+= this.grid) {
+               if(even) {
+                   var crect = this.canvas.paper.rect(x, y, this.grid, this.grid);
+                   crect.attr({fill: this.GRID_COLOR, &quot;stroke-width&quot;:0});
+                   this.cells.push(crect);
+               }
+               even = !even;
+           }
+           xEven = !xEven;
+           even = xEven;
+       }
+        
+       this.cells.toBack();
+    }
+  
+});</pre>
+</body>
+</html>

@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='draw2d-layout-locator-PortLocator'>/**
+</span> * @class draw2d.layout.locator.PortLocator
+ * 
+ * Repositions a Figure attached to a Connection when the 
+ * Connection is moved. Provides for alignment at the start 
+ * (source), middle, or end (target) of the Connection.
+ *
+ * @author Andreas Herz
+ * @extend draw2d.layout.locator.Locator
+ */
+draw2d.layout.locator.PortLocator = draw2d.layout.locator.Locator.extend({
+    NAME : &quot;draw2d.layout.locator.PortLocator&quot;,
+    
+<span id='draw2d-layout-locator-PortLocator-method-constructor'>    /**
+</span>     * @constructor
+     * Default constructor for a Locator which can layout a port in context of a 
+     * {@link grapiti.shape.node.Node}
+     * 
+     */
+    init:function( ){
+      this._super();
+    },
+    
+    applyConsiderRotation: function(port, x, y){
+    	var parent = port.getParent();
+    
+    	// determine the width/height before manipulate the 
+    	// matrix of the shape
+        var halfW = parent.getWidth()/2;
+        var halfH = parent.getHeight()/2;
+        
+    	var rotAngle = parent.getRotationAngle();
+    	var m = Raphael.matrix();
+    	m.rotate(rotAngle, halfW, halfH);
+        if(rotAngle=== 90|| rotAngle===270){
+            var ratio = parent.getHeight()/parent.getWidth();
+            m.scale(ratio, 1/ratio, halfW, halfH);
+        }
+
+        port.setPosition( m.x(x,y), m.y(x,y));
+    }
+});</pre>
+</body>
+</html>

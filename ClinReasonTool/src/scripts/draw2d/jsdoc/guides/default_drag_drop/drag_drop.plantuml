@@ -1,0 +1,120 @@
+@startuml
+'skin BlueModern
+
+actor user
+participant "canvas"
+participant resizeHandles
+participant ports
+participant lines
+participant figures
+participant "SingleSelelectionPolicy" as policy
+participant "<<Dragged Figure>>" as bestFigure
+participant "<<Selected Figures>>" as selectedFigure
+participant "<<Drop Target>>" as dropTarget
+
+user -> canvas: mouseDown
+activate canvas
+canvas -> policy: onMouseDown(x,y)
+|||
+activate policy
+policy -> canvas: getBestFigure(x,y)
+	activate canvas #3369e8
+	group forEach
+		canvas -> resizeHandles: hitTest(x,y)
+		activate resizeHandles
+		deactivate resizeHandles
+	end
+|||
+	group forEach <<optional>>
+		canvas -> ports: hitTest(x,y)
+		activate ports
+		deactivate ports
+	end
+|||
+	group forEach <<optional>>
+		canvas -> lines: hitTest(x,y)
+		activate lines
+		deactivate lines
+	end
+|||
+	group forEach <<optional>>
+		canvas -> figures: hitTest(x,y)
+		activate figures
+		deactivate figures
+	end
+
+	canvas -->> policy:
+	deactivate canvas
+		policy -> bestFigure: onDragStart(x,y)
+		activate bestFigure
+		deactivate bestFigure
+
+		policy -> policy: select(figure)
+		activate policy
+		note right: only if onDragStart returns !=null
+		policy -> bestFigure: select
+		activate bestFigure
+		deactivate bestFigure
+		policy -> canvas : getSelection().setPrimary(dragFigure)
+		activate canvas
+		deactivate canvas
+		deactivate policy
+|||
+		policy -->> canvas
+	deactivate policy
+canvas -->> user
+
+...
+
+== Repetition ==
+user -> canvas: mouseMove
+	canvas -> policy: onMouseDrag(x,y)
+	activate policy
+    policy -> selectedFigure: onDrag(dx, dy)
+	activate selectedFigure
+	deactivate selectedFigure
+	policy -> canvas: getBestFigure(x,y)
+ 	  activate canvas #3369e8
+ 	  |||
+ 	  |||
+ 	  |||
+ 	  |||
+	  canvas -->> policy
+	  deactivate canvas
+	group optional
+	   policy -> dropTarget: onDragEnter(dragFigure)
+       activate dropTarget
+	   deactivate dropTarget
+	end
+	group optional
+	   policy -> dropTarget: onDragLeave(dragFigure)
+       activate dropTarget
+	   deactivate dropTarget
+	end
+	policy -->> canvas
+	deactivate policy
+canvas -->> user
+== ==
+
+...
+user -> canvas: mouseUp
+	canvas -> policy : onMouseUp(x,y)
+	activate policy
+	policy -> bestFigure : onDragEnd
+	activate bestFigure
+	deactivate bestFigure
+	group optional
+	   policy -> bestFigure : onDrop(dropTarget)
+	   activate bestFigure
+	   deactivate bestFigure
+	   policy -> dropTarget: onDragLeave(dragFigure)
+       activate dropTarget
+	   deactivate dropTarget
+	end
+	policy -->> canvas
+canvas -->> user
+
+deactivate policy
+deactivate canvas
+
+@enduml

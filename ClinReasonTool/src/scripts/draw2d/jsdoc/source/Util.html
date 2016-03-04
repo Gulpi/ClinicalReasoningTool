@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js">
+
+<span id='draw2d-geo-Ray'>/**
+</span> * @class draw2d.geo.Ray
+ * A ray is a line starting in [0,0,] with some additional
+ * helper functions required for some router.
+ * 
+ * @inheritable
+ * @extends draw2d.geo.Point
+ * @author Andreas Herz
+ */
+draw2d.geo.Util=
+{
+
+<span id='draw2d-geo-Ray-method-insetPoint'>    insetPoint: function(start, end, distanceFromStart){
+</span>        if(start.equals(end)){
+            return start;
+        }
+        var vx = start.x-end.x;
+        var vy = start.y-end.y;
+        var length = Math.sqrt(vx*vx + vy*vy);
+        var localDistance = Math.min(length/2,distanceFromStart);
+        return {x: end.x + vx/length * (length - localDistance),
+                y: end.y + vy/length * (length - localDistance)};
+
+    }
+
+};</pre>
+</body>
+</html>

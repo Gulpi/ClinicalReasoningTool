@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js">
+<span id='draw2d-shape-diagram-Sparkline'>/**
+</span> * @class draw2d.shape.diagram.Sparkline
+ * 
+ * Small data line diagram.
+ * 
+ * See the example:
+ *
+ *     @example preview small frame
+ *     
+ *     var testData = [];
+ *     for(var i=0;i&lt;100;i++) {
+ *       testData.push(Math.floor(Math.random() * 100));
+ *     }
+ *     
+ *     var sparkline = new draw2d.shape.diagram.Sparkline({
+ *     	data: testData,
+ *      width:150,
+ *      height:50,
+ *      x:100,
+ *      y:60
+ *     });
+ *   
+ *     canvas.add( sparkline);
+ *     
+ * @extends draw2d.shape.diagram.Diagram
+ */
+draw2d.shape.diagram.Sparkline = draw2d.shape.diagram.Diagram.extend({
+    
+<span id='draw2d-shape-diagram-Sparkline-method-init'>    /**
+</span>     * 
+     * @param {Object} [attr] the configuration of the shape
+     */
+    init: function( attr, setter, getter)
+    {
+        this.min = 0;
+        this.max = 10;
+        this.padding =4;
+
+        this._super( $.extend({width:180, height:50},attr), setter, getter);
+    },
+    
+<span id='draw2d-shape-diagram-Sparkline-method-setData'>    /**
+</span>     * @inheritdoc
+     */
+    setData:function( data)
+    {
+        if(data.length&gt;0){
+            // get the min/max from an array and not only from two elements..
+            this.min = Math.min.apply(Math, data);
+            this.max = Math.max.apply(Math, data);
+        }
+        else{
+            this.min = 0;
+            this.max = 1;
+        }
+
+        if(this.max==this.min){
+            this.max = this.min+1;
+        }
+        
+        this._super(data);
+        this.fireEvent(&quot;change:data&quot;);
+
+        return this;
+    },
+    
+<span id='draw2d-shape-diagram-Sparkline-method-createSet'>    /**
+</span>     * @inheritdoc
+     */
+    createSet: function()
+    {
+        return this.canvas.paper.path(&quot;M0 0 l0 0&quot;);
+    },
+     
+<span id='draw2d-shape-diagram-Sparkline-method-repaint'>    /**
+</span>     * @inheritdoc
+     */
+    repaint: function(attributes)
+    {
+        if(this.repaintBlocked===true || this.shape===null){
+            return;
+        }
+        
+        attributes= attributes || {};
+
+        attributes.fill= &quot;90-#000:5-#4d4d4d:95&quot;;
+        
+        var padding = this.padding;
+        var width = this.getWidth()- 2*padding;
+        var height= this.getHeight()- 2*padding;
+        var length= this.data.length;
+        var min = this.min;
+        var max = this.max;
+        var toCoords = function(value, idx) {
+            var step =1;
+            // avoid divisionByZero
+            if(length&gt;1){
+                step = (width/ (length-1));
+            }
+
+            return {
+                y:  -((value-min)/(max-min) * height) + height+padding,
+                x: padding+idx*step
+            };
+        };
+
+        if(this.svgNodes!==null &amp;&amp; (typeof this.cache.pathString ===&quot;undefined&quot;)){
+            var prev_pt=null;
+            $.each(this.data, $.proxy(function(idx, item) {
+                var pt = toCoords(item, idx);
+                if(prev_pt===null) {
+                    this.cache.pathString = [ &quot;M&quot;, pt.x, pt.y].join(&quot; &quot;);
+                }
+                else{
+                    this.cache.pathString = [ this.cache.pathString,&quot;L&quot;, pt.x, pt.y].join(&quot; &quot;);
+                }
+                prev_pt = pt;
+            },this));
+
+            this.svgNodes.attr({path:this.cache.pathString, stroke: &quot;#f0f0f0&quot;});
+            
+        }
+        this._super(attributes);
+        
+        return this;
+    }
+});</pre>
+</body>
+</html>

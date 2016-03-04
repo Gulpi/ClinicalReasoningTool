@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js">
+<span id='draw2d-layout-mesh-ProposedMeshChange'>/**
+</span> * @class draw2d.layout.mesh.ProposedMeshChange
+ * Change proposal for grid/mesh layout changes.
+ *
+ * @author Andreas Herz
+ */
+draw2d.layout.mesh.ProposedMeshChange = Class.extend({
+
+<span id='draw2d-layout-mesh-ProposedMeshChange-method-constructor'>	/**
+</span>	 * @constructor 
+	 * Creates change object.
+	 */
+    init: function(figure, x, y){
+    	this.figure = figure;
+    	this.x = x;
+    	this.y = y;
+    },
+    
+<span id='draw2d-layout-mesh-ProposedMeshChange-method-getFigure'>    /**
+</span>     * @method
+     * Return the related figure.
+     * 
+     * @return {draw2d.Figure} the figure to the related change proposal
+     */
+    getFigure:function( )
+    {
+    	return this.figure;
+    },
+    
+<span id='draw2d-layout-mesh-ProposedMeshChange-method-getX'>    /**
+</span>     * @method
+     * The proposed x-coordinate.
+     * 
+     * @return {Number}
+     */
+    getX: function(){
+    	return this.x;
+    },
+    
+<span id='draw2d-layout-mesh-ProposedMeshChange-method-getY'>    /**
+</span>     * @method
+     * The proposed y-coordinate
+     * 
+     * @return {Number}
+     */
+    getY: function(){
+    	return this.y;
+    }
+    
+});</pre>
+</body>
+</html>

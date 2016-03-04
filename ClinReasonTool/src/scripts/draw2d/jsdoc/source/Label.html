@@ -1,0 +1,780 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js">
+<span id='draw2d-shape-basic-Label'>/**
+</span> * @class draw2d.shape.basic.Label
+ * Implements a simple text label.
+ * 
+ * See the example:
+ *
+ *     @example preview small frame
+ *     
+ *     var shape =  new draw2d.shape.basic.Label({text:&quot;This is a simple label&quot;, x:40, y:10});
+ *          
+ *     canvas.add(shape);
+ *     
+ * @author Andreas Herz
+ * 
+ * @extends draw2d.SetFigure
+ */
+draw2d.shape.basic.Label= draw2d.SetFigure.extend({
+
+	NAME : &quot;draw2d.shape.basic.Label&quot;,
+	
+    FONT_FALLBACK:  {
+      &#39;Georgia&#39;            :&#39;Georgia, serif&#39;,
+      &#39;Palatino Linotype&#39;  :&#39;&quot;Palatino Linotype&quot;, &quot;Book Antiqua&quot;, Palatino, serif&#39;,
+      &#39;Times New Roman&#39;    :&#39;&quot;Times New Roman&quot;, Times, serif&#39;,
+      &#39;Arial&#39;              :&#39;Arial, Helvetica, sans-serif&#39;,
+      &#39;Arial Black&#39;        :&#39;&quot;Arial Black&quot;, Gadget, sans-serif&#39;,   
+      &#39;Comic Sans MS&#39;      :&#39;&quot;Comic Sans MS&quot;, cursive, sans-serif&#39;,    
+      &#39;Impact&#39;             :&#39;Impact, Charcoal, sans-serif&#39;,
+      &#39;Lucida Sans Unicode&#39;:&#39;&quot;Lucida Sans Unicode&quot;, &quot;Lucida Grande&quot;, sans-serif&#39;,  
+      &#39;Tahoma, Geneva&#39;     :&#39;Tahoma, Geneva, sans-seri&#39;,
+      &#39;Trebuchet MS&#39;       :&#39;&quot;Trebuchet MS&quot;, Helvetica, sans-serif&#39;,
+      &#39;Verdana&#39;            :&#39;Verdana, Geneva, sans-serif&#39;,
+      &#39;Courier New&#39;        :&#39;&quot;Courier New&quot;, Courier, monospace&#39;,
+      &#39;Lucida Console&#39;     :&#39;&quot;Lucida Console&quot;, Monaco, monospace&#39;},
+      
+
+<span id='draw2d-shape-basic-Label-method-constructor'>    /**
+</span>     * @constructor
+     * Creates a new text element.
+     * 
+     * @param {Object} [attr] the configuration of the shape
+     */
+    init: function(attr, setter, getter)
+    {
+        
+        this.text = &quot;&quot;;
+    	// for performance reasons
+        //
+        this.cachedWidth  = null;
+        this.cachedHeight = null;
+        this.cachedMinWidth  = null;
+        this.cachedMinHeight = null;
+        
+        // appearance of the shape
+        //
+        this.fontSize = 12;
+        this.fontColor = new draw2d.util.Color(&quot;#080808&quot;);
+        this.fontFamily = null;
+        this.padding = {top:4, right:4, bottom:4,left:4};
+        
+        this.outlineStroke = 0;
+        this.outlineColor = new draw2d.util.Color(null);
+        
+        this.bold = false;
+        
+        this._super(
+            $.extend({stroke:1, width:1,height:1,resizeable:false},attr),
+            $.extend({
+<span id='draw2d-shape-basic-Label-attr-text'>                /** @attr {String} text the text to show */
+</span>                text  : this.setText,
+<span id='draw2d-shape-basic-Label-attr-outlineStroke'>                /** @attr {Number} outlineStroke the line width of the text to draw. Fill color and outline of the text can be different. */
+</span>                outlineStroke  : this.setOutlineStroke,
+<span id='draw2d-shape-basic-Label-attr-outlineColor'>                /** @attr {String|draw2d.util.Color} outlineColor the outline color of the text */
+</span>                outlineColor  : this.setOutlineColor,
+<span id='draw2d-shape-basic-Label-attr-fontFamily'>                /** @attr {String} fontFamily the font to use*/
+</span>                fontFamily  : this.setFontFamily,
+<span id='draw2d-shape-basic-Label-attr-fontSize'>                /** @attr {Number} fontSize the font size to use */
+</span>                fontSize  : this.setFontSize,
+<span id='draw2d-shape-basic-Label-attr-fontColor'>                /** @attr {String|draw2d.util.Color} fontColor the font color */
+</span>                fontColor  : this.setFontColor,
+<span id='draw2d-shape-basic-Label-attr-padding'>                /** @attr {Number} padding the padding in pixel around the text */
+</span>                padding  : this.setPadding,
+<span id='draw2d-shape-basic-Label-attr-bold'>                /** @attr {Boolean} bold indicator if bold text should be used*/
+</span>                bold  : this.setBold
+            }, setter),
+            $.extend({
+                text          : this.getText,
+                outlineStroke : this.getOutlineStroke,
+                outlineColor  : this.getOutlineColor,
+                fontFamily    : this.getFontFamily,
+                fontSize      : this.getFontSize,
+                fontColor     : this.getFontColor,
+                padding       : this.getPadding,
+                bold          : this.isBold
+            }, getter));
+            
+       
+        // behavior of the shape
+        //
+        this.editor = null;
+        
+        this.installEditPolicy(new draw2d.policy.figure.AntSelectionFeedbackPolicy());
+ 
+    
+        // some performance approvements
+        this.lastAppliedLabelRotation = &quot;&quot;;
+        this.lastAppliedTextAttributes= {};
+    },
+    
+<span id='draw2d-shape-basic-Label-method-createSet'>    /** 
+</span>     * @method
+     * Creates the shape object for a text node.
+     * 
+     * @template
+     **/
+    createSet : function()
+    {
+    	return this.canvas.paper.text(0, 0, this.text);
+    },
+
+<span id='draw2d-shape-basic-Label-method-setCanvas'>    /**
+</span>     * @method
+     * Set the canvas element of this figures.
+     * 
+     * @param {draw2d.Canvas} canvas the new parent of the figure or null
+     */
+    setCanvas: function( canvas )
+    {
+        this.clearCache();
+        this._super(canvas);
+        this.clearCache();
+    },
+    
+<span id='draw2d-shape-basic-Label-method-repaint'>    /**
+</span>     * @method
+     * Trigger the repaint of the element and transport all style properties to the visual representation.&lt;br&gt;
+     * Called by the framework.
+     * 
+     * @template
+     **/
+    repaint: function(attributes)
+    {
+        if(this.repaintBlocked===true || this.shape===null || (this.parent &amp;&amp; this.parent.repaintBlocked===true)){
+            return;
+        }
+
+        // style the label
+        var lattr = this.calculateTextAttr();
+        lattr.text = this.text;        
+        
+        var attrDiff = draw2d.util.JSON.flatDiff(lattr, this.lastAppliedTextAttributes);
+        this.lastAppliedTextAttributes= lattr;
+      
+        // the two &quot;attr&quot; calls takes 2/3 of the complete method call (chrome performance check).
+        // now we check if any changes happens and call this method only if neccessary.
+        if(!$.isEmptyObject(attrDiff)){
+            this.svgNodes.attr(lattr);
+            // set of the x/y must be done AFTER the font-size and bold has been set.
+            // Reason: the getBBox method needs the font attributes for calculation
+            this.svgNodes.attr({
+                    x: (this.padding.left+this.stroke),
+                    y: (this.svgNodes.getBBox(true).height/2 +this.padding.top + this.getStroke())
+                });
+        }
+        this._super(attributes);
+    },
+    
+
+<span id='draw2d-shape-basic-Label-method-calculateTextAttr'>    /**
+</span>     * 
+     * @private
+     */
+    calculateTextAttr:function()
+    {
+        var lattr={&quot;text-anchor&quot;:&quot;start&quot;,
+                   &quot;font-size&quot;:this.fontSize,
+                   &quot;font-weight&quot;:(this.bold===true)?&quot;bold&quot;:&quot;normal&quot;,
+                   fill: this.fontColor.hash(),
+                   stroke : this.outlineColor.hash(),
+                   &quot;stroke-width&quot;: this.outlineStroke
+                   };
+        if(this.fontFamily!==null){
+            lattr[&quot;font-family&quot;] = this.fontFamily;
+        }
+        return lattr;
+    },
+
+<span id='draw2d-shape-basic-Label-method-applyTransformation'>    /**
+</span>     * @private
+     */
+    applyTransformation:function()
+    {
+        var ts= &quot;R&quot;+this.rotationAngle;
+    //    if(ts!==this.lastAppliedLabelRotation){
+            this.shape.transform(ts);
+            this.lastAppliedLabelRotation = ts;
+    //    }
+        
+        this.svgNodes.transform(
+                &quot;R&quot; + this.rotationAngle+
+                &quot;T&quot; + this.getAbsoluteX() + &quot;,&quot; + this.getAbsoluteY());
+        
+        return this;
+    },
+
+    
+<span id='draw2d-shape-basic-Label-method-setFontSize'>    /**
+</span>     * @method
+     * Set the new font size in [pt].
+     *
+     * @param {Number} size The new font size in &lt;code&gt;pt&lt;/code&gt;
+     **/
+    setFontSize: function( size)
+    {
+      this.clearCache();
+      this.fontSize = size;
+      
+      this.repaint();
+
+      this.fireEvent(&quot;change:fontSize&quot;);
+      this.fireEvent(&quot;resize&quot;);
+      
+      // Update the resize handles if the user change the position of the element via an API call.
+      //
+      var _this = this;
+      this.editPolicy.each(function(i,e){
+         if(e instanceof draw2d.policy.figure.DragDropEditPolicy){
+             e.moved(_this.canvas, _this);
+         }
+      });
+      
+    
+      return this;
+    },
+    
+<span id='draw2d-shape-basic-Label-method-getFontSize'>    /**
+</span>     * @method
+     * Return the current used font size in px.
+     * 
+     * @returns {Number}
+     * @since 4.0.1
+     */
+    getFontSize: function( )
+    {
+      return this.fontSize;
+    },
+    
+
+<span id='draw2d-shape-basic-Label-method-setBold'>    /**
+</span>     * @method
+     * Set the label to &lt;b&gt;bold&lt;/b&gt; or &lt;b&gt;normal&lt;/b&gt; font weight.
+     *
+     * @param {Boolean} bold The bold flag for the label
+     * @since 2.4.1
+     **/
+    setBold: function( bold)
+    {
+      this.clearCache();
+      this.bold = bold;
+      this.repaint();
+      
+      this.fireEvent(&quot;change:bold&quot;);
+      this.fireEvent(&quot;resize&quot;);
+      
+      // Update the resize handles if the user change the position of the element via an API call.
+      //
+      var _this = this;
+      this.editPolicy.each(function(i,e){
+         if(e instanceof draw2d.policy.figure.DragDropEditPolicy){
+             e.moved(_this.canvas, _this);
+         }
+      });
+      
+      return this;
+    },
+    
+<span id='draw2d-shape-basic-Label-method-isBold'>    /**
+</span>     * @method
+     * Return the &quot;bold&quot; attribute of the label
+     * 
+     * @since 5.0.0
+     * @returns {Boolean}
+     */
+    isBold: function()
+    {
+        return this.bold;
+    },
+    
+<span id='draw2d-shape-basic-Label-method-setOutlineColor'>    /**
+</span>     * @method
+     * Set the outline color of the font.
+     * 
+     * @param {draw2d.util.Color/String} color The new color of the line.
+     * @since 4.2.1
+     **/
+    setOutlineColor:function( color)
+    {
+      this.outlineColor = new draw2d.util.Color(color);
+      this.repaint();
+      this.fireEvent(&quot;change:outlineColor&quot;);
+      
+      return this;
+    },
+
+<span id='draw2d-shape-basic-Label-method-getOutlineColor'>    /**
+</span>     * @method
+     * The outlien color of the text
+     * 
+     * @returns {draw2d.util.Color}
+     * @since 4.2.1
+     */
+    getOutlineColor:function()
+    {
+      return this.outlineColor;
+    },
+    
+<span id='draw2d-shape-basic-Label-method-setOutlineStroke'>    /**
+</span>     * @method
+     * Set the stroke of the text to use.
+     * 
+     * @param {Number} w The new line width of the figure
+     * @since 4.2.1
+     **/
+    setOutlineStroke:function( w )
+    {
+      this.outlineStroke=w;
+      this.repaint();
+      this.fireEvent(&quot;change:outlineStroke&quot;);
+     
+      return this;
+    },
+
+<span id='draw2d-shape-basic-Label-method-getOutlineStroke'>    /**
+</span>     * @method
+     * The used outline line width.
+     * 
+     * @type {Number}
+     * @since 4.2.1
+     **/
+    getOutlineStroke:function( )
+    {
+      return this.outlineStroke;
+    },
+
+<span id='draw2d-shape-basic-Label-method-setFontColor'>    /**
+</span>     * @method
+     * Set the color of the font.
+     * 
+     * @param {draw2d.util.Color/String} color The new color of the line.
+     **/
+    setFontColor:function( color)
+    {
+      this.fontColor = new draw2d.util.Color(color);
+      this.repaint();
+      this.fireEvent(&quot;change:fontColor&quot;);
+      
+      return this;
+    },
+
+<span id='draw2d-shape-basic-Label-method-getFontColor'>    /**
+</span>     * @method
+     * The current used font color
+     * 
+     * @returns {draw2d.util.Color}
+     */
+    getFontColor:function()
+    {
+      return this.fontColor;
+    },
+    
+<span id='draw2d-shape-basic-Label-method-setPadding'>    /**
+</span>     * @method
+     * Set the padding of the element
+     * 
+     *      // Alternatively you can use the attr method:
+     *      //
+     *      // set the padding for top,left,bottom,right in one call 
+     *      figure.attr({
+     *        padding: 3
+     *      });
+     *      
+     *      // update the padding left and top
+     *      figure.attr({
+     *        padding: {left:3, top:30}
+     *      });
+     * 
+     * @param {Number|Object} padding The new padding
+     **/
+    setPadding: function( padding)
+    {
+      this.clearCache();
+      if(typeof padding ===&quot;number&quot;){
+          this.padding = {top:padding, right:padding, bottom:padding, left:padding};
+      }
+      else{
+          $.extend(this.padding, padding);
+      }
+      this.repaint();
+      this.fireEvent(&quot;change:padding&quot;);
+      
+      return this;
+    },
+
+    
+<span id='draw2d-shape-basic-Label-method-getPadding'>    /**
+</span>     * @method
+     * Get the padding of the element.
+     *
+     * @since 4.0.1
+     **/
+    getPadding: function( )
+    {
+      return this.padding;
+    },
+
+<span id='draw2d-shape-basic-Label-method-setFontFamily'>    /**
+</span>     * @method
+     * Set the font family to use. If you use the shown font names the typical fallback 
+     * font are installed as well.
+     * 
+     * &lt;b&gt;Serif Fonts&lt;/b&gt;
+     * &lt;ul&gt;
+     *  &lt;li&gt;&lt;span style=&quot;font-family:&#39;Georgia&#39;&quot;&gt;Georgia&lt;/span&gt;&lt;/li&gt;
+     *  &lt;li&gt;&lt;span style=&quot;font-family:&#39;Palatino Linotype&#39;&quot;&gt;Palatino Linotype&lt;/span&gt;&lt;/li&gt;
+     *  &lt;li&gt;&lt;span style=&quot;font-family:&#39;Times New Roman&#39;&quot;&gt;Times New Roman&lt;/span&gt;&lt;/li&gt;   
+     * &lt;/ul&gt;
+     * 
+     * &lt;b&gt;Sans-Serif Fonts&lt;/b&gt;
+     * &lt;ul&gt;
+     *  &lt;li&gt;&lt;span style=&quot;font-family:&#39;Arial&#39;&quot;&gt;Arial&lt;/span&gt;&lt;/li&gt; 
+     *  &lt;li&gt;&lt;span style=&quot;font-family:&#39;Arial Black&#39;&quot;&gt;Arial Black&lt;/span&gt;&lt;/li&gt;  
+     *  &lt;li&gt;&lt;span style=&quot;font-family:&#39;Comic Sans MS&#39;&quot;&gt;Comic Sans MS&lt;/span&gt;&lt;/li&gt; 
+     *  &lt;li&gt;&lt;span style=&quot;font-family:&#39;Impact, Charcoal&#39;&quot;&gt;Impact, Charcoal&lt;/span&gt;&lt;/li&gt; 
+     *  &lt;li&gt;&lt;span style=&quot;font-family:&#39;Lucida Sans Unicode&#39;&quot;&gt;Lucida Sans Unicode&lt;/span&gt;&lt;/li&gt; 
+     *  &lt;li&gt;&lt;span style=&quot;font-family:&#39;Tahoma, Geneva&#39;&quot;&gt;Tahoma, Geneva&lt;/span&gt;&lt;/li&gt;
+     *  &lt;li&gt;&lt;span style=&quot;font-family:&#39;Trebuchet MS&#39;&quot;&gt;Trebuchet MS&lt;/span&gt; &lt;/li&gt;  
+     *  &lt;li&gt;&lt;span style=&quot;font-family:&#39;Verdana&#39;&quot;&gt;Verdana&lt;/span&gt;&lt;/li&gt;  
+     * &lt;/ul&gt;
+     * 
+     * &lt;b&gt;Monospace Fonts&lt;/b&gt;
+     * &lt;ul&gt;
+     *  &lt;li&gt;&lt;span style=&quot;font-family:&#39;Courier New&#39;&quot;&gt;Courier New&lt;/span&gt;&lt;/li&gt;
+     *  &lt;li&gt;&lt;span style=&quot;font-family:&#39;Lucida Console&#39;&quot;&gt;Lucida Console&lt;/span&gt;&lt;/li&gt;
+     * &lt;/ul&gt;
+     *
+     * @param {String} font The font to use
+     **/
+    setFontFamily: function( font)
+    {
+      this.clearCache();
+      
+      // check for fallback
+      //
+      if((typeof font!==&quot;undefined&quot;) &amp;&amp; font!==null &amp;&amp; typeof this.FONT_FALLBACK[font] !== &quot;undefined&quot;){
+          font=this.FONT_FALLBACK[font];
+      }
+      
+      this.fontFamily = font;
+      this.repaint();
+      this.fireEvent(&quot;change:fontFamily&quot;);
+      
+      return this;
+    },
+    
+    
+<span id='draw2d-shape-basic-Label-method-getFontFamily'>    /**
+</span>     * @method
+     * Returns the used font family of the label.
+     * 
+     * @returns {String}
+     */
+    getFontFamily : function(){
+        return this.fontFamily;
+    },
+    
+
+<span id='draw2d-shape-basic-Label-method-setDimension'>    /**
+</span>     * @method
+     * A Label did have &quot;autosize&quot;. Do nothing at all.
+     *
+     **/
+    setDimension:function( w, h)
+    {
+        this.clearCache();
+        
+        this._super(w,h);
+        
+        return this;
+    },
+    
+<span id='draw2d-shape-basic-Label-method-clearCache'>    /**
+</span>     * @method
+     * clear the internal cache for width/height precalculation
+     * @private
+     */
+    clearCache:function()
+    {
+        this.portRelayoutRequired=true;
+        this.cachedMinWidth  = null;
+        this.cachedMinHeight = null;
+        this.cachedWidth=null;
+        this.cachedHeight=null;
+        this.lastAppliedTextAttributes= {};
+        return this;
+    },
+    
+<span id='draw2d-shape-basic-Label-method-getMinWidth'>    /**
+</span>     * @method
+     * This value is relevant for the interactive resize of the figure.
+     *
+     * @return {Number} Returns the min. width of this object.
+     */
+    getMinWidth:function()
+    {
+        if (this.shape === null) {
+            return 0;
+        }
+        
+        if(this.cachedMinWidth=== null){
+            this.cachedMinWidth= this.svgNodes.getBBox(true).width
+                                +this.padding.left
+                                +this.padding.right
+                                +2*this.getStroke();
+       }
+        
+        return this.cachedMinWidth;
+    },
+    
+<span id='draw2d-shape-basic-Label-method-getMinHeight'>    /**
+</span>     * @method
+     * This value is relevant for the interactive resize of the figure.
+     *
+     * @return {Number} Returns the min. width of this object.
+     */
+    getMinHeight:function()
+    {
+        if (this.shape === null) {
+            return 0;
+        }
+        
+        if(this.cachedMinHeight=== null){
+            this.cachedMinHeight= this.svgNodes.getBBox(true).height
+                                 +this.padding.top
+                                 +this.padding.bottom
+                                 +(2*this.getStroke());
+        }
+        
+        return this.cachedMinHeight;
+    },
+    
+<span id='draw2d-shape-basic-Label-method-getWidth'>    /**
+</span>     * @method
+     * Return the calculate width of the set. This calculates the bounding box of all elements.
+     * 
+     * @returns the calculated width of the label
+     * @return {Number}
+     **/
+    getWidth : function() 
+    {    
+        if (this.shape === null) {
+            return 0;
+        }
+        
+        if(this.cachedWidth===null){
+            if(this.resizeable===true){
+                this.cachedWidth = Math.max(this.width, this.getMinWidth());
+            }
+            else{
+                this.cachedWidth = this.getMinWidth();
+            }
+        }
+        
+        
+        return this.cachedWidth;
+    },
+    
+<span id='draw2d-shape-basic-Label-method-getHeight'>    /**
+</span>     * @method
+     * Return the calculated height of the set. This calculates the bounding box of all elements.
+     * 
+     * @returns the calculated height of the label
+     * @return {Number}
+     */
+    getHeight:function()
+    {
+        if (this.shape === null) {
+            return 0;
+        }
+        
+        if(this.cachedHeight===null){
+            this.cachedHeight = Math.max(this.height, this.getMinHeight());
+        }
+        
+        return this.cachedHeight;
+    },
+
+<span id='draw2d-shape-basic-Label-method-installEditor'>    /**
+</span>     * @method
+     * Set an editor for the label. This can be a dialog or inplace editor for the 
+     * Text.&lt;br&gt;
+     * The editor will be activated if you doubleClick on the label.
+     * 
+     * @param {draw2d.ui.LabelEditor} editor
+     */
+    installEditor: function( editor )
+    {
+      this.editor = editor;  
+      
+      return this;
+    },
+    
+<span id='draw2d-shape-basic-Label-method-onDoubleClick'>    /**
+</span>     * @method
+     * Called when a user dbl clicks on the element
+     * 
+     */
+    onDoubleClick: function()
+    {
+        if(this.editor!==null){
+            this.editor.start(this);
+        }
+    },
+    
+    
+<span id='draw2d-shape-basic-Label-method-getText'>    /**
+</span>     * @method
+     * Returns the current text of the label.
+     *
+     * @returns the current display text of the label
+     * @type String
+     **/
+    getText:function()
+    {
+      return this.text;
+    },
+    
+<span id='draw2d-shape-basic-Label-method-setText'>    /**
+</span>     * @method
+     * Set the text for the label. Use \n for multiline text.
+     * 
+     * @param {String} text The new text for the label.
+     **/
+    setText:function( text )
+    {
+      this.clearCache();
+      this.text = text;
+      
+      this.repaint();
+      // Update the resize handles if the user change the position of the element via an API call.
+      //
+      var _this = this;
+      this.editPolicy.each(function(i,e){
+         if(e instanceof draw2d.policy.figure.DragDropEditPolicy){
+             e.moved(_this.canvas, _this);
+         }
+      });
+
+      this.fireEvent(&quot;resize&quot;);
+      this.fireEvent(&quot;change:text&quot;);
+
+      if(this.parent!==null){
+          this.parent.repaint();
+      }
+
+      return this;
+    },
+    
+
+    hitTest: function(x, y) 
+    {
+        // apply a simple bounding box test if the label isn&#39;T rotated
+        //
+        if( this.rotationAngle === 0){
+            return this._super(x,y); 
+        }
+        
+        // rotate the box with the current matrix of the
+        // shape
+        var matrix = this.shape.matrix;
+        var points = this.getBoundingBox().getVertices();
+        points.each(function(i,point){
+            var x = matrix.x(point.x,point.y);
+            var y = matrix.y(point.x,point.y);
+            point.x=x;
+            point.y=y;
+        });
+
+        var polySides=4;
+        var i=0;
+        var j=polySides-1 ;
+        var oddNodes=false;
+
+        for (i=0; i&lt;polySides; i++) {
+            var pi = points.get(i);
+            var pj = points.get(j);
+            if ((pi.y&lt; y &amp;&amp; pj.y&gt;=y
+            ||   pj.y&lt; y &amp;&amp; pi.y&gt;=y)
+            &amp;&amp;  (pi.x&lt;=x || pj.x&lt;=x)) {
+              if (pi.x+(y-pi.y)/(pj.y-pi.y)*(pj.x-pi.x)&lt;x) {
+                oddNodes=!oddNodes; }}
+            j=i; }
+        return oddNodes; 
+     },
+     
+
+<span id='draw2d-shape-basic-Label-method-getPersistentAttributes'>     /**
+</span>      * @method 
+      * Return an objects with all important attributes for XML or JSON serialization
+      * 
+      * @returns {Object}
+      */
+     getPersistentAttributes : function()
+     {
+         var memento = this._super();
+         
+         memento.text = this.text;
+         memento.outlineStroke = this.outlineStroke;
+         memento.outlineColor = this.outlineColor.hash();
+         memento.fontSize = this.fontSize;
+         memento.fontColor = this.fontColor.hash();
+         memento.fontFamily = this.fontFamily;
+
+         return memento;
+     },
+     
+<span id='draw2d-shape-basic-Label-method-setPersistentAttributes'>     /**
+</span>      * @method 
+      * Read all attributes from the serialized properties and transfer them into the shape.
+      * 
+      * @param {Object} memento
+      * @returns 
+      */
+     setPersistentAttributes : function(memento)
+     {
+         this._super(memento);
+         if(typeof memento.text !==&quot;undefined&quot;){
+             this.setText(memento.text);
+         }
+         if(typeof memento.outlineStroke !==&quot;undefined&quot;){
+             this.setOutlineStroke(memento.outlineStroke);
+         }
+         if(typeof memento.outlineColor !==&quot;undefined&quot;){
+             this.setOutlineColor(memento.outlineColor);
+         }
+         if(typeof memento.fontFamily !==&quot;undefined&quot;){
+             this.setFontFamily(memento.fontFamily);
+         }
+         if(typeof memento.fontSize !==&quot;undefined&quot;){
+             this.setFontSize(memento.fontSize);
+         }
+         if(typeof memento.fontColor !==&quot;undefined&quot;){
+             this.setFontColor(memento.fontColor);
+         }
+     }
+
+});
+
+
+
+</pre>
+</body>
+</html>

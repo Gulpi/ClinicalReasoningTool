@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Draw2D touch JavaScript GraphLib ( version 5.8.0 )</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="chrome=1">
+  <meta name="fragment" content="!">
+
+  
+
+  <link rel="shortcut icon" type="image/ico" href="favicon.ico" />
+  <link rel="stylesheet" href="resources/css/app-4689d2a5522dcd3c9e9923ca59c33f27.css" type="text/css" />
+  <link rel="stylesheet" href="styles-62760c6bfcaac901267ecfa2258c456d.css" type="text/css" />
+
+  <script type="text/javascript" src="extjs/ext-all.js"></script>
+  <script type="text/javascript" src="data-f4057912d55fa4362fc6edc1370b7461.js"></script>
+
+  <script type="text/javascript" src="app-0c945a27f43452df695771ddb60b3d14.js"></script>
+
+  <link rel="stylesheet" href="draw2d.css" type="text/css">
+
+</head>
+<body id="ext-body">
+
+  <div id="loading"><span class="title">Draw2D touch JavaScript GraphLib ( version 5.8.0 )</span><span class="logo"></span></div>
+
+  <div id="header-content">Draw2D touch JavaScript GraphLib ( version 5.8.0 )</div>
+  
+            <div id='categories-content' style='display:none'>
+            <div class='section'>
+<h1>draw2d</h1>
+<div class='left-column'>
+<h3>Connection</h3>
+<ul class='links'>
+<li><a href="#!/api/draw2d.Connection" rel="draw2d.Connection" class="docClass">draw2d.Connection</a></li>
+<li><a href="#!/api/draw2d.Connection.DEFAULT_ROUTER" rel="draw2d.Connection.DEFAULT_ROUTER" class="docClass">draw2d.Connection.DEFAULT_ROUTER</a></li>
+</ul>
+<h3>command</h3>
+<ul class='links'>
+<li><a href="#!/api/draw2d.command.Command" rel="draw2d.command.Command" class="docClass">draw2d.command.Command</a></li>
+<li><a href="#!/api/draw2d.command.CommandAattr" rel="draw2d.command.CommandAattr" class="docClass">draw2d.command.CommandAattr</a></li>
+<li><a href="#!/api/draw2d.command.CommandAdd" rel="draw2d.command.CommandAdd" class="docClass">draw2d.command.CommandAdd</a></li>
+<li><a href="#!/api/draw2d.command.CommandAddVertex" rel="draw2d.command.CommandAddVertex" class="docClass">draw2d.command.CommandAddVertex</a></li>
+<li><a href="#!/api/draw2d.command.CommandAssignFigure" rel="draw2d.command.CommandAssignFigure" class="docClass">draw2d.command.CommandAssignFigure</a></li>
+<li><a href="#!/api/draw2d.command.CommandBoundingBox" rel="draw2d.command.CommandBoundingBox" class="docClass">draw2d.command.CommandBoundingBox</a></li>
+<li><a href="#!/api/draw2d.command.CommandCollection" rel="draw2d.command.CommandCollection" class="docClass">draw2d.command.CommandCollection</a></li>
+<li><a href="#!/api/draw2d.command.CommandConnect" rel="draw2d.command.CommandConnect" class="docClass">draw2d.command.CommandConnect</a></li>
+<li><a href="#!/api/draw2d.command.CommandDelete" rel="draw2d.command.CommandDelete" class="docClass">draw2d.command.CommandDelete</a></li>
+<li><a href="#!/api/draw2d.command.CommandDeleteGroup" rel="draw2d.command.CommandDeleteGroup" class="docClass">draw2d.command.CommandDeleteGroup</a></li>
+<li><a href="#!/api/draw2d.command.CommandGroup" rel="draw2d.command.CommandGroup" class="docClass">draw2d.command.CommandGroup</a></li>
+<li><a href="#!/api/draw2d.command.CommandMove" rel="draw2d.command.CommandMove" class="docClass">draw2d.command.CommandMove</a></li>
+<li><a href="#!/api/draw2d.command.CommandMoveLine" rel="draw2d.command.CommandMoveLine" class="docClass">draw2d.command.CommandMoveLine</a></li>
+<li><a href="#!/api/draw2d.command.CommandMoveVertex" rel="draw2d.command.CommandMoveVertex" class="docClass">draw2d.command.CommandMoveVertex</a></li>
+<li><a href="#!/api/draw2d.command.CommandMoveVertices" rel="draw2d.command.CommandMoveVertices" class="docClass">draw2d.command.CommandMoveVertices</a></li>
+<li><a href="#!/api/draw2d.command.CommandReconnect" rel="draw2d.command.CommandReconnect" class="docClass">draw2d.command.CommandReconnect</a></li>
+<li><a href="#!/api/draw2d.command.CommandRemoveVertex" rel="draw2d.command.CommandRemoveVertex" class="docClass">draw2d.command.CommandRemoveVertex</a></li>
+<li><a href="#!/api/draw2d.command.CommandReplaceVertices" rel="draw2d.command.CommandReplaceVertices" class="docClass">draw2d.command.CommandReplaceVertices</a></li>
+<li><a href="#!/api/draw2d.command.CommandResize" rel="draw2d.command.CommandResize" class="docClass">draw2d.command.CommandResize</a></li>
+<li><a href="#!/api/draw2d.command.CommandRotate" rel="draw2d.command.CommandRotate" class="docClass">draw2d.command.CommandRotate</a></li>
+<li><a href="#!/api/draw2d.command.CommandStack" rel="draw2d.command.CommandStack" class="docClass">draw2d.command.CommandStack</a></li>
+<li><a href="#!/api/draw2d.command.CommandStack.POST_EXECUTE" rel="draw2d.command.CommandStack.POST_EXECUTE" class="docClass">draw2d.command.CommandStack.POST_EXECUTE</a></li>
+<li><a href="#!/api/draw2d.command.CommandStack.POST_INIT" rel="draw2d.command.CommandStack.POST_INIT" class="docClass">draw2d.command.CommandStack.POST_INIT</a></li>
+<li><a href="#!/api/draw2d.command.CommandStack.POST_REDO" rel="draw2d.command.CommandStack.POST_REDO" class="docClass">draw2d.command.CommandStack.POST_REDO</a></li>
+<li><a href="#!/api/draw2d.command.CommandStack.POST_UNDO" rel="draw2d.command.CommandStack.POST_UNDO" class="docClass">draw2d.command.CommandStack.POST_UNDO</a></li>
+<li><a href="#!/api/draw2d.command.CommandStack.PRE_EXECUTE" rel="draw2d.command.CommandStack.PRE_EXECUTE" class="docClass">draw2d.command.CommandStack.PRE_EXECUTE</a></li>
+<li><a href="#!/api/draw2d.command.CommandStack.PRE_REDO" rel="draw2d.command.CommandStack.PRE_REDO" class="docClass">draw2d.command.CommandStack.PRE_REDO</a></li>
+<li><a href="#!/api/draw2d.command.CommandStack.PRE_UNDO" rel="draw2d.command.CommandStack.PRE_UNDO" class="docClass">draw2d.command.CommandStack.PRE_UNDO</a></li>
+<li><a href="#!/api/draw2d.command.CommandStackEvent" rel="draw2d.command.CommandStackEvent" class="docClass">draw2d.command.CommandStackEvent</a></li>
+<li><a href="#!/api/draw2d.command.CommandStackEventListener" rel="draw2d.command.CommandStackEventListener" class="docClass">draw2d.command.CommandStackEventListener</a></li>
+<li><a href="#!/api/draw2d.command.CommandType" rel="draw2d.command.CommandType" class="docClass">draw2d.command.CommandType</a></li>
+<li><a href="#!/api/draw2d.command.CommandUngroup" rel="draw2d.command.CommandUngroup" class="docClass">draw2d.command.CommandUngroup</a></li>
+</ul>
+<h3>decoration</h3>
+<ul class='links'>
+<li><a href="#!/api/draw2d.decoration.connection.ArrowDecorator" rel="draw2d.decoration.connection.ArrowDecorator" class="docClass">draw2d.decoration.connection.ArrowDecorator</a></li>
+<li><a href="#!/api/draw2d.decoration.connection.BarDecorator" rel="draw2d.decoration.connection.BarDecorator" class="docClass">draw2d.decoration.connection.BarDecorator</a></li>
+<li><a href="#!/api/draw2d.decoration.connection.CircleDecorator" rel="draw2d.decoration.connection.CircleDecorator" class="docClass">draw2d.decoration.connection.CircleDecorator</a></li>
+<li><a href="#!/api/draw2d.decoration.connection.Decorator" rel="draw2d.decoration.connection.Decorator" class="docClass">draw2d.decoration.connection.Decorator</a></li>
+<li><a href="#!/api/draw2d.decoration.connection.DiamondDecorator" rel="draw2d.decoration.connection.DiamondDecorator" class="docClass">draw2d.decoration.connection.DiamondDecorator</a></li>
+</ul>
+<h3>geo</h3>
+<ul class='links'>
+<li><a href="#!/api/draw2d.geo.Point" rel="draw2d.geo.Point" class="docClass">draw2d.geo.Point</a></li>
+<li><a href="#!/api/draw2d.geo.PositionConstants" rel="draw2d.geo.PositionConstants" class="docClass">draw2d.geo.PositionConstants</a></li>
+<li><a href="#!/api/draw2d.geo.Ray" rel="draw2d.geo.Ray" class="docClass">draw2d.geo.Ray</a></li>
+<li><a href="#!/api/draw2d.geo.Rectangle" rel="draw2d.geo.Rectangle" class="docClass">draw2d.geo.Rectangle</a></li>
+<li><a href="#!/api/draw2d.geo.Rectangle.DIRECTION_UP" rel="draw2d.geo.Rectangle.DIRECTION_UP" class="docClass">draw2d.geo.Rectangle.DIRECTION_UP</a></li>
+</ul>
+<h3>io</h3>
+<ul class='links'>
+<li><a href="#!/api/draw2d.io.Reader" rel="draw2d.io.Reader" class="docClass">draw2d.io.Reader</a></li>
+<li><a href="#!/api/draw2d.io.Writer" rel="draw2d.io.Writer" class="docClass">draw2d.io.Writer</a></li>
+<li><a href="#!/api/draw2d.io.json.Reader" rel="draw2d.io.json.Reader" class="docClass">draw2d.io.json.Reader</a></li>
+<li><a href="#!/api/draw2d.io.json.Writer" rel="draw2d.io.json.Writer" class="docClass">draw2d.io.json.Writer</a></li>
+<li><a href="#!/api/draw2d.io.png.Writer" rel="draw2d.io.png.Writer" class="docClass">draw2d.io.png.Writer</a></li>
+<li><a href="#!/api/draw2d.io.svg.Writer" rel="draw2d.io.svg.Writer" class="docClass">draw2d.io.svg.Writer</a></li>
+</ul>
+<h3>layout</h3>
+<ul class='links'>
+<li><a href="#!/api/draw2d.layout.anchor.CenterEdgeConnectionAnchor" rel="draw2d.layout.anchor.CenterEdgeConnectionAnchor" class="docClass">draw2d.layout.anchor.CenterEdgeConnectionAnchor</a></li>
+<li><a href="#!/api/draw2d.layout.anchor.ChopboxConnectionAnchor" rel="draw2d.layout.anchor.ChopboxConnectionAnchor" class="docClass">draw2d.layout.anchor.ChopboxConnectionAnchor</a></li>
+<li><a href="#!/api/draw2d.layout.anchor.ConnectionAnchor" rel="draw2d.layout.anchor.ConnectionAnchor" class="docClass">draw2d.layout.anchor.ConnectionAnchor</a></li>
+<li><a href="#!/api/draw2d.layout.anchor.FanConnectionAnchor" rel="draw2d.layout.anchor.FanConnectionAnchor" class="docClass">draw2d.layout.anchor.FanConnectionAnchor</a></li>
+<li><a href="#!/api/draw2d.layout.anchor.ShortesPathConnectionAnchor" rel="draw2d.layout.anchor.ShortesPathConnectionAnchor" class="docClass">draw2d.layout.anchor.ShortesPathConnectionAnchor</a></li>
+<li><a href="#!/api/draw2d.layout.connection.CircuitConnectionRouter" rel="draw2d.layout.connection.CircuitConnectionRouter" class="docClass">draw2d.layout.connection.CircuitConnectionRouter</a></li>
+<li><a href="#!/api/draw2d.layout.connection.ConnectionRouter" rel="draw2d.layout.connection.ConnectionRouter" class="docClass">draw2d.layout.connection.ConnectionRouter</a></li>
+<li><a href="#!/api/draw2d.layout.connection.DirectRouter" rel="draw2d.layout.connection.DirectRouter" class="docClass">draw2d.layout.connection.DirectRouter</a></li>
+<li><a href="#!/api/draw2d.layout.connection.FanConnectionRouter" rel="draw2d.layout.connection.FanConnectionRouter" class="docClass">draw2d.layout.connection.FanConnectionRouter</a></li>
+<li><a href="#!/api/draw2d.layout.connection.InteractiveManhattanConnectionRouter" rel="draw2d.layout.connection.InteractiveManhattanConnectionRouter" class="docClass">draw2d.layout.connection.InteractiveManhattanConnectionRouter</a></li>
+<li><a href="#!/api/draw2d.layout.connection.ManhattanBridgedConnectionRouter" rel="draw2d.layout.connection.ManhattanBridgedConnectionRouter" class="docClass">draw2d.layout.connection.ManhattanBridgedConnectionRouter</a></li>
+<li><a href="#!/api/draw2d.layout.connection.ManhattanConnectionRouter" rel="draw2d.layout.connection.ManhattanConnectionRouter" class="docClass">draw2d.layout.connection.ManhattanConnectionRouter</a></li>
+<li><a href="#!/api/draw2d.layout.connection.MazeConnectionRouter" rel="draw2d.layout.connection.MazeConnectionRouter" class="docClass">draw2d.layout.connection.MazeConnectionRouter</a></li>
+<li><a href="#!/api/draw2d.layout.connection.MuteableManhattanConnectionRouter" rel="draw2d.layout.connection.MuteableManhattanConnectionRouter" class="docClass">draw2d.layout.connection.MuteableManhattanConnectionRouter</a></li>
+<li><a href="#!/api/draw2d.layout.connection.RubberbandRouter" rel="draw2d.layout.connection.RubberbandRouter" class="docClass">draw2d.layout.connection.RubberbandRouter</a></li>
+<li><a href="#!/api/draw2d.layout.connection.SketchBridgedConnectionRouter" rel="draw2d.layout.connection.SketchBridgedConnectionRouter" class="docClass">draw2d.layout.connection.SketchBridgedConnectionRouter</a></li>
+<li><a href="#!/api/draw2d.layout.connection.SplineConnectionRouter" rel="draw2d.layout.connection.SplineConnectionRouter" class="docClass">draw2d.layout.connection.SplineConnectionRouter</a></li>
+<li><a href="#!/api/draw2d.layout.connection.VertexRouter" rel="draw2d.layout.connection.VertexRouter" class="docClass">draw2d.layout.connection.VertexRouter</a></li>
+<li><a href="#!/api/draw2d.layout.locator.BottomLocator" rel="draw2d.layout.locator.BottomLocator" class="docClass">draw2d.layout.locator.BottomLocator</a></li>
+<li><a href="#!/api/draw2d.layout.locator.CenterLocator" rel="draw2d.layout.locator.CenterLocator" class="docClass">draw2d.layout.locator.CenterLocator</a></li>
+<li><a href="#!/api/draw2d.layout.locator.ConnectionLocator" rel="draw2d.layout.locator.ConnectionLocator" class="docClass">draw2d.layout.locator.ConnectionLocator</a></li>
+<li><a href="#!/api/draw2d.layout.locator.InputPortLocator" rel="draw2d.layout.locator.InputPortLocator" class="docClass">draw2d.layout.locator.InputPortLocator</a></li>
+<li><a href="#!/api/draw2d.layout.locator.LeftLocator" rel="draw2d.layout.locator.LeftLocator" class="docClass">draw2d.layout.locator.LeftLocator</a></li>
+<li><a href="#!/api/draw2d.layout.locator.Locator" rel="draw2d.layout.locator.Locator" class="docClass">draw2d.layout.locator.Locator</a></li>
+<li><a href="#!/api/draw2d.layout.locator.ManhattanMidpointLocator" rel="draw2d.layout.locator.ManhattanMidpointLocator" class="docClass">draw2d.layout.locator.ManhattanMidpointLocator</a></li>
+<li><a href="#!/api/draw2d.layout.locator.OutputPortLocator" rel="draw2d.layout.locator.OutputPortLocator" class="docClass">draw2d.layout.locator.OutputPortLocator</a></li>
+<li><a href="#!/api/draw2d.layout.locator.ParallelMidpointLocator" rel="draw2d.layout.locator.ParallelMidpointLocator" class="docClass">draw2d.layout.locator.ParallelMidpointLocator</a></li>
+<li><a href="#!/api/draw2d.layout.locator.PolylineMidpointLocator" rel="draw2d.layout.locator.PolylineMidpointLocator" class="docClass">draw2d.layout.locator.PolylineMidpointLocator</a></li>
+<li><a href="#!/api/draw2d.layout.locator.PortLocator" rel="draw2d.layout.locator.PortLocator" class="docClass">draw2d.layout.locator.PortLocator</a></li>
+<li><a href="#!/api/draw2d.layout.locator.RightLocator" rel="draw2d.layout.locator.RightLocator" class="docClass">draw2d.layout.locator.RightLocator</a></li>
+<li><a href="#!/api/draw2d.layout.locator.TopLocator" rel="draw2d.layout.locator.TopLocator" class="docClass">draw2d.layout.locator.TopLocator</a></li>
+<li><a href="#!/api/draw2d.layout.locator.XYAbsPortLocator" rel="draw2d.layout.locator.XYAbsPortLocator" class="docClass">draw2d.layout.locator.XYAbsPortLocator</a></li>
+<li><a href="#!/api/draw2d.layout.locator.XYRelPortLocator" rel="draw2d.layout.locator.XYRelPortLocator" class="docClass">draw2d.layout.locator.XYRelPortLocator</a></li>
+<li><a href="#!/api/draw2d.layout.mesh.ExplodeLayouter" rel="draw2d.layout.mesh.ExplodeLayouter" class="docClass">draw2d.layout.mesh.ExplodeLayouter</a></li>
+<li><a href="#!/api/draw2d.layout.mesh.MeshLayouter" rel="draw2d.layout.mesh.MeshLayouter" class="docClass">draw2d.layout.mesh.MeshLayouter</a></li>
+<li><a href="#!/api/draw2d.layout.mesh.ProposedMeshChange" rel="draw2d.layout.mesh.ProposedMeshChange" class="docClass">draw2d.layout.mesh.ProposedMeshChange</a></li>
+</ul>
+<h3>policy</h3>
+<ul class='links'>
+<li><a href="#!/api/draw2d.policy.EditPolicy" rel="draw2d.policy.EditPolicy" class="docClass">draw2d.policy.EditPolicy</a></li>
+<li><a href="#!/api/draw2d.policy.canvas.BoundingboxSelectionPolicy" rel="draw2d.policy.canvas.BoundingboxSelectionPolicy" class="docClass">draw2d.policy.canvas.BoundingboxSelectionPolicy</a></li>
+<li><a href="#!/api/draw2d.policy.canvas.CanvasPolicy" rel="draw2d.policy.canvas.CanvasPolicy" class="docClass">draw2d.policy.canvas.CanvasPolicy</a></li>
+<li><a href="#!/api/draw2d.policy.canvas.ConnectionInterceptorPolicy" rel="draw2d.policy.canvas.ConnectionInterceptorPolicy" class="docClass">draw2d.policy.canvas.ConnectionInterceptorPolicy</a></li>
+<li><a href="#!/api/draw2d.policy.canvas.CoronaDecorationPolicy" rel="draw2d.policy.canvas.CoronaDecorationPolicy" class="docClass">draw2d.policy.canvas.CoronaDecorationPolicy</a></li>
+<li><a href="#!/api/draw2d.policy.canvas.DecorationPolicy" rel="draw2d.policy.canvas.DecorationPolicy" class="docClass">draw2d.policy.canvas.DecorationPolicy</a></li>
+<li><a href="#!/api/draw2d.policy.canvas.DefaultKeyboardPolicy" rel="draw2d.policy.canvas.DefaultKeyboardPolicy" class="docClass">draw2d.policy.canvas.DefaultKeyboardPolicy</a></li>
+<li><a href="#!/api/draw2d.policy.canvas.ExtendedKeyboardPolicy" rel="draw2d.policy.canvas.ExtendedKeyboardPolicy" class="docClass">draw2d.policy.canvas.ExtendedKeyboardPolicy</a></li>
+<li><a href="#!/api/draw2d.policy.canvas.FadeoutDecorationPolicy" rel="draw2d.policy.canvas.FadeoutDecorationPolicy" class="docClass">draw2d.policy.canvas.FadeoutDecorationPolicy</a></li>
+<li><a href="#!/api/draw2d.policy.canvas.GhostMoveSelectionPolicy" rel="draw2d.policy.canvas.GhostMoveSelectionPolicy" class="docClass">draw2d.policy.canvas.GhostMoveSelectionPolicy</a></li>
+<li><a href="#!/api/draw2d.policy.canvas.KeyboardPolicy" rel="draw2d.policy.canvas.KeyboardPolicy" class="docClass">draw2d.policy.canvas.KeyboardPolicy</a></li>
+<li><a href="#!/api/draw2d.policy.canvas.PanningSelectionPolicy" rel="draw2d.policy.canvas.PanningSelectionPolicy" class="docClass">draw2d.policy.canvas.PanningSelectionPolicy</a></li>
+<li><a href="#!/api/draw2d.policy.canvas.ReadOnlySelectionPolicy" rel="draw2d.policy.canvas.ReadOnlySelectionPolicy" class="docClass">draw2d.policy.canvas.ReadOnlySelectionPolicy</a></li>
+<li><a href="#!/api/draw2d.policy.canvas.SelectionPolicy" rel="draw2d.policy.canvas.SelectionPolicy" class="docClass">draw2d.policy.canvas.SelectionPolicy</a></li>
+<li><a href="#!/api/draw2d.policy.canvas.ShowChessboardEditPolicy" rel="draw2d.policy.canvas.ShowChessboardEditPolicy" class="docClass">draw2d.policy.canvas.ShowChessboardEditPolicy</a></li>
+<li><a href="#!/api/draw2d.policy.canvas.ShowDotEditPolicy" rel="draw2d.policy.canvas.ShowDotEditPolicy" class="docClass">draw2d.policy.canvas.ShowDotEditPolicy</a></li>
+<li><a href="#!/api/draw2d.policy.canvas.ShowGridEditPolicy" rel="draw2d.policy.canvas.ShowGridEditPolicy" class="docClass">draw2d.policy.canvas.ShowGridEditPolicy</a></li>
+<li><a href="#!/api/draw2d.policy.canvas.SingleSelectionPolicy" rel="draw2d.policy.canvas.SingleSelectionPolicy" class="docClass">draw2d.policy.canvas.SingleSelectionPolicy</a></li>
+<li><a href="#!/api/draw2d.policy.canvas.SnapToCenterEditPolicy" rel="draw2d.policy.canvas.SnapToCenterEditPolicy" class="docClass">draw2d.policy.canvas.SnapToCenterEditPolicy</a></li>
+<li><a href="#!/api/draw2d.policy.canvas.SnapToEditPolicy" rel="draw2d.policy.canvas.SnapToEditPolicy" class="docClass">draw2d.policy.canvas.SnapToEditPolicy</a></li>
+<li><a href="#!/api/draw2d.policy.canvas.SnapToGeometryEditPolicy" rel="draw2d.policy.canvas.SnapToGeometryEditPolicy" class="docClass">draw2d.policy.canvas.SnapToGeometryEditPolicy</a></li>
+<li><a href="#!/api/draw2d.policy.canvas.SnapToGridEditPolicy" rel="draw2d.policy.canvas.SnapToGridEditPolicy" class="docClass">draw2d.policy.canvas.SnapToGridEditPolicy</a></li>
+<li><a href="#!/api/draw2d.policy.canvas.SnapToInBetweenEditPolicy" rel="draw2d.policy.canvas.SnapToInBetweenEditPolicy" class="docClass">draw2d.policy.canvas.SnapToInBetweenEditPolicy</a></li>
+<li><a href="#!/api/draw2d.policy.canvas.WheelZoomPolicy" rel="draw2d.policy.canvas.WheelZoomPolicy" class="docClass">draw2d.policy.canvas.WheelZoomPolicy</a></li>
+<li><a href="#!/api/draw2d.policy.canvas.ZoomPolicy" rel="draw2d.policy.canvas.ZoomPolicy" class="docClass">draw2d.policy.canvas.ZoomPolicy</a></li>
+<li><a href="#!/api/draw2d.policy.figure.AntSelectionFeedbackPolicy" rel="draw2d.policy.figure.AntSelectionFeedbackPolicy" class="docClass">draw2d.policy.figure.AntSelectionFeedbackPolicy</a></li>
+<li><a href="#!/api/draw2d.policy.figure.BigRectangleSelectionFeedbackPolicy" rel="draw2d.policy.figure.BigRectangleSelectionFeedbackPolicy" class="docClass">draw2d.policy.figure.BigRectangleSelectionFeedbackPolicy</a></li>
+<li><a href="#!/api/draw2d.policy.figure.BusSelectionFeedbackPolicy" rel="draw2d.policy.figure.BusSelectionFeedbackPolicy" class="docClass">draw2d.policy.figure.BusSelectionFeedbackPolicy</a></li>
+<li><a href="#!/api/draw2d.policy.figure.DragDropEditPolicy" rel="draw2d.policy.figure.DragDropEditPolicy" class="docClass">draw2d.policy.figure.DragDropEditPolicy</a></li>
+<li><a href="#!/api/draw2d.policy.figure.FigureEditPolicy" rel="draw2d.policy.figure.FigureEditPolicy" class="docClass">draw2d.policy.figure.FigureEditPolicy</a></li>
+<li><a href="#!/api/draw2d.policy.figure.GlowSelectionFeedbackPolicy" rel="draw2d.policy.figure.GlowSelectionFeedbackPolicy" class="docClass">draw2d.policy.figure.GlowSelectionFeedbackPolicy</a></li>
+<li><a href="#!/api/draw2d.policy.figure.HBusSelectionFeedbackPolicy" rel="draw2d.policy.figure.HBusSelectionFeedbackPolicy" class="docClass">draw2d.policy.figure.HBusSelectionFeedbackPolicy</a></li>
+<li><a href="#!/api/draw2d.policy.figure.HorizontalEditPolicy" rel="draw2d.policy.figure.HorizontalEditPolicy" class="docClass">draw2d.policy.figure.HorizontalEditPolicy</a></li>
+<li><a href="#!/api/draw2d.policy.figure.RectangleSelectionFeedbackPolicy" rel="draw2d.policy.figure.RectangleSelectionFeedbackPolicy" class="docClass">draw2d.policy.figure.RectangleSelectionFeedbackPolicy</a></li>
+<li><a href="#!/api/draw2d.policy.figure.RegionConstraintPolicy" rel="draw2d.policy.figure.RegionConstraintPolicy" class="docClass">draw2d.policy.figure.RegionConstraintPolicy</a></li>
+<li><a href="#!/api/draw2d.policy.figure.ResizeSelectionFeedbackPolicy" rel="draw2d.policy.figure.ResizeSelectionFeedbackPolicy" class="docClass">draw2d.policy.figure.ResizeSelectionFeedbackPolicy</a></li>
+<li><a href="#!/api/draw2d.policy.figure.RoundRectangleSelectionFeedbackPolicy" rel="draw2d.policy.figure.RoundRectangleSelectionFeedbackPolicy" class="docClass">draw2d.policy.figure.RoundRectangleSelectionFeedbackPolicy</a></li>
+<li><a href="#!/api/draw2d.policy.figure.SelectionFeedbackPolicy" rel="draw2d.policy.figure.SelectionFeedbackPolicy" class="docClass">draw2d.policy.figure.SelectionFeedbackPolicy</a></li>
+<li><a href="#!/api/draw2d.policy.figure.SlimSelectionFeedbackPolicy" rel="draw2d.policy.figure.SlimSelectionFeedbackPolicy" class="docClass">draw2d.policy.figure.SlimSelectionFeedbackPolicy</a></li>
+<li><a href="#!/api/draw2d.policy.figure.VBusSelectionFeedbackPolicy" rel="draw2d.policy.figure.VBusSelectionFeedbackPolicy" class="docClass">draw2d.policy.figure.VBusSelectionFeedbackPolicy</a></li>
+<li><a href="#!/api/draw2d.policy.figure.VertexSelectionFeedbackPolicy" rel="draw2d.policy.figure.VertexSelectionFeedbackPolicy" class="docClass">draw2d.policy.figure.VertexSelectionFeedbackPolicy</a></li>
+<li><a href="#!/api/draw2d.policy.figure.VerticalEditPolicy" rel="draw2d.policy.figure.VerticalEditPolicy" class="docClass">draw2d.policy.figure.VerticalEditPolicy</a></li>
+<li><a href="#!/api/draw2d.policy.figure.WidthSelectionFeedbackPolicy" rel="draw2d.policy.figure.WidthSelectionFeedbackPolicy" class="docClass">draw2d.policy.figure.WidthSelectionFeedbackPolicy</a></li>
+<li><a href="#!/api/draw2d.policy.line.LineSelectionFeedbackPolicy" rel="draw2d.policy.line.LineSelectionFeedbackPolicy" class="docClass">draw2d.policy.line.LineSelectionFeedbackPolicy</a></li>
+<li><a href="#!/api/draw2d.policy.line.OrthogonalSelectionFeedbackPolicy" rel="draw2d.policy.line.OrthogonalSelectionFeedbackPolicy" class="docClass">draw2d.policy.line.OrthogonalSelectionFeedbackPolicy</a></li>
+<li><a href="#!/api/draw2d.policy.line.VertexSelectionFeedbackPolicy" rel="draw2d.policy.line.VertexSelectionFeedbackPolicy" class="docClass">draw2d.policy.line.VertexSelectionFeedbackPolicy</a></li>
+<li><a href="#!/api/draw2d.policy.port.ElasticStrapFeedbackPolicy" rel="draw2d.policy.port.ElasticStrapFeedbackPolicy" class="docClass">draw2d.policy.port.ElasticStrapFeedbackPolicy</a></li>
+<li><a href="#!/api/draw2d.policy.port.IntrusivePortsFeedbackPolicy" rel="draw2d.policy.port.IntrusivePortsFeedbackPolicy" class="docClass">draw2d.policy.port.IntrusivePortsFeedbackPolicy</a></li>
+<li><a href="#!/api/draw2d.policy.port.PortFeedbackPolicy" rel="draw2d.policy.port.PortFeedbackPolicy" class="docClass">draw2d.policy.port.PortFeedbackPolicy</a></li>
+</ul>
+</div>
+<div class='middle-column'>
+<h3>shape</h3>
+<ul class='links'>
+<li><a href="#!/api/draw2d.shape.analog.OpAmp" rel="draw2d.shape.analog.OpAmp" class="docClass">draw2d.shape.analog.OpAmp</a></li>
+<li><a href="#!/api/draw2d.shape.analog.ResistorBridge" rel="draw2d.shape.analog.ResistorBridge" class="docClass">draw2d.shape.analog.ResistorBridge</a></li>
+<li><a href="#!/api/draw2d.shape.analog.ResistorVertical" rel="draw2d.shape.analog.ResistorVertical" class="docClass">draw2d.shape.analog.ResistorVertical</a></li>
+<li><a href="#!/api/draw2d.shape.analog.VoltageSupplyHorizontal" rel="draw2d.shape.analog.VoltageSupplyHorizontal" class="docClass">draw2d.shape.analog.VoltageSupplyHorizontal</a></li>
+<li><a href="#!/api/draw2d.shape.analog.VoltageSupplyVertical" rel="draw2d.shape.analog.VoltageSupplyVertical" class="docClass">draw2d.shape.analog.VoltageSupplyVertical</a></li>
+<li><a href="#!/api/draw2d.shape.arrow.CalligrapherArrowDownLeft" rel="draw2d.shape.arrow.CalligrapherArrowDownLeft" class="docClass">draw2d.shape.arrow.CalligrapherArrowDownLeft</a></li>
+<li><a href="#!/api/draw2d.shape.arrow.CalligrapherArrowLeft" rel="draw2d.shape.arrow.CalligrapherArrowLeft" class="docClass">draw2d.shape.arrow.CalligrapherArrowLeft</a></li>
+<li><a href="#!/api/draw2d.shape.basic.ARc" rel="draw2d.shape.basic.ARc" class="docClass">draw2d.shape.basic.ARc</a></li>
+<li><a href="#!/api/draw2d.shape.basic.Circle" rel="draw2d.shape.basic.Circle" class="docClass">draw2d.shape.basic.Circle</a></li>
+<li><a href="#!/api/draw2d.shape.basic.Diamond" rel="draw2d.shape.basic.Diamond" class="docClass">draw2d.shape.basic.Diamond</a></li>
+<li><a href="#!/api/draw2d.shape.basic.GhostVertexResizeHandle" rel="draw2d.shape.basic.GhostVertexResizeHandle" class="docClass">draw2d.shape.basic.GhostVertexResizeHandle</a></li>
+<li><a href="#!/api/draw2d.shape.basic.Image" rel="draw2d.shape.basic.Image" class="docClass">draw2d.shape.basic.Image</a></li>
+<li><a href="#!/api/draw2d.shape.basic.Label" rel="draw2d.shape.basic.Label" class="docClass">draw2d.shape.basic.Label</a></li>
+<li><a href="#!/api/draw2d.shape.basic.Line" rel="draw2d.shape.basic.Line" class="docClass">draw2d.shape.basic.Line</a></li>
+<li><a href="#!/api/draw2d.shape.basic.LineEndResizeHandle" rel="draw2d.shape.basic.LineEndResizeHandle" class="docClass">draw2d.shape.basic.LineEndResizeHandle</a></li>
+<li><a href="#!/api/draw2d.shape.basic.LineResizeHandle" rel="draw2d.shape.basic.LineResizeHandle" class="docClass">draw2d.shape.basic.LineResizeHandle</a></li>
+<li><a href="#!/api/draw2d.shape.basic.LineStartResizeHandle" rel="draw2d.shape.basic.LineStartResizeHandle" class="docClass">draw2d.shape.basic.LineStartResizeHandle</a></li>
+<li><a href="#!/api/draw2d.shape.basic.Oval" rel="draw2d.shape.basic.Oval" class="docClass">draw2d.shape.basic.Oval</a></li>
+<li><a href="#!/api/draw2d.shape.basic.PolyLine" rel="draw2d.shape.basic.PolyLine" class="docClass">draw2d.shape.basic.PolyLine</a></li>
+<li><a href="#!/api/draw2d.shape.basic.PolyLine.DEFAULT_ROUTER" rel="draw2d.shape.basic.PolyLine.DEFAULT_ROUTER" class="docClass">draw2d.shape.basic.PolyLine.DEFAULT_ROUTER</a></li>
+<li><a href="#!/api/draw2d.shape.basic.Polygon" rel="draw2d.shape.basic.Polygon" class="docClass">draw2d.shape.basic.Polygon</a></li>
+<li><a href="#!/api/draw2d.shape.basic.Rectangle" rel="draw2d.shape.basic.Rectangle" class="docClass">draw2d.shape.basic.Rectangle</a></li>
+<li><a href="#!/api/draw2d.shape.basic.Text" rel="draw2d.shape.basic.Text" class="docClass">draw2d.shape.basic.Text</a></li>
+<li><a href="#!/api/draw2d.shape.basic.VertexResizeHandle" rel="draw2d.shape.basic.VertexResizeHandle" class="docClass">draw2d.shape.basic.VertexResizeHandle</a></li>
+<li><a href="#!/api/draw2d.shape.composite.Composite" rel="draw2d.shape.composite.Composite" class="docClass">draw2d.shape.composite.Composite</a></li>
+<li><a href="#!/api/draw2d.shape.composite.Group" rel="draw2d.shape.composite.Group" class="docClass">draw2d.shape.composite.Group</a></li>
+<li><a href="#!/api/draw2d.shape.composite.Jailhouse" rel="draw2d.shape.composite.Jailhouse" class="docClass">draw2d.shape.composite.Jailhouse</a></li>
+<li><a href="#!/api/draw2d.shape.composite.Raft" rel="draw2d.shape.composite.Raft" class="docClass">draw2d.shape.composite.Raft</a></li>
+<li><a href="#!/api/draw2d.shape.composite.StrongComposite" rel="draw2d.shape.composite.StrongComposite" class="docClass">draw2d.shape.composite.StrongComposite</a></li>
+<li><a href="#!/api/draw2d.shape.composite.WeakComposite" rel="draw2d.shape.composite.WeakComposite" class="docClass">draw2d.shape.composite.WeakComposite</a></li>
+<li><a href="#!/api/draw2d.shape.diagram.Diagram" rel="draw2d.shape.diagram.Diagram" class="docClass">draw2d.shape.diagram.Diagram</a></li>
+<li><a href="#!/api/draw2d.shape.diagram.Pie" rel="draw2d.shape.diagram.Pie" class="docClass">draw2d.shape.diagram.Pie</a></li>
+<li><a href="#!/api/draw2d.shape.diagram.Sparkline" rel="draw2d.shape.diagram.Sparkline" class="docClass">draw2d.shape.diagram.Sparkline</a></li>
+<li><a href="#!/api/draw2d.shape.flowchart.Document" rel="draw2d.shape.flowchart.Document" class="docClass">draw2d.shape.flowchart.Document</a></li>
+<li><a href="#!/api/draw2d.shape.icon.Acw" rel="draw2d.shape.icon.Acw" class="docClass">draw2d.shape.icon.Acw</a></li>
+<li><a href="#!/api/draw2d.shape.icon.Alarm" rel="draw2d.shape.icon.Alarm" class="docClass">draw2d.shape.icon.Alarm</a></li>
+<li><a href="#!/api/draw2d.shape.icon.Anonymous" rel="draw2d.shape.icon.Anonymous" class="docClass">draw2d.shape.icon.Anonymous</a></li>
+<li><a href="#!/api/draw2d.shape.icon.Apple" rel="draw2d.shape.icon.Apple" class="docClass">draw2d.shape.icon.Apple</a></li>
+<li><a href="#!/api/draw2d.shape.icon.Apps" rel="draw2d.shape.icon.Apps" class="docClass">draw2d.shape.icon.Apps</a></li>
+<li><a href="#!/api/draw2d.shape.icon.ArrowAlt" rel="draw2d.shape.icon.ArrowAlt" class="docClass">draw2d.shape.icon.ArrowAlt</a></li>
+<li><a href="#!/api/draw2d.shape.icon.ArrowDown" rel="draw2d.shape.icon.ArrowDown" class="docClass">draw2d.shape.icon.ArrowDown</a></li>
+<li><a href="#!/api/draw2d.shape.icon.ArrowLeft" rel="draw2d.shape.icon.ArrowLeft" class="docClass">draw2d.shape.icon.ArrowLeft</a></li>
+<li><a href="#!/api/draw2d.shape.icon.ArrowLeft2" rel="draw2d.shape.icon.ArrowLeft2" class="docClass">draw2d.shape.icon.ArrowLeft2</a></li>
+<li><a href="#!/api/draw2d.shape.icon.ArrowLeftAlt" rel="draw2d.shape.icon.ArrowLeftAlt" class="docClass">draw2d.shape.icon.ArrowLeftAlt</a></li>
+<li><a href="#!/api/draw2d.shape.icon.ArrowRight" rel="draw2d.shape.icon.ArrowRight" class="docClass">draw2d.shape.icon.ArrowRight</a></li>
+<li><a href="#!/api/draw2d.shape.icon.ArrowRight2" rel="draw2d.shape.icon.ArrowRight2" class="docClass">draw2d.shape.icon.ArrowRight2</a></li>
+<li><a href="#!/api/draw2d.shape.icon.ArrowUp" rel="draw2d.shape.icon.ArrowUp" class="docClass">draw2d.shape.icon.ArrowUp</a></li>
+<li><a href="#!/api/draw2d.shape.icon.Attention" rel="draw2d.shape.icon.Attention" class="docClass">draw2d.shape.icon.Attention</a></li>
+<li><a href="#!/api/draw2d.shape.icon.Aumade" rel="draw2d.shape.icon.Aumade" class="docClass">draw2d.shape.icon.Aumade</a></li>
+<li><a href="#!/api/draw2d.shape.icon.BarChart" rel="draw2d.shape.icon.BarChart" class="docClass">draw2d.shape.icon.BarChart</a></li>
+<li><a href="#!/api/draw2d.shape.icon.BioHazard" rel="draw2d.shape.icon.BioHazard" class="docClass">draw2d.shape.icon.BioHazard</a></li>
+<li><a href="#!/api/draw2d.shape.icon.Book" rel="draw2d.shape.icon.Book" class="docClass">draw2d.shape.icon.Book</a></li>
+<li><a href="#!/api/draw2d.shape.icon.Bookmark" rel="draw2d.shape.icon.Bookmark" class="docClass">draw2d.shape.icon.Bookmark</a></li>
+<li><a href="#!/api/draw2d.shape.icon.Books" rel="draw2d.shape.icon.Books" class="docClass">draw2d.shape.icon.Books</a></li>
+<li><a href="#!/api/draw2d.shape.icon.Bubble" rel="draw2d.shape.icon.Bubble" class="docClass">draw2d.shape.icon.Bubble</a></li>
+<li><a href="#!/api/draw2d.shape.icon.Bug" rel="draw2d.shape.icon.Bug" class="docClass">draw2d.shape.icon.Bug</a></li>
+<li><a href="#!/api/draw2d.shape.icon.Calendar" rel="draw2d.shape.icon.Calendar" class="docClass">draw2d.shape.icon.Calendar</a></li>
+<li><a href="#!/api/draw2d.shape.icon.Cart" rel="draw2d.shape.icon.Cart" class="docClass">draw2d.shape.icon.Cart</a></li>
+<li><a href="#!/api/draw2d.shape.icon.Ccw" rel="draw2d.shape.icon.Ccw" class="docClass">draw2d.shape.icon.Ccw</a></li>
+<li><a href="#!/api/draw2d.shape.icon.Chat" rel="draw2d.shape.icon.Chat" class="docClass">draw2d.shape.icon.Chat</a></li>
+<li><a href="#!/api/draw2d.shape.icon.Check" rel="draw2d.shape.icon.Check" class="docClass">draw2d.shape.icon.Check</a></li>
+<li><a href="#!/api/draw2d.shape.icon.Chrome" rel="draw2d.shape.icon.Chrome" class="docClass">draw2d.shape.icon.Chrome</a></li>
+<li><a href="#!/api/draw2d.shape.icon.Clip" rel="draw2d.shape.icon.Clip" class="docClass">draw2d.shape.icon.Clip</a></li>
+<li><a href="#!/api/draw2d.shape.icon.Clock" rel="draw2d.shape.icon.Clock" class="docClass">draw2d.shape.icon.Clock</a></li>
+<li><a href="#!/api/draw2d.shape.icon.Cloud" rel="draw2d.shape.icon.Cloud" class="docClass">draw2d.shape.icon.Cloud</a></li>
+<li><a href="#!/api/draw2d.shape.icon.Cloud2" rel="draw2d.shape.icon.Cloud2" class="docClass">draw2d.shape.icon.Cloud2</a></li>
+<li><a href="#!/api/draw2d.shape.icon.CloudDown" rel="draw2d.shape.icon.CloudDown" class="docClass">draw2d.shape.icon.CloudDown</a></li>
+<li><a href="#!/api/draw2d.shape.icon.CloudUp" rel="draw2d.shape.icon.CloudUp" class="docClass">draw2d.shape.icon.CloudUp</a></li>
+<li><a href="#!/api/draw2d.shape.icon.Cloudy" rel="draw2d.shape.icon.Cloudy" class="docClass">draw2d.shape.icon.Cloudy</a></li>
+<li><a href="#!/api/draw2d.shape.icon.Code" rel="draw2d.shape.icon.Code" class="docClass">draw2d.shape.icon.Code</a></li>
+<li><a href="#!/api/draw2d.shape.icon.CodeTalk" rel="draw2d.shape.icon.CodeTalk" class="docClass">draw2d.shape.icon.CodeTalk</a></li>
+<li><a href="#!/api/draw2d.shape.icon.CommandLine" rel="draw2d.shape.icon.CommandLine" class="docClass">draw2d.shape.icon.CommandLine</a></li>
+<li><a href="#!/api/draw2d.shape.icon.Connect" rel="draw2d.shape.icon.Connect" class="docClass">draw2d.shape.icon.Connect</a></li>
+<li><a href="#!/api/draw2d.shape.icon.Contract" rel="draw2d.shape.icon.Contract" class="docClass">draw2d.shape.icon.Contract</a></li>
+<li><a href="#!/api/draw2d.shape.icon.Crop" rel="draw2d.shape.icon.Crop" class="docClass">draw2d.shape.icon.Crop</a></li>
+<li><a href="#!/api/draw2d.shape.icon.Cross" rel="draw2d.shape.icon.Cross" class="docClass">draw2d.shape.icon.Cross</a></li>
+<li><a href="#!/api/draw2d.shape.icon.Cube" rel="draw2d.shape.icon.Cube" class="docClass">draw2d.shape.icon.Cube</a></li>
+<li><a href="#!/api/draw2d.shape.icon.Customer" rel="draw2d.shape.icon.Customer" class="docClass">draw2d.shape.icon.Customer</a></li>
+<li><a href="#!/api/draw2d.shape.icon.Db" rel="draw2d.shape.icon.Db" class="docClass">draw2d.shape.icon.Db</a></li>
+<li><a href="#!/api/draw2d.shape.icon.Detour" rel="draw2d.shape.icon.Detour" class="docClass">draw2d.shape.icon.Detour</a></li>
+<li><a href="#!/api/draw2d.shape.icon.Diagram" rel="draw2d.shape.icon.Diagram" class="docClass">draw2d.shape.icon.Diagram</a></li>
+<li><a href="#!/api/draw2d.shape.icon.Disconnect" rel="draw2d.shape.icon.Disconnect" class="docClass">draw2d.shape.icon.Disconnect</a></li>
+<li><a href="#!/api/draw2d.shape.icon.DockBottom" rel="draw2d.shape.icon.DockBottom" class="docClass">draw2d.shape.icon.DockBottom</a></li>
+<li><a href="#!/api/draw2d.shape.icon.DockLeft" rel="draw2d.shape.icon.DockLeft" class="docClass">draw2d.shape.icon.DockLeft</a></li>
+<li><a href="#!/api/draw2d.shape.icon.DockRight" rel="draw2d.shape.icon.DockRight" class="docClass">draw2d.shape.icon.DockRight</a></li>
+<li><a href="#!/api/draw2d.shape.icon.DockTop" rel="draw2d.shape.icon.DockTop" class="docClass">draw2d.shape.icon.DockTop</a></li>
+<li><a href="#!/api/draw2d.shape.icon.Dollar" rel="draw2d.shape.icon.Dollar" class="docClass">draw2d.shape.icon.Dollar</a></li>
+<li><a href="#!/api/draw2d.shape.icon.Download" rel="draw2d.shape.icon.Download" class="docClass">draw2d.shape.icon.Download</a></li>
+<li><a href="#!/api/draw2d.shape.icon.Dry" rel="draw2d.shape.icon.Dry" class="docClass">draw2d.shape.icon.Dry</a></li>
+<li><a href="#!/api/draw2d.shape.icon.Employee" rel="draw2d.shape.icon.Employee" class="docClass">draw2d.shape.icon.Employee</a></li>
+<li><a href="#!/api/draw2d.shape.icon.End" rel="draw2d.shape.icon.End" class="docClass">draw2d.shape.icon.End</a></li>
+<li><a href="#!/api/draw2d.shape.icon.Ethernet" rel="draw2d.shape.icon.Ethernet" class="docClass">draw2d.shape.icon.Ethernet</a></li>
+<li><a href="#!/api/draw2d.shape.icon.Exchange" rel="draw2d.shape.icon.Exchange" class="docClass">draw2d.shape.icon.Exchange</a></li>
+<li><a href="#!/api/draw2d.shape.icon.Expand" rel="draw2d.shape.icon.Expand" class="docClass">draw2d.shape.icon.Expand</a></li>
+<li><a href="#!/api/draw2d.shape.icon.Export" rel="draw2d.shape.icon.Export" class="docClass">draw2d.shape.icon.Export</a></li>
+<li><a href="#!/api/draw2d.shape.icon.Fave" rel="draw2d.shape.icon.Fave" class="docClass">draw2d.shape.icon.Fave</a></li>
+<li><a href="#!/api/draw2d.shape.icon.Feed" rel="draw2d.shape.icon.Feed" class="docClass">draw2d.shape.icon.Feed</a></li>
+<li><a href="#!/api/draw2d.shape.icon.Ff" rel="draw2d.shape.icon.Ff" class="docClass">draw2d.shape.icon.Ff</a></li>
+<li><a href="#!/api/draw2d.shape.icon.Firefox" rel="draw2d.shape.icon.Firefox" class="docClass">draw2d.shape.icon.Firefox</a></li>
+<li><a href="#!/api/draw2d.shape.icon.Flag" rel="draw2d.shape.icon.Flag" class="docClass">draw2d.shape.icon.Flag</a></li>
+<li><a href="#!/api/draw2d.shape.icon.Flickr" rel="draw2d.shape.icon.Flickr" class="docClass">draw2d.shape.icon.Flickr</a></li>
+<li><a href="#!/api/draw2d.shape.icon.Folder" rel="draw2d.shape.icon.Folder" class="docClass">draw2d.shape.icon.Folder</a></li>
+<li><a href="#!/api/draw2d.shape.icon.Font" rel="draw2d.shape.icon.Font" class="docClass">draw2d.shape.icon.Font</a></li>
+<li><a href="#!/api/draw2d.shape.icon.Fork" rel="draw2d.shape.icon.Fork" class="docClass">draw2d.shape.icon.Fork</a></li>
+<li><a href="#!/api/draw2d.shape.icon.ForkAlt" rel="draw2d.shape.icon.ForkAlt" class="docClass">draw2d.shape.icon.ForkAlt</a></li>
+<li><a href="#!/api/draw2d.shape.icon.FullCube" rel="draw2d.shape.icon.FullCube" class="docClass">draw2d.shape.icon.FullCube</a></li>
+<li><a href="#!/api/draw2d.shape.icon.Future" rel="draw2d.shape.icon.Future" class="docClass">draw2d.shape.icon.Future</a></li>
+<li><a href="#!/api/draw2d.shape.icon.GRaphael" rel="draw2d.shape.icon.GRaphael" class="docClass">draw2d.shape.icon.GRaphael</a></li>
+<li><a href="#!/api/draw2d.shape.icon.Gear" rel="draw2d.shape.icon.Gear" class="docClass">draw2d.shape.icon.Gear</a></li>
+<li><a href="#!/api/draw2d.shape.icon.Gear2" rel="draw2d.shape.icon.Gear2" class="docClass">draw2d.shape.icon.Gear2</a></li>
+<li><a href="#!/api/draw2d.shape.icon.GitHub" rel="draw2d.shape.icon.GitHub" class="docClass">draw2d.shape.icon.GitHub</a></li>
+<li><a href="#!/api/draw2d.shape.icon.GitHubAlt" rel="draw2d.shape.icon.GitHubAlt" class="docClass">draw2d.shape.icon.GitHubAlt</a></li>
+<li><a href="#!/api/draw2d.shape.icon.Glasses" rel="draw2d.shape.icon.Glasses" class="docClass">draw2d.shape.icon.Glasses</a></li>
+<li><a href="#!/api/draw2d.shape.icon.Globe" rel="draw2d.shape.icon.Globe" class="docClass">draw2d.shape.icon.Globe</a></li>
+<li><a href="#!/api/draw2d.shape.icon.GlobeAlt" rel="draw2d.shape.icon.GlobeAlt" class="docClass">draw2d.shape.icon.GlobeAlt</a></li>
+<li><a href="#!/api/draw2d.shape.icon.GlobeAlt2" rel="draw2d.shape.icon.GlobeAlt2" class="docClass">draw2d.shape.icon.GlobeAlt2</a></li>
+<li><a href="#!/api/draw2d.shape.icon.Hail" rel="draw2d.shape.icon.Hail" class="docClass">draw2d.shape.icon.Hail</a></li>
+<li><a href="#!/api/draw2d.shape.icon.Hammer" rel="draw2d.shape.icon.Hammer" class="docClass">draw2d.shape.icon.Hammer</a></li>
+<li><a href="#!/api/draw2d.shape.icon.HammerAndScrewDriver" rel="draw2d.shape.icon.HammerAndScrewDriver" class="docClass">draw2d.shape.icon.HammerAndScrewDriver</a></li>
+<li><a href="#!/api/draw2d.shape.icon.HangUp" rel="draw2d.shape.icon.HangUp" class="docClass">draw2d.shape.icon.HangUp</a></li>
+<li><a href="#!/api/draw2d.shape.icon.Help" rel="draw2d.shape.icon.Help" class="docClass">draw2d.shape.icon.Help</a></li>
+<li><a href="#!/api/draw2d.shape.icon.History" rel="draw2d.shape.icon.History" class="docClass">draw2d.shape.icon.History</a></li>
+<li><a href="#!/api/draw2d.shape.icon.Home" rel="draw2d.shape.icon.Home" class="docClass">draw2d.shape.icon.Home</a></li>
+<li><a href="#!/api/draw2d.shape.icon.IMac" rel="draw2d.shape.icon.IMac" class="docClass">draw2d.shape.icon.IMac</a></li>
+<li><a href="#!/api/draw2d.shape.icon.Icon" rel="draw2d.shape.icon.Icon" class="docClass">draw2d.shape.icon.Icon</a></li>
+<li><a href="#!/api/draw2d.shape.icon.Icons" rel="draw2d.shape.icon.Icons" class="docClass">draw2d.shape.icon.Icons</a></li>
+<li><a href="#!/api/draw2d.shape.icon.Ie" rel="draw2d.shape.icon.Ie" class="docClass">draw2d.shape.icon.Ie</a></li>
+<li><a href="#!/api/draw2d.shape.icon.Ie9" rel="draw2d.shape.icon.Ie9" class="docClass">draw2d.shape.icon.Ie9</a></li>
+<li><a href="#!/api/draw2d.shape.icon.Import" rel="draw2d.shape.icon.Import" class="docClass">draw2d.shape.icon.Import</a></li>
+<li><a href="#!/api/draw2d.shape.icon.Info" rel="draw2d.shape.icon.Info" class="docClass">draw2d.shape.icon.Info</a></li>
+<li><a href="#!/api/draw2d.shape.icon.InkScape" rel="draw2d.shape.icon.InkScape" class="docClass">draw2d.shape.icon.InkScape</a></li>
+<li><a href="#!/api/draw2d.shape.icon.Ipad" rel="draw2d.shape.icon.Ipad" class="docClass">draw2d.shape.icon.Ipad</a></li>
+<li><a href="#!/api/draw2d.shape.icon.Iphone" rel="draw2d.shape.icon.Iphone" class="docClass">draw2d.shape.icon.Iphone</a></li>
+<li><a href="#!/api/draw2d.shape.icon.JQuery" rel="draw2d.shape.icon.JQuery" class="docClass">draw2d.shape.icon.JQuery</a></li>
+<li><a href="#!/api/draw2d.shape.icon.Jigsaw" rel="draw2d.shape.icon.Jigsaw" class="docClass">draw2d.shape.icon.Jigsaw</a></li>
+<li><a href="#!/api/draw2d.shape.icon.Key" rel="draw2d.shape.icon.Key" class="docClass">draw2d.shape.icon.Key</a></li>
+<li><a href="#!/api/draw2d.shape.icon.Lab" rel="draw2d.shape.icon.Lab" class="docClass">draw2d.shape.icon.Lab</a></li>
+<li><a href="#!/api/draw2d.shape.icon.Lamp" rel="draw2d.shape.icon.Lamp" class="docClass">draw2d.shape.icon.Lamp</a></li>
+<li><a href="#!/api/draw2d.shape.icon.Lamp_alt" rel="draw2d.shape.icon.Lamp_alt" class="docClass">draw2d.shape.icon.Lamp_alt</a></li>
+<li><a href="#!/api/draw2d.shape.icon.Landing" rel="draw2d.shape.icon.Landing" class="docClass">draw2d.shape.icon.Landing</a></li>
+<li><a href="#!/api/draw2d.shape.icon.Landscape1" rel="draw2d.shape.icon.Landscape1" class="docClass">draw2d.shape.icon.Landscape1</a></li>
+<li><a href="#!/api/draw2d.shape.icon.Landscape2" rel="draw2d.shape.icon.Landscape2" class="docClass">draw2d.shape.icon.Landscape2</a></li>
+<li><a href="#!/api/draw2d.shape.icon.LineChart" rel="draw2d.shape.icon.LineChart" class="docClass">draw2d.shape.icon.LineChart</a></li>
+<li><a href="#!/api/draw2d.shape.icon.Link" rel="draw2d.shape.icon.Link" class="docClass">draw2d.shape.icon.Link</a></li>
+<li><a href="#!/api/draw2d.shape.icon.LinkedIn" rel="draw2d.shape.icon.LinkedIn" class="docClass">draw2d.shape.icon.LinkedIn</a></li>
+<li><a href="#!/api/draw2d.shape.icon.Linux" rel="draw2d.shape.icon.Linux" class="docClass">draw2d.shape.icon.Linux</a></li>
+<li><a href="#!/api/draw2d.shape.icon.List" rel="draw2d.shape.icon.List" class="docClass">draw2d.shape.icon.List</a></li>
+<li><a href="#!/api/draw2d.shape.icon.Location" rel="draw2d.shape.icon.Location" class="docClass">draw2d.shape.icon.Location</a></li>
+<li><a href="#!/api/draw2d.shape.icon.Lock" rel="draw2d.shape.icon.Lock" class="docClass">draw2d.shape.icon.Lock</a></li>
+<li><a href="#!/api/draw2d.shape.icon.Locked" rel="draw2d.shape.icon.Locked" class="docClass">draw2d.shape.icon.Locked</a></li>
+<li><a href="#!/api/draw2d.shape.icon.Magic" rel="draw2d.shape.icon.Magic" class="docClass">draw2d.shape.icon.Magic</a></li>
+<li><a href="#!/api/draw2d.shape.icon.Magnet" rel="draw2d.shape.icon.Magnet" class="docClass">draw2d.shape.icon.Magnet</a></li>
+<li><a href="#!/api/draw2d.shape.icon.Mail" rel="draw2d.shape.icon.Mail" class="docClass">draw2d.shape.icon.Mail</a></li>
+<li><a href="#!/api/draw2d.shape.icon.Man" rel="draw2d.shape.icon.Man" class="docClass">draw2d.shape.icon.Man</a></li>
+<li><a href="#!/api/draw2d.shape.icon.Merge" rel="draw2d.shape.icon.Merge" class="docClass">draw2d.shape.icon.Merge</a></li>
+<li><a href="#!/api/draw2d.shape.icon.Mic" rel="draw2d.shape.icon.Mic" class="docClass">draw2d.shape.icon.Mic</a></li>
+<li><a href="#!/api/draw2d.shape.icon.MicMute" rel="draw2d.shape.icon.MicMute" class="docClass">draw2d.shape.icon.MicMute</a></li>
+<li><a href="#!/api/draw2d.shape.icon.Minus" rel="draw2d.shape.icon.Minus" class="docClass">draw2d.shape.icon.Minus</a></li>
+<li><a href="#!/api/draw2d.shape.icon.NewWindow" rel="draw2d.shape.icon.NewWindow" class="docClass">draw2d.shape.icon.NewWindow</a></li>
+<li><a href="#!/api/draw2d.shape.icon.No" rel="draw2d.shape.icon.No" class="docClass">draw2d.shape.icon.No</a></li>
+<li><a href="#!/api/draw2d.shape.icon.NoMagnet" rel="draw2d.shape.icon.NoMagnet" class="docClass">draw2d.shape.icon.NoMagnet</a></li>
+<li><a href="#!/api/draw2d.shape.icon.NodeJs" rel="draw2d.shape.icon.NodeJs" class="docClass">draw2d.shape.icon.NodeJs</a></li>
+<li><a href="#!/api/draw2d.shape.icon.Notebook" rel="draw2d.shape.icon.Notebook" class="docClass">draw2d.shape.icon.Notebook</a></li>
+<li><a href="#!/api/draw2d.shape.icon.Noview" rel="draw2d.shape.icon.Noview" class="docClass">draw2d.shape.icon.Noview</a></li>
+<li><a href="#!/api/draw2d.shape.icon.Opera" rel="draw2d.shape.icon.Opera" class="docClass">draw2d.shape.icon.Opera</a></li>
+<li><a href="#!/api/draw2d.shape.icon.Package" rel="draw2d.shape.icon.Package" class="docClass">draw2d.shape.icon.Package</a></li>
+<li><a href="#!/api/draw2d.shape.icon.Page" rel="draw2d.shape.icon.Page" class="docClass">draw2d.shape.icon.Page</a></li>
+<li><a href="#!/api/draw2d.shape.icon.Page2" rel="draw2d.shape.icon.Page2" class="docClass">draw2d.shape.icon.Page2</a></li>
+<li><a href="#!/api/draw2d.shape.icon.Pallete" rel="draw2d.shape.icon.Pallete" class="docClass">draw2d.shape.icon.Pallete</a></li>
+<li><a href="#!/api/draw2d.shape.icon.Palm" rel="draw2d.shape.icon.Palm" class="docClass">draw2d.shape.icon.Palm</a></li>
+<li><a href="#!/api/draw2d.shape.icon.Paper" rel="draw2d.shape.icon.Paper" class="docClass">draw2d.shape.icon.Paper</a></li>
+<li><a href="#!/api/draw2d.shape.icon.Parent" rel="draw2d.shape.icon.Parent" class="docClass">draw2d.shape.icon.Parent</a></li>
+<li><a href="#!/api/draw2d.shape.icon.Pc" rel="draw2d.shape.icon.Pc" class="docClass">draw2d.shape.icon.Pc</a></li>
+<li><a href="#!/api/draw2d.shape.icon.Pen" rel="draw2d.shape.icon.Pen" class="docClass">draw2d.shape.icon.Pen</a></li>
+<li><a href="#!/api/draw2d.shape.icon.Pensil" rel="draw2d.shape.icon.Pensil" class="docClass">draw2d.shape.icon.Pensil</a></li>
+<li><a href="#!/api/draw2d.shape.icon.People" rel="draw2d.shape.icon.People" class="docClass">draw2d.shape.icon.People</a></li>
+<li><a href="#!/api/draw2d.shape.icon.Phone" rel="draw2d.shape.icon.Phone" class="docClass">draw2d.shape.icon.Phone</a></li>
+<li><a href="#!/api/draw2d.shape.icon.Photo" rel="draw2d.shape.icon.Photo" class="docClass">draw2d.shape.icon.Photo</a></li>
+<li><a href="#!/api/draw2d.shape.icon.Picker" rel="draw2d.shape.icon.Picker" class="docClass">draw2d.shape.icon.Picker</a></li>
+<li><a href="#!/api/draw2d.shape.icon.Picture" rel="draw2d.shape.icon.Picture" class="docClass">draw2d.shape.icon.Picture</a></li>
+<li><a href="#!/api/draw2d.shape.icon.PieChart" rel="draw2d.shape.icon.PieChart" class="docClass">draw2d.shape.icon.PieChart</a></li>
+<li><a href="#!/api/draw2d.shape.icon.Plane" rel="draw2d.shape.icon.Plane" class="docClass">draw2d.shape.icon.Plane</a></li>
+<li><a href="#!/api/draw2d.shape.icon.Plugin" rel="draw2d.shape.icon.Plugin" class="docClass">draw2d.shape.icon.Plugin</a></li>
+<li><a href="#!/api/draw2d.shape.icon.Plus" rel="draw2d.shape.icon.Plus" class="docClass">draw2d.shape.icon.Plus</a></li>
+<li><a href="#!/api/draw2d.shape.icon.Power" rel="draw2d.shape.icon.Power" class="docClass">draw2d.shape.icon.Power</a></li>
+<li><a href="#!/api/draw2d.shape.icon.Ppt" rel="draw2d.shape.icon.Ppt" class="docClass">draw2d.shape.icon.Ppt</a></li>
+<li><a href="#!/api/draw2d.shape.icon.Printer" rel="draw2d.shape.icon.Printer" class="docClass">draw2d.shape.icon.Printer</a></li>
+<li><a href="#!/api/draw2d.shape.icon.Question" rel="draw2d.shape.icon.Question" class="docClass">draw2d.shape.icon.Question</a></li>
+<li><a href="#!/api/draw2d.shape.icon.Question2" rel="draw2d.shape.icon.Question2" class="docClass">draw2d.shape.icon.Question2</a></li>
+<li><a href="#!/api/draw2d.shape.icon.Quote" rel="draw2d.shape.icon.Quote" class="docClass">draw2d.shape.icon.Quote</a></li>
+<li><a href="#!/api/draw2d.shape.icon.Rain" rel="draw2d.shape.icon.Rain" class="docClass">draw2d.shape.icon.Rain</a></li>
+<li><a href="#!/api/draw2d.shape.icon.Raphael" rel="draw2d.shape.icon.Raphael" class="docClass">draw2d.shape.icon.Raphael</a></li>
+<li><a href="#!/api/draw2d.shape.icon.ReflectH" rel="draw2d.shape.icon.ReflectH" class="docClass">draw2d.shape.icon.ReflectH</a></li>
+<li><a href="#!/api/draw2d.shape.icon.ReflectV" rel="draw2d.shape.icon.ReflectV" class="docClass">draw2d.shape.icon.ReflectV</a></li>
+<li><a href="#!/api/draw2d.shape.icon.Refresh" rel="draw2d.shape.icon.Refresh" class="docClass">draw2d.shape.icon.Refresh</a></li>
+<li><a href="#!/api/draw2d.shape.icon.Resize2" rel="draw2d.shape.icon.Resize2" class="docClass">draw2d.shape.icon.Resize2</a></li>
+<li><a href="#!/api/draw2d.shape.icon.Rotate" rel="draw2d.shape.icon.Rotate" class="docClass">draw2d.shape.icon.Rotate</a></li>
+<li><a href="#!/api/draw2d.shape.icon.Ruler" rel="draw2d.shape.icon.Ruler" class="docClass">draw2d.shape.icon.Ruler</a></li>
+<li><a href="#!/api/draw2d.shape.icon.Run" rel="draw2d.shape.icon.Run" class="docClass">draw2d.shape.icon.Run</a></li>
+<li><a href="#!/api/draw2d.shape.icon.Rw" rel="draw2d.shape.icon.Rw" class="docClass">draw2d.shape.icon.Rw</a></li>
+<li><a href="#!/api/draw2d.shape.icon.Safari" rel="draw2d.shape.icon.Safari" class="docClass">draw2d.shape.icon.Safari</a></li>
+<li><a href="#!/api/draw2d.shape.icon.ScrewDriver" rel="draw2d.shape.icon.ScrewDriver" class="docClass">draw2d.shape.icon.ScrewDriver</a></li>
+<li><a href="#!/api/draw2d.shape.icon.Search" rel="draw2d.shape.icon.Search" class="docClass">draw2d.shape.icon.Search</a></li>
+<li><a href="#!/api/draw2d.shape.icon.Sencha" rel="draw2d.shape.icon.Sencha" class="docClass">draw2d.shape.icon.Sencha</a></li>
+<li><a href="#!/api/draw2d.shape.icon.Settings" rel="draw2d.shape.icon.Settings" class="docClass">draw2d.shape.icon.Settings</a></li>
+<li><a href="#!/api/draw2d.shape.icon.SettingsAlt" rel="draw2d.shape.icon.SettingsAlt" class="docClass">draw2d.shape.icon.SettingsAlt</a></li>
+<li><a href="#!/api/draw2d.shape.icon.Shuffle" rel="draw2d.shape.icon.Shuffle" class="docClass">draw2d.shape.icon.Shuffle</a></li>
+<li><a href="#!/api/draw2d.shape.icon.Skull" rel="draw2d.shape.icon.Skull" class="docClass">draw2d.shape.icon.Skull</a></li>
+<li><a href="#!/api/draw2d.shape.icon.Skype" rel="draw2d.shape.icon.Skype" class="docClass">draw2d.shape.icon.Skype</a></li>
+<li><a href="#!/api/draw2d.shape.icon.SlideShare" rel="draw2d.shape.icon.SlideShare" class="docClass">draw2d.shape.icon.SlideShare</a></li>
+<li><a href="#!/api/draw2d.shape.icon.Smile" rel="draw2d.shape.icon.Smile" class="docClass">draw2d.shape.icon.Smile</a></li>
+<li><a href="#!/api/draw2d.shape.icon.Smile2" rel="draw2d.shape.icon.Smile2" class="docClass">draw2d.shape.icon.Smile2</a></li>
+<li><a href="#!/api/draw2d.shape.icon.Snow" rel="draw2d.shape.icon.Snow" class="docClass">draw2d.shape.icon.Snow</a></li>
+<li><a href="#!/api/draw2d.shape.icon.Split" rel="draw2d.shape.icon.Split" class="docClass">draw2d.shape.icon.Split</a></li>
+<li><a href="#!/api/draw2d.shape.icon.Star" rel="draw2d.shape.icon.Star" class="docClass">draw2d.shape.icon.Star</a></li>
+<li><a href="#!/api/draw2d.shape.icon.Star2" rel="draw2d.shape.icon.Star2" class="docClass">draw2d.shape.icon.Star2</a></li>
+<li><a href="#!/api/draw2d.shape.icon.Star2Off" rel="draw2d.shape.icon.Star2Off" class="docClass">draw2d.shape.icon.Star2Off</a></li>
+<li><a href="#!/api/draw2d.shape.icon.Star3" rel="draw2d.shape.icon.Star3" class="docClass">draw2d.shape.icon.Star3</a></li>
+<li><a href="#!/api/draw2d.shape.icon.Star3Off" rel="draw2d.shape.icon.Star3Off" class="docClass">draw2d.shape.icon.Star3Off</a></li>
+<li><a href="#!/api/draw2d.shape.icon.StarOff" rel="draw2d.shape.icon.StarOff" class="docClass">draw2d.shape.icon.StarOff</a></li>
+<li><a href="#!/api/draw2d.shape.icon.Start" rel="draw2d.shape.icon.Start" class="docClass">draw2d.shape.icon.Start</a></li>
+<li><a href="#!/api/draw2d.shape.icon.Sticker" rel="draw2d.shape.icon.Sticker" class="docClass">draw2d.shape.icon.Sticker</a></li>
+<li><a href="#!/api/draw2d.shape.icon.Stop" rel="draw2d.shape.icon.Stop" class="docClass">draw2d.shape.icon.Stop</a></li>
+<li><a href="#!/api/draw2d.shape.icon.StopSign" rel="draw2d.shape.icon.StopSign" class="docClass">draw2d.shape.icon.StopSign</a></li>
+<li><a href="#!/api/draw2d.shape.icon.StopWatch" rel="draw2d.shape.icon.StopWatch" class="docClass">draw2d.shape.icon.StopWatch</a></li>
+<li><a href="#!/api/draw2d.shape.icon.Sun" rel="draw2d.shape.icon.Sun" class="docClass">draw2d.shape.icon.Sun</a></li>
+<li><a href="#!/api/draw2d.shape.icon.Svg" rel="draw2d.shape.icon.Svg" class="docClass">draw2d.shape.icon.Svg</a></li>
+<li><a href="#!/api/draw2d.shape.icon.TShirt" rel="draw2d.shape.icon.TShirt" class="docClass">draw2d.shape.icon.TShirt</a></li>
+<li><a href="#!/api/draw2d.shape.icon.Tag" rel="draw2d.shape.icon.Tag" class="docClass">draw2d.shape.icon.Tag</a></li>
+<li><a href="#!/api/draw2d.shape.icon.TakeOff" rel="draw2d.shape.icon.TakeOff" class="docClass">draw2d.shape.icon.TakeOff</a></li>
+<li><a href="#!/api/draw2d.shape.icon.Talke" rel="draw2d.shape.icon.Talke" class="docClass">draw2d.shape.icon.Talke</a></li>
+<li><a href="#!/api/draw2d.shape.icon.Talkq" rel="draw2d.shape.icon.Talkq" class="docClass">draw2d.shape.icon.Talkq</a></li>
+<li><a href="#!/api/draw2d.shape.icon.Temp" rel="draw2d.shape.icon.Temp" class="docClass">draw2d.shape.icon.Temp</a></li>
+<li><a href="#!/api/draw2d.shape.icon.Thunder" rel="draw2d.shape.icon.Thunder" class="docClass">draw2d.shape.icon.Thunder</a></li>
+<li><a href="#!/api/draw2d.shape.icon.Trash" rel="draw2d.shape.icon.Trash" class="docClass">draw2d.shape.icon.Trash</a></li>
+<li><a href="#!/api/draw2d.shape.icon.Twitter" rel="draw2d.shape.icon.Twitter" class="docClass">draw2d.shape.icon.Twitter</a></li>
+<li><a href="#!/api/draw2d.shape.icon.TwitterBird" rel="draw2d.shape.icon.TwitterBird" class="docClass">draw2d.shape.icon.TwitterBird</a></li>
+<li><a href="#!/api/draw2d.shape.icon.Umbrella" rel="draw2d.shape.icon.Umbrella" class="docClass">draw2d.shape.icon.Umbrella</a></li>
+<li><a href="#!/api/draw2d.shape.icon.Undo" rel="draw2d.shape.icon.Undo" class="docClass">draw2d.shape.icon.Undo</a></li>
+<li><a href="#!/api/draw2d.shape.icon.Unlock" rel="draw2d.shape.icon.Unlock" class="docClass">draw2d.shape.icon.Unlock</a></li>
+<li><a href="#!/api/draw2d.shape.icon.Usb" rel="draw2d.shape.icon.Usb" class="docClass">draw2d.shape.icon.Usb</a></li>
+<li><a href="#!/api/draw2d.shape.icon.User" rel="draw2d.shape.icon.User" class="docClass">draw2d.shape.icon.User</a></li>
+<li><a href="#!/api/draw2d.shape.icon.Users" rel="draw2d.shape.icon.Users" class="docClass">draw2d.shape.icon.Users</a></li>
+<li><a href="#!/api/draw2d.shape.icon.Video" rel="draw2d.shape.icon.Video" class="docClass">draw2d.shape.icon.Video</a></li>
+<li><a href="#!/api/draw2d.shape.icon.View" rel="draw2d.shape.icon.View" class="docClass">draw2d.shape.icon.View</a></li>
+<li><a href="#!/api/draw2d.shape.icon.Vim" rel="draw2d.shape.icon.Vim" class="docClass">draw2d.shape.icon.Vim</a></li>
+<li><a href="#!/api/draw2d.shape.icon.Volume0" rel="draw2d.shape.icon.Volume0" class="docClass">draw2d.shape.icon.Volume0</a></li>
+<li><a href="#!/api/draw2d.shape.icon.Volume1" rel="draw2d.shape.icon.Volume1" class="docClass">draw2d.shape.icon.Volume1</a></li>
+<li><a href="#!/api/draw2d.shape.icon.Volume2" rel="draw2d.shape.icon.Volume2" class="docClass">draw2d.shape.icon.Volume2</a></li>
+<li><a href="#!/api/draw2d.shape.icon.Volume3" rel="draw2d.shape.icon.Volume3" class="docClass">draw2d.shape.icon.Volume3</a></li>
+<li><a href="#!/api/draw2d.shape.icon.Warning" rel="draw2d.shape.icon.Warning" class="docClass">draw2d.shape.icon.Warning</a></li>
+<li><a href="#!/api/draw2d.shape.icon.WheelChair" rel="draw2d.shape.icon.WheelChair" class="docClass">draw2d.shape.icon.WheelChair</a></li>
+<li><a href="#!/api/draw2d.shape.icon.Windows" rel="draw2d.shape.icon.Windows" class="docClass">draw2d.shape.icon.Windows</a></li>
+<li><a href="#!/api/draw2d.shape.icon.Woman" rel="draw2d.shape.icon.Woman" class="docClass">draw2d.shape.icon.Woman</a></li>
+<li><a href="#!/api/draw2d.shape.icon.Wrench" rel="draw2d.shape.icon.Wrench" class="docClass">draw2d.shape.icon.Wrench</a></li>
+<li><a href="#!/api/draw2d.shape.icon.Wrench2" rel="draw2d.shape.icon.Wrench2" class="docClass">draw2d.shape.icon.Wrench2</a></li>
+<li><a href="#!/api/draw2d.shape.icon.Wrench3" rel="draw2d.shape.icon.Wrench3" class="docClass">draw2d.shape.icon.Wrench3</a></li>
+<li><a href="#!/api/draw2d.shape.icon.ZoomIn" rel="draw2d.shape.icon.ZoomIn" class="docClass">draw2d.shape.icon.ZoomIn</a></li>
+<li><a href="#!/api/draw2d.shape.icon.ZoomOut" rel="draw2d.shape.icon.ZoomOut" class="docClass">draw2d.shape.icon.ZoomOut</a></li>
+<li><a href="#!/api/draw2d.shape.layout.FlexGridLayout" rel="draw2d.shape.layout.FlexGridLayout" class="docClass">draw2d.shape.layout.FlexGridLayout</a></li>
+<li><a href="#!/api/draw2d.shape.layout.HorizontalLayout" rel="draw2d.shape.layout.HorizontalLayout" class="docClass">draw2d.shape.layout.HorizontalLayout</a></li>
+<li><a href="#!/api/draw2d.shape.layout.Layout" rel="draw2d.shape.layout.Layout" class="docClass">draw2d.shape.layout.Layout</a></li>
+<li><a href="#!/api/draw2d.shape.layout.TableLayout" rel="draw2d.shape.layout.TableLayout" class="docClass">draw2d.shape.layout.TableLayout</a></li>
+<li><a href="#!/api/draw2d.shape.layout.VerticalLayout" rel="draw2d.shape.layout.VerticalLayout" class="docClass">draw2d.shape.layout.VerticalLayout</a></li>
+<li><a href="#!/api/draw2d.shape.node.Between" rel="draw2d.shape.node.Between" class="docClass">draw2d.shape.node.Between</a></li>
+<li><a href="#!/api/draw2d.shape.node.End" rel="draw2d.shape.node.End" class="docClass">draw2d.shape.node.End</a></li>
+<li><a href="#!/api/draw2d.shape.node.Fulcrum" rel="draw2d.shape.node.Fulcrum" class="docClass">draw2d.shape.node.Fulcrum</a></li>
+<li><a href="#!/api/draw2d.shape.node.HorizontalBus" rel="draw2d.shape.node.HorizontalBus" class="docClass">draw2d.shape.node.HorizontalBus</a></li>
+<li><a href="#!/api/draw2d.shape.node.Hub" rel="draw2d.shape.node.Hub" class="docClass">draw2d.shape.node.Hub</a></li>
+<li><a href="#!/api/draw2d.shape.node.Node" rel="draw2d.shape.node.Node" class="docClass">draw2d.shape.node.Node</a></li>
+<li><a href="#!/api/draw2d.shape.node.Start" rel="draw2d.shape.node.Start" class="docClass">draw2d.shape.node.Start</a></li>
+<li><a href="#!/api/draw2d.shape.node.VerticalBus" rel="draw2d.shape.node.VerticalBus" class="docClass">draw2d.shape.node.VerticalBus</a></li>
+<li><a href="#!/api/draw2d.shape.note.PostIt" rel="draw2d.shape.note.PostIt" class="docClass">draw2d.shape.note.PostIt</a></li>
+<li><a href="#!/api/draw2d.shape.pert.Activity" rel="draw2d.shape.pert.Activity" class="docClass">draw2d.shape.pert.Activity</a></li>
+<li><a href="#!/api/draw2d.shape.pert.Start" rel="draw2d.shape.pert.Start" class="docClass">draw2d.shape.pert.Start</a></li>
+<li><a href="#!/api/draw2d.shape.state.Connection" rel="draw2d.shape.state.Connection" class="docClass">draw2d.shape.state.Connection</a></li>
+<li><a href="#!/api/draw2d.shape.state.End" rel="draw2d.shape.state.End" class="docClass">draw2d.shape.state.End</a></li>
+<li><a href="#!/api/draw2d.shape.state.Start" rel="draw2d.shape.state.Start" class="docClass">draw2d.shape.state.Start</a></li>
+<li><a href="#!/api/draw2d.shape.state.State" rel="draw2d.shape.state.State" class="docClass">draw2d.shape.state.State</a></li>
+<li><a href="#!/api/draw2d.shape.widget.Slider" rel="draw2d.shape.widget.Slider" class="docClass">draw2d.shape.widget.Slider</a></li>
+<li><a href="#!/api/draw2d.shape.widget.Widget" rel="draw2d.shape.widget.Widget" class="docClass">draw2d.shape.widget.Widget</a></li>
+</ul>
+</div>
+<div class='right-column'>
+<h3>storage</h3>
+<ul class='links'>
+<li><a href="#!/api/draw2d.storage.FileStorage" rel="draw2d.storage.FileStorage" class="docClass">draw2d.storage.FileStorage</a></li>
+<li><a href="#!/api/draw2d.storage.GoogleDrive" rel="draw2d.storage.GoogleDrive" class="docClass">draw2d.storage.GoogleDrive</a></li>
+<li><a href="#!/api/draw2d.storage.LocalFileStorage" rel="draw2d.storage.LocalFileStorage" class="docClass">draw2d.storage.LocalFileStorage</a></li>
+<li><a href="#!/api/draw2d.storage.TideSDKStorage" rel="draw2d.storage.TideSDKStorage" class="docClass">draw2d.storage.TideSDKStorage</a></li>
+</ul>
+<h3>ui</h3>
+<ul class='links'>
+<li><a href="#!/api/draw2d.ui.LabelEditor" rel="draw2d.ui.LabelEditor" class="docClass">draw2d.ui.LabelEditor</a></li>
+<li><a href="#!/api/draw2d.ui.LabelInplaceEditor" rel="draw2d.ui.LabelInplaceEditor" class="docClass">draw2d.ui.LabelInplaceEditor</a></li>
+</ul>
+<h3>util</h3>
+<ul class='links'>
+<li><a href="#!/api/draw2d.util.ArrayList" rel="draw2d.util.ArrayList" class="docClass">draw2d.util.ArrayList</a></li>
+<li><a href="#!/api/draw2d.util.Color" rel="draw2d.util.Color" class="docClass">draw2d.util.Color</a></li>
+<li><a href="#!/api/draw2d.util.UUID" rel="draw2d.util.UUID" class="docClass">draw2d.util.UUID</a></li>
+<li><a href="#!/api/draw2d.util.spline.BezierSpline" rel="draw2d.util.spline.BezierSpline" class="docClass">draw2d.util.spline.BezierSpline</a></li>
+<li><a href="#!/api/draw2d.util.spline.CatmullRomSpline" rel="draw2d.util.spline.CatmullRomSpline" class="docClass">draw2d.util.spline.CatmullRomSpline</a></li>
+<li><a href="#!/api/draw2d.util.spline.CubicSpline" rel="draw2d.util.spline.CubicSpline" class="docClass">draw2d.util.spline.CubicSpline</a></li>
+<li><a href="#!/api/draw2d.util.spline.Spline" rel="draw2d.util.spline.Spline" class="docClass">draw2d.util.spline.Spline</a></li>
+</ul>
+<h3>Others...</h3>
+<ul class='links'>
+<li><a href="#!/api/draw2d.Canvas" rel="draw2d.Canvas" class="docClass">draw2d.Canvas</a></li>
+<li><a href="#!/api/draw2d.Corona" rel="draw2d.Corona" class="docClass">draw2d.Corona</a></li>
+<li><a href="#!/api/draw2d.Figure" rel="draw2d.Figure" class="docClass">draw2d.Figure</a></li>
+<li><a href="#!/api/draw2d.HybridPort" rel="draw2d.HybridPort" class="docClass">draw2d.HybridPort</a></li>
+<li><a href="#!/api/draw2d.InputPort" rel="draw2d.InputPort" class="docClass">draw2d.InputPort</a></li>
+<li><a href="#!/api/draw2d.OutputPort" rel="draw2d.OutputPort" class="docClass">draw2d.OutputPort</a></li>
+<li><a href="#!/api/draw2d.Port" rel="draw2d.Port" class="docClass">draw2d.Port</a></li>
+<li><a href="#!/api/draw2d.ResizeHandle" rel="draw2d.ResizeHandle" class="docClass">draw2d.ResizeHandle</a></li>
+<li><a href="#!/api/draw2d.SVGFigure" rel="draw2d.SVGFigure" class="docClass">draw2d.SVGFigure</a></li>
+<li><a href="#!/api/draw2d.Selection" rel="draw2d.Selection" class="docClass">draw2d.Selection</a></li>
+<li><a href="#!/api/draw2d.SetFigure" rel="draw2d.SetFigure" class="docClass">draw2d.SetFigure</a></li>
+<li><a href="#!/api/draw2d.VectorFigure" rel="draw2d.VectorFigure" class="docClass">draw2d.VectorFigure</a></li>
+</ul>
+</div>
+<div style='clear:both'></div>
+</div>
+<div class='section'>
+<h1>Others...</h1>
+<div class='left-column'>
+<h3>Others...</h3>
+<ul class='links'>
+<li><a href="#!/api/global" rel="global" class="docClass">global</a></li>
+</ul>
+</div>
+<div class='middle-column'>
+</div>
+<div class='right-column'>
+</div>
+<div style='clear:both'></div>
+</div>
+          </div>
+
+  
+          <div id='guides-content' style='display:none'>
+            <h3>Imports and basic setup</h3>
+<ul>
+<li><a href='#!/guide/doctype'>Doctype</a></li>
+<li><a href='#!/guide/required_imports'>Required Imports</a></li>
+<li><a href='#!/guide/init'>Initializing Draw2D</a></li>
+</ul>
+<h3>Basic Concepts</h3>
+<ul>
+<li><a href='#!/guide/overview'>Overview</a></li>
+<li><a href='#!/guide/nodes'>Nodes</a></li>
+<li><a href='#!/guide/ports'>Ports</a></li>
+<li><a href='#!/guide/connectors'>Connectors</a></li>
+<li><a href='#!/guide/anchors'>Anchors</a></li>
+<li><a href='#!/guide/locators'>Locators</a></li>
+</ul>
+<h3>Create simple Shapes</h3>
+<ul>
+<li><a href='#!/guide/extending_set_figure'>Inherit from SetFigure</a></li>
+<li><a href='#!/guide/extending_svg_figure'>Inherit from SVGFigure</a></li>
+</ul>
+<h3>Tweaking the Default</h3>
+<ul>
+<li><a href='#!/guide/default_drag_drop'>Drag&Drop call sequence</a></li>
+<li><a href='#!/guide/connection_creation'>Connection creation</a></li>
+</ul>
+        </div>
+
+  <div id='footer-content' style='display: none'>Copyright 2012 Andreas Herz</div>
+
+  
+
+  <script type="text/javascript">
+  (function(){
+    var protocol = (document.location.protocol === "https:") ? "https:" : "http:";
+    document.write("<link href='"+protocol+"//fonts.googleapis.com/css?family=Exo' rel='stylesheet' type='text/css' />");
+  })();
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js">
+<span id='draw2d-shape-note-PostIt'>/**
+</span> * @class draw2d.shape.note.PostIt
+ * 
+ * Simple Post-it like figure with text. Can be used for annotations or documentation.
+ * 
+ * See the example:
+ *
+ *     @example preview small frame
+ *     
+ *     var shape =  new draw2d.shape.note.PostIt({
+ *        text:&quot;This is a simple sticky note&quot;, 
+ *        color:&quot;#000000&quot;, 
+ *        padding:20
+ *     });
+ *          
+ *     canvas.add(shape,40,10);
+ *     
+ * @author Andreas Herz
+ * @extends draw2d.shape.basic.Label
+ */
+draw2d.shape.note.PostIt= draw2d.shape.basic.Label.extend({
+
+	NAME : &quot;draw2d.shape.note.PostIt&quot;,
+
+<span id='draw2d-shape-note-PostIt-method-constructor'>    /**
+</span>     * @constructor
+     * 
+     * @param {Object} [attr] the configuration of the shape
+     */
+    init: function(attr, setter, getter )
+    {
+        this._super(attr);
+         
+        this.setStroke(1);
+        this.setBackgroundColor(&quot;#5b5b5b&quot;);
+        this.setColor(&quot;#FFFFFF&quot;);
+        this.setFontColor(&quot;#ffffff&quot;);
+        this.setFontSize(14);
+        this.setPadding(5);
+        this.setRadius(5);
+    }
+});
+
+
+
+</pre>
+</body>
+</html>

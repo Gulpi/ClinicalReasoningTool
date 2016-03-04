@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js">
+<span id='draw2d-shape-node-End'>/**
+</span> * @class draw2d.shape.node.End
+ * A simple Node which has a InputPort. Mainly used for demo and examples.
+ * 
+ * See the example:
+ *
+ *     @example preview small frame
+ *     
+ *     var figure =  new draw2d.shape.node.End({color: &quot;#3d3d3d&quot;});
+ *     
+ *     canvas.add(figure,50,10);
+ *     
+ * @extends draw2d.shape.basic.Rectangle
+ */
+draw2d.shape.node.End = draw2d.shape.basic.Rectangle.extend({
+
+    NAME : &quot;draw2d.shape.node.End&quot;,
+
+    DEFAULT_COLOR : new draw2d.util.Color(&quot;#4D90FE&quot;),
+	
+<span id='draw2d-shape-node-End-method-constructor'>    /**
+</span>     * @constructor
+     * 
+     * @param {Object} [attr] the configuration of the shape
+     */
+    init: function(attr, setter, getter )
+    {
+        this._super($.extend({bgColor:this.DEFAULT_COLOR, color:this.DEFAULT_COLOR.darker() ,width:50, height:50},attr), setter, getter);
+
+        this.createPort(&quot;input&quot;);
+
+    }
+
+});
+</pre>
+</body>
+</html>

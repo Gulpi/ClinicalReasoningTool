@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js">
+<span id='draw2d-Selection'>/**
+</span> * @class draw2d.Selection
+ * 
+ * Represents the current selection in the canvas. The selection element is a pure passive element which 
+ * manage/store the selection.
+ * 
+ * 
+ * @author Andreas Herz
+ */
+draw2d.Selection = Class.extend({
+    
+    NAME : &quot;draw2d.Selection&quot;,
+
+<span id='draw2d-Selection-method-constructor'>    /**
+</span>     * @constructor
+     * Creates a new figure element which are not assigned to any canvas.
+     * 
+     */
+    init: function() {
+        this.primary = null;
+        this.all = new draw2d.util.ArrayList();
+    },
+
+<span id='draw2d-Selection-method-clear'>    /**
+</span>     * Reset the current selection
+     * 
+     */
+    clear: function()
+    {
+        this.primary = null;
+        this.all = new draw2d.util.ArrayList();
+    },
+    
+<span id='draw2d-Selection-method-getPrimary'>    /**
+</span>     * @method
+     * Return the primary selection. This can only one figure at once.
+     * 
+     * @return {draw2d.Figure} the primary selected figure
+     */
+    getPrimary: function(  )
+    {
+        return this.primary;
+    },
+ 
+<span id='draw2d-Selection-method-setPrimary'>    /**
+</span>     * @method
+     * Set the primary selection.
+     * 
+     * @param {draw2d.Figure} figure The new primary selection
+     */
+    setPrimary: function(figure)
+    {
+        this.primary = figure;
+        this.add(figure);
+    },
+    
+<span id='draw2d-Selection-method-remove'>    /**
+</span>     * @method
+     * Remove the given figure from the selection (primary,all)
+     * 
+     * @param {draw2d.Figure} figure
+     */
+    remove: function(figure)
+    {
+        this.all.remove(figure);
+        if(this.primary===figure){
+            this.primary = null;
+        }
+    },
+
+<span id='draw2d-Selection-method-add'>    /**
+</span>     * @method
+     * Add a figure to the selection. No events are fired or update the selection handle. This method just
+     * add the figure to the internal management data structure.
+     * 
+     * @param figure
+     * @private
+     */
+    add: function(figure)
+    {
+        if(figure!==null &amp;&amp; !this.all.contains(figure)){
+            this.all.add(figure);
+        }
+    },
+ 
+    
+<span id='draw2d-Selection-method-contains'>    /**
+</span>     * @method
+     * return true if the given figure part of the selection.
+     * 
+     * @param {draw2d.Figure} figure The figure to check
+     * @param {boolean} checkDescendant Check if the figure provided by the argument is a descendant of the selection whether it is a direct child or nested more deeply.
+     * @since 2.2.0
+     */
+    contains: function(figure, checkDescendant)
+    {
+        if(checkDescendant){
+            var i=0;
+            for(i=0; i&lt;this.all.getSize();i++){
+                var figureToCheck = this.all.get(i);
+                if(figureToCheck===figure || figureToCheck.contains(figure)){
+                    return true;
+                }
+            }
+            return false;
+        }
+        return this.all.contains(figure);
+    },
+
+<span id='draw2d-Selection-method-getSize'>    /**
+</span>     * @method
+     * Return the size of the selection
+     * 
+     * @since 4.8.0
+     */
+    getSize: function()
+    {
+        return this.all.getSize();
+    },
+    
+<span id='draw2d-Selection-method-getAll'>    /**
+</span>     * @method
+     * Return the complete selection - including the primary selection.
+     *
+     * @param {boolean} expand expand all StrongComposite and WeakComposite to get all figures. Didn&#39;t expand any SetFigures or LayoutFigures
+     * @return {draw2d.util.ArrayList}
+     *
+     */
+    getAll: function(expand)
+    {
+        if(expand ===true){
+            var result = new draw2d.util.ArrayList();
+            var addRecursive = function(figures){
+                result.addAll(figures,true);
+                figures.each(function(index, figure){
+                    if(figure instanceof draw2d.shape.composite.StrongComposite){
+                        addRecursive(figure.getAssignedFigures());
+                    }
+                });
+            };
+            addRecursive(this.all);
+
+            return result;
+        }
+
+        return this.all.clone();
+    },
+    
+<span id='draw2d-Selection-method-each'>    /**
+</span>     * @method
+     * @param func
+     */
+    each: function( func){
+        this.all.each(func);
+        
+        return this;
+    }
+});</pre>
+</body>
+</html>

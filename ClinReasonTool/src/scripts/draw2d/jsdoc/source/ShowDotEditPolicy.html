@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js">
+<span id='draw2d-policy-canvas-ShowDotEditPolicy'>/**
+</span> * @class draw2d.policy.canvas.ShowDotEditPolicy
+ * 
+ * Paint a dotted pattern in the background of the canvas.
+ * 
+ * 
+ * @author Andreas Herz
+ * 
+ * @extends draw2d.policy.canvas.CanvasPolicy
+ * @since 4.0.1
+ */
+draw2d.policy.canvas.ShowDotEditPolicy = draw2d.policy.canvas.CanvasPolicy.extend({
+
+    NAME : &quot;draw2d.policy.canvas.ShowDotEditPolicy&quot;,
+    
+    DOT_COLOR  : &quot;#999999&quot;,
+    DOT_RADIUS  : 1,
+    DOT_DISTANCE : 20,
+    
+<span id='draw2d-policy-canvas-ShowDotEditPolicy-method-constructor'>    /**
+</span>     * @constructor 
+     * show a dot grid in the canvas for decoration.
+     * 
+     * @param {Number} [dotDistance] the distance or grid width between the dots.
+     * @param {Number} [dotRadius] the radius of the dots.
+     * @param {draw2d.util.Color|String} [dotColor] the color for the dots.
+     */
+    init: function( dotDistance, dotRadius, dotColor)
+    {
+        this._super();
+
+        this.dotDistance = dotDistance ? dotDistance : this.DOT_DISTANCE;
+        this.dotRadius = dotRadius ? dotRadius : this.DOT_RADIUS;
+        this.dotColor = new draw2d.util.Color(dotColor ? dotColor : this.DOT_COLOR);
+               
+        // generate the background pattern with an data URL GIF image. This is much faster than draw
+        // the pattern via the canvas and the raphael.circle method
+        //
+        var mypixels = Array(this.dotDistance*this.dotDistance);
+        // set the pixel at the coordinate [0,0] as opaque.       
+        mypixels[0] = 1;
+        this.imageDataURL = this.createMonochromGif(this.dotDistance, this.dotDistance, mypixels, this.dotColor);
+    },
+
+    onInstall: function(canvas)
+    {
+        this._super(canvas);
+        this.oldBg =  this.canvas.html.css(&quot;background-image&quot;);
+        $(canvas.paper.canvas).css({&quot;background-image&quot;: &quot;url(&#39;&quot;+this.imageDataURL+&quot;&#39;)&quot;});
+    },
+    
+    onUninstall: function(canvas)
+    {
+        this._super(canvas);
+        $(canvas.paper.canvas).css({&quot;background-image&quot;: this.oldBg});
+    }
+    
+
+});</pre>
+</body>
+</html>

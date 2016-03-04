@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js">
+<span id='draw2d-command-CommandAddVertex'>/**
+</span> * @class draw2d.command.CommandAddVertex
+ * 
+ * Add a vertex to a polyline or polygon
+ *
+ * @inheritable
+ * @author Andreas Herz
+ * 
+ * @extends draw2d.command.Command
+ */
+draw2d.command.CommandAddVertex = draw2d.command.Command.extend({
+    NAME : &quot;draw2d.command.CommandAddVertex&quot;, 
+  
+<span id='draw2d-command-CommandAddVertex-method-constructor'>    /**
+</span>     * @constructor
+     * Create a new Command objects which add a vertex to a PolyLine / Polygon.
+     *
+     * @param {draw2d.shape.basic.PolyLine} line the related line
+     * @param {Number} index the index where to add
+     * @param {Number} x the x coordinate for the new vertex
+     * @param {Number} y the y coordinate for the new vertex
+     */
+    init: function(line, index, x ,y)
+    {
+        this._super(draw2d.Configuration.i18n.command.addVertex);
+        
+        this.line = line;
+        this.index = index;
+        this.newPoint = new draw2d.geo.Point(x,y);
+    },
+    
+  
+<span id='draw2d-command-CommandAddVertex-method-canExecute'>    /**
+</span>     * @method
+     * Returns [true] if the command can be execute and the execution of the
+     * command modify the model. A CommandMove with [startX,startX] == [endX,endY] should
+     * return false. &lt;br&gt;
+     * the execution of the Command doesn&#39;t modify the model.
+     *
+     * @return {boolean}
+     **/
+    canExecute:function()
+    {
+      // return false if we doesn&#39;t modify the model =&gt; NOP Command
+      return true;
+    },
+    
+<span id='draw2d-command-CommandAddVertex-method-execute'>    /**
+</span>     * @method
+     * Execute the command the first time
+     * 
+     **/
+    execute:function()
+    {
+       this.redo();
+    },
+    
+<span id='draw2d-command-CommandAddVertex-method-undo'>    /**
+</span>     * @method
+     *
+     * Undo the move command
+     *
+     **/
+    undo:function()
+    {
+        this.line.removeVertexAt(this.index);
+    },
+    
+<span id='draw2d-command-CommandAddVertex-method-redo'>    /**
+</span>     * @method
+     * 
+     * Redo the move command after the user has undo this command
+     *
+     **/
+    redo:function()
+    {
+        this.line.insertVertexAt(this.index, this.newPoint.x, this.newPoint.y);
+    }
+});</pre>
+</body>
+</html>

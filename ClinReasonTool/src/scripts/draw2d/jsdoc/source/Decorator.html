@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='draw2d-decoration-connection-Decorator'>/**
+</span> * @class draw2d.decoration.connection.Decorator 
+ * 
+ * 
+ * @inheritable
+ * @author Andreas Herz
+ */
+draw2d.decoration.connection.Decorator = Class.extend({
+
+	NAME : &quot;draw2d.decoration.connection.Decorator&quot;,
+
+<span id='draw2d-decoration-connection-Decorator-method-constructor'>	/**
+</span>	 * @constructor 
+	 */
+	init: function(width, height) {
+
+        if(typeof width === &quot;undefined&quot; || width&lt;1){
+            this.width  = 20;
+        }
+        else{
+            this.width = width;
+        }
+        
+        if(typeof height === &quot;undefined&quot; || height&lt;1){
+            this.height = 15;
+        }
+        else{
+            this.height = height;
+        }
+        
+		this.color = new draw2d.util.Color(0, 0, 0);
+		this.backgroundColor = new  draw2d.util.Color(250, 250, 250);
+	},
+
+<span id='draw2d-decoration-connection-Decorator-method-paint'>	/**
+</span>	 * @method
+	 * Paint the decoration for a connector. The Connector starts always in
+	 * [0,0] and ends in [x,0].
+	 * It is not necessary to consider any rotation of the connection. This will be done by the 
+	 * framework.
+	 * 
+	 * &lt;pre&gt;
+	 *                | -Y
+	 *                |
+	 *                |
+	 *  --------------+-----------------------------&amp;gt; +X
+	 *                |
+	 *                |
+	 *                |
+	 *                V +Y
+	 * 
+	 * 
+	 * &lt;/pre&gt;
+	 * 
+	 * See in ArrowConnectionDecorator for example implementation.
+	 * @param {Raphael} paper
+	 */
+	paint : function(paper) {
+		// do nothing per default
+	},
+
+<span id='draw2d-decoration-connection-Decorator-method-setColor'>	/**
+</span>	 * @method
+	 * Set the stroke color for the decoration
+	 * 
+	 * @param {draw2d.util.Color|String} c
+	 */
+	setColor : function(c) {
+		this.color = new draw2d.util.Color(c);
+		
+		return this;
+	},
+
+<span id='draw2d-decoration-connection-Decorator-method-setBackgroundColor'>	/**
+</span>	 * @method
+	 * Set the background color for the decoration
+	 * 
+	 * @param {draw2d.util.Color|String} c
+	 */
+	setBackgroundColor : function(c) {
+		this.backgroundColor = new draw2d.util.Color(c);
+		
+		return this;
+	},
+	
+<span id='draw2d-decoration-connection-Decorator-method-setDimension'>	/**
+</span>	 * @method
+     * Change the dimension of the decoration shape
+     *
+     * @param {Number} width  The new width of the decoration
+     * @param {Number} height The new height of the decoration
+     **/
+    setDimension:function( width, height)
+    {
+        this.width=width;
+        this.height=height;
+        
+        return this;
+    }
+	
+});</pre>
+</body>
+</html>

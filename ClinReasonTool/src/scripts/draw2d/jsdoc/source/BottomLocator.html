@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js">
+<span id='draw2d-layout-locator-BottomLocator'>/**
+</span> * @class draw2d.layout.locator.BottomLocator
+ * 
+ * A bottomLocator is used to place figures at the bottom of a parent shape.
+ *
+ * 
+ * See the example:
+ *
+ *     @example preview small frame
+ *     
+ *
+ *     // create a basic figure and add a Label/child via API call
+ *     //
+ *     var circle = new draw2d.shape.basic.Circle({
+ *         x:100,
+ *         y:50,
+ *         diameter:120,
+ *         stroke: 3,
+ *         color:&quot;#A63343&quot;,
+ *         bgColor:&quot;#E65159&quot;
+ *     });
+ *     
+ *     circle.add(new draw2d.shape.basic.Label({text:&quot;Bottom Label&quot;}), new draw2d.layout.locator.BottomLocator());    
+ *     canvas.add( circle);
+ *
+ *
+ * @author Andreas Herz
+ * @extend draw2d.layout.locator.Locator
+ */
+draw2d.layout.locator.BottomLocator= draw2d.layout.locator.Locator.extend({
+    NAME : &quot;draw2d.layout.locator.BottomLocator&quot;,
+    
+<span id='draw2d-layout-locator-BottomLocator-method-constructor'>    /**
+</span>     * @constructor
+     * 
+     * 
+     */
+    init: function()
+    {
+      this._super();
+    },
+    
+    
+<span id='draw2d-layout-locator-BottomLocator-method-relocate'>    /**
+</span>     * @method
+     * Relocates the given Figure.
+     *
+     * @param {Number} index child index of the target
+     * @param {draw2d.Figure} target The figure to relocate
+     **/
+    relocate:function(index, target)
+    {
+       var parent = target.getParent();
+       var boundingBox = parent.getBoundingBox();
+       // I made a wrong decision in the port handling: anchor point
+       // is in the center and not topLeft. Now I must correct this flaw here, and there, and...
+       // shit happens.
+       var offset = (parent instanceof draw2d.Port)?boundingBox.w/2:0;
+       
+
+       var targetBoundingBox = target.getBoundingBox();
+       if(target instanceof draw2d.Port){
+           target.setPosition(boundingBox.w/2-offset,boundingBox.h);
+       }
+       else{
+           target.setPosition(boundingBox.w/2-targetBoundingBox.w/2-offset,2+boundingBox.h);
+       }
+    }
+});
+</pre>
+</body>
+</html>

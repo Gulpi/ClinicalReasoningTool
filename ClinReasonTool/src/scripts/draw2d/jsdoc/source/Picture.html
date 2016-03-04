@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js">
+<span id='draw2d-shape-icon-Picture'>/**
+</span> * @class draw2d.shape.icon.Picture
+
+ * See the example:
+ *
+ *     @example preview small frame
+ *     
+ *     var icon =  new draw2d.shape.icon.Picture();
+ *     
+ *     canvas.add(icon,50,10);
+ *     
+ * @inheritable
+ * @author Andreas Herz
+ * @extends draw2d.shape.icon.Icon
+ */
+draw2d.shape.icon.Picture = draw2d.shape.icon.Icon.extend({
+    NAME : &quot;draw2d.shape.icon.Picture&quot;,
+
+<span id='draw2d-shape-icon-Picture-method-constructor'>    /**
+</span>     * 
+     * @constructor
+     * Creates a new icon element which are not assigned to any canvas.
+     * 
+     * @param {Object} attr the configuration of the shape
+     */
+    init: function(attr, setter, getter ) {
+      this._super($.extend({width:50,height:50},attr), setter, getter);
+    },
+
+<span id='draw2d-shape-icon-Picture-method-createSet'>    /**
+</span>     * @private
+     * @returns
+     */
+    createSet : function() {
+        return this.canvas.paper.path(&quot;M2.5,4.833v22.334h27V4.833H2.5zM25.25,25.25H6.75V6.75h18.5V25.25zM11.25,14c1.426,0,2.583-1.157,2.583-2.583c0-1.427-1.157-2.583-2.583-2.583c-1.427,0-2.583,1.157-2.583,2.583C8.667,12.843,9.823,14,11.25,14zM24.251,16.25l-4.917-4.917l-6.917,6.917L10.5,16.333l-2.752,2.752v5.165h16.503V16.25z&quot;);
+    }
+});
+
+</pre>
+</body>
+</html>

@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js">
+<span id='draw2d-shape-basic-VertexResizeHandle'>/**
+</span> * @class draw2d.shape.basic.VertexResizeHandle
+ * 
+ * Selection handle for polyline vertices.
+ * 
+ *
+ * @inheritable
+ * @author Andreas Herz
+ * @extends draw2d.ResizeHandle 
+ */
+draw2d.shape.basic.VertexResizeHandle = draw2d.ResizeHandle.extend({
+    NAME : &quot;draw2d.shape.basic.VertexResizeHandle&quot;,
+
+    SNAP_THRESHOLD   : 3,
+    LINE_COLOR       : &quot;#1387E6&quot;,
+    FADEOUT_DURATION : 300,
+
+    init: function( figure, index) {
+        this._super(figure);
+        this.index = index;
+        this.isDead = false;
+        
+        this.vline = null;
+        this.hline = null;
+    },
+   
+    
+<span id='draw2d-shape-basic-VertexResizeHandle-method-onDoubleClick'>    /**
+</span>     * @method
+     * Called when a user double clicks on the element
+     * 
+     * @template
+     */
+    onDoubleClick: function()
+    {
+       	var cmd  = new draw2d.command.CommandRemoveVertex(this.owner, this.index );
+        this.getCanvas().getCommandStack().execute(cmd);
+
+        this.isDead = true;
+    },
+    
+    
+<span id='draw2d-shape-basic-VertexResizeHandle-method-onDragStart'>    /**
+</span>     * @method
+     * Called if a drag&amp;drop operation starts.&lt;br&gt;
+     *
+     * @param {Number} x the x-coordinate of the mouse up event
+     * @param {Number} y the y-coordinate of the mouse up event
+     * @param {Boolean} shiftKey true if the shift key has been pressed during this event
+     * @param {Boolean} ctrlKey true if the ctrl key has been pressed during the event
+     * @private
+     **/
+    onDragStart : function(x,y, shiftKey, ctrlKey)
+    {
+    	if(this.isDead===true){
+    		return;
+    	}
+    	
+        this._super();
+        this.command = this.getCanvas().getCurrentSelection().createCommand(new draw2d.command.CommandType(draw2d.command.CommandType.MOVE_VERTEX));
+        if(this.command!=null){
+            this.command.setIndex(this.index);
+            this.setAlpha(0.2);
+            this.shape.attr({&quot;cursor&quot;:&quot;crosshair&quot;});
+        }
+        
+        // Vertex is a reference and not a copy of the point
+        this.vertex = this.owner.getVertex(this.index).clone();
+        
+        // fire an event
+        // @since 5.3.3
+        this.fireEvent(&quot;dragstart&quot;,{x:x, y:y, shiftKey:shiftKey, ctrlKey:ctrlKey});
+
+        return true;
+    },
+    
+<span id='draw2d-shape-basic-VertexResizeHandle-method-onDrag'>    /**
+</span>     * @method
+     * Called from the framework during a drag&amp;drop operation
+     * 
+     * @param {Number} dx the x difference between the start of the drag drop operation and now
+     * @param {Number} dy the y difference between the start of the drag drop operation and now
+     * @param {Number} dx2 The x diff since the last call of this dragging operation
+     * @param {Number} dy2 The y diff since the last call of this dragging operation
+     * @return {boolean}
+     **/
+    onDrag : function(dx, dy, dx2, dy2) 
+    {
+        if (this.isDead===true || this.command == null) {
+            return false;
+        }
+
+        this.setPosition(this.x + dx2, this.y + dy2);
+
+        // update the polyline for immediately  drag&amp;drop feedback
+        //
+        this.vertex.translate(dx2, dy2);
+        this.owner.setVertex(this.index, this.vertex.x, this.vertex.y);
+        
+        // update the command for the undo/redo stuff
+        //
+        this.command.updatePosition(this.vertex.x, this.vertex.y);
+        
+        // show snapTo lines
+        //
+        var points = this.owner.getVertices();
+        var size = points.getSize();
+        var left   = points.get((this.index-1 +size)%size); // % is just to ensure the [0, size] interval
+        var right  = points.get((this.index+1)%size);       // % is just to ensure the [0, size] interval
+        
+        // horizontal guided line
+        //
+        if(Math.abs(left.x - this.vertex.x)&lt;this.SNAP_THRESHOLD){
+        	this.showVerticalLine(left.x);
+        }
+        else if( Math.abs(right.x - this.vertex.x)&lt;this.SNAP_THRESHOLD){
+        	this.showVerticalLine(right.x);
+        }
+        else{
+        	this.hideVerticalLine();
+        }
+        
+        // horizontal guided line
+        //
+        if(Math.abs(left.y - this.vertex.y)&lt;this.SNAP_THRESHOLD){
+        	this.showHorizontalLine(left.y);
+        }
+        else if( Math.abs(right.y - this.vertex.y)&lt;this.SNAP_THRESHOLD){
+        	this.showHorizontalLine(right.y);
+        }
+        else{
+        	this.hideHorizontalLine();
+        }
+
+        
+        return true;
+    },
+    
+<span id='draw2d-shape-basic-VertexResizeHandle-method-Called'>    /**
+</span>     * @method Called after a drag and drop action.&lt;br&gt;
+     *         Sub classes can override this method to implement additional stuff. Don&#39;t forget to call the super implementation via &lt;code&gt;this._super();&lt;/code&gt;
+     *         
+     * @param {Number} x the x-coordinate of the mouse event
+     * @param {Number} y the y-coordinate of the mouse event
+     * @param {Boolean} shiftKey true if the shift key has been pressed during this event
+     * @param {Boolean} ctrlKey true if the ctrl key has been pressed during the event
+     * 
+     * @return {boolean}
+     */
+    onDragEnd : function( x, y, shiftKey, ctrlKey)
+    {
+        if (this.isDead===true || this.command===null) {
+            return false;
+        }
+
+        this.shape.attr({&quot;cursor&quot;:&quot;move&quot;});
+        this.hideVerticalLine();
+        this.hideHorizontalLine();
+        
+        // snapTo
+        var points = this.owner.getVertices();
+        var size = points.getSize();
+        var left   = points.get((this.index-1 +size)%size); // % is just to ensure the [0, size] interval
+        var right  = points.get((this.index+1)%size);       // % is just to ensure the [0, size] interval
+        
+        // Vertical snapTo
+        //
+        if(Math.abs(left.x - this.vertex.x)&lt;this.SNAP_THRESHOLD){
+            this.command.updatePosition(left.x, this.vertex.y);
+        }
+        else if( Math.abs(right.x - this.vertex.x)&lt;this.SNAP_THRESHOLD){
+            this.command.updatePosition(right.x, this.vertex.y);
+        }
+
+        // horizontal snapTo
+        //
+        if(Math.abs(left.y - this.vertex.y)&lt;this.SNAP_THRESHOLD){
+            this.command.updatePosition(this.vertex.x, left.y);
+        }
+        else if( Math.abs(right.y - this.vertex.y)&lt;this.SNAP_THRESHOLD){
+            this.command.updatePosition(this.vertex.x, right.y);
+        }
+        
+        var stack = this.getCanvas().getCommandStack();
+        
+        stack.startTransaction();
+        try{
+	        stack.execute(this.command);
+	        this.command = null;
+
+	        var angle = this.getEnclosingAngle();
+	        if(angle&gt;178){
+	           	var cmd  = new draw2d.command.CommandRemoveVertex(this.owner, this.index );
+	            stack.execute(cmd);
+	        }
+        }
+        finally{
+        	stack.commitTransaction();
+        }
+        
+        this.setAlpha(1);
+
+        // fire an event
+        // @since 5.3.3
+        this.fireEvent(&quot;dragend&quot;,{x:x, y:y, shiftKey:shiftKey, ctrlKey:ctrlKey});
+    },
+    
+    
+<span id='draw2d-shape-basic-VertexResizeHandle-method-relocate'>    /**
+</span>     * @method
+     * Controls the location of the resize handle 
+     *
+     * @template
+     **/
+    relocate:function()
+    {
+
+        var resizeWidthHalf = this.getWidth()/2;
+        var resizeHeightHalf= this.getHeight()/2;
+
+        var anchor = this.owner.getVertex(this.index);
+    		
+  		this.setPosition(anchor.x-resizeWidthHalf,anchor.y-resizeHeightHalf);
+    },
+    
+<span id='draw2d-shape-basic-VertexResizeHandle-method-getEnclosingAngle'>    /**
+</span>     * @method
+     * Calculates the angle between the siblings 
+     * 
+     * @returns {Number}
+     */
+    getEnclosingAngle:function()
+    {
+        // calculate the angle between the siblings
+        var points = this.owner.getVertices();
+        var trans  = this.vertex.getScaled(-1);
+        var size = points.getSize();
+        var left   = points.get((this.index-1 +size)%size).translated(trans); // % is just to ensure the [0, size] interval
+        var right  = points.get((this.index+1)%size).translated(trans);       // % is just to ensure the [0, size] interval
+        
+        var dot = left.dot(right);
+        
+        var acos = Math.acos(dot/(left.length() * right.length()));
+        return acos*180/Math.PI;
+    },
+    
+    showVerticalLine:function(x)
+    {
+        if(this.vline!=null){
+            return; //silently
+        }
+        this.vline = this.canvas.paper
+                        .path(&quot;M &quot; + x + &quot; 0 l 0 &quot; + this.canvas.getHeight())
+                        .attr({&quot;stroke&quot;:this.LINE_COLOR,&quot;stroke-width&quot;:1});
+    },
+    
+    hideVerticalLine:function()
+    {
+        if(this.vline==null){
+            return;
+        }
+        var tmp = this.vline;
+        tmp.animate({
+            opacity: 0.1
+        }, this.FADEOUT_DURATION,function(){
+            tmp.remove();
+        });
+        
+        this.vline = null;
+    },
+
+    
+    showHorizontalLine:function(y)
+    {
+        if(this.hline!=null){
+            return;
+        }
+        
+        this.hline = this.canvas.paper
+                      .path(&quot;M 0 &quot; + y + &quot; l &quot; + this.canvas.getWidth() + &quot; 0&quot;)
+                      .attr({&quot;stroke&quot;:this.LINE_COLOR,&quot;stroke-width&quot;:1});
+    },
+
+    hideHorizontalLine:function()
+    {
+        if(this.hline==null){
+            return; //silently
+        }
+        var tmp = this.hline;
+        tmp.animate({
+            opacity: 0.1
+        }, this.FADEOUT_DURATION,function(){
+            tmp.remove();
+        });
+        this.hline = null;
+    }
+
+});</pre>
+</body>
+</html>

@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="beans.relation">
+
+	<class name="RelationProblem" table="crt.relation">
+		<cache usage="nonstrict-read-write" />
+		<comment>Problem Relation</comment>	
+	
+		<composite-id>
+			<key-property name="destId" column="dest_id" type="long" />
+			<key-property name="sourceId" column="source_id" type="long"/>	
+		</composite-id>
+</class>
+</hibernate-mapping>

@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js">
+<span id='draw2d-SVGFigure'>/**
+</span> * @class draw2d.SVGFigure
+ * Abstract class which can handle plain SVG content. Inherit class must override the method
+ * &lt;code&gt;getSVG()&lt;/code&gt;.
+ * 
+ * @author Andreas Herz
+ * @extends draw2d.shape.basic.Rectangle
+ */
+draw2d.SVGFigure = draw2d.SetFigure.extend({
+    
+    NAME : &quot;draw2d.SVGFigure&quot;,
+
+<span id='draw2d-SVGFigure-method-constructor'>    /**
+</span>     * @constructor
+     * Creates a new figure element which are not assigned to any canvas.
+     * 
+     * @param {Object} [attr] the configuration of the shape
+     */
+    init: function(attr) 
+    {
+      this._super(attr);
+    },
+
+<span id='draw2d-SVGFigure-method-createSet'>    /**
+</span>     * @inheritdoc
+     */
+    createSet : function() 
+    {
+		return this.importSVG(this.canvas, this.getSVG());
+	},
+    
+<span id='draw2d-SVGFigure-method-importSVG'>    /**
+</span>     * @private
+     */
+    importSVG : function (canvas, rawSVG) 
+    {
+      
+      var set = canvas.paper.set();
+       
+      try {
+        if (typeof rawSVG === &#39;undefined&#39;){
+          throw &#39;No data was provided.&#39;;
+        }
+        
+        // Override the dimension from the JSON if the SVG contains any
+        //
+        var svgDOM= $(rawSVG);
+        
+        // set the dimension of the element if the JSON import didn&#39;t provide
+        // a dimension already
+        //
+        if(typeof this._dimensionReadFromJSON ===&quot;undefined&quot;){
+            if(svgDOM.attr(&quot;width&quot;) &amp;&amp; svgDOM.attr(&quot;height&quot;)){
+                this.setDimension(parseFloat(svgDOM.attr(&quot;width&quot;)), parseFloat(svgDOM.attr(&quot;height&quot;)));
+            }
+            delete this._dimensionReadFromJSON;
+        }
+        
+        var findStyle = new RegExp(&#39;([a-z0-9\-]+) ?: ?([^ ;]+)[ ;]?&#39;,&#39;gi&#39;);
+        
+        svgDOM.children().each(function(i,element){
+          //element = $(element);
+          var shape=null;
+          var style=null;
+          var attr = { };
+          var node = element.tagName;
+          
+          // remove the namespace of the node if existing. This can happen in IE8
+          //
+          var index = node.indexOf(&quot;:&quot;);
+          if(index != -1)
+              node = node.substr(index+1);
+          
+          // map some element to Raphael specifix attributes or ignore some unknown attributes
+          //
+          $(element.attributes).each(function() {
+            switch(this.nodeName) {
+              case &#39;stroke-dasharray&#39;:
+                attr[this.nodeName] = &#39;- &#39;;
+              break;
+              case &#39;style&#39;:
+                style = this.nodeValue;
+              break;
+              case &#39;id&#39;:
+              case &#39;xml:space&#39;:
+                  // just to ignore
+                  break;
+              default:
+                if(this.value){
+                    attr[this.nodeName] = this.value;
+                }
+                else{
+                    // @deprecated
+                    attr[this.nodeName] = this.nodeValue;
+                }
+              break;
+            }
+          });
+          
+          
+          if ( style !== null){
+            while(findStyle.exec(style)){
+              attr[RegExp.$1] = RegExp.$2;
+            }
+          }
+          
+          // set some good defaults if the element didn&#39;t provide a stroke-width but has a &quot;stroke&quot; attribute
+          //
+          if (typeof attr[&#39;stroke-width&#39;] === &#39;undefined&#39;){
+              attr[&#39;stroke-width&#39;] = (typeof attr.stroke === &#39;undefined&#39; ? 0 : 1.2);
+          }
+          
+          switch(node) {
+            case &#39;rect&#39;:
+              shape = canvas.paper.rect();
+              break;
+            case &#39;circle&#39;:
+              shape = canvas.paper.circle();
+              break;
+            case &#39;ellipse&#39;:
+              shape = canvas.paper.ellipse();
+              break;
+            case &#39;path&#39;:
+              attr.fill =&quot;none&quot;;
+              shape = canvas.paper.path(attr.d);
+              break;
+            case &#39;line&#39;:
+              attr.d= &quot;M &quot;+attr.x1+&quot; &quot;+attr.y1+&quot;L&quot;+attr.x2+&quot; &quot;+attr.y2;
+              attr.fill =&quot;none&quot;;
+              shape = canvas.paper.path(attr.d);
+             break;
+            case &#39;polyline&#39;:
+              var path = attr.points;
+              attr.d = &quot;M &quot;+path.replace(&quot; &quot;,&quot; L&quot;);
+              shape = canvas.paper.path(attr.d);
+              break;
+            case &#39;polygon&#39;:
+              shape = canvas.paper.polygon(attr.points);
+              break;
+            case &#39;image&#39;:
+              shape = canvas.paper.image();
+              break;
+            case &#39;tspan&#39;:
+            case &#39;text&#39;:
+                if(element.childNodes.length&gt;0){
+                    var child = element.firstChild;
+                    do {
+                       switch(child.nodeType){
+                            case 2://ATTRIBUTE_NODE 
+                            case 4://CDATA_SECTION_NODE
+                            case 5://ENTITY_REFERENCE_NODE
+                            case 6://ENTITY_NODE
+                            case 7://PROCESSING_INSTRUCTION_NODE
+                            case 8://COMMENT_NODE
+                            case 9://DOCUMENT_NODE
+                            case 10://DOCUMENT_TYPE_NODE
+                            case 11://DOCUMENT_FRAGMENT_NODE
+                            case 12://NOTATION_NODE
+                                return;
+                            case 3://TEXT_NODE
+                            	 // redirect to the parent node if we found a simple TEXT without any attributes
+                            	child = element;
+                            	break;
+                            case 1://ELEMENT_NODE 
+                        }
+                        var subShape = canvas.paper.text(0,0,$(child).text());
+                        var subAttr ={&quot;x&quot;:parseFloat(child.attributes.x.value), &quot;y&quot;:parseFloat(child.attributes.y.value)};
+                        subAttr[&quot;text-anchor&quot;] = &quot;start&quot;;
+                        if(typeof child.attributes[&quot;text-anchor&quot;]!==&quot;undefined&quot;){
+                            subAttr[&quot;text-anchor&quot;] = child.attributes[&quot;text-anchor&quot;].value;
+                        }
+                        else if(typeof attr[&quot;text-anchor&quot;]!==&quot;undefined&quot;){
+                            subAttr[&quot;text-anchor&quot;] = attr[&quot;text-anchor&quot;];
+                        }
+                    
+                        if(typeof child.attributes[&quot;font-size&quot;]!==&quot;undefined&quot;){
+                            subAttr[&quot;font-size&quot;] = parseInt(child.attributes[&quot;font-size&quot;].value);
+                        }
+                        else if(typeof attr[&quot;font-size&quot;]!==&quot;undefined&quot;){
+                            // inherit the font size from the parent node
+                            subAttr[&quot;font-size&quot;] = parseInt(attr[&quot;font-size&quot;]);
+                        }
+                        
+                        if(typeof child.attributes[&quot;font-family&quot;]!==&quot;undefined&quot;){
+                            subAttr[&quot;font-family&quot;] = child.attributes[&quot;font-family&quot;].value;
+                        }
+                        else if(typeof attr[&quot;font-family&quot;]!==&quot;undefined&quot;){
+                            // inherit the font size from the parent node
+                            subAttr[&quot;font-family&quot;] = attr[&quot;font-family&quot;];
+                        }
+                        
+                        subAttr[&quot;fill&quot;] = &quot;#000000&quot;;
+                        if(typeof child.attributes[&quot;fill&quot;]!==&quot;undefined&quot;){
+                            subAttr[&quot;fill&quot;] = child.attributes[&quot;fill&quot;].value;
+                        }
+                        else if(typeof attr[&quot;fill&quot;]!==&quot;undefined&quot;){
+                            // inherit the font size from the parent node
+                            subAttr[&quot;fill&quot;] = attr[&quot;fill&quot;];
+                        }
+                        
+                        subAttr.y= subAttr.y+subShape.getBBox().height/2;
+                       
+                        subShape.attr(subAttr);
+                        set.push(subShape);
+                        child = child.nextSibling;
+
+                    }while(child &amp;&amp; child.nodeType === 3); // 3= TEXT_NODE
+                }
+                else{
+                  shape = canvas.paper.text(0,0,$(element).html());
+                  if(typeof attr[&quot;fill&quot;]===&quot;undefined&quot;)
+                      attr[&quot;fill&quot;] = &quot;#000000&quot;;
+                  if(typeof attr[&quot;text-anchor&quot;]===&quot;undefined&quot;)
+                      attr[&quot;text-anchor&quot;] = &quot;start&quot;;
+                  if(typeof attr[&quot;font-size&quot;]!==&quot;undefined&quot;)
+                      attr[&quot;font-size&quot;] = parseInt(attr[&quot;font-size&quot;]);
+                  if(typeof attr[&quot;font-family&quot;]!==&quot;undefined&quot;)
+                      attr[&quot;font-family&quot;] = parseInt(attr[&quot;font-family&quot;]);
+                  attr.y= parseFloat(attr.y)+shape.getBBox().height/2;
+                }
+              break;
+          }
+          if(shape!==null){
+              shape.attr(attr);
+              set.push(shape);
+          }
+        });
+      } catch (error) {
+        alert(&#39;The SVG data you entered was invalid! (&#39; + error + &#39;)&#39;);
+      }
+      
+      
+      return set;
+    },
+    
+<span id='draw2d-SVGFigure-method-setPersistentAttributes'>    /**
+</span>     * @method 
+     * Read all attributes from the serialized properties and transfer them into the shape.
+     * 
+     * @param {Object} memento
+     * @return
+     */
+    setPersistentAttributes : function(memento)
+    {
+        this._super(memento);
+       
+        // keep a temp flag to indicate the we have read the dimension of the
+        // element from the JSON struct. In this case we didn&#39;t care about the dimension 
+        // from the SVG data
+        //
+        if(typeof memento.width !== &quot;undefined&quot;){
+            this._dimensionReadFromJSON=true;
+        }
+        else if(typeof memento.height !== &quot;undefined&quot;){
+            this._dimensionReadFromJSON=true;
+        }
+        
+        return this;
+    }  
+
+
+});</pre>
+</body>
+</html>

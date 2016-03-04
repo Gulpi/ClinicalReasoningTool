@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js">
+
+<span id='draw2d-policy-canvas-SnapToCenterEditPolicy'>/**
+</span> * @class draw2d.policy.canvas.SnapToCenterEditPolicy
+ * 
+ * Snapping is based on the existing children of a container. When snapping a shape, 
+ * the center of the bounding box will snap to the center of other figures of the given canvas.
+ *
+ * @author Andreas Herz
+ * 
+ * @extends draw2d.policy.canvas.SnapToEditPolicy
+ * @since 5.6.4
+ */
+draw2d.policy.canvas.SnapToCenterEditPolicy = draw2d.policy.canvas.SnapToEditPolicy.extend({
+
+    NAME : &quot;draw2d.policy.canvas.SnapToCenterEditPolicy&quot;,
+    
+    SNAP_THRESHOLD   : 5,
+    FADEOUT_DURATION : 500,
+    
+<span id='draw2d-policy-canvas-SnapToCenterEditPolicy-method-constructor'>    /**
+</span>     * @constructor 
+     * Creates a new constraint policy for snap to geometry
+     * 
+     */
+    init: function( attr, setter, getter){
+        this.lineColor = null;
+
+        this._super(
+            $.extend({
+                lineColor: &quot;#1387E6&quot;
+            },attr),
+            $.extend({
+<span id='draw2d-policy-canvas-SnapToCenterEditPolicy-attr-color'>                /** @attr {draw2d.util.Color} color the line color of the snapTo lines */
+</span>                lineColor : this.setLineColor
+            }, setter),
+            $.extend({
+                lineColor : this.getLineColor
+            }, getter));
+
+        this.centers=null;
+
+        this.horizontalGuideLines = null;
+        this.verticalGuideLines = null;
+    },
+
+
+<span id='draw2d-policy-canvas-SnapToCenterEditPolicy-method-setLineColor'>    /**
+</span>     * @method
+     * Set the color of the snap line.
+     *
+     *      // Alternatively you can use the attr method:
+     *      policy.attr({
+     *        lineColor: color
+     *      });
+     *
+     * @param {draw2d.util.Color|String} color The new color of the line.
+     **/
+    setLineColor:function( color)
+    {
+        this.lineColor = new draw2d.util.Color(color);
+        return this;
+    },
+
+<span id='draw2d-policy-canvas-SnapToCenterEditPolicy-method-getLineColor'>    /**
+</span>     * @method
+     * Return the current paint color.
+     *
+     * @return {draw2d.util.Color} The paint color of the line.
+     * @since 5.6.1
+     **/
+    getLineColor:function()
+    {
+        return this.lineColor;
+    },
+
+
+<span id='draw2d-policy-canvas-SnapToCenterEditPolicy-method-onMouseUp'>    /**
+</span>     * @method
+     * 
+     * @param {draw2d.Canvas} canvas
+     * @param {Number} x the x-coordinate of the mouse down event
+     * @param {Number} y the y-coordinate of the mouse down event
+     * @param {Boolean} shiftKey true if the shift key has been pressed during this event
+     * @param {Boolean} ctrlKey true if the ctrl key has been pressed during the event
+     * @template
+     */
+    onMouseUp: function(figure, x, y, shiftKey, ctrlKey)
+    {
+        this.centers=null;
+        this.hideHorizontalGuides(false);
+        this.hideVerticalGuides(false);
+    },
+    
+<span id='draw2d-policy-canvas-SnapToCenterEditPolicy-method-snap'>    /**
+</span>     * @method
+     * Adjust the coordinates to the canvas neighbours
+     *
+     * @param canvas the related canvas
+     * @param figure the figure to snap
+     * @param {draw2d.geo.Point} pos
+     *
+     * @returns {draw2d.geo.Point} the constraint position of the figure
+     */
+    snap: function(canvas, figure, modifiedPos, originalPos)
+    {
+        // do nothing for resize handles
+        if(figure instanceof draw2d.ResizeHandle) {
+           return modifiedPos;
+        }
+
+
+        var allowXChanges = modifiedPos.x=== originalPos.x;
+        var allowYChanges = modifiedPos.y=== originalPos.y;
+
+        var inputBounds = new draw2d.geo.Rectangle(modifiedPos.x,modifiedPos.y, figure.getWidth(), figure.getHeight());
+        var inputCenter = inputBounds.getCenter();
+
+        modifiedPos = modifiedPos.clone();
+
+        if(allowXChanges===true) {
+            var horizontal = this.snapHorizontal(inputCenter);
+
+            // Show a horizontal line if the snapper has modified the inputPoint
+            //
+            if (horizontal.snapped) {
+                // show the snap lines..
+                this.showHorizontalGuides(figure, horizontal);
+
+                // and snap the x coordinate
+                modifiedPos.y += horizontal.diff;
+            }
+            else {
+                this.hideHorizontalGuides(true);
+            }
+        }
+        else{
+            this.hideHorizontalGuides(true);
+        }
+
+        if(allowYChanges===true) {
+            var vertical = this.snapVertical(inputCenter);
+
+            // Show a vertical guides if the snapper has modified the inputPoint
+            //
+            if (vertical.snapped) {
+                // show the snap lines..
+                this.showVerticalGuides(figure, vertical);
+
+                // and snap the x coordinate
+                modifiedPos.x += vertical.diff;
+            }
+            else {
+                this.hideVerticalGuides(true);
+            }
+        }
+        else{
+            this.hideVerticalGuides(true);
+        }
+
+        return modifiedPos;
+    },
+
+
+    snapVertical:function( center  )
+    {
+        var _this = this;
+        if(this.centers===null) {
+            this.populateCenters();
+        }
+
+        var result = {
+            point:center,
+            snapped:false,
+            diff : 0
+        };
+
+
+        var candidates= [];
+        this.centers.forEach(function( point){
+            if(Math.abs(point.x - center.x)&lt;_this.SNAP_THRESHOLD){
+                candidates.push(point);
+            }
+        });
+
+        // we can abort if we didn&#39;t find an intersection on the right hand side
+        if(candidates.length===0){
+            return result;
+        }
+
+        // sort the intersection point and get the closest point to the tested inputPoint
+        // In this case it is the point with the greates X coordinate
+        //
+        candidates.sort(function(a, b) {
+            return a.x - b.x;
+        });
+
+        var diff = candidates[0].x -center.x;
+        var snappedPoint = center.clone();
+        snappedPoint.x +=diff;
+        return {snapped: true, diff:diff, point:candidates[0], snappedPoint:snappedPoint};
+    },
+
+
+
+    snapHorizontal:function( center  )
+    {
+        var _this = this;
+        if(this.centers===null) {
+            this.populateCenters();
+        }
+
+        var result = {
+            point:center,
+            snapped:false,
+            diff : 0
+        };
+
+
+        var candidates= [];
+        this.centers.forEach(function( point){
+            if(Math.abs(point.y - center.y)&lt;_this.SNAP_THRESHOLD){
+                candidates.push(point);
+            }
+        });
+
+        // we can abort if we didn&#39;t find an intersection on the right hand side
+        if(candidates.length===0){
+            return result;
+        }
+
+        // sort the intersection point and get the closest point to the tested inputPoint
+        // In this case it is the point with the greatest X coordinate
+        //
+        candidates.sort(function(a, b) {
+            return a.y - b.y;
+        });
+
+        var diff = candidates[0].y -center.y;
+        var snappedPoint = center.clone();
+        snappedPoint.y +=diff;
+        return {snapped: true, diff:diff, point:candidates[0], snappedPoint:snappedPoint};
+    },
+
+    populateCenters: function()
+    {
+       var selection = this.canvas.getSelection().getAll(true);
+       var centers = this.centers = [];
+       
+       var figures = this.canvas.getFigures();
+       figures.each(function(index, figure){
+          if(!selection.contains(figure)){
+             centers.push(figure.getBoundingBox().getCenter());
+         }
+       });
+    },
+
+    showHorizontalGuides:function(causedFigure, constraint)
+    {
+        if(this.horizontalGuideLines!==null){
+            this.horizontalGuideLines.stop();
+            this.horizontalGuideLines.remove();
+        }
+
+        var start  = constraint.point;
+        var end    = constraint.snappedPoint;
+
+        this.canvas.paper.setStart();
+
+        // horizontal lines
+        //
+        this.canvas.paper.path(&quot;M &quot; + (start.x)  + &quot; &quot;+((start.y|0)+0.5)+&quot; L &quot;+(end.x)+ &quot; &quot;  + ((end.y|0)+0.5)).attr({&quot;stroke&quot;:this.lineColor.hash(),&quot;stroke-width&quot;:1});
+
+        this.horizontalGuideLines = this.canvas.paper.setFinish();
+        this.horizontalGuideLines.toFront();
+    },
+
+<span id='draw2d-policy-canvas-SnapToCenterEditPolicy-method-hideHorizontalGuides'>    /**
+</span>     * @method
+     * Hide the horizontal snapüing guides
+     *
+     * @param soft
+     */
+    hideHorizontalGuides:function( fast)
+    {
+        if(this.horizontalGuideLines===null){
+            return;
+        }
+        if(fast===true) {
+            if (this.horizontalGuideLines !== null) {
+                this.horizontalGuideLines.remove();
+                this.horizontalGuideLines = null;
+            }
+        }
+        else {
+            this.horizontalGuideLines.animate(
+                {opacity: 0.1},
+                this.FADEOUT_DURATION,
+                $.proxy(function () {
+                    if (this.horizontalGuideLines !== null) {
+                        this.horizontalGuideLines.remove();
+                        this.horizontalGuideLines = null;
+                    }
+                }, this)
+            );
+        }
+    },
+
+
+    showVerticalGuides:function(causedFigure, constraint)
+    {
+        if(this.verticalGuideLines!==null){
+            this.verticalGuideLines.stop();
+            this.verticalGuideLines.remove();
+        }
+
+        var start  = constraint.point;
+        var end    = constraint.snappedPoint;
+
+        this.canvas.paper.setStart();
+
+        // horizontal lines
+        //
+        this.canvas.paper.path(&quot;M &quot; + ((start.x|0)+0.5)  + &quot; &quot;+(start.y)+&quot; L &quot;+((end.x|0)+0.5)+ &quot; &quot;  + (end.y)).attr({&quot;stroke&quot;:this.lineColor.hash(),&quot;stroke-width&quot;:1});
+
+
+        this.verticalGuideLines = this.canvas.paper.setFinish();
+        this.verticalGuideLines.toFront();
+    },
+
+<span id='draw2d-policy-canvas-SnapToCenterEditPolicy-method-hideVerticalGuides'>    /**
+</span>     * @method
+     * Hide the horizontal snapüing guides
+     *
+     * @param soft
+     */
+    hideVerticalGuides:function( fast)
+    {
+        if(this.verticalGuideLines===null){
+            return;
+        }
+        if(fast===true) {
+            if (this.verticalGuideLines !== null) {
+                this.verticalGuideLines.remove();
+                this.verticalGuideLines = null;
+            }
+        }
+        else {
+            this.verticalGuideLines.animate(
+                {opacity: 0.1},
+                this.FADEOUT_DURATION,
+                $.proxy(function () {
+                    if (this.verticalGuideLines !== null) {
+                        this.verticalGuideLines.remove();
+                        this.verticalGuideLines = null;
+                    }
+                }, this)
+            );
+        }
+    }
+});</pre>
+</body>
+</html>

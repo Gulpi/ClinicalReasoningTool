@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js">
+<span id='draw2d-shape-icon-Talkq'>/**
+</span> * @class draw2d.shape.icon.Talkq
+
+ * See the example:
+ *
+ *     @example preview small frame
+ *     
+ *     var icon =  new draw2d.shape.icon.Talkq();
+ *     
+ *     canvas.add(icon,50,10);
+ *     
+ * @inheritable
+ * @author Andreas Herz
+ * @extends draw2d.shape.icon.Icon
+ */
+draw2d.shape.icon.Talkq = draw2d.shape.icon.Icon.extend({
+    NAME : &quot;draw2d.shape.icon.Talkq&quot;,
+
+<span id='draw2d-shape-icon-Talkq-method-constructor'>    /**
+</span>     * 
+     * @constructor
+     * Creates a new icon element which are not assigned to any canvas.
+     * 
+     * @param {Object} attr the configuration of the shape
+     */
+    init: function(attr, setter, getter ) {
+      this._super($.extend({width:50,height:50},attr), setter, getter);
+    },
+
+<span id='draw2d-shape-icon-Talkq-method-createSet'>    /**
+</span>     * @private
+     * @returns
+     */
+    createSet : function() {
+        return this.canvas.paper.path(&quot;M16,4.938c-7.732,0-14,4.701-14,10.5c0,1.981,0.741,3.833,2.016,5.414L2,25.272l5.613-1.44c2.339,1.316,5.237,2.106,8.387,2.106c7.732,0,14-4.701,14-10.5S23.732,4.938,16,4.938zM16.868,21.375h-1.969v-1.889h1.969V21.375zM16.772,18.094h-1.777l-0.176-8.083h2.113L16.772,18.094z&quot;);
+    }
+});
+
+</pre>
+</body>
+</html>

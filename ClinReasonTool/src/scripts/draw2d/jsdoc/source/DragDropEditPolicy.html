@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js">
+<span id='draw2d-policy-figure-DragDropEditPolicy'>/**
+</span> * @class draw2d.policy.figure.DragDropEditPolicy
+ * 
+ * Called by the framework if the user edit the position of a figure with a drag drop operation.
+ * Sub class like SelectionEditPolicy or RegionEditPolicy can adjust the position of the figure or the selections handles.
+ * 
+ * @author  Andreas Herz
+ * @extends draw2d.policy.figure.FigureEditPolicy
+ */
+draw2d.policy.figure.DragDropEditPolicy = draw2d.policy.figure.FigureEditPolicy.extend({
+
+    NAME : &quot;draw2d.policy.figure.DragDropEditPolicy&quot;,
+
+<span id='draw2d-policy-figure-DragDropEditPolicy-method-constructor'>    /**
+</span>     * @constructor 
+     * Creates a new Router object
+     */
+    init: function( attr, setter, getter){
+        this._super( attr, setter, getter);
+    },
+    
+   
+<span id='draw2d-policy-figure-DragDropEditPolicy-method-onDragStart'>    /**
+</span>     * @method
+     * Called by the framework if the related shape has init a drag&amp;drop
+     * operation
+     * 
+     * @param {draw2d.Canvas} canvas The host canvas
+     * @param {draw2d.Figure} figure The related figure
+     * @param {Number} x the x-coordinate of the mouse up event
+     * @param {Number} y the y-coordinate of the mouse up event
+     * @param {Boolean} shiftKey true if the shift key has been pressed during this event
+     * @param {Boolean} ctrlKey true if the ctrl key has been pressed during the event
+     * @template
+     */
+    onDragStart: function(canvas, figure, x, y, shiftKey, ctrlKey)
+    {
+    	figure.shape.attr({cursor:&quot;move&quot;});
+    	
+    	// this happens if you drag&amp;drop the shape outside of the screen and 
+    	// release the mouse button outside the window. We restore the alpha
+    	// with the next drag&amp;drop operation
+        if(figure.isMoving===true){
+            figure.setAlpha(figure.originalAlpha);
+        }
+        
+        figure.originalAlpha = figure.getAlpha();
+    	figure.isMoving = false;
+    },
+    
+<span id='draw2d-policy-figure-DragDropEditPolicy-method-onDrag'>    /**
+</span>     * @method
+     * Called by the framework during drag a figure.
+     * 
+     * @param {draw2d.Canvas} canvas The host canvas
+     * @param {draw2d.Figure} figure The related figure
+     * @template
+     */
+    onDrag: function(canvas, figure)
+    {
+        
+        // enable the alpha blending of the first real move of the object
+        //
+        if(figure.isMoving===false){
+            figure.isMoving = true;
+            figure.setAlpha(figure.originalAlpha*0.4);
+        }    	
+    },
+    
+<span id='draw2d-policy-figure-DragDropEditPolicy-method-onDragEnd'>    /**
+</span>     * @method
+     * Called by the framework if the drag drop operation ends.
+     * 
+     * @param {draw2d.Canvas} canvas The host canvas
+     * @param {draw2d.Figure} figure The related figure
+     * @param {Number} x the x-coordinate of the mouse up event
+     * @param {Number} y the y-coordinate of the mouse up event
+     * @param {Boolean} shiftKey true if the shift key has been pressed during this event
+     * @param {Boolean} ctrlKey true if the ctrl key has been pressed during the event
+     * @template
+     */
+    onDragEnd: function(canvas, figure, x, y, shiftKey, ctrlKey)
+    {
+        figure.shape.attr({cursor:&quot;default&quot;});
+        figure.isMoving = false;
+        figure.setAlpha(figure.originalAlpha);
+    },
+    
+<span id='draw2d-policy-figure-DragDropEditPolicy-method-adjustPosition'>    /**
+</span>     * @method
+     * Adjust the coordinates to the rectangle/region of this constraint.
+     * 
+     * @param figure
+     * @param {Number|draw2d.geo.Point} x
+     * @param {number} [y]
+     * @returns {draw2d.geo.Point} the constraint position of the figure
+     * 
+     * @template
+     */
+    adjustPosition: function(figure, x,y)
+    {
+        // do nothing per default implementation
+        if(x instanceof draw2d.geo.Point){
+            return x;
+        }
+        
+        return new draw2d.geo.Point(x,y);
+    },
+
+<span id='draw2d-policy-figure-DragDropEditPolicy-method-adjustDimension'>    /**
+</span>     * @method
+     * ensure that the dimension didn&#39;t goes outside the given restrictions
+     * 
+     * @param figure
+     * @param {Number} w
+     * @param {number} h
+     * @returns {draw2d.geo.Rectangle} the constraint position of the figure
+     */
+    adjustDimension : function(figure, w, h)
+    {
+        return new draw2d.geo.Rectangle(0,0,w,h);
+    },
+    
+<span id='draw2d-policy-figure-DragDropEditPolicy-method-moved'>    /**
+</span>     * @method
+     * Callback if the figure has moved
+     * 
+     * @param {draw2d.Canvas} canvas The host canvas
+     * @param {draw2d.Figure} figure The related figure
+     * 
+     * @template
+     */
+    moved: function(canvas,figure) 
+    {
+    }
+});</pre>
+</body>
+</html>

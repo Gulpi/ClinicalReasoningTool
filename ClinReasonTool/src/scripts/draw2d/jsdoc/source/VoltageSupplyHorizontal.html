@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js">
+<span id='draw2d-shape-analog-VoltageSupplyHorizontal'>/**
+</span> * @class draw2d.shape.analog.VoltageSupplyHorizontal
+ * 
+ * See the example:
+ *
+ *     @example preview small frame
+ *     
+ *     var figure =  new draw2d.shape.analog.VoltageSupplyHorizontal({x:10, y:10});
+ *     
+ *     canvas.add(figure);
+ *     
+ *     
+ * @extends draw2d.SVGFigure
+ */
+draw2d.shape.analog.VoltageSupplyHorizontal = draw2d.SVGFigure.extend({
+
+    NAME:&quot;draw2d.shape.analog.VoltageSupplyHorizontal&quot;,
+    
+    // custom locator for the special design of the Input area
+    MyInputPortLocator : draw2d.layout.locator.PortLocator.extend({
+        init: function( ){
+          this._super();
+        },    
+        relocate:function(index, figure){
+            var h = figure.getParent().getHeight();
+            this.applyConsiderRotation(figure,0, h/2);
+        }
+    }),
+    
+    // custom locator for the special design of the Output area
+    MyOutputPortLocator : draw2d.layout.locator.PortLocator.extend({
+        init: function( ){
+          this._super();
+        },    
+        relocate:function(index, figure){
+            var w = figure.getParent().getWidth();
+            var h = figure.getParent().getHeight();
+            this.applyConsiderRotation(figure,w, h/2);
+        }
+    }),
+
+<span id='draw2d-shape-analog-VoltageSupplyHorizontal-method-constructor'>    /**
+</span>     * @constructor
+     * Create a new instance
+     * @param {Object} [attr] the configuration of the shape
+     */
+    init: function(attr, setter, getter ){
+        this._super($.extend({width:50, height:30},attr), setter, getter);
+        
+        this.createPort(&quot;hybrid&quot;, new this.MyInputPortLocator());  // GND
+        this.createPort(&quot;hybrid&quot;, new this.MyOutputPortLocator()); // VCC
+    },
+    
+
+<span id='draw2d-shape-analog-VoltageSupplyHorizontal-method-getSVG'>    /**
+</span>     * @inheritdoc
+     */
+   getSVG: function(){
+         return &#39;&lt;svg width=&quot;49&quot; height=&quot;28&quot; xmlns=&quot;http://www.w3.org/2000/svg&quot; version=&quot;1.1&quot;&gt;&#39;+
+                &#39;&lt;path d=&quot;m24.99933,18.95592l0,-9.54576m-5.78374,-9.40907l0,28.35939m-5.78718,-9.40457l0,-9.54576m-5.78374,-9.40907l0,28.35939&quot; id=&quot;path10566&quot; stroke-miterlimit=&quot;14.3&quot; stroke=&quot;#010101&quot; fill=&quot;none&quot;/&gt;&#39;+
+                &#39;&lt;path d=&quot;m26.79878,14.13039l6.90583,0m-33.22691,0l6.90583,0&quot; id=&quot;path10568&quot; stroke-miterlimit=&quot;14.3&quot; stroke-linecap=&quot;square&quot; stroke=&quot;#010101&quot; fill=&quot;none&quot;/&gt;&#39;+
+                &#39;&lt;/svg&gt;&#39;;
+    }
+});</pre>
+</body>
+</html>

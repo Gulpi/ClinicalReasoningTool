@@ -7,7 +7,6 @@ import java.sql.Timestamp;
  * The relation of an object
  * to an (Patient) IllnessScript. 
  * @author ingahege
- *
  */
 public interface Relation /*extends DefaultWeightedEdge*/{
 

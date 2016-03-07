@@ -44,6 +44,7 @@ var numHyps = 1;
 var numFinds = 0;
 var numDiagnSteps = 0;
 var numMng = 0;
+var sessId = #{crtContext.patillscript.sessionId}; 
 
  var my_canvas = null;
  draw2d.Configuration.factory.createConnection=function(sourcePort, targetPort, callback, dropTarget){
@@ -159,9 +160,9 @@ What would you like to do now? -->
 		  <div id="patimg" style="position:relative;right:0px; top:0px; float:right;"><img src="patient.png" width="150px" /></div>
 		  	<div id="descr">
 		  		Name: Henry Rodin<br/>
-			  	Age: 30, Gender: M #{crtContext.patillscript.sessionId}<br/>
+			  	Age: 30, Gender: M <br/>
 				Course of Time: 
-				<h:selectOneMenu class="f_select" id="courseTime" value="#{crtContext.patillscript.courseOfTime}">
+				<h:selectOneMenu onchange="javascript:changeCourseOfTime();" class="f_select" id="courseTime" value="#{crtContext.patillscript.courseOfTime}">
 				<f:selectItem itemLabel="-" itemValue="-1" />
 				<f:selectItem itemLabel="acute" itemValue="1" />
 				<f:selectItem itemLabel="chronic" itemValue="2" />
@@ -188,7 +189,7 @@ What would you like to do now? -->
 			<div id="confidence_slider" class="conf_slider" title="Level of confidence"></div>
 	
 		  </div>
-		  <div id="tabs-5"><div class="ddx_left"><input class="f_text" id="tests"></input>
+		  <div id="tabs-5"><div class="ddx_left" style="width:300px;"><input class="f_text" id="tests"></input>
 		  		<!-- <select id="tests"  onchange="addTest();" class="f_select"><option>-</option><option value="1">Chest X-Ray</option></select>-->
 				<br/><ul id="list_tests" class="sortable"><li id="selds_1">Chest X-ray <select class="f_select"><option value="-1">scanning</option><option>r/c Pneumonia</option></select></li></ul>
 		  </div></div>

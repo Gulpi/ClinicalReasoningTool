@@ -1,5 +1,6 @@
 package database;
 
+import java.beans.Beans;
 import java.util.*;
 import org.hibernate.*;
 import org.hibernate.criterion.*;
@@ -70,7 +71,7 @@ public class DBClinReason extends HibernateUtil{
 	 * Save the Object to the database.
 	 * @param bean
 	 */
-	public void saveBean(Object bean) {
+	public void saveBean(Beans bean) {
 		Session s = getSession();
 		beginTransaction(s);
 		save(bean,s);

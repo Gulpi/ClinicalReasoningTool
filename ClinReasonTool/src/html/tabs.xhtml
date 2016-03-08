@@ -1,9 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml"
+<html xmlns="http://www.w3.org/1999/xhtml"   
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      >
+<!-- <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:f="http://java.sun.com/jsf/core"      
-      xmlns:h="http://java.sun.com/jsf/html">
+      xmlns:h="http://java.sun.com/jsf/html">-->
 <head>
 
 <title>Patient Illness Script</title>
@@ -170,24 +175,36 @@ What would you like to do now? -->
 				<!-- <select class="f_select" id="courseTime"><option value="-1">-</option><option value="1">acute</option><option value="2">chronic</option></select> --> 
 			</div>
 		  </div>
-		  <div id="tabs-2">	<div class="ddx_left"><!--  <select id="problems" onchange="addProblem();" class="custom-combobox f_select">-->
- <!--  <span id="problem_input">	<input onclick="openProblemsList();" class="f_text"></input></span>-->
-<input class="f_text" id="problems"></input>
-<!--  		  	<select class="f_select" onchange="addProblem();" id="problems"><option value="-1">-</option><option value="1">Cough</option><option value="2">Fever</option><option value="3">Cyanosis</option><option value="4">Dyspnea</option><option value="5">Chest pain</option></select>-->
-			<br/><ol id="list_problems" class="sortable"><li id="selprob_6">Shortness of Breath<a href="javascript:chgProblem('6','4');"><i class="icon-ok1"></i></a></li></ol>
-			</div>
+		  <div id="tabs-2">	
+		  		<div class="ddx_left">
+		  			<input class="f_text" id="problems"></input>
+					<br/>
+					<!--  <ol id="list_problems" class="sortable"><li id="selprob_6">Shortness of Breath<a href="javascript:chgProblem('6','4');"><i class="icon-ok1"></i></a></li></ol>-->
+					<ol id="list_problems" class="sortable">
+					   <ui:repeat value="#{crtContext.patillscript.problems}" var="prob" varStatus="status">
+       					 <!-- <c:forEach var="i"  value="#{crtContext.patillscript.problems}">-->
+
+       					 <li>#{prob.sourceId}
+           				 	<!--  <h:link value="#{prob.sourceId}">
+               			 		<f:param name="id" value="#{prob.sourceId}" />
+            				</h:link>-->
+        				</li>
+        				<!--</c:forEach>--> 
+    					 </ui:repeat>
+    					 </ol>
+				</div>
 		  </div>
-		  <div id="tabs-4">	<textarea class="f_textarea" name="summSt" cols="50" rows="10"></textarea>
+		  <div id="tabs-4">	
+		  		<textarea class="f_textarea" name="summSt" cols="50" rows="10"></textarea>
 		  </div>
 		  <div id="tabs-3">	
-		  	<div class="ddx_left"><input class="f_text" id="ddx"></input>
-				<!-- <select class="f_select" onchange="addDiagnosis();" id="ddx"><option value="-1">-</option><option value="1">Pneumonia</option><option value="2">Acute Bronchitis</option><option value="4">Flu</option><option value="3">COPD</option></select>--><br/>
-				<ol id="list_diagnoses" class="sortable">
-					<li id="selddx_2"><a href="javascript:toggleMnM('1');" title="Is this a Must-Not-Miss diagnosis? E.g. because it is lethal?"><i id="mnmicon_1" class="icon-attention0"></i></a>Pneumonia<a href="javascript:changeTier('1');" id="tiera_1" title="How likely is this diagnosis?"><i id="tiericon_1" class="icon-circle-tier0"></i></a></li>
-				</ol>
-			</div>
-			<div id="confidence_slider" class="conf_slider" title="Level of confidence"></div>
-	
+		  		<div class="ddx_left">
+		  			<input class="f_text" id="ddx"></input>
+					<ol id="list_diagnoses" class="sortable">
+						<li id="selddx_2"><a href="javascript:toggleMnM('1');" title="Is this a Must-Not-Miss diagnosis? E.g. because it is lethal?"><i id="mnmicon_1" class="icon-attention0"></i></a>Pneumonia<a href="javascript:changeTier('1');" id="tiera_1" title="How likely is this diagnosis?"><i id="tiericon_1" class="icon-circle-tier0"></i></a></li>
+					</ol>
+				</div>
+				<div id="confidence_slider" class="conf_slider" title="Level of confidence"></div>
 		  </div>
 		  <div id="tabs-5"><div class="ddx_left" style="width:300px;"><input class="f_text" id="tests"></input>
 		  		<!-- <select id="tests"  onchange="addTest();" class="f_select"><option>-</option><option value="1">Chest X-Ray</option></select>-->

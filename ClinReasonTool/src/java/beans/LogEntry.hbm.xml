@@ -1,19 +1,17 @@
 <?xml version="1.0"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
 	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
-<hibernate-mapping package="beans.relation">
+<hibernate-mapping package="beans">
 
-	<class name="RelationProblem" table="crt.relation_problem">
+	<class name="LogEntry" table="crt.log">
 		<cache usage="nonstrict-read-write" />
-		<comment>Problem Relation</comment>	
+		<comment>Log Entry</comment>	
 		<id name="id" type="long" column="id">
 			<generator class="sequence">
 				<param name ="sequence">CRT.CR_SEQ</param>
 			</generator>
 		</id>	
-		<property name="destId" column="dest_id" type="long" />
-		<property name="order" column="idx" type="int" />
-		<property name="sourceId" column="source_id" type="long"/>	
-		<property name="name" column="name" type="string"/>	
+		<property name="action" column="action" type="int" />
+		<property name="sessionId" column="sessionId" type="long"/>	
 </class>
 </hibernate-mapping>

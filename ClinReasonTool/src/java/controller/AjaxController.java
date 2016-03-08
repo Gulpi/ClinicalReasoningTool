@@ -29,8 +29,13 @@ public class AjaxController {
 	    ExternalContext externalContext = facesContext.getExternalContext();
 	    Map<String, String> reqParams = externalContext.getRequestParameterMap();
 	    if(reqParams!=null){
+	    	String sessionId = reqParams.get("session_id");
+	    	if(patillscript==null || sessionId==null|| Long.parseLong(sessionId)!=patillscript.getSessionId()){
+	    		System.out.println("Error: SessionId is:"+ sessionId + ", patIllScript.sessionId="+patillscript.getSessionId());
+	    		return; //TODO we need some more error handling here, how can this happen? What shall we do? 
+	    	}
 	    	String methodName = reqParams.get("type");
-	    	Statement stmt = new Statement(patillscript, methodName, new Object[]{new String(reqParams.get("id"))});
+	    	Statement stmt = new Statement(patillscript, methodName, new Object[]{new String(reqParams.get("id")), new String(reqParams.get("name"))});
 	    	try {
 				stmt.execute();
 			} catch (Exception e) {

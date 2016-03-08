@@ -1,9 +1,14 @@
 package beans;
+import java.beans.Beans;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.*;
 
 import javax.faces.bean.*;
+
+import beanActions.AddProblemAction;
 import beans.relation.*;
 import database.DBClinReason;
 
@@ -18,20 +23,24 @@ import database.DBClinReason;
  * @author ingahege
  *
  */
-public class PatientIllnessScript /*extends Node*/ implements /*IllnessScriptInterface, */Serializable{
+public class PatientIllnessScript extends Beans/*extends Node*/ implements /*IllnessScriptInterface, */Serializable, PropertyChangeListener{
 
-	private Timestamp creationDate; //do we really have that, entering of first item?
+	private static final long serialVersionUID = 1L;
+	private Timestamp creationDate;
 	private long sessionId = -1; //necessary or store PISId in C_Session?
 	private long id = -1;
+	/**
+	 * the patientIllnessScript created by the expert based on the VP
+	 */
+	private PatientIllnessScript expertPatIllScript;
 	//epi data:
 	//private Patient patient; //data from the patient object attached to a case
-	private long summaryStatementId = -1; //links the summaryStatement object
-	private String test ="hallo";
+	//private long summaryStatementId = -1; //links the summaryStatement object
 	/**
 	 * We might want to link the illness script directly here, might be faster for comparisons than going through
 	 * the session. If final diagnosis is wrong the relation might not be doable thru it...
 	 */
-	private long illnessScriptId = -1; 
+	//private long illnessScriptId = -1; 
 	/**
 	 * 1=acute, 2=subacute, 3=chronic
 	 */
@@ -56,12 +65,6 @@ public class PatientIllnessScript /*extends Node*/ implements /*IllnessScriptInt
 	 */
 	private boolean submitted;
 	
-	//scores: maybe put into separate class?
-	private float summStScore = -1; // we might categories here
-	private float problemScore = -1; //num and quality of problems
-	private float ddxScore = -1; //num, level and correctness of diagnoses
-	private float finalDiagnosisScore = -1; //level and correctness of diagnosis
-	
 	public PatientIllnessScript(){
 		System.out.println("hallo");
 	}
@@ -74,31 +77,19 @@ public class PatientIllnessScript /*extends Node*/ implements /*IllnessScriptInt
 	public long getSessionId() {return sessionId;}
 	public void setSessionId(long sessionId) {this.sessionId = sessionId;}
 	public int getCourseOfTime() {return courseOfTime;}
-	public void setCourseOfTime(int courseOfTime) {this.courseOfTime = courseOfTime;}	
+	public void setCourseOfTime(int courseOfTime) {this.courseOfTime = courseOfTime;}
+	public void chgCourseOfTime(String courseOfTimeStr) { 
+		setCourseOfTime(Integer.parseInt(courseOfTimeStr));
+		save();
+	}
 	public List<RelationProblem> getProblems() {return problems;}
 	public void setProblems(List<RelationProblem> problems) {this.problems = problems;}
+	public Timestamp getCreationDate(){ return this.creationDate;} //setting is done in DB
+	public void addProblem(String problemIdStr, String name){ new AddProblemAction(this).add(problemIdStr, name);}	
+	public PatientIllnessScript getExpertPatIllScript() {return expertPatIllScript;}
+	public void setExpertPatIllScript(PatientIllnessScript expertPatIllScript) {this.expertPatIllScript = expertPatIllScript;}
 	
-	public String getTest() {
-		return test;
-	}
-	public void setTest(String test) {
-		this.test = test;
-	}
-	
-	public void addProblem(String problemIdStr){
-		long problemId = Long.valueOf(problemIdStr.trim());
-		addProblem(problemId);
-	}
-	
-	public void addProblem(long problemId){
-		if(problems==null) problems = new ArrayList<RelationProblem>();
-		RelationProblem relProb = new RelationProblem(problemId, this.id);
-		//TODO we have to check whether is already in list...
-		problems.add(relProb);
-		save();
-		
-	}
-	private void save(){
+	public void save(){		
 		new DBClinReason().saveBean(this);
 	}
 	
@@ -113,4 +104,16 @@ public class PatientIllnessScript /*extends Node*/ implements /*IllnessScriptInt
 		return false;
 	}
 	
+	/*public void addPropertyChangeListener(PropertyChangeListener listener) {
+        this.addPropertyChangeListener(listener);
+    }*/
+
+	/* (non-Javadoc)
+	 * @see java.beans.PropertyChangeListener#propertyChange(java.beans.PropertyChangeEvent)
+	 */
+	public void propertyChange(PropertyChangeEvent evt) {
+		if(evt!=null){
+			System.out.println(evt.getPropertyName());
+		}		
+	}
 }

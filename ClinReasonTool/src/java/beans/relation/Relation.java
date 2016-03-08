@@ -10,8 +10,9 @@ import java.sql.Timestamp;
  */
 public interface Relation /*extends DefaultWeightedEdge*/{
 
+	
 	/*private long id = -1;
-	private long sourceId = -1; //can be problem, test, management, diagnosis
+	 * private long sourceId = -1; //can be problem, test, management, diagnosis
 	private long destId = -1; //(Patient)Illnesscript
 	private int orderNum = -1;*/
 	

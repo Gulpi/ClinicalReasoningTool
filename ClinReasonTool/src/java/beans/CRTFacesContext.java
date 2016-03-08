@@ -2,6 +2,7 @@ package beans;
 
 import java.io.*;
 import java.util.*;
+import java.beans.*;
 
 import javax.faces.application.*;
 import javax.faces.application.FacesMessage.Severity;
@@ -23,9 +24,13 @@ import database.DBClinReason;
 public class CRTFacesContext extends FacesContext implements Serializable{
 	private static final long serialVersionUID = 1L;
 	private long sessionId = -1;
-	private String test = "hallo";
+	//private String test = "hallo";
 	
 	private PatientIllnessScript patillscript;
+	/**
+	 * Detailed scores for this patIllScript
+	 */
+	private Score scores;
 	
 	public CRTFacesContext(){
 		setSessionId();
@@ -33,7 +38,7 @@ public class CRTFacesContext extends FacesContext implements Serializable{
 	}
 	public CRTFacesContext(long sessionId){
 		this.sessionId = sessionId;
-		this.test = "hallo";
+		loadPatIllScript();
 	}
 	
 		
@@ -55,11 +60,13 @@ public class CRTFacesContext extends FacesContext implements Serializable{
 	
 	private void createAndSaveNewPatientIllnessScript(){
 		patillscript = new PatientIllnessScript(this.sessionId);
-		new DBClinReason().saveBean(patillscript);
+		patillscript.save();
+		System.out.println("New PatIllScript created for session_id: " + this.sessionId);
+		//this.addPropertyChangeListener(new PatientIllnessScript());
 	}
 	
 	public PatientIllnessScript getPatillscript() { return patillscript;}
-	public void setPis(PatientIllnessScript patillscript) {this.patillscript = patillscript;}
+	public void setPatillscript(PatientIllnessScript patillscript) {this.patillscript = patillscript;}
 
 	@Override
 	public void addMessage(String arg0, FacesMessage arg1) {

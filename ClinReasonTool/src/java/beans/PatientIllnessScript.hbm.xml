@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
 	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
-<hibernate-mapping package="beans">
+<hibernate-mapping package="beans"> 
 
 	<class name="PatientIllnessScript" table="crt.patient_illnessscript">
 		<cache usage="nonstrict-read-write" />
@@ -16,9 +16,9 @@
 		<property name="sessionId" column="session_id" type="long" />
 		<property name="courseOfTime" column="courseoftime" type="int"/>	
 		
-		<list name="problems" table="crt.relation" cascade="all" lazy="false">
-    		<key column="dest_id"/>
-    		<list-index column="source_id" base="1"/>
+		<list name="problems" table="crt.relation_problem" cascade="all" lazy="false"> <!-- table="crt.relation_problem"-->
+    		<key column="dest_id"/> <!-- dest_id = patientIllnessScript id -->
+    		<list-index column="idx" base="0"/>
     		<one-to-many class="beans.relation.RelationProblem"/>   		
 		</list>	
 		

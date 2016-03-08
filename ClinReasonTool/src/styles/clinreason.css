@@ -1,3 +1,4 @@
+
 .ui-widget-content { /*needs to be at the beginning, otherwise the slider background will be overwritten*/
 	border: 1px solid #dddddd;
 	background: #ffffff url("images/ui-bg_highlight-soft_100_eeeeee_1x100.png") 50% top repeat-x;
@@ -110,19 +111,19 @@ input.f_text, textarea.f_textarea {
 	border: 1px solid #b0cbdc;
 }
 
-/* start <i> icons code...*/
 @font-face {
-  font-family: 'casus';
-  src: url('font/casus.eot?9585197');
-  src: url('font/casus.eot?9585197#iefix') format('embedded-opentype'),
-       url('font/casus.woff?9585197') format('woff'),
-       url('font/casus.ttf?9585197') format('truetype'),
-       url('font/casus.svg?9585197#casus') format('svg');
+  font-family: 'crt';
+  src: url('font/crt.eot?9585197');
+  src: url('font/crt.eot?9585197#iefix') format('embedded-opentype'),
+       url('font/crt.woff?9585197') format('woff'),
+       url('font/crt.ttf?9585197') format('truetype'),
+       url('font/casus.svg?9585197#crt') format('svg');
   font-weight: normal;
   font-style: normal;
 }
+
 [class^="icon-"]:before, [class*=" icon-"]:before {
-  font-family: "casus";
+  font-family: "crt";
   font-style: normal;
   font-weight: normal;
   speak: none;
@@ -155,19 +156,19 @@ input.f_text, textarea.f_textarea {
 .icon-circle-empty:before { content: '\e806'; } 
 
 .icon-circle-tier0:before { content: '\e805'; color:#C2C2C2; font-size: 0.8em;} 
-.icon-circle-tier1:before { content: '\e805'; color:#088A29; font-size: 0.8em;} 
+.icon-circle-tier1:before { content: '\e805'; color:#088A29; font-size: 0.8em;} /* color:#088A29;*/
 .icon-circle-tier2:before { content: '\e805'; color:#81F79F; font-size: 0.8em;} 
 .icon-circle-tier3:before { content: '\e805'; color:#CEF6CE; font-size: 0.8em;} 
 .icon-circle-tier4:before { content: '\e84c'; color:#088A29; font-size: 0.8em;} 
 .icon-attention0:before { content: '\e8d8'; color:#C2C2C2; font-size: 0.8em; } 
 .icon-attention1:before { content: '\e8d8'; color:#D60000; font-size: 0.8em; } 
-.icon-trash-1:before { content: '\e872';  color:#088A29; font-size: 1.3em;}
+.icon-trash-1:before { content: '\e872';  color:#000000; font-size: 1.3em;} /*color:#088A29;*/
 .icon-ok2:before { content: '\e804'; color:#088A29; font-size: 0.8em;}
 .icon-ok1:before { content: '\e804'; color:#CEF6CE; font-size: 0.8em;}
 .icon-upload-off:before { content: '\e81a'; color:#C2C2C2; font-size: 1.3em;}
-.icon-upload-on:before { content: '\e81a'; color:#088A29; font-size: 1.3em;}
-.icon-user-md:before { content: '\e8ef'; color:#088A29; font-size: 1.3em;}
-.icon-users:before { content: '\e8f8'; color:#088A29; font-size: 1.3em;}
+.icon-upload-on:before { content: '\e81a'; color:#000000; font-size: 1.3em;}/*color:#088A29;*/
+.icon-user-md:before { content: '\e8ef'; color:#000000; font-size: 1.3em;} /*color:#088A29;*/
+.icon-users:before { content: '\e8f8'; color:#000000; font-size: 1.3em;} /*color:#088A29;*/
 .icon-edit:before { content: '\e86b'; font-size: 1.3em;}
 .icon-list-alt:before { content: '\e907';}
 .icon-list-on:before { content: '\e907'; color:#088A29;}
@@ -300,6 +301,21 @@ body .ui-tooltip {
     font-size: 0.8em;
     decoration:none;
 }
+
+.ui-state-active a, .ui-state-active a:link, .ui-state-active a:visited {
+    color: #000000;
+}
+
+.ui-state-default a, .ui-state-default a:link, .ui-state-default a:visited {
+    color: #000000;
+}
+
+.ui-state-active, .ui-widget-content .ui-state-active, .ui-widget-header .ui-state-active {
+    border: 1px solid #CCCCCC;
+    background: #CCCCCC url("images/ui-bg_glass_65_ffffff_1x400.png") repeat-x scroll 50% 50%;
+    font-weight: bold;
+    /*color: #EB8F00;*/
+ }
 .custom-combobox {
     position: relative;
     display: inline-block;

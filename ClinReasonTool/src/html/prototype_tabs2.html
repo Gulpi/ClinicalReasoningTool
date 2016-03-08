@@ -7,35 +7,32 @@
 <head><title>Patient Illness Script</title>
  <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
 
-<link rel="stylesheet" type="text/css" href="../../html/dhtml/jquery112/ui-lightness/jquery-ui.css" /> 
-<link rel="stylesheet" type="text/css" href="../../html/scripts/draw2d/css/contextmenu.css"  />
+<link rel="stylesheet" type="text/css" href="../scripts/jquery112/ui-lightness/jquery-ui.css" /> 
+<link rel="stylesheet" type="text/css" href="../scripts/draw2d/css/contextmenu.css"  />
 <!--  <link rel="stylesheet" type="text/css" href="<PMW fcache>files/html/scripts/draw2d/css/contextmenu.css"  />-->
-<link rel="stylesheet" href="../../styles/clinreason.css" />
+<link rel="stylesheet" href="../styles/clinreason.css" />
 
-<script type="text/javascript" src="../../html/dhtml/jquery112/jquery.js"></script>
-<script type="text/javascript" src="../../html/dhtml/jquery112/jquery-ui.min.js"></script>
-<script type="text/javascript" src="../../html/dhtml/jquery112/jquery-ui.js"></script>
-<script src="../../html/scripts/draw2d/lib/shifty.js"></script>	
-<script src="../../html/scripts/draw2d/lib/raphael.js"></script>			
-<script src="../../html/scripts/draw2d/lib/jquery.autoresize.js"></script>	
-<script src="../../html/scripts/draw2d/lib/jquery-touch_punch.js"></script>	
-<script src="../../html/scripts/draw2d/lib/jquery.contextmenu.js"></script>	
-<script src="../../html/scripts/draw2d/lib/rgbcolor.js"></script>	
-<script src="../../html/scripts/draw2d/lib/canvg.js"></script>	
-<script src="../../html/scripts/draw2d/lib/Class.js"></script>	
-<script src="../../html/scripts/draw2d/lib/json2.js"></script>	
-<script src="../../html/scripts/draw2d/lib/pathfinding-browser.min.js"></script>
-<script src="../../html/scripts/draw2d/src/draw2d.js"></script>	
-<script src="../../html/scripts/draw2d/src/LabelConnection.js"></script>	
-<script src="../../html/scripts/draw2d/src/LabelRectangle.js"></script>	
-<script src="../../html/scripts/draw2d/src/LabelLMEditor.js"></script>	
+<script type="text/javascript" src="../scripts/jquery112/jquery.js"></script>
+<script type="text/javascript" src="../scripts/jquery112/jquery-ui.min.js"></script>
+<script type="text/javascript" src="../scripts/jquery112/jquery-ui.js"></script>
+<script src="../scripts/draw2d/lib/shifty.js"></script>	
+<script src="../scripts/draw2d/lib/raphael.js"></script>			
+<script src="../scripts/draw2d/lib/jquery.autoresize.js"></script>	
+<script src="../scripts/draw2d/lib/jquery-touch_punch.js"></script>	
+<script src="../scripts/draw2d/lib/jquery.contextmenu.js"></script>	
+<script src="../scripts/draw2d/lib/rgbcolor.js"></script>	
+<script src="../scripts/draw2d/lib/canvg.js"></script>	
+<script src="../scripts/draw2d/lib/Class.js"></script>	
+<script src="../scripts/draw2d/lib/json2.js"></script>	
+<script src="../scripts/draw2d/lib/pathfinding-browser.min.js"></script>
+<script src="../scripts/draw2d/src/draw2d.js"></script>	
+<script src="../scripts/draw2d/src/LabelConnection.js"></script>	
+<script src="../scripts/draw2d/src/LabelRectangle.js"></script>	
+<script src="../scripts/draw2d/src/LabelLMEditor.js"></script>	
 
-<script src="../../html/scripts/draw2d/lib/jquery.browser.js"></script>
-<script src="../../html/scripts/draw2d/lib/jquery.layout.js"></script>
-<!--  <script src="../../html/scripts/draw2d/io/png/Writer.js"></script>	
-<script src="../../html/scripts/draw2d/io/json/Writer.js"></script>	
-<script src="../../html/scripts/draw2d/io/json/Reader.js"></script>-->
-<script src="../../html/scripts/draw2d/src/mydraw2d.js"></script>
+<script src="../scripts/draw2d/lib/jquery.browser.js"></script>
+<script src="../scripts/draw2d/lib/jquery.layout.js"></script>
+<script src="../scripts/draw2d/src/mydraw2d.js"></script>
 
 <script language="JavaScript">
 
@@ -482,9 +479,9 @@ function doDisplayIS(){
    	<span id="dscontainer"></span> <div id="adddiagnstep" class=" newElem newDiagnStep">Diagn. Step</div>
     <span id="mngcontainer"></span> <div id="addmng" class=" newElem  newMng">Managment</div> 
  </div> -->
- <div id="case_story" style="float:left;width:60%;border:1px;">
-
-"Good morning Dr. Epstein" says the practice administrator as she puts your cup of tea down in front of you. "I think you have a busy surgery this morning".
+ <div id="case_story" style="float:left;width:60%;border:1px;border-color:#cccccc">
+Virtual Patient story here (e.g. in Casus)
+<!--  "Good morning Dr. Epstein" says the practice administrator as she puts your cup of tea down in front of you. "I think you have a busy surgery this morning".
 Your eyes are drawn to the window behind and the glorious view over the rooftops of Buckden and Wharfdale to the hills behind. Maybe there would be time later.....
 "Oh Dr Epstein, I think you'd better see the young gentleman that's just come in - he doesn't look so good. I've popped him in the treatment room."
 <br/><br/>
@@ -500,7 +497,7 @@ Henry's works in an insurance brokers, but works out regularly, and he is fit an
 Henry a non-smoker is married, with no children, who drinks alcohol socially. There is no history of allergy, medications, or chest problems. No significant family history. Just before undertaking this hike there had been a mild episode of a cold or flu-like illness, but not enough to abandon the hike.
 His respiratory rate 45/min, Pulse 116 /min, blood pressure 109/55, temperature 39.6 C, Saturation 79% in air.
 On examination his chest expansion seems somewhat limited on the right, and there is an area of altered breath sounds, with bronchial breathing and coarse rales over the upper right quadrant. This area is dull to percussion. A pleural friction rub is present.
-What would you like to do now?
+What would you like to do now?-->
 
 </div>
 
@@ -542,7 +539,7 @@ What would you like to do now?
 			<div id="confidence_slider" class="conf_slider" title="Level of confidence"></div>
 	
 		  </div>
-		  <div id="tabs-5"><div class="ddx_left"><input class="f_text" id="tests"></input>
+		  <div id="tabs-5"><div class="ddx_left" style="width:300px;"><input class="f_text" id="tests"></input>
 		  		<!-- <select id="tests"  onchange="addTest();" class="f_select"><option>-</option><option value="1">Chest X-Ray</option></select>-->
 				<br/><ul id="list_tests" class="sortable"><li id="selds_1">Chest X-ray <select class="f_select"><option value="-1">scanning</option><option>r/c Pneumonia</option></select></li></ul>
 		  </div></div>

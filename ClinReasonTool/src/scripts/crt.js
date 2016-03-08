@@ -2,22 +2,74 @@
  * javascript for displaying the illness script tabs representation
  */
 
-/* replace with jquery ajax later on....*/
+/**
+ * we start an ajax call with changed params. We also include always the session id!
+ */
 function sendAjax(id, callback, type, name){
 	$.ajax({
 		  method: "POST",
 		  url: "tabs_ajax.xhtml",
-		  data: { type: type, id: id }
+		  data: { type: type, id: id, session_id: sessId, name: name }
 		})
 	  .done(function( response ) {
 		 var id2 =  $(response).find('id').text();
-		 alert(id2);
-		 eval(callback)(id2, name); //CAVE: not very safe, a better way to do this!?!
+		// alert(id2);
+		 callback(id2, name);
 	  });
 	
 }
 
+/******************** patient tab*******************************/
+/**
+ * user changes the course of time, we trigger an ajax call to save change.
+ */
+function changeCourseOfTime(){
+	var courseTime = $("#courseTime").val(); 
+	//alert(courseTime);
+	sendAjax(courseTime, changeCourseOfTimeCallBack, "chgCourseOfTime", "");
+}
 
+function changeCourseOfTimeCallBack(id, name){
+	//nothing to do here....
+}
+
+/******************** problems tab*******************************/
+
+/**
+ * a problem is added to the list of the already added problems:
+ **/
+function addProblem(problemId, name){
+	//here we have to trigger an ajax call... 
+	//var problemId = $("#problems").val();
+	if(problemId>-1) sendAjax(problemId, addProblemCallBack, "addProblem", name);
+}
+
+function addProblemCallBack(problemId, selProblem){
+	$("#problems").val("");
+	//var selProblem = $("#problems option:selected").text();
+	var isCorr = tmpHelperGetCorrect(problemId);
+	var y = (numFinds * 30) +10;
+	if(isCorr==2) $("#list_problems").append("<li id=\"selProb="+problemId+"\">"+selProblem+"<i class=\"icon-ok2\"></i></li>");
+	else if(isCorr==1) $("#list_problems").append("<li id=\"selProb="+problemId+"\">"+selProblem+"<i class=\"icon-ok1\"></i></li>");
+	else $("#list_problems").append("<li id=\"selprob_"+problemId+"\">"+selProblem+"</li>");
+	
+	//alert(problemId);
+	createAndAddFind(selProblem,5, y, "cmprob_"+problemId);
+	numFinds++;
+		
+}
+/* if the answer was correct, but there is a better choice we offer the learner to change it by clicking on the checkmark*/
+function chgProblem(orgId, toChgId){
+	var confirmMsg = confirm("The term you have chosen is correct, however, a better choice would have been Dyspnea. Do you want to change your choice?");
+	if(confirmMsg){
+		$("#selprob_"+orgId).html("Dyspnea<i class=\"icon-ok2\"></i>");
+		$("#selprob_"+orgId).attr("id","selprob_"+toChgId);
+		//also trigger an ajax call to store the change....
+	}
+}
+
+
+/******************** concept map *******************************/
 function initAddHyp(){
   $( "#addhyp" ).draggable({ //add a new hypothesis
 	  start: function( event, ui ) {
@@ -96,38 +148,6 @@ function removeItemFromListCallback(draggable){
 	deleteItemFromCM(rect); //removes the ite from the cm		
 }
 
-/*
- * a problem is added to the list of the already added problems:
- */
-function addProblem(problemId, name){
-	//here we have to trigger an ajax call... 
-	//var problemId = $("#problems").val();
-	if(problemId>-1) sendAjax(problemId, addProblemCallBack, "addProblem", name)
-}
-
-function addProblemCallBack(problemId, selProblem){
-	$("#problems").val("");
-	//var selProblem = $("#problems option:selected").text();
-	var isCorr = tmpHelperGetCorrect(problemId);
-	var y = (numFinds * 30) +10;
-	if(isCorr==2) $("#list_problems").append("<li id=\"selProb="+problemId+"\">"+selProblem+"<i class=\"icon-ok2\"></i></li>");
-	else if(isCorr==1) $("#list_problems").append("<li id=\"selProb="+problemId+"\">"+selProblem+"<i class=\"icon-ok1\"></i></li>");
-	else $("#list_problems").append("<li id=\"selprob_"+problemId+"\">"+selProblem+"</li>");
-	
-	//alert(problemId);
-	createAndAddFind(selProblem,5, y, "cmprob_"+problemId);
-	numFinds++;
-		
-}
-/* if the answer was correct, but there is a better choice we offer the learner to change it by clicking on the checkmark*/
-function chgProblem(orgId, toChgId){
-	var confirmMsg = confirm("The term you have chosen is correct, however, a better choice would have been Dyspnea. Do you want to change your choice?");
-	if(confirmMsg){
-		$("#selprob_"+orgId).html("Dyspnea<i class=\"icon-ok2\"></i>");
-		$("#selprob_"+orgId).attr("id","selprob_"+toChgId);
-		//also trigger an ajax call to store the change....
-	}
-}
 
 /* this is no longer needed with ajax */
 function tmpHelperGetCorrect(problemId){

@@ -14,6 +14,7 @@
 		<property name="destId" column="dest_id" type="long" />
 		<property name="order" column="idx" type="int" />
 		<property name="sourceId" column="source_id" type="long"/>	
-		<property name="name" column="name" type="string"/>	
+		<!--  <property name="name" column="name" type="string"/>	-->
+		<many-to-one name="problem" class="model.ListItem" column="source_id"  lazy="false" insert="false" update="false"/>
 </class>
 </hibernate-mapping>

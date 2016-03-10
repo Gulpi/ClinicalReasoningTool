@@ -4,11 +4,15 @@ import beans.relation.Relation;
 
 public interface DelAction {
 
-	void save();
+	void save(Relation rel);
 	/**
-	 * A log entry for the move action is created and saved in a Log object
+	 * A log entry for the delete action is created and saved in a Log object
 	 */
 	void notifyLog(Relation rel);
 	
-	void delete();
+	/**
+	 * Delete the bean from the database.
+	 * @param id
+	 */
+	void delete(String id);
 }

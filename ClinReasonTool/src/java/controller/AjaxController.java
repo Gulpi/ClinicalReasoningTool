@@ -2,8 +2,9 @@ package controller;
 
 import java.beans.Statement;
 import java.io.IOException;
-import java.util.Map;
+import java.util.*;
 
+import javax.faces.application.FacesMessage;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 
@@ -11,10 +12,10 @@ import beans.*;
 import util.*;
 
 public class AjaxController {
-	FacesContext facesContext;
+	//CRTFacesContext facesContext;
 	
-	public AjaxController(FacesContext fc){
-		this.facesContext = fc;
+	public AjaxController(/*CRTFacesContext fc*/){
+		//this.facesContext = fc;
 	}
 
 	
@@ -25,8 +26,8 @@ public class AjaxController {
 	 * @throws IOException
 	 */
 	public void receiveAjax(PatientIllnessScript patillscript) throws IOException {
-	    //FacesContext facesContext = FacesContext.getCurrentInstance();
-	    ExternalContext externalContext = facesContext.getExternalContext();
+	    FacesContext facesContext2 = FacesContext.getCurrentInstance();
+	    ExternalContext externalContext = facesContext2.getExternalContext();
 	    Map<String, String> reqParams = externalContext.getRequestParameterMap();
 	    if(reqParams!=null){
 	    	String sessionId = reqParams.get("session_id");
@@ -35,9 +36,14 @@ public class AjaxController {
 	    		return; //TODO we need some more error handling here, how can this happen? What shall we do? 
 	    	}
 	    	String methodName = reqParams.get("type");
-	    	Statement stmt = new Statement(patillscript, methodName, new Object[]{new String(reqParams.get("id")), new String(reqParams.get("name"))});
+	    	String idStr = reqParams.get("id");
+	    	String nameStr = reqParams.get("name");
+	    	Statement stmt; 
+	    	if(nameStr!=null && !nameStr.trim().equals("")) stmt = new Statement(patillscript, methodName, new Object[]{idStr, nameStr});
+	    	else stmt = new Statement(patillscript, methodName, new Object[]{idStr});
+	    	
 	    	try {
-				stmt.execute();
+				stmt.execute();				
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				System.out.println(StringUtilities.stackTraceToString(e));
@@ -53,6 +59,7 @@ public class AjaxController {
 	 * @throws IOException
 	 */
 	private void responseAjax(ExternalContext externalContext, String responseId) throws IOException{
+		FacesContext facesContext = FacesContext.getCurrentInstance();
 	    externalContext.setResponseContentType("text/xml");
 	    externalContext.setResponseCharacterEncoding("UTF-8");    
 	    externalContext.getResponseOutputWriter().write(createResponseXML(responseId));
@@ -60,14 +67,37 @@ public class AjaxController {
 	}
 	
 	/**
-	 * assemble the xml response
+	 * assemble the xml response, include the id and if applicable a message.
 	 * @param responseParam
 	 * @return
 	 */
 	private String createResponseXML(String responseParam){
+		
 		//TODO: we might want to add more info to the response....
-		String s = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><response><id>"+responseParam+"</id></response>";
-		return s;
+		StringBuffer xmlResponse = new StringBuffer("<?xml version=\"1.0\" encoding=\"UTF-8\"?><response><id>");
+		xmlResponse.append(responseParam+"</id>");
+		appendMessag(xmlResponse);
+		//facesContext.
+		xmlResponse.append("</response>");
+		return xmlResponse.toString();
+	}
+	
+	/**
+	 * If e.g. an error has occurred we get the message from the FacesContext and include it into the xml response.
+	 * @param xmlResponse
+	 */
+	private void appendMessag(StringBuffer xmlResponse){
+		List<FacesMessage> msgs = FacesContext.getCurrentInstance().getMessageList();
+		if(msgs!=null && !msgs.isEmpty()){ //per default we only display last message
+			FacesMessage fmsg = msgs.get(0);	
+		//if(((CRTFacesContext) facesContext).getCurrentMessage()!=null){ //then we have to include a message into the response:
+			//String msg = "";facesContext.getCurrentMessage().getSummary();
+			/*if(msg!=null)*/ 
+		if(fmsg.getSummary()!=null && !fmsg.getSummary().trim().equals(""))
+				xmlResponse.append("<msg>"+fmsg.getSummary()+"</msg>");
+				xmlResponse.append("<ok>0</ok>"); //indicates that an error has occured
+		}
+		else xmlResponse.append("<ok>1</ok>"); //no error has occured
 	}
 
 }

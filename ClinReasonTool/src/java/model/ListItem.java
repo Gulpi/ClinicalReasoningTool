@@ -1,4 +1,5 @@
 package model;
+import java.io.Serializable;
 import java.util.*;
 
 /**
@@ -6,7 +7,9 @@ import java.util.*;
  * @author ingahege
  *
  */
-public class ListItem {
+public class ListItem implements Serializable{
+
+	private static final long serialVersionUID = 1L;
 	private String name; //MH
 	private String mesh_id; //UI
 	private long item_id = -1;

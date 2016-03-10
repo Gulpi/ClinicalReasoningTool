@@ -3,6 +3,10 @@ package beanActions;
 import java.beans.Beans;
 import java.util.*;
 
+import javax.faces.application.FacesMessage;
+import javax.faces.application.FacesMessage.Severity;
+import javax.faces.context.FacesContext;
+
 import beans.*;
 import beans.relation.*;
 import database.DBClinReason;
@@ -29,15 +33,27 @@ public class AddProblemAction implements AddAction{
 	
 	private void addProblem(long problemId, String name){
 		if(patIllScript.getProblems()==null) patIllScript.setProblems(new ArrayList<RelationProblem>());
-		RelationProblem relProb = new RelationProblem(problemId, patIllScript.getId());
-		relProb.setOrder(patIllScript.getProblems().size());
+		RelationProblem relProb = new RelationProblem(problemId, patIllScript.getId());		
 		if(patIllScript.getProblems().contains(relProb)){
-			//create error message....
+			createErrorMessage("Problem already assigned.","optional details", FacesMessage.SEVERITY_WARN);
 			return;
 		}
+		relProb.setOrder(patIllScript.getProblems().size());
 		patIllScript.getProblems().add(relProb);
+		relProb.setProblem(new DBClinReason().selectListItemById(problemId));
 		save(relProb);
+		notifyLog(relProb);
 		initScoreCalc(relProb);		
+	}
+	
+	/* (non-Javadoc)
+	 * @see beanActions.AddAction#createErrorMessage(java.lang.String, java.lang.String, javax.faces.application.FacesMessage.Severity)
+	 */
+	public void createErrorMessage(String summary, String details, Severity sev){
+		 // MyFacesContextFactory factory = (MyFacesContextFactory) FactoryFinder.getFactory("MyFacesContextFactory");
+		 // CRTFacesContext facesContext = factory.getFacesContextBySessionId(patIllScript.getSessionId());
+		FacesContext facesContext = FacesContext.getCurrentInstance(); 
+		facesContext.addMessage("",new FacesMessage(sev, summary,details));
 	}
 	
 	/* (non-Javadoc)
@@ -45,7 +61,7 @@ public class AddProblemAction implements AddAction{
 	 */
 	public void save(Beans b){
 		//TODO save whole problems collection?
-		new DBClinReason().saveBean(b);
+		new DBClinReason().saveAndCommit(b);
 	}
 	
 	/* (non-Javadoc)

@@ -43,10 +43,12 @@ input.f_text, textarea.f_textarea {
 	-ms-touch-action:none;
 	cursor:move;
 	/*background-color:#006699;*/
+	
 }
 .sortable li{
 	border: 1px solid #b0cbdc;
 	padding:5px;
+	background-color:#ffffff;
 }
 
 
@@ -162,8 +164,8 @@ input.f_text, textarea.f_textarea {
 .icon-circle-tier4:before { content: '\e84c'; color:#088A29; font-size: 0.8em;} 
 .icon-attention0:before { content: '\e8d8'; color:#C2C2C2; font-size: 0.8em; } 
 .icon-attention1:before { content: '\e8d8'; color:#D60000; font-size: 0.8em; } 
-.icon-trash-1:before { content: '\e872';  color:#000000; font-size: 1.3em;} /*color:#088A29;*/
-.icon-ok2:before { content: '\e804'; color:#088A29; font-size: 0.8em;}
+.icon-trash-1:before { content: '\e872';  color:#000000; font-size: 0.8em; float: right;} /*color:#088A29;*/
+.icon-ok2:before { content: '\e804'; color:#088A29; font-size: 0.8em; float: right;}
 .icon-ok1:before { content: '\e804'; color:#CEF6CE; font-size: 0.8em;}
 .icon-upload-off:before { content: '\e81a'; color:#C2C2C2; font-size: 1.3em;}
 .icon-upload-on:before { content: '\e81a'; color:#000000; font-size: 1.3em;}/*color:#088A29;*/

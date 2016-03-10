@@ -11,12 +11,8 @@
 /* we create a rectangle & label with the basic settings like size, color,... */
 function createRect(name, color, id){
 	var rect = new LabelRectangle();
-	//rect.setWidth(50);
-	//rect.setHeight(22);
 	rect.label.text=name;
-	//rect.label.setBackgroundColor(color);
 	rect.label.setBackgroundColor("#ffffff");
-	//rect.bgColor= new draw2d.util.Color(color);
 	rect.color= new draw2d.util.Color(color);
 	rect.setId(id);
 	

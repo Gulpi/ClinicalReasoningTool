@@ -1,8 +1,14 @@
 package controller;
 
+import java.util.*;
+import javax.faces.FacesException;
+import javax.faces.FactoryFinder;
 import javax.faces.bean.*;
+import javax.faces.context.FacesContext;
+import javax.faces.context.FacesContextFactory;
+import javax.faces.lifecycle.Lifecycle;
 
-import controller.MeshImporter;
+import beans.CRTFacesContext;
 import database.HibernateUtil;
 
 /**
@@ -12,8 +18,14 @@ import database.HibernateUtil;
  */
 @ManagedBean(name = "crtInit", eager = true)
 @ApplicationScoped
-public class CRTInit {
+public class CRTInit /*extends FacesContextFactory*/{
 
+	/**
+	 * Container in which we store the FacesContext for this application.
+	 * Long=sessionId
+	 */
+	//Map<Long, CRTFacesContext> facesContexts;
+	//private FacesContextFactory delegate;
 	
 	public CRTInit(){
 		HibernateUtil.initHibernate();

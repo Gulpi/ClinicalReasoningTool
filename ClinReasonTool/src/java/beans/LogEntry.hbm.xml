@@ -12,6 +12,6 @@
 			</generator>
 		</id>	
 		<property name="action" column="action" type="int" />
-		<property name="sessionId" column="sessionId" type="long"/>	
+		<property name="sessionId" column="session_id" type="long"/>	
 </class>
 </hibernate-mapping>

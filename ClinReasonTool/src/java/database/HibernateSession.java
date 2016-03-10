@@ -108,6 +108,7 @@ public class HibernateSession {
 			cfg.addClass(model.ListItem.class);
 			cfg.addClass(beans.PatientIllnessScript.class);	
 			cfg.addClass(beans.relation.RelationProblem.class);	
+			cfg.addClass(beans.LogEntry.class);
 			//addAutoHSQLDBConfig();
 			
 		   

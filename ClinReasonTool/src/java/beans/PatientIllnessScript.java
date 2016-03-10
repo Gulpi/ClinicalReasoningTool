@@ -1,14 +1,12 @@
 package beans;
-import java.beans.Beans;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
+import java.beans.*;
 import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.*;
 
 import javax.faces.bean.*;
 
-import beanActions.AddProblemAction;
+import beanActions.*;
 import beans.relation.*;
 import database.DBClinReason;
 
@@ -84,13 +82,15 @@ public class PatientIllnessScript extends Beans/*extends Node*/ implements /*Ill
 	}
 	public List<RelationProblem> getProblems() {return problems;}
 	public void setProblems(List<RelationProblem> problems) {this.problems = problems;}
-	public Timestamp getCreationDate(){ return this.creationDate;} //setting is done in DB
-	public void addProblem(String problemIdStr, String name){ new AddProblemAction(this).add(problemIdStr, name);}	
+	public Timestamp getCreationDate(){ return this.creationDate;} //setting is done in DB	
+	public void setCreationDate(Timestamp creationDate) {this.creationDate = creationDate;}
+	public void addProblem(String problemIdStr, String name){ new AddProblemAction(this).add(problemIdStr, name);}
+	public void delProblem(String problemIdStr, String name){ new DelProblemAction(this).delete(problemIdStr);}
 	public PatientIllnessScript getExpertPatIllScript() {return expertPatIllScript;}
 	public void setExpertPatIllScript(PatientIllnessScript expertPatIllScript) {this.expertPatIllScript = expertPatIllScript;}
 	
 	public void save(){		
-		new DBClinReason().saveBean(this);
+		new DBClinReason().saveAndCommit(this);
 	}
 	
 	/* (non-Javadoc)
@@ -115,5 +115,14 @@ public class PatientIllnessScript extends Beans/*extends Node*/ implements /*Ill
 		if(evt!=null){
 			System.out.println(evt.getPropertyName());
 		}		
+	}
+	
+	public RelationProblem getProblemById(long id){
+		if(problems==null || problems.isEmpty()) return null;
+		for(int i=0; i< problems.size(); i++){
+			RelationProblem prob = problems.get(i);
+			if(prob.getSourceId()==id) return prob;
+		}
+		return null; //nothing found
 	}
 }

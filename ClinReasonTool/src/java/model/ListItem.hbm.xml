@@ -9,7 +9,7 @@
 	
 		<id name="item_id" type="long" column="item_id">
 			<generator class="sequence">
-				<param name ="sequence">CRT.CR_SEQ</param>
+				<param name ="sequence">CRT.LIST_SEQ</param>
 			</generator>
 		</id>
 					

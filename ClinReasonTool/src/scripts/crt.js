@@ -13,8 +13,11 @@ function sendAjax(id, callback, type, name){
 		})
 	  .done(function( response ) {
 		 var id2 =  $(response).find('id').text();
-		// alert(id2);
-		 callback(id2, name);
+		 var msg =  $(response).find('msg').text();
+		 $("#msg").html(msg);
+		 var isOk =  $(response).find('ok').text();
+		 if(isOk=="1") callback(id2, name);
+		
 	  });
 	
 }
@@ -49,12 +52,12 @@ function addProblemCallBack(problemId, selProblem){
 	//var selProblem = $("#problems option:selected").text();
 	var isCorr = tmpHelperGetCorrect(problemId);
 	var y = (numFinds * 30) +10;
-	if(isCorr==2) $("#list_problems").append("<li id=\"selProb="+problemId+"\">"+selProblem+"<i class=\"icon-ok2\"></i></li>");
-	else if(isCorr==1) $("#list_problems").append("<li id=\"selProb="+problemId+"\">"+selProblem+"<i class=\"icon-ok1\"></i></li>");
+	if(isCorr==2) $("#list_problems").append("<li id=\"selProb_"+problemId+"\">"+selProblem+"<i class=\"icon-ok2\"></i></li>");
+	else if(isCorr==1) $("#list_problems").append("<li id=\"selProb_"+problemId+"\">"+selProblem+"<i class=\"icon-ok1\"></i></li>");
 	else $("#list_problems").append("<li id=\"selprob_"+problemId+"\">"+selProblem+"</li>");
 	
 	//alert(problemId);
-	createAndAddFind(selProblem,5, y, "cmprob_"+problemId);
+	createAndAddFind(selProblem,5, y, "cmprob_"+problemId); 
 	numFinds++;
 		
 }
@@ -66,6 +69,24 @@ function chgProblem(orgId, toChgId){
 		$("#selprob_"+orgId).attr("id","selprob_"+toChgId);
 		//also trigger an ajax call to store the change....
 	}
+}
+
+function delProblem(id, prefix){
+	sendAjax(id, removeItemFromListCallback, "delProblem", prefix);
+	//removeItemFromListCallback(draggable);
+}
+/* back from ajax call, remoce item from list and the concept map*/
+function removeItemFromListCallback(id, prefix){
+	
+	//var id_prefix = draggable.attr("id");
+	alert(prefix);
+	var itemId = prefix+"_"+id;
+	$("#"+itemId).remove();
+	//draggable.remove();
+	//we also remove the item from the canvas:
+	var idInCM = "cm"+itemId.substring(3);	//prefix maP: cmprob, prefix list: selProb
+	var rect  = my_canvas.getFigure(idInCM);
+	deleteItemFromCM(rect); //removes the ite from the cm		
 }
 
 
@@ -131,13 +152,14 @@ function initAddDiagnStep(){
 	}); 
 }
 /*an item has been dragged onto the trash bin, so, we remove it from the list*/
-function removeItemFromList(draggable){
+/*function removeItemFromList(draggable){
 	var itemIdToDel = draggable.attr("id"); //e.g. problems_2, ddx_67
 	//trigger ajax call here....
 	removeItemFromListCallback(draggable);
-}
+}*/
+
 /* back from ajax call, remoce item from list and the concept map*/
-function removeItemFromListCallback(draggable){
+/*function removeItemFromListCallback(draggable){
 	
 	var id_prefix = draggable.attr("id");
 	alert(id_prefix);
@@ -146,7 +168,9 @@ function removeItemFromListCallback(draggable){
 	var idInCM = "cm"+id_prefix.substring(3);	
 	var rect  = my_canvas.getFigure(idInCM);
 	deleteItemFromCM(rect); //removes the ite from the cm		
-}
+}*/
+
+
 
 
 /* this is no longer needed with ajax */

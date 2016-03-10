@@ -24,6 +24,10 @@ import database.DBClinReason;
 public class CRTFacesContext extends FacesContext implements Serializable{
 	private static final long serialVersionUID = 1L;
 	private long sessionId = -1;
+	/**
+	 * Messages (e.g. errors occured during ajax request handling)s
+	 */
+	private List<FacesMessage> messages;
 	//private String test = "hallo";
 	
 	private PatientIllnessScript patillscript;
@@ -46,7 +50,7 @@ public class CRTFacesContext extends FacesContext implements Serializable{
 	public void setSessionId(long sessionId) {this.sessionId = sessionId;}
 	private void setSessionId(){
 		Map<String,String[]> p = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterValuesMap();
-		String[] p1 = p.get("sessionid");
+		String[] p1 = p.get("session_id");
 		if (p1 != null && p1.length>0){
 			System.out.println(p1[0]);
 			this.sessionId = (Long.valueOf(p1[0]).longValue());
@@ -68,11 +72,20 @@ public class CRTFacesContext extends FacesContext implements Serializable{
 	public PatientIllnessScript getPatillscript() { return patillscript;}
 	public void setPatillscript(PatientIllnessScript patillscript) {this.patillscript = patillscript;}
 
-	@Override
-	public void addMessage(String arg0, FacesMessage arg1) {
-		// TODO Auto-generated method stub
-		
+	/**
+	 * @param arg0
+	 * @param msg
+	 */
+	public void addMessage(String clientId, FacesMessage msg) {
+		if(messages==null) messages = new ArrayList<FacesMessage>();
+		messages.add(msg);		
 	}
+	public FacesMessage getCurrentMessage(){
+		if(messages==null || messages.isEmpty()) return null; 
+		return messages.get(0);
+	}
+	public void addMessage(FacesMessage msg) { addMessage(null, msg);}
+	public void removeMessages(){messages=null;}
 
 	@Override
 	public Application getApplication() {
@@ -88,6 +101,7 @@ public class CRTFacesContext extends FacesContext implements Serializable{
 
 	@Override
 	public ExternalContext getExternalContext() {
+		//return super.getE
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -98,17 +112,17 @@ public class CRTFacesContext extends FacesContext implements Serializable{
 		return null;
 	}
 
-	@Override
+	/* (non-Javadoc)
+	 * @see javax.faces.context.FacesContext#getMessages()
+	 */
 	public Iterator<FacesMessage> getMessages() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+		if(messages!=null)return messages.iterator();
+		return null;}
 
-	@Override
-	public Iterator<FacesMessage> getMessages(String arg0) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+	/* (non-Javadoc)
+	 * @see javax.faces.context.FacesContext#getMessages(java.lang.String)
+	 */
+	public Iterator<FacesMessage> getMessages(String arg0) {		return messages.iterator();}
 
 	@Override
 	public RenderKit getRenderKit() {
@@ -183,7 +197,7 @@ public class CRTFacesContext extends FacesContext implements Serializable{
 	}
 	/* we land here from an ajax request....*/
 	public void ajaxResponseHandler() throws IOException {
-		new AjaxController(FacesContext.getCurrentInstance()).receiveAjax(patillscript);
+		new AjaxController().receiveAjax(patillscript);
 	}
 
 }

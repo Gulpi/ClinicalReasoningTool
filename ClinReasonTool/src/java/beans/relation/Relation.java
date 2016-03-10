@@ -32,9 +32,10 @@ public interface Relation /*extends DefaultWeightedEdge*/{
 		this.sourceId = sourceId;
 		this.destId = destId;
 	}*/
-	public long getSourceId(); // {return sourceId;}
-	public void setSourceId(long sourceId); // {this.sourceId = sourceId;}
-	public long getDestId(); // {return destId;}
-	public void setDestId(long destId); // {this.destId = destId;}
-		
+	public long getSourceId(); 
+	public void setSourceId(long sourceId); 
+	public long getDestId(); 
+	public void setDestId(long destId);
+	public int getOrder(); 
+	public void setOrder(int o); 	
 }

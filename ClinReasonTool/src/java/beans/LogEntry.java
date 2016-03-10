@@ -47,7 +47,7 @@ public class LogEntry extends Beans{
 	public void setSessionId(long sessionId) {this.sessionId = sessionId;}
 	
 	public void save(){
-		new DBClinReason().saveBean(this);
+		new DBClinReason().saveAndCommit(this);
 	}
 		
 }

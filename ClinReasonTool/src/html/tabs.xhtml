@@ -60,7 +60,7 @@ var sessId = #{crtContext.patillscript.sessionId};
 $(function() {
     $( "#tabs" ).tabs({
     	//active = $( ".selector" ).tabs( "option", "active" ),
-        event: "mouseover"
+       // event: "mouseover"
       });
 
     $( document ).tooltip();
@@ -182,17 +182,11 @@ What would you like to do now? -->
 					<!--  <ol id="list_problems" class="sortable"><li id="selprob_6">Shortness of Breath<a href="javascript:chgProblem('6','4');"><i class="icon-ok1"></i></a></li></ol>-->
 					<ol id="list_problems" class="sortable">
 					   <ui:repeat value="#{crtContext.patillscript.problems}" var="prob" varStatus="status">
-       					 <!-- <c:forEach var="i"  value="#{crtContext.patillscript.problems}">-->
-
-       					 <li>#{prob.sourceId}
-           				 	<!--  <h:link value="#{prob.sourceId}">
-               			 		<f:param name="id" value="#{prob.sourceId}" />
-            				</h:link>-->
-        				</li>
-        				<!--</c:forEach>--> 
-    					 </ui:repeat>
+       					 	<li id="selProb_#{prob.sourceId}">#{prob.problem.name}<a href="javascript:delProblem(#{prob.sourceId}, 'selProb');"><i class="icon-trash-1"></i></a> <i class="icon-ok2"></i></li>
+    					</ui:repeat>
     					 </ol>
 				</div>
+				
 		  </div>
 		  <div id="tabs-4">	
 		  		<textarea class="f_textarea" name="summSt" cols="50" rows="10"></textarea>
@@ -223,7 +217,13 @@ What would you like to do now? -->
 			    	<span id="mngcontainer"></span> <div id="addmng" class=" newElem  newMng">Managment</div> 
 			    </div>
 		   </div>
-		    <div id="trashbindiv" class="trashbindiv"><i class="icon-trash-1"></i></div>
+		    <div id="trashbindiv" class="trashbindiv"><!-- <i class="icon-trash-1"></i>--><div class="msg" id="msg"></div>
+		    
+		    	
+		    	<!-- <ui:repeat value="#{crtContext.messages}" var="msg" varStatus="status">
+		    		#{msg.summary},  #{msg.detail}
+	       		</ui:repeat>-->
+		    </div>
 			  	<div class="navfooter"><a href="" title="take notes"><i class="icon-edit"></i></a>
 			  	<a href="javascript:getProblemFedback();" title="See an experts problems"><i class="icon-user-md"></i></a> 
 				<a href="javascript:getProblemPeerFedback();" title="See problems listed by your peers"><i class="icon-users"></i></a>

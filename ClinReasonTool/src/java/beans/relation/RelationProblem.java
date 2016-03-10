@@ -5,6 +5,8 @@ import java.io.Serializable;
 
 import javax.faces.bean.*;
 
+import model.ListItem;
+
 /**
  * Relation between an (Patient-)IllnessScript and a problem. We need this to specify a problem, e.g. whether it is 
  * almost proving a diagnosis or rarely occurs with a diagnosis.
@@ -12,8 +14,6 @@ import javax.faces.bean.*;
  * @author ingahege
  *
  */
-/*@ManagedBean(name = "problem", eager = true)
-@SessionScoped*/
 public class RelationProblem extends Beans implements Relation, Serializable{
 
 	private static final long serialVersionUID = 1L;
@@ -27,15 +27,13 @@ public class RelationProblem extends Beans implements Relation, Serializable{
 	 */
 	private long sourceId; 
 	/**
-	 * To be on the safe side we store the name here as well....
-	 */
-	private String name;
-	/**
 	 * (Patient)Illnesscript
 	 */
 	private long destId; 
 	
 	private int order;
+	
+	private int deleteFlag = 0;
 	/**
 	 * problems: key-finding, other,... (?)
 	 */
@@ -45,6 +43,8 @@ public class RelationProblem extends Beans implements Relation, Serializable{
 	 * how often is a problem prevalent in a diagnosis (rare, medium, often)
 	 */
 	private int qualifier;
+	
+	private ListItem problem;
 	
 	public RelationProblem(){}
 	public RelationProblem(long sourceId, long destId){
@@ -59,8 +59,10 @@ public class RelationProblem extends Beans implements Relation, Serializable{
 	public void setId(long id) {this.id = id;}	
 	public int getOrder() {return order;}
 	public void setOrder(int order) {this.order = order;}	
-	public String getName() {return name;}
-	public void setName(String name) {this.name = name;}
+	public ListItem getProblem() {return problem;}
+	public void setProblem(ListItem problem) {this.problem = problem;}	
+	public int getDeleteFlag() {return deleteFlag;}
+	public void setDeleteFlag(int deleteFlag) {this.deleteFlag = deleteFlag;}
 	
 	public boolean equals(Object o){
 		if(o!=null){

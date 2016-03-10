@@ -30,9 +30,9 @@ draw2d.ui.LabelLMEditor =  draw2d.ui.LabelEditor.extend({
         // the ENTER and ESC key to commit /cancel the operation
         //
         //this.html = $('<input id="inplaceeditor">');
-        this.html = $('<select id="inplaceeditor">');
-        this.html.val('<option value="-1">-</option><option value="2">Pneumonia</option>');
-        this.html = $('</select>');
+        this.html = $("<select id=\"inplaceeditor\">");
+        this.html.val("<option value=\"-1\">-</option><option value=\"2\">Pneumonia</option>");
+        this.html = $("</select>");
         this.html.hide();
         
         $("body").append(this.html);

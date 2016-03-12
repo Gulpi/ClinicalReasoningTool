@@ -30,7 +30,7 @@ public class IllnessScript extends Node implements IllnessScriptInterface{
 	/**
 	 * related diagnoses to the covered diagnosis - we could also link to related IllnessScripts?
 	 */
-	private List<Rel_IS_Diagnosis> ddx;
+	//private List<Rel_IS_Diagnosis> ddx;
 	/**
 	 * Diagnosis this IllnessScript is covering
 	 */

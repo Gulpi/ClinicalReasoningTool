@@ -15,6 +15,6 @@ public class ActionHelper {
 			Relation rel = (Relation) items.get(i);
 			rel.setOrder(i);
 		}
-		new DBClinReason().saveAndCommit(items);
+		//new DBClinReason().saveAndCommit(items);
 	}
 }

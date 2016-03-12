@@ -69,15 +69,22 @@ $(function() {
     $( "#list_diagnoses" ).disableSelection();
     $( "#list_mngs" ).sortable();
     $( "#list_mngs" ).disableSelection();
-    $( "#list_problems" ).sortable();
+    $( "#list_problems" ).sortable({
+ 		stop: function( event, ui ) {
+ 			//alert(ui.item.text());
+ 			//var id = ui.item.attr("id");
+ 			//alert(id);
+ 			var sorted = $( "#list_problems" ).sortable( "serialize", { key: "selProb" } );
+ 			reOrderProblems(sorted, ui.item.attr("id"));
+ 		}
+    });
     $( "#list_problems" ).disableSelection();
-    $( "#trashbindiv" ).droppable({
-    	/*accept: ".sortable",*/
+/*    $( "#trashbindiv" ).droppable({
         drop: function( event, ui ) {
           $( this ) //this.id = id of trashbin
               removeItemFromList(ui.draggable);        
         }
-      });
+      });*/
 
     $( "#confidence_slider" ).slider({
        orientation: "vertical",
@@ -159,7 +166,8 @@ What would you like to do now? -->
 	    <li><a href="#tabs-3">DDX</a></li>
 	    <li><a href="#tabs-5">Diagn. Steps</a></li>
 	    <li><a href="#tabs-6">Therapy</a></li>
-	    <li><a href="#tabs-7">CM</a></li>
+	    <li><a href="#tabs-7">Concept map</a></li>
+	    <li><a href="#tabs-8">Notes</a></li>
 	  </ul>
 		  <div id="tabs-1">
 		  <div id="patimg" style="position:relative;right:0px; top:0px; float:right;"><img src="patient.png" width="150px" /></div>
@@ -175,48 +183,61 @@ What would you like to do now? -->
 				<!-- <select class="f_select" id="courseTime"><option value="-1">-</option><option value="1">acute</option><option value="2">chronic</option></select> --> 
 			</div>
 		  </div>
-		  <div id="tabs-2">	
-		  		<div class="ddx_left">
-		  			<input class="f_text" id="problems"></input>
-					<br/>
-					<!--  <ol id="list_problems" class="sortable"><li id="selprob_6">Shortness of Breath<a href="javascript:chgProblem('6','4');"><i class="icon-ok1"></i></a></li></ol>-->
+		  <div id="tabs-2" style="background-color:#cccccc;">	
+		  			<div class="search"><input class="f_text" id="problems"></input></div>
+					<div class="ddx_left">
 					<ol id="list_problems" class="sortable">
 					   <ui:repeat value="#{crtContext.patillscript.problems}" var="prob" varStatus="status">
        					 	<li id="selProb_#{prob.sourceId}">#{prob.problem.name}<a href="javascript:delProblem(#{prob.sourceId}, 'selProb');"><i class="icon-trash-1"></i></a> <i class="icon-ok2"></i></li>
     					</ui:repeat>
-    					 </ol>
-				</div>
-				
+    				</ol>
+				</div>				
 		  </div>
 		  <div id="tabs-4">	
 		  		<textarea class="f_textarea" name="summSt" cols="50" rows="10"></textarea>
 		  </div>
 		  <div id="tabs-3">	
-		  		<div class="ddx_left">
-		  			<input class="f_text" id="ddx"></input>
+		  		
+		  			<div class="search"><input class="f_text" id="ddx"></input></div>
+		  			<div class="ddx_left">
 					<ol id="list_diagnoses" class="sortable">
-						<li id="selddx_2"><a href="javascript:toggleMnM('1');" title="Is this a Must-Not-Miss diagnosis? E.g. because it is lethal?"><i id="mnmicon_1" class="icon-attention0"></i></a>Pneumonia<a href="javascript:changeTier('1');" id="tiera_1" title="How likely is this diagnosis?"><i id="tiericon_1" class="icon-circle-tier0"></i></a></li>
+						<ui:repeat value="#{crtContext.patillscript.diagnoses}" var="ddx" varStatus="status">
+       					 	<li id="selddx_#{ddx.sourceId}">
+       					 	<a href="javascript:toggleMnM('selddx_#{ddx.sourceId}');" title="Is this a Must-Not-Miss diagnosis? E.g. because it is lethal?"><i id="mnmicon_#{ddx.sourceId}" class="icon-attention0"></i></a>#{prob.diagnosis.name}<a href="javascript:delDDX(#{ddx.sourceId}, 'selddx');"><i class="icon-trash-1"></i></a> <i class="icon-ok2"></i></li>
+    					</ui:repeat>
+					
+					
+						<!--  <li id="selddx_2"><a href="javascript:toggleMnM('1');" title="Is this a Must-Not-Miss diagnosis? E.g. because it is lethal?"><i id="mnmicon_1" class="icon-attention0"></i></a>Pneumonia<a href="javascript:changeTier('1');" id="tiera_1" title="How likely is this diagnosis?"><i id="tiericon_1" class="icon-circle-tier0"></i></a></li>-->
 					</ol>
 				</div>
 				<div id="confidence_slider" class="conf_slider" title="Level of confidence"></div>
 		  </div>
-		  <div id="tabs-5"><div class="ddx_left" style="width:300px;"><input class="f_text" id="tests"></input>
-		  		<!-- <select id="tests"  onchange="addTest();" class="f_select"><option>-</option><option value="1">Chest X-Ray</option></select>-->
-				<br/><ul id="list_tests" class="sortable"><li id="selds_1">Chest X-ray <select class="f_select"><option value="-1">scanning</option><option>r/c Pneumonia</option></select></li></ul>
-		  </div></div>
-		  <div id="tabs-6"><div class="ddx_left"><input class="f_text" id="mng"></input>
-		  		<!-- <select id="mng" class="f_select" onchange="addManagement();"><option value="-1">-</option><option value="0">do nothing</option><option value="1">antibiotics</option></select>-->
-		   		<br/><ol id="list_mngs" class="sortable"></ol>	   	
-		  </div> </div>
+		  <div id="tabs-5">
+		  		<div class="search"><input class="f_text" id="tests"></input></div>
+		  		<div class="ddx_left" style="width:300px;">
+					<ul id="list_tests" class="sortable">
+						<li id="selds_1">Chest X-ray <select class="f_select"><option value="-1">scanning</option><option>r/c Pneumonia</option></select></li>
+					</ul>
+		  		</div>
+		  </div>
+		  <div id="tabs-6">
+		  <div class="search"><input class="f_text" id="mng"></input></div>
+		  		<div class="ddx_left">
+		   			<ol id="list_mngs" class="sortable"></ol>	   	
+		  		</div> 
+		  </div>
 		   <div id="tabs-7">
 				<div id="canvas" class="canvas"> </div>
-				 <div class="newElemContainer">
-				 	<span id="findcontainer"></span><div id="addfind" class=" newElem newFind">Problem</div><br/>
-					<span id="hypcontainer"></span><div id="addhyp" class=" newElem newHyp">Diagnosis</div><br/>
-			   		<span id="dscontainer"></span> <div id="adddiagnstep" class=" newElem newDiagnStep">Diagn. Step</div><br/>
-			    	<span id="mngcontainer"></span> <div id="addmng" class=" newElem  newMng">Managment</div> 
-			    </div>
-		   </div>
+				 	<div class="newElemContainer">
+				 		<span id="findcontainer"></span><div id="addfind" class=" newElem newFind">Problem</div><br/>
+						<span id="hypcontainer"></span><div id="addhyp" class=" newElem newHyp">Diagnosis</div><br/>
+			   			<span id="dscontainer"></span> <div id="adddiagnstep" class=" newElem newDiagnStep">Diagn. Step</div><br/>
+			    		<span id="mngcontainer"></span> <div id="addmng" class=" newElem  newMng">Managment</div> 
+			   		 </div>
+		  		 </div>
+		     <div id="tabs-8">	
+		  		<textarea class="f_textarea" name="notes" cols="50" rows="10"></textarea>
+		  </div>
 		    <div id="trashbindiv" class="trashbindiv"><!-- <i class="icon-trash-1"></i>--><div class="msg" id="msg"></div>
 		    
 		    	
@@ -224,7 +245,7 @@ What would you like to do now? -->
 		    		#{msg.summary},  #{msg.detail}
 	       		</ui:repeat>-->
 		    </div>
-			  	<div class="navfooter"><a href="" title="take notes"><i class="icon-edit"></i></a>
+			  	<div class="navfooter"><!-- <a href="" title="take notes"><i class="icon-edit"></i></a>-->
 			  	<a href="javascript:getProblemFedback();" title="See an experts problems"><i class="icon-user-md"></i></a> 
 				<a href="javascript:getProblemPeerFedback();" title="See problems listed by your peers"><i class="icon-users"></i></a>
 				<a href="javascript:doSubmitDDX();" title="Submit your final diagnoses and differentials"><i id="uploadddx" class="icon-upload-off"></i></a>

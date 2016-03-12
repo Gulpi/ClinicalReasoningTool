@@ -4,6 +4,10 @@
 
 /**
  * we start an ajax call with changed params. We also include always the session id!
+ * id = id of the problem/diagnosis,...
+ * callback = function to call when coming back from ajax cal
+ * type = method name to call server-side to handle the call.
+ * name = name of problem, diagnosis,...
  */
 function sendAjax(id, callback, type, name){
 	$.ajax({
@@ -73,22 +77,45 @@ function chgProblem(orgId, toChgId){
 
 function delProblem(id, prefix){
 	sendAjax(id, removeItemFromListCallback, "delProblem", prefix);
-	//removeItemFromListCallback(draggable);
 }
-/* back from ajax call, remoce item from list and the concept map*/
+/* back from ajax call, remove item from list and the concept map*/
 function removeItemFromListCallback(id, prefix){
-	
-	//var id_prefix = draggable.attr("id");
-	alert(prefix);
 	var itemId = prefix+"_"+id;
 	$("#"+itemId).remove();
-	//draggable.remove();
 	//we also remove the item from the canvas:
 	var idInCM = "cm"+itemId.substring(3);	//prefix maP: cmprob, prefix list: selProb
 	var rect  = my_canvas.getFigure(idInCM);
-	deleteItemFromCM(rect); //removes the ite from the cm		
+	deleteItemFromCM(rect); //removes the item from the cm		
 }
 
+function reOrderProblems(newOrder, id){
+	sendAjax(id, reOrderProblemsCallback, "reorderProblems", newOrder);
+}
+
+function reOrderProblemsCallback(){}
+
+/******************** diagnoses *******************************/
+
+/*
+ * a diagnosis is added to the list of the already added diagnoses:
+ */
+function addDiagnosis(diagnId, name){
+	if(diagnId>-1) sendAjax(diagnId, addDiagnosisCallBack, "addDiagnosis", name);
+		//addDiagnosisCallBack(diagnId, selDiagnosis);	
+}
+
+function addDiagnosisCallBack(diagnId, selDiagnosis){
+	$("#ddx").val("");
+	var liItem = "<li id='selddx_"+diagnId+"'>";
+	liItem+="<a href=\"javascript:toggleMnM('"+diagnId+"');\" title=\"Is this a Must-Not-Miss diagnosis? E.g. because it is lethal?\"><i id=\"mnmicon_"+diagnId+"\" class=\"icon-attention0\"></i></a>";
+	liItem+=" "+selDiagnosis+" ";
+	liItem +="<a href=\"javascript:changeTier('"+diagnId+"');\" id=\"tiera_"+diagnId+"\" title=\"How likely is this diagnosis?\"><i id=\"tiericon_"+diagnId+"\" class=\"icon-circle-tier0\"></i></a>";
+	liItem+="</li>";
+	$("#list_diagnoses").append(liItem);
+	var y = (numHyps * 30) +5;
+	createAndAddHyp(selDiagnosis,90, y, "cmddx_"+diagnId);
+	numHyps++;
+}
 
 /******************** concept map *******************************/
 function initAddHyp(){
@@ -183,33 +210,6 @@ function tmpHelperGetCorrect(problemId){
 	return 0;
 }
 
-/*
- * a diagnosis is added to the list of the already added diagnoses:
- */
-function addDiagnosis(diagnId, selDiagnosis){
-	//here we have to trigger an ajax call... 
-	//var diagnId = $("#ddx").val();
-	if(diagnId>-1){
-		addDiagnosisCallBack(diagnId, selDiagnosis);	
-	}
-}
-
-function addDiagnosisCallBack(diagnId, selDiagnosis){
-	$("#ddx").val("");
-	//var selDiagnosis = $("#ddx option:selected").text();
-	var liItem = "<li id='selddx_"+diagnId+"'>";
-	//$("#list_diagnoses").append("<li id='selddx_"+diagnId+"'>");
-	liItem+="<a href=\"javascript:toggleMnM('"+diagnId+"');\" title=\"Is this a Must-Not-Miss diagnosis? E.g. because it is lethal?\"><i id=\"mnmicon_"+diagnId+"\" class=\"icon-attention0\"></i></a>";
-	liItem+=" "+selDiagnosis+" ";
-	liItem +="<a href=\"javascript:changeTier('"+diagnId+"');\" id=\"tiera_"+diagnId+"\" title=\"How likely is this diagnosis?\"><i id=\"tiericon_"+diagnId+"\" class=\"icon-circle-tier0\"></i></a>";
-	liItem+="</li>";
-	$("#list_diagnoses").append(liItem);
-	//$("#ddx").val("-1");
-	//var x = numHyps*50;
-	var y = (numHyps * 30) +5;
-	createAndAddHyp(selDiagnosis,90, y, "cmddx_"+diagnId);
-	numHyps++;
-}
 
 /*
  * a test is added to the list of the already added tests:

@@ -7,11 +7,11 @@ import beans.*;
 import beans.relation.*;
 import database.DBClinReason;
 
-public class MoveProblemAction implements MoveAction{
+public class MoveDiagnosisAction implements MoveAction{
 
 	private PatientIllnessScript patIllScript;
 	
-	public MoveProblemAction(PatientIllnessScript patIllScript){
+	public MoveDiagnosisAction(PatientIllnessScript patIllScript){
 		this.patIllScript = patIllScript;
 	}
 	
@@ -26,7 +26,7 @@ public class MoveProblemAction implements MoveAction{
 	 * @see beanActions.MoveAction#notifyLog(beans.relation.Relation)
 	 */
 	public void notifyLog(Relation rel) {
-		LogEntry le = new LogEntry(LogEntry.MOVEPROBLEM_ACTION, patIllScript.getSessionId(), rel.getSourceId());
+		LogEntry le = new LogEntry(LogEntry.MOVEDIAGNOSIS_ACTION, patIllScript.getSessionId(), rel.getSourceId());
 		le.save();			
 	}
 
@@ -35,18 +35,16 @@ public class MoveProblemAction implements MoveAction{
 	 */
 	public void reorder(String newOrderStr) {		
 		String[] newOrderArr = newOrderStr.split("&");
-		List<RelationProblem> newList  = new ArrayList<RelationProblem>();
+		List<RelationDiagnosis> newList  = new ArrayList<RelationDiagnosis>();
 		if(newOrderArr==null || newOrderArr.length==0) return;
 		for(int i=0; i<newOrderArr.length; i++){
 			String idStr = newOrderArr[i];
 			idStr = idStr.substring(8);	
-			RelationProblem relProb = this.patIllScript.getProblemById(Long.parseLong(idStr));
-			relProb.setOrder(i);
-			newList.add(relProb);
+			RelationDiagnosis rel = this.patIllScript.getDiagnosisById(Long.parseLong(idStr));
+			rel.setOrder(i);
+			newList.add(rel);
 		}
-		patIllScript.setProblems(newList);
-		save(patIllScript.getProblems());
-		//now we change the order attribute of each Relationproblem object:
-		//new ActionHelper().reOrderItems(this.patIllScript.getProblems());
+		patIllScript.setDiagnoses(newList);
+		save(patIllScript.getDiagnoses());
 	}
 }

@@ -33,7 +33,7 @@ public class RelationProblem extends Beans implements Relation, Serializable{
 	
 	private int order;
 	
-	private int deleteFlag = 0;
+	//private int deleteFlag = 0;
 	/**
 	 * problems: key-finding, other,... (?)
 	 */
@@ -61,8 +61,6 @@ public class RelationProblem extends Beans implements Relation, Serializable{
 	public void setOrder(int order) {this.order = order;}	
 	public ListItem getProblem() {return problem;}
 	public void setProblem(ListItem problem) {this.problem = problem;}	
-	public int getDeleteFlag() {return deleteFlag;}
-	public void setDeleteFlag(int deleteFlag) {this.deleteFlag = deleteFlag;}
 	
 	public boolean equals(Object o){
 		if(o!=null){

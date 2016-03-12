@@ -1,16 +1,16 @@
 package beanActions;
 
-import java.util.List;
+import java.util.*;
 
 import beans.LogEntry;
 import beans.PatientIllnessScript;
 import beans.relation.*;
 import database.DBClinReason;
 
-public class DelProblemAction implements DelAction{
+public class DelDiagnosisAction implements DelAction{
 	private PatientIllnessScript patIllScript;
 	
-	public DelProblemAction(PatientIllnessScript patIllScript){
+	public DelDiagnosisAction(PatientIllnessScript patIllScript){
 		this.patIllScript = patIllScript;
 	}
 	
@@ -19,14 +19,14 @@ public class DelProblemAction implements DelAction{
 	 */
 	public void save(Relation rel) {
 		new DBClinReason().deleteAndCommit(rel);
-		new DBClinReason().saveAndCommit(patIllScript.getProblems());
+		new DBClinReason().saveAndCommit(patIllScript.getDiagnoses());
 	}
 
 	/* (non-Javadoc)
 	 * @see beanActions.DelAction#notifyLog(beans.relation.Relation)
 	 */
 	public void notifyLog(Relation rel) {
-		LogEntry le = new LogEntry(LogEntry.DELPROBLEM_ACTION, patIllScript.getSessionId(), rel.getSourceId());
+		LogEntry le = new LogEntry(LogEntry.DELDIAGNOSIS_ACTION, patIllScript.getSessionId(), rel.getSourceId());
 		le.save();		
 	}
 
@@ -34,13 +34,13 @@ public class DelProblemAction implements DelAction{
 	 * @see beanActions.DelAction#delete(java.lang.String)
 	 */
 	public void delete(String id) {
-		if(id==null || id.trim().equals("") || patIllScript==null || patIllScript.getProblems()==null || patIllScript.getProblems().isEmpty()){
+		if(id==null || id.trim().equals("") || patIllScript==null || patIllScript.getDiagnoses()==null || patIllScript.getDiagnoses().isEmpty()){
 			//todo error msg
 			return;		
 		}
-		RelationProblem rel = patIllScript.getProblemById(Long.parseLong(id));
-		patIllScript.getProblems().remove(rel);
-		new ActionHelper().reOrderItems(patIllScript.getProblems());
+		RelationDiagnosis rel = patIllScript.getDiagnosisById(Long.parseLong(id));
+		patIllScript.getDiagnoses().remove(rel);
+		new ActionHelper().reOrderItems(patIllScript.getDiagnoses());
 		notifyLog(rel);
 		save(rel);
 	}

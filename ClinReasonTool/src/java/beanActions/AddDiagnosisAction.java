@@ -13,37 +13,37 @@ import database.DBClinReason;
 import errors.WrongProblemError;
 import scoringActions.ProblemScoring;
 
-public class AddProblemAction implements AddAction{
+public class AddDiagnosisAction implements AddAction{
 
 	private PatientIllnessScript patIllScript;
 	
-	public AddProblemAction(PatientIllnessScript patIllScript){
+	public AddDiagnosisAction(PatientIllnessScript patIllScript){
 		this.patIllScript = patIllScript;
 	}
 	
 	/* (non-Javadoc)
 	 * @see beanActions.AddAction#add(java.lang.String)
 	 */
-	public void add(String idStr, String name){ addProblem(idStr, name);}
+	public void add(String idStr, String name){ addDiagnosis(idStr, name);}
 	
-	private void addProblem(String idStr, String name){
+	private void addDiagnosis(String idStr, String name){
 		long id = Long.valueOf(idStr.trim());
-		addProblem(id, name);
+		addDiagnosis(id, name);
 	}
 	
-	private void addProblem(long id, String name){
-		if(patIllScript.getProblems()==null) patIllScript.setProblems(new ArrayList<RelationProblem>());
-		RelationProblem relProb = new RelationProblem(id, patIllScript.getId());		
-		if(patIllScript.getProblems().contains(relProb)){
-			createErrorMessage("Problem already assigned.","optional details", FacesMessage.SEVERITY_WARN);
+	private void addDiagnosis(long id, String name){
+		if(patIllScript.getDiagnoses()==null) patIllScript.setDiagnoses(new ArrayList<RelationDiagnosis>());
+		RelationDiagnosis relDDX = new RelationDiagnosis(id, patIllScript.getId());		
+		if(patIllScript.getDiagnoses().contains(relDDX)){
+			createErrorMessage("Diagnosis already assigned.","optional details", FacesMessage.SEVERITY_WARN);
 			return;
 		}
-		relProb.setOrder(patIllScript.getProblems().size());
-		patIllScript.getProblems().add(relProb);
-		relProb.setProblem(new DBClinReason().selectListItemById(id));
-		save(relProb);
-		notifyLog(relProb);
-		initScoreCalc(relProb);		
+		relDDX.setOrder(patIllScript.getDiagnoses().size());
+		patIllScript.getDiagnoses().add(relDDX);
+		relDDX.setDiagnosis(new DBClinReason().selectListItemById(id));
+		save(relDDX);
+		notifyLog(relDDX);
+		initScoreCalc(relDDX);		
 	}
 	
 	/* (non-Javadoc)
@@ -68,7 +68,7 @@ public class AddProblemAction implements AddAction{
 	 * @see beanActions.AddAction#notifyLog(beans.relation.Relation)
 	 */
 	public void notifyLog(Relation relProb){
-		LogEntry le = new LogEntry(LogEntry.ADDPROBLEM_ACTION, patIllScript.getSessionId(), relProb.getSourceId());
+		LogEntry le = new LogEntry(LogEntry.ADDDIAGNOSIS_ACTION, patIllScript.getSessionId(), relProb.getSourceId());
 		le.save();
 	}
 	
@@ -76,9 +76,9 @@ public class AddProblemAction implements AddAction{
 	 * @see beanActions.AddAction#initScoreCalc(beans.relation.Relation)
 	 */
 	public void initScoreCalc(Relation relProb){
-		try{
-			new ProblemScoring().calcScoreForAddProblem(patIllScript, relProb);
-		}
-		catch(WrongProblemError wpe){}
+		//try{
+			//new ProblemScoring().calcScoreForAddDiagb(patIllScript, relProb);
+		//}
+		//catch(WrongProblemError wpe){}
 	}
 }

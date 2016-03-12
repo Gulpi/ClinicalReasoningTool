@@ -23,6 +23,9 @@ import database.DBClinReason;
  */
 public class PatientIllnessScript extends Beans/*extends Node*/ implements /*IllnessScriptInterface, */Serializable, PropertyChangeListener{
 
+	public static final int TYPE_LEARNER_CREATED = 1;
+	public static final int TYPE_EXPERT_CREATED = 2;
+	
 	private static final long serialVersionUID = 1L;
 	private Timestamp creationDate;
 	private long sessionId = -1; //necessary or store PISId in C_Session?
@@ -41,14 +44,23 @@ public class PatientIllnessScript extends Beans/*extends Node*/ implements /*Ill
 	//private long illnessScriptId = -1; 
 	/**
 	 * 1=acute, 2=subacute, 3=chronic
-	 */
-	
+	 */	
 	private int courseOfTime = -1;
+	
+	/**
+	 * the VP the patIllScript is related to. We need this in addition to the sessionId to be able to connect 
+	 * the learners' script to the authors'/experts' script.
+	 */
+	private long vpId;
+	/**
+	 * created by learner or expert
+	 */
+	private int type = TYPE_LEARNER_CREATED;
 	/**
 	 * List of related problems to the PatientIllnessScript
 	 */
 	private List<RelationProblem> problems;
-	//private List<Rel_IS_Diagnosis> ddx; //contains all diagnoses, including the final(s)?
+	private List<RelationDiagnosis> diagnoses; //contains all diagnoses, including the final(s)?
 	//private List<Rel_IS_Management> managements;
 	//private List<Rel_IS_Test> tests;
 	
@@ -84,10 +96,21 @@ public class PatientIllnessScript extends Beans/*extends Node*/ implements /*Ill
 	public void setProblems(List<RelationProblem> problems) {this.problems = problems;}
 	public Timestamp getCreationDate(){ return this.creationDate;} //setting is done in DB	
 	public void setCreationDate(Timestamp creationDate) {this.creationDate = creationDate;}
-	public void addProblem(String problemIdStr, String name){ new AddProblemAction(this).add(problemIdStr, name);}
-	public void delProblem(String problemIdStr, String name){ new DelProblemAction(this).delete(problemIdStr);}
+	public void addProblem(String idStr, String name){ new AddProblemAction(this).add(idStr, name);}
+	public void delProblem(String idStr, String name){ new DelProblemAction(this).delete(idStr);}
+	public void reorderProblems(String idStr, String newOrderStr){ new MoveProblemAction(this).reorder(newOrderStr);}
+	public void addDiagnosis(String idStr, String name){ new AddDiagnosisAction(this).add(idStr, name);}
+	public void delDiagnosis(String idStr, String name){ new DelDiagnosisAction(this).delete(idStr);}
+	public void reorderDiagnoses(String idStr, String newOrderStr){ new MoveDiagnosisAction(this).reorder(newOrderStr);}
+
 	public PatientIllnessScript getExpertPatIllScript() {return expertPatIllScript;}
-	public void setExpertPatIllScript(PatientIllnessScript expertPatIllScript) {this.expertPatIllScript = expertPatIllScript;}
+	public void setExpertPatIllScript(PatientIllnessScript expertPatIllScript) {this.expertPatIllScript = expertPatIllScript;}	
+	public long getVpId() {return vpId;}
+	public void setVpId(long vpId) {this.vpId = vpId;}
+	public int getType() {return type;}
+	public void setType(int type) {this.type = type;}	
+	public List<RelationDiagnosis> getDiagnoses() {return diagnoses;}
+	public void setDiagnoses(List<RelationDiagnosis> diagnoses) {this.diagnoses = diagnoses;}
 	
 	public void save(){		
 		new DBClinReason().saveAndCommit(this);
@@ -117,11 +140,14 @@ public class PatientIllnessScript extends Beans/*extends Node*/ implements /*Ill
 		}		
 	}
 	
-	public RelationProblem getProblemById(long id){
-		if(problems==null || problems.isEmpty()) return null;
-		for(int i=0; i< problems.size(); i++){
-			RelationProblem prob = problems.get(i);
-			if(prob.getSourceId()==id) return prob;
+	public RelationProblem getProblemById(long id){return (RelationProblem) getRelationById(problems);}	
+	public RelationDiagnosis getDiagnosisById(long id){return (RelationDiagnosis) getRelationById(diagnoses);}
+	
+	private Relation getRelationById(List items){
+		if(items==null || items.isEmpty()) return null;
+		for(int i=0; i< items.size(); i++){
+			Relation rel = (Relation) items.get(i);
+			if(rel.getSourceId()==id) return rel;
 		}
 		return null; //nothing found
 	}

@@ -15,6 +15,8 @@
 					
 		<property name="sessionId" column="session_id" type="long" />
 		<property name="courseOfTime" column="courseoftime" type="int"/>	
+		<property name="vpId" column="vp_id" type="long"/>	
+		<property name="type" column="type" type="int"/>	
 		
 		<list name="problems" table="crt.relation_problem" cascade="all" lazy="false"> <!-- table="crt.relation_problem"-->
     		<key column="dest_id"/> <!-- dest_id = patientIllnessScript id -->

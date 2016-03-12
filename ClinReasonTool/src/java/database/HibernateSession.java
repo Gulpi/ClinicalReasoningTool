@@ -1,29 +1,12 @@
 package database;
 
-import java.io.File;
-import java.io.FilenameFilter;
-import java.lang.annotation.ElementType;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.*;
-
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.sql.DataSource;
 
 import org.apache.commons.collections.FastArrayList;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.cfg.Configuration;
-import org.hibernate.dialect.function.VarArgsSQLFunction;
-import org.hibernate.search.annotations.Index;
-import org.hibernate.search.annotations.Store;
-import org.hibernate.search.cfg.SearchMapping;
-import org.hibernate.stat.Statistics;
-import org.hibernate.tool.hbm2ddl.SchemaExport;
 
 /**
  * non static reusable version of hibernateUtil static class, this class does the real work....
@@ -42,7 +25,7 @@ public class HibernateSession {
 	/**
 	 * turn logging of stacktraces per session get / put on or off -> performance critical!!!!
 	 */
-	private boolean logstacktrace = false;
+	//private boolean logstacktrace = false;
 	/**
 	 * replaced by threadLocal implementation, now used for documentation only when logstacktrace is true
 	 */
@@ -108,6 +91,7 @@ public class HibernateSession {
 			cfg.addClass(model.ListItem.class);
 			cfg.addClass(beans.PatientIllnessScript.class);	
 			cfg.addClass(beans.relation.RelationProblem.class);	
+			cfg.addClass(beans.relation.RelationDiagnosis.class);	
 			cfg.addClass(beans.LogEntry.class);
 			//addAutoHSQLDBConfig();
 			

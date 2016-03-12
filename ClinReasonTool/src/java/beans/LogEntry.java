@@ -10,6 +10,11 @@ public class LogEntry extends Beans{
 	public static final int ADDPROBLEM_ACTION = 1;
 	public static final int DELPROBLEM_ACTION = 2;
 	public static final int CHGCOURSETIME_ACTION = 3; 
+	public static final int MOVEPROBLEM_ACTION = 4; 
+	public static final int ADDDIAGNOSIS_ACTION = 5;
+	public static final int DELDIAGNOSIS_ACTION = 6;
+	public static final int MOVEDIAGNOSIS_ACTION = 7; 
+
 	//....
 	
 	/**

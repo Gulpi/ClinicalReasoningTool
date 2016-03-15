@@ -17,16 +17,16 @@ public class DelProblemAction implements DelAction{
 	/* (non-Javadoc)
 	 * @see beanActions.DelAction#save(beans.relation.Relation)
 	 */
-	public void save(Relation rel) {
+	public void save(Object rel) {
 		new DBClinReason().deleteAndCommit(rel);
-		new DBClinReason().saveAndCommit(patIllScript.getProblems());
+		new DBClinReason().saveAndCommit(patIllScript.getProblems()); //orderNrs have changed, so we have to save all
 	}
 
 	/* (non-Javadoc)
 	 * @see beanActions.DelAction#notifyLog(beans.relation.Relation)
 	 */
-	public void notifyLog(Relation rel) {
-		LogEntry le = new LogEntry(LogEntry.DELPROBLEM_ACTION, patIllScript.getSessionId(), rel.getSourceId());
+	public void notifyLog(Object o) {
+		LogEntry le = new LogEntry(LogEntry.DELPROBLEM_ACTION, patIllScript.getSessionId(), ((Relation)o).getSourceId());
 		le.save();		
 	}
 

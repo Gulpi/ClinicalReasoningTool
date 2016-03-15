@@ -2,9 +2,11 @@ package beans.relation;
 
 import java.beans.Beans;
 import java.io.Serializable;
+import java.sql.Timestamp;
 
 import javax.faces.bean.*;
 
+import controller.ConceptMapController;
 import model.ListItem;
 
 /**
@@ -14,7 +16,7 @@ import model.ListItem;
  * @author ingahege
  *
  */
-public class RelationProblem extends Beans implements Relation, Serializable{
+public class RelationProblem extends Beans implements Relation, Rectangle, Serializable{
 
 	private static final long serialVersionUID = 1L;
 	public static final int QUALIFIER_RARE = 0; 
@@ -33,7 +35,16 @@ public class RelationProblem extends Beans implements Relation, Serializable{
 	
 	private int order;
 	
-	//private int deleteFlag = 0;
+	/**
+	 * x position of the problem in the concept map canvas
+	 */
+	private int x;
+	/**
+	 * y position of the problem in the concept map canvas
+	 */
+	private int y;
+	
+	//also include height/width
 	/**
 	 * problems: key-finding, other,... (?)
 	 */
@@ -43,6 +54,8 @@ public class RelationProblem extends Beans implements Relation, Serializable{
 	 * how often is a problem prevalent in a diagnosis (rare, medium, often)
 	 */
 	private int qualifier;
+	
+	private Timestamp creationDate;
 	
 	private ListItem problem;
 	
@@ -60,7 +73,14 @@ public class RelationProblem extends Beans implements Relation, Serializable{
 	public int getOrder() {return order;}
 	public void setOrder(int order) {this.order = order;}	
 	public ListItem getProblem() {return problem;}
-	public void setProblem(ListItem problem) {this.problem = problem;}	
+	public void setProblem(ListItem problem) {this.problem = problem;}		
+	public int getX() {return x;}
+	public void setX(int x) {this.x = x;}
+	public int getY() {return y;}
+	public void setY(int y) {this.y = y;}	
+	public Timestamp getCreationDate() {return creationDate;}
+	public void setCreationDate(Timestamp creationDate) {this.creationDate = creationDate;}
+	public String getIdWithPrefix(){ return ConceptMapController.PREFIX_PROB+this.getId();}
 	
 	public boolean equals(Object o){
 		if(o!=null){
@@ -68,5 +88,11 @@ public class RelationProblem extends Beans implements Relation, Serializable{
 				return true;
 		}
 		return false;
+	}
+	
+	public String toJson(){
+		StringBuffer sb = new StringBuffer();
+		sb.append("{\"label\":\""+this.getProblem().getName()+"\",\"id\": \""+getIdWithPrefix()+"\",\"x\": "+this.x+",\"y\":"+this.y+"}");		
+		return sb.toString();
 	}
 }

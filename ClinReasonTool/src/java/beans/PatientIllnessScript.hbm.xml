@@ -17,12 +17,24 @@
 		<property name="courseOfTime" column="courseoftime" type="int"/>	
 		<property name="vpId" column="vp_id" type="long"/>	
 		<property name="type" column="type" type="int"/>	
+		<property name="creationDate" column="creation_date" update="false" type="timestamp"/>
+		
 		
 		<list name="problems" table="crt.relation_problem" cascade="all" lazy="false"> <!-- table="crt.relation_problem"-->
     		<key column="dest_id"/> <!-- dest_id = patientIllnessScript id -->
     		<list-index column="idx" base="0"/>
     		<one-to-many class="beans.relation.RelationProblem"/>   		
 		</list>	
+		<list name="diagnoses" table="crt.relation_diagnosis" cascade="all" lazy="false"> <!-- table="crt.relation_problem"-->
+    		<key column="dest_id"/> <!-- dest_id = patientIllnessScript id -->
+    		<list-index column="idx" base="0"/>
+    		<one-to-many class="beans.relation.RelationDiagnosis"/>   		
+		</list>	
 		
+		<map name="conns" table="crt.connection" lazy="false" cascade="all" order-by="id" >
+	   		<key column="illscript_id" />
+	   		<map-key column="id" type="long"/>	   		
+	    	<one-to-many class="beans.Connection" />
+	    </map>		
 </class>
 </hibernate-mapping>

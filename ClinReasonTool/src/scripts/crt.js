@@ -33,12 +33,12 @@ function sendAjax(id, callback, type, name){
 function changeCourseOfTime(){
 	var courseTime = $("#courseTime").val(); 
 	//alert(courseTime);
-	sendAjax(courseTime, changeCourseOfTimeCallBack, "chgCourseOfTime", "");
+	sendAjax(courseTime, doNothing, "chgCourseOfTime", "");
 }
 
-function changeCourseOfTimeCallBack(id, name){
+/*function changeCourseOfTimeCallBack(id, name){
 	//nothing to do here....
-}
+}*/
 
 /******************** problems tab*******************************/
 
@@ -89,10 +89,10 @@ function removeItemFromListCallback(id, prefix){
 }
 
 function reOrderProblems(newOrder, id){
-	sendAjax(id, reOrderProblemsCallback, "reorderProblems", newOrder);
+	sendAjax(id, doNothing, "reorderProblems", newOrder);
 }
 
-function reOrderProblemsCallback(){}
+function doNothing(){}
 
 /******************** diagnoses *******************************/
 
@@ -117,67 +117,26 @@ function addDiagnosisCallBack(diagnId, selDiagnosis){
 	numHyps++;
 }
 
-/******************** concept map *******************************/
-function initAddHyp(){
-  $( "#addhyp" ).draggable({ //add a new hypothesis
-	  start: function( event, ui ) {
-		 $("#addhyp").clone().prependTo($("#hypcontainer")); 
-	  } , 
-	  stop: function( event, ui ) {	
-		  this.remove();	  
-		  var canvasX = ui.offset.left- my_canvas.html.offset().left;
- 		  var canvasY = ui.offset.top - my_canvas.html.offset().top;
-	  	createAndAddHyp("neue hyp", canvasX, canvasY,"cmddx_-1");	  	
-	  	updatePreview();
-	  }
-  });	
+function delDDX(id, prefix){
+	sendAjax(id, removeItemFromListCallback, "delDiagnosis", prefix);
 }
 
-function initAddFind(){
-	$( "#addfind" ).draggable({ //add a new hypothesis
-	  start: function( event, ui ) {
-			 $("#addfind").clone().prependTo($("#findcontainer")); 
-		  } , 
-		  stop: function( event, ui ) {	
-			  this.remove();	
-			  var canvasX = ui.offset.left- my_canvas.html.offset().left;
-	 		  var canvasY = ui.offset.top - my_canvas.html.offset().top;
-
-		  	createAndAddFind("new find", canvasX, canvasY, "cmprob_-1");	  	
-		  	updatePreview();
-		  }
-	  });	
+function hasAFinalDiagnosis(){
+	//tiericon_1
+	var numFinDiagn = $(".icon-circle-tier4").length;
+	if(numFinDiagn>0) return true;
+	return false;
 }
 
-function initAddMng(){
-	 $( "#addmng" ).draggable({ //add a new hypothesis
-		  start: function( event, ui ) {
-			 $("#addmng").clone().prependTo($("#mngcontainer")); 
-		  } , 
-		  stop: function( event, ui ) {	
-			  this.remove();	
-			  var canvasX = ui.offset.left- my_canvas.html.offset().left;
-	 		  var canvasY = ui.offset.top - my_canvas.html.offset().top;
-		  	  createAndAddMng("new mng", canvasX, canvasY, "cmmng_-1");	  	
-		      updatePreview();
-		  }
-	 });	
+/* a diagnosis is changed to must not missed -red icon or toggled back*/
+function toggleMnM(id){
+	var id = "mnmicon_"+id;
+	var actClass = $("#"+id).attr("class");
+	$("#"+id).removeClass(actClass);
+	if(actClass=="icon-attention0") $("#"+id).addClass("icon-attention1");
+	else  $("#"+id).addClass("icon-attention0");
 }
 
-function initAddDiagnStep(){
-	 $( "#adddiagnstep" ).draggable({ //add a new hypothesis
-		  start: function( event, ui ) {
-			 $("#adddiagnstep").clone().prependTo($("#dscontainer")); 
-		  } , 
-		  stop: function( event, ui ) {	
-			  this.remove();	
-			  var canvasX = ui.offset.left- my_canvas.html.offset().left;
-	 		  var canvasY = ui.offset.top - my_canvas.html.offset().top;
-			  createAndAddDiagnStep("new test", canvasX, canvasY,"cmds_-1");	  	
-		  	updatePreview();
-		  }
-	}); 
-}
 /*an item has been dragged onto the trash bin, so, we remove it from the list*/
 /*function removeItemFromList(draggable){
 	var itemIdToDel = draggable.attr("id"); //e.g. problems_2, ddx_67
@@ -196,7 +155,6 @@ function initAddDiagnStep(){
 	var rect  = my_canvas.getFigure(idInCM);
 	deleteItemFromCM(rect); //removes the ite from the cm		
 }*/
-
 
 
 
@@ -313,21 +271,7 @@ function toggleSubmit(){
 }
 
 
-function hasAFinalDiagnosis(){
-	//tiericon_1
-	var numFinDiagn = $(".icon-circle-tier4").length;
-	if(numFinDiagn>0) return true;
-	return false;
-}
 
-/* a diagnosis is changed to must not missed -red icon or toggled back*/
-function toggleMnM(id){
-	var id = "mnmicon_"+id;
-	var actClass = $("#"+id).attr("class");
-	$("#"+id).removeClass(actClass);
-	if(actClass=="icon-attention0") $("#"+id).addClass("icon-attention1");
-	else  $("#"+id).addClass("icon-attention0");
-}
 var active = $( "#tabs" ).tabs( "option", "active" ); //we have to determine the active tab, to be able to adapt the nav icons!
   
   $(function() {

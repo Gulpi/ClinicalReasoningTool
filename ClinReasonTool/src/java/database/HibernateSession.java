@@ -93,6 +93,7 @@ public class HibernateSession {
 			cfg.addClass(beans.relation.RelationProblem.class);	
 			cfg.addClass(beans.relation.RelationDiagnosis.class);	
 			cfg.addClass(beans.LogEntry.class);
+			cfg.addClass(beans.Connection.class);
 			//addAutoHSQLDBConfig();
 			
 		   

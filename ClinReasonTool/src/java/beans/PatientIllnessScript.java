@@ -8,6 +8,7 @@ import javax.faces.bean.*;
 
 import beanActions.*;
 import beans.relation.*;
+import controller.ConceptMapController;
 import database.DBClinReason;
 
 /**
@@ -64,6 +65,7 @@ public class PatientIllnessScript extends Beans/*extends Node*/ implements /*Ill
 	//private List<Rel_IS_Management> managements;
 	//private List<Rel_IS_Test> tests;
 	
+	private Map conns;
 	/**
 	 * we might want to have this separately for quicker access, since this enables accessing IS
 	 * more than one? Or do we have to have then multiple PIS/VP???
@@ -75,9 +77,7 @@ public class PatientIllnessScript extends Beans/*extends Node*/ implements /*Ill
 	 */
 	private boolean submitted;
 	
-	public PatientIllnessScript(){
-		System.out.println("hallo");
-	}
+	public PatientIllnessScript(){}
 	public PatientIllnessScript(long sessionId){
 		this.sessionId = sessionId;
 	}
@@ -98,11 +98,12 @@ public class PatientIllnessScript extends Beans/*extends Node*/ implements /*Ill
 	public void setCreationDate(Timestamp creationDate) {this.creationDate = creationDate;}
 	public void addProblem(String idStr, String name){ new AddProblemAction(this).add(idStr, name);}
 	public void delProblem(String idStr, String name){ new DelProblemAction(this).delete(idStr);}
-	public void reorderProblems(String idStr, String newOrderStr){ new MoveProblemAction(this).reorder(newOrderStr);}
+	public void reorderProblems(String idStr, String newOrderStr){ new MoveProblemAction(this).reorder(idStr, newOrderStr);}
 	public void addDiagnosis(String idStr, String name){ new AddDiagnosisAction(this).add(idStr, name);}
 	public void delDiagnosis(String idStr, String name){ new DelDiagnosisAction(this).delete(idStr);}
-	public void reorderDiagnoses(String idStr, String newOrderStr){ new MoveDiagnosisAction(this).reorder(newOrderStr);}
-
+	public void reorderDiagnoses(String idStr, String newOrderStr){ new MoveDiagnosisAction(this).reorder(idStr, newOrderStr);}
+	public void addConnection(String sourceId, String targetId){new AddConnectionAction(this).add(sourceId,targetId);}
+	public void delConnection(String id, String name){new DelConnectionAction(this).delete(id);}
 	public PatientIllnessScript getExpertPatIllScript() {return expertPatIllScript;}
 	public void setExpertPatIllScript(PatientIllnessScript expertPatIllScript) {this.expertPatIllScript = expertPatIllScript;}	
 	public long getVpId() {return vpId;}
@@ -111,10 +112,13 @@ public class PatientIllnessScript extends Beans/*extends Node*/ implements /*Ill
 	public void setType(int type) {this.type = type;}	
 	public List<RelationDiagnosis> getDiagnoses() {return diagnoses;}
 	public void setDiagnoses(List<RelationDiagnosis> diagnoses) {this.diagnoses = diagnoses;}
+	public Map getConns() {return conns;}
+	public void setConns(Map conns) {this.conns = conns;}
+	public String getProblemsJson(){ return new ConceptMapController().getRelationsToJson(problems);}
+	public String getDdxJson(){return new ConceptMapController().getRelationsToJson(diagnoses);}
+	public String getConnsJson(){return new ConceptMapController().getConnsToJson(conns);}
 	
-	public void save(){		
-		new DBClinReason().saveAndCommit(this);
-	}
+	public void save(){new DBClinReason().saveAndCommit(this);}
 	
 	/* (non-Javadoc)
 	 * @see java.lang.Object#equals(java.lang.Object)
@@ -140,14 +144,14 @@ public class PatientIllnessScript extends Beans/*extends Node*/ implements /*Ill
 		}		
 	}
 	
-	public RelationProblem getProblemById(long id){return (RelationProblem) getRelationById(problems);}	
-	public RelationDiagnosis getDiagnosisById(long id){return (RelationDiagnosis) getRelationById(diagnoses);}
+	public RelationProblem getProblemById(long id){return (RelationProblem) getRelationById(problems, id);}	
+	public RelationDiagnosis getDiagnosisById(long id){return (RelationDiagnosis) getRelationById(diagnoses, id);}
 	
-	private Relation getRelationById(List items){
+	private Relation getRelationById(List items, long itemId){
 		if(items==null || items.isEmpty()) return null;
 		for(int i=0; i< items.size(); i++){
 			Relation rel = (Relation) items.get(i);
-			if(rel.getSourceId()==id) return rel;
+			if(rel.getSourceId()==itemId) return rel;
 		}
 		return null; //nothing found
 	}

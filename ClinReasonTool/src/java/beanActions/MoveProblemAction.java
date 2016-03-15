@@ -25,22 +25,24 @@ public class MoveProblemAction implements MoveAction{
 	/* (non-Javadoc)
 	 * @see beanActions.MoveAction#notifyLog(beans.relation.Relation)
 	 */
-	public void notifyLog(Relation rel) {
-		LogEntry le = new LogEntry(LogEntry.MOVEPROBLEM_ACTION, patIllScript.getSessionId(), rel.getSourceId());
+	public void notifyLog(Relation relBeforeReSort) {
+		LogEntry le = new LogEntry(LogEntry.MOVEPROBLEM_ACTION, patIllScript.getSessionId(), relBeforeReSort.getSourceId(), relBeforeReSort.getOrder());
 		le.save();			
 	}
 
 	/* (non-Javadoc)
 	 * @see beanActions.MoveAction#reorder(java.lang.String)
 	 */
-	public void reorder(String newOrderStr) {		
+	public void reorder(String idStrMovedItem, String newOrderStr) {		
 		String[] newOrderArr = newOrderStr.split("&");
 		List<RelationProblem> newList  = new ArrayList<RelationProblem>();
 		if(newOrderArr==null || newOrderArr.length==0) return;
 		for(int i=0; i<newOrderArr.length; i++){
 			String idStr = newOrderArr[i];
 			idStr = idStr.substring(8);	
+			idStrMovedItem = idStrMovedItem.substring(8);
 			RelationProblem relProb = this.patIllScript.getProblemById(Long.parseLong(idStr));
+			if(idStrMovedItem.equals(idStr)) notifyLog(relProb);
 			relProb.setOrder(i);
 			newList.add(relProb);
 		}

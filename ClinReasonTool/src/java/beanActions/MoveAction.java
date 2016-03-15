@@ -23,6 +23,6 @@ public interface MoveAction {
 	 * reorder the problems list 
 	 * @param newOrderStr (format: selProb=12654&selProb=578&selProb=4655&selProb=717&selProb=6327)
 	 */
-	void reorder(String newOrderStr);
+	void reorder(String idStr, String newOrderStr);
 	
 }

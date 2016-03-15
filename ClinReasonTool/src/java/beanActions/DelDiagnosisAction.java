@@ -17,16 +17,16 @@ public class DelDiagnosisAction implements DelAction{
 	/* (non-Javadoc)
 	 * @see beanActions.DelAction#save(beans.relation.Relation)
 	 */
-	public void save(Relation rel) {
-		new DBClinReason().deleteAndCommit(rel);
+	public void save(Object o) {
+		new DBClinReason().deleteAndCommit((Relation)o);
 		new DBClinReason().saveAndCommit(patIllScript.getDiagnoses());
 	}
 
 	/* (non-Javadoc)
 	 * @see beanActions.DelAction#notifyLog(beans.relation.Relation)
 	 */
-	public void notifyLog(Relation rel) {
-		LogEntry le = new LogEntry(LogEntry.DELDIAGNOSIS_ACTION, patIllScript.getSessionId(), rel.getSourceId());
+	public void notifyLog(Object o) {
+		LogEntry le = new LogEntry(LogEntry.DELDIAGNOSIS_ACTION, patIllScript.getSessionId(), ((Relation)o).getSourceId());
 		le.save();		
 	}
 

@@ -1,14 +1,14 @@
 package beanActions;
 
-import beans.relation.Relation;
+//simport beans.relation.Relation;
 
 public interface DelAction {
 
-	void save(Relation rel);
+	void save(Object rel);
 	/**
 	 * A log entry for the delete action is created and saved in a Log object
 	 */
-	void notifyLog(Relation rel);
+	void notifyLog(Object o);
 	
 	/**
 	 * Delete the bean from the database.

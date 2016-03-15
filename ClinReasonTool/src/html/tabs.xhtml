@@ -31,6 +31,8 @@
 <script src="../scripts/draw2d/lib/canvg.js"></script>	
 <script src="../scripts/draw2d/lib/Class.js"></script>	
 <script src="../scripts/draw2d/lib/json2.js"></script>	
+
+
 <script src="../scripts/draw2d/lib/pathfinding-browser.min.js"></script>
 <script src="../scripts/draw2d/src/draw2d.js"></script>	
 <script src="../scripts/draw2d/src/LabelConnection.js"></script>	
@@ -39,21 +41,29 @@
 
 <script src="../scripts/draw2d/lib/jquery.browser.js"></script>
 <script src="../scripts/draw2d/lib/jquery.layout.js"></script>
-<script src="../scripts/draw2d/src/mydraw2d.js"></script>
+<script src="../scripts/mydraw2d.js"></script>
 <script src="../scripts/crt.js"></script>
 <script language="JavaScript">
 
-//var $j = jQuery.noConflict();
+
 var msg2="Please connect the hypotheses with the findings";
 var numHyps = 1;
 var numFinds = 0;
 var numDiagnSteps = 0;
 var numMng = 0;
 var sessId = #{crtContext.patillscript.sessionId}; 
+var jsonProbMap = '#{crtContext.patillscript.problemsJson}'; //problems for concept map
+var jsonDDXMap = '#{crtContext.patillscript.ddxJson}';		//diagnoses for concept map
+var jsonConnsMap = '#{crtContext.patillscript.connsJson}';  //connections for concept map 
 
- var my_canvas = null;
+//var jsonProbMap = '[{"label": "Cough", "id": "cmddx_6", "x": 5,"y":5},{"label": "Fever", "id": "cmddx_5","x":5,"y":50}]';
+//var jsonDDXMap = '[{"label": "Pneumonia", "id": "cmddx_3", "x":100,"y":5},{"label": "Bronchitis", "id": "cmddx_4","x":100,"y":50}]'; //[{"id": "1","x": 150,"y": 200,"width": 100,"height": 80,"label":"hallo"}];
+//var jsonConnsMap = '[{"id": "cnx_1", "sourceid": "cmddx_6","targetid": "cmddx_3"}]';
+var my_canvas = null;
+
  draw2d.Configuration.factory.createConnection=function(sourcePort, targetPort, callback, dropTarget){
-	    return new LabelConnection();
+	 addConnection(sourcePort, targetPort);
+	 return new LabelConnection();
  };
  
 
@@ -71,9 +81,6 @@ $(function() {
     $( "#list_mngs" ).disableSelection();
     $( "#list_problems" ).sortable({
  		stop: function( event, ui ) {
- 			//alert(ui.item.text());
- 			//var id = ui.item.attr("id");
- 			//alert(id);
  			var sorted = $( "#list_problems" ).sortable( "serialize", { key: "selProb" } );
  			reOrderProblems(sorted, ui.item.attr("id"));
  		}
@@ -100,35 +107,24 @@ $(function() {
 	});
 	
 	my_canvas  = new draw2d.Canvas("canvas");
-	 /*for testing */
-	 createAndAddHyp("Pneumonia",90,5,"cmddx_2");
-	/*createAndAddHyp("Acute Bronchitis",170,50);
-	 createAndAddFind("Cough", 100, 200);
-	 createAndAddDiagnStep("Chest X-Ray", 170, 200);
-	 createAndAddMng("Do nothing", 200, 50);*/
-	/* testing end */
-	  updatePreview();
-	  my_canvas.getCommandStack().addEventListener(function(e){
+    initConceptMap(); 
+
+	my_canvas.getCommandStack().addEventListener(function(e){
 	      if(e.isPostChangeEvent()){
-	          updatePreview();
+	          //updatePreview();
 	  } 
-	  });
+	});
 	initAddHyp();
 	initAddFind();
 	initAddMng();
 	initAddDiagnStep();
-	/*$("#jdialogCanvas").dialog({
-		autoOpen: false,
-		modal: false,
-		width: "auto",
-		height: "auto"
-	});	*/
 	my_canvas.on("figure:remove", function(emitter, event){
-	    //alert("figure removed:");
+		//alert(emitter.getFigure());
+	    //alert("id=" + event.figure.id);
+	    deleteItem(event.figure.id);
 	 });
 
 	toggleSubmit();
-	//$("#canvascontainer").hide();
 });
 
 
@@ -137,24 +133,6 @@ $(function() {
 <body style="font-family:arial;">
  <div id="case_story" style="float:left;width:60%;border:1px;">
 Case placed here...
-<!--  "Good morning Dr. Epstein" says the practice administrator as she puts your cup of tea down in front of you. "I think you have a busy surgery this morning".
-Your eyes are drawn to the window behind and the glorious view over the rooftops of Buckden and Wharfdale to the hills behind. Maybe there would be time later.....
-"Oh Dr Epstein, I think you'd better see the young gentleman that's just come in - he doesn't look so good. I've popped him in the treatment room."
-<br/><br/>
-
-Waiting for you on the couch is Henry Rodin, who has been brought in by his friends by taxi. He is visibly ill and distressed.
-
-He can barely stand or speak, is flushed, hot, short of breath, and coughing frequently. He complains of severe pain in the right side of the chest when he breathes. The practise nurse has measured his temperature, at 39.6°C. 
-<br/><br/>
-
-Henry is having some difficulty answering your questions now. You note that he is breathing a little fast too.
-Nevertheless, you are able to find out that is no history of significant serious illness during adult life.
-Henry's works in an insurance brokers, but works out regularly, and he is fit and active. For the previous 4 years their group had spent a fortnight or so each autumn hiking.
-Henry a non-smoker is married, with no children, who drinks alcohol socially. There is no history of allergy, medications, or chest problems. No significant family history. Just before undertaking this hike there had been a mild episode of a cold or flu-like illness, but not enough to abandon the hike.
-His respiratory rate 45/min, Pulse 116 /min, blood pressure 109/55, temperature 39.6 C, Saturation 79% in air.
-On examination his chest expansion seems somewhat limited on the right, and there is an area of altered breath sounds, with bronchial breathing and coarse rales over the upper right quadrant. This area is dull to percussion. A pleural friction rub is present.
-What would you like to do now? -->
-
 </div>
 
 	<div id="tabs" class="cr-tabs">
@@ -203,7 +181,7 @@ What would you like to do now? -->
 					<ol id="list_diagnoses" class="sortable">
 						<ui:repeat value="#{crtContext.patillscript.diagnoses}" var="ddx" varStatus="status">
        					 	<li id="selddx_#{ddx.sourceId}">
-       					 	<a href="javascript:toggleMnM('selddx_#{ddx.sourceId}');" title="Is this a Must-Not-Miss diagnosis? E.g. because it is lethal?"><i id="mnmicon_#{ddx.sourceId}" class="icon-attention0"></i></a>#{prob.diagnosis.name}<a href="javascript:delDDX(#{ddx.sourceId}, 'selddx');"><i class="icon-trash-1"></i></a> <i class="icon-ok2"></i></li>
+       					 	<a href="javascript:toggleMnM('selddx_#{ddx.sourceId}');" title="Is this a Must-Not-Miss diagnosis? E.g. because it is lethal?"><i id="mnmicon_#{ddx.sourceId}" class="icon-attention0"></i></a>#{ddx.diagnosis.name}<a href="javascript:delDDX(#{ddx.sourceId}, 'selddx');"><i class="icon-trash-1"></i></a> <i class="icon-ok2"></i></li>
     					</ui:repeat>
 					
 					

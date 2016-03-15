@@ -1,13 +1,15 @@
 package beans.relation;
 import java.beans.Beans;
 import java.io.Serializable;
+import java.sql.Timestamp;
 
+import controller.ConceptMapController;
 import model.ListItem;
 /**
  * connects a Diagnosis object to a (Patient)IllnessScript object with some attributes.
  * @author ingahege
  */
-public class RelationDiagnosis extends Beans implements Relation, Serializable {
+public class RelationDiagnosis extends Beans implements Relation, Rectangle, Serializable {
 
 	private static final long serialVersionUID = 1L;
 	public static final int REL_TYPE_FINAL = 1; //final diagnosis (for PIS only)
@@ -39,6 +41,9 @@ public class RelationDiagnosis extends Beans implements Relation, Serializable {
 	 */
 	private int value = -1; //key finding,...
 	
+	private Timestamp creationDate;
+	private int x;
+	private int y;
 	private ListItem diagnosis;
 
 	public RelationDiagnosis(){}
@@ -57,7 +62,23 @@ public class RelationDiagnosis extends Beans implements Relation, Serializable {
 	public int getType() {return type;}
 	public void setType(int type) {this.type = type;}
 	public ListItem getDiagnosis() {return diagnosis;}
-	public void setDiagnosis(ListItem diagnosis) {this.diagnosis = diagnosis;}
+	public void setDiagnosis(ListItem diagnosis) {this.diagnosis = diagnosis;}	
+	public int getX() {return x;}
+	public void setX(int x) {this.x = x;}
+	public int getY() {return y;}
+	public void setY(int y) {this.y = y;}		
+	public Timestamp getCreationDate() {return creationDate;}
+	public void setCreationDate(Timestamp creationDate) {this.creationDate = creationDate;}
+	public String getIdWithPrefix(){ return ConceptMapController.PREFIX_DDX+this.getId();}
+	
+	/* (non-Javadoc)
+	 * @see beans.relation.Rectangle#toJson()
+	 */
+	public String toJson(){
+		StringBuffer sb = new StringBuffer();
+		sb.append("{\"label\":\""+this.getDiagnosis().getName()+"\",\"id\": \""+getIdWithPrefix()+"\",\"x\": "+this.x+",\"y\":"+this.y+"}");		
+		return sb.toString();
+	}
 	
 	public boolean equals(Object o){
 		if(o!=null){

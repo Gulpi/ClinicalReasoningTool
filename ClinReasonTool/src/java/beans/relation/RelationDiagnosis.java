@@ -16,7 +16,8 @@ public class RelationDiagnosis extends Beans implements Relation, Rectangle, Ser
 	public static final int REL_TYPE_DDX = 2; //differential diagnosis 
 	public static final int REL_TYPE_COMPL = 3; //complication of IS diagnosis 
 	public static final int REL_TYPE_RELATED = 4; //otherwise related diagnosis 
-		
+	public static final int DEFAULT_X = 50; //default x position of problems in canvas
+	
 	private long id;
 	/**
 	 * diagnosis id
@@ -41,7 +42,7 @@ public class RelationDiagnosis extends Beans implements Relation, Rectangle, Ser
 	 */
 	private int value = -1; //key finding,...
 	
-	private Timestamp creationDate;
+	//private Timestamp creationDate;
 	private int x;
 	private int y;
 	private ListItem diagnosis;
@@ -67,8 +68,8 @@ public class RelationDiagnosis extends Beans implements Relation, Rectangle, Ser
 	public void setX(int x) {this.x = x;}
 	public int getY() {return y;}
 	public void setY(int y) {this.y = y;}		
-	public Timestamp getCreationDate() {return creationDate;}
-	public void setCreationDate(Timestamp creationDate) {this.creationDate = creationDate;}
+	//public Timestamp getCreationDate() {return creationDate;}
+	//public void setCreationDate(Timestamp creationDate) {this.creationDate = creationDate;}
 	public String getIdWithPrefix(){ return ConceptMapController.PREFIX_DDX+this.getId();}
 	
 	/* (non-Javadoc)
@@ -76,7 +77,7 @@ public class RelationDiagnosis extends Beans implements Relation, Rectangle, Ser
 	 */
 	public String toJson(){
 		StringBuffer sb = new StringBuffer();
-		sb.append("{\"label\":\""+this.getDiagnosis().getName()+"\",\"id\": \""+getIdWithPrefix()+"\",\"x\": "+this.x+",\"y\":"+this.y+"}");		
+		sb.append("{\"label\":\""+this.getDiagnosis().getName()+"\",\"shortlabel\":\""+this.getDiagnosis().getShortName()+"\",\"id\": \""+getIdWithPrefix()+"\",\"x\": "+this.x+",\"y\":"+this.y+"}");		
 		return sb.toString();
 	}
 	

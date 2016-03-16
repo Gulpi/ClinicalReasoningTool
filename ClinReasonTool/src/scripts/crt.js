@@ -2,58 +2,15 @@
  * javascript for displaying the illness script tabs representation
  */
 
-/**
- * we start an ajax call with changed params. We also include always the session id!
- * id = id of the problem/diagnosis,...
- * callback = function to call when coming back from ajax cal
- * type = method name to call server-side to handle the call.
- * name = name of problem, diagnosis,...
- */
-function sendAjax(id, callback, type, name){
-	$.ajax({
-		  method: "POST",
-		  url: "tabs_ajax.xhtml",
-		  data: { type: type, id: id, session_id: sessId, name: name }
-		})
-	  .done(function( response ) {
-		 var id2 =  $(response).find('id').text();
-		 var msg =  $(response).find('msg').text();
-		 $("#msg").html(msg);
-		 var isOk =  $(response).find('ok').text();
-		 if(isOk=="1") callback(id2, name);
-		
-	  });	
-}
-
-function sendAjaxCM(id, callback, type, name, x, y){
-	$.ajax({
-		  method: "POST",
-		  url: "tabs_ajax.xhtml",
-		  data: { type: type, id: id, session_id: sessId, name: name, x: x, y: y}
-		})
-	  .done(function( response ) {
-		 var id2 =  $(response).find('id').text();
-		 var msg =  $(response).find('msg').text();
-		 $("#msg").html(msg);
-		 var isOk =  $(response).find('ok').text();
-		 if(isOk=="1") callback(id2, name);
-		
-	  });	
-}
-
 /******************** patient tab*******************************/
 /**
  * user changes the course of time, we trigger an ajax call to save change.
  */
 function changeCourseOfTime(){
 	var courseTime = $("#courseTime").val(); 
-	//alert(courseTime);
 	sendAjax(courseTime, doNothing, "chgCourseOfTime", "");
 }
 
-/*function changeCourseOfTimeCallBack(id, name){
-	//nothing to do here....
-}*/
 
 /******************** problems tab*******************************/
 
@@ -63,21 +20,31 @@ function changeCourseOfTime(){
 function addProblem(problemId, name){
 	//here we have to trigger an ajax call... 
 	//var problemId = $("#problems").val();
-	if(problemId>-1) sendAjax(problemId, addProblemCallBack, "addProblem", name);
+	if(problemId>-1) sendAjax(problemId, problemCallBack, "addProblem", name);
 }
 
-function addProblemCallBack(problemId, selProblem){
+function problemCallBack(problemId, selProblem){
 	$("#problems").val("");
 	//var selProblem = $("#problems option:selected").text();
-	var isCorr = tmpHelperGetCorrect(problemId);
-	var y = (numFinds * 30) +10;
-	if(isCorr==2) $("#list_problems").append("<li id=\"selProb_"+problemId+"\">"+selProblem+"<i class=\"icon-ok2\"></i></li>");
+	//var isCorr = tmpHelperGetCorrect(problemId);
+	//var y = (numFinds * 30) +10;
+	
+	//we update the problems list and the json string
+	$("[id='probform:hiddenProbButton']").click();
+	//my_canvas.clear();
+	//initConceptMap();
+	//var foo = $("[id='#{probform.hiddenProbButton}']");
+	//foo.click();
+	//$("#probform").$("#hiddenProbButton").click();
+	//s = $("#hiddenProbButton").attr("id");
+	//alert(s);
+	/*if(isCorr==2) $("#list_problems").append("<li id=\"selProb_"+problemId+"\">"+selProblem+"<i class=\"icon-ok2\"></i></li>");
 	else if(isCorr==1) $("#list_problems").append("<li id=\"selProb_"+problemId+"\">"+selProblem+"<i class=\"icon-ok1\"></i></li>");
 	else $("#list_problems").append("<li id=\"selprob_"+problemId+"\">"+selProblem+"</li>");
-	
+	*/
 	//alert(problemId);
-	createAndAddFind(selProblem,5, y, "cmprob_"+problemId); 
-	numFinds++;
+	//createAndAddFind(selProblem,5, y, "cmprob_"+problemId, ""); 
+	//numFinds++;
 		
 }
 /* if the answer was correct, but there is a better choice we offer the learner to change it by clicking on the checkmark*/
@@ -94,38 +61,38 @@ function chgProblem(orgId, toChgId){
  * problem has been changed (from CM)
  * id=id of the problemRelation, probId: the id of the new problem, name: problem label
  */
-function editProblem(id, probId, name){
-	sendAjax(probId, editProblemCallBack, "changeProblem", id);
-}
+/*function editProblem(id, probId, name){
+	sendAjax(probId, addProblemCallBack, "changeProblem", id);
+}*/
 
-function editProblemCallBack(id, relId){
+/*function editProblemCallBack(id, relId){
 	var name = my_canvas.getFigure("cmprob_"+relId).label.getText();
 	$("#selProb_"+relId).html(name);
+}*/
+
+function delProblem(id){
+	//alert(id);
+	//alert(prefix);
+	sendAjax(id, problemCallBack, "delProblem", "");
 }
 
-function delProblem(id, prefix){
-	sendAjax(id, delProblemCallback, "delProblem", prefix);
-}
-
-function delProblemCallback(id, prefix){
+/*function delProblemCallback(id, prefix){
 	$("#selProb_"+id).remove();
 	var rect  = my_canvas.getFigure("cmprob_"+id);
 	deleteItemFromCM(rect); //removes the item from the cm		
-}
+}*/
 
 /* back from ajax call, remove item from list and the concept map*/
 function delDiagnosisCallback(id, prefix){
 	$("#selddx_"+id).remove();
 	var rect  = my_canvas.getFigure("cmddx_"+id);
 	//alert("rect= " + rect);
-	deleteItemFromCM(rect); //removes the item from the cm		
+	//deleteItemFromCM(rect); //removes the item from the cm		
 }
 
 function reOrderProblems(newOrder, id){
-	sendAjax(id, doNothing, "reorderProblems", newOrder);
+	sendAjax(id, problemCallBack, "reorderProblems", newOrder);
 }
-
-function doNothing(){}
 
 /******************** diagnoses *******************************/
 

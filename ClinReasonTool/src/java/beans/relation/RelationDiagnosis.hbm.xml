@@ -14,7 +14,7 @@
 		<property name="destId" column="dest_id" type="long" />
 		<property name="order" column="idx" type="int" />
 		<property name="sourceId" column="source_id" type="long"/>	
-		<property name="creationDate" column="creation_date" update="false" type="timestamp"/>
+		<!--  <property name="creationDate" column="creation_date" update="false" type="timestamp"/>-->
 		<property name="x" column="x" type="int"/>
 		<property name="y" column="y" type="int"/>
 		<!--  <property name="name" column="name" type="string"/>	-->

@@ -1,5 +1,6 @@
 package beanActions;
 
+import java.awt.Point;
 import java.beans.Beans;
 import java.util.*;
 
@@ -24,14 +25,19 @@ public class AddDiagnosisAction implements AddAction{
 	/* (non-Javadoc)
 	 * @see beanActions.AddAction#add(java.lang.String)
 	 */
-	public void add(String idStr, String name){ addDiagnosis(idStr, name);}
-	
-	private void addDiagnosis(String idStr, String name){
+	public void add(String idStr, String name){ 
 		long id = Long.valueOf(idStr.trim());
-		addDiagnosis(id, name);
+		addDiagnosis(id, name, -1, -1);
 	}
 	
-	private void addDiagnosis(long id, String name){
+	public void add(String idStr, String name, String xStr, String yStr){ 
+		long id = Long.valueOf(idStr.trim());
+		float x = Float.valueOf(xStr.trim());
+		float y = Float.valueOf(yStr.trim());		
+		addDiagnosis(id, name, (int)x, (int)y);
+	}
+	
+	private void addDiagnosis(long id, String name, int x, int y){
 		if(patIllScript.getDiagnoses()==null) patIllScript.setDiagnoses(new ArrayList<RelationDiagnosis>());
 		RelationDiagnosis relDDX = new RelationDiagnosis(id, patIllScript.getId());		
 		if(patIllScript.getDiagnoses().contains(relDDX)){
@@ -39,6 +45,15 @@ public class AddDiagnosisAction implements AddAction{
 			return;
 		}
 		relDDX.setOrder(patIllScript.getDiagnoses().size());
+		if(x<0 && y<0){//setDefault x,y for problem
+			Point p = calculateNewItemPosInCanvas();
+			relDDX.setX(p.x);
+			relDDX.setY(p.y);
+		}
+		else{ //problem has been created from the concept map, therefore we have a position
+			relDDX.setX(x);
+			relDDX.setY(y);
+		}
 		patIllScript.getDiagnoses().add(relDDX);
 		relDDX.setDiagnosis(new DBClinReason().selectListItemById(id));
 		save(relDDX);
@@ -54,6 +69,19 @@ public class AddDiagnosisAction implements AddAction{
 		 // CRTFacesContext facesContext = factory.getFacesContextBySessionId(patIllScript.getSessionId());
 		FacesContext facesContext = FacesContext.getCurrentInstance(); 
 		facesContext.addMessage("",new FacesMessage(sev, summary,details));
+	}
+	
+	/**
+	 * we calculate a position for the new item. 
+	 * TODO: we could check whether the position is already taken,.....
+	 * @return
+	 */
+	private Point calculateNewItemPosInCanvas(){
+		int y = 5;
+		if(patIllScript.getProblems()!=null || !patIllScript.getProblems().isEmpty()){
+			y = patIllScript.getProblems().size() * 20;//CAVE max y!
+		}
+		return new Point(RelationProblem.DEFAULT_X,y);
 	}
 	
 	/* (non-Javadoc)

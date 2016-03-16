@@ -98,11 +98,12 @@ public class PatientIllnessScript extends Beans/*extends Node*/ implements /*Ill
 	public void setCreationDate(Timestamp creationDate) {this.creationDate = creationDate;}
 	public void addProblem(String idStr, String name){ new AddProblemAction(this).add(idStr, name);}
 	public void addProblem(String idStr, String name, String x, String y){ new AddProblemAction(this).add(idStr, name, x,y);}
-	public void delProblem(String idStr, String name){ new DelProblemAction(this).delete(idStr);}
+	public void delProblem(String idStr){ 
+		new DelProblemAction(this).delete(idStr);}
 	public void reorderProblems(String idStr, String newOrderStr){ new MoveProblemAction(this).reorder(idStr, newOrderStr);}
 	public void changeProblem(String probRelIdStr,String newProbId){new ChangeProblemAction(this).changeProblem(probRelIdStr, newProbId);}
 	public void addDiagnosis(String idStr, String name){ new AddDiagnosisAction(this).add(idStr, name);}
-	public void delDiagnosis(String idStr, String name){ new DelDiagnosisAction(this).delete(idStr);}
+	public void delDiagnosis(String idStr){ new DelDiagnosisAction(this).delete(idStr);}
 	public void reorderDiagnoses(String idStr, String newOrderStr){ new MoveDiagnosisAction(this).reorder(idStr, newOrderStr);}
 	public void addConnection(String sourceId, String targetId){new AddConnectionAction(this).add(sourceId,targetId);}
 	public void delConnection(String idStr){new DelConnectionAction(this).delete(idStr);}

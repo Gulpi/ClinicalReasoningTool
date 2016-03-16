@@ -1,5 +1,6 @@
 package beanActions;
 
+import java.awt.Point;
 import java.beans.Beans;
 import java.util.*;
 
@@ -58,7 +59,9 @@ public class AddProblemAction implements AddAction{
 		}
 		relProb.setOrder(patIllScript.getProblems().size());
 		if(x<0 && y<0){//setDefault x,y for problem
-		
+			Point p = calculateNewItemPosInCanvas();
+			relProb.setX(p.x);
+			relProb.setY(p.y);
 		}
 		else{ //problem has been created from the concept map, therefore we have a position
 			relProb.setX(x);
@@ -81,13 +84,23 @@ public class AddProblemAction implements AddAction{
 		facesContext.addMessage("",new FacesMessage(sev, summary,details));
 	}
 	
+	/**
+	 * we calculate a position for the new item. 
+	 * TODO: we could check whether the position is already taken,or others are vacant due to deleting of others
+	 * @return
+	 */
+	private Point calculateNewItemPosInCanvas(){
+		int y = 5;
+		if(patIllScript.getProblems()!=null || !patIllScript.getProblems().isEmpty()){
+			y = patIllScript.getProblems().size() * 20; //CAVE max y! 
+		}
+		return new Point(RelationProblem.DEFAULT_X,y);
+	}
+	
 	/* (non-Javadoc)
 	 * @see beanActions.AddAction#save(beans.relation.Relation)
 	 */
-	public void save(Beans b){
-		//TODO save whole problems collection?
-		new DBClinReason().saveAndCommit(b);
-	}
+	public void save(Beans b){ new DBClinReason().saveAndCommit(b); }
 	
 	/* (non-Javadoc)
 	 * @see beanActions.AddAction#notifyLog(beans.relation.Relation)

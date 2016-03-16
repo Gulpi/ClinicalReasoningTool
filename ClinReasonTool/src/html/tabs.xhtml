@@ -44,6 +44,8 @@
 <script src="../scripts/draw2d/lib/jquery.layout.js"></script>
 <script src="../scripts/mydraw2d.js"></script>
 <script src="../scripts/crt.js"></script>
+<script src="../scripts/ajax.js"></script>
+
 <script language="JavaScript">
 
 
@@ -53,7 +55,7 @@ var numFinds = 0;
 var numDiagnSteps = 0;
 var numMng = 0;
 var sessId = #{crtContext.patillscript.sessionId}; 
-var jsonProbMap = '#{crtContext.patillscript.problemsJson}'; //problems for concept map
+//var jsonProbMap = '#{crtContext.patillscript.problemsJson}'; //problems for concept map
 var jsonDDXMap = '#{crtContext.patillscript.ddxJson}';		//diagnoses for concept map
 var jsonConnsMap = '#{crtContext.patillscript.connsJson}';  //connections for concept map 
 
@@ -69,14 +71,35 @@ var my_canvas = null;
  
 
 $(function() {
-	 $("#dialogCMDDX" ).hide();
-	 $("#dialogCMProb" ).hide();
+	$("#dialogCMDDX").hide();
+	$("#dialogCMProb").hide();
+	$("#dialogCMNewProb").hide();
     $( "#tabs" ).tabs({
     	//active = $( ".selector" ).tabs( "option", "active" ),
        // event: "mouseover"
       });
 
-    $( document ).tooltip();
+    $( document ).tooltip({
+    	items: " rect, [title], text, tspan",
+    	content: function() {
+    		var element = $( this );
+            if ( element.is( "[title]" ) ) { //this is a "normal" tooltip returning the title of an element
+                return element.attr( "title" );
+              }
+			//these are element of the concept map, we return the label text:
+    	 	 //if(element.is("rect")){
+    	 	//	 alert(element[0].getLabel());
+    			//return element.attr("userData"); //not working, find a workaround?
+    		//}
+			/*if(element.is("text")){
+    			return element.text;
+    		}*/
+			if(element.is("tspan")){
+				return getToolTipForRect(element);
+			}
+    	}
+        
+    });
     $( ".draggable" ).draggable();	
     $( "#list_diagnoses" ).sortable();
     $( "#list_diagnoses" ).disableSelection();
@@ -134,7 +157,7 @@ $(function() {
 	my_canvas.on("figure:remove", function(emitter, event){
 		//alert(emitter.getFigure());
 	    //alert("id=" + event.figure.id);
-	    deleteItem(event.figure.id);
+	    //deleteItem(event.figure.id);
 	 });
 
 	toggleSubmit();
@@ -144,6 +167,7 @@ $(function() {
 </script>
 </head>
 <body style="font-family:arial;">
+
  <div id="case_story" style="float:left;width:60%;border:1px;">
 Case placed here...
 </div>
@@ -177,12 +201,19 @@ Case placed here...
 		  <div id="tabs-2" style="background-color:#cccccc;">	
 		  			<div class="search"><input class="f_text" id="problems"></input></div>
 					<div class="ddx_left">
+					<h:form id="probform">
+					<h:panelGroup id="problems_group">
 					<ol id="list_problems" class="sortable">
-					   <ui:repeat value="#{crtContext.patillscript.problems}" var="prob" varStatus="status">
-       					 	<li id="selProb_#{prob.id}">#{prob.problem.name}<a href="javascript:delProblem(#{prob.id}, 'selProb');"><i class="icon-trash-1"></i></a> <i class="icon-ok2"></i></li>
+					   <ui:repeat id="repeatprob" value="#{crtContext.patillscript.problems}" var="prob" varStatus="status">
+					   		<ui:include src="probline.xhtml" />
     					</ui:repeat>
     				</ol>
-				</div>				
+    				<div id="jsonProbMap" >#{crtContext.patillscript.problemsJson}</div>
+    				</h:panelGroup>
+    				     <h:commandButton id="hiddenProbButton" value="RenderSomething" style="visibility:hidden">
+    						<f:ajax render="@form" onevent="updateCMCallback"></f:ajax>
+						</h:commandButton></h:form>
+				</div>			
 		  </div>
 		  <div id="tabs-4">	
 		  		<textarea class="f_textarea" name="summSt" cols="50" rows="10"></textarea>
@@ -193,12 +224,8 @@ Case placed here...
 		  			<div class="ddx_left">
 					<ol id="list_diagnoses" class="sortable">
 						<ui:repeat value="#{crtContext.patillscript.diagnoses}" var="ddx" varStatus="status">
-       					 	<li id="selddx_#{ddx.id}">
-       					 	<a href="javascript:toggleMnM('selddx_#{ddx.id}');" title="Is this a Must-Not-Miss diagnosis? E.g. because it is lethal?"><i id="mnmicon_#{ddx.id}" class="icon-attention0"></i></a>#{ddx.diagnosis.name}<a href="javascript:delDDX(#{ddx.id}, 'selddx');"><i class="icon-trash-1"></i></a> <i class="icon-ok2"></i></li>
-    					</ui:repeat>
-					
-					
-						<!--  <li id="selddx_2"><a href="javascript:toggleMnM('1');" title="Is this a Must-Not-Miss diagnosis? E.g. because it is lethal?"><i id="mnmicon_1" class="icon-attention0"></i></a>Pneumonia<a href="javascript:changeTier('1');" id="tiera_1" title="How likely is this diagnosis?"><i id="tiericon_1" class="icon-circle-tier0"></i></a></li>-->
+							<ui:include src="ddxline.xhtml" />
+     					</ui:repeat>					
 					</ol>
 				</div>
 				<div id="confidence_slider" class="conf_slider" title="Level of confidence"></div>
@@ -237,7 +264,8 @@ Case placed here...
 	       		</ui:repeat>-->
 		    </div>
 			  	<div class="navfooter"><!-- <a href="" title="take notes"><i class="icon-edit"></i></a>-->
-			  	<a href="javascript:getProblemFedback();" title="See an experts problems"><i class="icon-user-md"></i></a> 
+			  	<i class="icon-help-circled" title="not yet working"></i>
+			  	<a href="javascript:getProblemFedback();" title="See an experts' problems"><i class="icon-user-md"></i></a> 
 				<a href="javascript:getProblemPeerFedback();" title="See problems listed by your peers"><i class="icon-users"></i></a>
 				<a href="javascript:doSubmitDDX();" title="Submit your final diagnoses and differentials"><i id="uploadddx" class="icon-upload-off"></i></a>
 				<a href="javascript:doDisplayIS();" title="open illness script"><i id="is_icon" class="icon-list-alt"></i></a></div>

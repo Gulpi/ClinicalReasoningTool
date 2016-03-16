@@ -9,6 +9,7 @@ import java.util.*;
  */
 public class ListItem implements Serializable{
 
+	public static final int MAXLENGTH_NAME = 15;
 	private static final long serialVersionUID = 1L;
 	private String name; //MH
 	private String mesh_id; //UI
@@ -54,5 +55,10 @@ public class ListItem implements Serializable{
 	public void setMesh_ec(String mesh_ec) {this.mesh_ec = mesh_ec;}
 	public String getItemType() {return itemType;}
 	public void setItemType(String itemType) {this.itemType = itemType;}	
+	public String getShortName(){
+		if(this.name==null || this.name.length()<=MAXLENGTH_NAME) return name;
+		String shortName = name.substring(0, MAXLENGTH_NAME) + "..";
+		return shortName;
+	}
 	
 }

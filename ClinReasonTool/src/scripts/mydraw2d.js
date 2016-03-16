@@ -1,5 +1,7 @@
 
-
+var lookUpLabels = [];
+var lookUpShortLabels = [];
+var counter = 0;
 /******************** concept map *******************************/
 /**
  * read the json strings and place the rectangles and connection on the canvas.
@@ -8,23 +10,42 @@ function initConceptMap(){
 	var ddxs = ''; 
 	var probs = '';
 	var conns = '';
+	var jsonProbMap = $("#jsonProbMap").html();
 	if(jsonDDXMap!=null && jsonDDXMap!='') ddxs = jQuery.parseJSON(jsonDDXMap);
 	if(jsonProbMap!=null && jsonProbMap!='') probs = jQuery.parseJSON(jsonProbMap);
 	if(jsonConnsMap!='') conns =  jQuery.parseJSON(jsonConnsMap);
 	if(ddxs!=''){
 		for(i=0; i<ddxs.length;i++){
-			createAndAddHyp(ddxs[i].label, ddxs[i].x, ddxs[i].y, ddxs[i].id);
+			createAndAddHyp(ddxs[i].label, ddxs[i].x, ddxs[i].y, ddxs[i].id, ddxs[i].shortlabel);
 		}
 	}
 	if(probs!=''){
 		for(i=0; i<probs.length;i++){
-			createAndAddFind(probs[i].label, probs[i].x, probs[i].y, probs[i].id);
+			createAndAddFind(probs[i].label, probs[i].x, probs[i].y, probs[i].id, probs[i].shortlabel);
 		}
 	}
 	if(conns!=''){
 		for(i=0; i<conns.length;i++){
 			createConnection(conns[i].id, conns[i].sourceid, conns[i].targetid);
 		}
+	}
+}
+
+/** when coming back from adding items, we empty the map and init it again from the updated json string*/
+function updateCMCallback(data){
+	switch (data.status) {
+    case "begin": // This is called right before ajax request is been sent.
+        //button.disabled = true;
+        break;
+
+    case "complete": // This is called right after ajax response is received.
+        // We don't want to enable it yet here, right?
+        break;
+
+    case "success": // This is called right after update of HTML DOM.
+    	my_canvas.clear();
+    	initConceptMap();
+        break;
 	}
 }
 /**
@@ -65,7 +86,7 @@ function initAddHyp(){
 		  var canvasX = ui.offset.left- my_canvas.html.offset().left;
  		  var canvasY = ui.offset.top - my_canvas.html.offset().top;
 	  	createAndAddHyp("", canvasX, canvasY,"cmddx_-1");	  	
-	  	updatePreview();
+	  	//updatePreview();
 	  }
   });	
 }
@@ -87,7 +108,7 @@ function initAddFind(){
 	 		  //open list:
 	 		 // alert(canvasX);
 	 		 //openListForCMNewItem(canvasX,canvasY, "prob");
-		  	updatePreview();
+		  	//updatePreview();
 		  }
 	  });	
 }
@@ -98,7 +119,7 @@ function initAddFind(){
  * @param y
  * @param type
  */
-function createAndAddFindCM(type,x,y,id){
+function createAndAddFindCM(name,x,y,id){
 	//positioning stuff:
 	//selectedId = clickedId; //TODO: get the element last clicked from the canvas?
 	canvasX = $("#canvas").offset().left;
@@ -133,15 +154,22 @@ function newProblemCM(id, name){
 	var x = rect.x;
 	var y = rect.y;
 	//$("#dialogCMProb").hide();
-	deleteItemFromCM(rect); //removes the item from the cm		
+	//deleteItemFromCM(rect); //removes the item from the cm		
 	sendAjaxCM(id, addProblemCallBack, "addProblem", name, x, y);
 }
 
 /**
  * create a new problem rectangle and add it to the canvas (including label and ports)
  **/
-function createAndAddFind(name, x, y, id){
-	 var rect = createRect(name,"#cccccc"/*"#99CC99"*/,id);//new draw2d.shape.basic.Rectangle();
+function createAndAddFind(name, x, y, id, shortname){
+	//alert(shortname);
+	if(shortname!=""){
+		lookUpLabels[counter] = name;
+		lookUpShortLabels[counter] = shortname;
+		counter++;
+	}
+	else shortname = name;
+	 var rect = createRect(shortname,"#cccccc"/*"#99CC99"*/,id);//new draw2d.shape.basic.Rectangle();
 	 rect.createPort("output", new draw2d.layout.locator.RightLocator());
 	 designPort(rect.getOutputPort(0));
 	 rect.setBackgroundColor("#ffffff");
@@ -215,6 +243,7 @@ function createAndAddHyp(name, x, y, id){
 		editor.start(rect.label);
 	}
 	rect.setBackgroundColor("#ffffff");
+	
 	my_canvas.add(rect, x, y);	
 	initAddHyp(); //we have to re-init this here, because we have created a clone!!!
 }
@@ -272,24 +301,44 @@ function doSave(){
 /** delete item from concept map (called when deleting an item from the lists)
  * 
 **/
-function deleteItemFromCM(item){
+/*function deleteItemFromCM(item){
     var cmd = new draw2d.command.CommandDelete(item);
     my_canvas.getCommandStack().execute(cmd);
-}
+}*/
 
 /** delete item from concept map AND list (except if connection)
  * 
  * */
-function deleteItem(id){	
-	//deleteItemFromCM(item);
-	if(id.startsWith("cmcnx")) //then we delete connection: 
+function deleteItem(idWithPrefix){	
+	alert(idWithPrefix);
+	//var idx = idWithPrefix.indexOf("_");
+	//alert(idx);
+	var idPrefix = idWithPrefix.substring(0,idWithPrefix.indexOf("_"));
+	var id = idWithPrefix.substring(idWithPrefix.indexOf("_")+1);
+	
+	//alert(idPrefix);
+	//alert(id);
+	switch (idPrefix) {
+    case "cmcnx": 
+    	sendAjax(id, doNothing, "delConnection", "");
+        break;
+
+    case "cmprob": 
+        delProblem(id);
+        break;
+
+    case "success": // This is called right after update of HTML DOM.
+    	
+        break;
+	}
+	/*if(id.startsWith("cmcnx")) //then we delete connection: 
 	{
 		sendAjax(id, doNothing, "delConnection", "");
-	}
-	else{//delete from list (except connections):
+	}*/
+	/*else{//delete from list (except connections):
 		var id = "sel"+item.getId().substring(2);	
 		$("#"+id).remove();
-	}
+	}*/
 }
 /**
  * we show the div tag with the list and lay it over the rectangle the user has clicked on. 
@@ -324,8 +373,20 @@ function openListForCM(x,y, clickedId){
 function editProblemCM(newValue, label){
 	//update rectangle with selectedId
 	var selFigure = my_canvas.getSelection().getPrimary();
-	selFigure.label.setText(label);	
-	alert(selFigure.id.substring(7));
+	//selFigure.label.setText(label);	
+	//alert(selFigure.id.substring(7));
 	//update list and trigger ajax call for saving:
-	editProblem(selFigure.id.substring(7), newValue, label);
+	sendAjax(newValue, problemCallBack, "changeProblem", selFigure.id.substring(7));
+	//editProblem(selFigure.id.substring(7), newValue, label);
+}
+
+function getToolTipForRect(element){
+	var s = element.html();
+	if(element.html().endsWith(".")){
+		for(i=0; i<lookUpShortLabels.length;i++){
+			if(lookUpShortLabels[i]==element.html())
+				return lookUpLabels[i];
+		}
+	}
+	return element.html();
 }

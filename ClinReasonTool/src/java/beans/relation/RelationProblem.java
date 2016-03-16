@@ -22,6 +22,8 @@ public class RelationProblem extends Beans implements Relation, Rectangle, Seria
 	public static final int QUALIFIER_RARE = 0; 
 	public static final int QUALIFIER_MEDIUM = 1;
 	public static final int QUALIFIER_OFTEN = 2;
+	public static final int DEFAULT_X = 5; //default x position of problems in canvas
+	
 	
 	private long id;
 	/**
@@ -55,7 +57,7 @@ public class RelationProblem extends Beans implements Relation, Rectangle, Seria
 	 */
 	private int qualifier;
 	
-	private Timestamp creationDate;
+	//private Timestamp creationDate;
 	
 	private ListItem problem;
 	
@@ -78,8 +80,8 @@ public class RelationProblem extends Beans implements Relation, Rectangle, Seria
 	public void setX(int x) {this.x = x;}
 	public int getY() {return y;}
 	public void setY(int y) {this.y = y;}	
-	public Timestamp getCreationDate() {return creationDate;}
-	public void setCreationDate(Timestamp creationDate) {this.creationDate = creationDate;}
+	//public Timestamp getCreationDate() {return creationDate;}
+	//public void setCreationDate(Timestamp creationDate) {this.creationDate = creationDate;}
 	public String getIdWithPrefix(){ return ConceptMapController.PREFIX_PROB+this.getId();}
 	
 	public boolean equals(Object o){
@@ -92,7 +94,9 @@ public class RelationProblem extends Beans implements Relation, Rectangle, Seria
 	
 	public String toJson(){
 		StringBuffer sb = new StringBuffer();
-		sb.append("{\"label\":\""+this.getProblem().getName()+"\",\"id\": \""+getIdWithPrefix()+"\",\"x\": "+this.x+",\"y\":"+this.y+"}");		
+		
+		
+		sb.append("{\"label\":\""+this.getProblem().getName()+"\",\"shortlabel\":\""+this.getProblem().getShortName()+"\",\"id\": \""+getIdWithPrefix()+"\",\"x\": "+this.x+",\"y\":"+this.y+"}");		
 		return sb.toString();
 	}
 }

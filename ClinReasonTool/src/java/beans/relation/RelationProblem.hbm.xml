@@ -16,7 +16,7 @@
 		<property name="sourceId" column="source_id" type="long"/>	
 		<property name="x" column="x" type="int"/>
 		<property name="y" column="y" type="int"/>
-		<property name="creationDate" column="creation_date" update="false" type="timestamp"/>
+		<!--  <property name="creationDate" column="creation_date" update="false" type="timestamp"/>-->
 		
 		<!--  <property name="name" column="name" type="string"/>	-->
 		<many-to-one name="problem" class="model.ListItem" column="source_id"  lazy="false" insert="false" update="false"/>

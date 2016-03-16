@@ -11,7 +11,7 @@ var LabelRectangle= draw2d.shape.basic.Rectangle.extend({
     init:function(attr)
     {
     	this._super(attr);
-    	this.setWidth(50);
+    	this.setWidth(55);
     	this.setHeight(22);
 
 		  // Create any Draw2D figure as decoration for the connection
@@ -22,6 +22,7 @@ var LabelRectangle= draw2d.shape.basic.Rectangle.extend({
 		  this.label.setMinHeight(16);
 		  this.label.setWidth(50);
 		  this.label.setHeight(16);
+		 // this.label.setCssClass("mylabel");
 		  //this.label.setOutlineColor("#006699")
 		  //this.label.setX(0);
 		  this.label.setFontSize(8);
@@ -29,10 +30,21 @@ var LabelRectangle= draw2d.shape.basic.Rectangle.extend({
 		  // add the new decoration to the connection with a position locator.
 		  //
 		  this.add(this.label, new draw2d.layout.locator.XYRelPortLocator(5,5)); //CenterLocator(this));
-		  
-		  this.label.installEditor(new draw2d.ui.LabelLMEditor());
+		  this.label.setWidth(50); //this needs to be done after the locator, no idea why
+		  this.label.setCssClass("mylabel");
+		// this.label.installEditor(new draw2d.ui.LabelLMEditor());
     },
-
+    
+    onDoubleClick:function(emitter){ //open the select box to change label?
+    	//var editor = new draw2d.ui.LabelLMEditor();
+    	//$("#"+this.id).html("<input class=\"f_text\" id=\"inplaceeditor2\"></input>");
+    	//this.label.editor.start(this.label);
+    	//$("#jdialogCM").show();
+    	//alert(this.x);
+    	//alert(this.id);
+    	openListForCM(this.x, this.y, this.id); //we could also trigger this from the context menu with an edit button
+        //alert(this.id);
+    },
 onContextMenu:function(x,y){
     $.contextMenu({
         selector: 'body', 

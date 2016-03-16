@@ -5,7 +5,7 @@ draw2d.ui.LabelLMEditor =  draw2d.ui.LabelEditor.extend({
      * @private
      */
     init: function(listener){
-        this._super();
+        //this._super();
         
         // register some default listener and override this with the handover one 
         this.listener = $.extend({onCommit:function(){}, onCancel:function(){}},listener);
@@ -29,17 +29,16 @@ draw2d.ui.LabelLMEditor =  draw2d.ui.LabelEditor.extend({
         // append the input field to the document and register 
         // the ENTER and ESC key to commit /cancel the operation
         //
-        //this.html = $('<input id="inplaceeditor">');
-        this.html = $("<select id=\"inplaceeditor\">");
-        this.html.val("<option value=\"-1\">-</option><option value=\"2\">Pneumonia</option>");
-        this.html = $("</select>");
-        this.html.hide();
+        this.html = $('<select id="inplaceeditor2"></select>');
+       // this.html = $("<select id=\"inplaceeditor\"><option value=\"-1\">-</option><option value=\"2\">Pneumonia</option></select>");
+       
+        // this.html.hide();
         
         $("body").append(this.html);
         
         this.html.autoResize({animate:false});
         
-        this.html.bind("keyup",$.proxy(function(e){
+        /*this.html.bind("keyup",$.proxy(function(e){
             switch (e.which) {
             case 13:
                  this.commit();
@@ -48,34 +47,34 @@ draw2d.ui.LabelLMEditor =  draw2d.ui.LabelEditor.extend({
                 this.cancel();
                  break;
            }
-         },this));
+         },this));*/
         
          this.html.bind("blur",this.commitCallback);
          
          // avoid commit of the operation if we click inside the editor
          //
-         this.html.bind("click",function(e){
-             e.stopPropagation();
-             e.preventDefault();
-         });
+        // this.html.bind("click",function(e){
+            // e.stopPropagation();
+            // e.preventDefault();
+        // });
 
         // Position the INPUT and init the autoresize of the element
         //
-        var canvas = this.label.getCanvas();
+        //var canvas = this.label.getCanvas();
         var bb = this.label.getBoundingBox();
 
-        bb.setPosition(canvas.fromCanvasToDocumentCoordinate(bb.x,bb.y));
+        bb.setPosition(my_canvas.fromCanvasToDocumentCoordinate(bb.x,bb.y));
 
         // remove the scroll from the body if we add the canvas directly into the body
-        var scrollDiv = canvas.getScrollArea();
+        var scrollDiv = my_canvas.getScrollArea();
         if(scrollDiv.is($("body"))){
-           bb.translate(canvas.getScrollLeft(), canvas.getScrollTop());
+           bb.translate(my_canvas.getScrollLeft(), my_canvas.getScrollTop());
         }
         
         bb.translate(-1,-1);
         bb.resize(2,2);
                
-        this.html.css({position:"absolute","top": bb.y, "left":bb.x, "min-width":bb.w*(1/canvas.getZoom()), "height":Math.max(25,bb.h*(1/canvas.getZoom()))});
+        this.html.css({position:"absolute","top": bb.y, "left":bb.x, "min-width":bb.w*(1/my_canvas.getZoom()), "height":Math.max(25,bb.h*(1/my_canvas.getZoom()))});
         this.html.fadeIn($.proxy(function(){
             this.html.focus();
         },this));

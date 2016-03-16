@@ -24,14 +24,32 @@ public class AddProblemAction implements AddAction{
 	/* (non-Javadoc)
 	 * @see beanActions.AddAction#add(java.lang.String)
 	 */
-	public void add(String idStr, String name){ addProblem(idStr, name);}
-	
-	private void addProblem(String idStr, String name){
+	public void add(String idStr, String name){ 
+		//addProblem(idStr, name);
 		long id = Long.valueOf(idStr.trim());
-		addProblem(id, name);
+		addProblem(id, name, -1, -1);
 	}
 	
-	private void addProblem(long id, String name){
+	/**
+	 * @param idStr
+	 * @param name
+	 * @param xStr (e.g. "199.989894") -> we have to convert it into int
+	 * @param yStr
+	 */
+	public void add(String idStr, String name, String xStr, String yStr){ 
+		long id = Long.valueOf(idStr.trim());
+		float x = Float.valueOf(xStr.trim());
+		float y = Float.valueOf(yStr.trim());
+		
+		addProblem(id, name, (int)x, (int)y);
+	}
+	
+	/*private void addProblem(String idStr, String name){
+		long id = Long.valueOf(idStr.trim());
+		addProblem(id, name);
+	}*/
+	
+	private void addProblem(long id, String name, int x, int y){
 		if(patIllScript.getProblems()==null) patIllScript.setProblems(new ArrayList<RelationProblem>());
 		RelationProblem relProb = new RelationProblem(id, patIllScript.getId());		
 		if(patIllScript.getProblems().contains(relProb)){
@@ -39,6 +57,13 @@ public class AddProblemAction implements AddAction{
 			return;
 		}
 		relProb.setOrder(patIllScript.getProblems().size());
+		if(x<0 && y<0){//setDefault x,y for problem
+		
+		}
+		else{ //problem has been created from the concept map, therefore we have a position
+			relProb.setX(x);
+			relProb.setY(y);
+		}
 		patIllScript.getProblems().add(relProb);
 		relProb.setProblem(new DBClinReason().selectListItemById(id));
 		save(relProb);

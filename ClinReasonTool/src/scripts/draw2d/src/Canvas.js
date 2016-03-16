@@ -25,7 +25,7 @@
 draw2d.Canvas = Class.extend(
 {
     NAME : "draw2d.Canvas",
-
+    
     /**
      * @constructor
      * Create a new canvas with the given HTML DOM references.
@@ -36,6 +36,7 @@ draw2d.Canvas = Class.extend(
     {
         // Hook the canvas calculation for IE8
         //
+    	alert("init canvas" );
         if (navigator.appName == 'Microsoft Internet Explorer')
         {
           var ua = navigator.userAgent;
@@ -1273,6 +1274,7 @@ draw2d.Canvas = Class.extend(
      **/
     onRightMouseDown : function(x, y)
     {
+    	alert("hallo");
        var figure = this.getBestFigure(x, y);
         if(figure!==null){
             figure.onContextMenu(x,y);

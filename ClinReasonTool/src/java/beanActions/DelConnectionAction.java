@@ -16,9 +16,12 @@ public class DelConnectionAction implements DelAction{
 		this.patIllScript = patIllScript;
 	}
 	
-	@Override
+
+	/* (non-Javadoc)
+	 * @see beanActions.DelAction#save(java.lang.Object)
+	 */
 	public void save(Object o) {
-		new DBClinReason().deleteAndCommit(o);		
+		new DBClinReason().deleteAndCommit((Connection)o);		
 	}
 
 	/* (non-Javadoc)
@@ -31,14 +34,16 @@ public class DelConnectionAction implements DelAction{
 	}
 
 	@Override
-	public void delete(String id) {
-		if(id==null || id.trim().equals("") || patIllScript==null || patIllScript.getConns()==null || patIllScript.getConns().isEmpty()){
+	public void delete(String idStr) {
+		if(idStr==null || idStr.trim().equals("") || patIllScript==null || patIllScript.getConns()==null || patIllScript.getConns().isEmpty()){
 			//todo error msg
 			return;		
 		}
-		Connection conn = (Connection) patIllScript.getConns().get(Long.getLong(id));
-		patIllScript.getConns().remove(conn);
-		new ActionHelper().reOrderItems(patIllScript.getProblems());
+		idStr = idStr.substring(6);
+		long id = Long.parseLong(idStr);
+		Connection conn = (Connection) patIllScript.getConns().get(new Long(id));
+		patIllScript.getConns().remove(new Long(id));
+		//new ActionHelper().reOrderItems(patIllScript.getProblems());
 		notifyLog(conn);
 		save(conn);
 		

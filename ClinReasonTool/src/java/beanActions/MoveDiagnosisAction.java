@@ -41,7 +41,7 @@ public class MoveDiagnosisAction implements MoveAction{
 			String idStr = newOrderArr[i];
 			idStr = idStr.substring(8);	
 			idStrMovedItem = idStrMovedItem.substring(8);
-			RelationDiagnosis rel = this.patIllScript.getDiagnosisById(Long.parseLong(idStr));
+			RelationDiagnosis rel = this.patIllScript.getDiagnosisBySourceId(Long.parseLong(idStr));
 			if(idStrMovedItem.equals(idStr)) notifyLog(rel);
 			rel.setOrder(i);
 			newList.add(rel);

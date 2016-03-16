@@ -22,8 +22,23 @@ function sendAjax(id, callback, type, name){
 		 var isOk =  $(response).find('ok').text();
 		 if(isOk=="1") callback(id2, name);
 		
-	  });
-	
+	  });	
+}
+
+function sendAjaxCM(id, callback, type, name, x, y){
+	$.ajax({
+		  method: "POST",
+		  url: "tabs_ajax.xhtml",
+		  data: { type: type, id: id, session_id: sessId, name: name, x: x, y: y}
+		})
+	  .done(function( response ) {
+		 var id2 =  $(response).find('id').text();
+		 var msg =  $(response).find('msg').text();
+		 $("#msg").html(msg);
+		 var isOk =  $(response).find('ok').text();
+		 if(isOk=="1") callback(id2, name);
+		
+	  });	
 }
 
 /******************** patient tab*******************************/
@@ -75,16 +90,34 @@ function chgProblem(orgId, toChgId){
 	}
 }
 
-function delProblem(id, prefix){
-	sendAjax(id, removeItemFromListCallback, "delProblem", prefix);
+/**
+ * problem has been changed (from CM)
+ * id=id of the problemRelation, probId: the id of the new problem, name: problem label
+ */
+function editProblem(id, probId, name){
+	sendAjax(probId, editProblemCallBack, "changeProblem", id);
 }
+
+function editProblemCallBack(id, relId){
+	var name = my_canvas.getFigure("cmprob_"+relId).label.getText();
+	$("#selProb_"+relId).html(name);
+}
+
+function delProblem(id, prefix){
+	sendAjax(id, delProblemCallback, "delProblem", prefix);
+}
+
+function delProblemCallback(id, prefix){
+	$("#selProb_"+id).remove();
+	var rect  = my_canvas.getFigure("cmprob_"+id);
+	deleteItemFromCM(rect); //removes the item from the cm		
+}
+
 /* back from ajax call, remove item from list and the concept map*/
-function removeItemFromListCallback(id, prefix){
-	var itemId = prefix+"_"+id;
-	$("#"+itemId).remove();
-	//we also remove the item from the canvas:
-	var idInCM = "cm"+itemId.substring(3);	//prefix maP: cmprob, prefix list: selProb
-	var rect  = my_canvas.getFigure(idInCM);
+function delDiagnosisCallback(id, prefix){
+	$("#selddx_"+id).remove();
+	var rect  = my_canvas.getFigure("cmddx_"+id);
+	//alert("rect= " + rect);
 	deleteItemFromCM(rect); //removes the item from the cm		
 }
 
@@ -313,6 +346,8 @@ var active = $( "#tabs" ).tabs( "option", "active" ); //we have to determine the
 	          });
 	        }
 	      });
+	    
+	    
 	    $.ajax({
 	        url: "jsonp.json",
 	        dataType: "json",
@@ -325,6 +360,57 @@ var active = $( "#tabs" ).tabs( "option", "active" ); //we have to determine the
 	            },
 	  	      close: function(ui) {
 	  	        $("#tests").val("");
+	  	      }
+	          });
+	        }
+	      });
+	    $.ajax({ //user clicks on a problem in CM and selects something from the list.
+	        url: "jsonp.json",
+	        dataType: "json",
+	        success: function( data ) {
+	          $( "#cm_prob_sel" ).autocomplete({
+	            source: data,
+	            minLength: 3,
+	            select: function( event, ui ) {
+	            	editProblemCM(ui.item.value, ui.item.label);
+	            },
+	  	      close: function(ui) {
+	  	        $("#cm_prob_sel").val("");
+	  	        $("#dialogCMProb" ).hide();
+	  	      }
+	          });
+	        }
+	      });
+	    $.ajax({ //user clicks on a diagnosis in CM and selects something from the list.
+	        url: "jsonp.json",
+	        dataType: "json",
+	        success: function( data ) {
+	          $( "#cm_ddx_sel" ).autocomplete({
+	            source: data,
+	            minLength: 3,
+	            select: function( event, ui ) {
+	            	newProblemCM(ui.item.value, ui.item.label);
+	            },
+	  	      close: function(ui) {
+	  	        $("#cm_ddx_sel").val("");
+	  	        $("#dialogCMDDX" ).hide();
+	  	      }
+	          });
+	        }
+	      });
+	    $.ajax({ //user creates a new finding for CM
+	        url: "jsonp.json",
+	        dataType: "json",
+	        success: function( data ) {
+	          $( "#cm_newprob_sel" ).autocomplete({
+	            source: data,
+	            minLength: 3,
+	            select: function( event, ui ) {
+	            	newProblemCM(ui.item.value, ui.item.label);
+	            },
+	  	      close: function(ui) {
+	  	        $("#cm_newprob_sel").val("");
+	  	        $("#dialogCMNewProb" ).hide();
 	  	      }
 	          });
 	        }

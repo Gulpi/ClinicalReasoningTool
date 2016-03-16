@@ -6,7 +6,7 @@ public interface ChgAction {
 	/**
 	 * A log entry for the move action is created and saved in a Log object
 	 */
-	void notifyLog();
+	void notifyLog(Relation rel, long newId);
 	
-	void save();
+	void save(Relation rel);
 }

@@ -41,7 +41,7 @@ public class MoveProblemAction implements MoveAction{
 			String idStr = newOrderArr[i];
 			idStr = idStr.substring(8);	
 			idStrMovedItem = idStrMovedItem.substring(8);
-			RelationProblem relProb = this.patIllScript.getProblemById(Long.parseLong(idStr));
+			RelationProblem relProb = this.patIllScript.getProblemBySourceId(Long.parseLong(idStr));
 			if(idStrMovedItem.equals(idStr)) notifyLog(relProb);
 			relProb.setOrder(i);
 			newList.add(relProb);

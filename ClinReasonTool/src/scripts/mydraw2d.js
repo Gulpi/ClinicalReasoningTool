@@ -64,7 +64,7 @@ function initAddHyp(){
 		  this.remove();	  
 		  var canvasX = ui.offset.left- my_canvas.html.offset().left;
  		  var canvasY = ui.offset.top - my_canvas.html.offset().top;
-	  	createAndAddHyp("neue hyp", canvasX, canvasY,"cmddx_-1");	  	
+	  	createAndAddHyp("", canvasX, canvasY,"cmddx_-1");	  	
 	  	updatePreview();
 	  }
   });	
@@ -82,13 +82,72 @@ function initAddFind(){
 			  this.remove();	
 			  var canvasX = ui.offset.left- my_canvas.html.offset().left;
 	 		  var canvasY = ui.offset.top - my_canvas.html.offset().top;
-
-		  	createAndAddFind("new find", canvasX, canvasY, "cmprob_-1");	  	
+	 		 //sendAjaxCM(initAddFindCallback, canvasX, canvasY); //(id, callback, type, name, x, y)
+	 		  createAndAddFindCM("prob", canvasX, canvasY, "cmprob_-1");	 
+	 		  //open list:
+	 		 // alert(canvasX);
+	 		 //openListForCMNewItem(canvasX,canvasY, "prob");
 		  	updatePreview();
 		  }
 	  });	
 }
 
+/**
+ * open the list for a new item, that has been dragged to the canvas
+ * @param x
+ * @param y
+ * @param type
+ */
+function createAndAddFindCM(type,x,y,id){
+	//positioning stuff:
+	//selectedId = clickedId; //TODO: get the element last clicked from the canvas?
+	canvasX = $("#canvas").offset().left;
+	canvasY = $("#canvas").offset().top;
+	xOfDialog = canvasX + x; 
+	yOfDialog = canvasY + y;
+	var rect = createRect(name,"#cccccc"/*"#99CC99"*/,id);//new draw2d.shape.basic.Rectangle();
+	rect.createPort("output", new draw2d.layout.locator.RightLocator());
+	designPort(rect.getOutputPort(0));
+	rect.setBackgroundColor("#ffffff");
+	my_canvas.add(rect, x, y);	 
+	var dialogName = "dialogCMNewProb";
+	//alert(xOfDialog);
+	//getting type of item the user has clicked on: 
+	if(type=="ddx") 
+		dialogName = "dialogCMNewDDX";
+		
+	//display:
+	 $("#"+dialogName ).show();
+	 $("#"+dialogName ).offset({ top: yOfDialog, left: xOfDialog });
+}
+
+/**
+ * we submit the new problem and add it the same way as if coming from list. 
+ * Therefore, we have to remove the temporarily created rectangle.
+ * @param id
+ * @param name
+ */
+function newProblemCM(id, name){
+	//$("cm_prob_sel").val(""); //empty the select list
+	var rect  = my_canvas.getFigure("cmprob_-1");
+	var x = rect.x;
+	var y = rect.y;
+	//$("#dialogCMProb").hide();
+	deleteItemFromCM(rect); //removes the item from the cm		
+	sendAjaxCM(id, addProblemCallBack, "addProblem", name, x, y);
+}
+
+/**
+ * create a new problem rectangle and add it to the canvas (including label and ports)
+ **/
+function createAndAddFind(name, x, y, id){
+	 var rect = createRect(name,"#cccccc"/*"#99CC99"*/,id);//new draw2d.shape.basic.Rectangle();
+	 rect.createPort("output", new draw2d.layout.locator.RightLocator());
+	 designPort(rect.getOutputPort(0));
+	 rect.setBackgroundColor("#ffffff");
+	 my_canvas.add(rect, x, y);	 
+	 //initAddFind();
+}
 /**
  * init the drag&drop rectangle for adding a new management item
  */
@@ -137,6 +196,8 @@ function createRect(name, color, id){
 	
 	return rect;
 }
+
+
 /**
  * create a new hypothesis rectangle and add it to the canvas (including label and ports)
  **/
@@ -145,21 +206,25 @@ function createAndAddHyp(name, x, y, id){
 	//alert(rect.getId());
 	rect.createPort("input");
 	rect.createPort("output");
+	//rect.getInputPort(0).setCssClass("ports");
+	designPort(rect.getInputPort(0)); 
+	designPort(rect.getOutputPort(0));
+	if(name==""){ //then it is a new hyp from drag&drop and we have to attach an editor to select a label:
+		var editor = new draw2d.ui.LabelLMEditor();
+		rect.label.installEditor(editor);
+		editor.start(rect.label);
+	}
 	rect.setBackgroundColor("#ffffff");
 	my_canvas.add(rect, x, y);	
 	initAddHyp(); //we have to re-init this here, because we have created a clone!!!
 }
-
-/**
- * create a new problem rectangle and add it to the canvas (including label and ports)
- **/
-function createAndAddFind(name, x, y, id){
-	 var rect = createRect(name,"#cccccc"/*"#99CC99"*/,id);//new draw2d.shape.basic.Rectangle();
-	 rect.createPort("output");
-	 rect.setBackgroundColor("#ffffff");
-	 my_canvas.add(rect, x, y);	 
-	 initAddFind();
+/* for some reason the setCssClass method is not working properly...*/
+function designPort(port){
+	port.setBackgroundColor("#cccccc");
+	port.setRadius(3);
 }
+
+
 
 /**
  * create a new diagnostic step rectangle and add it to the canvas (including label and ports)
@@ -225,5 +290,42 @@ function deleteItem(id){
 		var id = "sel"+item.getId().substring(2);	
 		$("#"+id).remove();
 	}
-	
+}
+/**
+ * we show the div tag with the list and lay it over the rectangle the user has clicked on. 
+ * this is a workaround, because I was not able to control the events of the canvas and its childs.
+ */
+function openListForCM(x,y, clickedId){
+	//positioning stuff:
+	//selectedId = clickedId; //TODO: get the element last clicked from the canvas?
+	canvasX = $("#canvas").offset().left;
+	canvasY = $("#canvas").offset().top;
+	xOfDialog = canvasX + x; 
+	yOfDialog = canvasY + y;
+	var dialogName = "dialogCMProb";
+	//getting type of item the user has clicked on: 
+	if(clickedId.startsWith("cmddx")) 
+			dialogName = "dialogCMDDX";
+		
+	//display:
+	$("#"+dialogName ).show();
+	$("#"+dialogName ).offset({ top: yOfDialog, left: xOfDialog });
+}
+/**
+ * We would have to update here the 
+ * - figure: label, itemid(?), we do not have to change the id of the rectangle 
+ * - list: change problem 
+ * - connection
+ * -> ajax: get problem with of the rectangles id and update the associated Problem object,
+ * All ids can stay the same, so we do not have to update connections.
+ * @param value
+ * @param label
+ */
+function editProblemCM(newValue, label){
+	//update rectangle with selectedId
+	var selFigure = my_canvas.getSelection().getPrimary();
+	selFigure.label.setText(label);	
+	alert(selFigure.id.substring(7));
+	//update list and trigger ajax call for saving:
+	editProblem(selFigure.id.substring(7), newValue, label);
 }

@@ -38,8 +38,19 @@ public class AjaxController {
 	    	String methodName = reqParams.get("type");
 	    	String idStr = reqParams.get("id");
 	    	String nameStr = reqParams.get("name");
+	    	String x = reqParams.get("x");
+	    	String y = reqParams.get("y");
 	    	Statement stmt; 
-	    	if(nameStr!=null && !nameStr.trim().equals("")) stmt = new Statement(patillscript, methodName, new Object[]{idStr, nameStr});
+	    	/*StringBuffer sb = new StringBuffer("{"+idStr);
+	    	if(nameStr!=null && !nameStr.trim().equals("")) sb.append(","+nameStr);
+	    	if(x!=null && !x.trim().equals("")) sb.append(","+x);
+	    	if(y!=null && !y.trim().equals("")) sb.append(","+y);
+	    	sb.append("}");*/
+	    	if(x!=null && !x.trim().equals("")){
+	    		stmt = new Statement(patillscript, methodName, new Object[]{idStr, nameStr,x,y});
+	    	}
+	    	else if(nameStr!=null && !nameStr.trim().equals("")) 
+	    		stmt = new Statement(patillscript, methodName, new Object[]{idStr, nameStr});
 	    	else stmt = new Statement(patillscript, methodName, new Object[]{idStr});
 	    	
 	    	try {
@@ -76,7 +87,7 @@ public class AjaxController {
 		//TODO: we might want to add more info to the response....
 		StringBuffer xmlResponse = new StringBuffer("<?xml version=\"1.0\" encoding=\"UTF-8\"?><response><id>");
 		xmlResponse.append(responseParam+"</id>");
-		appendMessag(xmlResponse);
+		appendMessage(xmlResponse);
 		//facesContext.
 		xmlResponse.append("</response>");
 		return xmlResponse.toString();
@@ -86,7 +97,7 @@ public class AjaxController {
 	 * If e.g. an error has occurred we get the message from the FacesContext and include it into the xml response.
 	 * @param xmlResponse
 	 */
-	private void appendMessag(StringBuffer xmlResponse){
+	private void appendMessage(StringBuffer xmlResponse){
 		List<FacesMessage> msgs = FacesContext.getCurrentInstance().getMessageList();
 		if(msgs!=null && !msgs.isEmpty()){ //per default we only display last message
 			FacesMessage fmsg = msgs.get(0);	

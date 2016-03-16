@@ -38,6 +38,7 @@
 <script src="../scripts/draw2d/src/LabelConnection.js"></script>	
 <script src="../scripts/draw2d/src/LabelRectangle.js"></script>	
 <script src="../scripts/draw2d/src/LabelLMEditor.js"></script>	
+<script src="../scripts/draw2d/src/MyCanvas.js"></script>	
 
 <script src="../scripts/draw2d/lib/jquery.browser.js"></script>
 <script src="../scripts/draw2d/lib/jquery.layout.js"></script>
@@ -68,6 +69,8 @@ var my_canvas = null;
  
 
 $(function() {
+	 $("#dialogCMDDX" ).hide();
+	 $("#dialogCMProb" ).hide();
     $( "#tabs" ).tabs({
     	//active = $( ".selector" ).tabs( "option", "active" ),
        // event: "mouseover"
@@ -105,8 +108,17 @@ $(function() {
 		width: "auto",
 		height: "auto"
 	});
+	/*$("#jdialogCM").dialog({ //div for concept map to display select box
+		autoOpen: false,
+		modal: true,
+		width: "auto",
+		height: "auto"
+	});*/
 	
-	my_canvas  = new draw2d.Canvas("canvas");
+	my_canvas  = new MyCanvas("canvas");
+	/*$("#canvas").contextmenu(function() {
+		 alert("hallo2");
+	});*/
     initConceptMap(); 
 
 	my_canvas.getCommandStack().addEventListener(function(e){
@@ -114,6 +126,7 @@ $(function() {
 	          //updatePreview();
 	  } 
 	});
+	//createLabel("hallo", "#989898", "testid");
 	initAddHyp();
 	initAddFind();
 	initAddMng();
@@ -166,7 +179,7 @@ Case placed here...
 					<div class="ddx_left">
 					<ol id="list_problems" class="sortable">
 					   <ui:repeat value="#{crtContext.patillscript.problems}" var="prob" varStatus="status">
-       					 	<li id="selProb_#{prob.sourceId}">#{prob.problem.name}<a href="javascript:delProblem(#{prob.sourceId}, 'selProb');"><i class="icon-trash-1"></i></a> <i class="icon-ok2"></i></li>
+       					 	<li id="selProb_#{prob.id}">#{prob.problem.name}<a href="javascript:delProblem(#{prob.id}, 'selProb');"><i class="icon-trash-1"></i></a> <i class="icon-ok2"></i></li>
     					</ui:repeat>
     				</ol>
 				</div>				
@@ -180,8 +193,8 @@ Case placed here...
 		  			<div class="ddx_left">
 					<ol id="list_diagnoses" class="sortable">
 						<ui:repeat value="#{crtContext.patillscript.diagnoses}" var="ddx" varStatus="status">
-       					 	<li id="selddx_#{ddx.sourceId}">
-       					 	<a href="javascript:toggleMnM('selddx_#{ddx.sourceId}');" title="Is this a Must-Not-Miss diagnosis? E.g. because it is lethal?"><i id="mnmicon_#{ddx.sourceId}" class="icon-attention0"></i></a>#{ddx.diagnosis.name}<a href="javascript:delDDX(#{ddx.sourceId}, 'selddx');"><i class="icon-trash-1"></i></a> <i class="icon-ok2"></i></li>
+       					 	<li id="selddx_#{ddx.id}">
+       					 	<a href="javascript:toggleMnM('selddx_#{ddx.id}');" title="Is this a Must-Not-Miss diagnosis? E.g. because it is lethal?"><i id="mnmicon_#{ddx.id}" class="icon-attention0"></i></a>#{ddx.diagnosis.name}<a href="javascript:delDDX(#{ddx.id}, 'selddx');"><i class="icon-trash-1"></i></a> <i class="icon-ok2"></i></li>
     					</ui:repeat>
 					
 					
@@ -245,5 +258,9 @@ Case placed here...
 
 <div id="jdialog">Are you sure you want to submit Pneumonia as your final diagnosis without any further work-up?<br/>
 <a href="javascript:submitDDXConfirmed();">Yes</a><br/></div>
+<div id="dialogCMProb" style="visibility:none;width:190px; height:30px; position:absolute;background-color:#cccccc"><input id="cm_prob_sel" class="f_text"></input></div>
+<div id="dialogCMDDX" style="visibility:none;width:190px; height:30px; position:absolute;background-color:#cccccc"><input id="cm_ddx_sel" class="f_text"></input></div>
+<div id="dialogCMNewProb" style="visibility:none;width:190px; height:30px; position:absolute;background-color:#cccccc"><input id="cm_newprob_sel" class="f_text"></input></div>
+
 </body>
 </html>

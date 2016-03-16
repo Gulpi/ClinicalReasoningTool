@@ -380,3 +380,11 @@ body .ui-tooltip {
 	bottom:0;
 	vertical-align:bottom;
   }
+  
+ /* concept map */
+.mylabel{
+	width:50px;
+	background-color:#cccccc;
+	/*font-size:0.4em;*/
+	overflow:hidden;
+}

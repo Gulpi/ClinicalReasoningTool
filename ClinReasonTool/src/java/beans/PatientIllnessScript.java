@@ -97,13 +97,15 @@ public class PatientIllnessScript extends Beans/*extends Node*/ implements /*Ill
 	public Timestamp getCreationDate(){ return this.creationDate;} //setting is done in DB	
 	public void setCreationDate(Timestamp creationDate) {this.creationDate = creationDate;}
 	public void addProblem(String idStr, String name){ new AddProblemAction(this).add(idStr, name);}
+	public void addProblem(String idStr, String name, String x, String y){ new AddProblemAction(this).add(idStr, name, x,y);}
 	public void delProblem(String idStr, String name){ new DelProblemAction(this).delete(idStr);}
 	public void reorderProblems(String idStr, String newOrderStr){ new MoveProblemAction(this).reorder(idStr, newOrderStr);}
+	public void changeProblem(String probRelIdStr,String newProbId){new ChangeProblemAction(this).changeProblem(probRelIdStr, newProbId);}
 	public void addDiagnosis(String idStr, String name){ new AddDiagnosisAction(this).add(idStr, name);}
 	public void delDiagnosis(String idStr, String name){ new DelDiagnosisAction(this).delete(idStr);}
 	public void reorderDiagnoses(String idStr, String newOrderStr){ new MoveDiagnosisAction(this).reorder(idStr, newOrderStr);}
 	public void addConnection(String sourceId, String targetId){new AddConnectionAction(this).add(sourceId,targetId);}
-	public void delConnection(String id, String name){new DelConnectionAction(this).delete(id);}
+	public void delConnection(String idStr){new DelConnectionAction(this).delete(idStr);}
 	public PatientIllnessScript getExpertPatIllScript() {return expertPatIllScript;}
 	public void setExpertPatIllScript(PatientIllnessScript expertPatIllScript) {this.expertPatIllScript = expertPatIllScript;}	
 	public long getVpId() {return vpId;}
@@ -144,14 +146,25 @@ public class PatientIllnessScript extends Beans/*extends Node*/ implements /*Ill
 		}		
 	}
 	
+	public RelationProblem getProblemBySourceId(long id){return (RelationProblem) getRelationBySourceId(problems, id);}	
+	public RelationDiagnosis getDiagnosisBySourceId(long id){return (RelationDiagnosis) getRelationBySourceId(diagnoses, id);}
 	public RelationProblem getProblemById(long id){return (RelationProblem) getRelationById(problems, id);}	
 	public RelationDiagnosis getDiagnosisById(long id){return (RelationDiagnosis) getRelationById(diagnoses, id);}
+	
+	private Relation getRelationBySourceId(List items, long sourceId){
+		if(items==null || items.isEmpty()) return null;
+		for(int i=0; i< items.size(); i++){
+			Relation rel = (Relation) items.get(i);
+			if(rel.getSourceId()==sourceId) return rel;
+		}
+		return null; //nothing found
+	}
 	
 	private Relation getRelationById(List items, long itemId){
 		if(items==null || items.isEmpty()) return null;
 		for(int i=0; i< items.size(); i++){
 			Relation rel = (Relation) items.get(i);
-			if(rel.getSourceId()==itemId) return rel;
+			if(rel.getId()==itemId) return rel;
 		}
 		return null; //nothing found
 	}

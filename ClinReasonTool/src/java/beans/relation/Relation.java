@@ -17,6 +17,7 @@ public interface Relation /*extends DefaultWeightedEdge*/{
 	public void setDestId(long destId);
 	public int getOrder(); 
 	public void setOrder(int o); 	
+	public long getId();
 	//better to extend Rectangle?
 
 }

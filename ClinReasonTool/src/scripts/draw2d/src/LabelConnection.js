@@ -18,7 +18,7 @@ var LabelConnection= draw2d.Connection.extend({
           text:"...",
           color:"#0d0d0d",
           fontColor:"#0d0d0d",
-          bgColor:"#f0f0f0",
+          bgColor:"#cccccc",
           fontSize:"8pt"
       });
      
@@ -33,10 +33,10 @@ var LabelConnection= draw2d.Connection.extend({
       this.attr({
           router:new draw2d.layout.connection.InteractiveManhattanConnectionRouter(),
           outlineStroke:1,
-          outlineColor:"#303030",
-          stroke:2,
-          color:"#00a8f0",
-          radius:4
+          outlineColor:"#000000",
+          stroke:1,
+          color:"#000000",
+          radius:2
       });
     },
     /**
@@ -65,9 +65,9 @@ var LabelConnection= draw2d.Connection.extend({
                case "green":
                    this.setColor('#b9dd69');
                    break;
-               case "blue":
+              /* case "blue":
                    this.setColor('#00A8F0');
-                   break;
+                   break;*/
                case "delete":
                    // without undo/redo support
               //     this.getCanvas().remove(this);
@@ -86,7 +86,7 @@ var LabelConnection= draw2d.Connection.extend({
             {
                 "red":    {name: "Red", icon: "edit"},
                 "green":  {name: "Green", icon: "cut"},
-                "blue":   {name: "Blue", icon: "copy"},
+                /*"blue":   {name: "Blue", icon: "copy"},*/
                 "sep1":   "---------",
                 "delete": {name: "Delete", icon: "delete"}
             }

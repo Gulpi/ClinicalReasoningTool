@@ -93,9 +93,7 @@ public class RelationProblem extends Beans implements Relation, Rectangle, Seria
 	}
 	
 	public String toJson(){
-		StringBuffer sb = new StringBuffer();
-		
-		
+		StringBuffer sb = new StringBuffer();		
 		sb.append("{\"label\":\""+this.getProblem().getName()+"\",\"shortlabel\":\""+this.getProblem().getShortName()+"\",\"id\": \""+getIdWithPrefix()+"\",\"x\": "+this.x+",\"y\":"+this.y+"}");		
 		return sb.toString();
 	}

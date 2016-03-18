@@ -38,9 +38,10 @@ public class DelDiagnosisAction implements DelAction{
 			//todo error msg
 			return;		
 		}
-		RelationDiagnosis rel = patIllScript.getDiagnosisBySourceId(Long.parseLong(id));
+		RelationDiagnosis rel = patIllScript.getDiagnosisById(Long.parseLong(id));
 		patIllScript.getDiagnoses().remove(rel);
 		new ActionHelper().reOrderItems(patIllScript.getDiagnoses());
+		new DelConnectionAction(patIllScript).deleteConnsByTargetId(rel.getId());
 		notifyLog(rel);
 		save(rel);
 	}

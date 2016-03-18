@@ -40,8 +40,9 @@ public class DelProblemAction implements DelAction{
 		}
 		RelationProblem rel = patIllScript.getProblemById(Long.parseLong(id));
 		patIllScript.getProblems().remove(rel);
-		new ActionHelper().reOrderItems(patIllScript.getProblems());
+		new ActionHelper().reOrderItems(patIllScript.getProblems());		
 		notifyLog(rel);
+		new DelConnectionAction(patIllScript).deleteConnsByStartId(rel.getId());
 		save(rel);
 	}
 }

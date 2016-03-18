@@ -393,3 +393,11 @@ body .ui-tooltip {
 .myrect{
 	overflow:hidden;
 }
+
+.listdialog{
+	/*visibility:hidden;*/
+	width:180px; 
+	height:30px; 
+	position:absolute;
+	background-color:#cccccc";
+}

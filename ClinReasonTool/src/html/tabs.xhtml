@@ -56,12 +56,9 @@ var numDiagnSteps = 0;
 var numMng = 0;
 var sessId = #{crtContext.patillscript.sessionId}; 
 //var jsonProbMap = '#{crtContext.patillscript.problemsJson}'; //problems for concept map
-var jsonDDXMap = '#{crtContext.patillscript.ddxJson}';		//diagnoses for concept map
+//var jsonDDXMap = '#{crtContext.patillscript.ddxJson}';		//diagnoses for concept map
 var jsonConnsMap = '#{crtContext.patillscript.connsJson}';  //connections for concept map 
 
-//var jsonProbMap = '[{"label": "Cough", "id": "cmddx_6", "x": 5,"y":5},{"label": "Fever", "id": "cmddx_5","x":5,"y":50}]';
-//var jsonDDXMap = '[{"label": "Pneumonia", "id": "cmddx_3", "x":100,"y":5},{"label": "Bronchitis", "id": "cmddx_4","x":100,"y":50}]'; //[{"id": "1","x": 150,"y": 200,"width": 100,"height": 80,"label":"hallo"}];
-//var jsonConnsMap = '[{"id": "cnx_1", "sourceid": "cmddx_6","targetid": "cmddx_3"}]';
 var my_canvas = null;
 
  draw2d.Configuration.factory.createConnection=function(sourcePort, targetPort, callback, dropTarget){
@@ -73,7 +70,7 @@ var my_canvas = null;
 $(function() {
 	$("#dialogCMDDX").hide();
 	$("#dialogCMProb").hide();
-	$("#dialogCMNewProb").hide();
+	//$("#dialogCMNewProb").hide();
     $( "#tabs" ).tabs({
     	//active = $( ".selector" ).tabs( "option", "active" ),
        // event: "mouseover"
@@ -87,15 +84,15 @@ $(function() {
                 return element.attr( "title" );
               }
 			//these are element of the concept map, we return the label text:
-    	 	 //if(element.is("rect")){
-    	 	//	 alert(element[0].getLabel());
-    			//return element.attr("userData"); //not working, find a workaround?
+    	 	 //if(element.is("rect")){    			
+    	 		 //return element.attr("userData"); //not working, find a workaround?
     		//}
 			/*if(element.is("text")){
     			return element.text;
     		}*/
-			if(element.is("tspan")){
-				return getToolTipForRect(element);
+			if(element.is("tspan")){ 
+				var tooltip = getToolTipForRect(element);
+				if(tooltip!="") return tooltip;
 			}
     	}
         
@@ -112,13 +109,6 @@ $(function() {
  		}
     });
     $( "#list_problems" ).disableSelection();
-/*    $( "#trashbindiv" ).droppable({
-        drop: function( event, ui ) {
-          $( this ) //this.id = id of trashbin
-              removeItemFromList(ui.draggable);        
-        }
-      });*/
-
     $( "#confidence_slider" ).slider({
        orientation: "vertical",
     	min: 0,
@@ -131,17 +121,8 @@ $(function() {
 		width: "auto",
 		height: "auto"
 	});
-	/*$("#jdialogCM").dialog({ //div for concept map to display select box
-		autoOpen: false,
-		modal: true,
-		width: "auto",
-		height: "auto"
-	});*/
 	
 	my_canvas  = new MyCanvas("canvas");
-	/*$("#canvas").contextmenu(function() {
-		 alert("hallo2");
-	});*/
     initConceptMap(); 
 
 	my_canvas.getCommandStack().addEventListener(function(e){
@@ -149,7 +130,6 @@ $(function() {
 	          //updatePreview();
 	  } 
 	});
-	//createLabel("hallo", "#989898", "testid");
 	initAddHyp();
 	initAddFind();
 	initAddMng();
@@ -222,11 +202,18 @@ Case placed here...
 		  		
 		  			<div class="search"><input class="f_text" id="ddx"></input></div>
 		  			<div class="ddx_left">
+		  			<h:form id="ddxform">
+					<h:panelGroup id="ddx_group">
 					<ol id="list_diagnoses" class="sortable">
 						<ui:repeat value="#{crtContext.patillscript.diagnoses}" var="ddx" varStatus="status">
 							<ui:include src="ddxline.xhtml" />
      					</ui:repeat>					
 					</ol>
+					<div id="jsonDDXMap" >#{crtContext.patillscript.ddxJson}</div>
+    				</h:panelGroup>
+    				     <h:commandButton id="hiddenDDXButton" value="RenderSomething" style="visibility:hidden">
+    						<f:ajax render="@form" onevent="updateCMCallback"></f:ajax>
+						</h:commandButton></h:form>
 				</div>
 				<div id="confidence_slider" class="conf_slider" title="Level of confidence"></div>
 		  </div>
@@ -286,9 +273,8 @@ Case placed here...
 
 <div id="jdialog">Are you sure you want to submit Pneumonia as your final diagnosis without any further work-up?<br/>
 <a href="javascript:submitDDXConfirmed();">Yes</a><br/></div>
-<div id="dialogCMProb" style="visibility:none;width:190px; height:30px; position:absolute;background-color:#cccccc"><input id="cm_prob_sel" class="f_text"></input></div>
-<div id="dialogCMDDX" style="visibility:none;width:190px; height:30px; position:absolute;background-color:#cccccc"><input id="cm_ddx_sel" class="f_text"></input></div>
-<div id="dialogCMNewProb" style="visibility:none;width:190px; height:30px; position:absolute;background-color:#cccccc"><input id="cm_newprob_sel" class="f_text"></input></div>
+<div id="dialogCMProb" class="listdialog" ><input id="cm_prob_sel" class="f_text"></input></div>
+<div id="dialogCMDDX" class="listdialog"><input id="cm_ddx_sel" class="f_text"></input></div>
 
 </body>
 </html>

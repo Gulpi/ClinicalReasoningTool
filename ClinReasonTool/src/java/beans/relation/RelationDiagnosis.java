@@ -16,8 +16,9 @@ public class RelationDiagnosis extends Beans implements Relation, Rectangle, Ser
 	public static final int REL_TYPE_DDX = 2; //differential diagnosis 
 	public static final int REL_TYPE_COMPL = 3; //complication of IS diagnosis 
 	public static final int REL_TYPE_RELATED = 4; //otherwise related diagnosis 
-	public static final int DEFAULT_X = 50; //default x position of problems in canvas
-	
+	public static final int DEFAULT_X = 70; //default x position of problems in canvas
+	public static final String COLOR_DEFAULT = "#ffffff";
+	public static final String COLOR_RED = "#990000";
 	private long id;
 	/**
 	 * diagnosis id
@@ -45,7 +46,12 @@ public class RelationDiagnosis extends Beans implements Relation, Rectangle, Ser
 	//private Timestamp creationDate;
 	private int x;
 	private int y;
+	/**
+	 * Backgroundcolor of the diagnosis rectangle
+	 */
+	private String color; //default: #ffffff
 	private ListItem diagnosis;
+	private int mnm = 0;
 
 	public RelationDiagnosis(){}
 	public RelationDiagnosis(long sourceId, long destId){
@@ -67,17 +73,24 @@ public class RelationDiagnosis extends Beans implements Relation, Rectangle, Ser
 	public int getX() {return x;}
 	public void setX(int x) {this.x = x;}
 	public int getY() {return y;}
-	public void setY(int y) {this.y = y;}		
+	public void setY(int y) {this.y = y;}	
+	public String getColor() {return color;}
+	public void setColor(String color) {this.color = color;}
 	//public Timestamp getCreationDate() {return creationDate;}
 	//public void setCreationDate(Timestamp creationDate) {this.creationDate = creationDate;}
 	public String getIdWithPrefix(){ return ConceptMapController.PREFIX_DDX+this.getId();}
-	
+	public int getMnm() {return mnm;}
+	public void setMnm(int mnm) {this.mnm = mnm;}
+	public boolean isMnM(){
+		if(mnm==1) return true;
+		return false;
+	}
 	/* (non-Javadoc)
 	 * @see beans.relation.Rectangle#toJson()
 	 */
 	public String toJson(){
 		StringBuffer sb = new StringBuffer();
-		sb.append("{\"label\":\""+this.getDiagnosis().getName()+"\",\"shortlabel\":\""+this.getDiagnosis().getShortName()+"\",\"id\": \""+getIdWithPrefix()+"\",\"x\": "+this.x+",\"y\":"+this.y+"}");		
+		sb.append("{\"label\":\""+this.getDiagnosis().getName()+"\",\"shortlabel\":\""+this.getDiagnosis().getShortName()+"\",\"id\": \""+getIdWithPrefix()+"\",\"x\": "+this.x+",\"y\":"+this.y+",\"color\": \""+this.color+"\"}");		
 		return sb.toString();
 	}
 	

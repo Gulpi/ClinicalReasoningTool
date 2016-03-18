@@ -53,7 +53,27 @@ public class DBClinReason extends HibernateUtil{
         }
         finally { }      
     }
-  
+    /**
+     * Delete a collection from the database
+     * @param o
+     */
+    public void deleteAndCommit(Collection c){
+    	Session s = getSession();   	
+        try {
+        	beginTransaction(s);
+            s.setFlushMode(FlushMode.COMMIT);     
+            Iterator it = c.iterator();
+            while(it.hasNext())
+            {
+            	s.delete(it.next());
+            }
+            HibernateUtil.commitTransaction(s);
+        }        
+        catch(Exception e){
+        	System.out.println("DBClinReason.deleteAndCommit(), Exception: " + StringUtilities.stackTraceToString(e));
+        	 rollBackTx();
+        }   	
+    }  
     
     /**
      * Delete a Bean from the database

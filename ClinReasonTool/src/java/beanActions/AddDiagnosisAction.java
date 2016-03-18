@@ -78,10 +78,10 @@ public class AddDiagnosisAction implements AddAction{
 	 */
 	private Point calculateNewItemPosInCanvas(){
 		int y = 5;
-		if(patIllScript.getProblems()!=null || !patIllScript.getProblems().isEmpty()){
-			y = patIllScript.getProblems().size() * 20;//CAVE max y!
+		if(patIllScript.getDiagnoses()!=null || !patIllScript.getDiagnoses().isEmpty()){
+			y = patIllScript.getDiagnoses().size() * 25;//CAVE max y!
 		}
-		return new Point(RelationProblem.DEFAULT_X,y);
+		return new Point(RelationDiagnosis.DEFAULT_X,y);
 	}
 	
 	/* (non-Javadoc)

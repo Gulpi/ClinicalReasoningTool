@@ -92,7 +92,7 @@ public class AddProblemAction implements AddAction{
 	private Point calculateNewItemPosInCanvas(){
 		int y = 5;
 		if(patIllScript.getProblems()!=null || !patIllScript.getProblems().isEmpty()){
-			y = patIllScript.getProblems().size() * 20; //CAVE max y! 
+			y = patIllScript.getProblems().size() * 25; //CAVE max y! 
 		}
 		return new Point(RelationProblem.DEFAULT_X,y);
 	}

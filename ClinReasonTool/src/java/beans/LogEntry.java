@@ -23,6 +23,10 @@ public class LogEntry extends Beans{
 	public static final int ADDCONNECTION_ACTION = 8; 
 	public static final int DELCONNECTION_ACTION = 9; 
 	public static final int CHGPROBLEM_ACTION = 10; 
+	public static final int CHGDDX_ACTION = 13; 
+	public static final int CHGDDXMNM_ACTION = 14; //change MnM flag
+	public static final int DELCNXAFTERSTARTNODE_ACTION = 11; //a connection is deleted because the related start point has been deleted
+	public static final int DELCNXAFTERTARGETNODE_ACTION = 12; //a connection is deleted because the related target point has been deleted
 
 	//....
 	

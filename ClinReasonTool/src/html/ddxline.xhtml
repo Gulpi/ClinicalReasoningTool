@@ -6,8 +6,11 @@
 
    	<li id="selddx_#{ddx.id}">
 		<a href="javascript:toggleMnM('selddx_#{ddx.id}');" title="Is this a Must-Not-Miss diagnosis? E.g. because it is lethal?">
-  	 	<i id="mnmicon_#{ddx.id}" class="icon-attention0"></i></a>#{ddx.diagnosis.name}
-   		<a href="javascript:delDDX(#{ddx.id}, 'selddx');">
+  	 	<i id="mnmicon_selddx_#{ddx.id}" class="icon-attention#{ddx.mnm}"></i></a>
+  	 	<a href="javascript:changeTier('#{ddx.id}');" id="tiera_#{ddx.id}" title="How likely is this diagnosis?"><i id="tiericon_#{ddx.id}" class="icon-circle-tier0"></i></a>
+  	 	
+  	 	#{ddx.diagnosis.name}
+   		<a href="javascript:delDiagnosis(#{ddx.id});">
    		<i class="icon-trash-1"></i></a> 
    		<i class="icon-ok2"></i>
   	</li>

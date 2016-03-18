@@ -17,6 +17,8 @@
 		<!--  <property name="creationDate" column="creation_date" update="false" type="timestamp"/>-->
 		<property name="x" column="x" type="int"/>
 		<property name="y" column="y" type="int"/>
+		<property name="color" column="color" type="string"/>
+		<property name="mnm" column="mnm" type="int"/>
 		<!--  <property name="name" column="name" type="string"/>	-->
 		<many-to-one name="diagnosis" class="model.ListItem" column="source_id"  lazy="false" insert="false" update="false"/>
 </class>

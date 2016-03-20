@@ -25,12 +25,11 @@ public class CRTFacesContext extends FacesContext implements Serializable{
 	private static final long serialVersionUID = 1L;
 	private long sessionId = -1;
 	/**
-	 * Messages (e.g. errors occured during ajax request handling)s
+	 * Messages (e.g. errors occured during ajax request handling
 	 */
-	private List<FacesMessage> messages;
-	//private String test = "hallo";
-	
+	private List<FacesMessage> messages;	
 	private PatientIllnessScript patillscript;
+	private List<PatientIllnessScript> scriptsOfUser;
 	/**
 	 * Detailed scores for this patIllScript
 	 */
@@ -38,6 +37,7 @@ public class CRTFacesContext extends FacesContext implements Serializable{
 	
 	public CRTFacesContext(){
 		setSessionId();
+		loadScriptsOfUser(); //this loads all scripts
 		loadPatIllScript();
 	}
 	public CRTFacesContext(long sessionId){
@@ -49,21 +49,31 @@ public class CRTFacesContext extends FacesContext implements Serializable{
 	public long getSessionId() {return sessionId;}
 	public void setSessionId(long sessionId) {this.sessionId = sessionId;}
 	private void setSessionId(){
-		Map<String,String[]> p = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterValuesMap();
-		String[] p1 = p.get("session_id");
-		if (p1 != null && p1.length>0){
-			System.out.println(p1[0]);
-			this.sessionId = (Long.valueOf(p1[0]).longValue());
+		String sessionIdStr = new AjaxController().getRequestParamByKey("session_id");
+		if(sessionIdStr!=null) this.sessionId = (Long.valueOf(sessionIdStr).longValue());
+	}
+
+	private void loadScriptsOfUser(){
+		String userIdStr = new AjaxController().getRequestParamByKey("user_id");
+		long userId = 0;
+		if(userIdStr!=null){
+			userId = Long.valueOf(userIdStr).longValue();
+		}
+		if(userId>0){
+			this.scriptsOfUser = new DBClinReason().selectPatIllScriptsByUserId(userId);
 		}
 	}
-	//move to a DB class
+	//TODO: we could also get the current script from the already loaded list -> reduces DB calls!
 	private void loadPatIllScript(){
-		patillscript = new DBClinReason().selectPatIllScriptBySessionId(sessionId);
-		if(patillscript==null) createAndSaveNewPatientIllnessScript(); 
+		if(sessionId>0){
+			patillscript = new DBClinReason().selectPatIllScriptBySessionId(sessionId);
+			if(patillscript==null) createAndSaveNewPatientIllnessScript(); 
+		}
+		else patillscript = null;
 	}
 	
 	private void createAndSaveNewPatientIllnessScript(){
-		patillscript = new PatientIllnessScript(this.sessionId);
+		patillscript = new PatientIllnessScript(this.sessionId, new AjaxController().getLocale());
 		patillscript.save();
 		System.out.println("New PatIllScript created for session_id: " + this.sessionId);
 		//this.addPropertyChangeListener(new PatientIllnessScript());
@@ -71,7 +81,8 @@ public class CRTFacesContext extends FacesContext implements Serializable{
 	
 	public PatientIllnessScript getPatillscript() { return patillscript;}
 	public void setPatillscript(PatientIllnessScript patillscript) {this.patillscript = patillscript;}
-
+	public List<PatientIllnessScript> getScriptsOfUser() {return scriptsOfUser;}
+	public void setScriptsOfUser(List<PatientIllnessScript> scriptsOfUser) {this.scriptsOfUser = scriptsOfUser;}
 	/**
 	 * @param arg0
 	 * @param msg
@@ -156,7 +167,8 @@ public class CRTFacesContext extends FacesContext implements Serializable{
 
 	@Override
 	public UIViewRoot getViewRoot() {
-		// TODO Auto-generated method stub
+		//UIViewRoot r = new UIViewRoot();
+		//r.
 		return null;
 	}
 

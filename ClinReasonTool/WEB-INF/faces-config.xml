@@ -27,7 +27,7 @@
      <faces-context-factory>controller.MyFacesContextFactory</faces-context-factory>
    </factory>-->
    
-<!--<application>
+<application>
    <locale-config>
       <default-locale>en</default-locale>
         <supported-locale>de</supported-locale>
@@ -36,7 +36,7 @@
       <base-name>intlproperties</base-name>
       <var>prop</var>
    </resource-bundle>
-</application>   -->
+</application>  
 
   <!--  <application>
     <navigation-handler>

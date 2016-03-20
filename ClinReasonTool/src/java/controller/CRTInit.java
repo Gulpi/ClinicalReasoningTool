@@ -20,6 +20,8 @@ import database.HibernateUtil;
 @ApplicationScoped
 public class CRTInit /*extends FacesContextFactory*/{
 
+	public static final String DEFAULT_LOCALE="en"; 
+	public static final String[] ACCEPTED_LOCALES = new String[]{"en", "de"};
 	/**
 	 * Container in which we store the FacesContext for this application.
 	 * Long=sessionId

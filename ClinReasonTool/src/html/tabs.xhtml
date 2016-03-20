@@ -39,7 +39,6 @@
 <script src="../scripts/draw2d/src/LabelRectangle.js"></script>	
 <script src="../scripts/draw2d/src/LabelLMEditor.js"></script>	
 <script src="../scripts/draw2d/src/MyCanvas.js"></script>	
-
 <script src="../scripts/draw2d/lib/jquery.browser.js"></script>
 <script src="../scripts/draw2d/lib/jquery.layout.js"></script>
 <script src="../scripts/mydraw2d.js"></script>
@@ -55,8 +54,6 @@ var numFinds = 0;
 var numDiagnSteps = 0;
 var numMng = 0;
 var sessId = #{crtContext.patillscript.sessionId}; 
-//var jsonProbMap = '#{crtContext.patillscript.problemsJson}'; //problems for concept map
-//var jsonDDXMap = '#{crtContext.patillscript.ddxJson}';		//diagnoses for concept map
 var jsonConnsMap = '#{crtContext.patillscript.connsJson}';  //connections for concept map 
 
 var my_canvas = null;
@@ -70,6 +67,9 @@ var my_canvas = null;
 $(function() {
 	$("#dialogCMDDX").hide();
 	$("#dialogCMProb").hide();
+	$("#dialogCMTest").hide();
+	$("#dialogCMMng").hide();
+
 	//$("#dialogCMNewProb").hide();
     $( "#tabs" ).tabs({
     	//active = $( ".selector" ).tabs( "option", "active" ),
@@ -100,6 +100,8 @@ $(function() {
     $( ".draggable" ).draggable();	
     $( "#list_diagnoses" ).sortable();
     $( "#list_diagnoses" ).disableSelection();
+    $( "#list_tests" ).sortable();
+    $( "#list_tests" ).disableSelection();
     $( "#list_mngs" ).sortable();
     $( "#list_mngs" ).disableSelection();
     $( "#list_problems" ).sortable({
@@ -133,7 +135,7 @@ $(function() {
 	initAddHyp();
 	initAddFind();
 	initAddMng();
-	initAddDiagnStep();
+	initAddTest();
 	my_canvas.on("figure:remove", function(emitter, event){
 		//alert(emitter.getFigure());
 	    //alert("id=" + event.figure.id);
@@ -178,6 +180,7 @@ Case placed here...
 				<!-- <select class="f_select" id="courseTime"><option value="-1">-</option><option value="1">acute</option><option value="2">chronic</option></select> --> 
 			</div>
 		  </div>
+		  <!-- problems -->
 		  <div id="tabs-2" style="background-color:#cccccc;">	
 		  			<div class="search"><input class="f_text" id="problems"></input></div>
 					<div class="ddx_left">
@@ -198,8 +201,8 @@ Case placed here...
 		  <div id="tabs-4">	
 		  		<textarea class="f_textarea" name="summSt" cols="50" rows="10"></textarea>
 		  </div>
-		  <div id="tabs-3">	
-		  		
+		  <!--  diagnoses -->
+		  <div id="tabs-3">			  		
 		  			<div class="search"><input class="f_text" id="ddx"></input></div>
 		  			<div class="ddx_left">
 		  			<h:form id="ddxform">
@@ -217,26 +220,54 @@ Case placed here...
 				</div>
 				<div id="confidence_slider" class="conf_slider" title="Level of confidence"></div>
 		  </div>
+		  <!-- tests -->
 		  <div id="tabs-5">
 		  		<div class="search"><input class="f_text" id="tests"></input></div>
-		  		<div class="ddx_left" style="width:300px;">
-					<ul id="list_tests" class="sortable">
-						<li id="selds_1">Chest X-ray <select class="f_select"><option value="-1">scanning</option><option>r/c Pneumonia</option></select></li>
-					</ul>
-		  		</div>
-		  </div>
+		  			<div class="ddx_left">
+		  			<h:form id="testform">
+		  			<h:panelGroup id="test_group">
+					<ol id="list_tests" class="sortable">
+						<ui:repeat value="#{crtContext.patillscript.tests}" var="test" varStatus="status">
+							<ui:include src="testline.xhtml" />
+     					</ui:repeat>				
+						<!-- <li id="selds_1">Chest X-ray <select class="f_select"><option value="-1">scanning</option><option>r/c Pneumonia</option></select></li>-->
+					</ol>
+					<div id="jsonTestsMap" >#{crtContext.patillscript.testsJson}</div>
+    				</h:panelGroup>
+    				     <h:commandButton id="hiddenTestsButton" value="RenderSomething" style="visibility:hidden">
+    						<f:ajax render="@form" onevent="updateCMCallback"></f:ajax>
+						</h:commandButton>
+					</h:form>
+					</div>
+		  	</div>
+		  <!-- managements -->
 		  <div id="tabs-6">
-		  <div class="search"><input class="f_text" id="mng"></input></div>
-		  		<div class="ddx_left">
-		   			<ol id="list_mngs" class="sortable"></ol>	   	
-		  		</div> 
-		  </div>
+		  	<div class="search"><input class="f_text" id="mng"></input></div>
+		  	<div class="ddx_left">
+	  			<h:form id="mngform">
+	  			<h:panelGroup id="mng_group">
+	
+				<ol id="list_mngs" class="sortable">
+					<ui:repeat value="#{crtContext.patillscript.mngs}" var="mng" varStatus="status">
+						<ui:include src="mngline.xhtml" />
+	   					</ui:repeat>				
+					<!-- <li id="selds_1">Chest X-ray <select class="f_select"><option value="-1">scanning</option><option>r/c Pneumonia</option></select></li>-->
+				</ol>
+				<div id="jsonTestsMap" >#{crtContext.patillscript.mngsJson}</div>
+	  				</h:panelGroup>
+	  				     <h:commandButton id="hiddenMngButton" value="RenderSomething" style="visibility:hidden">
+	  						<f:ajax render="@form" onevent="updateCMCallback"></f:ajax>
+					</h:commandButton></h:form>
+				</div>
+	  		</div>
+		  
+		  <!-- concept map -->
 		   <div id="tabs-7">
 				<div id="canvas" class="canvas"> </div>
 				 	<div class="newElemContainer">
 				 		<span id="findcontainer"></span><div id="addfind" class=" newElem newFind">Problem</div><br/>
 						<span id="hypcontainer"></span><div id="addhyp" class=" newElem newHyp">Diagnosis</div><br/>
-			   			<span id="dscontainer"></span> <div id="adddiagnstep" class=" newElem newDiagnStep">Diagn. Step</div><br/>
+			   			<span id="dscontainer"></span> <div id="adddtest" class=" newElem newDiagnStep">Diagn. Step</div><br/>
 			    		<span id="mngcontainer"></span> <div id="addmng" class=" newElem  newMng">Managment</div> 
 			   		 </div>
 		  		 </div>
@@ -275,6 +306,8 @@ Case placed here...
 <a href="javascript:submitDDXConfirmed();">Yes</a><br/></div>
 <div id="dialogCMProb" class="listdialog" ><input id="cm_prob_sel" class="f_text"></input></div>
 <div id="dialogCMDDX" class="listdialog"><input id="cm_ddx_sel" class="f_text"></input></div>
+<div id="dialogCMMng" class="listdialog"><input id="cm_mng_sel" class="f_text"></input></div>
+<div id="dialogCMTest" class="listdialog"><input id="cm_ds_sel" class="f_text"></input></div>
 
 </body>
 </html>

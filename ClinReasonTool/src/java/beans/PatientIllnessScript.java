@@ -8,6 +8,7 @@ import javax.faces.bean.*;
 
 import beanActions.*;
 import beans.relation.*;
+import controller.AjaxController;
 import controller.ConceptMapController;
 import database.DBClinReason;
 
@@ -30,7 +31,9 @@ public class PatientIllnessScript extends Beans/*extends Node*/ implements /*Ill
 	private static final long serialVersionUID = 1L;
 	private Timestamp creationDate;
 	private long sessionId = -1; //necessary or store PISId in C_Session?
+	private long userId; //needed so that we can display all the users' scripts to him
 	private long id = -1;
+	private Locale locale;
 	/**
 	 * the patientIllnessScript created by the expert based on the VP
 	 */
@@ -62,8 +65,8 @@ public class PatientIllnessScript extends Beans/*extends Node*/ implements /*Ill
 	 */
 	private List<RelationProblem> problems;
 	private List<RelationDiagnosis> diagnoses; //contains all diagnoses, including the final(s)?
-	//private List<Rel_IS_Management> managements;
-	//private List<Rel_IS_Test> tests;
+	private List<RelationManagement> mngs;
+	private List<RelationTest> tests;
 	
 	/**
 	 * key = cnxId (Long), value = Connection object
@@ -81,8 +84,9 @@ public class PatientIllnessScript extends Beans/*extends Node*/ implements /*Ill
 	private boolean submitted;
 	
 	public PatientIllnessScript(){}
-	public PatientIllnessScript(long sessionId){
+	public PatientIllnessScript(long sessionId, Locale loc){
 		this.sessionId = sessionId;
+		this.locale = loc;
 	}
 	
 	public long getId() {return id;}
@@ -99,17 +103,6 @@ public class PatientIllnessScript extends Beans/*extends Node*/ implements /*Ill
 	public void setProblems(List<RelationProblem> problems) {this.problems = problems;}
 	public Timestamp getCreationDate(){ return this.creationDate;} //setting is done in DB	
 	public void setCreationDate(Timestamp creationDate) {this.creationDate = creationDate;}
-	public void addProblem(String idStr, String name){ new AddProblemAction(this).add(idStr, name);}
-	public void addProblem(String idStr, String name, String x, String y){ new AddProblemAction(this).add(idStr, name, x,y);}
-	public void delProblem(String idStr){ new DelProblemAction(this).delete(idStr);}
-	public void reorderProblems(String idStr, String newOrderStr){ new MoveProblemAction(this).reorder(idStr, newOrderStr);}
-	public void changeProblem(String probRelIdStr,String newProbId){new ChangeProblemAction(this).changeProblem(probRelIdStr, newProbId);}
-	public void addDiagnosis(String idStr, String name){ new AddDiagnosisAction(this).add(idStr, name);}
-	public void delDiagnosis(String idStr){ new DelDiagnosisAction(this).delete(idStr);}
-	public void reorderDiagnoses(String idStr, String newOrderStr){ new MoveDiagnosisAction(this).reorder(idStr, newOrderStr);}
-	public void changeMnM(String idStr, String newValue){new ChangeDiagnosisAction(this).toggleMnM(idStr, newValue);}
-	public void addConnection(String sourceId, String targetId){new AddConnectionAction(this).add(sourceId,targetId);}
-	public void delConnection(String idStr){new DelConnectionAction(this).delete(idStr);}
 	public PatientIllnessScript getExpertPatIllScript() {return expertPatIllScript;}
 	public void setExpertPatIllScript(PatientIllnessScript expertPatIllScript) {this.expertPatIllScript = expertPatIllScript;}	
 	public long getVpId() {return vpId;}
@@ -118,14 +111,52 @@ public class PatientIllnessScript extends Beans/*extends Node*/ implements /*Ill
 	public void setType(int type) {this.type = type;}	
 	public List<RelationDiagnosis> getDiagnoses() {return diagnoses;}
 	public void setDiagnoses(List<RelationDiagnosis> diagnoses) {this.diagnoses = diagnoses;}
+	public List<RelationManagement> getMngs() {return mngs;}
+	public void setMngs(List<RelationManagement> mngs) {this.mngs = mngs;}	
+	public List<RelationTest> getTests() {return tests;}
+	public void setTests(List<RelationTest> tests) {this.tests = tests;}
 	public Map getConns() {return conns;}
 	public void setConns(Map conns) {this.conns = conns;}
+	public long getUserId() {return userId;}
+	public void setUserId(long userId) {this.userId = userId;}	
+	public Locale getLocale() {return locale;}
+	public void setLocale(Locale locale) {this.locale = locale;}
+	
+	public void addProblem(String idStr, String name){ new AddProblemAction(this).add(idStr, name);}
+	public void addProblem(String idStr, String name, String x, String y){ new AddProblemAction(this).add(idStr, name, x,y);}
+	public void addDiagnosis(String idStr, String name){ new AddDiagnosisAction(this).add(idStr, name);}
+	public void addDiagnosis(String idStr, String name, String x, String y){ new AddDiagnosisAction(this).add(idStr, name, x,y);}
+	public void addTest(String idStr, String name){ new AddTestAction(this).add(idStr, name);}
+	public void addTest(String idStr, String name, String x, String y){ new AddTestAction(this).add(idStr, name, x,y);}
+	public void addMng(String idStr, String name){ new AddMngAction(this).add(idStr, name);}
+	public void addMng(String idStr, String name, String x, String y){ new AddMngAction(this).add(idStr, name, x,y);}
+	
+	public void delProblem(String idStr){ new DelProblemAction(this).delete(idStr);}
+	public void delDiagnosis(String idStr){ new DelDiagnosisAction(this).delete(idStr);}
+	public void delTest(String idStr){ new DelTestAction(this).delete(idStr);}
+	public void delMng(String idStr){ new DelMngAction(this).delete(idStr);}
+
+	public void reorderProblems(String idStr, String newOrderStr){ new MoveProblemAction(this).reorder(idStr, newOrderStr);}
+	public void reorderDiagnoses(String idStr, String newOrderStr){ new MoveDiagnosisAction(this).reorder(idStr, newOrderStr);}
+	public void reorderTests(String idStr, String newOrderStr){ new MoveTestAction(this).reorder(idStr, newOrderStr);}
+	public void reorderMngs(String idStr, String newOrderStr){ new MoveMngAction(this).reorder(idStr, newOrderStr);}
+
+	public void changeProblem(String probRelIdStr,String newProbId){new ChangeProblemAction(this).changeProblem(probRelIdStr, newProbId);}
+	public void changeDiagnosis(String probRelIdStr,String newProbId){new ChangeDiagnosisAction(this).changeDiagnosis(probRelIdStr, newProbId);}
+	public void changeTest(String probRelIdStr,String newProbId){new ChangeTestAction(this).changeTest(probRelIdStr, newProbId);}
+	public void changeMng(String probRelIdStr,String newProbId){new ChangeMngAction(this).changeMng(probRelIdStr, newProbId);}
+
+	public void changeMnM(String idStr, String newValue){new ChangeDiagnosisAction(this).toggleMnM(idStr, newValue);}
+	public void addConnection(String sourceId, String targetId){new AddConnectionAction(this).add(sourceId,targetId);}
+	public void delConnection(String idStr){new DelConnectionAction(this).delete(idStr);}
+
 	public String getProblemsJson(){ return new ConceptMapController().getRelationsToJson(problems);}
 	public String getDdxJson(){return new ConceptMapController().getRelationsToJson(diagnoses);}
-	public String getConnsJson(){return new ConceptMapController().getConnsToJson(conns);}
+	public String getTestsJson(){return new ConceptMapController().getRelationsToJson(tests);}
+	public String getMngsJson(){return new ConceptMapController().getRelationsToJson(mngs);}
+	public String getConnsJson(){return new ConceptMapController().getConnsToJson(conns);}	
 	
-	public void save(){new DBClinReason().saveAndCommit(this);}
-	
+	public void save(){new DBClinReason().saveAndCommit(this);}	
 	/* (non-Javadoc)
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
@@ -151,9 +182,14 @@ public class PatientIllnessScript extends Beans/*extends Node*/ implements /*Ill
 	}
 	
 	public RelationProblem getProblemBySourceId(long id){return (RelationProblem) getRelationBySourceId(problems, id);}	
-	public RelationDiagnosis getDiagnosisBySourceId(long id){return (RelationDiagnosis) getRelationBySourceId(diagnoses, id);}
 	public RelationProblem getProblemById(long id){return (RelationProblem) getRelationById(problems, id);}	
-	public RelationDiagnosis getDiagnosisById(long id){return (RelationDiagnosis) getRelationById(diagnoses, id);}
+	public RelationDiagnosis getDiagnosisBySourceId(long id){return (RelationDiagnosis) getRelationBySourceId(diagnoses, id);}
+	public RelationDiagnosis getDiagnosisById(long id){return (RelationDiagnosis) getRelationById(diagnoses, id);}	
+	public RelationTest getTestBySourceId(long id){return (RelationTest) getRelationBySourceId(tests, id);}	
+	public RelationTest getTestById(long id){return (RelationTest) getRelationById(tests, id);}		
+	public RelationManagement getMngBySourceId(long id){return (RelationManagement) getRelationBySourceId(mngs, id);}	
+	public RelationManagement getMngById(long id){return (RelationManagement) getRelationById(mngs, id);}	
+
 	
 	private Relation getRelationBySourceId(List items, long sourceId){
 		if(items==null || items.isEmpty()) return null;

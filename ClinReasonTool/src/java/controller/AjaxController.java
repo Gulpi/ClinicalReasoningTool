@@ -41,11 +41,6 @@ public class AjaxController {
 	    	String x = reqParams.get("x");
 	    	String y = reqParams.get("y");
 	    	Statement stmt; 
-	    	/*StringBuffer sb = new StringBuffer("{"+idStr);
-	    	if(nameStr!=null && !nameStr.trim().equals("")) sb.append(","+nameStr);
-	    	if(x!=null && !x.trim().equals("")) sb.append(","+x);
-	    	if(y!=null && !y.trim().equals("")) sb.append(","+y);
-	    	sb.append("}");*/
 	    	if(x!=null && !x.trim().equals("")){
 	    		stmt = new Statement(patillscript, methodName, new Object[]{idStr, nameStr,x,y});
 	    	}
@@ -110,5 +105,28 @@ public class AjaxController {
 		}
 		else xmlResponse.append("<ok>1</ok>"); //no error has occured
 	}
-
+	
+	public String getRequestParamByKey(String key){
+		Map<String,String[]> p = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterValuesMap();
+		String[] p1 = p.get(key);
+		if (p1 != null && p1.length>0){
+			System.out.println(p1[0]);
+			return p1[0];
+			//this.sessionId = (Long.valueOf(p1[0]).longValue());
+		}
+		return null;
+	}
+	
+	public Locale getLocale(){
+		Locale loc = new Locale(CRTInit.DEFAULT_LOCALE);
+		String locStr = getRequestParamByKey("locale");
+		if(locStr!=null && !locStr.trim().equals("")){ 
+			for(int i=0; i<CRTInit.ACCEPTED_LOCALES.length; i++){
+			if(locStr.equals(CRTInit.ACCEPTED_LOCALES[i]))
+					loc = new Locale(locStr);
+			}
+		}
+		
+		return loc;
+	}
 }

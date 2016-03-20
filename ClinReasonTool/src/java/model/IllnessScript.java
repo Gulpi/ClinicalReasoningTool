@@ -1,6 +1,9 @@
 package model;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
+
+import beans.relation.*;
+
 import java.io.Serializable;
 
 
@@ -34,12 +37,12 @@ public class IllnessScript extends Node implements IllnessScriptInterface{
 	/**
 	 * Diagnosis this IllnessScript is covering
 	 */
-	private Diagnosis diagnosis; 
+	private RelationDiagnosis diagnosis; 
 	
 	/**
 	 * for final diagnosis
 	 */
-	private List<Rel_IS_Management> managements;
+	private List<RelationManagement> managements;
 	
 	/**
 	 * Here we store all values that are important for this illness script. See definitions above. 

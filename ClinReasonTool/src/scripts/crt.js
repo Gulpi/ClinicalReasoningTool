@@ -68,12 +68,34 @@ function diagnosisCallBack(ddxId, selDDX){
 	$("[id='ddxform:hiddenDDXButton']").click();		
 }
 
+function reOrderProblems(newOrder, id){
+	sendAjax(id, diagnosisCallBack, "reorderDiagnoses", newOrder);
+}
 
 function hasAFinalDiagnosis(){
 	//tiericon_1
 	var numFinDiagn = $(".icon-circle-tier4").length;
 	if(numFinDiagn>0) return true;
 	return false;
+}
+
+/** a diagnosis is changed to must not missed -red icon or toggled back*/
+function toggleMnM(id){
+	var id2 = "mnmicon_"+id;
+	var actClass = $("#"+id2).attr("class");
+	var newClass = "icon-attention0";
+	$("#"+id2).removeClass(actClass);
+	if(actClass=="icon-attention0") 
+			newClass = "icon-attention1";
+	
+	$("#"+id2).addClass(newClass);
+	id = id.substring(7);
+	var newClass = newClass.substring(14);
+	sendAjax(id, toggleMnMCallback, "changeMnM",  newClass);
+}
+
+function toggleMnMCallback(){
+	//TODO: we would have to update all resources...
 }
 
 /* we submit the DDX (or only final diagnoses?) and ask for certainity*/
@@ -134,70 +156,36 @@ function toggleSubmit(){
 
 /******************** management *******************************/
 
-
-/** a diagnosis is changed to must not missed -red icon or toggled back*/
-function toggleMnM(id){
-	var id2 = "mnmicon_"+id;
-	var actClass = $("#"+id2).attr("class");
-	var newClass = "icon-attention0";
-	$("#"+id2).removeClass(actClass);
-	if(actClass=="icon-attention0") 
-			newClass = "icon-attention1";
-	
-	$("#"+id2).addClass(newClass);
-	id = id.substring(7);
-	var newClass = newClass.substring(14);
-	sendAjax(id, toggleMnMCallback, "changeMnM",  newClass);
-}
-
-function toggleMnMCallback(){
-	//TODO: we would have to update all resources...
-}
-
 /*
  * a management item is added to the list of the already added items:
  */
-function addManagement(mngId, selMng){
-	//here we have to trigger an ajax call... 
-	//var mngId = $("#mng").val();
-	if(mngId>-1) addManagementCallBack(mngId, selMng);
+function addManagement(mngId, name){
+	if(mngId>-1) sendAjax(mngId, managementCallBack, "addMng", name);
+	//if(mngId>-1) addManagementCallBack(mngId, selMng);
 }
 
-function addManagementCallBack(mngId, selMng){
-	//we get the problemId and name via ajax...
-	//var selMng = $("#mng option:selected").text();
-	$("#mng").val("");
-	$("#list_mngs").append("<li id='selmng_"+mngId+"'>"+selMng+"</li>");	
-	var y = (numMng * 30) +10;
-	createAndAddMng(selMng,250, y, "cmmng_"+mngId);
-	numMng++;
+function delManagement(id){
+	sendAjax(id, managementCallBack, "delMng", "");
 }
 
-
-
-/* this is no longer needed with ajax */
-/*function tmpHelperGetCorrect(problemId){
-	//alert(problemId);
-	var exp_problems_ids = [2,5]; //this comes then from ajax, rating can be 0 (wrong), 1(partly correct), 2 (correct)
-	for(i=0; i<exp_problems_ids.length; i++){
-		if(problemId==exp_problems_ids[i]) return 2;
-	}
-	return 0;
-}*/
+function managementCallBack(testId, selTest){
+	$("#mng").val("");	
+	//we update the problems list and the json string
+	$("[id='mngform:hiddenMngButton']").click();		
+}
 
 
 /******************** diagnostic steps *******************************/
 
+
 /*
  * a test is added to the list of the already added tests:
  */
-function addTest(testId, testname){
-	//here we have to trigger an ajax call... 
-	//var testId = $("#tests").val();
-	if(testId>-1) addTestCallBack(testId, testname);
+function addTest(testId, name){
+	if(testId>-1) sendAjax(testId, testCallBack, "addTest", name);
 }
 
-function addTestCallBack(testId,selTest){
+/*function addTestCallBack(testId,selTest){
 	//we get the problemId and name via ajax...
 	//var selTest = $("#tests option:selected").text();
 	$("#tests").val("");
@@ -206,8 +194,17 @@ function addTestCallBack(testId,selTest){
 	//$("#tests").val("-1");
 	createAndAddDiagnStep(selTest,190, y, "cmds_"+testId);
 	numDiagnSteps++;
+}*/
+
+function delTest(id){
+	sendAjax(id, testCallBack, "delTest", "");
 }
 
+function testCallBack(testId, selTest){
+	$("#test").val("");	
+	//we update the problems list and the json string
+	$("[id='ddxform:hiddenTestButton']").click();		
+}
 
 
 
@@ -279,6 +276,26 @@ var active = $( "#tabs" ).tabs( "option", "active" ); //we have to determine the
 	          });
 	        }
 	      });
+	    $.ajax({ //list for management item (list view)
+	        url: "jsonp.json",
+	        dataType: "json",
+	        success: function( data ) {
+	          $( "#mng" ).autocomplete({
+	            source: data,
+	            minLength: 3,
+	            select: function( event, ui ) {
+	            	addManagement(ui.item.value, ui.item.label);
+	            },
+	  	      close: function(ui) {
+	  	        $("#cm_mng_sel").val("");
+	  	        //$("#dialogCMMng" ).hide();
+	  	        //$("#cm_mng_sel").autocomplete( "close" );
+	  	        //if we had opened a new one, we have to remove it from the canvas:
+	  	       // delTempRect();
+	  	      }
+	          });
+	        }
+	      });
 	    $.ajax({ //list for problems from concept map
 	        url: "jsonp.json",
 	        dataType: "json",
@@ -318,7 +335,27 @@ var active = $( "#tabs" ).tabs( "option", "active" ); //we have to determine the
 	          });
 	        }
 	      });
-	    $.ajax({ //list for management item (list view)
+	    $.ajax({ //list for tests from concept map
+	        url: "jsonp.json",
+	        dataType: "json",
+	        success: function( data ) {
+	          $( "#cm_ds_sel" ).autocomplete({
+	            source: data,
+	            minLength: 3,
+	            select: function( event, ui ) {
+	            	editOrAddTestCM(ui.item.value, ui.item.label);
+	            },
+	  	      close: function(ui) {
+	  	        $("#cm_ds_sel").val("");
+	  	        $("#dialogCMTest" ).hide();
+	  	        $("#cm_ds_sel").autocomplete( "close" );
+	  	        //if we had opened a new one, we have to remove it from the canvas:
+	  	        delTempRect();
+	  	      }
+	          });
+	        }
+	      });
+	    $.ajax({ //list for management item from concept map
 	        url: "jsonp.json",
 	        dataType: "json",
 	        success: function( data ) {
@@ -326,10 +363,14 @@ var active = $( "#tabs" ).tabs( "option", "active" ); //we have to determine the
 	            source: data,
 	            minLength: 3,
 	            select: function( event, ui ) {
-	            	addManagement(ui.item.value, ui.item.label);
+	            	editOrAddMng(ui.item.value, ui.item.label);
 	            },
 	  	      close: function(ui) {
-	  	        $("#mng").val("");
+	  	        $("#cm_mng_sel").val("");
+	  	        $("#dialogCMMng" ).hide();
+	  	        $("#cm_mng_sel").autocomplete( "close" );
+	  	        //if we had opened a new one, we have to remove it from the canvas:
+	  	        delTempRect();
 	  	      }
 	          });
 	        }
@@ -341,3 +382,16 @@ function doDisplayIS(){
 		alert("Display of the Illness Script(s) for the (correct) final diagnoses");
 	else alert("You can access the Illness Script only after submitting your final diagnoses.");
 }
+
+
+
+
+/* this is no longer needed with ajax */
+/*function tmpHelperGetCorrect(problemId){
+	//alert(problemId);
+	var exp_problems_ids = [2,5]; //this comes then from ajax, rating can be 0 (wrong), 1(partly correct), 2 (correct)
+	for(i=0; i<exp_problems_ids.length; i++){
+		if(problemId==exp_problems_ids[i]) return 2;
+	}
+	return 0;
+}*/

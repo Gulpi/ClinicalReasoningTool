@@ -1,0 +1,36 @@
+ 
+.portfoliodiv{
+  width: 200px; 
+  height: 200px; 
+   font-size:0.8em;  
+  position:relative;
+  float:left;
+  margin:10px;
+  background-color:#ffffff;
+  border: 1px solid #b0cbdc;
+  /*cursor:move;*/	
+}
+
+.header{
+	background-color:#cccccc;
+	padding: 5px; 
+	width: 190px;
+	font-size:1.0em; 
+	font-weight:bold; 
+	
+}
+
+.plainList{
+	padding:5px;
+	list-style-type: none; /*icon could be liststyls? */
+}
+
+.portfsearch{
+	position:absolute;
+	float:right;
+	top:5;
+	right:0;
+	width:200px;
+	overflow:hidden;
+	/*background-color:#cccccc;*/
+}

@@ -101,10 +101,19 @@ public class DBClinReason extends HibernateUtil{
     public PatientIllnessScript selectPatIllScriptBySessionId(long sessionId){
     	Criteria criteria = HibernateUtil.getSession().createCriteria(PatientIllnessScript.class,"PatientIllnessScript");
     	criteria.add(Restrictions.eq("sessionId", new Long(sessionId)));
-    	PatientIllnessScript patis = (PatientIllnessScript) criteria.uniqueResult();
-    	return patis;
+    	return (PatientIllnessScript) criteria.uniqueResult();
     }
-   
+
+    /**
+     * Select the PatientIllnessScripts for the userId from the database. 
+     * @param sessionId
+     * @return PatientIllnessScript or null
+     */
+    public List<PatientIllnessScript> selectPatIllScriptsByUserId(long userId){
+    	Criteria criteria = HibernateUtil.getSession().createCriteria(PatientIllnessScript.class,"PatientIllnessScript");
+    	criteria.add(Restrictions.eq("userId", new Long(userId)));
+    	return (List<PatientIllnessScript>) criteria.list();
+    }
     
     /**
      * Select the ListItem with the given id from the database.

@@ -94,8 +94,8 @@ public class HibernateSession {
 			cfg.addClass(beans.relation.RelationDiagnosis.class);	
 			cfg.addClass(beans.LogEntry.class);
 			cfg.addClass(beans.Connection.class);
-			//addAutoHSQLDBConfig();
-			
+			cfg.addClass(beans.relation.RelationManagement.class);			
+			cfg.addClass(beans.relation.RelationTest.class);			
 		   
 			if (factory==null) {
 				//init_setHibernateDialect();

@@ -1,0 +1,14 @@
+ <ui:composition 
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core">
+
+   	<li id="selds_#{test.id}">  
+  	 	#{test.test.name}
+   		<a href="javascript:delTest(#{test.id});">
+   		<i class="icon-trash-1"></i></a> 
+   		<i class="icon-ok2"></i>
+  	</li>
+
+</ui:composition>

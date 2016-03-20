@@ -1,4 +1,6 @@
-
+body{
+	font-family:Arial;
+}
 .ui-widget-content { /*needs to be at the beginning, otherwise the slider background will be overwritten*/
 	border: 1px solid #dddddd;
 	background: #ffffff url("images/ui-bg_highlight-soft_100_eeeeee_1x100.png") 50% top repeat-x;
@@ -101,13 +103,13 @@ input.f_text, textarea.f_textarea {
 	width:150px;
 }
 
-.cm-preview{
+/*.cm-preview{
 	float:right;
 	position:relative;
 	bottom:0;
 	width:55px;
 	border: 1px solid #b0cbdc;
-}
+}*/
 
 @font-face {
   font-family: 'crt';
@@ -169,13 +171,14 @@ input.f_text, textarea.f_textarea {
 .icon-users:before { content: '\e8f8'; color:#000000; font-size: 1.3em;} /*color:#088A29;*/
 .icon-edit:before { content: '\e86b'; font-size: 1.3em;}
 .icon-list-alt:before { content: '\e907';}
-.icon-list-on:before { content: '\e907'; color:#088A29;}
+.icon-list-on:before { content: '\e907'; color:#000000;} /*color:#088A29;*/
 .icon-list-off:before { content: '\e907'; color:#C2C2C2;}
 .icon-file-pdf:before { content: '\e8d9'; font-size: 1.3em;}
 .icon-print:before { content: '\e911'; font-size: 1.3em;} 
 .icon-help-circled:before { content: '\e858'; } 
-
-
+.icon-sitemap:before { content: '\e815';font-size: 0.8em;}
+.icon-video:before { content: '\e84a'; font-size: 0.8em;} 
+.icon-plus-circled:before { content: '\e851'; } 
 /* end i-icons code */
 
 /*concept map */

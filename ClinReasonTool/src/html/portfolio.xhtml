@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"   
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      >
+<head>
+
+<title>Illness Script Portfolio</title>
+ <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+ <script type="text/javascript" src="../scripts/jquery112/jquery.js"></script>
+<script type="text/javascript" src="../scripts/jquery112/jquery-ui.min.js"></script>
+<script type="text/javascript" src="../scripts/jquery112/jquery-ui.js"></script>
+<link rel="stylesheet" type="text/css" href="../scripts/jquery112/ui-lightness/jquery-ui.css" /> 
+<link rel="stylesheet" type="text/css" href="../scripts/draw2d/css/contextmenu.css"  />
+<link rel="stylesheet" href="../styles/clinreason.css" />
+<link rel="stylesheet" href="../styles/portfolio.css" />
+
+
+<script language="JavaScript">
+$( document ).tooltip({
+	items: " rect, [title], text, tspan",
+	content: function() {
+		var element = $( this );
+        if ( element.is( "[title]" ) ) { //this is a "normal" tooltip returning the title of an element
+            return element.attr( "title" );
+          }
+	}
+});
+</script>
+ </head>
+ <body>
+ <div class="portfsearch"><input id="searchfield" class="f_text"></input></div> 
+ <div id="myScripts" class="portfoliodiv">
+ <div class="header">My Patient Illness Scripts</div>
+	<ul id="list_diagnoses" class="plainList">
+		<ui:repeat value="#{crtContext.scriptsOfUser}" var="scripts" varStatus="status">
+			<li><a href="tabs.xhtml?session_id=#{scripts.sessionId}">#{scripts.id}</a>
+				<i class="icon-sitemap"></i><i class="icon-list-on"></i></li>
+ 		</ui:repeat>					
+	</ul>
+ 		<!--<li><a href="tabs.xhtml?session_id=12346">Henry Rodin</a> <i class="icon-sitemap"></i></li>-->
+ <div class="footer"><a href="" title="create new illness script"><i class="icon-plus-circled"></i></a></div>
+ </div>
+  <div class="portfoliodiv"><div class="header">Illness Scripts</div>
+  evtl auch bei myscripts verlinken?</div>
+  <div class="portfoliodiv"><div class="header">Resources</div>
+  <ul class="plainList"> 
+  	<li> <i class="icon-video"></i>What is clinical reasoning</li>
+  	<li> <i class="icon-video"></i>...</li>
+  	</ul>
+  </div>
+    <div class="portfoliodiv"><div class="header">Achievements</div>
+  <ul class="plainList"> 
+  	<li>...</li>
+  	</ul>
+  </div>
+ </body></html>

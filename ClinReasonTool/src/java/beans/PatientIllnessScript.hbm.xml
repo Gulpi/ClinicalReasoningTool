@@ -12,11 +12,12 @@
 				<param name ="sequence">CRT.CR_SEQ</param>
 			</generator>
 		</id>
-					
+		<property name="userId" column="user_id" type="long" />			
 		<property name="sessionId" column="session_id" type="long" />
 		<property name="courseOfTime" column="courseoftime" type="int"/>	
 		<property name="vpId" column="vp_id" type="long"/>	
-		<property name="type" column="type" type="int"/>	
+		<property name="type" column="type" type="int"/>
+		<property name="locale" column="locale" update="false" type="locale"/>	
 		<property name="creationDate" column="creation_date" update="false" type="timestamp"/>
 		
 		
@@ -29,6 +30,16 @@
     		<key column="dest_id"/> <!-- dest_id = patientIllnessScript id -->
     		<list-index column="idx" base="0"/>
     		<one-to-many class="beans.relation.RelationDiagnosis"/>   		
+		</list>	
+		<list name="tests" table="crt.relation_test" cascade="all" lazy="false"> <!-- table="crt.relation_problem"-->
+    		<key column="dest_id"/> <!-- dest_id = patientIllnessScript id -->
+    		<list-index column="idx" base="0"/>
+    		<one-to-many class="beans.relation.RelationTest"/>   		
+		</list>	
+		<list name="mngs" table="crt.relation_management" cascade="all" lazy="false"> <!-- table="crt.relation_problem"-->
+    		<key column="dest_id"/> <!-- dest_id = patientIllnessScript id -->
+    		<list-index column="idx" base="0"/>
+    		<one-to-many class="beans.relation.RelationManagement"/>   		
 		</list>	
 		
 		<map name="conns" table="crt.connection" lazy="false" cascade="all" order-by="id" >

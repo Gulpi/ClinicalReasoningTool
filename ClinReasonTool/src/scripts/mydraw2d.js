@@ -9,20 +9,36 @@ var counter = 0;
 function initConceptMap(){
 	var ddxs = ''; 
 	var probs = '';
+	var tests = '';
+	var mngs = '';
 	var conns = '';
 	var jsonProbMap = $("#jsonProbMap").html();
 	var jsonDDXMap = $("#jsonDDXMap").html();
+	var jsonTestMap = $("#jsonTestMap").html();
+	var jsonMngMap = $("#jsonMngMap").html();
 	if(jsonDDXMap!=null && jsonDDXMap!='') ddxs = jQuery.parseJSON(jsonDDXMap);
 	if(jsonProbMap!=null && jsonProbMap!='') probs = jQuery.parseJSON(jsonProbMap);
+	if(jsonTestMap!=null && jsonTestMap!='') tests = jQuery.parseJSON(jsonTestMap);
+	if(jsonMngMap!=null && jsonMngMap!='') mngs = jQuery.parseJSON(jsonMngMap);
 	if(jsonConnsMap!='') conns =  jQuery.parseJSON(jsonConnsMap);
+	if(probs!=''){
+		for(i=0; i<probs.length;i++){
+			createAndAddFind(probs[i].label, probs[i].x, probs[i].y, probs[i].id, probs[i].shortlabel);
+		}
+	}
 	if(ddxs!=''){
 		for(i=0; i<ddxs.length;i++){
 			createAndAddHyp(ddxs[i].label, ddxs[i].x, ddxs[i].y, ddxs[i].id, ddxs[i].shortlabel, ddxs[i].color);
 		}
 	}
-	if(probs!=''){
-		for(i=0; i<probs.length;i++){
-			createAndAddFind(probs[i].label, probs[i].x, probs[i].y, probs[i].id, probs[i].shortlabel);
+	if(tests!=''){
+		for(i=0; i<tests.length;i++){
+			createAndAddTest(tests[i].label, tests[i].x, tests[i].y, tests[i].id, tests[i].shortlabel);
+		}
+	}
+	if(mngs!=''){
+		for(i=0; i<mngs.length;i++){
+			createAndAddMng(mngs[i].label, mngs[i].x, mngs[i].y, mngs[i].id, mngs[i].shortlabel);
 		}
 	}
 	if(conns!=''){
@@ -110,6 +126,42 @@ function initAddFind(){
 }
 
 /**
+ * init the drag&drop rectangle for adding a new management item
+ */
+function initAddMng(){
+	 $( "#addmng" ).draggable({ //add a new hypothesis
+		  start: function( event, ui ) {
+			 $("#addmng").clone().prependTo($("#mngcontainer")); 
+		  } , 
+		  stop: function( event, ui ) {	
+			  this.remove();	
+			  var canvasX = ui.offset.left- my_canvas.html.offset().left;
+	 		  var canvasY = ui.offset.top - my_canvas.html.offset().top;
+		  	  createAndAddMng("new mng", canvasX, canvasY, "cmmng_-1");	  	
+		      updatePreview();
+		  }
+	 });	
+}
+
+/**
+ * init the drag&drop rectangle for adding a new diagnostic step
+ */
+function initAddTest(){
+	 $( "#adddiagnstep" ).draggable({ //add a new hypothesis
+		  start: function( event, ui ) {
+			 $("#adddiagnstep").clone().prependTo($("#dscontainer")); 
+		  } , 
+		  stop: function( event, ui ) {	
+			  this.remove();	
+			  var canvasX = ui.offset.left- my_canvas.html.offset().left;
+	 		  var canvasY = ui.offset.top - my_canvas.html.offset().top;
+			  createAndAddTest("new test", canvasX, canvasY,"cmds_-1");	  	
+		  	updatePreview();
+		  }
+	}); 
+}
+
+/**
  * open the list for a new item, that has been dragged to the canvas
  * @param x
  * @param y
@@ -144,7 +196,14 @@ function openListForCM(x,y, clickedId){
 		dialogName = "dialogCMDDX";	
 		inputFieldName = "cm_ddx_sel";
 	}
-		
+	if(clickedId.startsWith("cmds")){
+		dialogName = "dialogCMTest";	
+		inputFieldName = "cm_ds_sel";
+	}	
+	if(clickedId.startsWith("cmmng")){
+		dialogName = "dialogCMMng";	
+		inputFieldName = "cm_mng_sel";
+	}		
 	//display:
 	$("#"+dialogName ).show();
 	$("#"+inputFieldName).focus();
@@ -179,6 +238,46 @@ function editOrAddDDXCM(newValue, label){
 		sendAjax(newValue, problemCallBack, "changeDiagnosis", id);
 }
 
+function editOrAddTestCM(newValue, label){
+	var selFigure = my_canvas.getSelection().getPrimary();
+	var id = selFigure.id.substring(6);
+	alert(id);
+	if(id=="-1") //a new problem
+		sendAjaxCM(newValue, problemCallBack, "addTest", label, selFigure.x, selFigure.y);
+	else //change of existing problem
+		sendAjax(newValue, problemCallBack, "changeTest", id);
+}
+
+function editOrAddMngCM(newValue, label){
+	var selFigure = my_canvas.getSelection().getPrimary();
+	var id = selFigure.id.substring(6);
+	alert(id);
+	if(id=="-1") //a new problem
+		sendAjaxCM(newValue, problemCallBack, "addMng", label, selFigure.x, selFigure.y);
+	else //change of existing problem
+		sendAjax(newValue, problemCallBack, "changeMng", id);
+}
+
+
+
+/** we create a rectangle & label with the basic settings like size, color,... **/
+function createRect(name, color, id){
+	var rect = new LabelRectangle();
+	rect.label.text=name;
+	rect.label.setBackgroundColor("#ffffff");
+	rect.color= new draw2d.util.Color(color);
+	rect.setId(id);
+	
+	return rect;
+}
+
+/* for some reason the setCssClass method is not working properly...*/
+function designPort(port){
+	port.setBackgroundColor("#cccccc");
+	port.setRadius(3);
+}
+
+
 /**
  * create a new problem rectangle and add it to the canvas (including label and ports)
  **/
@@ -197,56 +296,6 @@ function createAndAddFind(name, x, y, id, shortname){
 }
 
 /**
- * init the drag&drop rectangle for adding a new management item
- */
-function initAddMng(){
-	 $( "#addmng" ).draggable({ //add a new hypothesis
-		  start: function( event, ui ) {
-			 $("#addmng").clone().prependTo($("#mngcontainer")); 
-		  } , 
-		  stop: function( event, ui ) {	
-			  this.remove();	
-			  var canvasX = ui.offset.left- my_canvas.html.offset().left;
-	 		  var canvasY = ui.offset.top - my_canvas.html.offset().top;
-		  	  createAndAddMng("new mng", canvasX, canvasY, "cmmng_-1");	  	
-		      updatePreview();
-		  }
-	 });	
-}
-
-/**
- * init the drag&drop rectangle for adding a new diagnostic step
- */
-function initAddDiagnStep(){
-	 $( "#adddiagnstep" ).draggable({ //add a new hypothesis
-		  start: function( event, ui ) {
-			 $("#adddiagnstep").clone().prependTo($("#dscontainer")); 
-		  } , 
-		  stop: function( event, ui ) {	
-			  this.remove();	
-			  var canvasX = ui.offset.left- my_canvas.html.offset().left;
-	 		  var canvasY = ui.offset.top - my_canvas.html.offset().top;
-			  createAndAddDiagnStep("new test", canvasX, canvasY,"cmds_-1");	  	
-		  	updatePreview();
-		  }
-	}); 
-}
-
-
-
-/** we create a rectangle & label with the basic settings like size, color,... **/
-function createRect(name, color, id){
-	var rect = new LabelRectangle();
-	rect.label.text=name;
-	rect.label.setBackgroundColor("#ffffff");
-	rect.color= new draw2d.util.Color(color);
-	rect.setId(id);
-	
-	return rect;
-}
-
-
-/**
  * create a new hypothesis rectangle and add it to the canvas (including label and ports)
  **/
 function createAndAddHyp(name, x, y, id, color){
@@ -256,24 +305,16 @@ function createAndAddHyp(name, x, y, id, color){
 	//rect.getInputPort(0).setCssClass("ports");
 	designPort(rect.getInputPort(0)); 
 	designPort(rect.getOutputPort(0));
-	if(name==""){ //then it is a new hyp from drag&drop and we have to attach an editor to select a label:
+	/*if(name==""){ //then it is a new hyp from drag&drop and we have to attach an editor to select a label:
 		var editor = new draw2d.ui.LabelLMEditor();
 		rect.label.installEditor(editor);
 		editor.start(rect.label);
-	}
+	}*/
 	rect.setBackgroundColor("#ffffff");
 	
 	my_canvas.add(rect, x, y);	
 	initAddHyp(); //we have to re-init this here, because we have created a clone!!!
 }
-
-/* for some reason the setCssClass method is not working properly...*/
-function designPort(port){
-	port.setBackgroundColor("#cccccc");
-	port.setRadius(3);
-}
-
-
 
 /**
  * create a new diagnostic step rectangle and add it to the canvas (including label and ports)
@@ -283,7 +324,7 @@ function createAndAddDiagnStep(name, x, y, id){
 	rect.createPort("input");
 	rect.setBackgroundColor("#ffffff");
 	my_canvas.add(rect, x, y);	
-	initAddDiagnStep();
+	initAddTest();
 }
 
 /**
@@ -299,9 +340,6 @@ function createAndAddMng(name, x, y, id){
 
 
 
-function updatePreview(){}
-
-
 /** delete item from concept map AND list (except if connection)
  * 
  * */
@@ -310,30 +348,23 @@ function deleteItem(idWithPrefix){
 	var id = idWithPrefix.substring(idWithPrefix.indexOf("_")+1);
 	
 	switch (idPrefix) {
-    /*case "cmcnx": 
-    	delDiagnosis(id);
-        break;*/
-
     case "cmprob": 
         delProblem(id);
         break;
     case "cmddx": 
     	delDiagnosis(id);
+        break;       
+    case "cmds": 
+    	delTest(id);
+        break;   
+    case "cmmng": 
+    	delManagement(id);
         break;
     case "success": // This is called right after update of HTML DOM.
     	
         break;
 	}
-	/*if(id.startsWith("cmcnx")) //then we delete connection: 
-	{
-		sendAjax(id, doNothing, "delConnection", "");
-	}*/
-	/*else{//delete from list (except connections):
-		var id = "sel"+item.getId().substring(2);	
-		$("#"+id).remove();
-	}*/
 }
-
 
 
 function getToolTipForRect(element){

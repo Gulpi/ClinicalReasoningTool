@@ -3,6 +3,8 @@ package controller;
 import java.io.Serializable;
 import java.util.*;
 
+import javax.faces.context.FacesContext;
+
 import beans.PatientIllnessScript;
 import database.DBClinReason;
 
@@ -65,7 +67,8 @@ public class IllnessScriptController implements Serializable{
 		long userId = new AjaxController().getIdRequestParamByKey(AjaxController.REQPARAM_USER);
 		long sessionId = new AjaxController().getIdRequestParamByKey(AjaxController.REQPARAM_SESSION);
 		long vpId = new AjaxController().getIdRequestParamByKey(AjaxController.REQPARAM_VP);
-		PatientIllnessScript patillscript = new PatientIllnessScript(sessionId, userId, vpId, new AjaxController().getLocale());
+		Locale loc = FacesContext.getCurrentInstance().getApplication().getViewHandler().calculateLocale(FacesContext.getCurrentInstance());
+		PatientIllnessScript patillscript = new PatientIllnessScript(sessionId, userId, vpId, loc);
 		patillscript.save();
 
 		System.out.println("New PatIllScript created for session_id: " + sessionId);

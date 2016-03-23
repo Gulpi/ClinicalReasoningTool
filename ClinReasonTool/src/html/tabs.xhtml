@@ -167,13 +167,19 @@ $(function() {
 <body style="font-family:arial;"><!-- test: #{crtContext.test}-->
 
  <div id="case_story" style="float:left;width:60%;border:1px;">
-Case placed here...
+Case placed here...<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
+<h:form>
+   <h:commandLink action="#{navController.openOverview}" value="Overview" >
+   	<f:param name="user_id" value="#{crtContext.userId}" />
+   </h:commandLink>	
+   
+</h:form>
 </div>
 
 	<div id="tabs" class="cr-tabs">
 	  <ul>
-	    <li><a href="#tabs-1">Patient</a></li>
-	    <li><a href="#tabs-2">Problems<!--  #{prop['problems']}--></a></li>
+	    <li><a href="#tabs-1">#{prop['patient']}</a></li> <!-- example for internationalization -->
+	    <li><a href="#tabs-2">#{prop['problems']}</a></li>
 	     <li><a href="#tabs-4">Summary</a></li>
 	    
 	    <li><a href="#tabs-3">DDX</a></li>
@@ -318,12 +324,7 @@ Case placed here...
 		- display of rect/label not correct
 		- connection labels just on contextmenu?
 	 --> 
-<h:form>
-   <h:commandLink action="#{navController.openOverview}" value="Overview" >
-   	<f:param name="user_id" value="#{crtContext.userId}" />
-   </h:commandLink>	
-   
-</h:form>
+
 <!-- <a href="portfolio.xhtml">Overview</a>-->
 <div id="jdialog">Are you sure you want to submit Pneumonia as your final diagnosis without any further work-up?<br/>
 <a href="javascript:submitDDXConfirmed();">Yes</a><br/></div>

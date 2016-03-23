@@ -3,6 +3,8 @@ package controller;
 import java.util.*;
 import javax.faces.FacesException;
 import javax.faces.FactoryFinder;
+import javax.faces.application.Application;
+import javax.faces.application.ApplicationWrapper;
 import javax.faces.bean.*;
 import javax.faces.context.FacesContext;
 import javax.faces.context.FacesContextFactory;
@@ -18,7 +20,7 @@ import database.HibernateUtil;
  */
 @ManagedBean(name = "crtInit", eager = true)
 @ApplicationScoped
-public class CRTInit /*extends FacesContextFactory*/{
+public class CRTInit extends ApplicationWrapper{
 
 	public static final String DEFAULT_LOCALE="en"; 
 	public static final String[] ACCEPTED_LOCALES = new String[]{"en", "de"};
@@ -31,6 +33,14 @@ public class CRTInit /*extends FacesContextFactory*/{
 	
 	public CRTInit(){
 		HibernateUtil.initHibernate();
+		setViewHandler(new CRTViewHandler(FacesContext.getCurrentInstance().getApplication().getViewHandler()));
 		//MeshImporter.main(null);
+	}
+	
+	/* (non-Javadoc)
+	 * @see javax.faces.application.ApplicationWrapper#getWrapped()
+	 */
+	public Application getWrapped() {
+		return FacesContext.getCurrentInstance().getApplication();
 	}
 }

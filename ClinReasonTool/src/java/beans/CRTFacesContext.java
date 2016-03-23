@@ -43,7 +43,7 @@ public class CRTFacesContext extends FacesContextWrapper implements Serializable
 	public CRTFacesContext(){
 		//setSessionId();
 		setUserId();
-		Locale loc = new AjaxController().getLocale();
+		//Locale loc = new AjaxController().getLocale();
 		loadAndSetScriptsOfUser(); //this loads all scripts, we do not necessarily have to do that here, only if overview page is opened!
 		loadAndSetPatIllScript();
 		FacesContextWrapper.getCurrentInstance().getExternalContext().getSessionMap().put(CRT_FC_KEY, this);
@@ -78,6 +78,8 @@ public class CRTFacesContext extends FacesContextWrapper implements Serializable
 		if(id>0)
 			setPatillscript(isc.loadPatIllScriptById(id));
 		else setPatillscript(isc.loadPatIllScriptBySessionId(sessionId));
+		
+		//TODO error handling!!!!
 	}
 	public void loadAndSetPatIllScript(long id)
 	{ 
@@ -91,30 +93,14 @@ public class CRTFacesContext extends FacesContextWrapper implements Serializable
 		this.patillscript = patillscript;
 		//FacesContextWrapper.getCurrentInstance().getExternalContext().getSessionMap().put(PATILLSCRIPT_KEY, patillscript);
 	}
-		//return (PatientIllnessScript) FacesContextWrapper.getCurrentInstance().getAttributes().get("patillscript");}
-	//public void setPatillscript(PatientIllnessScript patillscript) {this.patillscript = patillscript;}
 	
 	public List<PatientIllnessScript> getScriptsOfUser() {
 		return this.scriptsOfUser;
-		//return (List<PatientIllnessScript>) FacesContextWrapper.getCurrentInstance().getExternalContext().getSessionMap().get(PATILLSCRIPTS_KEY);
 	}
 	private void setScriptsOfUser(List<PatientIllnessScript> scriptsOfUser){
 		this.scriptsOfUser = scriptsOfUser;
-		//FacesContextWrapper.getCurrentInstance().getExternalContext().getSessionMap().put(PATILLSCRIPTS_KEY, scriptsOfUser);
 	}
-	/**
-	 * @param arg0
-	 * @param msg
-	 */
-	/*public void addMessage(String clientId, FacesMessage msg) {
-		if(messages==null) messages = new ArrayList<FacesMessage>();
-		messages.add(msg);		
-	}
-	public FacesMessage getCurrentMessage(){
-		if(messages==null || messages.isEmpty()) return null; 
-		return messages.get(0);
-	}*/
-	//public void addMessage(FacesMessage msg) { addMessage(null, msg);}
+
 	public String getTest(){
 		return FacesContextWrapper.getCurrentInstance().toString();
 	}
@@ -129,94 +115,4 @@ public class CRTFacesContext extends FacesContextWrapper implements Serializable
 	public FacesContext getWrapped() {
 		return this; //or return this ????
 	}
-	
-	
-	//public void removeMessages(){messages=null;}
-
-	
-
-	/* (non-Javadoc)
-	 * @see javax.faces.context.FacesContext#getMessages()
-	 */
-	/*public Iterator<FacesMessage> getMessages() {
-		if(messages!=null)return messages.iterator();
-		return null;}*/
-
-	/* (non-Javadoc)
-	 * @see javax.faces.context.FacesContext#getMessages(java.lang.String)
-	 */
-	//public Iterator<FacesMessage> getMessages(String arg0) {		return messages.iterator();}
-
-	/*public RenderKit getRenderKit() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public boolean getRenderResponse() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean getResponseComplete() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public ResponseStream getResponseStream() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public ResponseWriter getResponseWriter() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public UIViewRoot getViewRoot() {
-		//UIViewRoot r = new UIViewRoot();
-		//r.
-		return null;
-	}
-
-	@Override
-	public void release() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void renderResponse() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void responseComplete() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void setResponseStream(ResponseStream arg0) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void setResponseWriter(ResponseWriter arg0) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	public void setViewRoot(UIViewRoot arg0) {
-		// TODO Auto-generated method stub
-		
-	}*/
-
-
 }

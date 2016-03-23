@@ -139,7 +139,7 @@ public class AjaxController {
 	 * 
 	 * @return
 	 */
-	public Locale getLocale(){
+/*	public Locale getLocale(){
 		Locale loc = FacesContext.getCurrentInstance().getViewRoot().getLocale();
 		if(loc==null) loc = new Locale(CRTInit.DEFAULT_LOCALE);
 		String locStr = getRequestParamByKey(REQPARAM_LOC);
@@ -151,5 +151,5 @@ public class AjaxController {
 		}
 		
 		return loc;
-	}
+	}*/
 }

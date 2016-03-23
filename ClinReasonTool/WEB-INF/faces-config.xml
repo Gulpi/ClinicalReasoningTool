@@ -33,7 +33,7 @@
         <supported-locale>de</supported-locale>
    </locale-config>
    <resource-bundle>
-      <base-name>intlproperties</base-name>
+      <base-name>properties.intlproperties</base-name>
       <var>prop</var>
    </resource-bundle>
 </application>  

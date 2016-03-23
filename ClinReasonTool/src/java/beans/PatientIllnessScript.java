@@ -48,7 +48,7 @@ public class PatientIllnessScript extends Beans/*extends Node*/ implements /*Ill
 	private PatientIllnessScript expertPatIllScript;
 	
 	private SummaryStatement summSt;
-	private long summStId;
+	private long summStId = -1;
 	//epi data:
 	//private Patient patient; //data from the patient object attached to a case
 	/**

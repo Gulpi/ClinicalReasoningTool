@@ -68,7 +68,7 @@ function diagnosisCallBack(ddxId, selDDX){
 	$("[id='ddxform:hiddenDDXButton']").click();		
 }
 
-function reOrderProblems(newOrder, id){
+function reOrderDiagnoses(newOrder, id){
 	sendAjax(id, diagnosisCallBack, "reorderDiagnoses", newOrder);
 }
 
@@ -174,6 +174,10 @@ function managementCallBack(testId, selTest){
 	$("[id='mngform:hiddenMngButton']").click();		
 }
 
+function reOrderMngs(newOrder, id){
+	sendAjax(id, managementCallBack, "reorderMngs", newOrder);
+}
+
 
 /******************** diagnostic steps *******************************/
 
@@ -206,12 +210,16 @@ function testCallBack(testId, selTest){
 	$("[id='ddxform:hiddenTestButton']").click();		
 }
 
+function reOrderTests(newOrder, id){
+	sendAjax(id, testCallBack, "reorderTests", newOrder);
+}
 
+/******************** summary statement *******************************/
 
-/* We open a jdialog for the concept map*/
-/*function openCanvas(){
-	$("#canvascontainer").show();
-}*/
+function saveSummSt(id){
+	sendAjax(id, doNothing, "saveSummStatement", "");
+}
+
 
 /** init the lists for selecting problems, diagnoses etc.*/
 var active = $( "#tabs" ).tabs( "option", "active" ); //we have to determine the active tab, to be able to adapt the nav icons!

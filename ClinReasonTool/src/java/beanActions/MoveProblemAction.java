@@ -37,12 +37,12 @@ public class MoveProblemAction implements MoveAction{
 		String[] newOrderArr = newOrderStr.split("&");
 		List<RelationProblem> newList  = new ArrayList<RelationProblem>();
 		if(newOrderArr==null || newOrderArr.length==0) return;
+		idStrMovedItem = idStrMovedItem.substring(8);
 		for(int i=0; i<newOrderArr.length; i++){
 			String idStr = newOrderArr[i];
-			idStr = idStr.substring(8);	
-			idStrMovedItem = idStrMovedItem.substring(8);
-			RelationProblem relProb = this.patIllScript.getProblemBySourceId(Long.parseLong(idStr));
-			if(idStrMovedItem.equals(idStr)) notifyLog(relProb);
+			idStr = idStr.substring(8);				
+			RelationProblem relProb = this.patIllScript.getProblemById(Long.parseLong(idStr));
+			if(relProb!=null && idStrMovedItem.equals(idStr)) notifyLog(relProb);
 			relProb.setOrder(i);
 			newList.add(relProb);
 		}

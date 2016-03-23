@@ -41,11 +41,11 @@ public class MyFacesContextFactory extends FacesContextFactory{
 	 * @param fc
 	 */
 	public void registerFacesContext(CRTFacesContext fc){
-		if(facesContexts==null) facesContexts = new HashMap<Long,CRTFacesContext>();
+		/*if(facesContexts==null) facesContexts = new HashMap<Long,CRTFacesContext>();
 		if(facesContexts.get(new Long(fc.getSessionId()))!=null){
 			System.out.println("Session already registered");
 		}
-		else facesContexts.put(new Long(fc.getSessionId()), fc);
+		else facesContexts.put(new Long(fc.getSessionId()), fc);*/
 	}
 	
 	public CRTFacesContext getFacesContextBySessionId(long sessionId){

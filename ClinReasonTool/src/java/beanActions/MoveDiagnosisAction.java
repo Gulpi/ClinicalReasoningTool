@@ -37,12 +37,13 @@ public class MoveDiagnosisAction implements MoveAction{
 		String[] newOrderArr = newOrderStr.split("&");
 		List<RelationDiagnosis> newList  = new ArrayList<RelationDiagnosis>();
 		if(newOrderArr==null || newOrderArr.length==0) return;
+		idStrMovedItem = idStrMovedItem.substring(7);
 		for(int i=0; i<newOrderArr.length; i++){
 			String idStr = newOrderArr[i];
-			idStr = idStr.substring(8);	
-			idStrMovedItem = idStrMovedItem.substring(8);
-			RelationDiagnosis rel = this.patIllScript.getDiagnosisBySourceId(Long.parseLong(idStr));
-			if(idStrMovedItem.equals(idStr)) notifyLog(rel);
+			idStr = idStr.substring(7);	
+			
+			RelationDiagnosis rel = this.patIllScript.getDiagnosisById(Long.parseLong(idStr));
+			if(rel!=null && idStrMovedItem.equals(idStr)) notifyLog(rel);
 			rel.setOrder(i);
 			newList.add(rel);
 		}

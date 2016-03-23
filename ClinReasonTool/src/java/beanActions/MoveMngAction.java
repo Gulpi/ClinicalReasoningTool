@@ -38,14 +38,15 @@ public class MoveMngAction implements MoveAction{
 		String[] newOrderArr = newOrderStr.split("&");
 		List<RelationManagement> newList  = new ArrayList<RelationManagement>();
 		if(newOrderArr==null || newOrderArr.length==0) return;
+		idStrMovedItem = idStrMovedItem.substring(7);
 		for(int i=0; i<newOrderArr.length; i++){
 			String idStr = newOrderArr[i];
-			idStr = idStr.substring(8);	
-			idStrMovedItem = idStrMovedItem.substring(8);
-			RelationManagement relProb = this.patIllScript.getMngBySourceId(Long.parseLong(idStr));
-			if(idStrMovedItem.equals(idStr)) notifyLog(relProb);
-			relProb.setOrder(i);
-			newList.add(relProb);
+			idStr = idStr.substring(7);	
+			
+			RelationManagement rel = this.patIllScript.getMngById(Long.parseLong(idStr));
+			if(rel!=null && idStrMovedItem.equals(idStr)) notifyLog(rel);
+			rel.setOrder(i);
+			newList.add(rel);
 		}
 		patIllScript.setMngs(newList);
 		save(patIllScript.getMngs());

@@ -17,8 +17,8 @@ import database.DBClinReason;
  * @author ingahege
  *
  */
-/*@ManagedBean(name = "patillscript", eager = true)
-@SessionScoped*/
+/*@ManagedBean(name = "patillscript", eager = true)*/
+@SessionScoped
 /**
  * @author ingahege
  *
@@ -30,17 +30,27 @@ public class PatientIllnessScript extends Beans/*extends Node*/ implements /*Ill
 	
 	private static final long serialVersionUID = 1L;
 	private Timestamp creationDate;
-	private long sessionId = -1; //necessary or store PISId in C_Session?
+	private long sessionId = -1; //necessary or store PISId in C_Session? and/or vpId?
+	/**
+	 * the VP the patIllScript is related to. We need this in addition to the sessionId to be able to connect 
+	 * the learners' script to the authors'/experts' script.
+	 */
+	private long vpId;
 	private long userId; //needed so that we can display all the users' scripts to him
+	/**
+	 * Id of the PatientIllnessScript
+	 */
 	private long id = -1;
-	private Locale locale;
+	private Locale locale; // do we need this here to determine which list to load?
 	/**
 	 * the patientIllnessScript created by the expert based on the VP
 	 */
 	private PatientIllnessScript expertPatIllScript;
+	
+	private SummaryStatement summSt;
+	private long summStId;
 	//epi data:
 	//private Patient patient; //data from the patient object attached to a case
-	//private long summaryStatementId = -1; //links the summaryStatement object
 	/**
 	 * We might want to link the illness script directly here, might be faster for comparisons than going through
 	 * the session. If final diagnosis is wrong the relation might not be doable thru it...
@@ -51,11 +61,6 @@ public class PatientIllnessScript extends Beans/*extends Node*/ implements /*Ill
 	 */	
 	private int courseOfTime = -1;
 	
-	/**
-	 * the VP the patIllScript is related to. We need this in addition to the sessionId to be able to connect 
-	 * the learners' script to the authors'/experts' script.
-	 */
-	private long vpId;
 	/**
 	 * created by learner or expert
 	 */
@@ -71,7 +76,7 @@ public class PatientIllnessScript extends Beans/*extends Node*/ implements /*Ill
 	/**
 	 * key = cnxId (Long), value = Connection object
 	 */
-	private Map conns;
+	private Map<Long,Connection> conns;
 	/**
 	 * we might want to have this separately for quicker access, since this enables accessing IS
 	 * more than one? Or do we have to have then multiple PIS/VP???
@@ -84,8 +89,10 @@ public class PatientIllnessScript extends Beans/*extends Node*/ implements /*Ill
 	private boolean submitted;
 	
 	public PatientIllnessScript(){}
-	public PatientIllnessScript(long sessionId, Locale loc){
-		this.sessionId = sessionId;
+	public PatientIllnessScript(long sessionId, long userId, long vpId, Locale loc){
+		if(sessionId>0) this.sessionId = sessionId;
+		if(userId>0) this.userId = userId;
+		if(vpId>0) this.vpId = vpId;
 		this.locale = loc;
 	}
 	
@@ -115,12 +122,16 @@ public class PatientIllnessScript extends Beans/*extends Node*/ implements /*Ill
 	public void setMngs(List<RelationManagement> mngs) {this.mngs = mngs;}	
 	public List<RelationTest> getTests() {return tests;}
 	public void setTests(List<RelationTest> tests) {this.tests = tests;}
-	public Map getConns() {return conns;}
-	public void setConns(Map conns) {this.conns = conns;}
+	public Map<Long,Connection> getConns() {return conns;}
+	public void setConns(Map<Long,Connection> conns) {this.conns = conns;}
 	public long getUserId() {return userId;}
 	public void setUserId(long userId) {this.userId = userId;}	
 	public Locale getLocale() {return locale;}
-	public void setLocale(Locale locale) {this.locale = locale;}
+	public void setLocale(Locale locale) {this.locale = locale;}	
+	public SummaryStatement getSummSt() {return summSt;}
+	public void setSummSt(SummaryStatement summSt) {this.summSt = summSt;}	
+	public long getSummStId() {return summStId;}
+	public void setSummStId(long summStId) {this.summStId = summStId;}
 	
 	public void addProblem(String idStr, String name){ new AddProblemAction(this).add(idStr, name);}
 	public void addProblem(String idStr, String name, String x, String y){ new AddProblemAction(this).add(idStr, name, x,y);}
@@ -155,8 +166,13 @@ public class PatientIllnessScript extends Beans/*extends Node*/ implements /*Ill
 	public String getTestsJson(){return new ConceptMapController().getRelationsToJson(tests);}
 	public String getMngsJson(){return new ConceptMapController().getRelationsToJson(mngs);}
 	public String getConnsJson(){return new ConceptMapController().getConnsToJson(conns);}	
-	
-	public void save(){new DBClinReason().saveAndCommit(this);}	
+	public void saveSummStatement(String idStr, String text){}
+	public void save(){
+		boolean isNew = false;
+		if(getId()<=0) isNew = true;
+		new DBClinReason().saveAndCommit(this);
+		if(isNew) notifyLog();
+	}	
 	/* (non-Javadoc)
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
@@ -207,5 +223,10 @@ public class PatientIllnessScript extends Beans/*extends Node*/ implements /*Ill
 			if(rel.getId()==itemId) return rel;
 		}
 		return null; //nothing found
+	}
+	
+	private void notifyLog(){
+		LogEntry le = new LogEntry( LogEntry.CRTPATILLSCRIPT_ACTION, this.getSessionId(), -1, this.getId());
+		new DBClinReason().saveAndCommit(le);
 	}
 }

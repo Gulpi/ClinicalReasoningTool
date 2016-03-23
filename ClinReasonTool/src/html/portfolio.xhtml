@@ -35,12 +35,15 @@ $( document ).tooltip({
  <div class="portfsearch"><input id="searchfield" class="f_text"></input></div> 
  <div id="myScripts" class="portfoliodiv">
  <div class="header">My Patient Illness Scripts</div>
-	<ul id="list_diagnoses" class="plainList">
+	<h:form><ul id="list_diagnoses" class="plainList">
 		<ui:repeat value="#{crtContext.scriptsOfUser}" var="scripts" varStatus="status">
-			<li><a href="tabs.xhtml?session_id=#{scripts.sessionId}">#{scripts.id}</a>
+		<li> <h:commandLink action="#{navController.openPatIllScript}" value="#{scripts.id}" >
+				<f:param name="script_id" value="#{scripts.id}" />
+			</h:commandLink>
+			<!-- <li><a href="tabs.xhtml?session_id=#{scripts.sessionId}">#{scripts.id}</a>-->
 				<i class="icon-sitemap"></i><i class="icon-list-on"></i></li>
  		</ui:repeat>					
-	</ul>
+	</ul></h:form>
  		<!--<li><a href="tabs.xhtml?session_id=12346">Henry Rodin</a> <i class="icon-sitemap"></i></li>-->
  <div class="footer"><a href="" title="create new illness script"><i class="icon-plus-circled"></i></a></div>
  </div>

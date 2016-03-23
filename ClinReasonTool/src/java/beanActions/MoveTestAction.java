@@ -38,14 +38,15 @@ public class MoveTestAction implements MoveAction{
 		String[] newOrderArr = newOrderStr.split("&");
 		List<RelationTest> newList  = new ArrayList<RelationTest>();
 		if(newOrderArr==null || newOrderArr.length==0) return;
+		idStrMovedItem = idStrMovedItem.substring(6);
 		for(int i=0; i<newOrderArr.length; i++){
 			String idStr = newOrderArr[i];
-			idStr = idStr.substring(8);	
-			idStrMovedItem = idStrMovedItem.substring(8);
-			RelationTest relProb = this.patIllScript.getTestBySourceId(Long.parseLong(idStr));
-			if(idStrMovedItem.equals(idStr)) notifyLog(relProb);
-			relProb.setOrder(i);
-			newList.add(relProb);
+			idStr = idStr.substring(6);	
+			
+			RelationTest rel = this.patIllScript.getTestById(Long.parseLong(idStr));
+			if(rel!=null && idStrMovedItem.equals(idStr)) notifyLog(rel);
+			rel.setOrder(i);
+			newList.add(rel);
 		}
 		patIllScript.setTests(newList);
 		save(patIllScript.getTests());

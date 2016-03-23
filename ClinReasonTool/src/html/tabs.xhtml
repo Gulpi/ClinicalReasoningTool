@@ -53,7 +53,8 @@ var numHyps = 1;
 var numFinds = 0;
 var numDiagnSteps = 0;
 var numMng = 0;
-var sessId = #{crtContext.patillscript.sessionId}; 
+var sessId = "#{crtContext.patillscript.sessionId}";
+var scriptId = "#{crtContext.patillscript.id}";
 var jsonConnsMap = '#{crtContext.patillscript.connsJson}';  //connections for concept map 
 
 var my_canvas = null;
@@ -98,11 +99,26 @@ $(function() {
         
     });
     $( ".draggable" ).draggable();	
-    $( "#list_diagnoses" ).sortable();
+    $( "#list_diagnoses" ).sortable({
+ 		stop: function( event, ui ) {
+ 			var sorted = $( "#list_diagnoses" ).sortable( "serialize", { key: "selddx" } );
+ 			reOrderDiagnoses(sorted, ui.item.attr("id"));
+ 		}
+    });
     $( "#list_diagnoses" ).disableSelection();
-    $( "#list_tests" ).sortable();
+    $( "#list_tests" ).sortable({
+ 		stop: function( event, ui ) {
+ 			var sorted = $( "#list_tests" ).sortable( "serialize", { key: "selds" } );
+ 			reOrderTests(sorted, ui.item.attr("id"));
+ 		}
+    });
     $( "#list_tests" ).disableSelection();
-    $( "#list_mngs" ).sortable();
+    $( "#list_mngs" ).sortable({
+ 		stop: function( event, ui ) {
+ 			var sorted = $( "#list_mngs" ).sortable( "serialize", { key: "selmng" } );
+ 			reOrderMngs(sorted, ui.item.attr("id"));
+ 		}
+    });
     $( "#list_mngs" ).disableSelection();
     $( "#list_problems" ).sortable({
  		stop: function( event, ui ) {
@@ -148,7 +164,7 @@ $(function() {
 
 </script>
 </head>
-<body style="font-family:arial;">
+<body style="font-family:arial;"><!-- test: #{crtContext.test}-->
 
  <div id="case_story" style="float:left;width:60%;border:1px;">
 Case placed here...
@@ -199,7 +215,8 @@ Case placed here...
 				</div>			
 		  </div>
 		  <div id="tabs-4">	
-		  		<textarea class="f_textarea" name="summSt" cols="50" rows="10"></textarea>
+		  		<textarea class="f_textarea" name="summSt" cols="50" rows="10"></textarea><br/>
+		  		<a href="javascript:saveSummSt();" title="Save your summary statement"><i class="icon-floppy"></i></a>
 		  </div>
 		  <!--  diagnoses -->
 		  <div id="tabs-3">			  		
@@ -301,7 +318,13 @@ Case placed here...
 		- display of rect/label not correct
 		- connection labels just on contextmenu?
 	 --> 
-
+<h:form>
+   <h:commandLink action="#{navController.openOverview}" value="Overview" >
+   	<f:param name="user_id" value="#{crtContext.userId}" />
+   </h:commandLink>	
+   
+</h:form>
+<!-- <a href="portfolio.xhtml">Overview</a>-->
 <div id="jdialog">Are you sure you want to submit Pneumonia as your final diagnosis without any further work-up?<br/>
 <a href="javascript:submitDDXConfirmed();">Yes</a><br/></div>
 <div id="dialogCMProb" class="listdialog" ><input id="cm_prob_sel" class="f_text"></input></div>

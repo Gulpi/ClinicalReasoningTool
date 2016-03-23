@@ -9,7 +9,7 @@ function sendAjax(id, callback, type, name){
 	$.ajax({
 		  method: "POST",
 		  url: "tabs_ajax.xhtml",
-		  data: { type: type, id: id, session_id: sessId, name: name }
+		  data: { type: type, id: id, session_id: sessId, name: name, script_id: scriptId }
 		})
 	  .done(function( response ) {
 		  handleResponse(response, callback, name);		
@@ -20,7 +20,7 @@ function sendAjaxCM(id, callback, type, name, x, y){
 	$.ajax({
 		  method: "POST",
 		  url: "tabs_ajax.xhtml",
-		  data: { type: type, id: id, session_id: sessId, name: name, x: x, y: y}
+		  data: { type: type, id: id, session_id: sessId, name: name, x: x, y: y, script_id: scriptId }
 		})
 	  .done(function( response ) {	
 		  handleResponse(response, callback, name);

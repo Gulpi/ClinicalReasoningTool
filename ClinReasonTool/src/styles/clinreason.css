@@ -179,6 +179,8 @@ input.f_text, textarea.f_textarea {
 .icon-sitemap:before { content: '\e815';font-size: 0.8em;}
 .icon-video:before { content: '\e84a'; font-size: 0.8em;} 
 .icon-plus-circled:before { content: '\e851'; } 
+.icon-floppy:before { content: '\e801'; }s
+
 /* end i-icons code */
 
 /*concept map */

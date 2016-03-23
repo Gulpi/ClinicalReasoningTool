@@ -78,8 +78,6 @@ public class AddProblemAction implements AddAction{
 	 * @see beanActions.AddAction#createErrorMessage(java.lang.String, java.lang.String, javax.faces.application.FacesMessage.Severity)
 	 */
 	public void createErrorMessage(String summary, String details, Severity sev){
-		 // MyFacesContextFactory factory = (MyFacesContextFactory) FactoryFinder.getFactory("MyFacesContextFactory");
-		 // CRTFacesContext facesContext = factory.getFacesContextBySessionId(patIllScript.getSessionId());
 		FacesContext facesContext = FacesContext.getCurrentInstance(); 
 		facesContext.addMessage("",new FacesMessage(sev, summary,details));
 	}

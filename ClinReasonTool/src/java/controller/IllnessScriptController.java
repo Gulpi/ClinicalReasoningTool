@@ -1,0 +1,74 @@
+package controller;
+
+import java.io.Serializable;
+import java.util.*;
+
+import beans.PatientIllnessScript;
+import database.DBClinReason;
+
+/**
+ * Helper class for creating and loading Illness scripts based on sessionId oder userId.
+ * @author ingahege
+ *
+ */
+public class IllnessScriptController implements Serializable{
+	/**
+	 * We load the patientIllnessScripts of a user
+	 * @return  List<PatientIllnessScript> or null
+	 */
+	public List<PatientIllnessScript> loadScriptsOfUser(){
+		String userIdStr = new AjaxController().getRequestParamByKey(AjaxController.REQPARAM_USER);
+		long userId = 0;
+		if(userIdStr!=null){
+			userId = Long.valueOf(userIdStr).longValue();
+		}
+		if(userId>0){
+			List<PatientIllnessScript> scriptsOfUser = new DBClinReason().selectPatIllScriptsByUserId(userId);
+			return scriptsOfUser;
+			//setScriptsOfUser(scriptsOfUser);
+		}
+		return null;
+	}
+	//TODO: we could also get the current script from the already loaded list -> reduces DB calls!
+	public PatientIllnessScript loadPatIllScriptById(long id){
+		if(id>0){
+			PatientIllnessScript patillscript = new DBClinReason().selectPatIllScriptById(id);
+			if(patillscript==null){
+				patillscript = createAndSaveNewPatientIllnessScript(); 
+			}
+			return patillscript;
+		}
+		else{
+			return null;
+			//TODO error message?
+		}
+	}
+	
+	public PatientIllnessScript loadPatIllScriptBySessionId(long sessionId){
+		if(sessionId>0){
+			PatientIllnessScript patillscript = new DBClinReason().selectPatIllScriptBySessionId(sessionId);
+			if(patillscript==null){
+				patillscript = createAndSaveNewPatientIllnessScript(); 
+			}
+			return patillscript;
+		}
+		else{
+			return null;
+			//TODO error message?
+		}
+	}
+		
+	/**We create a new PatientIllnessScript and save it. 
+	 * @param sessionId
+	 */
+	private PatientIllnessScript createAndSaveNewPatientIllnessScript(){
+		long userId = new AjaxController().getIdRequestParamByKey(AjaxController.REQPARAM_USER);
+		long sessionId = new AjaxController().getIdRequestParamByKey(AjaxController.REQPARAM_SESSION);
+		long vpId = new AjaxController().getIdRequestParamByKey(AjaxController.REQPARAM_VP);
+		PatientIllnessScript patillscript = new PatientIllnessScript(sessionId, userId, vpId, new AjaxController().getLocale());
+		patillscript.save();
+
+		System.out.println("New PatIllScript created for session_id: " + sessionId);
+		return patillscript;
+	}
+}

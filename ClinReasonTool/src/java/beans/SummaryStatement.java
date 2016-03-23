@@ -1,4 +1,4 @@
-package model;
+package beans;
 import java.sql.Timestamp;
 import java.util.*; 
 /**
@@ -12,5 +12,10 @@ public class SummaryStatement {
 	private String text; 
 	private long id = -1; //shall we link to the current SummaryStatementAnswerView?
 	private Timestamp creationDate;
+	
+	public String getText() {return text;}
+	public void setText(String text) {this.text = text;}
+	public long getId() {return id;}
+	public void setId(long id) {this.id = id;}		
 	
 }

@@ -7,12 +7,17 @@ import java.util.*;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
+import javax.faces.context.FacesContextWrapper;
 
 import beans.*;
 import util.*;
 
 public class AjaxController {
-	//CRTFacesContext facesContext;
+	public static final String REQPARAM_USER = "user_id";
+	public static final String REQPARAM_SESSION = "session_id";
+	public static final String REQPARAM_SCRIPT = "script_id";
+	public static final String REQPARAM_VP = "vp_id";
+	public static final String REQPARAM_LOC = "locale";
 	
 	public AjaxController(/*CRTFacesContext fc*/){
 		//this.facesContext = fc;
@@ -26,13 +31,15 @@ public class AjaxController {
 	 * @throws IOException
 	 */
 	public void receiveAjax(PatientIllnessScript patillscript) throws IOException {
-	    FacesContext facesContext2 = FacesContext.getCurrentInstance();
-	    ExternalContext externalContext = facesContext2.getExternalContext();
+		ExternalContext externalContext = FacesContextWrapper.getCurrentInstance().getExternalContext();
+	    //ExternalContext externalContext = facesContext2.getExternalContext();
+	    //ExternalContext ec = fcw.getExternalContext();
+	   // Map<String, Object> sessionMap = externalContext.getSessionMap().get("patIll);
 	    Map<String, String> reqParams = externalContext.getRequestParameterMap();
 	    if(reqParams!=null){
-	    	String sessionId = reqParams.get("session_id");
-	    	if(patillscript==null || sessionId==null|| Long.parseLong(sessionId)!=patillscript.getSessionId()){
-	    		System.out.println("Error: SessionId is:"+ sessionId + ", patIllScript.sessionId="+patillscript.getSessionId());
+	    	String patillscriptId = reqParams.get(REQPARAM_SCRIPT);
+	    	if(patillscript==null || patillscriptId==null|| Long.parseLong(patillscriptId)!=patillscript.getId()){
+	    		System.out.println("Error: patillscriptId is:"+ patillscriptId + ", patIllScript.sessionId="+patillscript.getSessionId());
 	    		return; //TODO we need some more error handling here, how can this happen? What shall we do? 
 	    	}
 	    	String methodName = reqParams.get("type");
@@ -40,6 +47,7 @@ public class AjaxController {
 	    	String nameStr = reqParams.get("name");
 	    	String x = reqParams.get("x");
 	    	String y = reqParams.get("y");
+	    	String patIllScriptId = reqParams.get(REQPARAM_SCRIPT); //TODO check wether belongs to currently loaded script!
 	    	Statement stmt; 
 	    	if(x!=null && !x.trim().equals("")){
 	    		stmt = new Statement(patillscript, methodName, new Object[]{idStr, nameStr,x,y});
@@ -117,9 +125,24 @@ public class AjaxController {
 		return null;
 	}
 	
+	public long getIdRequestParamByKey(String key){
+		String id = getRequestParamByKey(key);
+		if(id!=null && !id.trim().equals("")){
+			return Long.parseLong(id);
+		}
+		return -1;
+	}
+	
+	/**
+	 * get Locale based on request param or facesContext. We have to do this, because the patientIllnessScript 
+	 * might be in a different Locale than the current browser Locale. 
+	 * 
+	 * @return
+	 */
 	public Locale getLocale(){
-		Locale loc = new Locale(CRTInit.DEFAULT_LOCALE);
-		String locStr = getRequestParamByKey("locale");
+		Locale loc = FacesContext.getCurrentInstance().getViewRoot().getLocale();
+		if(loc==null) loc = new Locale(CRTInit.DEFAULT_LOCALE);
+		String locStr = getRequestParamByKey(REQPARAM_LOC);
 		if(locStr!=null && !locStr.trim().equals("")){ 
 			for(int i=0; i<CRTInit.ACCEPTED_LOCALES.length; i++){
 			if(locStr.equals(CRTInit.ACCEPTED_LOCALES[i]))

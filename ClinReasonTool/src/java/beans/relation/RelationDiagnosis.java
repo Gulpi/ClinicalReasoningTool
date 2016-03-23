@@ -3,6 +3,10 @@ import java.beans.Beans;
 import java.io.Serializable;
 import java.sql.Timestamp;
 
+import javax.faces.FacesWrapper;
+import javax.faces.context.FacesContext;
+import javax.faces.context.FacesContextWrapper;
+
 import controller.ConceptMapController;
 import model.ListItem;
 /**
@@ -89,6 +93,7 @@ public class RelationDiagnosis extends Beans implements Relation, Rectangle, Ser
 	 * @see beans.relation.Rectangle#toJson()
 	 */
 	public String toJson(){
+		FacesContext facesContext2 = FacesContextWrapper.getCurrentInstance();
 		StringBuffer sb = new StringBuffer();
 		sb.append("{\"label\":\""+this.getDiagnosis().getName()+"\",\"shortlabel\":\""+this.getDiagnosis().getShortName()+"\",\"id\": \""+getIdWithPrefix()+"\",\"x\": "+this.x+",\"y\":"+this.y+",\"color\": \""+this.color+"\"}");		
 		return sb.toString();

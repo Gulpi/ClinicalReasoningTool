@@ -16,10 +16,12 @@
 		<property name="sessionId" column="session_id" type="long" />
 		<property name="courseOfTime" column="courseoftime" type="int"/>	
 		<property name="vpId" column="vp_id" type="long"/>	
+		<property name="summStId" column="summst_id" type="long"/>	
+		
 		<property name="type" column="type" type="int"/>
 		<property name="locale" column="locale" update="false" type="locale"/>	
 		<property name="creationDate" column="creation_date" update="false" type="timestamp"/>
-		
+		<many-to-one name="summSt" column="summst_id" class="beans.SummaryStatement" lazy="false" insert="false" update="false" />
 		
 		<list name="problems" table="crt.relation_problem" cascade="all" lazy="false"> <!-- table="crt.relation_problem"-->
     		<key column="dest_id"/> <!-- dest_id = patientIllnessScript id -->

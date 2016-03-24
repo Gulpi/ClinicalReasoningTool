@@ -14,7 +14,7 @@ import database.HibernateUtil;
 /**
  * We init here some application stuff, like hibernate,....
  * @author ingahege
- *
+ *@deprecated
  */
 public class MyFacesContextFactory extends FacesContextFactory{
 

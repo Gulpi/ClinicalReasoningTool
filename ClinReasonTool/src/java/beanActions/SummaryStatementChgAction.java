@@ -1,21 +1,76 @@
 package beanActions;
 
+import java.beans.Beans;
+
+import beans.LogEntry;
 import beans.PatientIllnessScript;
-import beans.relation.Relation;
+import beans.SummaryStatement;
+import database.DBClinReason;
+
 
 public class SummaryStatementChgAction implements ChgAction{
 
 	private PatientIllnessScript patIllScript;
+	private DBClinReason dcr = new DBClinReason();
 	
-	@Override
-	public void notifyLog(Relation rel, long newId) {
-		// TODO Auto-generated method stub
+	public SummaryStatementChgAction(){}
+	public SummaryStatementChgAction(PatientIllnessScript patIllScript){
+		this.patIllScript = patIllScript;
+	}
+	
+	/* (non-Javadoc)
+	 * @see beanActions.ChgAction#notifyLog(java.beans.Beans, long)
+	 */
+	public void notifyLog(Beans b, long newId) {
+		LogEntry le = new LogEntry(LogEntry.CREATESUMMST_ACTION, patIllScript.getSessionId(), newId);
+		le.save();
 		
 	}
-
-	@Override
-	public void save(Relation rel) {
-		// TODO Auto-generated method stub
+	
+	private void notifyLogUpdate(Beans b, long newId) {
+		LogEntry le = new LogEntry(LogEntry.UPDATESUMMST_ACTION, patIllScript.getSessionId(), newId);
+		le.save();		
+	}
+	
+	/**
+	 * @param summStId (not really needed)
+	 * @param text
+	 */
+	public void updateOrCreateSummaryStatement(String summStId, String text){
+		if(patIllScript.getSummSt()==null || summStId.equals("-1")) createSummaryStatement(text);
+		else updateSummaryStatement(text);
+	}
+	
+	/**
+	 * No summaryStatement has been created so far, so we create one, save it and attach it to the 
+	 * PatientIllnessScript.
+	 * @param text
+	 */
+	private void createSummaryStatement(String text){
+		SummaryStatement sumSt = new SummaryStatement(text);
+		save(sumSt);
+		patIllScript.setSummSt(sumSt);
+		patIllScript.setSummStId(sumSt.getId());
+		patIllScript.save();
+		//new DBClinReason().saveAndCommit(sumSt, patIllScript);
+		notifyLog(patIllScript.getSummSt(), patIllScript.getSummSt().getId());
+	}
+	
+	/**
+	 * Summary Statement already attached to PatientIllnessScript, so we just update it. 
+	 * @param text
+	 */
+	private void updateSummaryStatement(String text){
+		patIllScript.getSummSt().setText(text);
+		save(patIllScript.getSummSt());
+		notifyLogUpdate(patIllScript.getSummSt(), patIllScript.getSummSt().getId());
+	}
+	
+	/* (non-Javadoc)
+	 * @see beanActions.ChgAction#save(java.beans.Beans)
+	 */
+	public void save(Beans b) {
+		dcr.saveAndCommit(b);
 		
 	}
 

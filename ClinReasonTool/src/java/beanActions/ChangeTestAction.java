@@ -1,5 +1,7 @@
 package beanActions;
 
+import java.beans.Beans;
+
 import beans.LogEntry;
 import beans.PatientIllnessScript;
 import beans.relation.*;
@@ -39,12 +41,12 @@ public class ChangeTestAction implements ChgAction{
 		//else -> error...
 	}
 	
-	public void notifyLog(Relation testToChg, long newTestId){
-		LogEntry le = new LogEntry(LogEntry.CHGTEST_ACTION, patIllScript.getSessionId(), testToChg.getSourceId(), newTestId);
+	public void notifyLog(Beans testToChg, long newTestId){
+		LogEntry le = new LogEntry(LogEntry.CHGTEST_ACTION, patIllScript.getSessionId(), ((Relation)testToChg).getSourceId(), newTestId);
 		le.save();
 	}
 	
-	public void save(Relation rel){
+	public void save(Beans rel){
 		new DBClinReason().saveAndCommit(rel);
 	}
 }

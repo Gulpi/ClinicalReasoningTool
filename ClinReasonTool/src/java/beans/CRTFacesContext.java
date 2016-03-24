@@ -23,9 +23,9 @@ import database.DBClinReason;
  */
 @ManagedBean(name = "crtContext", eager = true)
 @SessionScoped
-public class CRTFacesContext extends FacesContextWrapper implements Serializable{
-	public static final String PATILLSCRIPT_KEY = "patillscript";
-	public static final String PATILLSCRIPTS_KEY = "patillscripts";
+public class CRTFacesContext /*extends FacesContextWrapper*/ implements Serializable{
+	//public static final String PATILLSCRIPT_KEY = "patillscript";
+	//public static final String PATILLSCRIPTS_KEY = "patillscripts";
 	public static final String CRT_FC_KEY = "crtfc";
 	
 	private static final long serialVersionUID = 1L;
@@ -44,9 +44,10 @@ public class CRTFacesContext extends FacesContextWrapper implements Serializable
 		//setSessionId();
 		setUserId();
 		//Locale loc = new AjaxController().getLocale();
-		loadAndSetScriptsOfUser(); //this loads all scripts, we do not necessarily have to do that here, only if overview page is opened!
+		//loadAndSetScriptsOfUser(); //this loads all scripts, we do not necessarily have to do that here, only if overview page is opened!
 		loadAndSetPatIllScript();
-		FacesContextWrapper.getCurrentInstance().getExternalContext().getSessionMap().put(CRT_FC_KEY, this);
+		
+		//FacesContextWrapper.getCurrentInstance().getExternalContext().getSessionMap().put(CRT_FC_KEY, this);
 	}
 	/*public CRTFacesContext(long sessionId){
 		this.sessionId = sessionId;
@@ -87,11 +88,13 @@ public class CRTFacesContext extends FacesContextWrapper implements Serializable
 	}
 	
 	public PatientIllnessScript getPatillscript() { 
-		return patillscript;//(PatientIllnessScript) FacesContextWrapper.getCurrentInstance().getExternalContext().getSessionMap().get(PATILLSCRIPT_KEY);
+		return patillscript;
+		//FacesContext fc = FacesContextWrapper.getCurrentInstance();
+		//return (PatientIllnessScript) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get(PATILLSCRIPT_KEY);
 	}
 	public void setPatillscript(PatientIllnessScript patillscript) { 
 		this.patillscript = patillscript;
-		//FacesContextWrapper.getCurrentInstance().getExternalContext().getSessionMap().put(PATILLSCRIPT_KEY, patillscript);
+		//FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put(PATILLSCRIPT_KEY, patillscript);
 	}
 	
 	public List<PatientIllnessScript> getScriptsOfUser() {
@@ -112,7 +115,7 @@ public class CRTFacesContext extends FacesContextWrapper implements Serializable
 	/* (non-Javadoc)
 	 * @see javax.faces.context.FacesContextWrapper#getWrapped()
 	 */
-	public FacesContext getWrapped() {
+	/*public FacesContext getWrapped() {
 		return this; //or return this ????
-	}
+	}*/
 }

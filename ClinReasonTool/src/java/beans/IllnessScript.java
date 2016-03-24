@@ -1,9 +1,10 @@
-package model;
+package beans;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 
 import beans.relation.*;
-
+import beans.helper.*;
+import java.beans.Beans;
 import java.io.Serializable;
 
 
@@ -16,14 +17,16 @@ import java.util.*;
  */
 @ManagedBean
 @SessionScoped
-public class IllnessScript extends Node implements IllnessScriptInterface{
+public class IllnessScript extends Beans implements Serializable{
 
+	private static final long serialVersionUID = 1L;
 	//private int age_min = -1;
 	//private int age_max = -1;
 	/**
 	 * -1= gender not relevant, 1=male is precondition, 2=female is precondition (females more often affected)
 	 */
 	//private int gender = -1;
+	private long userId; //user who created the IllnessScript -> later use
 	/**
 	 * 1=acute, 2=subacute, 3=chronic
 	 */

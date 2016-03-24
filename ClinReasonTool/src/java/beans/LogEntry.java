@@ -37,8 +37,11 @@ public class LogEntry extends Beans{
 	public static final int CLOSEPATILLSCRIPT_ACTION = 24;
 	public static final int DELCNXAFTERSTARTNODE_ACTION = 11; //a connection is deleted because the related start point has been deleted
 	public static final int DELCNXAFTERTARGETNODE_ACTION = 12; //a connection is deleted because the related target point has been deleted
+	public static final int CREATESUMMST_ACTION = 25;
+	public static final int UPDATESUMMST_ACTION = 26;
+	public static final int CREATENOTE_ACTION = 27;
+	public static final int UPDATENOTE_ACTION = 28;
 
-	//....
 	
 	/**
 	 * action triggered by user, e.g. add a problem,... (see static definitions above)

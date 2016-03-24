@@ -1,4 +1,5 @@
-package model;
+package beans.helper;
+
 public class IllnessScriptKey {
 
 	public static final int KEY_AGE = 1;

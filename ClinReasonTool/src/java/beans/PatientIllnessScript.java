@@ -18,6 +18,10 @@ import database.DBClinReason;
  *
  */
 /*@ManagedBean(name = "patillscript", eager = true)*/
+/**
+ * @author ingahege
+ *
+ */
 @SessionScoped
 /**
  * @author ingahege
@@ -49,6 +53,8 @@ public class PatientIllnessScript extends Beans/*extends Node*/ implements /*Ill
 	
 	private SummaryStatement summSt;
 	private long summStId = -1;
+	private Note note;
+	private long noteId;
 	//epi data:
 	//private Patient patient; //data from the patient object attached to a case
 	/**
@@ -131,7 +137,11 @@ public class PatientIllnessScript extends Beans/*extends Node*/ implements /*Ill
 	public SummaryStatement getSummSt() {return summSt;}
 	public void setSummSt(SummaryStatement summSt) {this.summSt = summSt;}	
 	public long getSummStId() {return summStId;}
-	public void setSummStId(long summStId) {this.summStId = summStId;}
+	public void setSummStId(long summStId) {this.summStId = summStId;}	
+	public Note getNote() {return note;}
+	public void setNote(Note note) {this.note = note;}
+	public long getNoteId() {return noteId;}
+	public void setNoteId(long noteId) {this.noteId = noteId;}
 	
 	public void addProblem(String idStr, String name){ new AddProblemAction(this).add(idStr, name);}
 	public void addProblem(String idStr, String name, String x, String y){ new AddProblemAction(this).add(idStr, name, x,y);}
@@ -166,13 +176,22 @@ public class PatientIllnessScript extends Beans/*extends Node*/ implements /*Ill
 	public String getTestsJson(){return new ConceptMapController().getRelationsToJson(tests);}
 	public String getMngsJson(){return new ConceptMapController().getRelationsToJson(mngs);}
 	public String getConnsJson(){return new ConceptMapController().getConnsToJson(conns);}	
-	public void saveSummStatement(String idStr, String text){}
+	public void saveSummStatement(String idStr, String text){
+		new SummaryStatementChgAction(this).updateOrCreateSummaryStatement( idStr, text);
+	}
+	public void saveNote(String idStr, String text){
+		new NoteChgAction(this).updateOrCreateNote( idStr, text);
+	}
 	public void save(){
 		boolean isNew = false;
 		if(getId()<=0) isNew = true;
 		new DBClinReason().saveAndCommit(this);
 		if(isNew) notifyLog();
 	}	
+	
+	public void update(){
+		new DBClinReason().updateAndCommit(this);
+	}
 	/* (non-Javadoc)
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */

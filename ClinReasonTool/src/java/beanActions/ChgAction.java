@@ -1,12 +1,14 @@
 package beanActions;
 
+import java.beans.Beans;
+
 import beans.relation.Relation;
 
 public interface ChgAction {
 	/**
-	 * A log entry for the move action is created and saved in a Log object
+	 * A log entry for the change action is created and saved in a Log object
 	 */
-	void notifyLog(Relation rel, long newId);
+	void notifyLog(Beans rel, long newId);
 	
-	void save(Relation rel);
+	void save(Beans rel);
 }

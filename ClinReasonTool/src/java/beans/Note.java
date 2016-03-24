@@ -12,15 +12,15 @@ import javax.faces.bean.SessionScoped;
  *
  */
 @SessionScoped
-public class SummaryStatement extends Beans implements Serializable{
+public class Note extends Beans implements Serializable{
 
 	private static final long serialVersionUID = 1L;
 	private String text; 
 	private long id = -1; //shall we link to the current SummaryStatementAnswerView?
 	private Timestamp creationDate;
 	
-	public SummaryStatement(){}
-	public SummaryStatement(String text){
+	public Note(){}
+	public Note(String text){
 		this.text = text;
 	}
 	public String getText() {return text;}
@@ -32,8 +32,8 @@ public class SummaryStatement extends Beans implements Serializable{
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	public boolean equals(Object o){
-		if(o instanceof SummaryStatement){
-			if(((SummaryStatement) o).getId() == this.id) return true;
+		if(o instanceof Note){
+			if(((Note) o).getId() == this.id) return true;
 		}
 		return false;
 	}

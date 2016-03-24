@@ -18,7 +18,7 @@ import javax.sql.DataSource;
  * Contains all necessary methods to start Hibernate and get and return a Session. 
  * 
  * @author inga
- *
+ *@deprecated
  */
 public class HibernateUtil 
 {
@@ -59,44 +59,12 @@ public class HibernateUtil
 	}
 
 
-	static public Session getSession()
+	/*static public Session getSession()
 	{
 		return instance.getInternalSession(Thread.currentThread(), false);
-	}
+	}*/
 
-	static public Map getAllSessions() {
-		return instance.getAllSessions();
-	}
 	
-	/**
-	 * opens and returns a session from the session factory.
-	 * @return Session
-	 */
-	static public Session getSession(Thread t)
-	{
-		return instance.getInternalSession(t, false);        
-	}
-	
-	/**
-	 * opens and returns a session from the session factory.
-	 * @return Session
-	 */
-	static public Session getSession(Thread t, boolean debug)
-	{
-		return instance.getInternalSession(t, debug);
-	}
-
-
-	/**
-	 * Checks whether in the sessions HashMap there is already a session open, which has not been closed
-	 * before. If there is found a session it will be returned. If not null will be returned. 
-	 * This method seems to be important when executing statements in a loop.
-	 * @param t
-	 * @return
-	 */
-	static public Session getSessionByThread(Thread t) {
-		return instance.getInternalSessionByThread(t);
-	}	
 
 
 	/**

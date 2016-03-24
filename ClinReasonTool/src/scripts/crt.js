@@ -217,9 +217,16 @@ function reOrderTests(newOrder, id){
 /******************** summary statement *******************************/
 
 function saveSummSt(id){
-	sendAjax(id, doNothing, "saveSummStatement", "");
+	var text =  $("#summStText").val();
+	sendAjax(id, doNothing, "saveSummStatement",text);	
+	//TODO let user know that was saved
 }
 
+function saveNote(id){
+	var text =  $("#notes").val();
+	sendAjax(id, doNothing, "saveNote",text);
+	//TODO let user know that was saved
+}
 
 /** init the lists for selecting problems, diagnoses etc.*/
 var active = $( "#tabs" ).tabs( "option", "active" ); //we have to determine the active tab, to be able to adapt the nav icons!

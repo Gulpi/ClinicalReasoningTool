@@ -221,8 +221,8 @@ Case placed here...<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
 				</div>			
 		  </div>
 		  <div id="tabs-4">	
-		  		<textarea class="f_textarea" name="summSt" cols="50" rows="10"></textarea><br/>
-		  		<a href="javascript:saveSummSt();" title="Save your summary statement"><i class="icon-floppy"></i></a>
+		  		<textarea class="f_textarea" name="summSt" id="summStText" cols="50" rows="10">#{crtContext.patillscript.summSt.text}</textarea><br/>
+		  		<a href="javascript:saveSummSt('#{crtContext.patillscript.summStId}');" title="Save your summary statement"><i class="icon-floppy"></i></a>
 		  </div>
 		  <!--  diagnoses -->
 		  <div id="tabs-3">			  		
@@ -295,7 +295,9 @@ Case placed here...<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
 			   		 </div>
 		  		 </div>
 		     <div id="tabs-8">	
-		  		<textarea class="f_textarea" name="notes" cols="50" rows="10"></textarea>
+		  		<textarea class="f_textarea" name="notes" id="notes" cols="50" rows="10">#{crtContext.patillscript.note.text}</textarea><br/>
+		  		<a href="javascript:saveNote('#{crtContext.patillscript.noteId}');" title="Save your notes"><i class="icon-floppy"></i></a>
+		  		
 		  </div>
 		    <div id="trashbindiv" class="trashbindiv"><!-- <i class="icon-trash-1"></i>--><div class="msg" id="msg"></div>
 		    

@@ -2,31 +2,85 @@ package database;
 
 import java.beans.Beans;
 import java.util.*;
+
+import javax.faces.context.FacesContext;
+
 import org.hibernate.*;
+import org.hibernate.cfg.Configuration;
 import org.hibernate.criterion.*;
+
+import beans.CRTFacesContext;
 import beans.PatientIllnessScript;
 import model.ListItem;
 import util.StringUtilities;
 
-public class DBClinReason extends HibernateUtil{
-    
+public class DBClinReason /*extends HibernateUtil*/{
+	static HibernateSession instance = new HibernateSession();
+	//static SessionFactory sessionFactory = new SessionFactory();//new Configuration().configure().buildSessionFactory();
+	
     /**
      * saves an object into the database. Object has to have a hibernate mapping!
      * @param o
      */
     public void saveAndCommit(Object o){
-    	Session s = getSession();
-    	
+    	Session s = instance.getInternalSession(Thread.currentThread(), false);
+    	//PatientIllnessScript ps = (PatientIllnessScript) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get(CRTFacesContext.PATILLSCRIPT_KEY);
         try {
-        	beginTransaction(s);
+        	instance.beginTransaction();
             s.setFlushMode(FlushMode.COMMIT);     
             s.saveOrUpdate(o);
-            HibernateUtil.commitTransaction(s);
+            instance.commitTransaction(s);
         }
         
         catch(Exception e){
         	System.out.println("DBClinReason.saveAndCommit(), Exception: " + StringUtilities.stackTraceToString(e));
-        	 rollBackTx();
+        	instance.rollBackTx();
+        }
+        finally{
+        	    s.flush();
+        	    s.close();
+        }
+    }
+    
+    /*public void saveAndCommit(Object o1, Object o2){
+    	Session s = instance.getInternalSession(Thread.currentThread(), false);
+    	//Session s = sessionFactory.getCurrentSession();
+    	
+        try {
+        	instance.beginTransaction();
+            s.setFlushMode(FlushMode.COMMIT);     
+            s.saveOrUpdate(o1);
+            s.saveOrUpdate(o2);
+            instance.commitTransaction(s);
+        }
+        
+        catch(Exception e){
+        	System.out.println("DBClinReason.saveAndCommit(), Exception: " + StringUtilities.stackTraceToString(e));
+        	instance.rollBackTx();
+        }
+    }*/
+    
+    /**
+     * saves an object into the database. Object has to have a hibernate mapping!
+     * @param o
+     */
+    public void updateAndCommit(Object o){
+    	Session s = instance.getInternalSession(Thread.currentThread(), false);
+    	
+        try {
+        	instance.beginTransaction();
+            s.setFlushMode(FlushMode.COMMIT);     
+            s.update(o);
+            instance.commitTransaction(s);
+        }
+        
+        catch(Exception e){
+        	System.out.println("DBClinReason.saveAndCommit(), Exception: " + StringUtilities.stackTraceToString(e));
+        	instance.rollBackTx();
+        }
+        finally{
+    	    s.flush();
+    	    s.close();
         }
     }
     
@@ -35,9 +89,9 @@ public class DBClinReason extends HibernateUtil{
      * @param o
      */
     public void saveAndCommit(Collection o) {
-    	Session s = getSession();
+    	Session s = instance.getInternalSession(Thread.currentThread(), false);
         try {
-        	beginTransaction(s);
+        	instance.beginTransaction();
             s.setFlushMode(FlushMode.COMMIT);   //commit will be done after insert!
             //tx = s.beginTransaction();
             Iterator it = o.iterator();
@@ -45,34 +99,41 @@ public class DBClinReason extends HibernateUtil{
             {
             	s.saveOrUpdate(it.next());
             }
-            HibernateUtil.commitTransaction(s);
+            instance.commitTransaction(s);
         }
         catch (Exception e) {
         	System.out.println("DBClinReason.saveAndCommit(), Exception: " + StringUtilities.stackTraceToString(e));
-            rollBackTx();
+        	instance.rollBackTx();
         }
-        finally { }      
+        finally{
+    	    s.flush();
+    	    s.close();
+        }
     }
     /**
      * Delete a collection from the database
      * @param o
      */
     public void deleteAndCommit(Collection c){
-    	Session s = getSession();   	
+    	Session s = instance.getInternalSession(Thread.currentThread(), false);   	
         try {
-        	beginTransaction(s);
+        	instance.beginTransaction(s);
             s.setFlushMode(FlushMode.COMMIT);     
             Iterator it = c.iterator();
             while(it.hasNext())
             {
             	s.delete(it.next());
             }
-            HibernateUtil.commitTransaction(s);
+            instance.commitTransaction(s);
         }        
         catch(Exception e){
         	System.out.println("DBClinReason.deleteAndCommit(), Exception: " + StringUtilities.stackTraceToString(e));
-        	 rollBackTx();
-        }   	
+        	instance.rollBackTx();
+        }   
+        finally{
+    	    s.flush();
+    	    s.close();
+        }
     }  
     
     /**
@@ -80,17 +141,21 @@ public class DBClinReason extends HibernateUtil{
      * @param o
      */
     public void deleteAndCommit(Object o){
-    	Session s = getSession();   	
+    	Session s = instance.getInternalSession(Thread.currentThread(), false);   		
         try {
-        	beginTransaction(s);
+        	instance.beginTransaction(s);
             s.setFlushMode(FlushMode.COMMIT);     
             s.delete(o);
             HibernateUtil.commitTransaction(s);
         }        
         catch(Exception e){
         	System.out.println("DBClinReason.deleteAndCommit(), Exception: " + StringUtilities.stackTraceToString(e));
-        	 rollBackTx();
-        }   	
+        	instance.rollBackTx();
+        }  
+        finally{
+    	    s.flush();
+    	    s.close();
+        }
     }
     
     /**
@@ -99,9 +164,12 @@ public class DBClinReason extends HibernateUtil{
      * @return PatientIllnessScript or null
      */
     public PatientIllnessScript selectPatIllScriptBySessionId(long sessionId){
-    	Criteria criteria = HibernateUtil.getSession().createCriteria(PatientIllnessScript.class,"PatientIllnessScript");
+    	Session s = instance.getInternalSession(Thread.currentThread(), false);
+    	Criteria criteria = s.createCriteria(PatientIllnessScript.class,"PatientIllnessScript");
     	criteria.add(Restrictions.eq("sessionId", new Long(sessionId)));
-    	return (PatientIllnessScript) criteria.uniqueResult();
+    	PatientIllnessScript ps =  (PatientIllnessScript) criteria.uniqueResult();
+    	s.close();
+    	return ps;
     }
 
     /**
@@ -110,9 +178,12 @@ public class DBClinReason extends HibernateUtil{
      * @return PatientIllnessScript or null
      */
     public PatientIllnessScript selectPatIllScriptById(long id){
-    	Criteria criteria = HibernateUtil.getSession().createCriteria(PatientIllnessScript.class,"PatientIllnessScript");
+    	Session s = instance.getInternalSession(Thread.currentThread(), false);
+    	Criteria criteria = s.createCriteria(PatientIllnessScript.class,"PatientIllnessScript");
     	criteria.add(Restrictions.eq("id", new Long(id)));
-    	return (PatientIllnessScript) criteria.uniqueResult();
+    	PatientIllnessScript ps = (PatientIllnessScript) criteria.uniqueResult();
+    	s.close();
+    	return ps;
     }
     /**
      * Select the PatientIllnessScripts for the userId from the database. 
@@ -120,9 +191,10 @@ public class DBClinReason extends HibernateUtil{
      * @return PatientIllnessScript or null
      */
     public List<PatientIllnessScript> selectPatIllScriptsByUserId(long userId){
-    	Criteria criteria = HibernateUtil.getSession().createCriteria(PatientIllnessScript.class,"PatientIllnessScript");
+    	Session s = instance.getInternalSession(Thread.currentThread(), false);
+    	Criteria criteria = s.createCriteria(PatientIllnessScript.class,"PatientIllnessScript");
     	criteria.add(Restrictions.eq("userId", new Long(userId)));
-    	return (List<PatientIllnessScript>) criteria.list();
+    	return  criteria.list();
     }
     
     /**
@@ -131,9 +203,12 @@ public class DBClinReason extends HibernateUtil{
      * @return ListItem or null
      */
     public ListItem selectListItemById(long id){
-    	Criteria criteria = HibernateUtil.getSession().createCriteria(ListItem.class,"ListItem");
+    	Session s = instance.getInternalSession(Thread.currentThread(), false);
+    	Criteria criteria = s.createCriteria(ListItem.class,"ListItem");
     	criteria.add(Restrictions.eq("item_id", new Long(id)));
-    	return (ListItem) criteria.uniqueResult();
+    	ListItem li = (ListItem) criteria.uniqueResult();
+    	s.close();
+    	return li;
     }
     
 

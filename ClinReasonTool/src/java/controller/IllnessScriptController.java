@@ -5,6 +5,7 @@ import java.util.*;
 
 import javax.faces.context.FacesContext;
 
+import beans.IllnessScript;
 import beans.PatientIllnessScript;
 import database.DBClinReason;
 
@@ -45,6 +46,15 @@ public class IllnessScriptController implements Serializable{
 			//TODO error message?
 		}
 	}
+	
+	/**
+	 * get all IllnessScripts for a parent id from the database. 
+	 * @param parentId
+	 * @return
+	 */
+	/*public List<IllnessScript> loadIllnessScriptsByParentId(long parentId){
+		return new DBClinReason().selectIllScriptByParentId(parentId);
+	}*/
 	
 	public PatientIllnessScript loadPatIllScriptBySessionId(long sessionId){
 		if(sessionId>0){

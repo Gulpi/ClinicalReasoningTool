@@ -6,7 +6,7 @@ import java.util.*;
 
 import javax.faces.bean.*;
 
-import beanActions.*;
+import actions.beanActions.*;
 import beans.relation.*;
 import controller.AjaxController;
 import controller.ConceptMapController;
@@ -18,15 +18,7 @@ import database.DBClinReason;
  *
  */
 /*@ManagedBean(name = "patillscript", eager = true)*/
-/**
- * @author ingahege
- *
- */
 @SessionScoped
-/**
- * @author ingahege
- *
- */
 public class PatientIllnessScript extends Beans/*extends Node*/ implements /*IllnessScriptInterface, */Serializable, PropertyChangeListener{
 
 	public static final int TYPE_LEARNER_CREATED = 1;
@@ -39,17 +31,14 @@ public class PatientIllnessScript extends Beans/*extends Node*/ implements /*Ill
 	 * the VP the patIllScript is related to. We need this in addition to the sessionId to be able to connect 
 	 * the learners' script to the authors'/experts' script.
 	 */
-	private long vpId;
+	private long parentId;
 	private long userId; //needed so that we can display all the users' scripts to him
 	/**
 	 * Id of the PatientIllnessScript
 	 */
 	private long id = -1;
 	private Locale locale; // do we need this here to determine which list to load?
-	/**
-	 * the patientIllnessScript created by the expert based on the VP
-	 */
-	private PatientIllnessScript expertPatIllScript;
+
 	
 	private SummaryStatement summSt;
 	private long summStId = -1;
@@ -78,7 +67,7 @@ public class PatientIllnessScript extends Beans/*extends Node*/ implements /*Ill
 	private List<RelationDiagnosis> diagnoses; //contains all diagnoses, including the final(s)?
 	private List<RelationManagement> mngs;
 	private List<RelationTest> tests;
-	
+		
 	/**
 	 * key = cnxId (Long), value = Connection object
 	 */
@@ -88,6 +77,7 @@ public class PatientIllnessScript extends Beans/*extends Node*/ implements /*Ill
 	 * more than one? Or do we have to have then multiple PIS/VP???
 	 */
 	//private Rel_IS_Diagnosis finalDiagnosis; 
+	
 	/**
 	 * have the components of the IS been submitted by the learner? If yes for certain components no more changes 
 	 * can be made (?)
@@ -98,7 +88,7 @@ public class PatientIllnessScript extends Beans/*extends Node*/ implements /*Ill
 	public PatientIllnessScript(long sessionId, long userId, long vpId, Locale loc){
 		if(sessionId>0) this.sessionId = sessionId;
 		if(userId>0) this.userId = userId;
-		if(vpId>0) this.vpId = vpId;
+		if(vpId>0) this.parentId = vpId;
 		this.locale = loc;
 	}
 	
@@ -116,10 +106,8 @@ public class PatientIllnessScript extends Beans/*extends Node*/ implements /*Ill
 	public void setProblems(List<RelationProblem> problems) {this.problems = problems;}
 	public Timestamp getCreationDate(){ return this.creationDate;} //setting is done in DB	
 	public void setCreationDate(Timestamp creationDate) {this.creationDate = creationDate;}
-	public PatientIllnessScript getExpertPatIllScript() {return expertPatIllScript;}
-	public void setExpertPatIllScript(PatientIllnessScript expertPatIllScript) {this.expertPatIllScript = expertPatIllScript;}	
-	public long getVpId() {return vpId;}
-	public void setVpId(long vpId) {this.vpId = vpId;}
+	public long getParentId() {return parentId;}
+	public void setParentId(long parentId) {this.parentId = parentId;}
 	public int getType() {return type;}
 	public void setType(int type) {this.type = type;}	
 	public List<RelationDiagnosis> getDiagnoses() {return diagnoses;}
@@ -189,9 +177,6 @@ public class PatientIllnessScript extends Beans/*extends Node*/ implements /*Ill
 		if(isNew) notifyLog();
 	}	
 	
-	public void update(){
-		new DBClinReason().updateAndCommit(this);
-	}
 	/* (non-Javadoc)
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */

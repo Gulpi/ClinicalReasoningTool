@@ -97,7 +97,9 @@ public class HibernateSession {
 			cfg.addClass(beans.relation.RelationManagement.class);			
 			cfg.addClass(beans.relation.RelationTest.class);	
 			cfg.addClass(beans.SummaryStatement.class);	
-		   
+			cfg.addClass(beans.helper.Range.class);
+			cfg.addClass(beans.ScoreBean.class);
+			
 			if (factory==null) {
 				//init_setHibernateDialect();
 				addAlternativeProperties();

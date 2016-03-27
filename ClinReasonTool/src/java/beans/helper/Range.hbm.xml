@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="beans.helper">
+
+	<class name="Range" table="crt.ranges">
+		<cache usage="nonstrict-read-write" />
+		<comment>Range</comment>	
+		<id name="id" type="long" column="id">
+			<generator class="sequence">
+				<param name ="sequence">CRT.CR_SEQ</param>
+			</generator>
+		</id>	
+		<property name="key" column="key" type="int" />
+		<property name="illnessScriptId" column="illnessscript_id" type="long"/>
+		<property name="min" column="min" type="int"/>
+		<property name="max" column="max" type="int"/>
+			
+</class>
+</hibernate-mapping>

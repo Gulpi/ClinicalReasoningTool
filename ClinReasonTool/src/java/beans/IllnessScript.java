@@ -1,5 +1,5 @@
 package beans;
-import javax.faces.bean.ManagedBean;
+
 import javax.faces.bean.SessionScoped;
 
 import beans.relation.*;
@@ -11,24 +11,32 @@ import java.io.Serializable;
 import java.util.*;
 /**
  * Each VP/case can have an associated IllnessScript which includes the basic data of the disease(s) covered in the 
- * case.
+ * case. An IllnessScript represents a typical representation of a disease (which may vary from actual PatientIllnessScripts) 
+ * IllnessScripts can be fetched in different ways depending on the type of feedback/use case: 
+ * - based on the problems related to it (we need a matching algorithm for that) 
+ * - based on the parentId or the final diagnosis of the expert's PatientIllnessScript 
+ * - based on the ddx and final diagnoses of the learners' PatientIllnessScript 
+ * - based on a search term (from the portfolio/overview page) 
  * @author ingahege
  *
  */
-@ManagedBean
 @SessionScoped
 public class IllnessScript extends Beans implements Serializable{
 
 	private static final long serialVersionUID = 1L;
-	//private int age_min = -1;
-	//private int age_max = -1;
+
 	/**
 	 * -1= gender not relevant, 1=male is precondition, 2=female is precondition (females more often affected)
 	 */
 	//private int gender = -1;
 	private long userId; //user who created the IllnessScript -> later use
+	
 	/**
-	 * 1=acute, 2=subacute, 3=chronic
+	 * The id of the parent object, e.g. a VP 
+	 */	
+	private long parentId;
+	/**
+	 * 1=acute, 2=subacute, 3=chronic, -1 = NA
 	 */
 	private int courseOfTime = -1; //do we need a range here?
 	
@@ -41,7 +49,7 @@ public class IllnessScript extends Beans implements Serializable{
 	 * Diagnosis this IllnessScript is covering
 	 */
 	private RelationDiagnosis diagnosis; 
-	
+	private long diagnosisId; 
 	/**
 	 * for final diagnosis
 	 */
@@ -55,7 +63,18 @@ public class IllnessScript extends Beans implements Serializable{
 	/**
 	 * external resources (such as uTube videos or websites) that have additional information for this IS
 	 */
-	private List<String> externalResources; 
+	private List<String> externalResources;
+
+	
+	
+	public long getUserId() {return userId;}
+	public void setUserId(long userId) {this.userId = userId;}
+	public long getParentId() {return parentId;}
+	public void setParentId(long parentId) {this.parentId = parentId;}
+	public int getCourseOfTime() {return courseOfTime;}
+	public void setCourseOfTime(int courseOfTime) {this.courseOfTime = courseOfTime;} 
+	
+	
 	
 	/*
 	 * age: range and set (e.g. child, elderly,...)

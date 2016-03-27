@@ -15,7 +15,7 @@
 		<property name="userId" column="user_id" type="long" />			
 		<property name="sessionId" column="session_id" type="long" />
 		<property name="courseOfTime" column="courseoftime" type="int"/>	
-		<property name="vpId" column="vp_id" type="long"/>	
+		<property name="parentId" column="parent_id" type="long"/>	
 		<property name="summStId" column="summst_id" type="long"/>
 		
 		<property name="type" column="type" type="int"/>

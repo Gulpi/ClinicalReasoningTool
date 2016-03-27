@@ -10,7 +10,9 @@ import org.hibernate.cfg.Configuration;
 import org.hibernate.criterion.*;
 
 import beans.CRTFacesContext;
+import beans.IllnessScript;
 import beans.PatientIllnessScript;
+import beans.relation.RelationProblem;
 import model.ListItem;
 import util.StringUtilities;
 
@@ -42,47 +44,6 @@ public class DBClinReason /*extends HibernateUtil*/{
         }
     }
     
-    /*public void saveAndCommit(Object o1, Object o2){
-    	Session s = instance.getInternalSession(Thread.currentThread(), false);
-    	//Session s = sessionFactory.getCurrentSession();
-    	
-        try {
-        	instance.beginTransaction();
-            s.setFlushMode(FlushMode.COMMIT);     
-            s.saveOrUpdate(o1);
-            s.saveOrUpdate(o2);
-            instance.commitTransaction(s);
-        }
-        
-        catch(Exception e){
-        	System.out.println("DBClinReason.saveAndCommit(), Exception: " + StringUtilities.stackTraceToString(e));
-        	instance.rollBackTx();
-        }
-    }*/
-    
-    /**
-     * saves an object into the database. Object has to have a hibernate mapping!
-     * @param o
-     */
-    public void updateAndCommit(Object o){
-    	Session s = instance.getInternalSession(Thread.currentThread(), false);
-    	
-        try {
-        	instance.beginTransaction();
-            s.setFlushMode(FlushMode.COMMIT);     
-            s.update(o);
-            instance.commitTransaction(s);
-        }
-        
-        catch(Exception e){
-        	System.out.println("DBClinReason.saveAndCommit(), Exception: " + StringUtilities.stackTraceToString(e));
-        	instance.rollBackTx();
-        }
-        finally{
-    	    s.flush();
-    	    s.close();
-        }
-    }
     
     /**
      * Saves/updates a collection of objects into the database
@@ -146,7 +107,7 @@ public class DBClinReason /*extends HibernateUtil*/{
         	instance.beginTransaction(s);
             s.setFlushMode(FlushMode.COMMIT);     
             s.delete(o);
-            HibernateUtil.commitTransaction(s);
+            instance.commitTransaction(s);
         }        
         catch(Exception e){
         	System.out.println("DBClinReason.deleteAndCommit(), Exception: " + StringUtilities.stackTraceToString(e));
@@ -163,28 +124,84 @@ public class DBClinReason /*extends HibernateUtil*/{
      * @param sessionId
      * @return PatientIllnessScript or null
      */
+    public List<IllnessScript> selectIllScriptByParentId(long parentId){
+    	return selectIllScripts(parentId, "parentId");
+    }
+    
+    /**
+     * Select the PatientIllnessScript for the parentId (e.g. vpId) from the database. 
+     * @param sessionId
+     * @return PatientIllnessScript or null
+     */
+    public List<IllnessScript> selectIllScriptByDiagnosisId(long diagnosisId){
+    	return selectIllScripts(diagnosisId, "diagnosisId");
+    }
+ 
+    /**
+     * Select the IllnessScript for a given list of problems   
+     * @param sessionId
+     * @return PatientIllnessScript or null
+     * TODO
+     */
+    public List<IllnessScript> selectIllScriptByProblems(List<RelationProblem> probs){
+    	return null; //we need a matching algorithm here....
+    }
+    /**
+     * Select the PatientIllnessScript for the sessionId from the database. 
+     * @param sessionId
+     * @return PatientIllnessScript or null
+     */
+    private List<IllnessScript> selectIllScripts(long id, String identifier){
+    	Session s = instance.getInternalSession(Thread.currentThread(), false);
+    	Criteria criteria = s.createCriteria(IllnessScript.class,"IllnessScript");
+    	criteria.add(Restrictions.eq(identifier, new Long(identifier)));
+    	List<IllnessScript> l =  (List<IllnessScript>) criteria.list();
+    	s.close();
+    	return l;
+    }
+    
+    /**
+     * Select the PatientIllnessScript for the sessionId from the database. 
+     * @param sessionId
+     * @return PatientIllnessScript or null
+     */
     public PatientIllnessScript selectPatIllScriptBySessionId(long sessionId){
+    	return selectLearnerPatIllScript(sessionId, "sessionId");
+    }
+    
+    /**
+     * Select the PatientIllnessScript of the expert, which is identified by the parentId and type from the database. 
+     * @param sessionId
+     * @return PatientIllnessScript or null
+     */
+    public PatientIllnessScript selectExpertPatIllScript(long parentId){
     	Session s = instance.getInternalSession(Thread.currentThread(), false);
     	Criteria criteria = s.createCriteria(PatientIllnessScript.class,"PatientIllnessScript");
-    	criteria.add(Restrictions.eq("sessionId", new Long(sessionId)));
+    	criteria.add(Restrictions.eq("parentId", new Long(parentId)));
+    	criteria.add(Restrictions.eq("type", new Integer(PatientIllnessScript.TYPE_EXPERT_CREATED)));
     	PatientIllnessScript ps =  (PatientIllnessScript) criteria.uniqueResult();
     	s.close();
-    	return ps;
+    	return ps;    	
     }
-
     /**
      * Select the PatientIllnessScript for the sessionId from the database. 
      * @param sessionId
      * @return PatientIllnessScript or null
      */
     public PatientIllnessScript selectPatIllScriptById(long id){
+    	return selectLearnerPatIllScript(id, "id");
+    }
+    
+    private PatientIllnessScript selectLearnerPatIllScript(long id, String identifier){
     	Session s = instance.getInternalSession(Thread.currentThread(), false);
     	Criteria criteria = s.createCriteria(PatientIllnessScript.class,"PatientIllnessScript");
-    	criteria.add(Restrictions.eq("id", new Long(id)));
-    	PatientIllnessScript ps = (PatientIllnessScript) criteria.uniqueResult();
+    	criteria.add(Restrictions.eq(identifier, new Long(id)));
+    	criteria.add(Restrictions.eq("type", new Integer(PatientIllnessScript.TYPE_LEARNER_CREATED)));
+    	PatientIllnessScript ps =  (PatientIllnessScript) criteria.uniqueResult();
     	s.close();
-    	return ps;
+    	return ps;    	
     }
+
     /**
      * Select the PatientIllnessScripts for the userId from the database. 
      * @param sessionId

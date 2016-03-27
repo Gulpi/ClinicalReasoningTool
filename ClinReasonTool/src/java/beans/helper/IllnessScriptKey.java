@@ -1,13 +1,17 @@
 package beans.helper;
 
-public class IllnessScriptKey {
+public abstract class IllnessScriptKey {
 
 	public static final int KEY_AGE = 1;
 	
-	private int key = -1;
-	private long illnessScriptId = -1;
+	private int key;
+	//private long illnessScriptId;
 	
-	public String getKeyStr(){
-		return key+"_"+illnessScriptId;
-	}
+	
+	//public IllnessScriptKey(){}
+	public int getKey() {return key;}
+	public void setKey(int key) {this.key = key;}
+	//public long getIllnessScriptId() {return illnessScriptId;}
+	//public void setIllnessScriptId(long illnessScriptId) {this.illnessScriptId = illnessScriptId;}	
+
 }

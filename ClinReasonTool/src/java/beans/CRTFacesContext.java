@@ -17,7 +17,8 @@ import database.DBClinReason;
 
 /**
  * The facesContext for a session....
- * TODO shall we put the CRTFacesContext into the ExternalContext as well???
+ * We put the CRTFacesContext into the ExternalContext of the FacesContext, so that we can access it throughout the
+ * users' session.
  * @author ingahege
  *
  */
@@ -33,33 +34,28 @@ public class CRTFacesContext /*extends FacesContextWrapper*/ implements Serializ
 	private long userId = -1;
 	private IllnessScriptController isc = new IllnessScriptController();
 	private PatientIllnessScript patillscript;
+	/**
+	 * all scripts of the user, needed for the overview/portfolio page to display a list. 
+	 * TODO: we only need id and a name, so maybe we do not have to load the full objects? or get 
+	 * them from view?
+	 */
 	private List<PatientIllnessScript> scriptsOfUser;
-
+	
+	private FeedbackBean feedbackBean;
 	/**
 	 * Detailed scores for this patIllScript
 	 */
-	//private Score scores; -> put in FacesContext
+	private ScoreContainer scoreContainer;
 	
 	public CRTFacesContext(){
-		//setSessionId();
 		setUserId();
-		//Locale loc = new AjaxController().getLocale();
 		//loadAndSetScriptsOfUser(); //this loads all scripts, we do not necessarily have to do that here, only if overview page is opened!
-		loadAndSetPatIllScript();
-		
-		//FacesContextWrapper.getCurrentInstance().getExternalContext().getSessionMap().put(CRT_FC_KEY, this);
+		boolean isNewPatIllScript = loadAndSetPatIllScript();
+		feedbackBean = new FeedbackBean(false, patillscript.getParentId());
+		if(!isNewPatIllScript) loadScoreContainer();
+		FacesContextWrapper.getCurrentInstance().getExternalContext().getSessionMap().put(CRT_FC_KEY, this);
 	}
-	/*public CRTFacesContext(long sessionId){
-		this.sessionId = sessionId;
-		loadAndSetPatIllScript();
-	}*/
-			
-	//public long getSessionId() {return sessionId;}
-	//public void setSessionId(long sessionId) {this.sessionId = sessionId;}
-	/*private void setSessionId(){
-		String sessionIdStr = new AjaxController().getRequestParamByKey(AjaxController.REQPARAM_SESSION);
-		if(sessionIdStr!=null) this.sessionId = (Long.valueOf(sessionIdStr).longValue());
-	}*/
+
 	private void setUserId(){
 		String setUserIdStr = new AjaxController().getRequestParamByKey(AjaxController.REQPARAM_USER);
 		if(setUserIdStr!=null) this.userId = (Long.valueOf(setUserIdStr).longValue());
@@ -69,23 +65,27 @@ public class CRTFacesContext /*extends FacesContextWrapper*/ implements Serializ
 	public void setUserId(long userId) {this.userId = userId;}
 
 	private void loadAndSetScriptsOfUser(){	setScriptsOfUser(isc.loadScriptsOfUser());}
-	
+	private void loadScoreContainer(){
+		//TODO: we have to load previous scores for this patIllScript.:
+		
+	}
 	/**
 	 * load PatientIllnessScript based on id or sessionId
 	 */
-	public void loadAndSetPatIllScript(){ 
+	public boolean loadAndSetPatIllScript(){ 
 		long id = new AjaxController().getIdRequestParamByKey(AjaxController.REQPARAM_SCRIPT);
 		long sessionId = new AjaxController().getIdRequestParamByKey(AjaxController.REQPARAM_SESSION);
-		if(id>0)
+		boolean isNew = true;
+		if(id>0){
+			isNew = false;
 			setPatillscript(isc.loadPatIllScriptById(id));
+		}
 		else setPatillscript(isc.loadPatIllScriptBySessionId(sessionId));
 		
 		//TODO error handling!!!!
+		return isNew;
 	}
-	public void loadAndSetPatIllScript(long id)
-	{ 
-		setPatillscript(isc.loadPatIllScriptById(id));
-	}
+	public void loadAndSetPatIllScript(long id){ setPatillscript(isc.loadPatIllScriptById(id));}
 	
 	public PatientIllnessScript getPatillscript() { 
 		return patillscript;
@@ -95,19 +95,12 @@ public class CRTFacesContext /*extends FacesContextWrapper*/ implements Serializ
 	public void setPatillscript(PatientIllnessScript patillscript) { 
 		this.patillscript = patillscript;
 		//FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put(PATILLSCRIPT_KEY, patillscript);
-	}
-	
-	public List<PatientIllnessScript> getScriptsOfUser() {
-		return this.scriptsOfUser;
-	}
-	private void setScriptsOfUser(List<PatientIllnessScript> scriptsOfUser){
-		this.scriptsOfUser = scriptsOfUser;
-	}
+	}	
+	public List<PatientIllnessScript> getScriptsOfUser() {return this.scriptsOfUser;}
+	private void setScriptsOfUser(List<PatientIllnessScript> scriptsOfUser){this.scriptsOfUser = scriptsOfUser;}	
+	public ScoreContainer getScoreContainer() {return scoreContainer;}
+	public void setScoreBean(ScoreContainer scoreContainer) {this.scoreContainer = scoreContainer;}
 
-	public String getTest(){
-		return FacesContextWrapper.getCurrentInstance().toString();
-	}
-	
 	/* we land here from an ajax request....*/
 	public void ajaxResponseHandler() throws IOException {
 		new AjaxController().receiveAjax(this.getPatillscript());

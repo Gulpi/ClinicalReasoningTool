@@ -14,6 +14,8 @@
 		</id>
 		
 		<property name="userId" column="user_id" type="long" />	
+		<!-- <property name="parentId" column="parent_id" type="long" />	--> 
+		
 		<property name="courseOfTime" column="courseoftime" type="int"/>	
 		
 </class>

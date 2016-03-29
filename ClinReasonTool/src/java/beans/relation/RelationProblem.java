@@ -6,6 +6,7 @@ import java.sql.Timestamp;
 
 import javax.faces.bean.*;
 
+import beans.graph.VertexInterface;
 import controller.ConceptMapController;
 import model.ListItem;
 
@@ -16,14 +17,13 @@ import model.ListItem;
  * @author ingahege
  *
  */
-public class RelationProblem extends Beans implements Relation, Rectangle, Serializable{
+public class RelationProblem extends Beans implements Relation, Rectangle, Serializable, VertexInterface{
 
 	private static final long serialVersionUID = 1L;
 	public static final int QUALIFIER_RARE = 0; 
 	public static final int QUALIFIER_MEDIUM = 1;
 	public static final int QUALIFIER_OFTEN = 2;
 	public static final int DEFAULT_X = 5; //default x position of problems in canvas
-	
 	
 	private long id;
 	/**
@@ -57,7 +57,8 @@ public class RelationProblem extends Beans implements Relation, Rectangle, Seria
 	 */
 	private int qualifier;
 	
-	//private Timestamp creationDate;
+	private Timestamp creationDate;
+	private long step; //when was item created, e.g. cardId of case
 	
 	private ListItem problem;
 	
@@ -92,9 +93,26 @@ public class RelationProblem extends Beans implements Relation, Rectangle, Seria
 		return false;
 	}
 	
+	/* (non-Javadoc)
+	 * @see beans.relation.Rectangle#toJson()
+	 */
 	public String toJson(){
 		StringBuffer sb = new StringBuffer();		
 		sb.append("{\"label\":\""+this.getProblem().getName()+"\",\"shortlabel\":\""+this.getProblem().getShortName()+"\",\"id\": \""+getIdWithPrefix()+"\",\"x\": "+this.x+",\"y\":"+this.y+"}");		
 		return sb.toString();
+	}
+
+	/* (non-Javadoc)
+	 * @see beans.graph.VertexInterface#getVertexId()
+	 */
+	public long getVertexId() {
+		return this.getProblem().getItem_id();
+	}
+	
+	/* (non-Javadoc)
+	 * @see beans.graph.VertexInterface#getVertextype()
+	 */
+	public int getVertextype() {
+		return TYPE_PROBLEM;
 	}
 }

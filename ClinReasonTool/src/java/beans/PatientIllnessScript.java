@@ -19,10 +19,8 @@ import database.DBClinReason;
  */
 /*@ManagedBean(name = "patillscript", eager = true)*/
 @SessionScoped
-public class PatientIllnessScript extends Beans/*extends Node*/ implements /*IllnessScriptInterface, */Serializable, PropertyChangeListener{
+public class PatientIllnessScript extends Beans/*extends Node*/ implements IllnessScriptInterface, Serializable /*, PropertyChangeListener*/ {
 
-	public static final int TYPE_LEARNER_CREATED = 1;
-	public static final int TYPE_EXPERT_CREATED = 2;
 	
 	private static final long serialVersionUID = 1L;
 	private Timestamp creationDate;
@@ -59,7 +57,7 @@ public class PatientIllnessScript extends Beans/*extends Node*/ implements /*Ill
 	/**
 	 * created by learner or expert
 	 */
-	private int type = TYPE_LEARNER_CREATED;
+	private int type = IllnessScriptInterface.TYPE_LEARNER_CREATED;
 	/**
 	 * List of related problems to the PatientIllnessScript
 	 */

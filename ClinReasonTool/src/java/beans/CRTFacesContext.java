@@ -4,16 +4,12 @@ import java.io.*;
 import java.util.*;
 import java.beans.*;
 
-import javax.faces.application.*;
-import javax.faces.application.FacesMessage.Severity;
 import javax.faces.bean.*;
-import javax.faces.component.UIViewRoot;
 import javax.faces.context.*;
-import javax.faces.render.RenderKit;
+import javax.servlet.ServletContext;
 
-import controller.AjaxController;
-import controller.IllnessScriptController;
-import database.DBClinReason;
+import beans.graph.Graph;
+import controller.*;
 
 /**
  * The facesContext for a session....
@@ -34,6 +30,7 @@ public class CRTFacesContext /*extends FacesContextWrapper*/ implements Serializ
 	private long userId = -1;
 	private IllnessScriptController isc = new IllnessScriptController();
 	private PatientIllnessScript patillscript;
+	private Graph graph;
 	/**
 	 * all scripts of the user, needed for the overview/portfolio page to display a list. 
 	 * TODO: we only need id and a name, so maybe we do not have to load the full objects? or get 
@@ -53,7 +50,24 @@ public class CRTFacesContext /*extends FacesContextWrapper*/ implements Serializ
 		boolean isNewPatIllScript = loadAndSetPatIllScript();
 		feedbackBean = new FeedbackBean(false, patillscript.getParentId());
 		if(!isNewPatIllScript) loadScoreContainer();
-		FacesContextWrapper.getCurrentInstance().getExternalContext().getSessionMap().put(CRT_FC_KEY, this);
+	    ServletContext context = (ServletContext) FacesContext.getCurrentInstance().getExternalContext().getContext();
+	    AppBean app = (AppBean) context.getAttribute(AppBean.APP_KEY);
+	    app.addExpertPatIllnessScriptForParentId(patillscript.getParentId());
+	    app.addIllnessScriptForParentId(patillscript.getParentId());
+	    FacesContextWrapper.getCurrentInstance().getExternalContext().getSessionMap().put(CRTFacesContext.CRT_FC_KEY, this);
+	    initGraph();
+		//ServletContext context2 = (ServletContext) FacesContext.getCurrentInstance().getExternalContext().getContext();
+		//ApplicationWrapper app = (ApplicationWrapper) context2.getAttribute("CRTInit");
+		//ApplicationFactory factory = (ApplicationFactory) FactoryFinder.getFactory(FactoryFinder.APPLICATION_FACTORY);
+		//System.out.println("");
+	}
+	
+	private void initGraph(){
+		if(graph!=null) return; //nothing todo, can this happen?
+		graph = new Graph(patillscript.getParentId());
+		System.out.println(graph.toString());
+		//graph.initGraph(patillscript.getParentId());
+		
 	}
 
 	private void setUserId(){

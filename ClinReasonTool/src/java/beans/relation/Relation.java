@@ -10,6 +10,10 @@ import java.sql.Timestamp;
  */
 public interface Relation /*extends DefaultWeightedEdge*/{
 
+	public static final int TYPE_PROBLEM = 1;
+	public static final int TYPE_DDX = 2;
+	public static final int TYPE_TEST = 3;
+	public static final int TYPE_MNG = 4;
 
 	public long getSourceId(); 
 	public void setSourceId(long sourceId); 

@@ -120,9 +120,9 @@ public class DBClinReason /*extends HibernateUtil*/{
     }
     
     /**
-     * Select the PatientIllnessScript for the sessionId from the database. 
-     * @param sessionId
-     * @return PatientIllnessScript or null
+     * Select the PatientIllnessScript for the parentId from the database. 
+     * @param parentId
+     * @return IllnessScript or null
      */
     public List<IllnessScript> selectIllScriptByParentId(long parentId){
     	return selectIllScripts(parentId, "parentId");
@@ -147,7 +147,7 @@ public class DBClinReason /*extends HibernateUtil*/{
     	return null; //we need a matching algorithm here....
     }
     /**
-     * Select the PatientIllnessScript for the sessionId from the database. 
+     * Select the IllnessScript
      * @param sessionId
      * @return PatientIllnessScript or null
      */

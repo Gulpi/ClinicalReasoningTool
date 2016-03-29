@@ -179,7 +179,7 @@ input.f_text, textarea.f_textarea {
 .icon-sitemap:before { content: '\e815';font-size: 0.8em;}
 .icon-video:before { content: '\e84a'; font-size: 0.8em;} 
 .icon-plus-circled:before { content: '\e851'; } 
-.icon-floppy:before { content: '\e801'; }s
+.icon-floppy:before { content: '\e801'; }
 
 /* end i-icons code */
 
@@ -245,7 +245,7 @@ input.f_text, textarea.f_textarea {
 	background-color:#ffffff;
 	font-size: 0.7em;
 	float:left;
-	width:35%;
+	/*width:35%;*/
 	height:300px;
 	font-family:Arial;
 }

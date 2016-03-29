@@ -121,7 +121,7 @@ public class AddProblemAction implements AddAction, Scoreable, FeedbackCreator{
 	 * @see actions.scoringActions.Scoreable#triggerScoringAction(java.beans.Beans)
 	 */
 	public void triggerScoringAction(Beans relProb){		
-			new ProblemScoringAction().scoreAddProblemAction((RelationProblem) relProb);
+			//new ProblemScoringAction().scoreAddProblemAction((RelationProblem) relProb);
 	}
 
 	@Override

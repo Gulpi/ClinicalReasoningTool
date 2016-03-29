@@ -21,7 +21,7 @@ import java.util.*;
  *
  */
 @SessionScoped
-public class IllnessScript extends Beans implements Serializable{
+public class IllnessScript extends Beans implements Serializable, IllnessScriptInterface{
 
 	private static final long serialVersionUID = 1L;
 
@@ -72,7 +72,14 @@ public class IllnessScript extends Beans implements Serializable{
 	public long getParentId() {return parentId;}
 	public void setParentId(long parentId) {this.parentId = parentId;}
 	public int getCourseOfTime() {return courseOfTime;}
-	public void setCourseOfTime(int courseOfTime) {this.courseOfTime = courseOfTime;} 
+	public void setCourseOfTime(int courseOfTime) {this.courseOfTime = courseOfTime;}
+
+	/* (non-Javadoc)
+	 * @see beans.IllnessScriptInterface#getType()
+	 */
+	public int getType() {
+		return IllnessScriptInterface.TYPE_ILLNESSSCRIPT;
+	} 
 	
 	
 	

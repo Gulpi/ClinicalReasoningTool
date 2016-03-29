@@ -98,7 +98,7 @@ $(function() {
     	}
         
     });
-    $( ".draggable" ).draggable();	
+    //$( ".draggable" ).draggable();	
     $( "#list_diagnoses" ).sortable({
  		stop: function( event, ui ) {
  			var sorted = $( "#list_diagnoses" ).sortable( "serialize", { key: "selddx" } );
@@ -166,15 +166,10 @@ $(function() {
 </head>
 <body style="font-family:arial;"><!-- test: #{crtContext.test}-->
 
- <div id="case_story" style="float:left;width:60%;border:1px;">
+<!--   <div id="case_story" style="float:left;width:60%;border:1px;">
 Case placed here...<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
-<h:form>
-   <h:commandLink action="#{navController.openOverview}" value="Overview" >
-   	<f:param name="user_id" value="#{crtContext.userId}" />
-   </h:commandLink>	
-   
-</h:form>
-</div>
+
+</div>-->
 
 	<div id="tabs" class="cr-tabs">
 	  <ul>
@@ -191,8 +186,8 @@ Case placed here...<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
 		  <div id="tabs-1">
 		  <div id="patimg" style="position:relative;right:0px; top:0px; float:right;"><img src="patient.png" width="150px" /></div>
 		  	<div id="descr">
-		  		Name: Henry Rodin<br/>
-			  	Age: 30, Gender: M <br/>
+		  		Name: Delai Johnston<br/>
+			  	Age: 65, Gender: M <br/>
 				Course of Time: 
 				<h:selectOneMenu onchange="javascript:changeCourseOfTime();" class="f_select" id="courseTime" value="#{crtContext.patillscript.courseOfTime}">
 				<f:selectItem itemLabel="-" itemValue="-1" />
@@ -213,7 +208,7 @@ Case placed here...<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
 					   		<ui:include src="probline.xhtml" />
     					</ui:repeat>
     				</ol>
-    				<div id="jsonProbMap" >#{crtContext.patillscript.problemsJson}</div>
+    				<div id="jsonProbMap" style="visibility:hidden">#{crtContext.patillscript.problemsJson}</div>
     				</h:panelGroup>
     				     <h:commandButton id="hiddenProbButton" value="RenderSomething" style="visibility:hidden">
     						<f:ajax render="@form" onevent="updateCMCallback"></f:ajax>
@@ -235,7 +230,7 @@ Case placed here...<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
 							<ui:include src="ddxline.xhtml" />
      					</ui:repeat>					
 					</ol>
-					<div id="jsonDDXMap" >#{crtContext.patillscript.ddxJson}</div>
+					<div id="jsonDDXMap" style="visibility:hidden" >#{crtContext.patillscript.ddxJson}</div>
     				</h:panelGroup>
     				     <h:commandButton id="hiddenDDXButton" value="RenderSomething" style="visibility:hidden">
     						<f:ajax render="@form" onevent="updateCMCallback"></f:ajax>
@@ -255,7 +250,7 @@ Case placed here...<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
      					</ui:repeat>				
 						<!-- <li id="selds_1">Chest X-ray <select class="f_select"><option value="-1">scanning</option><option>r/c Pneumonia</option></select></li>-->
 					</ol>
-					<div id="jsonTestsMap" >#{crtContext.patillscript.testsJson}</div>
+					<div id="jsonTestsMap" style="visibility:hidden">#{crtContext.patillscript.testsJson}</div>
     				</h:panelGroup>
     				     <h:commandButton id="hiddenTestsButton" value="RenderSomething" style="visibility:hidden">
     						<f:ajax render="@form" onevent="updateCMCallback"></f:ajax>
@@ -276,7 +271,7 @@ Case placed here...<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
 	   					</ui:repeat>				
 					<!-- <li id="selds_1">Chest X-ray <select class="f_select"><option value="-1">scanning</option><option>r/c Pneumonia</option></select></li>-->
 				</ol>
-				<div id="jsonTestsMap" >#{crtContext.patillscript.mngsJson}</div>
+				<div id="jsonTestsMap" style="visibility:hidden">#{crtContext.patillscript.mngsJson}</div>
 	  				</h:panelGroup>
 	  				     <h:commandButton id="hiddenMngButton" value="RenderSomething" style="visibility:hidden">
 	  						<f:ajax render="@form" onevent="updateCMCallback"></f:ajax>
@@ -315,8 +310,13 @@ Case placed here...<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
 		  	<!--  </div>-->
 		  	<!--  <div class="cm-preview"><a href="javascript:openCanvas();" title="click to open concept map"><img id="preview_img" style="border-radius:5px;overflow:auto; width:50px; height:50px;"/> </a></div> -->
 		 <!--   </div>-->
-	</div>   
-	
+	</div> <br clear="all"/>  
+<!--  <h:form>
+   <h:commandLink action="#{navController.openOverview}" value="Overview" >
+   	<f:param name="user_id" value="#{crtContext.userId}" />
+   </h:commandLink>	
+   
+</h:form>	-->
 	<!-- 
 	open questions/issues: 
 		- do we want to keep lists and CP in sync all the time or leave it up to the user and ask if deleting in list or cm?

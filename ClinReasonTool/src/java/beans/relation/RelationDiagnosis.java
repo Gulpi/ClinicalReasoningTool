@@ -27,7 +27,7 @@ public class RelationDiagnosis extends Beans implements Relation, Rectangle, Ser
 	/**
 	 * diagnosis id
 	 */
-	private long sourceId; 
+	private long listItemId; 
 	/**
 	 * (Patient)Illnesscript
 	 */
@@ -58,12 +58,12 @@ public class RelationDiagnosis extends Beans implements Relation, Rectangle, Ser
 	private int mnm = 0;
 
 	public RelationDiagnosis(){}
-	public RelationDiagnosis(long sourceId, long destId){
-		this.setSourceId(sourceId);
+	public RelationDiagnosis(long lisItemId, long destId){
+		this.setListItemId(lisItemId);
 		this.setDestId(destId);
 	}
-	public long getSourceId() { return sourceId;}
-	public void setSourceId(long sourceId) {this.sourceId = sourceId;}
+	public long getListItemId() { return listItemId;}
+	public void setListItemId(long listItemId) {this.listItemId = listItemId;}
 	public long getId() {return id;}
 	public void setId(long id) {this.id = id;}
 	public long getDestId() {return destId;}
@@ -99,11 +99,36 @@ public class RelationDiagnosis extends Beans implements Relation, Rectangle, Ser
 		return sb.toString();
 	}
 	
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
 	public boolean equals(Object o){
 		if(o!=null){
-			if(o instanceof RelationDiagnosis && ((RelationDiagnosis)o).getSourceId()==this.sourceId && ((RelationDiagnosis)o).getDestId()==this.destId)
+			if(o instanceof RelationDiagnosis && ((RelationDiagnosis)o).getListItemId()==this.listItemId && ((RelationDiagnosis)o).getDestId()==this.destId)
 				return true;
 		}
 		return false;
+	}
+
+	/* (non-Javadoc)
+	 * @see beans.graph.VertexInterface#getVertexId()
+	 */
+	public long getVertexId() {
+		return this.getDiagnosis().getItem_id();
+	}
+
+	/* (non-Javadoc)
+	 * @see beans.graph.VertexInterface#getVertextype()
+	 */
+	public int getVertextype() {
+		return TYPE_DDX;
+	}
+	
+	/* (non-Javadoc)
+	 * @see beans.graph.VertexInterface#getLabel()
+	 */
+	public String getLabel(){
+		return diagnosis.getName();
 	}
 }

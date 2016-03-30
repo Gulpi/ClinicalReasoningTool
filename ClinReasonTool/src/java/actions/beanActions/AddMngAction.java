@@ -8,10 +8,13 @@ import javax.faces.application.FacesMessage;
 import javax.faces.application.FacesMessage.Severity;
 
 import actions.scoringActions.Scoreable;
+import beans.IllnessScriptInterface;
 import beans.LogEntry;
 import beans.PatientIllnessScript;
+import beans.graph.Graph;
 import beans.relation.Relation;
 import beans.relation.RelationManagement;
+import controller.NavigationController;
 import database.DBClinReason;
 
 public class AddMngAction implements AddAction, Scoreable{
@@ -32,7 +35,7 @@ public class AddMngAction implements AddAction, Scoreable{
 	 * @see beanActions.AddAction#notifyLog(beans.relation.Relation)
 	 */
 	public void notifyLog(Relation rel) {
-		LogEntry le = new LogEntry(LogEntry.ADDMNG_ACTION, patIllScript.getSessionId(), rel.getSourceId());
+		LogEntry le = new LogEntry(LogEntry.ADDMNG_ACTION, patIllScript.getSessionId(), rel.getListItemId());
 		le.save();
 	}
 
@@ -78,6 +81,7 @@ public class AddMngAction implements AddAction, Scoreable{
 		patIllScript.getMngs().add(relMng);
 		relMng.setManagement(new DBClinReason().selectListItemById(id));
 		save(relMng);
+		updateGraph(relMng);
 		notifyLog(relMng);
 		triggerScoringAction(relMng);				
 	}
@@ -105,6 +109,22 @@ public class AddMngAction implements AddAction, Scoreable{
 	public void createErrorMessage(String summary, String details, Severity sev) {
 		// TODO Auto-generated method stub
 		
+	}
+	
+	/* (non-Javadoc)
+	 * @see actions.beanActions.AddAction#updateGraph(beans.relation.Relation)
+	 */
+	public void updateGraph(Relation rel) {
+		Graph graph = new NavigationController().getCRTFacesContext().getGraph();
+		graph.addVertex(rel, IllnessScriptInterface.TYPE_LEARNER_CREATED);		
+		// add implicit edges:
+		if( patIllScript.getDiagnoses()!=null){
+			for(int i=0; i < patIllScript.getDiagnoses().size(); i++){
+				graph.addImplicitEdge(patIllScript.getDiagnoses().get(i).getListItemId(), rel.getListItemId(), IllnessScriptInterface.TYPE_LEARNER_CREATED);
+			}
+		}
+		System.out.println(graph.toString());
+
 	}
 
 }

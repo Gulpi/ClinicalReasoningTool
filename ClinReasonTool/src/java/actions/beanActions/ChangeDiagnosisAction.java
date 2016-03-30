@@ -31,24 +31,24 @@ public class ChangeDiagnosisAction implements ChgAction, Scoreable{
 	
 	public void changeDiagnosis(long newDDXId, long ddxRel){
 		RelationDiagnosis ddxToChg = patIllScript.getDiagnosisById(ddxRel);
-		ListItem oldDDX = new DBClinReason().selectListItemById(ddxToChg.getSourceId());
+		ListItem oldDDX = new DBClinReason().selectListItemById(ddxToChg.getListItemId());
 		ListItem newDDX = new DBClinReason().selectListItemById(newDDXId);
 		if(ddxToChg!=null && newDDX!=null && oldDDX!=null){
 			notifyLog(ddxToChg, newDDXId);
 			ddxToChg.setDiagnosis(newDDX);
-			ddxToChg.setSourceId(newDDX.getItem_id());
+			ddxToChg.setListItemId(newDDX.getItem_id());
 			save(ddxToChg);		
 		}
 		//else -> error...
 	}
 	
 	public void notifyLog(Beans ddxToChg, long newDDXId){
-		LogEntry le = new LogEntry(LogEntry.CHGDDX_ACTION, patIllScript.getSessionId(), ((Relation) ddxToChg).getSourceId(), newDDXId);
+		LogEntry le = new LogEntry(LogEntry.CHGDDX_ACTION, patIllScript.getSessionId(), ((Relation) ddxToChg).getListItemId(), newDDXId);
 		le.save();
 	}
 
 	private void notifyMnMLog(Beans ddxToChg, int newMnM){
-		LogEntry le = new LogEntry(LogEntry.CHGDDXMNM_ACTION, patIllScript.getSessionId(), ((Relation) ddxToChg).getSourceId(), newMnM);
+		LogEntry le = new LogEntry(LogEntry.CHGDDXMNM_ACTION, patIllScript.getSessionId(), ((Relation) ddxToChg).getListItemId(), newMnM);
 		le.save();
 	}
 	

@@ -31,19 +31,19 @@ public class ChangeTestAction implements ChgAction, Scoreable{
 	
 	public void changeTest(long newProbId, long probRel){
 		RelationTest testToChg = patIllScript.getTestById(probRel);
-		ListItem oldTest = new DBClinReason().selectListItemById(testToChg.getSourceId());
+		ListItem oldTest = new DBClinReason().selectListItemById(testToChg.getListItemId());
 		ListItem newTest = new DBClinReason().selectListItemById(newProbId);
 		if(testToChg!=null && newTest!=null && oldTest!=null){
 			notifyLog(testToChg, newProbId);
 			testToChg.setTest(newTest);
-			testToChg.setSourceId(newTest.getItem_id());
+			testToChg.setListItemId(newTest.getItem_id());
 			save(testToChg);		
 		}
 		//else -> error...
 	}
 	
 	public void notifyLog(Beans testToChg, long newTestId){
-		LogEntry le = new LogEntry(LogEntry.CHGTEST_ACTION, patIllScript.getSessionId(), ((Relation)testToChg).getSourceId(), newTestId);
+		LogEntry le = new LogEntry(LogEntry.CHGTEST_ACTION, patIllScript.getSessionId(), ((Relation)testToChg).getListItemId(), newTestId);
 		le.save();
 	}
 	

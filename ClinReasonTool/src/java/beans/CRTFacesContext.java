@@ -9,6 +9,7 @@ import javax.faces.context.*;
 import javax.servlet.ServletContext;
 
 import beans.graph.Graph;
+import beans.relation.Relation;
 import controller.*;
 
 /**
@@ -53,7 +54,8 @@ public class CRTFacesContext /*extends FacesContextWrapper*/ implements Serializ
 	    ServletContext context = (ServletContext) FacesContext.getCurrentInstance().getExternalContext().getContext();
 	    AppBean app = (AppBean) context.getAttribute(AppBean.APP_KEY);
 	    app.addExpertPatIllnessScriptForParentId(patillscript.getParentId());
-	    app.addIllnessScriptForParentId(patillscript.getParentId());
+	    //app.addIllnessScriptForParentId(patillscript.getParentId());
+	    app.addIllnessScriptForDiagnoses(patillscript.getDiagnoses(), patillscript.getParentId());
 	    FacesContextWrapper.getCurrentInstance().getExternalContext().getSessionMap().put(CRTFacesContext.CRT_FC_KEY, this);
 	    initGraph();
 		//ServletContext context2 = (ServletContext) FacesContext.getCurrentInstance().getExternalContext().getContext();
@@ -65,9 +67,7 @@ public class CRTFacesContext /*extends FacesContextWrapper*/ implements Serializ
 	private void initGraph(){
 		if(graph!=null) return; //nothing todo, can this happen?
 		graph = new Graph(patillscript.getParentId());
-		System.out.println(graph.toString());
-		//graph.initGraph(patillscript.getParentId());
-		
+		System.out.println(graph.toString());		
 	}
 
 	private void setUserId(){
@@ -77,6 +77,8 @@ public class CRTFacesContext /*extends FacesContextWrapper*/ implements Serializ
 
 	public long getUserId() {return userId;}
 	public void setUserId(long userId) {this.userId = userId;}
+	public Graph getGraph() {return graph;}
+	//public void setGraph(Graph graph) {this.graph = graph;}
 
 	private void loadAndSetScriptsOfUser(){	setScriptsOfUser(isc.loadScriptsOfUser());}
 	private void loadScoreContainer(){

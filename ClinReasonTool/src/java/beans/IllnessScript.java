@@ -29,6 +29,9 @@ public class IllnessScript extends Beans implements Serializable, IllnessScriptI
 	 * -1= gender not relevant, 1=male is precondition, 2=female is precondition (females more often affected)
 	 */
 	//private int gender = -1;
+	
+	
+	private long id; 
 	private long userId; //user who created the IllnessScript -> later use
 	
 	/**
@@ -64,8 +67,6 @@ public class IllnessScript extends Beans implements Serializable, IllnessScriptI
 	 * external resources (such as uTube videos or websites) that have additional information for this IS
 	 */
 	private List<String> externalResources;
-
-	
 	
 	public long getUserId() {return userId;}
 	public void setUserId(long userId) {this.userId = userId;}
@@ -73,7 +74,11 @@ public class IllnessScript extends Beans implements Serializable, IllnessScriptI
 	public void setParentId(long parentId) {this.parentId = parentId;}
 	public int getCourseOfTime() {return courseOfTime;}
 	public void setCourseOfTime(int courseOfTime) {this.courseOfTime = courseOfTime;}
-
+	public long getDiagnosisId() {return diagnosisId;}
+	public void setDiagnosisId(long diagnosisId) {this.diagnosisId = diagnosisId;}	
+	public long getId() {return id;}
+	public void setId(long id) {this.id = id;}
+	
 	/* (non-Javadoc)
 	 * @see beans.IllnessScriptInterface#getType()
 	 */

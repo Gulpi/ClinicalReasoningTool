@@ -17,7 +17,7 @@ import model.ListItem;
  * @author ingahege
  *
  */
-public class RelationProblem extends Beans implements Relation, Rectangle, Serializable, VertexInterface{
+public class RelationProblem extends Beans implements Relation, Rectangle, Serializable{
 
 	private static final long serialVersionUID = 1L;
 	public static final int QUALIFIER_RARE = 0; 
@@ -29,7 +29,7 @@ public class RelationProblem extends Beans implements Relation, Rectangle, Seria
 	/**
 	 * can be problem, test, management, diagnosis
 	 */
-	private long sourceId; 
+	private long listItemId; 
 	/**
 	 * (Patient)Illnesscript
 	 */
@@ -63,12 +63,12 @@ public class RelationProblem extends Beans implements Relation, Rectangle, Seria
 	private ListItem problem;
 	
 	public RelationProblem(){}
-	public RelationProblem(long sourceId, long destId){
-		this.setSourceId(sourceId);
+	public RelationProblem(long listItemId, long destId){
+		this.setListItemId(listItemId);
 		this.setDestId(destId);
 	}
-	public long getSourceId() {return sourceId;}
-	public void setSourceId(long sourceId) {this.sourceId = sourceId;}
+	public long getListItemId() {return listItemId;}
+	public void setListItemId(long listItemId) {this.listItemId = listItemId;}
 	public long getDestId() {return destId;}
 	public void setDestId(long destId) {this.destId = destId;}	
 	public long getId() {return id;}
@@ -87,7 +87,7 @@ public class RelationProblem extends Beans implements Relation, Rectangle, Seria
 	
 	public boolean equals(Object o){
 		if(o!=null){
-			if(o instanceof RelationProblem && ((RelationProblem)o).getSourceId()==this.sourceId && ((RelationProblem)o).getDestId()==this.destId)
+			if(o instanceof RelationProblem && ((RelationProblem)o).getListItemId()==this.listItemId && ((RelationProblem)o).getDestId()==this.destId)
 				return true;
 		}
 		return false;
@@ -114,5 +114,12 @@ public class RelationProblem extends Beans implements Relation, Rectangle, Seria
 	 */
 	public int getVertextype() {
 		return TYPE_PROBLEM;
+	}
+	
+	/* (non-Javadoc)
+	 * @see beans.graph.VertexInterface#getLabel()
+	 */
+	public String getLabel(){
+		return problem.getName();
 	}
 }

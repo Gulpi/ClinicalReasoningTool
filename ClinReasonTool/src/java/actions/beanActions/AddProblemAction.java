@@ -9,7 +9,10 @@ import javax.faces.application.FacesMessage.Severity;
 import javax.faces.context.FacesContext;
 
 import beans.*;
+import beans.graph.Graph;
+import beans.graph.MultiEdge;
 import beans.relation.*;
+import controller.NavigationController;
 import database.DBClinReason;
 import actions.feedbackActions.FeedbackCreator;
 import actions.scoringActions.ProblemScoringAction;
@@ -53,11 +56,6 @@ public class AddProblemAction implements AddAction, Scoreable, FeedbackCreator{
 		addProblem(id, name, (int)x, (int)y);
 	}
 	
-	/*private void addProblem(String idStr, String name){
-		long id = Long.valueOf(idStr.trim());
-		addProblem(id, name);
-	}*/
-	
 	private void addProblem(long id, String name, int x, int y){
 		if(patIllScript.getProblems()==null) patIllScript.setProblems(new ArrayList<RelationProblem>());
 		RelationProblem relProb = new RelationProblem(id, patIllScript.getId());		
@@ -79,6 +77,7 @@ public class AddProblemAction implements AddAction, Scoreable, FeedbackCreator{
 		relProb.setProblem(new DBClinReason().selectListItemById(id));
 		save(relProb);
 		notifyLog(relProb);
+		updateGraph(relProb);
 		triggerScoringAction(relProb);		
 	}
 	
@@ -112,7 +111,7 @@ public class AddProblemAction implements AddAction, Scoreable, FeedbackCreator{
 	 * @see beanActions.AddAction#notifyLog(beans.relation.Relation)
 	 */
 	public void notifyLog(Relation relProb){
-		LogEntry le = new LogEntry(LogEntry.ADDPROBLEM_ACTION, patIllScript.getSessionId(), relProb.getSourceId());
+		LogEntry le = new LogEntry(LogEntry.ADDPROBLEM_ACTION, patIllScript.getSessionId(), relProb.getListItemId());
 		le.save();
 	}
 	
@@ -128,6 +127,21 @@ public class AddProblemAction implements AddAction, Scoreable, FeedbackCreator{
 	public void triggerFeedbackAction() {
 		// TODO Auto-generated method stub
 		
+	}
+
+	/* (non-Javadoc)
+	 * @see actions.beanActions.AddAction#updateGraph(beans.relation.Relation)
+	 */
+	public void updateGraph(Relation rel) {
+		Graph graph = new NavigationController().getCRTFacesContext().getGraph();
+		graph.addVertex(rel, IllnessScriptInterface.TYPE_LEARNER_CREATED);	
+		// add implicit edges:
+		if(patIllScript.getDiagnoses()!=null){
+			for(int i=0; i < patIllScript.getDiagnoses().size(); i++){
+				graph.addImplicitEdge(rel.getListItemId(), patIllScript.getDiagnoses().get(i).getListItemId(), IllnessScriptInterface.TYPE_LEARNER_CREATED);
+			}
+		}
+		System.out.println(graph.toString());
 	}
 
 }

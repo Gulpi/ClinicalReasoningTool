@@ -26,7 +26,7 @@ public class MoveProblemAction implements MoveAction{
 	 * @see beanActions.MoveAction#notifyLog(beans.relation.Relation)
 	 */
 	public void notifyLog(Relation relBeforeReSort) {
-		LogEntry le = new LogEntry(LogEntry.MOVEPROBLEM_ACTION, patIllScript.getSessionId(), relBeforeReSort.getSourceId(), relBeforeReSort.getOrder());
+		LogEntry le = new LogEntry(LogEntry.MOVEPROBLEM_ACTION, patIllScript.getSessionId(), relBeforeReSort.getListItemId(), relBeforeReSort.getOrder());
 		le.save();			
 	}
 

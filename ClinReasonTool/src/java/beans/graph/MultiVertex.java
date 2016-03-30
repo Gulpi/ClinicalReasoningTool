@@ -1,9 +1,6 @@
 package beans.graph;
 
 import beans.IllnessScriptInterface;
-import beans.relation.Relation;
-import beans.relation.RelationProblem;
-
 /**
  * This is a vertex container, that can contains from which soure this vertex has been added.
  * @author ingahege
@@ -17,10 +14,13 @@ public class MultiVertex {
 	private VertexInterface illScriptVertex;
 	private long vertexId; //the ListItemId
 	private int type;
+	private String label;
 	public MultiVertex(){}
 	public MultiVertex(VertexInterface vertex, int illnessScriptType){
 		type = vertex.getVertextype();
-		addVertexInterface(vertex, illnessScriptType);
+		label = vertex.getLabel();
+		vertexId = vertex.getVertexId();
+		this.addVertexInterface(vertex, illnessScriptType);
 	}
 	public long getVertexId() {return vertexId;}
 	public void setVertexId(long vertexId) {this.vertexId = vertexId;}
@@ -54,6 +54,27 @@ public class MultiVertex {
 		if(expertVertex!=null && expertVertex.equals(vertexIF)) return true;
 		if(illScriptVertex!=null && illScriptVertex.equals(vertexIF)) return true;
 		return false;
+	}
+	
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	public String toString(){
+		return label+" ("+vertexId+"), learner: "+ isLearnerVertex() + ", exp: " + isExpertVertex() + ", illscript: " + isIllScriptVertex();
+	}
+	
+	public boolean isLearnerVertex(){
+		if(learnerVertex==null) return false;
+		return true;
+	}
+	public boolean isExpertVertex(){
+		if(expertVertex==null) return false;
+		return true;
+	}
+	
+	public boolean isIllScriptVertex(){
+		if(illScriptVertex==null) return false;
+		return true;
 	}
 		
 }

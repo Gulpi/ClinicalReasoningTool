@@ -6,6 +6,7 @@ import javax.faces.FactoryFinder;
 import javax.faces.application.*;
 import javax.faces.bean.*;
 import javax.faces.context.FacesContext;
+import javax.management.relation.Relation;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpSessionEvent;
 import javax.servlet.http.HttpSessionListener;
@@ -13,6 +14,7 @@ import javax.servlet.http.HttpSessionListener;
 import beans.IllnessScript;
 import beans.PatientIllnessScript;
 import beans.graph.Graph;
+import beans.relation.RelationDiagnosis;
 import database.DBClinReason;
 import database.HibernateUtil;
 
@@ -45,6 +47,7 @@ public class AppBean extends ApplicationWrapper implements HttpSessionListener{
 	 */
 	public static Map<Long, List<IllnessScript>> ilnessScripts;
 
+	public static Map<Long, Graph> graph;
 	
 	/**
 	 * called when the application is started... We init Hibernate and a ViewHandler (for Locale handling)
@@ -72,21 +75,36 @@ public class AppBean extends ApplicationWrapper implements HttpSessionListener{
 		if(parentId>0 && !expertPatIllScripts.containsKey(new Long(parentId))){
 			PatientIllnessScript expScript = new DBClinReason().selectExpertPatIllScript(parentId);
 			if(expScript!=null) expertPatIllScripts.put(new Long(parentId), expScript);
+			//if(graphs!=null && graphs.get(new Long(parentId)!=null)) return
+			//todo init graphs?
 		}
 	}
+	
 	
 	/**
 	 * We can have a list of IllnessScripts per VP (patient can suffer from more than one diagnosis). 
 	 * If the list has not yet been loaded, we load it now and put it into the ilnessScripts Map.
 	 * @param parentId
 	 */
-	public synchronized void addIllnessScriptForParentId(long parentId){
+	/*public synchronized void addIllnessScriptForParentId(long parentId){
 		if(ilnessScripts==null) ilnessScripts = new HashMap<Long, List<IllnessScript>>();
 		if(parentId>0 && !ilnessScripts.containsKey(new Long(parentId))){
 			List<IllnessScript> scripts = new DBClinReason().selectIllScriptByParentId(parentId);
 			if(scripts!=null) ilnessScripts.put(new Long(parentId), scripts);
+			//todo init graphs?
+		}
+	}*/
+	
+	public synchronized void addIllnessScriptForDiagnoses(List diagnoses, long parentId){
+		if(ilnessScripts==null) ilnessScripts = new HashMap<Long, List<IllnessScript>>();
+		if(parentId>0 && !ilnessScripts.containsKey(new Long(parentId))){
+			List<IllnessScript> scripts = new DBClinReason().selectIllScriptByDiagnoses(diagnoses);
+			if(scripts!=null) ilnessScripts.put(new Long(parentId), scripts);
+			//todo init graphs?
 		}
 	}
+	
+	
 	
 	
 	public static PatientIllnessScript getExpertPatIllScript(long parentId) {

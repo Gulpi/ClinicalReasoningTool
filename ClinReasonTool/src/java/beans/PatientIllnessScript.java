@@ -199,21 +199,29 @@ public class PatientIllnessScript extends Beans/*extends Node*/ implements Illne
 		}		
 	}
 	
-	public RelationProblem getProblemBySourceId(long id){return (RelationProblem) getRelationBySourceId(problems, id);}	
+	//public RelationProblem getProblemBySourceId(long id){return (RelationProblem) getRelationByListItemId(problems, id);}	
 	public RelationProblem getProblemById(long id){return (RelationProblem) getRelationById(problems, id);}	
-	public RelationDiagnosis getDiagnosisBySourceId(long id){return (RelationDiagnosis) getRelationBySourceId(diagnoses, id);}
+	//public RelationDiagnosis getDiagnosisBySourceId(long id){return (RelationDiagnosis) getRelationByListItemId(diagnoses, id);}
 	public RelationDiagnosis getDiagnosisById(long id){return (RelationDiagnosis) getRelationById(diagnoses, id);}	
-	public RelationTest getTestBySourceId(long id){return (RelationTest) getRelationBySourceId(tests, id);}	
+	//public RelationTest getTestBySourceId(long id){return (RelationTest) getRelationByListItemId(tests, id);}	
 	public RelationTest getTestById(long id){return (RelationTest) getRelationById(tests, id);}		
-	public RelationManagement getMngBySourceId(long id){return (RelationManagement) getRelationBySourceId(mngs, id);}	
+	//public RelationManagement getMngBySourceId(long id){return (RelationManagement) getRelationByListItemId(mngs, id);}	
 	public RelationManagement getMngById(long id){return (RelationManagement) getRelationById(mngs, id);}	
 
+	public Relation getRelationByListItemIdAndType(long id, int type){
+		if(type==ConceptMapController.TYPE_PROB) return getRelationByListItemId(this.problems, id);
+		if(type==ConceptMapController.TYPE_DDX) return getRelationByListItemId(this.diagnoses, id);
+		if(type==ConceptMapController.TYPE_MNG) return getRelationByListItemId(this.mngs, id);
+		if(type==ConceptMapController.TYPE_TEST) return getRelationByListItemId(this.tests, id);
+		
+		return null;
+	}
 	
-	private Relation getRelationBySourceId(List items, long sourceId){
+	private Relation getRelationByListItemId(List items, long listItemId){
 		if(items==null || items.isEmpty()) return null;
 		for(int i=0; i< items.size(); i++){
 			Relation rel = (Relation) items.get(i);
-			if(rel.getSourceId()==sourceId) return rel;
+			if(rel.getListItemId()==listItemId) return rel;
 		}
 		return null; //nothing found
 	}
@@ -225,6 +233,15 @@ public class PatientIllnessScript extends Beans/*extends Node*/ implements Illne
 			if(rel.getId()==itemId) return rel;
 		}
 		return null; //nothing found
+	}
+	
+	public Relation getRelationByIdAndType(long id, int type){
+		if(type==ConceptMapController.TYPE_PROB) return getRelationById(this.problems, id);
+		if(type==ConceptMapController.TYPE_DDX) return getRelationById(this.diagnoses, id);
+		if(type==ConceptMapController.TYPE_MNG) return getRelationById(this.mngs, id);
+		if(type==ConceptMapController.TYPE_TEST) return getRelationById(this.tests, id);
+		
+		return null;
 	}
 	
 	private void notifyLog(){

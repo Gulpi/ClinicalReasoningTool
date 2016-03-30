@@ -15,4 +15,5 @@ public interface AddAction{
 	void add(String id, String name);
 	//void initScoreCalc(Relation rel);
 	void createErrorMessage(String summary, String details, Severity sev);
+	void updateGraph(Relation rel);
 }

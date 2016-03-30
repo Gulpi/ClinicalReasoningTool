@@ -33,19 +33,19 @@ public class ChangeMngAction implements ChgAction, Scoreable{
 	
 	public void changeMng(long newMngId, long mngRel){
 		RelationManagement mngToChg = patIllScript.getMngById(mngRel);
-		ListItem oldMng = new DBClinReason().selectListItemById(mngToChg.getSourceId());
+		ListItem oldMng = new DBClinReason().selectListItemById(mngToChg.getListItemId());
 		ListItem newMng = new DBClinReason().selectListItemById(newMngId);
 		if(mngToChg!=null && newMng!=null && oldMng!=null){
 			notifyLog(mngToChg, newMngId);
 			mngToChg.setManagement(newMng);
-			mngToChg.setSourceId(newMng.getItem_id());
+			mngToChg.setListItemId(newMng.getItem_id());
 			save(mngToChg);		
 		}
 		//else -> error...
 	}
 	
 	public void notifyLog(Beans mngToChg, long newMngId){
-		LogEntry le = new LogEntry(LogEntry.CHGMNG_ACTION, patIllScript.getSessionId(), ((Relation)mngToChg).getSourceId(), newMngId);
+		LogEntry le = new LogEntry(LogEntry.CHGMNG_ACTION, patIllScript.getSessionId(), ((Relation)mngToChg).getListItemId(), newMngId);
 		le.save();
 	}
 	

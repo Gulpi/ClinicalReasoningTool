@@ -8,13 +8,16 @@ import javax.faces.application.FacesMessage.Severity;
 
 import actions.scoringActions.Scoreable;
 import beans.PatientIllnessScript;
+import beans.graph.Graph;
 import beans.relation.Relation;
 import controller.ConceptMapController;
+import controller.NavigationController;
 import beans.Connection;
+import beans.IllnessScriptInterface;
 import beans.LogEntry;
 import database.DBClinReason;
 
-public class AddConnectionAction implements AddAction, Scoreable{
+public class AddConnectionAction implements Scoreable{
 
 	private PatientIllnessScript patIllScript;
 	
@@ -31,7 +34,7 @@ public class AddConnectionAction implements AddAction, Scoreable{
 
 	public void notifyLog(Relation rel) {}	
 	public void notifyLog(Connection cnx) {
-		LogEntry le = new LogEntry(LogEntry.ADDPROBLEM_ACTION, patIllScript.getSessionId(), cnx.getStartId());
+		LogEntry le = new LogEntry(LogEntry.ADDCONNECTION_ACTION, patIllScript.getSessionId(), cnx.getStartId());
 		le.save();	
 	}
 
@@ -60,7 +63,7 @@ public class AddConnectionAction implements AddAction, Scoreable{
 		//relProb.setOrder(patIllScript.getProblems().size());
 		save(cnx); //first save to get an id...
 		patIllScript.getConns().put(new Long(cnx.getId()), cnx);
-		
+		updateGraph(cnx);
 		notifyLog(cnx);
 		//initScoreCalc(relProb);		
 	}
@@ -71,10 +74,17 @@ public class AddConnectionAction implements AddAction, Scoreable{
 		
 	}
 
-	@Override
 	public void createErrorMessage(String summary, String details, Severity sev) {
 		// TODO Auto-generated method stub
 		
 	}
-
+	
+	/* (non-Javadoc)
+	 * @see actions.beanActions.AddAction#updateGraph(beans.relation.Relation)
+	 */
+	public void updateGraph(Connection cnx) {
+		Graph graph = new NavigationController().getCRTFacesContext().getGraph();
+		graph.addExplicitEdge(cnx, patIllScript, IllnessScriptInterface.TYPE_LEARNER_CREATED);
+		System.out.println(graph.toString());
+	}
 }

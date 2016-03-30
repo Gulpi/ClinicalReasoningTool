@@ -32,19 +32,19 @@ public class ChangeProblemAction implements ChgAction, Scoreable, FeedbackCreato
 	
 	public void changeProblem(long newProbId, long probRel){
 		RelationProblem probToChg = patIllScript.getProblemById(probRel);
-		ListItem oldProblem = new DBClinReason().selectListItemById(probToChg.getSourceId());
+		ListItem oldProblem = new DBClinReason().selectListItemById(probToChg.getListItemId());
 		ListItem newProblem = new DBClinReason().selectListItemById(newProbId);
 		if(probToChg!=null && newProblem!=null && oldProblem!=null){
 			notifyLog(probToChg, newProbId);
 			probToChg.setProblem(newProblem);
-			probToChg.setSourceId(newProblem.getItem_id());
+			probToChg.setListItemId(newProblem.getItem_id());
 			save(probToChg);		
 		}
 		//else -> error...
 	}
 	
 	public void notifyLog(Beans probToChg, long newProbId){
-		LogEntry le = new LogEntry(LogEntry.CHGPROBLEM_ACTION, patIllScript.getSessionId(), ((Relation)probToChg).getSourceId(), newProbId);
+		LogEntry le = new LogEntry(LogEntry.CHGPROBLEM_ACTION, patIllScript.getSessionId(), ((Relation)probToChg).getListItemId(), newProbId);
 		le.save();
 	}
 	

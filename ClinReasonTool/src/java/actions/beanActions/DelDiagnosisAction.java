@@ -26,7 +26,7 @@ public class DelDiagnosisAction implements DelAction{
 	 * @see beanActions.DelAction#notifyLog(beans.relation.Relation)
 	 */
 	public void notifyLog(Object o) {
-		LogEntry le = new LogEntry(LogEntry.DELDIAGNOSIS_ACTION, patIllScript.getSessionId(), ((Relation)o).getSourceId());
+		LogEntry le = new LogEntry(LogEntry.DELDIAGNOSIS_ACTION, patIllScript.getSessionId(), ((Relation)o).getListItemId());
 		le.save();		
 	}
 

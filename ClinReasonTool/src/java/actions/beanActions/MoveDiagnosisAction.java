@@ -26,7 +26,7 @@ public class MoveDiagnosisAction implements MoveAction{
 	 * @see beanActions.MoveAction#notifyLog(beans.relation.Relation)
 	 */
 	public void notifyLog(Relation rel) {
-		LogEntry le = new LogEntry(LogEntry.MOVEDIAGNOSIS_ACTION, patIllScript.getSessionId(), rel.getSourceId(), rel.getOrder());
+		LogEntry le = new LogEntry(LogEntry.MOVEDIAGNOSIS_ACTION, patIllScript.getSessionId(), rel.getListItemId(), rel.getOrder());
 		le.save();			
 	}
 

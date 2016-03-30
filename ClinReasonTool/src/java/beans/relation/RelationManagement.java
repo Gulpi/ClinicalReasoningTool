@@ -15,7 +15,7 @@ public class RelationManagement extends Beans implements Relation, Rectangle, Se
 	/**
 	 * can be problem, test, management, diagnosis
 	 */
-	private long sourceId; 
+	private long listItemId; 
 	/**
 	 * (Patient)Illnesscript
 	 */
@@ -35,8 +35,8 @@ public class RelationManagement extends Beans implements Relation, Rectangle, Se
 	private ListItem management;
 	
 	public RelationManagement(){}
-	public RelationManagement(long sourceId, long destId){
-		this.setSourceId(sourceId);
+	public RelationManagement(long listItemId, long destId){
+		this.setListItemId(listItemId);
 		this.setDestId(destId);
 	}
 		
@@ -47,8 +47,8 @@ public class RelationManagement extends Beans implements Relation, Rectangle, Se
 	public ListItem getManagement() {return management;}
 	public void setManagement(ListItem management) {this.management = management;}
 	public void setId(long id) {this.id = id;}	
-	public long getSourceId() {return sourceId;}
-	public void setSourceId(long sourceId) {this.sourceId = sourceId;}
+	public long getListItemId() {return listItemId;}
+	public void setListItemId(long listItemId) {this.listItemId = listItemId;}
 	public long getDestId() {return destId;}
 	public void setDestId(long destId) {this.destId = destId;}
 	public int getOrder() {return order;}
@@ -57,18 +57,45 @@ public class RelationManagement extends Beans implements Relation, Rectangle, Se
 	public String getIdWithPrefix(){ return ConceptMapController.PREFIX_MNG+this.getId();}
 
 	
+	/* (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
 	public boolean equals(Object o){
 		if(o!=null){
-			if(o instanceof RelationManagement && ((RelationManagement)o).getSourceId()==this.sourceId && ((RelationManagement)o).getDestId()==this.destId)
+			if(o instanceof RelationManagement && ((RelationManagement)o).getListItemId()==this.listItemId && ((RelationManagement)o).getDestId()==this.destId)
 				return true;
 		}
 		return false;
 	}
 	
+	/* (non-Javadoc)
+	 * @see beans.relation.Rectangle#toJson()
+	 */
 	public String toJson(){
 		StringBuffer sb = new StringBuffer();		
 		sb.append("{\"label\":\""+this.getManagement().getName()+"\",\"shortlabel\":\""+this.getManagement().getShortName()+"\",\"id\": \""+getIdWithPrefix()+"\",\"x\": "+this.x+",\"y\":"+this.y+"}");		
 		return sb.toString();
+	}
+	
+	/* (non-Javadoc)
+	 * @see beans.graph.VertexInterface#getVertexId()
+	 */
+	public long getVertexId() {
+		return this.getManagement().getItem_id();
+
+	}
+	/* (non-Javadoc)
+	 * @see beans.graph.VertexInterface#getVertextype()
+	 */
+	public int getVertextype() {
+		return TYPE_MNG;
+	}
+	
+	/* (non-Javadoc)
+	 * @see beans.graph.VertexInterface#getLabel()
+	 */
+	public String getLabel(){
+		return management.getName();
 	}
 	
 }

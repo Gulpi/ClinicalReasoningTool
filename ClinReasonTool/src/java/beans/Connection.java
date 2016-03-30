@@ -7,7 +7,8 @@ import java.sql.Timestamp;
 import controller.ConceptMapController;
 
 /**
- * Connection in the concept map between problem-ddx,...
+ * Connection in the concept map between Relation objects, e.g. ProblemRelation -> DiagnosisRelation. 
+ * CAVE: start- and targetIds are the ids of the Relations NOT the listItems! 
  * @author ingahege
  *
  */
@@ -19,11 +20,11 @@ public class Connection extends Beans implements Serializable{
 	 */
 	private long id;
 	/**
-	 * e.g. Problem
+	 * id of a Relation (e.g. a ProblemRelation) object
 	 */
 	private long startId; 
 	/**
-	 * e.g. DDX
+	 * id of a Relation (e.g. a DiagnosisRelation) object
 	 */
 	private long targetId;
 	private long illScriptId;

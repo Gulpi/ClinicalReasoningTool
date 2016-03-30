@@ -4,6 +4,7 @@ import java.beans.Beans;
 import java.util.*;
 
 import javax.faces.context.FacesContext;
+import javax.management.relation.Relation;
 
 import org.hibernate.*;
 import org.hibernate.cfg.Configuration;
@@ -12,7 +13,9 @@ import org.hibernate.criterion.*;
 import beans.CRTFacesContext;
 import beans.IllnessScript;
 import beans.PatientIllnessScript;
+import beans.relation.RelationDiagnosis;
 import beans.relation.RelationProblem;
+import controller.IllnessScriptController;
 import model.ListItem;
 import util.StringUtilities;
 
@@ -146,6 +149,18 @@ public class DBClinReason /*extends HibernateUtil*/{
     public List<IllnessScript> selectIllScriptByProblems(List<RelationProblem> probs){
     	return null; //we need a matching algorithm here....
     }
+    
+    public List<IllnessScript> selectIllScriptByDiagnoses(List ddx){
+    	if(ddx==null) return null; 
+    	Session s = instance.getInternalSession(Thread.currentThread(), false);
+    	Criteria criteria = s.createCriteria(IllnessScript.class,"IllnessScript");
+    	Long[] ids = new IllnessScriptController().getListItemsFromRelationList(ddx);
+    	if(ids!=null){
+    		criteria.add(Restrictions.in("diagnosisId", ids));
+    		return criteria.list();
+    	}
+    	else return null;
+    }
     /**
      * Select the IllnessScript
      * @param sessionId
@@ -183,6 +198,8 @@ public class DBClinReason /*extends HibernateUtil*/{
     	s.close();
     	return ps;    	
     }
+   
+    
     /**
      * Select the PatientIllnessScript for the sessionId from the database. 
      * @param sessionId

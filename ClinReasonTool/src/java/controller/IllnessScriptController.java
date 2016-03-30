@@ -4,9 +4,11 @@ import java.io.Serializable;
 import java.util.*;
 
 import javax.faces.context.FacesContext;
+import javax.management.relation.Relation;
 
 import beans.IllnessScript;
 import beans.PatientIllnessScript;
+import beans.graph.VertexInterface;
 import database.DBClinReason;
 
 /**
@@ -84,4 +86,15 @@ public class IllnessScriptController implements Serializable{
 		System.out.println("New PatIllScript created for session_id: " + sessionId);
 		return patillscript;
 	}
+	
+	public Long[] getListItemsFromRelationList(List rels){
+		if(rels==null) return null;
+		Long[] ids = new Long[rels.size()];
+		for(int i=0; i<rels.size(); i++){
+			ids[i] = new Long(((VertexInterface) rels.get(i)).getVertexId());
+		}
+		return ids;
+	}
+	
+	
 }

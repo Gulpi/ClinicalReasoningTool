@@ -27,7 +27,7 @@ public class RelationTest extends Beans implements Relation, Rectangle, Serializ
 	/**
 	 * can be problem, test, management, diagnosis
 	 */
-	private long sourceId; 
+	private long listItemId; 
 	/**
 	 * (Patient)Illnesscript
 	 */
@@ -60,12 +60,12 @@ public class RelationTest extends Beans implements Relation, Rectangle, Serializ
 	private ListItem test;
 	
 	public RelationTest(){}
-	public RelationTest(long sourceId, long destId){
-		this.setSourceId(sourceId);
+	public RelationTest(long listItemId, long destId){
+		this.setListItemId(listItemId);
 		this.setDestId(destId);
 	}
-	public long getSourceId() {return sourceId;}
-	public void setSourceId(long sourceId) {this.sourceId = sourceId;}
+	public long getListItemId() {return listItemId;}
+	public void setListItemId(long listItemId) {this.listItemId = listItemId;}
 	public long getDestId() {return destId;}
 	public void setDestId(long destId) {this.destId = destId;}	
 	public long getId() {return id;}
@@ -82,17 +82,41 @@ public class RelationTest extends Beans implements Relation, Rectangle, Serializ
 	//public void setCreationDate(Timestamp creationDate) {this.creationDate = creationDate;}
 	public String getIdWithPrefix(){ return ConceptMapController.PREFIX_TEST+this.getId();}
 	
+	/* (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
 	public boolean equals(Object o){
 		if(o!=null){
-			if(o instanceof RelationTest && ((RelationTest)o).getSourceId()==this.sourceId && ((RelationTest)o).getDestId()==this.destId)
+			if(o instanceof RelationTest && ((RelationTest)o).getListItemId()==this.listItemId && ((RelationTest)o).getDestId()==this.destId)
 				return true;
 		}
 		return false;
 	}
 	
+	/* (non-Javadoc)
+	 * @see beans.relation.Rectangle#toJson()
+	 */
 	public String toJson(){
 		StringBuffer sb = new StringBuffer();		
 		sb.append("{\"label\":\""+this.getTest().getName()+"\",\"shortlabel\":\""+this.getTest().getShortName()+"\",\"id\": \""+getIdWithPrefix()+"\",\"x\": "+this.x+",\"y\":"+this.y+"}");		
 		return sb.toString();
+	}
+	/* (non-Javadoc)
+	 * @see beans.graph.VertexInterface#getVertexId()
+	 */
+	public long getVertexId() {
+		return this.getTest().getItem_id();
+	}
+	/* (non-Javadoc)
+	 * @see beans.graph.VertexInterface#getVertextype()
+	 */
+	public int getVertextype() {
+		return TYPE_TEST;
+	}
+	/* (non-Javadoc)
+	 * @see beans.graph.VertexInterface#getLabel()
+	 */
+	public String getLabel(){
+		return test.getName();
 	}
 }

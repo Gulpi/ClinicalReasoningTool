@@ -6,5 +6,5 @@ package actions.scoringActions;
  *
  */
 public interface ScoringAction {
-	void scoreAddAction(long id);
+	void scoreAddAction(long listItemId, long patIllScriptId);
 }

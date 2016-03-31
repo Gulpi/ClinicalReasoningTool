@@ -1,10 +1,12 @@
 package controller;
 
+import java.io.InputStream;
 import java.util.*;
 
 import javax.faces.FactoryFinder;
 import javax.faces.application.*;
 import javax.faces.bean.*;
+import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.management.relation.Relation;
 import javax.servlet.ServletContext;
@@ -28,10 +30,14 @@ import database.HibernateUtil;
 @ApplicationScoped
 public class AppBean extends ApplicationWrapper implements HttpSessionListener{
 
-	public static final String DEFAULT_LOCALE="en"; 
-	public static final String[] ACCEPTED_LOCALES = new String[]{"en", "de"};
+	public static final String DEFAULT_LOCALE="en"; //TODO get from properties!
+	public static final String[] ACCEPTED_LOCALES = new String[]{"en", "de"}; //TODO get from properties!
 	public static List<Graph> graphs;
 	public static final String APP_KEY = "AppBean";
+	/**
+	 * Any application-wide properties, file is in WEB-INF/classes/globalsettings.properties
+	 */
+	public static final Properties properties = new Properties();
 	
 	/**
 	 * we dynamically load the experts' scripts into the map if a learner opens a VP that has not been
@@ -52,15 +58,19 @@ public class AppBean extends ApplicationWrapper implements HttpSessionListener{
 	/**
 	 * called when the application is started... We init Hibernate and a ViewHandler (for Locale handling)
 	 * We also put this AppBean into the ServletContext for later access to the applicationScoped scripts
+	 * Loading any 
 	 */
 	public AppBean(){
 		HibernateUtil.initHibernate();
 		setViewHandler(new CRTViewHandler(FacesContext.getCurrentInstance().getApplication().getViewHandler()));
 	    ServletContext context = (ServletContext) FacesContext.getCurrentInstance().getExternalContext().getContext();
 	    context.setAttribute(APP_KEY, this);
-	    
-		//ApplicationFactory factory = (ApplicationFactory) FactoryFinder.getFactory(FactoryFinder.APPLICATION_FACTORY);
-		//factory.setApplication(this);
+	    try{
+	    	//load properties for the application(file is in WEB-INF/classes:
+	    	InputStream input =  Thread.currentThread().getContextClassLoader().getResourceAsStream("globalsettings.properties");
+	    	properties.load(input);
+	    }
+	    catch(Exception e){}
 	    System.out.println("Init done");
 		//MeshImporter.main(null);
 	}
@@ -80,20 +90,6 @@ public class AppBean extends ApplicationWrapper implements HttpSessionListener{
 		}
 	}
 	
-	
-	/**
-	 * We can have a list of IllnessScripts per VP (patient can suffer from more than one diagnosis). 
-	 * If the list has not yet been loaded, we load it now and put it into the ilnessScripts Map.
-	 * @param parentId
-	 */
-	/*public synchronized void addIllnessScriptForParentId(long parentId){
-		if(ilnessScripts==null) ilnessScripts = new HashMap<Long, List<IllnessScript>>();
-		if(parentId>0 && !ilnessScripts.containsKey(new Long(parentId))){
-			List<IllnessScript> scripts = new DBClinReason().selectIllScriptByParentId(parentId);
-			if(scripts!=null) ilnessScripts.put(new Long(parentId), scripts);
-			//todo init graphs?
-		}
-	}*/
 	
 	public synchronized void addIllnessScriptForDiagnoses(List diagnoses, long parentId){
 		if(ilnessScripts==null) ilnessScripts = new HashMap<Long, List<IllnessScript>>();

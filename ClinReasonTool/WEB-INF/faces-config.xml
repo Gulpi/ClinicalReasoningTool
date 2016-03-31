@@ -36,6 +36,10 @@
       <base-name>properties.intlproperties</base-name>
       <var>prop</var>
    </resource-bundle>
+     <!--   <resource-bundle>
+        <base-name>properties.globalsettings</base-name>
+        <var>setting</var>
+    </resource-bundle>-->
 </application>  
 
   <!--  <application>

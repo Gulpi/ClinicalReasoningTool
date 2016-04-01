@@ -111,24 +111,17 @@ public class RelationDiagnosis extends Beans implements Relation, Rectangle, Ser
 		return false;
 	}
 
-	/* (non-Javadoc)
-	 * @see beans.graph.VertexInterface#getVertexId()
-	 */
-	public long getVertexId() {
-		return this.getDiagnosis().getItem_id();
-	}
 
 	/* (non-Javadoc)
-	 * @see beans.graph.VertexInterface#getVertextype()
+	 * @see beans.relation.Relation#getRelationType()
 	 */
-	public int getVertextype() {
-		return TYPE_DDX;
-	}
-	
+	public int getRelationType() {return TYPE_DDX;}	
 	/* (non-Javadoc)
-	 * @see beans.graph.VertexInterface#getLabel()
+	 * @see beans.relation.Relation#getLabel()
 	 */
-	public String getLabel(){
-		return diagnosis.getName();
-	}
+	public String getLabel(){return diagnosis.getName();}
+	/* (non-Javadoc)
+	 * @see beans.relation.Relation#getListItem()
+	 */
+	public ListItem getListItem() {return diagnosis;}
 }

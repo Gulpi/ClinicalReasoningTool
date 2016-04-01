@@ -1,7 +1,9 @@
 package beans.relation;
 import java.sql.Timestamp;
+import java.util.*;
 
 import beans.graph.VertexInterface;
+import model.ListItem;
 
 //import org.jgrapht.graph.DefaultWeightedEdge;
 
@@ -10,7 +12,7 @@ import beans.graph.VertexInterface;
  * to an (Patient) IllnessScript. 
  * @author ingahege
  */
-public interface Relation extends VertexInterface{
+public interface Relation{
 
 	public static final int TYPE_PROBLEM = 1;
 	public static final int TYPE_DDX = 2;
@@ -23,6 +25,8 @@ public interface Relation extends VertexInterface{
 	 */
 	public long getListItemId(); 
 	public void setListItemId(long lisItemId); 
+	public ListItem getListItem();
+	public String getLabel();
 	/**
 	 * =PatientIllnessScriptId or IllnessScriptId
 	 * @return
@@ -32,6 +36,7 @@ public interface Relation extends VertexInterface{
 	public int getOrder(); 
 	public void setOrder(int o); 	
 	public long getId();
+	public int getRelationType();
 
 
 }

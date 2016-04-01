@@ -71,6 +71,7 @@ public class AppBean extends ApplicationWrapper implements HttpSessionListener{
 	    	properties.load(input);
 	    }
 	    catch(Exception e){}
+	    new JsonCreator().initJsonExport();
 	    System.out.println("Init done");
 		//MeshImporter.main(null);
 	}

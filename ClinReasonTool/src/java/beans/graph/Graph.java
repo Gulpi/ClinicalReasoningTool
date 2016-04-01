@@ -5,6 +5,7 @@ import java.util.*;
 import org.jgrapht.graph.DirectedWeightedMultigraph;
 
 import beans.Connection;
+import beans.IllnessScriptInterface;
 import beans.PatientIllnessScript;
 import beans.relation.Relation;
 import controller.GraphController;
@@ -18,7 +19,7 @@ import controller.GraphController;
  * @author ingahege
  *
  */
-public class Graph extends DirectedWeightedMultigraph<MultiVertex, MultiEdge> {
+public class Graph extends DirectedWeightedMultigraph<VertexInterface, MultiEdge> {
 
 	private static final long serialVersionUID = 1L;
 	private long parentId; //e.g. VPId,...
@@ -41,10 +42,9 @@ public class Graph extends DirectedWeightedMultigraph<MultiVertex, MultiEdge> {
 	public long getExpertPatIllScriptId() {return expertPatIllScriptId;}
 	public void setExpertPatIllScriptId(long expertPatIllScriptId) {this.expertPatIllScriptId = expertPatIllScriptId;}
 	public List<Long> getIllScriptIds() {return illScriptIds;}
-	public void setIllScriptId(List illScriptIds) {this.illScriptIds = illScriptIds;}
+	public void setIllScriptId(List<Long> illScriptIds) {this.illScriptIds = illScriptIds;}
 	public void addIllScriptId(long id){
-		if(illScriptIds==null)
-			illScriptIds = new ArrayList<Long>();
+		if(illScriptIds==null) illScriptIds = new ArrayList<Long>();
 		if(!illScriptIds.contains(new Long(id))) illScriptIds.add(new Long(id));
 	}
 
@@ -56,15 +56,22 @@ public class Graph extends DirectedWeightedMultigraph<MultiVertex, MultiEdge> {
 	 * @param illScriptType
 	 * @return
 	 */
-	public boolean addVertex(VertexInterface vertex, int illScriptType){
-		MultiVertex multiVertex = getVertexById(vertex.getVertexId());
+	public boolean addMultiVertex(Relation vertex, int illScriptType){
+		VertexInterface multiVertex = getVertexById(vertex.getListItemId());		
 		if(multiVertex==null){
 			multiVertex = new MultiVertex(vertex, illScriptType);
-			return super.addVertex(multiVertex);
+			super.addVertex(multiVertex);
 		}
-		if(multiVertex.containsVertexInterface(vertex)) return false;
-		multiVertex.addVertexInterface(vertex, illScriptType);
+		else if(((MultiVertex)multiVertex).containsRelation(vertex)) return false;
+		else ((MultiVertex)multiVertex).addRelation(vertex, illScriptType);
+		if(illScriptType==IllnessScriptInterface.TYPE_EXPERT_CREATED){
+			gctrl.addSynonymaVerticesAndEdges((MultiVertex)multiVertex);
+		}
 		return true;
+	}
+	
+	public boolean addVertex(SimpleVertex vertex){
+		return super.addVertex(vertex);
 	}
 	
 	/**
@@ -76,12 +83,10 @@ public class Graph extends DirectedWeightedMultigraph<MultiVertex, MultiEdge> {
 		Relation source = patIllScript.getRelationByIdAndType(cnx.getStartId(), cnx.getStartType());
 		Relation target = patIllScript.getRelationByIdAndType(cnx.getTargetId(), cnx.getTargetType());
 		createAndAddEdge(getVertexById(source.getListItemId()), getVertexById(target.getListItemId()), type, MultiEdge.WEIGHT_EXPLICIT);
-
 	}
 	
 	public void addImplicitEdge(long sourceId, long targetId, int type){
 		createAndAddEdge(this.getVertexById(sourceId), this.getVertexById(targetId), type, MultiEdge.WEIGHT_IMPLICIT);
-		
 	}
 	
 	/**
@@ -93,7 +98,7 @@ public class Graph extends DirectedWeightedMultigraph<MultiVertex, MultiEdge> {
 	 * @param weight (implicit or explicit - see defintions in MultiEdge)
 	 * @return
 	 */
-	public boolean createAndAddEdge(MultiVertex source, MultiVertex target, int type, int weight){
+	public boolean createAndAddEdge(VertexInterface source, VertexInterface target, int type, int weight){
 		if(source==null || target==null)
 			return false;
 		MultiEdge e = getEdge(source, target); 
@@ -105,19 +110,12 @@ public class Graph extends DirectedWeightedMultigraph<MultiVertex, MultiEdge> {
 		return false; //edge already there, but we have changed the params of it.
 		
 	}
-		
-	/* (non-Javadoc)
-	 * @see org.jgrapht.graph.AbstractBaseGraph#addEdge(java.lang.Object, java.lang.Object, java.lang.Object)
-	 */
-	/*public boolean addEdge(MultiVertex source, MultiVertex target, MultiEdge e){		
-		return super.addEdge(source, target, e);
-	}*/
 
-	public MultiVertex getVertexById(long vertexId){
-		Iterator it = this.vertexSet().iterator();
+	public VertexInterface getVertexById(long vertexId){
+		Iterator<VertexInterface> it = this.vertexSet().iterator();
 		while(it.hasNext()){
-			MultiVertex vi = (MultiVertex) it.next();
-			if(vi.getVertexId() == vertexId) return vi;
+			VertexInterface vi = (VertexInterface) it.next();
+			if(vi.getVertexId().equals(vertexId)) return vi;
 		}
 		return null;
 	}
@@ -130,7 +128,7 @@ public class Graph extends DirectedWeightedMultigraph<MultiVertex, MultiEdge> {
 		StringBuffer sb = new StringBuffer();
 		sb.append("Graph: parent_id = " + this.parentId + ", vertices[ ");
 		if(this.vertexSet()!=null){
-			Iterator it = this.vertexSet().iterator();
+			Iterator<VertexInterface> it = this.vertexSet().iterator();
 			while(it.hasNext()){
 				sb.append(it.next().toString() +";\n ");
 			}
@@ -138,7 +136,7 @@ public class Graph extends DirectedWeightedMultigraph<MultiVertex, MultiEdge> {
 		}
 		if(this.edgeSet()!=null){
 			sb.append("Edges[ ");
-			Iterator it = this.edgeSet().iterator();
+			Iterator<MultiEdge> it = this.edgeSet().iterator();
 			while(it.hasNext()){
 				sb.append(it.next().toString() +"; ");
 			}

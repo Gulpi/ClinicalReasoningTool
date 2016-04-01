@@ -4,19 +4,19 @@ import java.io.Serializable;
 import java.util.*;
 
 import javax.faces.context.FacesContext;
-import javax.management.relation.Relation;
-
-import beans.IllnessScript;
 import beans.PatientIllnessScript;
-import beans.graph.VertexInterface;
+import beans.relation.Relation;
 import database.DBClinReason;
 
 /**
- * Helper class for creating and loading Illness scripts based on sessionId oder userId.
+ * Helper class for creating and loading Illness scripts based on sessionId, userId, or id....
  * @author ingahege
  *
  */
 public class IllnessScriptController implements Serializable{
+
+	private static final long serialVersionUID = 1L;
+
 	/**
 	 * We load the patientIllnessScripts of a user
 	 * @return  List<PatientIllnessScript> or null
@@ -87,11 +87,11 @@ public class IllnessScriptController implements Serializable{
 		return patillscript;
 	}
 	
-	public Long[] getListItemsFromRelationList(List rels){
+	public Long[] getListItemsFromRelationList(List<Relation> rels){
 		if(rels==null) return null;
 		Long[] ids = new Long[rels.size()];
 		for(int i=0; i<rels.size(); i++){
-			ids[i] = new Long(((VertexInterface) rels.get(i)).getVertexId());
+			ids[i] = new Long(((Relation) rels.get(i)).getListItemId());
 		}
 		return ids;
 	}

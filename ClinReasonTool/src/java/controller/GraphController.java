@@ -39,7 +39,7 @@ public class GraphController {
 	    	addVerticesOfPatientIllnessScript(expIllScript, IllnessScriptInterface.TYPE_EXPERT_CREATED);
 	    	addExplicitEdgesOfPatientIllnessScript(expIllScript, IllnessScriptInterface.TYPE_EXPERT_CREATED); //and connect all implicitly
 		    addImplicitEdgesOfPatientIllnessScript(expIllScript,  IllnessScriptInterface.TYPE_EXPERT_CREATED);
-
+		    
 	    	//TODO add synonyma in ListItem...
 	    }
 	}
@@ -87,12 +87,31 @@ public class GraphController {
 		 addVertices( patIllScript.getTests(), illnessScriptType);
 	}
 	
+	/**
+	 * @param vertices (List of Relation items)
+	 * @param illnessScriptType
+	 */
 	private void addVertices(List vertices, int illnessScriptType){
 		if(vertices==null) return;
 		for(int i=0; i<vertices.size(); i++){
-			boolean added = graph.addVertex((VertexInterface) vertices.get(i), illnessScriptType);
+			//add 
+			graph.addMultiVertex((Relation) vertices.get(i), illnessScriptType);
 		}
-		
+	}
+
+	public void addSynonymaVerticesAndEdges(MultiVertex vertex){
+		//Relation rel = (Relation) vertex;
+		Relation rel = vertex.getExpertVertex();
+		Set<String> synonyma = rel.getListItem().getSynonyma();
+		if(synonyma==null || synonyma.isEmpty()) return; //no synonyma for this ListItem
+		Iterator<String> it = synonyma.iterator();
+		int counter = 1;
+		while(it.hasNext()){
+			SimpleVertex synVertex = new SimpleVertex(it.next(), IllnessScriptInterface.TYPE_SYNONYMA, vertex.getVertexId(), counter);
+			graph.addVertex(synVertex);
+			graph.createAndAddEdge(synVertex, vertex, IllnessScriptInterface.TYPE_SYNONYMA, MultiEdge.WEIGHT_NONE);
+			counter++;
+		}		
 	}
 	
 	private void addExplicitEdgesOfPatientIllnessScript(PatientIllnessScript patIllScript, int type){

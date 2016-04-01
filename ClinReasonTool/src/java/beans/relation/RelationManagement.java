@@ -77,25 +77,19 @@ public class RelationManagement extends Beans implements Relation, Rectangle, Se
 		return sb.toString();
 	}
 	
-	/* (non-Javadoc)
-	 * @see beans.graph.VertexInterface#getVertexId()
-	 */
-	public long getVertexId() {
-		return this.getManagement().getItem_id();
 
-	}
 	/* (non-Javadoc)
-	 * @see beans.graph.VertexInterface#getVertextype()
+	 * @see beans.relation.Relation#getRelationType()
 	 */
-	public int getVertextype() {
-		return TYPE_MNG;
-	}
-	
+	public int getRelationType() {return TYPE_MNG;}	
+
 	/* (non-Javadoc)
-	 * @see beans.graph.VertexInterface#getLabel()
+	 * @see beans.relation.Relation#getLabel()
 	 */
-	public String getLabel(){
-		return management.getName();
-	}
+	public String getLabel(){return management.getName();}
+	/* (non-Javadoc)
+	 * @see beans.relation.Relation#getListItem()
+	 */
+	public ListItem getListItem() {return management;}
 	
 }

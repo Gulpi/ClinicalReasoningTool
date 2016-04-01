@@ -245,5 +245,22 @@ public class DBClinReason /*extends HibernateUtil*/{
     	return li;
     }
     
+    /**
+     * Loads ListItems for the given types. CAVE: This returns lots of items, only call during init of application 
+     * or for testing!
+     * @param types
+     * @return
+     */
+    public List<ListItem> selectListItemsByTypes(String[] types){
+    	Session s = instance.getInternalSession(Thread.currentThread(), false);
+    	Criteria criteria = s.createCriteria(ListItem.class,"ListItem");
+    	criteria.add(Restrictions.in("itemType", types));
+    	criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
+    	criteria.addOrder(Order.asc("name"));
+    	List l = criteria.list();
+    	s.close();
+    	return l;
+    }
+    
 
 }

@@ -101,22 +101,17 @@ public class RelationTest extends Beans implements Relation, Rectangle, Serializ
 		sb.append("{\"label\":\""+this.getTest().getName()+"\",\"shortlabel\":\""+this.getTest().getShortName()+"\",\"id\": \""+getIdWithPrefix()+"\",\"x\": "+this.x+",\"y\":"+this.y+"}");		
 		return sb.toString();
 	}
+
 	/* (non-Javadoc)
-	 * @see beans.graph.VertexInterface#getVertexId()
+	 * @see beans.relation.Relation#getRelationType()
 	 */
-	public long getVertexId() {
-		return this.getTest().getItem_id();
-	}
+	public int getRelationType() {return TYPE_TEST;}
 	/* (non-Javadoc)
-	 * @see beans.graph.VertexInterface#getVertextype()
+	 * @see beans.relation.Relation#getLabel()
 	 */
-	public int getVertextype() {
-		return TYPE_TEST;
-	}
+	public String getLabel(){return test.getName();}
 	/* (non-Javadoc)
-	 * @see beans.graph.VertexInterface#getLabel()
+	 * @see beans.relation.Relation#getListItem()
 	 */
-	public String getLabel(){
-		return test.getName();
-	}
+	public ListItem getListItem(){return test;}
 }

@@ -76,6 +76,7 @@ public class RelationProblem extends Beans implements Relation, Rectangle, Seria
 	public int getOrder() {return order;}
 	public void setOrder(int order) {this.order = order;}	
 	public ListItem getProblem() {return problem;}
+	public ListItem getListItem() {return getProblem();}
 	public void setProblem(ListItem problem) {this.problem = problem;}		
 	public int getX() {return x;}
 	public void setX(int x) {this.x = x;}
@@ -101,25 +102,13 @@ public class RelationProblem extends Beans implements Relation, Rectangle, Seria
 		sb.append("{\"label\":\""+this.getProblem().getName()+"\",\"shortlabel\":\""+this.getProblem().getShortName()+"\",\"id\": \""+getIdWithPrefix()+"\",\"x\": "+this.x+",\"y\":"+this.y+"}");		
 		return sb.toString();
 	}
-
-	/* (non-Javadoc)
-	 * @see beans.graph.VertexInterface#getVertexId()
-	 */
-	public long getVertexId() {
-		return this.getProblem().getItem_id();
-	}
 	
 	/* (non-Javadoc)
-	 * @see beans.graph.VertexInterface#getVertextype()
+	 * @see beans.relation.Relation#getRelationType()
 	 */
-	public int getVertextype() {
-		return TYPE_PROBLEM;
-	}
-	
+	public int getRelationType() {return TYPE_PROBLEM;}	
 	/* (non-Javadoc)
-	 * @see beans.graph.VertexInterface#getLabel()
+	 * @see beans.relation.Relation#getLabel()
 	 */
-	public String getLabel(){
-		return problem.getName();
-	}
+	public String getLabel(){return problem.getName();}
 }

@@ -45,10 +45,10 @@ public class ListItem implements Serializable{
 	public void setItem_description(String item_description) {this.item_description = item_description;}
 	public String getSource() {return source;}
 	public void setSource(String source) {this.source = source;}
-	public Set getSynonyma() {return synonyma;}
-	public void setSynonyma(Set synonyma) {this.synonyma = synonyma;}
-	public Set getOtherCodes() {return otherCodes;}
-	public void setOtherCodes(Set otherCodes) {this.otherCodes = otherCodes;}
+	public Set<String> getSynonyma() {return synonyma;}
+	public void setSynonyma(Set<String> synonyma) {this.synonyma = synonyma;}
+	public Set<String> getOtherCodes() {return otherCodes;}
+	public void setOtherCodes(Set<String> otherCodes) {this.otherCodes = otherCodes;}
 	public String getLanguage() {return language;}
 	public void setLanguage(String language) {this.language = language;}
 	public String getMesh_ec() {return mesh_ec;}

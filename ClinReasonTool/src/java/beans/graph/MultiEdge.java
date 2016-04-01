@@ -16,7 +16,6 @@ public class MultiEdge extends DefaultWeightedEdge{
 	public static final int WEIGHT_NONE = 0;	
 	public static final int WEIGHT_IMPLICIT = 1; //a connection has made in the concept map, tests have been associated to DDX  
 	public static final int WEIGHT_EXPLICIT = 2; //implicit connection - being in the same illnessScript
-	
 	/**
 	 * key = type (see definition in IllnessScriptInterface)
 	 * value = weight (for peers the number of conx)
@@ -83,12 +82,12 @@ public class MultiEdge extends DefaultWeightedEdge{
 	/* (non-Javadoc)
 	 * @see org.jgrapht.graph.DefaultEdge#getTarget()
 	 */
-	public MultiVertex getTarget(){return (MultiVertex) super.getTarget();}
+	public VertexInterface getTarget(){return (VertexInterface) super.getTarget();}
 	
 	/* (non-Javadoc)
 	 * @see org.jgrapht.graph.DefaultEdge#getSource()
 	 */
-	public MultiVertex getSource(){return (MultiVertex) super.getSource();}
+	public VertexInterface getSource(){return (VertexInterface) super.getSource();}
 	
 	/* (non-Javadoc)
 	 * @see org.jgrapht.graph.DefaultWeightedEdge#getWeight()

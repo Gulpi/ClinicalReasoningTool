@@ -2,7 +2,11 @@ package beans.graph;
 
 public interface VertexInterface {
 
-	public long getVertexId();
-	public int getVertextype();
+	public String getVertexId();
+	/**
+	 * Problem, DDX,... see definitions in Relation
+	 * @return
+	 */
+	public int getType();
 	public String getLabel();
 }

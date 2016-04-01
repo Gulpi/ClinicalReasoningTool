@@ -1,44 +1,42 @@
 package beans.graph;
 
 import beans.IllnessScriptInterface;
+import beans.relation.Relation;
 /**
  * This is a vertex container, that can contains from which soure this vertex has been added.
  * @author ingahege
  *
  */
-public class MultiVertex {
+public class MultiVertex extends SimpleVertex implements VertexInterface{
 
 	private int peerNums; //how many peers have added this item (e.g. Problem) to thier PatientIllnessScript
-	private VertexInterface learnerVertex; //e.g. RelationProblem of learner
-	private VertexInterface expertVertex;
-	private VertexInterface illScriptVertex;
-	private long vertexId; //the ListItemId
-	private int type;
-	private String label;
-	public MultiVertex(){}
-	public MultiVertex(VertexInterface vertex, int illnessScriptType){
-		type = vertex.getVertextype();
-		label = vertex.getLabel();
-		vertexId = vertex.getVertexId();
-		this.addVertexInterface(vertex, illnessScriptType);
-	}
-	public long getVertexId() {return vertexId;}
-	public void setVertexId(long vertexId) {this.vertexId = vertexId;}
+	private Relation learnerVertex; //e.g. RelationProblem of learner
+	private Relation expertVertex;
+	private Relation illScriptVertex;
+	//private String vertexId; //the ListItemId
 	
-	public void addVertexInterface(VertexInterface vertex, int illnessScriptType){
+	public MultiVertex(){}
+	public MultiVertex(Relation vertex, int illnessScriptType){
+		super.setType(vertex.getRelationType());
+		super.setLabel(vertex.getLabel());
+		setVertexId(String.valueOf(vertex.getListItemId()));
+		this.addRelation(vertex, illnessScriptType);
+	}
+	
+	public void addRelation(Relation rel, int illnessScriptType){
 		if(learnerVertex==null && illnessScriptType==IllnessScriptInterface.TYPE_LEARNER_CREATED)
-			learnerVertex = vertex;
+			learnerVertex = rel;
 		if(expertVertex==null && illnessScriptType==IllnessScriptInterface.TYPE_EXPERT_CREATED)
-			expertVertex = vertex;
+			expertVertex = rel;
 		if(illScriptVertex==null && illnessScriptType==IllnessScriptInterface.TYPE_ILLNESSSCRIPT)
-			illScriptVertex = vertex;
+			illScriptVertex = rel;
 		
 	}
 	/* (non-Javadoc)
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	public boolean equals(Object o){
-		if(o !=null && o instanceof MultiVertex && ((MultiVertex)o).getVertexId()==this.vertexId) 
+		if(o !=null && o instanceof MultiVertex && ((MultiVertex)o).getVertexId().equals(getVertexId())) 
 				return true;		
 		return false;
 	}
@@ -49,7 +47,7 @@ public class MultiVertex {
 	 * @param vertexIF
 	 * @return
 	 */
-	public boolean containsVertexInterface(VertexInterface vertexIF){
+	public boolean containsRelation(Relation vertexIF){
 		if(learnerVertex!=null && learnerVertex.equals(vertexIF)) return true;
 		if(expertVertex!=null && expertVertex.equals(vertexIF)) return true;
 		if(illScriptVertex!=null && illScriptVertex.equals(vertexIF)) return true;
@@ -60,7 +58,7 @@ public class MultiVertex {
 	 * @see java.lang.Object#toString()
 	 */
 	public String toString(){
-		return label+" ("+vertexId+"), learner: "+ isLearnerVertex() + ", exp: " + isExpertVertex() + ", illscript: " + isIllScriptVertex();
+		return getLabel()+" ("+getVertexId()+"), learner: "+ isLearnerVertex() + ", exp: " + isExpertVertex() + ", illscript: " + isIllScriptVertex();
 	}
 	
 	public boolean isLearnerVertex(){
@@ -76,5 +74,8 @@ public class MultiVertex {
 		if(illScriptVertex==null) return false;
 		return true;
 	}
-		
+	public int getPeerNums() {return peerNums;}
+	public Relation getLearnerVertex() {return learnerVertex;}
+	public Relation getExpertVertex() {return expertVertex;}
+	public Relation getIllScriptVertex() {return illScriptVertex;}	
 }

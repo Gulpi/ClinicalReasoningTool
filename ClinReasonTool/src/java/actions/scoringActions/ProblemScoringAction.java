@@ -7,6 +7,7 @@ import beans.ScoreBean;
 import beans.ScoreContainer;
 import beans.graph.Graph;
 import beans.graph.MultiVertex;
+import beans.graph.VertexInterface;
 import beans.relation.Relation;
 import beans.relation.RelationProblem;
 //import errors.WrongProblemError;
@@ -47,12 +48,12 @@ public class ProblemScoringAction implements ScoringAction{
 	 */	
 	private void calculateAddActionScoreBasedOnExpert(long itemId, Graph graph, long patIllScriptId){		
 		ScoreBean scoreBean = new ScoreBean(patIllScriptId, itemId, Relation.TYPE_PROBLEM);
-		MultiVertex vertex = graph.getVertexById(itemId);
+		VertexInterface vertex = graph.getVertexById(itemId);
 		if(graph.getExpertPatIllScriptId()>0){ 
-			if (vertex.isExpertVertex()) scoreBean.setScoreBasedOnExp(ScoringController.FULL_SCORE);
-			else{//look for synonyma:
+			//if (vertex.isExpertVertex()) scoreBean.setScoreBasedOnExp(ScoringController.FULL_SCORE);
+			//else{//look for synonyma:
 				
-			}
+			//}
 		}
 		if(graph.getIllScriptIds()!=null && !graph.getIllScriptIds().isEmpty()){
 			//todo score ....

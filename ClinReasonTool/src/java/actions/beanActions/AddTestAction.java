@@ -124,7 +124,7 @@ public class AddTestAction implements AddAction, Scoreable, FeedbackCreator{
 	 */
 	public void updateGraph(Relation rel) {
 		Graph graph = new NavigationController().getCRTFacesContext().getGraph();
-		graph.addVertex(rel, IllnessScriptInterface.TYPE_LEARNER_CREATED);		
+		graph.addMultiVertex(rel, IllnessScriptInterface.TYPE_LEARNER_CREATED);		
 		// add implicit edges:
 		for(int i=0; i < patIllScript.getDiagnoses().size(); i++){
 			graph.addImplicitEdge(patIllScript.getDiagnoses().get(i).getListItemId(), rel.getListItemId(), IllnessScriptInterface.TYPE_LEARNER_CREATED);

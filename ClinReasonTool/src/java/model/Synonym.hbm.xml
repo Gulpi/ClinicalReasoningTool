@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="model">
+
+	<class name="Synonym" table="crt.clinreason_list_syn">
+		<cache usage="nonstrict-read-write" />
+		<comment>Synonym</comment>	
+	
+        <!--  	<key-property name="name" column="name" type="string" />		
+        	<key-property name="listItemId" column="item_id" type="long"/>-->
+  
+		
+		  <id name="id" type="long" column="id">
+			<generator class="sequence">
+				<param name ="sequence">CRT.LIST_SEQ</param>
+			</generator>
+		</id>
+					
+		 <property name="name" column="name" type="string" length="300"/>
+		  <property name="listItemId" column="item_id" type="long" />	
+		<!--  <property name="id" column="id" type="long" />	-->
+		<property name="locale" column="lang" type="locale"/>	
+	 
+</class>
+</hibernate-mapping>

@@ -1,11 +1,12 @@
 package util;
 
-//import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.*;
 
 import controller.JsonCreator;
 
 import java.io.*;
+import java.util.Locale;
 
 /**
  * Any kind of utilities we need for string handling
@@ -13,6 +14,8 @@ import java.io.*;
  *
  */
 public class StringUtilities {
+	public static final int MIN_LEVEN_DISTANCE = 4; //if we have a level 1 similarity the item is not included
+	public static final int MAX_FUZZY_DISTANCE = 38; //if we have a level 1 similarity the item is not included
 
 	/**
 	 * Counts the number of a pattern within a string.
@@ -81,16 +84,25 @@ public class StringUtilities {
 	 * @param item2
 	 * @return
 	 */
-	public static int compareStrings(String item1, String item2){
-		int leven = 0; //org.apache.commons.lang3.StringUtils.getLevenshteinDistance(item1, item2);
-		//StringUtils.getF
+	public static boolean similarStrings(String item1, String item2, Locale loc){
+		int leven = StringUtils.getLevenshteinDistance(item1, item2);
+		int fuzzy = StringUtils.getFuzzyDistance(item1, item2, loc);
 		String firstLetterItem1 = item1.substring(0,1);
 		String firstLetterItem2 = item2.substring(0,1);
-		//if(leven==4 && firstLetterItem1.equalsIgnoreCase(firstLetterItem2)) System.out.println("Levensthein: ("+leven+") "+ item1 + " - " + item2);
+		if(item1.equals("Abdomen, Acute") || item2.equals("Abdomen, Acute"))
+			System.out.println("Leven: " + leven + ", fuzzy: " + fuzzy + " Item1: " + item1 + " Item2: " + item2);
 
-		if(leven <= JsonCreator.MIN_SIMILARITY_DISTANCE && firstLetterItem1.equalsIgnoreCase(firstLetterItem2)){
+		//if(leven==4 && firstLetterItem1.equalsIgnoreCase(firstLetterItem2)) System.out.println("Levensthein: ("+leven+") "+ item1 + " - " + item2);
+		if(leven < MIN_LEVEN_DISTANCE /*&& firstLetterItem1.equalsIgnoreCase(firstLetterItem2)*/){
 			//System.out.println("not added: " + item1 + " - " + item2);
-			return leven; //these items are not added
+			return true; //these items are not added
+		}
+		if(fuzzy>=MAX_FUZZY_DISTANCE){
+			//System.out.println("Leven: " + leven + ", fuzzy: " + fuzzy + " Item1: " + item1 + " Item2: " + item2);
+			return true;			
+		}
+		if(fuzzy==11 && leven==11){
+			System.out.println("Leven: " + leven + ", fuzzy: " + fuzzy + " Item1: " + item1 + " Item2: " + item2);
 		}
 		/*else{
 			String item1NoBlanks = StringUtils.remove(item1, " ");
@@ -100,6 +112,6 @@ public class StringUtilities {
 		}*/
 		//if(leven==2 && firstLetterItem1.equalsIgnoreCase(firstLetterItem2)) return leven;
 		// if(leven==3 && firstLetterItem1.equalsIgnoreCase(firstLetterItem2)) return leven;
-		return 99;
+		return false;
 	}
 }

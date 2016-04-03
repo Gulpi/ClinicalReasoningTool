@@ -5,12 +5,14 @@ import java.util.*;
 import javax.faces.context.FacesContext;
 import javax.servlet.ServletContext;
 
+import application.AppBean;
 import beans.Connection;
 import beans.IllnessScript;
 import beans.IllnessScriptInterface;
 import beans.PatientIllnessScript;
 import beans.graph.*;
 import beans.relation.Relation;
+import model.Synonym;
 
 /**
  * Controls the graph creation and manipulation based on PatientIllnessScript and IllnessScript objects 
@@ -102,12 +104,13 @@ public class GraphController {
 	public void addSynonymaVerticesAndEdges(MultiVertex vertex){
 		//Relation rel = (Relation) vertex;
 		Relation rel = vertex.getExpertVertex();
-		Set<String> synonyma = rel.getListItem().getSynonyma();
+		Set<Synonym> synonyma = rel.getListItem().getSynonyma();
 		if(synonyma==null || synonyma.isEmpty()) return; //no synonyma for this ListItem
-		Iterator<String> it = synonyma.iterator();
+		Iterator<Synonym> it = synonyma.iterator();
 		int counter = 1;
 		while(it.hasNext()){
-			SimpleVertex synVertex = new SimpleVertex(it.next(), IllnessScriptInterface.TYPE_SYNONYMA, vertex.getVertexId(), counter);
+			Synonym syn = it.next();
+			SimpleVertex synVertex = new SimpleVertex(syn.getName(), IllnessScriptInterface.TYPE_SYNONYMA, vertex.getVertexId(), counter);
 			graph.addVertex(synVertex);
 			graph.createAndAddEdge(synVertex, vertex, IllnessScriptInterface.TYPE_SYNONYMA, MultiEdge.WEIGHT_NONE);
 			counter++;

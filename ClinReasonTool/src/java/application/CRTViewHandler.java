@@ -1,10 +1,12 @@
-package controller;
+package application;
 
 import java.util.Locale;
 
 import javax.faces.application.ViewHandler;
 import javax.faces.application.ViewHandlerWrapper;
 import javax.faces.context.FacesContext;
+
+import controller.AjaxController;
 
 public class CRTViewHandler extends ViewHandlerWrapper{
 

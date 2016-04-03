@@ -17,6 +17,7 @@ import beans.relation.RelationDiagnosis;
 import beans.relation.RelationProblem;
 import controller.IllnessScriptController;
 import model.ListItem;
+import model.Synonym;
 import util.StringUtilities;
 
 public class DBClinReason /*extends HibernateUtil*/{
@@ -246,20 +247,45 @@ public class DBClinReason /*extends HibernateUtil*/{
     }
     
     /**
+     * Select the ListItem with the given meshId from the database.
+     * Just needed for importing German Mesh List.
+     * @param id
+     * @return ListItem or null
+     */
+    public ListItem selectListItemByMeshId(String id){
+    	Session s = instance.getInternalSession(Thread.currentThread(), false);
+    	Criteria criteria = s.createCriteria(ListItem.class,"ListItem");
+    	criteria.add(Restrictions.eq("mesh_id", id));
+    	ListItem li = (ListItem) criteria.uniqueResult();
+    	s.close();
+    	return li;
+    }
+    
+    /**
      * Loads ListItems for the given types. CAVE: This returns lots of items, only call during init of application 
      * or for testing!
      * @param types
      * @return
      */
-    public List<ListItem> selectListItemsByTypes(String[] types){
+    public List<ListItem> selectListItemsByTypesAndLang(Locale loc, String[] types){
     	Session s = instance.getInternalSession(Thread.currentThread(), false);
     	Criteria criteria = s.createCriteria(ListItem.class,"ListItem");
     	criteria.add(Restrictions.in("itemType", types));
     	criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
+    	criteria.add(Restrictions.eq("language", loc));
     	criteria.addOrder(Order.asc("name"));
     	List l = criteria.list();
     	s.close();
     	return l;
+    }
+    
+    public List selectSynonyma(){
+    	Session s = instance.getInternalSession(Thread.currentThread(), false);
+    	Criteria criteria = s.createCriteria(Synonym.class,"Synonym");
+    	criteria.add(Restrictions.eq("id", new Long(1)));
+    	List li = criteria.list();
+    	s.close();
+    	return li;
     }
     
 

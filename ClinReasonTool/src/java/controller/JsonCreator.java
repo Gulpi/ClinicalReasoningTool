@@ -6,6 +6,7 @@ import java.util.*;
 import beans.graph.SimpleVertex;
 import database.DBClinReason;
 import model.ListItem;
+import model.Synonym;
 import util.StringUtilities;
 
 /**
@@ -21,44 +22,46 @@ public class JsonCreator {
 	public static final String TYPE_TEST = "E";
 	public static final String TYPE_DRUGS = "D";
 	public static final String TYPE_MNG = "E";
-	private static final String fileNameOneList = "jsonp.json"; //TODO we need the path to the HTML folder!!!
+	private static final String fileNameOneListEN = "jsonp_en.json"; //TODO we need the path to the HTML folder!!!
+	private static final String fileNameOneListDE = "jsonp_de.json";
 	//A=Anatomy,B=Organisms, F=Psychiatry/Psychology, G=Phenomena and Processes, H=Disciplines/Occupations
 	
 	//configurations: TODO get from property file
 	private boolean createOneList = true; //if false, we create multiple lists for problems, ddx, etc.
 	private boolean includeSynonyma = true;
 	private String language="en";
-	public static final int MIN_SIMILARITY_DISTANCE = 3; //if we have a level 1 similarity the item is not included
 	
 	
 	public synchronized void initJsonExport(){
-		if(createOneList) exportOneList();
+		if(createOneList){
+			exportOneList(new Locale("en"));
+			exportOneList(new Locale("de"));
+		}
+		
 	}
 	
 	//TODO also load item which have a corresponding (secondary code)
-	private void exportOneList(){
-		List<ListItem> items = new DBClinReason().selectListItemsByTypes(new String[]{TYPE_PROBLEM, TYPE_TEST,TYPE_DRUGS});
+	private void exportOneList(Locale loc){
+		//setIdsForSyn();
+		List<ListItem> items = new DBClinReason().selectListItemsByTypesAndLang(loc, new String[]{TYPE_PROBLEM, TYPE_TEST,TYPE_DRUGS});
 		if(items==null || items.isEmpty()) return; //then something went really wrong!
 		try{
-			File f = new File(fileNameOneList);
+			File f = null;
+			if (loc.getLanguage().equals(new Locale("en").getLanguage())) f = new File(fileNameOneListEN);
+			else if (loc.getLanguage().equals(new Locale("de").getLanguage())) f = new File(fileNameOneListDE);
 			PrintWriter pw = new PrintWriter(new FileWriter(f));
 			int lines = 0;
+			StringBuffer sb = new StringBuffer("[");
 			for(int i=0; i<items.size(); i++){
 				ListItem item = items.get(i);
-				StringBuffer sb = new StringBuffer();
-				if(i==0) sb.append("[");
-				sb.append("{\"label\": \""+item.getName()+"\", \"value\": \""+item.getItem_id()+"\"}");
-				if(i<items.size()-1) sb.append(",");
-				lines++;
-				lines += addSynonyma(item, pw);
-				
-				if(i==items.size()-1) sb.append("]");
-					
-				//System.out.println(sb.toString());
-				pw.println(sb.toString());
-				//TODO synonyma
+				if(doAddItem(item)){
+					sb.append("{\"label\": \""+item.getName()+"\", \"value\": \""+item.getItem_id()+"\"},\n");
+					lines++;
+					lines += addSynonyma(item, sb);
+				}
 			}
-			//pw.println("]");
+			sb.replace(sb.length()-2, sb.length(), "]");
+			pw.print(sb.toString());
 			pw.flush();
 		    pw.close();
 		    System.out.println("lines exported: " + lines);
@@ -69,29 +72,55 @@ public class JsonCreator {
 	}
 	
 	/**
+	 * Make some improvements of the list, we do not add a certain item_level depending on the category etc.
+	 * maybe do more here....
+	 * @param item
+	 * @return
+	 */
+	private boolean doAddItem(ListItem item){
+		if(item.getItemType().equals("D") && item.getLevel()>=10) return false;
+		if(item.getName().startsWith("1") || item.getName().startsWith("2") || item.getName().startsWith("3")) return false;
+		if(item.getName().startsWith("4-") || item.getName().startsWith("4,")) return false;
+		if(item.getName().startsWith("5") || item.getName().startsWith("6") || item.getName().startsWith("7")) return false;
+		if(item.getName().startsWith("8") || item.getName().startsWith("9")) return false;
+		if(item.getName().contains("[")) return false;
+		return true;
+	}
+	
+	/*private void setIdsForSyn(){
+		DBClinReason dbcr = new DBClinReason();
+		List<Synonym> l = dbcr.selectSynonyma();
+		long counter = 142620;
+		for(int i=0; i<l.size(); i++){
+			l.get(i).setId(counter);
+			dbcr.saveAndCommit(l.get(i));
+			counter++;
+		}
+	}*/
+	
+	/**
 	 * We check all Synonyma for the given ListItem and add them to the list if they are not too similar to the main 
 	 * listItem or any already added synonyma of this ListItem.
 	 * @param item
 	 * @param pw
 	 * @return
 	 */
-	private int addSynonyma(ListItem item, PrintWriter pw){
+	private int addSynonyma(ListItem item, StringBuffer sb/*PrintWriter pw, boolean lastEntry*/){
 		if(item.getSynonyma()==null) return 0;
-		List<String> addedSyn = new ArrayList<String>();
-		Iterator<String> it = item.getSynonyma().iterator();
-		int counter = 1;
+		List<Synonym> addedSyn = new ArrayList<Synonym>();
+		Iterator<Synonym> it = item.getSynonyma().iterator();
+		int counter = 0;
 		while(it.hasNext()){	
-			String syn = it.next();
-			//boolean doAdd = false;
-			int distance = StringUtilities.compareStrings(item.getName(), syn);
-			if(distance > MIN_SIMILARITY_DISTANCE){ //then it has enough difference to add 
+			Synonym syn = it.next();
+			boolean isSimilar = StringUtilities.similarStrings(item.getName(), syn.getName(), item.getLanguage());
+			if(!isSimilar/*distance > MIN_SIMILARITY_DISTANCE*/){ //then it has enough difference to add 
 				//now check similarity to already added synonyma: 
 				boolean doAdd = true;
 				if(addedSyn!=null || !addedSyn.isEmpty()){
 					for(int i=0; i < addedSyn.size(); i++){
-						int distance2 = StringUtilities.compareStrings(syn, addedSyn.get(i));
-						if(distance2<=MIN_SIMILARITY_DISTANCE){ //then we have found a similar item
-							System.out.println("not added: " + syn + " - " + addedSyn.get(i));
+						boolean isSimilar2 = StringUtilities.similarStrings(syn.getName(), addedSyn.get(i).getName(), syn.getLocale());
+						if(isSimilar2/*distance2<=MIN_SIMILARITY_DISTANCE*/){ //then we have found a similar item
+							//System.out.println("not added: " + syn + " - " + addedSyn.get(i).getName());
 							doAdd = false;
 							break;
 						}
@@ -99,14 +128,12 @@ public class JsonCreator {
 				}
 				addedSyn.add(syn);
 				if(doAdd){
-					String s = "{\"label\": \""+syn+"\", \"value\": \""+SimpleVertex.SYN_VERTEXID_PREFIX+item.getItem_id()+"_"+counter+"\"},";
+					sb.append("{\"label\": \""+syn.getName()+"\", \"value\": \""+syn.getId()+"\"},\n");
 					counter++;
-					pw.println(s);
 				}
 			}
 		}
 		return counter;
-		//return sb.toString();
 	}
 
 }

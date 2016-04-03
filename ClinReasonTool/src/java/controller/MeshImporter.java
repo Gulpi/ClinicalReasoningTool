@@ -3,24 +3,102 @@ package controller;
 import java.io.*;
 import java.util.*;
 
+import org.apache.commons.lang.StringUtils;
+
 //import net.casus.util.*;
 import database.DBClinReason;
 import model.ListItem;
+import model.Synonym;
 import util.*;
 
 /**
  * We import a Mesh ACSII file into the database
+ * TODO: exclude similar synonyma already upon import, exclude synonyma containing a |, include mechanism 
+ * to assign unique ids to synonyma.
  * @author ingahege
  *
  */
 public class MeshImporter {
+	static String file = "/Users/ingahege/ownCloud/documents/Inga/marie_curie/WP2_concept/mesh/d2016.bin";
+	static String file_DE = "/Users/ingahege/ownCloud/documents/Inga/marie_curie/WP2_concept/mesh/deutsch/MeSH-2016.xml";
 
-	public static void main(String[] args){
-		String file = "/Users/ingahege/ownCloud/documents/Inga/marie_curie/WP2_concept/mesh/d2016.bin";
-		createRecord(file);
+	
+	public static void main(String lang){
+		if(lang.equals("en")) createRecord();
+		if(lang.equals("de")) importMeshDE();
 	}
 	
-	private static void createRecord(String file){
+	private static void importMeshDE(){
+		
+		try{
+			LineNumberReader lbr = new LineNumberReader(new FileReader(file_DE));
+			String line;
+			List<String[]> l = new ArrayList<String[]>();
+			String[] str = new String[3];
+			boolean readNextLine1 = false;
+			boolean readNextLine2 = false;
+			while((line=lbr.readLine())!=null){
+				
+				if(line.contains("<DescriptorUI>")){ 
+					if(str[0]==null || str[0].equals("")) str[0] = StringUtils.substringBetween(line, "<DescriptorUI>", "</DescriptorUI>");
+				}
+				if(line.contains("<TreeNumberList>"))readNextLine1 = true;
+				if(readNextLine1 && line.contains("<TreeNumber>")){
+					str[1] = StringUtils.substringBetween(line, "<TreeNumber>", "</TreeNumber>");
+					readNextLine1 = false;					
+				}					
+				
+				if(line.contains("<TermUI>ger"))readNextLine2 = true;
+				if(readNextLine2 && line.contains("<String>")){
+					str[2] = StringUtils.substringBetween(line, "<String>", "</String>");
+					readNextLine2 = false;
+					System.out.println(str[0]+", " + str[1] + ", " + str[2]);
+					l.add(str);
+					str = new String[3];
+				}
+			}
+			importListItemDE(l);
+		}
+		catch (Exception e){
+			System.out.println("MeshImporter_de: Exception= " + StringUtilities.stackTraceToString(e));
+
+		}
+	}
+	
+	/**
+	 * str[0] = meshID
+	 * str[1] = <TreeNumber>
+	 * str[2] = german Term
+	 * @param strList
+	 */
+	private static void importListItemDE(List<String[]> strList){
+		DBClinReason dbcr = new DBClinReason();
+		List<ListItem> deItems = new ArrayList<ListItem>();
+		ListItem deItem = null;
+		//List<Synonym> deSynonyma = new ArrayList<Synonym>();
+		String currentId="";
+		for(int i=0; i<strList.size(); i++){
+			String[] str = strList.get(i);
+			if(str[0]!=null){ //then it a new ListItem
+				currentId = str[0];
+				deItem = new ListItem("de", "MESH", str[2]); //dbcr.selectListItemByMeshId(str[0]);
+				deItem.setLevel(StringUtils.countMatches(str[1], ".")+1);
+				deItem.setItemType(StringUtils.substring(str[1], 0, 1));
+				deItem.setMesh_id(str[0]);
+				deItem.setFirstCode(str[1]);
+				deItems.add(deItem);
+				dbcr.saveAndCommit(deItem);
+			}
+			else{
+				Synonym syn = new Synonym(new Locale("de"), str[2]);
+				syn.setListItemId(deItem.getItem_id());
+				dbcr.saveAndCommit(syn);
+			}
+		}
+		System.out.println("");
+	}
+	
+	private static void createRecord(){
 		Map<String, List<String>> m = new TreeMap<String, List<String>>();
 		String line;
 		try{
@@ -95,7 +173,7 @@ public class MeshImporter {
 		if(m.get("EC")!=null && m.get("EC").get(0)!=null) li.setMesh_ec(m.get("EC").get(0));
 
 		li.setSource("MESH");
-		li.setLanguage("en");
+		li.setLanguage(new Locale("en"));
 		if(m.get("ENTRY")!=null){ //synonyma:
 			Set entries = new TreeSet();
 			for(int i=0; i<m.get("ENTRY").size(); i++){

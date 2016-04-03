@@ -30,6 +30,12 @@ public class RelationProblem extends Beans implements Relation, Rectangle, Seria
 	 * can be problem, test, management, diagnosis
 	 */
 	private long listItemId; 
+	
+	/**
+	 * In case the learner has selected the not the main item, but a synonyma, we save the id here, which 
+	 * is listItemId_oderNrOfSyn
+	 */
+	private String synId;
 	/**
 	 * (Patient)Illnesscript
 	 */

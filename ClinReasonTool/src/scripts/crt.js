@@ -238,7 +238,7 @@ var active = $( "#tabs" ).tabs( "option", "active" ); //we have to determine the
 	    }
 	 
 	    $.ajax({ //list for problems (list view)
-	        url: "jsonp.json",
+	        url: listUrl,
 	        dataType: "json",
 	        success: function( data ) {
 	          $( "#problems" ).autocomplete({
@@ -255,7 +255,7 @@ var active = $( "#tabs" ).tabs( "option", "active" ); //we have to determine the
 	      });
 	    
 	    $.ajax({ //list for diagnoses (list view)
-	        url: "jsonp.json",
+	        url: listUrl,
 	        dataType: "json",
 	        success: function( data ) {
 	          $( "#ddx" ).autocomplete({
@@ -273,7 +273,7 @@ var active = $( "#tabs" ).tabs( "option", "active" ); //we have to determine the
 	      });    
 	    
 	    $.ajax({ //list for diagnostic steps (list view)
-	        url: "jsonp.json",
+	        url: listUrl,
 	        dataType: "json",
 	        success: function( data ) {
 	          $( "#tests" ).autocomplete({
@@ -292,7 +292,7 @@ var active = $( "#tabs" ).tabs( "option", "active" ); //we have to determine the
 	        }
 	      });
 	    $.ajax({ //list for management item (list view)
-	        url: "jsonp.json",
+	        url: listUrl,
 	        dataType: "json",
 	        success: function( data ) {
 	          $( "#mng" ).autocomplete({
@@ -312,7 +312,7 @@ var active = $( "#tabs" ).tabs( "option", "active" ); //we have to determine the
 	        }
 	      });
 	    $.ajax({ //list for problems from concept map
-	        url: "jsonp.json",
+	        url: listUrl,
 	        dataType: "json",
 	        success: function( data ) {
 	          $( "#cm_prob_sel" ).autocomplete({
@@ -331,7 +331,7 @@ var active = $( "#tabs" ).tabs( "option", "active" ); //we have to determine the
 	        }
 	      });
 	    $.ajax({ //list for diagnoses from concept map
-	        url: "jsonp.json",
+	        url: listUrl,
 	        dataType: "json",
 	        success: function( data ) {
 	          $( "#cm_ddx_sel" ).autocomplete({
@@ -351,7 +351,7 @@ var active = $( "#tabs" ).tabs( "option", "active" ); //we have to determine the
 	        }
 	      });
 	    $.ajax({ //list for tests from concept map
-	        url: "jsonp.json",
+	        url: listUrl,
 	        dataType: "json",
 	        success: function( data ) {
 	          $( "#cm_ds_sel" ).autocomplete({
@@ -371,7 +371,7 @@ var active = $( "#tabs" ).tabs( "option", "active" ); //we have to determine the
 	        }
 	      });
 	    $.ajax({ //list for management item from concept map
-	        url: "jsonp.json",
+	        url: listUrl,
 	        dataType: "json",
 	        success: function( data ) {
 	          $( "#mng" ).autocomplete({

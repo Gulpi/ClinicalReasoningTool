@@ -1,4 +1,4 @@
-package controller;
+package application;
 
 import java.io.InputStream;
 import java.util.*;
@@ -17,6 +17,7 @@ import beans.IllnessScript;
 import beans.PatientIllnessScript;
 import beans.graph.Graph;
 import beans.relation.RelationDiagnosis;
+import controller.JsonCreator;
 import database.DBClinReason;
 import database.HibernateUtil;
 
@@ -71,9 +72,10 @@ public class AppBean extends ApplicationWrapper implements HttpSessionListener{
 	    	properties.load(input);
 	    }
 	    catch(Exception e){}
-	    new JsonCreator().initJsonExport();
+	    //does not have to be done on every restart:
+	    new JsonCreator().initJsonExport(); 
 	    System.out.println("Init done");
-		//MeshImporter.main(null);
+		//MeshImporter.main("de");
 	}
 	
 	/**

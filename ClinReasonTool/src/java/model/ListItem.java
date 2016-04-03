@@ -1,6 +1,9 @@
 package model;
+
+import org.apache.commons.lang3.StringUtils;
 import java.io.Serializable;
 import java.util.*;
+
 
 /**
  * We have one list in the database containing all entries for diagnoses, problems etc. ListItem models one entry. 
@@ -22,10 +25,16 @@ public class ListItem implements Serializable{
 	private String source; //e.g. MESH
 	private Set synonyma; //ENTRY
 	private Set otherCodes; //MN 
-	private String language; //en, de,...
+	private Locale language; //en, de,...
 	private String mesh_ec; //EC
 	private String itemType; //D=Diagnosis, ...
 	
+	public ListItem(){}
+	public ListItem(String lang,String source, String name){
+		this.language = new Locale(lang);
+		this.source = source;
+		this.name = name;
+	}
 	
 	public String getName() {return name;}
 	public void setName(String name) {this.name = name;}
@@ -45,20 +54,29 @@ public class ListItem implements Serializable{
 	public void setItem_description(String item_description) {this.item_description = item_description;}
 	public String getSource() {return source;}
 	public void setSource(String source) {this.source = source;}
-	public Set<String> getSynonyma() {return synonyma;}
-	public void setSynonyma(Set<String> synonyma) {this.synonyma = synonyma;}
+	public Set<Synonym> getSynonyma() {return synonyma;}
+	public void setSynonyma(Set<Synonym> synonyma) {this.synonyma = synonyma;}
 	public Set<String> getOtherCodes() {return otherCodes;}
 	public void setOtherCodes(Set<String> otherCodes) {this.otherCodes = otherCodes;}
-	public String getLanguage() {return language;}
-	public void setLanguage(String language) {this.language = language;}
+	public Locale getLanguage() {return language;}
+	public void setLanguage(Locale language) {this.language = language;}
 	public String getMesh_ec() {return mesh_ec;}
 	public void setMesh_ec(String mesh_ec) {this.mesh_ec = mesh_ec;}
 	public String getItemType() {return itemType;}
 	public void setItemType(String itemType) {this.itemType = itemType;}	
-	public String getShortName(){
-		if(this.name==null || this.name.length()<=MAXLENGTH_NAME) return name;
+	
+	public String getShortName(){ 
+		return StringUtils.abbreviate(this.name, MAXLENGTH_NAME);
+		/*if(this.name==null || this.name.length()<=MAXLENGTH_NAME) return name;
 		String shortName = name.substring(0, MAXLENGTH_NAME) + "..";
-		return shortName;
+		return shortName;*/
+	}
+	
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	public String toString(){
+		return this.name + ", Id: " + this.item_id;
 	}
 	
 }

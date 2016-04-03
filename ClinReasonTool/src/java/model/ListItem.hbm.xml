@@ -21,13 +21,14 @@
 		<property name="note" column="item_note" type="string" length="2000"/>
 		<property name="item_description" column="item_description" type="string" length="2000"/>
 		<property name="source" column="source" type="string" length="20"/>
-		<property name="language" column="language" type="string" length="5"/>
+		<property name="language" column="language" type="locale" length="5"/>
 		<property name="mesh_ec" column="mesh_ec" type="string" length="500"/>
 		<property name="itemType" column="item_type" type="string" length="5"/>
 	    
 	    <set name="synonyma" table="crt.CLINREASON_LIST_SYN" lazy="false" fetch="join" batch-size="100">
     		<key column="item_id"/>
-    		<element column="name" type="string"/>
+    		<one-to-many class="Synonym"/>
+    		<!-- <element column="name" type="string"/>-->
 		</set>	
 		<set name="otherCodes" table="crt.CLINREASON_LIST_CODES" lazy="false" fetch="join" batch-size="100">
     		<key column="item_id"/>

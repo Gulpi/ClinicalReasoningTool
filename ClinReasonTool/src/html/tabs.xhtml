@@ -56,7 +56,8 @@ var numMng = 0;
 var sessId = "#{crtContext.patillscript.sessionId}";
 var scriptId = "#{crtContext.patillscript.id}";
 var jsonConnsMap = '#{crtContext.patillscript.connsJson}';  //connections for concept map 
-
+var listUrl="jsonp_en.json";
+var lang = "#{crtContext.patillscript.locale}";
 var my_canvas = null;
 
  draw2d.Configuration.factory.createConnection=function(sourcePort, targetPort, callback, dropTarget){
@@ -66,6 +67,7 @@ var my_canvas = null;
  
 
 $(function() {
+	if(lang=="de") listUrl = "jsonp_de.json";
 	$("#dialogCMDDX").hide();
 	$("#dialogCMProb").hide();
 	$("#dialogCMTest").hide();

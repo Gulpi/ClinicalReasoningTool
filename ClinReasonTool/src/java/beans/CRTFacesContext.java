@@ -8,6 +8,7 @@ import javax.faces.bean.*;
 import javax.faces.context.*;
 import javax.servlet.ServletContext;
 
+import application.AppBean;
 import beans.graph.Graph;
 import beans.relation.Relation;
 import controller.*;

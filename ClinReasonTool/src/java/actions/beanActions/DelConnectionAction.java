@@ -4,11 +4,14 @@ import java.beans.Beans;
 import java.util.*;
 
 import beans.Connection;
+import beans.IllnessScriptInterface;
 import beans.LogEntry;
 import beans.PatientIllnessScript;
+import beans.graph.Graph;
+import controller.NavigationController;
 import database.DBClinReason;
 
-public class DelConnectionAction implements DelAction{
+public class DelConnectionAction /*implements DelAction*/{
 	private PatientIllnessScript patIllScript;
 	
 	public DelConnectionAction(PatientIllnessScript patIllScript){
@@ -32,7 +35,6 @@ public class DelConnectionAction implements DelAction{
 		le.save();			
 	}
 
-	@Override
 	public void delete(String idStr) {
 		if(idStr==null || idStr.trim().equals("") || patIllScript==null || patIllScript.getConns()==null || patIllScript.getConns().isEmpty()){
 			//todo error msg
@@ -57,6 +59,7 @@ public class DelConnectionAction implements DelAction{
 		if(connsToDelete==null) return;
 		for(int i=0; i<connsToDelete.size(); i++){
 			Connection conn = connsToDelete.get(i);
+			updateGraph(conn);
 			patIllScript.getConns().remove(conn);		
 			logs.add(new LogEntry(LogEntry.DELCNXAFTERSTARTNODE_ACTION, patIllScript.getSessionId(), conn.getStartId(), conn.getTargetId()));
 		}
@@ -99,7 +102,7 @@ public class DelConnectionAction implements DelAction{
 	}
 	
 	/**
-	 * We get all conncetions with the given targetId 
+	 * We get all connections with the given targetId 
 	 * @param startId
 	 * @return List<Connection> or null
 	 */
@@ -113,6 +116,12 @@ public class DelConnectionAction implements DelAction{
 		}
 		if(connsToDelete.isEmpty()) return null;
 		return connsToDelete;
+	}
+	
+	private void updateGraph(Connection connToDel){
+		Graph graph = new NavigationController().getCRTFacesContext().getGraph();
+		graph.removeExplicitEdgeWeight(connToDel, IllnessScriptInterface.TYPE_LEARNER_CREATED);
+		System.out.println(graph.toString());
 	}
 
 }

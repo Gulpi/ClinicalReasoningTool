@@ -3,7 +3,7 @@ package controller;
 import java.io.*;
 import java.util.*;
 
-import beans.graph.SimpleVertex;
+import beans.graph.SynonymVertex;
 import database.DBClinReason;
 import model.ListItem;
 import model.Synonym;
@@ -128,7 +128,7 @@ public class JsonCreator {
 				}
 				addedSyn.add(syn);
 				if(doAdd){
-					sb.append("{\"label\": \""+syn.getName()+"\", \"value\": \""+syn.getId()+"\"},\n");
+					sb.append("{\"label\": \""+syn.getName()+"\", \"value\": \""+Synonym.SYN_VERTEXID_PREFIX+syn.getId()+"\"},\n");
 					counter++;
 				}
 			}

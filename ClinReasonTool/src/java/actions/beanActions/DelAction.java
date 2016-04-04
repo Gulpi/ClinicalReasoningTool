@@ -1,5 +1,7 @@
 package actions.beanActions;
 
+import beans.relation.Relation;
+
 //simport beans.relation.Relation;
 
 public interface DelAction {
@@ -15,4 +17,10 @@ public interface DelAction {
 	 * @param id
 	 */
 	void delete(String id);
+	
+	/**
+	 * we remove any edge weight (implicit and explicit) from the MultiEdges for this Relation. 
+	 * @param rel
+	 */
+	void updateGraph(Relation rel);
 }

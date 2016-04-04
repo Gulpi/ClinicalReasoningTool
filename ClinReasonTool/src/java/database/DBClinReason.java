@@ -279,11 +279,20 @@ public class DBClinReason /*extends HibernateUtil*/{
     	return l;
     }
     
-    public List selectSynonyma(){
+    /*public List selectSynonyma(){
     	Session s = instance.getInternalSession(Thread.currentThread(), false);
     	Criteria criteria = s.createCriteria(Synonym.class,"Synonym");
     	criteria.add(Restrictions.eq("id", new Long(1)));
     	List li = criteria.list();
+    	s.close();
+    	return li;
+    }*/ 
+    
+    public Synonym selectSynonymById(long id){
+    	Session s = instance.getInternalSession(Thread.currentThread(), false);
+    	Criteria criteria = s.createCriteria(Synonym.class,"Synonym");
+    	criteria.add(Restrictions.eq("id", new Long(id)));
+    	Synonym li = (Synonym) criteria.uniqueResult();
     	s.close();
     	return li;
     }

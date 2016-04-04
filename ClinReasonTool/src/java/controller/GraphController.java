@@ -77,10 +77,7 @@ public class GraphController {
 	    		//...
 	    	}
 	    }
-	}
-	
-
-	
+	}	
 	
 	private void addVerticesOfPatientIllnessScript(PatientIllnessScript patIllScript, int illnessScriptType){
 		 addVertices( patIllScript.getProblems(),illnessScriptType);
@@ -90,31 +87,18 @@ public class GraphController {
 	}
 	
 	/**
+	 * if a relation has a synId we add the SimpleVertex for the syn:
+	 * Learnerskript: we ONLY add the SimpleVertex
+	 * ExpertSkript: we add the main relation and ALL synonyma as SimpleVertex
 	 * @param vertices (List of Relation items)
 	 * @param illnessScriptType
 	 */
 	private void addVertices(List vertices, int illnessScriptType){
 		if(vertices==null) return;
 		for(int i=0; i<vertices.size(); i++){
-			//add 
-			graph.addMultiVertex((Relation) vertices.get(i), illnessScriptType);
+			Relation rel = (Relation) vertices.get(i);
+			graph.addVertex(rel, illnessScriptType);
 		}
-	}
-
-	public void addSynonymaVerticesAndEdges(MultiVertex vertex){
-		//Relation rel = (Relation) vertex;
-		Relation rel = vertex.getExpertVertex();
-		Set<Synonym> synonyma = rel.getListItem().getSynonyma();
-		if(synonyma==null || synonyma.isEmpty()) return; //no synonyma for this ListItem
-		Iterator<Synonym> it = synonyma.iterator();
-		int counter = 1;
-		while(it.hasNext()){
-			Synonym syn = it.next();
-			SimpleVertex synVertex = new SimpleVertex(syn.getName(), IllnessScriptInterface.TYPE_SYNONYMA, vertex.getVertexId(), counter);
-			graph.addVertex(synVertex);
-			graph.createAndAddEdge(synVertex, vertex, IllnessScriptInterface.TYPE_SYNONYMA, MultiEdge.WEIGHT_NONE);
-			counter++;
-		}		
 	}
 	
 	private void addExplicitEdgesOfPatientIllnessScript(PatientIllnessScript patIllScript, int type){
@@ -126,30 +110,74 @@ public class GraphController {
 		}
 	}
 	
-	/*public void addExplicitEdge(Connection cnx, PatientIllnessScript patIllScript, int type){
-		Relation source = patIllScript.getRelationByIdAndType(cnx.getStartId(), cnx.getStartType());
-		Relation target = patIllScript.getRelationByIdAndType(cnx.getTargetId(), cnx.getTargetType());
-		graph.createAndAddEdge(graph.getVertexById(source.getListItemId()), graph.getVertexById(target.getListItemId()), type, MultiEdge.WEIGHT_EXPLICIT);
-	}*/
-	
-	private void addImplicitEdgesOfPatientIllnessScript(PatientIllnessScript patIllScript, int type){
+	private void addImplicitEdgesOfPatientIllnessScript(PatientIllnessScript patIllScript, int illScriptType){
 		if(patIllScript==null || patIllScript.getDiagnoses()==null) return;
 		for(int i=0; i < patIllScript.getDiagnoses().size(); i++){
 			//add problems -> ddx
 			for(int j=0; j < patIllScript.getProblems().size(); j++){
-				graph.createAndAddEdge(graph.getVertexById(patIllScript.getProblems().get(j).getListItemId()), graph.getVertexById(patIllScript.getDiagnoses().get(i).getListItemId()), type, MultiEdge.WEIGHT_IMPLICIT);
+				//graph.addImplicitEdge(sourceId, targetId, type);
+				graph.addImplicitEdge(patIllScript.getProblems().get(j).getListItemId(), patIllScript.getDiagnoses().get(i).getListItemId(), illScriptType);
 			}
 			//add ddx -> tests
 			for(int j=0; j < patIllScript.getTests().size(); j++){
-				graph.createAndAddEdge(graph.getVertexById(patIllScript.getDiagnoses().get(i).getListItemId()), graph.getVertexById(patIllScript.getTests().get(j).getListItemId()), type, MultiEdge.WEIGHT_IMPLICIT);
+				graph.addImplicitEdge(patIllScript.getDiagnoses().get(i).getListItemId(), patIllScript.getTests().get(j).getListItemId(), illScriptType);
 			}
 			//add ddx -> mng
 			for(int j=0; j < patIllScript.getMngs().size(); j++){
-				graph.createAndAddEdge(graph.getVertexById(patIllScript.getDiagnoses().get(i).getListItemId()), graph.getVertexById(patIllScript.getMngs().get(j).getListItemId()), type, MultiEdge.WEIGHT_IMPLICIT);
+				graph.addImplicitEdge(patIllScript.getDiagnoses().get(i).getListItemId(), patIllScript.getMngs().get(j).getListItemId(), illScriptType);
 			}
 
 		}
 	}
 	
-
+	public String graphToJson(){ 
+		Set<MultiVertex> allVertices = graph.vertexSet();
+		if(allVertices == null || allVertices.isEmpty()) return "";
+		Iterator<MultiVertex> it = allVertices.iterator();
+		while (it.hasNext()){
+			MultiVertex vi = it.next();
+		}
+		return "";
+		//return new ConceptMapController().getRelationsToJson(problems);
+	}
+	
+	/**
+	 * 1 = no feedback
+	 * 2 = exp feedback
+	 * 3 = illscript fb
+	 * 4 = peer feedback
+	 * @param vertex
+	 * @return
+	 */
+	private boolean[] getDisplayModusOfVertex(VertexInterface vertex, boolean[] feedbackModus){
+		feedbackModus = new boolean[]{true, true, false, false}; //show learner and expert, TODO get from user settings and/or store in FacesContext
+		boolean[] displayModus = new boolean[]{false, false, false, false}; //learner, expert, illscript, peer 
+		int currentStage = 1;	
+		/*boolean showExp = false; 
+		boolean showLearner = false; 
+		boolean showIllScript = false; 
+		boolean showPeer = false; */
+		
+		//if(vertex instanceof MultiVertex){
+			MultiVertex mvertex = (MultiVertex) vertex;
+			/*Relation learnerRel = ;*/
+			Relation expRel = mvertex.getExpertVertex();
+		
+			if(mvertex.isLearnerVertex() && feedbackModus[0]){
+				displayModus[0] = true; //we always show what the learner has entered
+				if(feedbackModus[1] && mvertex.isExpertVertex()) //if learner has added this and expert as well display expert node:
+					displayModus[1] = true;
+				if(feedbackModus[3]) displayModus[3] = true; //show peers
+			}
+			else if(!mvertex.isLearnerVertex()){ //now learner has not added node:
+				if(feedbackModus[1] && mvertex.isExpertVertex() && expRel.getStage()<=currentStage) //but exp has added node
+					displayModus[1] = true;
+			}	
+			return displayModus;
+		//}
+		/*if(vertex instanceof SynonymVertex){ //then it is a synonym
+			
+		}*/
+		
+	}
 }

@@ -1,14 +1,19 @@
 package beans.relation;
+import java.awt.Point;
 import java.beans.Beans;
 import java.io.Serializable;
 import java.sql.Timestamp;
+import java.util.Iterator;
+import java.util.Set;
 
 import javax.faces.FacesWrapper;
 import javax.faces.context.FacesContext;
 import javax.faces.context.FacesContextWrapper;
 
 import controller.ConceptMapController;
+import controller.RelationController;
 import model.ListItem;
+import model.Synonym;
 /**
  * connects a Diagnosis object to a (Patient)IllnessScript object with some attributes.
  * @author ingahege
@@ -56,11 +61,18 @@ public class RelationDiagnosis extends Beans implements Relation, Rectangle, Ser
 	private String color; //default: #ffffff
 	private ListItem diagnosis;
 	private int mnm = 0;
-
+	private int stage;
+	/**
+	 * In case the learner has selected the not the main item, but a synonyma, we save the id here.
+	 * We do not need the object, since it is already stored in the ListItem 
+	 */
+	private long synId;
+	
 	public RelationDiagnosis(){}
-	public RelationDiagnosis(long lisItemId, long destId){
+	public RelationDiagnosis(long lisItemId, long destId, long synId){
 		this.setListItemId(lisItemId);
 		this.setDestId(destId);
+		if(synId>0) this.synId = synId;
 	}
 	public long getListItemId() { return listItemId;}
 	public void setListItemId(long listItemId) {this.listItemId = listItemId;}
@@ -79,7 +91,10 @@ public class RelationDiagnosis extends Beans implements Relation, Rectangle, Ser
 	public int getY() {return y;}
 	public void setY(int y) {this.y = y;}	
 	public String getColor() {return color;}
-	public void setColor(String color) {this.color = color;}
+	public void setColor(String color) {this.color = color;}	
+	public int getStage() {return stage;}
+	public void setStage(int stage) {this.stage = stage;}
+	
 	//public Timestamp getCreationDate() {return creationDate;}
 	//public void setCreationDate(Timestamp creationDate) {this.creationDate = creationDate;}
 	public String getIdWithPrefix(){ return ConceptMapController.PREFIX_DDX+this.getId();}
@@ -93,10 +108,11 @@ public class RelationDiagnosis extends Beans implements Relation, Rectangle, Ser
 	 * @see beans.relation.Rectangle#toJson()
 	 */
 	public String toJson(){
-		FacesContext facesContext2 = FacesContextWrapper.getCurrentInstance();
+		return new RelationController().getRelationToJson(this);
+		/*FacesContext facesContext2 = FacesContextWrapper.getCurrentInstance();
 		StringBuffer sb = new StringBuffer();
 		sb.append("{\"label\":\""+this.getDiagnosis().getName()+"\",\"shortlabel\":\""+this.getDiagnosis().getShortName()+"\",\"id\": \""+getIdWithPrefix()+"\",\"x\": "+this.x+",\"y\":"+this.y+",\"color\": \""+this.color+"\"}");		
-		return sb.toString();
+		return sb.toString();*/
 	}
 	
 
@@ -124,4 +140,16 @@ public class RelationDiagnosis extends Beans implements Relation, Rectangle, Ser
 	 * @see beans.relation.Relation#getListItem()
 	 */
 	public ListItem getListItem() {return diagnosis;}
+	public Synonym getSynonym(){
+		return new RelationController().getSynonym(this.synId,this);
+	}
+	public long getSynId() {return synId;}
+	/* (non-Javadoc)
+	 * @see beans.relation.Relation#getSynonyma()
+	 */
+	public Set<Synonym> getSynonyma(){ return diagnosis.getSynonyma();}
+	public void setXAndY(Point p){
+		this.setX(p.x);
+		this.setY(p.y);
+	}
 }

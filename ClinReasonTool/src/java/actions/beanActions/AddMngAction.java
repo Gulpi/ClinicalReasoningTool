@@ -15,6 +15,7 @@ import beans.graph.Graph;
 import beans.relation.Relation;
 import beans.relation.RelationManagement;
 import controller.NavigationController;
+import controller.RelationController;
 import database.DBClinReason;
 
 public class AddMngAction implements AddAction, Scoreable{
@@ -40,52 +41,44 @@ public class AddMngAction implements AddAction, Scoreable{
 	}
 
 	/* (non-Javadoc)
-	 * @see beanActions.AddAction#add(java.lang.String, java.lang.String)
+	 * @see beanActions.AddAction#add(java.lang.String)
 	 */
-	public void add(String idStr, String name) {
-		long id = Long.valueOf(idStr.trim());
-		addMng(id, name, -1, -1);
+	public void add(String idStr, String name){ 
+		//addProblem(idStr, name);
+		//long id = Long.valueOf(idStr.trim());
+		add(idStr, name, "-1", "-1");
 	}
 	
 	/**
-	 * @param idStr
+	 * @param idStr either an id or syn_id (for a synonym)
 	 * @param name
 	 * @param xStr (e.g. "199.989894") -> we have to convert it into int
 	 * @param yStr
 	 */
 	public void add(String idStr, String name, String xStr, String yStr){ 
-		long id = Long.valueOf(idStr.trim());
-		float x = Float.valueOf(xStr.trim());
-		float y = Float.valueOf(yStr.trim());
-		
-		addMng(id, name, (int)x, (int)y);
+		new RelationController().initAdd(idStr, name, xStr, yStr, this);
 	}
 	
-	private void addMng(long id, String name, int x, int y){
+	public void addRelation(long id, String name, int x, int y, long synId){
 		if(patIllScript.getMngs()==null) patIllScript.setMngs(new ArrayList<RelationManagement>());
-		RelationManagement relMng = new RelationManagement(id, patIllScript.getId());		
-		if(patIllScript.getMngs().contains(relMng)){
+		RelationManagement rel = new RelationManagement(id, patIllScript.getId(), synId);		
+		if(patIllScript.getMngs().contains(rel)){
 			createErrorMessage("Problem already assigned.","optional details", FacesMessage.SEVERITY_WARN);
 			return;
 		}
-		relMng.setOrder(patIllScript.getMngs().size());
-		if(x<0 && y<0){//setDefault x,y for problem
-			Point p = calculateNewItemPosInCanvas();
-			relMng.setX(p.x);
-			relMng.setY(p.y);
-		}
-		else{ //problem has been created from the concept map, therefore we have a position
-			relMng.setX(x);
-			relMng.setY(y);
-		}
-		patIllScript.getMngs().add(relMng);
-		relMng.setManagement(new DBClinReason().selectListItemById(id));
-		save(relMng);
-		updateGraph(relMng);
-		notifyLog(relMng);
-		triggerScoringAction(relMng);				
+		rel.setOrder(patIllScript.getMngs().size());
+		if(x<0 && y<0) rel.setXAndY(calculateNewItemPosInCanvas());		
+		else rel.setXAndY(new Point(x,y)); //problem has been created from the concept map, therefore we have a position
+
+		patIllScript.getMngs().add(rel);
+		rel.setManagement(new DBClinReason().selectListItemById(id));
+		save(rel);
+		updateGraph(rel);
+		notifyLog(rel);
+		triggerScoringAction(rel);				
 	}
 	
+
 	/**
 	 * we calculate a position for the new item. 
 	 * TODO: we could check whether the position is already taken,or others are vacant due to deleting of others
@@ -116,7 +109,8 @@ public class AddMngAction implements AddAction, Scoreable{
 	 */
 	public void updateGraph(Relation rel) {
 		Graph graph = new NavigationController().getCRTFacesContext().getGraph();
-		graph.addMultiVertex(rel, IllnessScriptInterface.TYPE_LEARNER_CREATED);		
+		graph.addVertex(rel, IllnessScriptInterface.TYPE_LEARNER_CREATED);
+	
 		// add implicit edges:
 		if( patIllScript.getDiagnoses()!=null){
 			for(int i=0; i < patIllScript.getDiagnoses().size(); i++){
@@ -124,7 +118,5 @@ public class AddMngAction implements AddAction, Scoreable{
 			}
 		}
 		System.out.println(graph.toString());
-
 	}
-
 }

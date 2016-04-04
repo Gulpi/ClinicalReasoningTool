@@ -2,13 +2,17 @@ package beans.graph;
 
 import java.util.*;
 
+import javax.faces.bean.SessionScoped;
+
 import org.jgrapht.graph.DirectedWeightedMultigraph;
 
 import beans.Connection;
 import beans.IllnessScriptInterface;
 import beans.PatientIllnessScript;
 import beans.relation.Relation;
+import controller.ConceptMapController;
 import controller.GraphController;
+import model.Synonym;
 
 /**
  * A Graph that models the components of (Patient-)IllnessScripts in a MultiGraph. 
@@ -19,7 +23,8 @@ import controller.GraphController;
  * @author ingahege
  *
  */
-public class Graph extends DirectedWeightedMultigraph<VertexInterface, MultiEdge> {
+@SessionScoped
+public class Graph extends DirectedWeightedMultigraph<MultiVertex, MultiEdge> {
 
 	private static final long serialVersionUID = 1L;
 	private long parentId; //e.g. VPId,...
@@ -47,33 +52,55 @@ public class Graph extends DirectedWeightedMultigraph<VertexInterface, MultiEdge
 		if(illScriptIds==null) illScriptIds = new ArrayList<Long>();
 		if(!illScriptIds.contains(new Long(id))) illScriptIds.add(new Long(id));
 	}
-
-
+	
 	/**
-	 * If a multiVertex for this vertexInterface has not yet been created we create a new one and add it. 
-	 * Otherwise we add the vertexInterface to the MultiVertex.
-	 * @param vertex
-	 * @param illScriptType
-	 * @return
+	 * We look for the Vertex for the given relation and remove the learnerVertex from it (only learnerVertices can be
+	 * removed!!!). If there do not 
+	 * @param rel
 	 */
-	public boolean addMultiVertex(Relation vertex, int illScriptType){
-		VertexInterface multiVertex = getVertexById(vertex.getListItemId());		
-		if(multiVertex==null){
-			multiVertex = new MultiVertex(vertex, illScriptType);
+	public void removeMultiVertex(Relation rel){
+		MultiVertex vertex = this.getVertexById(rel.getListItemId());
+		if(vertex==null) return; //Should not happen
+		vertex.setLearnerVertex(null);
+		//Shall we remove the vertex from the graph if there is no relation attached? (we still might have some peer nums)
+		//then also the edges would be removed automatically.
+	
+	}
+	
+	public void removeExplicitEdgeWeight(Connection cnx, int illScriptType){
+		MultiEdge edge = this.getEdge(this.getVertexById(cnx.getStartId()), this.getVertexById(cnx.getTargetId()));
+		if(edge==null) return; //should not happen
+		edge.removeExplicitWeight(illScriptType);
+	}
+	
+	public void removeEdgeWeight(long sourceId, long targetId, int illScriptType){
+		MultiEdge edge = this.getEdge(this.getVertexById(sourceId), this.getVertexById(targetId));
+		if(edge==null) return; //should not happen
+		edge.removeWeight(illScriptType);
+	}
+
+	
+	/**
+	 * We can call this for any addAction, no matter of main ListItem or Synonym, 
+	 * Check whether for this Relation a MultiVertex exists, if not create one. If yes, 
+	 * we check whether this Relation has been added or needs to be updated (e.g. because the learner has now 
+	 * changed from the synonym to the main ListItem entry. 
+	 * @param rel ALWAYS the Relation containing the ListItem (optional with the synonymId)
+	 * @param illnessScriptType
+	 */
+	public void addVertex(Relation rel, int illScriptType){
+		MultiVertex multiVertex = getVertexById(rel.getListItemId());
+		if(multiVertex==null){ //create a new one:
+			multiVertex = new MultiVertex(rel, illScriptType); 
 			super.addVertex(multiVertex);
 		}
-		else if(((MultiVertex)multiVertex).containsRelation(vertex)) return false;
-		else ((MultiVertex)multiVertex).addRelation(vertex, illScriptType);
-		if(illScriptType==IllnessScriptInterface.TYPE_EXPERT_CREATED){
-			gctrl.addSynonymaVerticesAndEdges((MultiVertex)multiVertex);
+		else{ //we only have to update the relation in the MultiVertex
+			Relation relInVertex = multiVertex.getRelationByType(illScriptType); 
+			multiVertex.addRelation(relInVertex, illScriptType); //relation not yet added			
 		}
-		return true;
 	}
 	
-	public boolean addVertex(SimpleVertex vertex){
-		return super.addVertex(vertex);
-	}
-	
+
 	/**
 	 * @param cnx
 	 * @param patIllScript
@@ -82,11 +109,11 @@ public class Graph extends DirectedWeightedMultigraph<VertexInterface, MultiEdge
 	public void addExplicitEdge(Connection cnx, PatientIllnessScript patIllScript, int type){
 		Relation source = patIllScript.getRelationByIdAndType(cnx.getStartId(), cnx.getStartType());
 		Relation target = patIllScript.getRelationByIdAndType(cnx.getTargetId(), cnx.getTargetType());
-		createAndAddEdge(getVertexById(source.getListItemId()), getVertexById(target.getListItemId()), type, MultiEdge.WEIGHT_EXPLICIT);
+		addOrUpdateEdge(getVertexById(source.getListItemId()), getVertexById(target.getListItemId()), type, MultiEdge.WEIGHT_EXPLICIT);
 	}
 	
 	public void addImplicitEdge(long sourceId, long targetId, int type){
-		createAndAddEdge(this.getVertexById(sourceId), this.getVertexById(targetId), type, MultiEdge.WEIGHT_IMPLICIT);
+		addOrUpdateEdge(this.getVertexById(sourceId), this.getVertexById(targetId), type, MultiEdge.WEIGHT_IMPLICIT);
 	}
 	
 	/**
@@ -98,7 +125,7 @@ public class Graph extends DirectedWeightedMultigraph<VertexInterface, MultiEdge
 	 * @param weight (implicit or explicit - see defintions in MultiEdge)
 	 * @return
 	 */
-	public boolean createAndAddEdge(VertexInterface source, VertexInterface target, int type, int weight){
+	private boolean addOrUpdateEdge(MultiVertex source, MultiVertex target, int type, int weight){
 		if(source==null || target==null)
 			return false;
 		MultiEdge e = getEdge(source, target); 
@@ -111,11 +138,11 @@ public class Graph extends DirectedWeightedMultigraph<VertexInterface, MultiEdge
 		
 	}
 
-	public VertexInterface getVertexById(long vertexId){
-		Iterator<VertexInterface> it = this.vertexSet().iterator();
+	public MultiVertex getVertexById(long vertexId){
+		Iterator<MultiVertex> it = this.vertexSet().iterator();
 		while(it.hasNext()){
-			VertexInterface vi = (VertexInterface) it.next();
-			if(vi.getVertexId().equals(vertexId)) return vi;
+			MultiVertex vi = it.next();
+			if(vi.getVertexId()==vertexId) return vi;
 		}
 		return null;
 	}
@@ -128,7 +155,7 @@ public class Graph extends DirectedWeightedMultigraph<VertexInterface, MultiEdge
 		StringBuffer sb = new StringBuffer();
 		sb.append("Graph: parent_id = " + this.parentId + ", vertices[ ");
 		if(this.vertexSet()!=null){
-			Iterator<VertexInterface> it = this.vertexSet().iterator();
+			Iterator<MultiVertex> it = this.vertexSet().iterator();
 			while(it.hasNext()){
 				sb.append(it.next().toString() +";\n ");
 			}

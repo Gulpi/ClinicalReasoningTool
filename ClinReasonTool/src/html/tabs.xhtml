@@ -210,7 +210,7 @@ Case placed here...<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
 					   		<ui:include src="probline.xhtml" />
     					</ui:repeat>
     				</ol>
-    				<div id="jsonProbMap" style="visibility:hidden">#{crtContext.patillscript.problemsJson}</div>
+    				<div id="jsonProbMap"> <!--  style="visibility:hidden"-->#{crtContext.patillscript.problemsJson}</div>
     				</h:panelGroup>
     				     <h:commandButton id="hiddenProbButton" value="RenderSomething" style="visibility:hidden">
     						<f:ajax render="@form" onevent="updateCMCallback"></f:ajax>

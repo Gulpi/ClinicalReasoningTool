@@ -12,13 +12,17 @@
 			</generator>
 		</id>	
 		<property name="destId" column="dest_id" type="long" />
+		<property name="synId" column="syn_id" type="long"/>
 		<property name="order" column="idx" type="int" />
 		<property name="listItemId" column="source_id" type="long"/>	
 		<property name="x" column="x" type="int"/>
 		<property name="y" column="y" type="int"/>
+		<property name="stage" column="stage" type="int"/>
 		<!--  <property name="creationDate" column="creation_date" update="false" type="timestamp"/>-->
 		
 		<!--  <property name="name" column="name" type="string"/>	-->
 		<many-to-one name="problem" class="model.ListItem" column="source_id"  lazy="false" insert="false" update="false"/>
+		<!-- <many-to-one name="syn" class="model.Synonym" column="syn_id"  lazy="false" not-null="false"/>-->
+		
 </class>
 </hibernate-mapping>

@@ -1,14 +1,15 @@
 package beans.relation;
 
+import java.awt.Point;
 import java.beans.Beans;
 import java.io.Serializable;
 import java.sql.Timestamp;
+import java.util.*;
 
-import javax.faces.bean.*;
-
-import beans.graph.VertexInterface;
 import controller.ConceptMapController;
+import controller.RelationController;
 import model.ListItem;
+import model.Synonym;
 
 /**
  * Relation between an (Patient-)IllnessScript and a problem. We need this to specify a problem, e.g. whether it is 
@@ -32,10 +33,10 @@ public class RelationProblem extends Beans implements Relation, Rectangle, Seria
 	private long listItemId; 
 	
 	/**
-	 * In case the learner has selected the not the main item, but a synonyma, we save the id here, which 
-	 * is listItemId_oderNrOfSyn
+	 * In case the learner has selected the not the main item, but a synonyma, we save the id here.
+	 * We do not need the object, since it is already stored in the ListItem 
 	 */
-	private String synId;
+	private long synId;
 	/**
 	 * (Patient)Illnesscript
 	 */
@@ -64,14 +65,22 @@ public class RelationProblem extends Beans implements Relation, Rectangle, Seria
 	private int qualifier;
 	
 	private Timestamp creationDate;
-	private long step; //when was item created, e.g. cardId of case
+	/**
+	 * When during a session was the item added (e.g. on which card number, if provided by 
+	 * the API), minimun 2 stages (before & after diagnosis submission)
+	 */
+	private int stage; //when was item created, e.g. cardId of case
 	
 	private ListItem problem;
+	/**
+	 * If a user has selected a synonym instead of the main item, we store this here in addition to the main item.
+	 */
 	
 	public RelationProblem(){}
-	public RelationProblem(long listItemId, long destId){
+	public RelationProblem(long listItemId, long destId, long synId){
 		this.setListItemId(listItemId);
 		this.setDestId(destId);
+		if(synId>0) this.synId = synId;
 	}
 	public long getListItemId() {return listItemId;}
 	public void setListItemId(long listItemId) {this.listItemId = listItemId;}
@@ -87,10 +96,18 @@ public class RelationProblem extends Beans implements Relation, Rectangle, Seria
 	public int getX() {return x;}
 	public void setX(int x) {this.x = x;}
 	public int getY() {return y;}
-	public void setY(int y) {this.y = y;}	
+	public void setY(int y) {this.y = y;}		
+	public int getStage() {return stage;}
+	public void setStage(int stage) {this.stage = stage;}	
+	public long getSynId() {return synId;}
+	public void setSynId(long synId) {this.synId = synId;}
+	
 	//public Timestamp getCreationDate() {return creationDate;}
 	//public void setCreationDate(Timestamp creationDate) {this.creationDate = creationDate;}
-	public String getIdWithPrefix(){ return ConceptMapController.PREFIX_PROB+this.getId();}
+	public String getIdWithPrefix(){ 
+		/*if(synId<=0)*/ return ConceptMapController.PREFIX_PROB+this.getId();
+		//return ConceptMapController.PREFIX_PROB+synId;
+	}
 	
 	public boolean equals(Object o){
 		if(o!=null){
@@ -104,9 +121,15 @@ public class RelationProblem extends Beans implements Relation, Rectangle, Seria
 	 * @see beans.relation.Rectangle#toJson()
 	 */
 	public String toJson(){
-		StringBuffer sb = new StringBuffer();		
-		sb.append("{\"label\":\""+this.getProblem().getName()+"\",\"shortlabel\":\""+this.getProblem().getShortName()+"\",\"id\": \""+getIdWithPrefix()+"\",\"x\": "+this.x+",\"y\":"+this.y+"}");		
-		return sb.toString();
+		return new RelationController().getRelationToJson(this);
+		/*StringBuffer sb = new StringBuffer();
+		if(synId<=0)
+			sb.append("{\"label\":\""+this.getProblem().getName()+"\",\"shortlabel\":\""+this.getProblem().getShortName()+"\",\"id\": \""+getIdWithPrefix()+"\",\"x\": "+this.x+",\"y\":"+this.y+"}");		
+		else{
+			sb.append("{\"label\":\""+this.getSynonym().getName()+"\",\"shortlabel\":\""+this.getSynonym().getShortName()+"\",\"id\": \""+getIdWithPrefix()+"\",\"x\": "+this.x+",\"y\":"+this.y+"}");		
+
+		}
+		return sb.toString();*/
 	}
 	
 	/* (non-Javadoc)
@@ -117,4 +140,17 @@ public class RelationProblem extends Beans implements Relation, Rectangle, Seria
 	 * @see beans.relation.Relation#getLabel()
 	 */
 	public String getLabel(){return problem.getName();}
+	
+	public Synonym getSynonym(){
+		return new RelationController().getSynonym(this.synId,this);
+	}
+	
+	/* (non-Javadoc)
+	 * @see beans.relation.Relation#getSynonyma()
+	 */
+	public Set<Synonym> getSynonyma(){ return problem.getSynonyma();}
+	public void setXAndY(Point p){
+		this.setX(p.x);
+		this.setY(p.y);
+	}
 }

@@ -1,11 +1,15 @@
 package beans.relation;
 
+import java.awt.Point;
 import java.beans.Beans;
 import java.io.Serializable;
 import java.sql.Timestamp;
+import java.util.Set;
 
 import controller.ConceptMapController;
+import controller.RelationController;
 import model.ListItem;
+import model.Synonym;
 
 /**
  * Relation between an (Patient-)IllnessScript and a problem. We need this to specify a problem, e.g. whether it is 
@@ -55,14 +59,22 @@ public class RelationTest extends Beans implements Relation, Rectangle, Serializ
 	 */
 	private int qualifier;
 	
+	private int stage;
+	
 	//private Timestamp creationDate;
 	
 	private ListItem test;
+	/**
+	 * In case the learner has selected the not the main item, but a synonyma, we save the id here.
+	 * We do not need the object, since it is already stored in the ListItem 
+	 */
+	private long synId;
 	
 	public RelationTest(){}
-	public RelationTest(long listItemId, long destId){
+	public RelationTest(long listItemId, long destId, long synId){
 		this.setListItemId(listItemId);
 		this.setDestId(destId);
+		if(synId>0) this.synId = synId;
 	}
 	public long getListItemId() {return listItemId;}
 	public void setListItemId(long listItemId) {this.listItemId = listItemId;}
@@ -82,6 +94,9 @@ public class RelationTest extends Beans implements Relation, Rectangle, Serializ
 	//public void setCreationDate(Timestamp creationDate) {this.creationDate = creationDate;}
 	public String getIdWithPrefix(){ return ConceptMapController.PREFIX_TEST+this.getId();}
 	
+	public int getStage() {return stage;}
+	public void setStage(int stage) {this.stage = stage;}
+	
 	/* (non-Javadoc)
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
@@ -97,9 +112,10 @@ public class RelationTest extends Beans implements Relation, Rectangle, Serializ
 	 * @see beans.relation.Rectangle#toJson()
 	 */
 	public String toJson(){
-		StringBuffer sb = new StringBuffer();		
+		return new RelationController().getRelationToJson(this);
+		/*StringBuffer sb = new StringBuffer();		
 		sb.append("{\"label\":\""+this.getTest().getName()+"\",\"shortlabel\":\""+this.getTest().getShortName()+"\",\"id\": \""+getIdWithPrefix()+"\",\"x\": "+this.x+",\"y\":"+this.y+"}");		
-		return sb.toString();
+		return sb.toString();*/
 	}
 
 	/* (non-Javadoc)
@@ -114,4 +130,20 @@ public class RelationTest extends Beans implements Relation, Rectangle, Serializ
 	 * @see beans.relation.Relation#getListItem()
 	 */
 	public ListItem getListItem(){return test;}
+	/* (non-Javadoc)
+	 * @see beans.relation.Relation#getSynonym()
+	 */
+	public Synonym getSynonym(){ return new RelationController().getSynonym(this.synId,this);}
+	/* (non-Javadoc)
+	 * @see beans.relation.Relation#getSynonyma()
+	 */
+	public Set<Synonym> getSynonyma(){ return test.getSynonyma();}
+	/* (non-Javadoc)
+	 * @see beans.relation.Relation#getSynId()
+	 */
+	public long getSynId() {return synId;}
+	public void setXAndY(Point p){
+		this.setX(p.x);
+		this.setY(p.y);
+	}
 }

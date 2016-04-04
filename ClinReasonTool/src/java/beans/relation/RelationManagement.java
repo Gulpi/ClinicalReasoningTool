@@ -1,10 +1,14 @@
 package beans.relation;
 
+import java.awt.Point;
 import java.beans.Beans;
 import java.io.Serializable;
+import java.util.Set;
 
 import controller.ConceptMapController;
+import controller.RelationController;
 import model.ListItem;
+import model.Synonym;
 
 public class RelationManagement extends Beans implements Relation, Rectangle, Serializable{
 	
@@ -33,11 +37,18 @@ public class RelationManagement extends Beans implements Relation, Rectangle, Se
 	private int y;
 	
 	private ListItem management;
+	/**
+	 * In case the learner has selected the not the main item, but a synonyma, we save the id here.
+	 * We do not need the object, since it is already stored in the ListItem 
+	 */
+	private long synId;
 	
+	private int stage;
 	public RelationManagement(){}
-	public RelationManagement(long listItemId, long destId){
+	public RelationManagement(long listItemId, long destId, long synId){
 		this.setListItemId(listItemId);
 		this.setDestId(destId);
+		if(synId>0) this.synId = synId;
 	}
 		
 	public int getX() {return x;}
@@ -53,7 +64,9 @@ public class RelationManagement extends Beans implements Relation, Rectangle, Se
 	public void setDestId(long destId) {this.destId = destId;}
 	public int getOrder() {return order;}
 	public void setOrder(int order) {this.order = order;}
-	public long getId() {return id;}
+	public long getId() {return id;}	
+	public int getStage() {return stage;}
+	public void setStage(int stage) {this.stage = stage;}
 	public String getIdWithPrefix(){ return ConceptMapController.PREFIX_MNG+this.getId();}
 
 	
@@ -72,9 +85,10 @@ public class RelationManagement extends Beans implements Relation, Rectangle, Se
 	 * @see beans.relation.Rectangle#toJson()
 	 */
 	public String toJson(){
-		StringBuffer sb = new StringBuffer();		
+		return new RelationController().getRelationToJson(this);
+		/*StringBuffer sb = new StringBuffer();		
 		sb.append("{\"label\":\""+this.getManagement().getName()+"\",\"shortlabel\":\""+this.getManagement().getShortName()+"\",\"id\": \""+getIdWithPrefix()+"\",\"x\": "+this.x+",\"y\":"+this.y+"}");		
-		return sb.toString();
+		return sb.toString();*/
 	}
 	
 
@@ -91,5 +105,19 @@ public class RelationManagement extends Beans implements Relation, Rectangle, Se
 	 * @see beans.relation.Relation#getListItem()
 	 */
 	public ListItem getListItem() {return management;}
+	public Synonym getSynonym(){ return new RelationController().getSynonym(this.synId,this);}
 	
+	/* (non-Javadoc)
+	 * @see beans.relation.Relation#getSynonyma()
+	 */
+	public Set<Synonym> getSynonyma(){ return management.getSynonyma();}
+	/* (non-Javadoc)
+	 * @see beans.relation.Relation#getSynId()
+	 */
+	public long getSynId() {return synId;}
+	
+	public void setXAndY(Point p){
+		this.setX(p.x);
+		this.setY(p.y);
+	}
 }

@@ -16,6 +16,7 @@ import beans.graph.Graph;
 import beans.relation.Relation;
 import beans.relation.RelationTest;
 import controller.NavigationController;
+import controller.RelationController;
 import database.DBClinReason;
 
 public class AddTestAction implements AddAction, Scoreable, FeedbackCreator{
@@ -41,50 +42,44 @@ public class AddTestAction implements AddAction, Scoreable, FeedbackCreator{
 	}
 
 	/* (non-Javadoc)
-	 * @see actions.beanActions.AddAction#add(java.lang.String, java.lang.String)
+	 * @see beanActions.AddAction#add(java.lang.String)
 	 */
-	public void add(String idStr, String name) {
-		long id = Long.valueOf(idStr.trim());
-		addTest(id, name, -1, -1);
+	public void add(String idStr, String name){ 
+		//addProblem(idStr, name);
+		//long id = Long.valueOf(idStr.trim());
+		add(idStr, name, "-1", "-1");
 	}
 	
 	/**
-	 * @param idStr
+	 * @param idStr either an id or syn_id (for a synonym)
 	 * @param name
 	 * @param xStr (e.g. "199.989894") -> we have to convert it into int
 	 * @param yStr
 	 */
 	public void add(String idStr, String name, String xStr, String yStr){ 
-		long id = Long.valueOf(idStr.trim());
-		float x = Float.valueOf(xStr.trim());
-		float y = Float.valueOf(yStr.trim());
-		
-		addTest(id, name, (int)x, (int)y);
+		new RelationController().initAdd(idStr, name, xStr, yStr, this);
 	}
 	
-	private void addTest(long id, String name, int x, int y){
+	/* (non-Javadoc)
+	 * @see actions.beanActions.AddAction#addRelation(long, java.lang.String, int, int, long)
+	 */
+	public void addRelation(long id, String name, int x, int y, long synId){
 		if(patIllScript.getTests()==null) patIllScript.setTests(new ArrayList<RelationTest>());
-		RelationTest relTest = new RelationTest(id, patIllScript.getId());		
-		if(patIllScript.getTests().contains(relTest)){
+		RelationTest rel = new RelationTest(id, patIllScript.getId(), synId);		
+		if(patIllScript.getTests().contains(rel)){
 			createErrorMessage("Test already assigned.","optional details", FacesMessage.SEVERITY_WARN);
 			return;
 		}
-		relTest.setOrder(patIllScript.getTests().size());
-		if(x<0 && y<0){//setDefault x,y for problem
-			Point p = calculateNewItemPosInCanvas();
-			relTest.setX(p.x);
-			relTest.setY(p.y);
-		}
-		else{ //problem has been created from the concept map, therefore we have a position
-			relTest.setX(x);
-			relTest.setY(y);
-		}
-		patIllScript.getTests().add(relTest);
-		relTest.setTest(new DBClinReason().selectListItemById(id));
-		save(relTest);
-		updateGraph(relTest);
-		notifyLog(relTest);
-		triggerScoringAction(relTest);				
+		rel.setOrder(patIllScript.getTests().size());
+		if(x<0 && y<0) rel.setXAndY(calculateNewItemPosInCanvas());		
+		else rel.setXAndY(new Point(x,y)); //problem has been created from the concept map, therefore we have a position
+
+		patIllScript.getTests().add(rel);
+		rel.setTest(new DBClinReason().selectListItemById(id));
+		save(rel);
+		updateGraph(rel);
+		notifyLog(rel);
+		triggerScoringAction(rel);				
 	}
 	
 	/**
@@ -124,7 +119,8 @@ public class AddTestAction implements AddAction, Scoreable, FeedbackCreator{
 	 */
 	public void updateGraph(Relation rel) {
 		Graph graph = new NavigationController().getCRTFacesContext().getGraph();
-		graph.addMultiVertex(rel, IllnessScriptInterface.TYPE_LEARNER_CREATED);		
+		graph.addVertex(rel, IllnessScriptInterface.TYPE_LEARNER_CREATED);
+	
 		// add implicit edges:
 		for(int i=0; i < patIllScript.getDiagnoses().size(); i++){
 			graph.addImplicitEdge(patIllScript.getDiagnoses().get(i).getListItemId(), rel.getListItemId(), IllnessScriptInterface.TYPE_LEARNER_CREATED);

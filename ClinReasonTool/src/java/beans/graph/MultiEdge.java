@@ -49,8 +49,17 @@ public class MultiEdge extends DefaultWeightedEdge{
 			if(types.get(new Integer(type)) < weight){
 				types.put(new Integer(type), new Integer(weight));
 			}
-			
 		}
+	}
+	
+	public void removeExplicitWeight(int illScriptType){
+		if(types==null || types.get(new Integer(illScriptType))==null) return;
+		types.put(new Integer(illScriptType),new Integer(WEIGHT_IMPLICIT));		
+	}
+	
+	public void removeWeight(int illScriptType){
+		if(types==null || types.get(new Integer(illScriptType))==null) return;
+		types.remove(new Integer(illScriptType));		
 	}
 	
 	/**
@@ -82,12 +91,12 @@ public class MultiEdge extends DefaultWeightedEdge{
 	/* (non-Javadoc)
 	 * @see org.jgrapht.graph.DefaultEdge#getTarget()
 	 */
-	public VertexInterface getTarget(){return (VertexInterface) super.getTarget();}
+	public MultiVertex getTarget(){return (MultiVertex) super.getTarget();}
 	
 	/* (non-Javadoc)
 	 * @see org.jgrapht.graph.DefaultEdge#getSource()
 	 */
-	public VertexInterface getSource(){return (VertexInterface) super.getSource();}
+	public MultiVertex getSource(){return (MultiVertex) super.getSource();}
 	
 	/* (non-Javadoc)
 	 * @see org.jgrapht.graph.DefaultWeightedEdge#getWeight()
@@ -98,7 +107,7 @@ public class MultiEdge extends DefaultWeightedEdge{
 	 * @see org.jgrapht.graph.DefaultEdge#toString()
 	 */
 	public String toString(){
-		return "edge: " + this.getSource().getVertexId()+"-"+this.getTarget().getVertexId();
+		return "edge: " + this.getSource().getLabel()+"-"+this.getTarget().getLabel()+" types: " + types.toString()+"\n";
 	}
 	
 	public void setSource(Object o){}

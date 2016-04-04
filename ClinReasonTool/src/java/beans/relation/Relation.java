@@ -4,6 +4,7 @@ import java.util.*;
 
 import beans.graph.VertexInterface;
 import model.ListItem;
+import model.Synonym;
 
 //import org.jgrapht.graph.DefaultWeightedEdge;
 
@@ -37,6 +38,17 @@ public interface Relation{
 	public void setOrder(int o); 	
 	public long getId();
 	public int getRelationType();
-
-
+	/**
+	 * When during a session was the item added (e.g. on which card number, if provided by 
+	 * the API), minimun 2 stages (before & after diagnosis submission)
+	 */
+	public int getStage();
+	/**
+	 * If the user has chosen a synonym of the main ListItem we return it here, otherwise null.
+	 * @return
+	 */
+	public Synonym getSynonym(); 
+	public Set<Synonym> getSynonyma();
+	public long getSynId();
+	public String getIdWithPrefix();
 }

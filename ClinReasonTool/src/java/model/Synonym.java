@@ -3,6 +3,8 @@ package model;
 import java.io.Serializable;
 import java.util.*;
 
+import org.apache.commons.lang3.StringUtils;
+
 public class Synonym implements Serializable{
 
 	private String name;
@@ -19,7 +21,8 @@ public class Synonym implements Serializable{
 	 * on a case-basis over time. What shall we choose for default value?
 	 */
 	private float ratingComparedToListItem = 1; 
-	
+	public static final String SYN_VERTEXID_PREFIX = "syn_";
+
 	public String getName() {return name;}
 	public void setName(String name) {this.name = name;}
 	public long getId() {return id;}
@@ -47,6 +50,10 @@ public class Synonym implements Serializable{
 	 */
 	public String toString(){
 		return this.name + ", Id: " + this.id;
+	}
+	
+	public String getShortName(){ 
+		return StringUtils.abbreviate(this.name, ListItem.MAXLENGTH_NAME);
 	}
 	
 }

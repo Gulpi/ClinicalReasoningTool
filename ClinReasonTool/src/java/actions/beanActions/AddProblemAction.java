@@ -13,7 +13,9 @@ import beans.graph.Graph;
 import beans.graph.MultiEdge;
 import beans.relation.*;
 import controller.NavigationController;
+import controller.RelationController;
 import database.DBClinReason;
+import model.Synonym;
 import actions.feedbackActions.FeedbackCreator;
 import actions.scoringActions.ProblemScoringAction;
 import actions.scoringActions.Scoreable;
@@ -38,47 +40,57 @@ public class AddProblemAction implements AddAction, Scoreable, FeedbackCreator{
 	 */
 	public void add(String idStr, String name){ 
 		//addProblem(idStr, name);
-		long id = Long.valueOf(idStr.trim());
-		addProblem(id, name, -1, -1);
+		//long id = Long.valueOf(idStr.trim());
+		add(idStr, name, "-1", "-1");
 	}
 	
-	/**
-	 * @param idStr
-	 * @param name
-	 * @param xStr (e.g. "199.989894") -> we have to convert it into int
-	 * @param yStr
+
+	/* (non-Javadoc)
+	 * @see actions.beanActions.AddAction#add(java.lang.String, java.lang.String, java.lang.String, java.lang.String)
 	 */
 	public void add(String idStr, String name, String xStr, String yStr){ 
-		long id = Long.valueOf(idStr.trim());
+		new RelationController().initAdd(idStr, name, xStr, yStr, this);
+		/*long id;
+		int type = AddAction.ADD_TYPE_MAINITEM;
+		if(idStr.startsWith(Synonym.SYN_VERTEXID_PREFIX)){
+			type = AddAction.ADD_TYPE_SYNITEM;
+			id = Long.valueOf(idStr.substring(Synonym.SYN_VERTEXID_PREFIX.length()));
+		}
+		else id = Long.valueOf(idStr.trim());
 		float x = Float.valueOf(xStr.trim());
 		float y = Float.valueOf(yStr.trim());
 		
-		addProblem(id, name, (int)x, (int)y);
+		if(type==AddAction.ADD_TYPE_MAINITEM) addProblem(id, name, (int)x, (int)y);
+		else{
+			//we have to find the parent id of the synonym.
+			Synonym syn = new DBClinReason().selectSynonymById(id);
+			addProblem(syn.getListItemId(), name, (int)x, (int)y, id); //then we add a synonym
+		}*/
 	}
+	/*private void addProblem(long id, String name, int x, int y){
+		addProblem(id, name, x, y, -1);
+	}*/
 	
-	private void addProblem(long id, String name, int x, int y){
+	
+	/* (non-Javadoc)
+	 * @see actions.beanActions.AddAction#addRelation(long, java.lang.String, int, int, long)
+	 */
+	public void addRelation(long id, String name, int x, int y, long synId){
 		if(patIllScript.getProblems()==null) patIllScript.setProblems(new ArrayList<RelationProblem>());
-		RelationProblem relProb = new RelationProblem(id, patIllScript.getId());		
-		if(patIllScript.getProblems().contains(relProb)){
+		RelationProblem rel = new RelationProblem(id, patIllScript.getId(), synId);		
+		if(patIllScript.getProblems().contains(rel)){
 			createErrorMessage("Problem already assigned.","optional details", FacesMessage.SEVERITY_WARN);
 			return;
 		}
-		relProb.setOrder(patIllScript.getProblems().size());
-		if(x<0 && y<0){//setDefault x,y for problem
-			Point p = calculateNewItemPosInCanvas();
-			relProb.setX(p.x);
-			relProb.setY(p.y);
-		}
-		else{ //problem has been created from the concept map, therefore we have a position
-			relProb.setX(x);
-			relProb.setY(y);
-		}
-		patIllScript.getProblems().add(relProb);
-		relProb.setProblem(new DBClinReason().selectListItemById(id));
-		save(relProb);
-		notifyLog(relProb);
-		updateGraph(relProb);
-		triggerScoringAction(relProb);		
+		rel.setOrder(patIllScript.getProblems().size());
+		if(x<0 && y<0) rel.setXAndY(calculateNewItemPosInCanvas());		
+		else rel.setXAndY(new Point(x,y)); //problem has been created from the concept map, therefore we have a position
+		patIllScript.getProblems().add(rel);
+		rel.setProblem(new DBClinReason().selectListItemById(id));
+		save(rel);
+		notifyLog(rel);
+		updateGraph(rel);
+		triggerScoringAction(rel);		
 	}
 	
 	/* (non-Javadoc)
@@ -134,14 +146,10 @@ public class AddProblemAction implements AddAction, Scoreable, FeedbackCreator{
 	 */
 	public void updateGraph(Relation rel) {
 		Graph graph = new NavigationController().getCRTFacesContext().getGraph();
-		graph.addMultiVertex(rel, IllnessScriptInterface.TYPE_LEARNER_CREATED);	
-		// add implicit edges:
-		if(patIllScript.getDiagnoses()!=null){
-			for(int i=0; i < patIllScript.getDiagnoses().size(); i++){
-				graph.addImplicitEdge(rel.getListItemId(), patIllScript.getDiagnoses().get(i).getListItemId(), IllnessScriptInterface.TYPE_LEARNER_CREATED);
-			}
+		graph.addVertex(rel, IllnessScriptInterface.TYPE_LEARNER_CREATED);
+		for(int i=0; i<patIllScript.getDiagnoses().size(); i++){
+			graph.addImplicitEdge(rel.getListItemId(), patIllScript.getDiagnoses().get(i).getListItemId(), IllnessScriptInterface.TYPE_LEARNER_CREATED);
 		}
 		System.out.println(graph.toString());
 	}
-
 }

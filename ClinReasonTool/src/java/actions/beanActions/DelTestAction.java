@@ -2,9 +2,13 @@ package actions.beanActions;
 
 import java.util.*;
 
+import beans.IllnessScriptInterface;
 import beans.LogEntry;
 import beans.PatientIllnessScript;
+import beans.graph.Graph;
+import beans.graph.MultiVertex;
 import beans.relation.*;
+import controller.NavigationController;
 import database.DBClinReason;
 
 public class DelTestAction implements DelAction{
@@ -40,10 +44,28 @@ public class DelTestAction implements DelAction{
 		}
 		RelationTest rel = patIllScript.getTestById(Long.parseLong(id));
 		patIllScript.getTests().remove(rel);
+		updateGraph(rel);
 		new ActionHelper().reOrderItems(patIllScript.getTests());
 		//TODO:
 		//new DelConnectionAction(patIllScript).deleteConnsByTargetId(rel.getId());
 		notifyLog(rel);
 		save(rel);
+	}
+	
+	/* (non-Javadoc)
+	 * @see actions.beanActions.DelAction#updateGraph(beans.relation.Relation)
+	 */
+	public void updateGraph(Relation rel){
+		Graph graph = new NavigationController().getCRTFacesContext().getGraph();
+		MultiVertex vertex = graph.getVertexById(rel.getListItemId());
+		if(vertex==null) return; //Should not happen
+		vertex.setLearnerVertex(null);
+		//remove complete edge param for all these edges:
+		if( patIllScript.getDiagnoses()!=null){
+			for(int i=0; i < patIllScript.getDiagnoses().size(); i++){
+				graph.removeEdgeWeight(patIllScript.getDiagnoses().get(i).getListItemId(), rel.getListItemId(), IllnessScriptInterface.TYPE_LEARNER_CREATED);
+			}
+		}
+		System.out.println(graph.toString());
 	}
 }

@@ -1,10 +1,14 @@
 package actions.beanActions;
 
-import java.util.List;
+import java.util.*;
 
+import beans.IllnessScriptInterface;
 import beans.LogEntry;
 import beans.PatientIllnessScript;
+import beans.graph.Graph;
+import beans.graph.MultiVertex;
 import beans.relation.*;
+import controller.NavigationController;
 import database.DBClinReason;
 
 public class DelProblemAction implements DelAction{
@@ -42,7 +46,23 @@ public class DelProblemAction implements DelAction{
 		patIllScript.getProblems().remove(rel);
 		new ActionHelper().reOrderItems(patIllScript.getProblems());		
 		notifyLog(rel);
+		updateGraph(rel);
 		new DelConnectionAction(patIllScript).deleteConnsByStartId(rel.getId());
 		save(rel);
+		
+	}
+	
+	public void updateGraph(Relation rel){
+		Graph graph = new NavigationController().getCRTFacesContext().getGraph();
+		MultiVertex vertex = graph.getVertexById(rel.getListItemId());
+		if(vertex==null) return; //Should not happen
+		vertex.setLearnerVertex(null);
+		//remove complete edge param for all these edges:
+		if( patIllScript.getDiagnoses()!=null){
+			for(int i=0; i < patIllScript.getDiagnoses().size(); i++){
+				graph.removeEdgeWeight(rel.getListItemId(), patIllScript.getDiagnoses().get(i).getListItemId(), IllnessScriptInterface.TYPE_LEARNER_CREATED);
+			}
+		}
+		System.out.println(graph.toString());
 	}
 }

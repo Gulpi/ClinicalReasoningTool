@@ -1,4 +1,4 @@
-package beans;
+package beans.scoring;
 
 import java.beans.Beans;
 import java.io.Serializable;

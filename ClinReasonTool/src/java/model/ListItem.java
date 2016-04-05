@@ -64,6 +64,7 @@ public class ListItem implements Serializable{
 	public void setMesh_ec(String mesh_ec) {this.mesh_ec = mesh_ec;}
 	public String getItemType() {return itemType;}
 	public void setItemType(String itemType) {this.itemType = itemType;}	
+
 	
 	public String getShortName(){ 
 		return StringUtils.abbreviate(this.name, MAXLENGTH_NAME);

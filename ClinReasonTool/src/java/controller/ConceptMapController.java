@@ -3,12 +3,15 @@ package controller;
 import java.util.*;
 
 import beans.Connection;
+import beans.graph.Graph;
+import beans.graph.MultiEdge;
+import beans.graph.MultiVertex;
 import beans.relation.Rectangle;
 
 /**
  * Handles the IO of the Json strings for the concept map
  * @author ingahege
- *
+ *@deprecated
  */
 public class ConceptMapController {
 	public static final String PREFIX_PROB = "cmprob_";
@@ -24,19 +27,48 @@ public class ConceptMapController {
 	public static final int TYPE_CNX = 5;
 	
 	
-	public String getConnsToJson(Map m){
+	/*public String getConnsToJson(Map m){
 		if(m==null || m.isEmpty()) return "";
 		StringBuffer sb = new StringBuffer("[");
-		Iterator it = m.values().iterator();
+		Iterator<Connection> it = m.values().iterator();
 		while(it.hasNext()){
-			sb.append(((Connection)it.next()).toJson());
+			sb.append(it.next().toJson());
 			if(it.hasNext()) sb.append(",");
 		}
 		sb.append("]");
 		return sb.toString();
-	} 
+	} */
 	
-	public String getRelationsToJson(List l){
+	/*public String getEdgesToJson(Graph g){
+		Set<MultiEdge> edges = g.edgeSet();
+		if(edges==null || edges.isEmpty()) return "";
+		Iterator<MultiEdge> it = edges.iterator();
+		StringBuffer sb = new StringBuffer("[");
+		while(it.hasNext()){
+			MultiEdge edge = it.next();
+			
+		}
+	}*/
+	
+	/*public String getGraphToJson(Graph g){
+		Set<MultiVertex> vertices = g.vertexSet();
+		if(vertices==null || vertices.isEmpty()) return ""; 
+		Iterator<MultiVertex> it = vertices.iterator();
+		StringBuffer sb = new StringBuffer("[");
+		
+		while(it.hasNext()){
+			MultiVertex mv = it.next();
+			Rectangle learnerRel = (Rectangle) mv.getLearnerVertex();
+			if(learnerRel!=null)
+				sb.append(learnerRel.toJson()+",");
+		}
+		sb.replace(sb.length()-1, sb.length(), ""); //remove the last ","
+		sb.append("]");
+		return sb.toString();
+	}*/
+
+	
+	/*public String getRelationsToJson(List l){
 		if(l==null || l.isEmpty()) return "";
 		StringBuffer sb = new StringBuffer("[");
 		for(int i=0; i<l.size(); i++){
@@ -45,7 +77,7 @@ public class ConceptMapController {
 		}
 		sb.append("]");
 		return sb.toString();
-	}
+	}*/
 	
 	public int getTypeByPrefix(String prefix){
 		if(prefix==null) return 0;

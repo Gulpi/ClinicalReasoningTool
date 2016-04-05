@@ -1,6 +1,9 @@
-package beans;
+package beans.scoring;
 
 import java.util.*;
+
+import beans.LogEntry;
+import beans.PatientIllnessScript;
 
 /**
  * LearninAnalytics takes into account all users' actions, scores, and goals. 

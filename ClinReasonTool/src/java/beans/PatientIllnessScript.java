@@ -157,10 +157,10 @@ public class PatientIllnessScript extends Beans/*extends Node*/ implements Illne
 	public void addConnection(String sourceId, String targetId){new AddConnectionAction(this).add(sourceId,targetId);}
 	public void delConnection(String idStr){new DelConnectionAction(this).delete(idStr);}
 
-	public String getProblemsJson(){ return new ConceptMapController().getRelationsToJson(problems);}
+/*	public String getProblemsJson(){ return new ConceptMapController().getRelationsToJson(problems);}
 	public String getDdxJson(){return new ConceptMapController().getRelationsToJson(diagnoses);}
 	public String getTestsJson(){return new ConceptMapController().getRelationsToJson(tests);}
-	public String getMngsJson(){return new ConceptMapController().getRelationsToJson(mngs);}
+	public String getMngsJson(){return new ConceptMapController().getRelationsToJson(mngs);}*/
 	public String getConnsJson(){return new ConceptMapController().getConnsToJson(conns);}	
 	public void saveSummStatement(String idStr, String text){
 		new SummaryStatementChgAction(this).updateOrCreateSummaryStatement( idStr, text);

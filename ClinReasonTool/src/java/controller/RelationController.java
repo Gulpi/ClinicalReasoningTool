@@ -23,12 +23,20 @@ public class RelationController {
 	
 	public String getRelationToJson(Relation rel){
 		StringBuffer sb = new StringBuffer();
-		if(rel.getSynId()<=0)
-			sb.append("{\"label\":\""+rel.getListItem().getName()+"\",\"shortlabel\":\""+rel.getListItem().getShortName()+"\",\"id\": \""+rel.getIdWithPrefix()+"\",\"x\": "+((Rectangle)rel).getX()+",\"y\":"+((Rectangle)rel).getY()+"}");		
-		else{
-			sb.append("{\"label\":\""+rel.getSynonym().getName()+"\",\"shortlabel\":\""+rel.getSynonym().getShortName()+"\",\"id\": \""+rel.getIdWithPrefix()+"\",\"x\": "+((Rectangle)rel).getX()+",\"y\":"+((Rectangle)rel).getY()+"}");		
+		/*String label = rel.getListItem().getName();
+		String shortLabel = rel.getListItem().getShortName(); 
+		if(rel.getSynId()>0){
+			label = rel.getSynonym().getName();
+			shortLabel= rel.getSynonym().getShortName();
+		}*/
+		sb.append("{\"label\":\""+rel.getLabelOrSynLabel()+"\",");
+		sb.append("\"shortlabel\":\""+rel.getShortLabelOrSynShortLabel()+"\",");
+		sb.append("\"id\":\""+rel.getIdWithPrefix()+"\",");
+		sb.append("\"x\":\""+((Rectangle)rel).getX()+"\",");
+		sb.append("\"y\":\""+((Rectangle)rel).getY()+"\",");	
+		sb.append("\"type\":\""+rel.getRelationType()+"\"");
+		sb.append("}");
 
-		}
 		return sb.toString();
 	}
 	

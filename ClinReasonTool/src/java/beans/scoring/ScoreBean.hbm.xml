@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
 	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
-<hibernate-mapping package="beans"> 
+<hibernate-mapping package="beans.scoring"> 
 
 	<class name="ScoreBean" table="crt.score">
 		<cache usage="nonstrict-read-write" />
@@ -18,7 +18,7 @@
 		<property name="scoreBasedOnIllScript" column="score_illscr" type="float" />
 		<property name="overallScore" column="score" type="float" />
 		<property name="scoredItem" column="action_item_id" type="long"/>	
-		<property name="itemType" column="item_type" type="int"/>	
+		<property name="type" column="item_type" type="int"/>	
 		<property name="weight" column="weight" type="int"/>
 		
 </class>

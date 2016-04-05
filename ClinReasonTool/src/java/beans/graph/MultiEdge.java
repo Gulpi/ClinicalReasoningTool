@@ -5,6 +5,8 @@ import java.util.*;
 import org.jgrapht.graph.DefaultWeightedEdge;
 
 import beans.IllnessScriptInterface;
+import beans.relation.Relation;
+import controller.ConceptMapController;
 
 
 /**
@@ -16,6 +18,11 @@ public class MultiEdge extends DefaultWeightedEdge{
 	public static final int WEIGHT_NONE = 0;	
 	public static final int WEIGHT_IMPLICIT = 1; //a connection has made in the concept map, tests have been associated to DDX  
 	public static final int WEIGHT_EXPLICIT = 2; //implicit connection - being in the same illnessScript
+	public static final String PREFIX_PROB = "cmprob_";
+	public static final String PREFIX_DDX = "cmddx_";
+	public static final String PREFIX_MNG = "cmmng_";
+	public static final String PREFIX_CNX = "cmcnx_";
+	public static final String PREFIX_TEST = "cmds_";
 	/**
 	 * key = type (see definition in IllnessScriptInterface)
 	 * value = weight (for peers the number of conx)
@@ -72,7 +79,19 @@ public class MultiEdge extends DefaultWeightedEdge{
 		types.put(new Integer(type), new Integer(weight));
 		
 	}
+	public int getLearnerWeight(){
+		return getParamByType(IllnessScriptInterface.TYPE_LEARNER_CREATED);
+	}
+
+	public int getExpertWeight(){
+		return getParamByType(IllnessScriptInterface.TYPE_EXPERT_CREATED);
+	}
 	
+	private int getParamByType(int illScriptType){
+		Integer param = types.get(new Integer(illScriptType)); 
+		if(param==null) return 0;
+		return param.intValue();
+	}
 	public long getSourceId() {return sourceId;}
 	public void setSourceId(long sourceId) {this.sourceId = sourceId;}
 	public long getTargetId() {return targetId;}
@@ -111,5 +130,27 @@ public class MultiEdge extends DefaultWeightedEdge{
 	}
 	
 	public void setSource(Object o){}
+	
+/*	public String toJson(Graph g){
+		//'[{"id": "cnx_1", "sourceid": "cmddx_6","targetid": "cmddx_3"}]';
+		String startIdWithPrefix = getPrefixByType(startType)+sourceId; 	
+		String targetIdWithPrefix = getPrefixByType(targetType)+targetId;
+		
+		return"{\"id\":\""+ PREFIX_CNX + this.getId()+"\",\"sourceid\": \""+startIdWithPrefix+"\",\"targetid\": \""+targetIdWithPrefix+"\"}");		
+		//return sb.toString();		
+	}*/
+	
+	protected int getTypeByPrefix(String prefix){
+		if(prefix==null) return 0;
+		if(prefix.equals(PREFIX_PROB)) return Relation.TYPE_PROBLEM;
+		if(prefix.equals(PREFIX_DDX)) return Relation.TYPE_DDX;
+		return 0;
+	}
+	
+	protected String getPrefixByType(int type){
+		if(type==Relation.TYPE_PROBLEM) return PREFIX_PROB;
+		if(type==Relation.TYPE_DDX) return PREFIX_DDX;
+		return "";
+	}
 	
 }

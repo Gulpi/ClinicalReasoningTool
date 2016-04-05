@@ -55,7 +55,7 @@ var numDiagnSteps = 0;
 var numMng = 0;
 var sessId = "#{crtContext.patillscript.sessionId}";
 var scriptId = "#{crtContext.patillscript.id}";
-var jsonConnsMap = '#{crtContext.patillscript.connsJson}';  //connections for concept map 
+//var jsonConnsMap = '#{crtContext.patillscript.connsJson}';  //connections for concept map 
 var listUrl="jsonp_en.json";
 var lang = "#{crtContext.patillscript.locale}";
 var my_canvas = null;
@@ -182,7 +182,7 @@ Case placed here...<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
 	    <li><a href="#tabs-3">DDX</a></li>
 	    <li><a href="#tabs-5">Diagn. Steps</a></li>
 	    <li><a href="#tabs-6">Therapy</a></li>
-	    <li><a href="#tabs-7">Concept map</a></li>
+	    <li><a href="#tabs-7" onclick="javascript:updateGraph();">Concept map</a></li>
 	    <li><a href="#tabs-8">Notes</a></li>
 	  </ul>
 		  <div id="tabs-1">
@@ -210,10 +210,10 @@ Case placed here...<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
 					   		<ui:include src="probline.xhtml" />
     					</ui:repeat>
     				</ol>
-    				<div id="jsonProbMap"> <!--  style="visibility:hidden"-->#{crtContext.patillscript.problemsJson}</div>
+    				<!-- <div id="jsonProbMap">#{crtContext.patillscript.problemsJson}</div>-->
     				</h:panelGroup>
     				     <h:commandButton id="hiddenProbButton" value="RenderSomething" style="visibility:hidden">
-    						<f:ajax render="@form" onevent="updateCMCallback"></f:ajax>
+    						<f:ajax render="@form" onevent="updateCallback"></f:ajax>
 						</h:commandButton></h:form>
 				</div>			
 		  </div>
@@ -232,10 +232,10 @@ Case placed here...<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
 							<ui:include src="ddxline.xhtml" />
      					</ui:repeat>					
 					</ol>
-					<div id="jsonDDXMap" style="visibility:hidden" >#{crtContext.patillscript.ddxJson}</div>
+					<!-- <div id="jsonDDXMap" style="visibility:hidden" >#{crtContext.patillscript.ddxJson}</div>-->
     				</h:panelGroup>
     				     <h:commandButton id="hiddenDDXButton" value="RenderSomething" style="visibility:hidden">
-    						<f:ajax render="@form" onevent="updateCMCallback"></f:ajax>
+    						<f:ajax render="@form" onevent="updateCallback"></f:ajax>
 						</h:commandButton></h:form>
 				</div>
 				<div id="confidence_slider" class="conf_slider" title="Level of confidence"></div>
@@ -252,10 +252,10 @@ Case placed here...<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
      					</ui:repeat>				
 						<!-- <li id="selds_1">Chest X-ray <select class="f_select"><option value="-1">scanning</option><option>r/c Pneumonia</option></select></li>-->
 					</ol>
-					<div id="jsonTestsMap" style="visibility:hidden">#{crtContext.patillscript.testsJson}</div>
+					<!--  <div id="jsonTestsMap" style="visibility:hidden">#{crtContext.patillscript.testsJson}</div>-->
     				</h:panelGroup>
-    				     <h:commandButton id="hiddenTestsButton" value="RenderSomething" style="visibility:hidden">
-    						<f:ajax render="@form" onevent="updateCMCallback"></f:ajax>
+    				     <h:commandButton id="hiddenTestButton" value="RenderSomething" style="visibility:hidden">
+    						<f:ajax render="@form" onevent="updateCallback"></f:ajax>
 						</h:commandButton>
 					</h:form>
 					</div>
@@ -273,10 +273,10 @@ Case placed here...<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
 	   					</ui:repeat>				
 					<!-- <li id="selds_1">Chest X-ray <select class="f_select"><option value="-1">scanning</option><option>r/c Pneumonia</option></select></li>-->
 				</ol>
-				<div id="jsonTestsMap" style="visibility:hidden">#{crtContext.patillscript.mngsJson}</div>
+				<!--  <div id="jsonTestsMap" style="visibility:hidden">#{crtContext.patillscript.mngsJson}</div>-->
 	  				</h:panelGroup>
 	  				     <h:commandButton id="hiddenMngButton" value="RenderSomething" style="visibility:hidden">
-	  						<f:ajax render="@form" onevent="updateCMCallback"></f:ajax>
+	  						<f:ajax render="@form" onevent="updateCallback"></f:ajax>
 					</h:commandButton></h:form>
 				</div>
 	  		</div>
@@ -313,6 +313,16 @@ Case placed here...<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
 		  	<!--  <div class="cm-preview"><a href="javascript:openCanvas();" title="click to open concept map"><img id="preview_img" style="border-radius:5px;overflow:auto; width:50px; height:50px;"/> </a></div> -->
 		 <!--   </div>-->
 	</div> <br clear="all"/>  
+	<h:form id="graphform">
+		<h:panelGroup id="graph">
+			<div id="jsonGraph" >#{crtContext.graph.toJson}</div>
+			<div id="jsonConns">#{crtContext.graph.connsJson}</div> <!--  onnections for concept map -->
+			
+		</h:panelGroup>
+		     <h:commandButton id="hiddenGraphButton" value="RenderSomething" style="visibility:hidden">
+				<f:ajax render="@form" onevent="updateCMCallback"></f:ajax>
+			</h:commandButton>
+	</h:form>
 <!--  <h:form>
    <h:commandLink action="#{navController.openOverview}" value="Overview" >
    	<f:param name="user_id" value="#{crtContext.userId}" />

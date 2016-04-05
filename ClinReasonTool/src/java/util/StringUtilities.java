@@ -14,8 +14,8 @@ import java.util.Locale;
  *
  */
 public class StringUtilities {
-	public static final int MIN_LEVEN_DISTANCE = 4; //if we have a level 1 similarity the item is not included
-	public static final int MAX_FUZZY_DISTANCE = 38; //if we have a level 1 similarity the item is not included
+	public static final int MIN_LEVEN_DISTANCE = 20; //if we have a level 1 similarity the item is not included
+	public static final int MAX_FUZZY_DISTANCE = 30; //if we have a level 1 similarity the item is not included
 
 	/**
 	 * Counts the number of a pattern within a string.

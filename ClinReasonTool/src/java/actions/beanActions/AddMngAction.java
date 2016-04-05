@@ -8,11 +8,13 @@ import javax.faces.application.FacesMessage;
 import javax.faces.application.FacesMessage.Severity;
 
 import actions.scoringActions.Scoreable;
+import actions.scoringActions.ScoringAddAction;
 import beans.IllnessScriptInterface;
 import beans.LogEntry;
 import beans.PatientIllnessScript;
 import beans.graph.Graph;
 import beans.relation.Relation;
+import beans.relation.RelationDiagnosis;
 import beans.relation.RelationManagement;
 import controller.NavigationController;
 import controller.RelationController;
@@ -92,10 +94,11 @@ public class AddMngAction implements AddAction, Scoreable{
 		return new Point(RelationManagement.DEFAULT_X,y);
 	}
 
-	@Override
+	/* (non-Javadoc)
+	 * @see actions.scoringActions.Scoreable#triggerScoringAction(java.beans.Beans)
+	 */
 	public void triggerScoringAction(Beans rel) {
-		// TODO Auto-generated method stub
-		
+		new ScoringAddAction().scoreAction(((RelationManagement) rel).getListItemId(), ((RelationManagement) rel).getDestId());		
 	}
 
 	@Override

@@ -9,6 +9,7 @@ import javax.faces.application.FacesMessage.Severity;
 import javax.faces.context.FacesContext;
 
 import actions.scoringActions.Scoreable;
+import actions.scoringActions.ScoringAddAction;
 import beans.*;
 import beans.graph.Graph;
 import beans.relation.*;
@@ -129,10 +130,8 @@ public class AddDiagnosisAction implements AddAction, Scoreable{
 	 * @see beanActions.AddAction#initScoreCalc(beans.relation.Relation)
 	 */
 	public void triggerScoringAction(Beans relDDX){
-		//try{
-			//new ProblemScoring().calcScoreForAddDiagb(patIllScript, relProb);
-		//}
-		//catch(WrongProblemError wpe){}
+		new ScoringAddAction().scoreAction(((RelationDiagnosis) relDDX).getListItemId(), ((RelationDiagnosis) relDDX).getDestId());
+
 	}
 	
 	/* (non-Javadoc)

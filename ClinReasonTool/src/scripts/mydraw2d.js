@@ -7,46 +7,31 @@ var counter = 0;
  * read the json strings and place the rectangles and connection on the canvas.
  */
 function initConceptMap(){
-	var ddxs = ''; 
-	var probs = '';
-	var tests = '';
-	var mngs = '';
-	var conns = '';
-	var jsonProbMap = $("#jsonProbMap").html();
-	var jsonDDXMap = $("#jsonDDXMap").html();
-	var jsonTestMap = $("#jsonTestMap").html();
-	var jsonMngMap = $("#jsonMngMap").html();
-	if(jsonDDXMap!=null && jsonDDXMap!='') ddxs = jQuery.parseJSON(jsonDDXMap);
-	if(jsonProbMap!=null && jsonProbMap!='') probs = jQuery.parseJSON(jsonProbMap);
-	if(jsonTestMap!=null && jsonTestMap!='') tests = jQuery.parseJSON(jsonTestMap);
-	if(jsonMngMap!=null && jsonMngMap!='') mngs = jQuery.parseJSON(jsonMngMap);
-	if(jsonConnsMap!='') conns =  jQuery.parseJSON(jsonConnsMap);
-	if(probs!=''){
-		for(i=0; i<probs.length;i++){
-			createAndAddFind(probs[i].label, probs[i].x, probs[i].y, probs[i].id, probs[i].shortlabel);
-		}
+	//alert("initConceptMap");
+	var conns = jQuery.parseJSON($("#jsonConnsMap").html());
+	var jsonRects = jQuery.parseJSON($("#jsonGraph").html());
+	//alert(jsonRects);
+	for(i=0; i<jsonRects.length;i++){
+		createAndAddRectangle(jsonRects[i].label, jsonRects[i].x, jsonRects[i].y, jsonRects[i].id, jsonRects[i].shortlabel, jsonRects[i].type);
 	}
-	if(ddxs!=''){
-		for(i=0; i<ddxs.length;i++){
-			createAndAddHyp(ddxs[i].label, ddxs[i].x, ddxs[i].y, ddxs[i].id, ddxs[i].shortlabel, ddxs[i].color);
-		}
-	}
-	if(tests!=''){
-		for(i=0; i<tests.length;i++){
-			createAndAddTest(tests[i].label, tests[i].x, tests[i].y, tests[i].id, tests[i].shortlabel);
-		}
-	}
-	if(mngs!=''){
-		for(i=0; i<mngs.length;i++){
-			createAndAddMng(mngs[i].label, mngs[i].x, mngs[i].y, mngs[i].id, mngs[i].shortlabel);
-		}
-	}
+	
+	//if(jsonConnsMap!='') conns =  jQuery.parseJSON(jsonConnsMap);
+
 	if(conns!=''){
 		for(i=0; i<conns.length;i++){
 			createConnection(conns[i].id, conns[i].sourceid, conns[i].targetid);
 		}
 	}
 }
+/*
+ * When the learner clicks on the concept map tab we init an ajax call to make sure that the graph json representation 
+ * is up-to-date.
+ */
+function updateGraph(){
+	//alert("updateGraph");
+	$("[id='graphform:hiddenGraphButton']").click();
+}
+
 
 /** when coming back from adding items, we empty the map and init it again from the updated json string*/
 function updateCMCallback(data){
@@ -61,6 +46,7 @@ function updateCMCallback(data){
 
     case "success": // This is called right after update of HTML DOM.
     	my_canvas.clear();
+    	//alert("updateCMCallback");
     	initConceptMap();
         break;
 	}
@@ -89,11 +75,27 @@ function addConnection(sourcePort, targetPort){
 	sendAjax(sourcePort.getParent().id, doNothing, "addConnection", targetPort.getParent().id);
 }
 
+
+function initAddRectangle(prefix, name, containerName){
+	$( "#"+name ).draggable({ //add a new hypothesis
+		  start: function( event, ui ) {
+				 $("#"+name).clone().prependTo($("#"+containerName)); 
+			  } , 
+			  stop: function( event, ui ) {	
+				  this.remove();	
+				  var canvasX = ui.offset.left- my_canvas.html.offset().left;
+		 		  var canvasY = ui.offset.top - my_canvas.html.offset().top;
+		 		  createTempRect(" ", canvasX, canvasY, "cm"+prefix+"_-1");	 
+		 		  openListForCM(canvasX,canvasY, "cm"+prefix+"_-1");
+			  }
+		  });	
+}
 /**
  * init the drag&drop rectangle for adding a new hypothesis
  */
 function initAddHyp(){
-  $( "#addhyp" ).draggable({ //add a new hypothesis
+	initAddRectangle("ddx", "addhyp", "hypcontainer");
+  /*$( "#addhyp" ).draggable({ //add a new hypothesis
 	  start: function( event, ui ) {
 		 $("#addhyp").clone().prependTo($("#hypcontainer")); 
 	  } , 
@@ -104,14 +106,16 @@ function initAddHyp(){
  		  createTempRect("ddx", canvasX, canvasY, "cmddx_-1");
  		  openListForCM(canvasX,canvasY, "cmddx_-1");
 	  }
-  });	
+  });	*/
 }
+
 
 /**
  * init the drag&drop rectangle for adding a new problem
  */
 function initAddFind(){
-	$( "#addfind" ).draggable({ //add a new hypothesis
+	initAddRectangle("prob", "addfind", "findcontainer");
+	/*$( "#addfind" ).draggable({ //add a new hypothesis
 	  start: function( event, ui ) {
 			 $("#addfind").clone().prependTo($("#findcontainer")); 
 		  } , 
@@ -122,14 +126,15 @@ function initAddFind(){
 	 		  createTempRect("prob", canvasX, canvasY, "cmprob_-1");	 
 	 		  openListForCM(canvasX,canvasY, "cmprob_-1");
 		  }
-	  });	
+	  });	*/
 }
 
 /**
  * init the drag&drop rectangle for adding a new management item
  */
 function initAddMng(){
-	 $( "#addmng" ).draggable({ //add a new hypothesis
+	initAddRectangle("mng", "addmng", "mngcontainer");
+	/* $( "#addmng" ).draggable({ //add a new hypothesis
 		  start: function( event, ui ) {
 			 $("#addmng").clone().prependTo($("#mngcontainer")); 
 		  } , 
@@ -140,14 +145,15 @@ function initAddMng(){
 		  	  createAndAddMng("new mng", canvasX, canvasY, "cmmng_-1");	  	
 		      updatePreview();
 		  }
-	 });	
+	 });*/	
 }
 
 /**
  * init the drag&drop rectangle for adding a new diagnostic step
  */
 function initAddTest(){
-	 $( "#adddiagnstep" ).draggable({ //add a new hypothesis
+	initAddRectangle("ds", "adddiagnstep", "dscontainer");
+	/* $( "#adddiagnstep" ).draggable({ //add a new hypothesis
 		  start: function( event, ui ) {
 			 $("#adddiagnstep").clone().prependTo($("#dscontainer")); 
 		  } , 
@@ -158,7 +164,7 @@ function initAddTest(){
 			  createAndAddTest("new test", canvasX, canvasY,"cmds_-1");	  	
 		  	updatePreview();
 		  }
-	}); 
+	}); */
 }
 
 /**
@@ -224,18 +230,18 @@ function editOrAddProblemCM(newValue, label){
 	var selFigure = my_canvas.getSelection().getPrimary();
 	var id = selFigure.id.substring(7);
 	if(id=="-1") //a new problem
-		sendAjaxCM(newValue, problemCallBack, "addProblem", label, selFigure.x, selFigure.y);
+		sendAjaxCM(newValue, problemCallBackCM, "addProblem", label, selFigure.x, selFigure.y);
 	else //change of existing problem
-		sendAjax(newValue, problemCallBack, "changeProblem", id);
+		sendAjax(newValue, problemCallBackCM, "changeProblem", id);
 }
 
 function editOrAddDDXCM(newValue, label){
 	var selFigure = my_canvas.getSelection().getPrimary();
 	var id = selFigure.id.substring(6);
 	if(id=="-1") //a new problem
-		sendAjaxCM(newValue, problemCallBack, "addDiagnosis", label, selFigure.x, selFigure.y);
+		sendAjaxCM(newValue, diagnosisCallBackCM, "addDiagnosis", label, selFigure.x, selFigure.y);
 	else //change of existing problem
-		sendAjax(newValue, problemCallBack, "changeDiagnosis", id);
+		sendAjax(newValue, diagnosisCallBackCM, "changeDiagnosis", id);
 }
 
 function editOrAddTestCM(newValue, label){
@@ -243,9 +249,9 @@ function editOrAddTestCM(newValue, label){
 	var id = selFigure.id.substring(6);
 	alert(id);
 	if(id=="-1") //a new problem
-		sendAjaxCM(newValue, problemCallBack, "addTest", label, selFigure.x, selFigure.y);
+		sendAjaxCM(newValue, testCallBackCM, "addTest", label, selFigure.x, selFigure.y);
 	else //change of existing problem
-		sendAjax(newValue, problemCallBack, "changeTest", id);
+		sendAjax(newValue, testCallBackCM, "changeTest", id);
 }
 
 function editOrAddMngCM(newValue, label){
@@ -253,9 +259,9 @@ function editOrAddMngCM(newValue, label){
 	var id = selFigure.id.substring(6);
 	alert(id);
 	if(id=="-1") //a new problem
-		sendAjaxCM(newValue, problemCallBack, "addMng", label, selFigure.x, selFigure.y);
+		sendAjaxCM(newValue, managementCallBackCM, "addMng", label, selFigure.x, selFigure.y);
 	else //change of existing problem
-		sendAjax(newValue, problemCallBack, "changeMng", id);
+		sendAjax(newValue, managementCallBackCM, "changeMng", id);
 }
 
 
@@ -277,29 +283,38 @@ function designPort(port){
 	port.setRadius(3);
 }
 
-
-/**
- * create a new problem rectangle and add it to the canvas (including label and ports)
- **/
-function createAndAddFind(name, x, y, id, shortname){
+function createAndAddRectangle(name, x, y, id, shortname, type){
 	if(shortname!=""){
 		lookUpLabels[counter] = name;
 		lookUpShortLabels[counter] = shortname;
 		counter++;
 	}
 	else shortname = name;
+	var rect;
+	//we need individual functions here, to be able to adapt the number and types of ports
+	if(type=="1") rect = createAndAddFind(name, x, y, id, shortname);
+	if(type=="2") rect = createAndAddHyp(name, x, y, id, shortname);
+	if(type=="3") rect = createAndAddDiagnStep(name, x, y, id, shortname);
+	if(type=="4") rect = createAndAddMng(name, x, y, id, shortname);
+	my_canvas.add(rect, Number(x), Number(y));		
+}
+/**
+ * create a new problem rectangle and add it to the canvas (including label and ports)
+ **/
+function createAndAddFind(name, x, y, id, shortname){
 	 var rect = createRect(shortname,"#cccccc"/*"#99CC99"*/,id);//new draw2d.shape.basic.Rectangle();
 	 rect.createPort("output", new draw2d.layout.locator.RightLocator());
 	 designPort(rect.getOutputPort(0));
 	 rect.setBackgroundColor("#ffffff");
-	 my_canvas.add(rect, x, y);	 
+	 
+	 return rect;
 }
 
 /**
  * create a new hypothesis rectangle and add it to the canvas (including label and ports)
  **/
-function createAndAddHyp(name, x, y, id, color){
-	var rect = createRect(name,/*"#B7CDDC"*/ color, id/*,"990000"*/); //new draw2d.shape.basic.Rectangle();
+function createAndAddHyp(name, x, y, id, shortname){
+	var rect = createRect(shortname,"#cccccc", id/*,"990000"*/); //new draw2d.shape.basic.Rectangle();
 	rect.createPort("input");
 	rect.createPort("output");
 	//rect.getInputPort(0).setCssClass("ports");
@@ -312,30 +327,30 @@ function createAndAddHyp(name, x, y, id, color){
 	}*/
 	rect.setBackgroundColor("#ffffff");
 	
-	my_canvas.add(rect, x, y);	
-	initAddHyp(); //we have to re-init this here, because we have created a clone!!!
+	//my_canvas.add(rect, x, y);	
+	return rect;
+	//initAddHyp(); //we have to re-init this here, because we have created a clone!!!
 }
 
 /**
  * create a new diagnostic step rectangle and add it to the canvas (including label and ports)
  **/
-function createAndAddDiagnStep(name, x, y, id){
-	var rect = createRect(name,"#cccccc" /*"#F6E3CE"*/, id);
+function createAndAddDiagnStep(name, x, y, id, shortname){
+	var rect = createRect(shortname,"#cccccc" /*"#F6E3CE"*/, id);
 	rect.createPort("input");
 	rect.setBackgroundColor("#ffffff");
-	my_canvas.add(rect, x, y);	
-	initAddTest();
+	return rect;
+	//initAddTest();
 }
 
 /**
  * create a new management item rectangle and add it to the canvas (including label and ports)
  **/
-function createAndAddMng(name, x, y, id){
-	var rect = createRect(name,"#cccccc" /*"#FFFF99"*/, id);
+function createAndAddMng(name, x, y, id, shortname){
+	var rect = createRect(shortname,"#cccccc" /*"#FFFF99"*/, id);
 	rect.createPort("input");
-	rect.setBackgroundColor("#ffffff");
-	my_canvas.add(rect, x, y);	
-	initAddMng();
+	rect.setBackgroundColor("#ffffff");			
+	return rect;
 }
 
 

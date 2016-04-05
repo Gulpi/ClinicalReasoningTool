@@ -66,7 +66,7 @@ public class Connection extends Beans implements Serializable{
 		return false;
 	}
 	
-	public String toJson(){
+	/*public String toJson(){
 		//'[{"id": "cnx_1", "sourceid": "cmddx_6","targetid": "cmddx_3"}]';
 		StringBuffer sb = new StringBuffer();
 		ConceptMapController cmc = new ConceptMapController();
@@ -75,6 +75,6 @@ public class Connection extends Beans implements Serializable{
 		
 		sb.append("{\"id\":\""+cmc.PREFIX_CNX + this.getId()+"\",\"sourceid\": \""+startIdWithPrefix+"\",\"targetid\": \""+targetIdWithPrefix+"\"}");		
 		return sb.toString();		
-	}
+	}*/
 	
 }

@@ -20,7 +20,7 @@ function changeCourseOfTime(){
 function addProblem(problemId, name){
 	//here we have to trigger an ajax call... 
 	//var problemId = $("#problems").val();
-	if(problemId>-1) sendAjax(problemId, problemCallBack, "addProblem", name);
+	if(name!="") sendAjax(problemId, problemCallBack, "addProblem", name);
 }
 
 
@@ -41,7 +41,14 @@ function delProblem(id){
 function problemCallBack(problemId, selProblem){
 	$("#problems").val("");	
 	//we update the problems list and the json string
-	$("[id='probform:hiddenProbButton']").click();		
+	$("[id='probform:hiddenProbButton']").click();	
+	//$("[id='probform:hiddenGraphButton']").click();
+}
+
+function problemCallBackCM(problemId, selProblem){
+	//we update the problems list and the json string
+	$("[id='probform:hiddenProbButton']").click();	
+	$("[id='graphform:hiddenGraphButton']").click();
 }
 
 
@@ -55,7 +62,7 @@ function reOrderProblems(newOrder, id){
  * a diagnosis is added to the list of the already added diagnoses:
  */
 function addDiagnosis(diagnId, name){
-	if(diagnId>-1) sendAjax(diagnId, diagnosisCallBack, "addDiagnosis", name);
+	if(name!="") sendAjax(diagnId, diagnosisCallBack, "addDiagnosis", name);
 }
 
 function delDiagnosis(id){
@@ -65,7 +72,14 @@ function delDiagnosis(id){
 function diagnosisCallBack(ddxId, selDDX){
 	$("#ddx").val("");	
 	//we update the problems list and the json string
-	$("[id='ddxform:hiddenDDXButton']").click();		
+	$("[id='ddxform:hiddenDDXButton']").click();	
+	//$("[id='probform:hiddenGraphButton']").click();
+}
+
+function diagnosisCallBackCM(ddxId, selDDX){
+	//we update the problems list and the json string
+	$("[id='ddxform:hiddenDDXButton']").click();	
+	$("[id='graphform:hiddenGraphButton']").click();
 }
 
 function reOrderDiagnoses(newOrder, id){
@@ -160,7 +174,7 @@ function toggleSubmit(){
  * a management item is added to the list of the already added items:
  */
 function addManagement(mngId, name){
-	if(mngId>-1) sendAjax(mngId, managementCallBack, "addMng", name);
+	if(name!="") sendAjax(mngId, managementCallBack, "addMng", name);
 	//if(mngId>-1) addManagementCallBack(mngId, selMng);
 }
 
@@ -168,10 +182,16 @@ function delManagement(id){
 	sendAjax(id, managementCallBack, "delMng", "");
 }
 
-function managementCallBack(testId, selTest){
+function managementCallBack(mngId, selMng){
 	$("#mng").val("");	
 	//we update the problems list and the json string
 	$("[id='mngform:hiddenMngButton']").click();		
+}
+
+function managementCallBackCM(mngId, selMng){
+	//we update the problems list and the json string
+	$("[id='mngform:hiddenMngButton']").click();	
+	$("[id='graphform:hiddenGraphButton']").click();
 }
 
 function reOrderMngs(newOrder, id){
@@ -186,19 +206,8 @@ function reOrderMngs(newOrder, id){
  * a test is added to the list of the already added tests:
  */
 function addTest(testId, name){
-	if(testId>-1) sendAjax(testId, testCallBack, "addTest", name);
+	if(name!="") sendAjax(testId, testCallBack, "addTest", name);
 }
-
-/*function addTestCallBack(testId,selTest){
-	//we get the problemId and name via ajax...
-	//var selTest = $("#tests option:selected").text();
-	$("#tests").val("");
-	var y = (numDiagnSteps * 30) +10;
-	$("#list_tests").append("<li id='selds_"+testId+"'>"+selTest+"</li>");
-	//$("#tests").val("-1");
-	createAndAddDiagnStep(selTest,190, y, "cmds_"+testId);
-	numDiagnSteps++;
-}*/
 
 function delTest(id){
 	sendAjax(id, testCallBack, "delTest", "");
@@ -207,7 +216,13 @@ function delTest(id){
 function testCallBack(testId, selTest){
 	$("#test").val("");	
 	//we update the problems list and the json string
-	$("[id='ddxform:hiddenTestButton']").click();		
+	$("[id='testform:hiddenTestButton']").click();		
+}
+
+function testCallBackCM(testId, selTest){
+	//we update the problems list and the json string
+	$("[id='testform:hiddenTestButton']").click();	
+	$("[id='graphform:hiddenGraphButton']").click();
 }
 
 function reOrderTests(newOrder, id){
@@ -302,7 +317,7 @@ var active = $( "#tabs" ).tabs( "option", "active" ); //we have to determine the
 	            	addManagement(ui.item.value, ui.item.label);
 	            },
 	  	      close: function(ui) {
-	  	        $("#cm_mng_sel").val("");
+	  	        $("#mng").val("");
 	  	        //$("#dialogCMMng" ).hide();
 	  	        //$("#cm_mng_sel").autocomplete( "close" );
 	  	        //if we had opened a new one, we have to remove it from the canvas:
@@ -374,11 +389,11 @@ var active = $( "#tabs" ).tabs( "option", "active" ); //we have to determine the
 	        url: listUrl,
 	        dataType: "json",
 	        success: function( data ) {
-	          $( "#mng" ).autocomplete({
+	          $( "#cm_mng_sel" ).autocomplete({
 	            source: data,
 	            minLength: 3,
 	            select: function( event, ui ) {
-	            	editOrAddMng(ui.item.value, ui.item.label);
+	            	editOrAddMngCM(ui.item.value, ui.item.label);
 	            },
 	  	      close: function(ui) {
 	  	        $("#cm_mng_sel").val("");
@@ -399,7 +414,24 @@ function doDisplayIS(){
 }
 
 
+/** when coming back from adding items, we empty the map and init it again from the updated json string*/
+function updateCallback(data){
+	switch (data.status) {
+    case "begin": // This is called right before ajax request is been sent.
+        //button.disabled = true;
+        break;
 
+    case "complete": // This is called right after ajax response is received.
+        // We don't want to enable it yet here, right?
+        break;
+
+    case "success": // This is called right after update of HTML DO, we do no longer update map here, this is only done when clicking on tab.
+    	//my_canvas.clear();   	
+    	alert("updateCallback");
+    	//initConceptMap();
+        break;
+	}
+}
 
 /* this is no longer needed with ajax */
 /*function tmpHelperGetCorrect(problemId){

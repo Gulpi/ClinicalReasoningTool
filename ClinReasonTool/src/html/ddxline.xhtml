@@ -9,10 +9,10 @@
   	 	<i id="mnmicon_selddx_#{ddx.id}" class="icon-attention#{ddx.mnm}"></i></a>
   	 	<a href="javascript:changeTier('#{ddx.id}');" id="tiera_#{ddx.id}" title="How likely is this diagnosis?"><i id="tiericon_#{ddx.id}" class="icon-circle-tier0"></i></a>
   	 	
-  	 	#{ddx.diagnosis.name}
+  	 	#{ddx.labelOrSynLabel}
    		<a href="javascript:delDiagnosis(#{ddx.id});">
    		<i class="icon-trash-1"></i></a> 
-   		<i class="icon-ok2"></i>
+   		<i class="#{ddx.score}"></i>
   	</li>
 
 </ui:composition>

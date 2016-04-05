@@ -10,8 +10,11 @@ import javax.faces.FacesWrapper;
 import javax.faces.context.FacesContext;
 import javax.faces.context.FacesContextWrapper;
 
+import org.apache.commons.lang3.StringUtils;
+
 import controller.ConceptMapController;
 import controller.RelationController;
+import controller.ScoringController;
 import model.ListItem;
 import model.Synonym;
 /**
@@ -151,5 +154,25 @@ public class RelationDiagnosis extends Beans implements Relation, Rectangle, Ser
 	public void setXAndY(Point p){
 		this.setX(p.x);
 		this.setY(p.y);
+	}
+	
+	/* (non-Javadoc)
+	 * @see beans.relation.Relation#getLabelOrSynLabel()
+	 */
+	public String getLabelOrSynLabel(){		
+		if(synId<=0) return diagnosis.getName();
+		else return getSynonym().getName();
+	}
+	
+	/* (non-Javadoc)
+	 * @see beans.relation.Relation#getShortLabelOrSynShortLabel()
+	 */
+	public String getShortLabelOrSynShortLabel(){		
+		return StringUtils.abbreviate(getLabelOrSynLabel(), ListItem.MAXLENGTH_NAME);
+	}
+	
+	public String getScore(){
+		return new ScoringController().getIconForScore(this.getListItemId());
+		//sreturn "icon-ok2";
 	}
 }

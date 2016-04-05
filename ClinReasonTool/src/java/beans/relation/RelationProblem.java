@@ -6,8 +6,13 @@ import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.*;
 
+import org.apache.commons.lang3.StringUtils;
+
+import beans.scoring.ScoreContainer;
 import controller.ConceptMapController;
+import controller.NavigationController;
 import controller.RelationController;
+import controller.ScoringController;
 import model.ListItem;
 import model.Synonym;
 
@@ -141,6 +146,21 @@ public class RelationProblem extends Beans implements Relation, Rectangle, Seria
 	 */
 	public String getLabel(){return problem.getName();}
 	
+	/* (non-Javadoc)
+	 * @see beans.relation.Relation#getLabelOrSynLabel()
+	 */
+	public String getLabelOrSynLabel(){		
+		if(synId<=0) return problem.getName();
+		else return getSynonym().getName();
+	}
+	
+	/* (non-Javadoc)
+	 * @see beans.relation.Relation#getShortLabelOrSynShortLabel()
+	 */
+	public String getShortLabelOrSynShortLabel(){		
+		return StringUtils.abbreviate(getLabelOrSynLabel(), ListItem.MAXLENGTH_NAME);
+	}
+	
 	public Synonym getSynonym(){
 		return new RelationController().getSynonym(this.synId,this);
 	}
@@ -152,5 +172,10 @@ public class RelationProblem extends Beans implements Relation, Rectangle, Seria
 	public void setXAndY(Point p){
 		this.setX(p.x);
 		this.setY(p.y);
+	}
+	
+	public String getScore(){
+		return new ScoringController().getIconForScore(this.getListItemId());
+		//sreturn "icon-ok2";
 	}
 }

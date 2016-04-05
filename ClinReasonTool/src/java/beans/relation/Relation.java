@@ -2,6 +2,8 @@ package beans.relation;
 import java.sql.Timestamp;
 import java.util.*;
 
+import org.apache.commons.lang3.StringUtils;
+
 import beans.graph.VertexInterface;
 import model.ListItem;
 import model.Synonym;
@@ -19,6 +21,7 @@ public interface Relation{
 	public static final int TYPE_DDX = 2;
 	public static final int TYPE_TEST = 3;
 	public static final int TYPE_MNG = 4;
+	public static final int TYPE_CNX = 5;
 
 	/**
 	 * ListItemId
@@ -51,4 +54,7 @@ public interface Relation{
 	public Set<Synonym> getSynonyma();
 	public long getSynId();
 	public String getIdWithPrefix();
+	
+	public String getLabelOrSynLabel();
+	public String getShortLabelOrSynShortLabel();
 }

@@ -9,6 +9,7 @@ import org.jgrapht.graph.DirectedWeightedMultigraph;
 import beans.Connection;
 import beans.IllnessScriptInterface;
 import beans.PatientIllnessScript;
+import beans.relation.Rectangle;
 import beans.relation.Relation;
 import controller.ConceptMapController;
 import controller.GraphController;
@@ -30,7 +31,11 @@ public class Graph extends DirectedWeightedMultigraph<MultiVertex, MultiEdge> {
 	private long parentId; //e.g. VPId,...
 	private long userId;
 	private long expertPatIllScriptId;
-	private boolean peersConsidered = false; //we have to get this from a property file
+	//private boolean peersConsidered = false; //we have to get this from a property file
+	/**
+	 * How many peers have completed this patientIllnessScript? If we have enough we can include the peers into 
+	 * the scoring algorithm.
+	 */
 	private int peerNums; //we might need this for the scoring process?
 	private List<Long> illScriptIds;//TODO: more than one! 
 	private GraphController gctrl;
@@ -47,7 +52,10 @@ public class Graph extends DirectedWeightedMultigraph<MultiVertex, MultiEdge> {
 	public long getExpertPatIllScriptId() {return expertPatIllScriptId;}
 	public void setExpertPatIllScriptId(long expertPatIllScriptId) {this.expertPatIllScriptId = expertPatIllScriptId;}
 	public List<Long> getIllScriptIds() {return illScriptIds;}
-	public void setIllScriptId(List<Long> illScriptIds) {this.illScriptIds = illScriptIds;}
+	public void setIllScriptId(List<Long> illScriptIds) {this.illScriptIds = illScriptIds;}	
+	public int getPeerNums() {return peerNums;}
+	public void setPeerNums(int peerNums) {this.peerNums = peerNums;}
+
 	public void addIllScriptId(long id){
 		if(illScriptIds==null) illScriptIds = new ArrayList<Long>();
 		if(!illScriptIds.contains(new Long(id))) illScriptIds.add(new Long(id));
@@ -67,12 +75,25 @@ public class Graph extends DirectedWeightedMultigraph<MultiVertex, MultiEdge> {
 	
 	}
 	
+	/**
+	 * We change the edge weight for this illnessScriptType to implicit if it was explicit. This needs to be done
+	 *  when a user deletes a connection from the concept map.
+	 * @param cnx
+	 * @param illScriptType
+	 */
 	public void removeExplicitEdgeWeight(Connection cnx, int illScriptType){
 		MultiEdge edge = this.getEdge(this.getVertexById(cnx.getStartId()), this.getVertexById(cnx.getTargetId()));
 		if(edge==null) return; //should not happen
 		edge.removeExplicitWeight(illScriptType);
 	}
 	
+	/**
+	 * We remove the edge weight (explicit or implicit) from the edge from the source to the target MultiVertex. 
+	 * This needs to be done when we remove a MultiVertex vertex for the given illnessScriptType component 
+	 * @param sourceId
+	 * @param targetId
+	 * @param illScriptType
+	 */
 	public void removeEdgeWeight(long sourceId, long targetId, int illScriptType){
 		MultiEdge edge = this.getEdge(this.getVertexById(sourceId), this.getVertexById(targetId));
 		if(edge==null) return; //should not happen
@@ -95,8 +116,8 @@ public class Graph extends DirectedWeightedMultigraph<MultiVertex, MultiEdge> {
 			super.addVertex(multiVertex);
 		}
 		else{ //we only have to update the relation in the MultiVertex
-			Relation relInVertex = multiVertex.getRelationByType(illScriptType); 
-			multiVertex.addRelation(relInVertex, illScriptType); //relation not yet added			
+			//Relation relInVertex = multiVertex.getRelationByType(illScriptType); 
+			multiVertex.addRelation(rel, illScriptType); //relation not yet added			
 		}
 	}
 	
@@ -171,4 +192,46 @@ public class Graph extends DirectedWeightedMultigraph<MultiVertex, MultiEdge> {
 		}
 		return sb.toString();
 	}	
+		
+	/**
+	 * Format: {"label":"Cough","shortlabel":"Cough","id":"12345","x": "10","y":"200", "type":"1"}");		
+	 * 
+	 * @return learners' patIllScript
+	 */
+	public String getToJson(){
+		Set<MultiVertex> vertices = this.vertexSet();
+		if(vertices==null || vertices.isEmpty()) return ""; 
+		Iterator<MultiVertex> it = vertices.iterator();
+		StringBuffer sb = new StringBuffer("[");
+		
+		while(it.hasNext()){
+			MultiVertex mv = it.next();
+			Rectangle learnerRel = (Rectangle) mv.getLearnerVertex();
+			if(learnerRel!=null)
+				sb.append(learnerRel.toJson()+",");
+		}
+		sb.replace(sb.length()-1, sb.length(), ""); //remove the last ","
+		sb.append("]");
+		return sb.toString();
+	}
+	
+	public String getJsonConns(){
+		Set<MultiEdge> edges = this.edgeSet();
+		if(edges==null || edges.isEmpty()) return "";
+		Iterator<MultiEdge> it = edges.iterator();
+		StringBuffer sb = new StringBuffer("[");
+		while(it.hasNext()){
+			MultiEdge edge = it.next();
+			if(edge.getLearnerWeight()==MultiEdge.WEIGHT_EXPLICIT){ //then we add the edge to the concept map
+				MultiVertex sourceVertex = this.getVertexById(edge.getSourceId());
+				MultiVertex targetVertex = this.getVertexById(edge.getTargetId());
+				String startIdWithPrefix = edge.getPrefixByType(sourceVertex.getType())+edge.getSourceId(); 	
+				String targetIdWithPrefix = edge.getPrefixByType(targetVertex.getType())+edge.getTargetId();
+				
+				return"{\"id\":\""+MultiEdge.PREFIX_CNX + this.getId()+"\",\"sourceid\": \""+startIdWithPrefix+"\",\"targetid\": \""+targetIdWithPrefix+"\"}");		
+
+			}	
+		}
+	}
+	
 }

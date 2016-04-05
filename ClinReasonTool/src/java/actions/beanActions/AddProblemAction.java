@@ -17,7 +17,7 @@ import controller.RelationController;
 import database.DBClinReason;
 import model.Synonym;
 import actions.feedbackActions.FeedbackCreator;
-import actions.scoringActions.ProblemScoringAction;
+import actions.scoringActions.ScoringAddAction;
 import actions.scoringActions.Scoreable;
 
 /**
@@ -50,6 +50,9 @@ public class AddProblemAction implements AddAction, Scoreable, FeedbackCreator{
 	 */
 	public void add(String idStr, String name, String xStr, String yStr){ 
 		new RelationController().initAdd(idStr, name, xStr, yStr, this);
+		/*if(!xStr.equals("-1")){ //then we come from the concept map
+			
+		}*/
 		/*long id;
 		int type = AddAction.ADD_TYPE_MAINITEM;
 		if(idStr.startsWith(Synonym.SYN_VERTEXID_PREFIX)){
@@ -132,7 +135,7 @@ public class AddProblemAction implements AddAction, Scoreable, FeedbackCreator{
 	 * @see actions.scoringActions.Scoreable#triggerScoringAction(java.beans.Beans)
 	 */
 	public void triggerScoringAction(Beans relProb){		
-			//new ProblemScoringAction().scoreAddProblemAction((RelationProblem) relProb);
+		new ScoringAddAction().scoreAction(((RelationProblem) relProb).getListItemId(), ((RelationProblem) relProb).getDestId());
 	}
 
 	@Override

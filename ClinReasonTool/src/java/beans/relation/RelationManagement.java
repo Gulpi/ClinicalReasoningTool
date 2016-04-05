@@ -5,8 +5,11 @@ import java.beans.Beans;
 import java.io.Serializable;
 import java.util.Set;
 
+import org.apache.commons.lang3.StringUtils;
+
 import controller.ConceptMapController;
 import controller.RelationController;
+import controller.ScoringController;
 import model.ListItem;
 import model.Synonym;
 
@@ -119,5 +122,25 @@ public class RelationManagement extends Beans implements Relation, Rectangle, Se
 	public void setXAndY(Point p){
 		this.setX(p.x);
 		this.setY(p.y);
+	}
+	
+	/* (non-Javadoc)
+	 * @see beans.relation.Relation#getLabelOrSynLabel()
+	 */
+	public String getLabelOrSynLabel(){		
+		if(synId<=0) return management.getName();
+		else return getSynonym().getName();
+	}
+	
+	/* (non-Javadoc)
+	 * @see beans.relation.Relation#getShortLabelOrSynShortLabel()
+	 */
+	public String getShortLabelOrSynShortLabel(){		
+		return StringUtils.abbreviate(getLabelOrSynLabel(), ListItem.MAXLENGTH_NAME);
+	}
+	
+	public String getScore(){
+		return new ScoringController().getIconForScore(this.getListItemId());
+		//sreturn "icon-ok2";
 	}
 }

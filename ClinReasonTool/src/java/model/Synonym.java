@@ -20,7 +20,7 @@ public class Synonym implements Serializable{
 	 * synonym "Shortness of Breath" should be scored less than "Dyspnea". This has to be done manually in the database 
 	 * on a case-basis over time. What shall we choose for default value?
 	 */
-	private float ratingComparedToListItem = 1; 
+	private float ratingWeight = 1; 
 	public static final String SYN_VERTEXID_PREFIX = "syn_";
 
 	public String getName() {return name;}
@@ -30,7 +30,9 @@ public class Synonym implements Serializable{
 	public long getListItemId() {return listItemId;}
 	public void setListItemId(long listItemId) {this.listItemId = listItemId;}	
 	public Locale getLocale() {return locale;}
-	public void setLocale(Locale locale) {this.locale = locale;}
+	public void setLocale(Locale locale) {this.locale = locale;}	
+	public float getRatingWeight() {return ratingWeight;}
+	public void setRatingWeight(float ratingWeight) {this.ratingWeight = ratingWeight;}
 	
 	public Synonym(){}
 	public Synonym(Locale loc, String name){

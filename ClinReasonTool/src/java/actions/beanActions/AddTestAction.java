@@ -9,11 +9,13 @@ import javax.faces.application.FacesMessage.Severity;
 
 import actions.feedbackActions.FeedbackCreator;
 import actions.scoringActions.Scoreable;
+import actions.scoringActions.ScoringAddAction;
 import beans.IllnessScriptInterface;
 import beans.LogEntry;
 import beans.PatientIllnessScript;
 import beans.graph.Graph;
 import beans.relation.Relation;
+import beans.relation.RelationManagement;
 import beans.relation.RelationTest;
 import controller.NavigationController;
 import controller.RelationController;
@@ -44,11 +46,7 @@ public class AddTestAction implements AddAction, Scoreable, FeedbackCreator{
 	/* (non-Javadoc)
 	 * @see beanActions.AddAction#add(java.lang.String)
 	 */
-	public void add(String idStr, String name){ 
-		//addProblem(idStr, name);
-		//long id = Long.valueOf(idStr.trim());
-		add(idStr, name, "-1", "-1");
-	}
+	public void add(String idStr, String name){ add(idStr, name, "-1", "-1");}
 	
 	/**
 	 * @param idStr either an id or syn_id (for a synonym)
@@ -95,10 +93,11 @@ public class AddTestAction implements AddAction, Scoreable, FeedbackCreator{
 		return new Point(RelationTest.DEFAULT_X,y);
 	}
 
-	@Override
+	/* (non-Javadoc)
+	 * @see actions.scoringActions.Scoreable#triggerScoringAction(java.beans.Beans)
+	 */
 	public void triggerScoringAction(Beans rel) {
-		// TODO Auto-generated method stub
-		
+		new ScoringAddAction().scoreAction(((RelationTest) rel).getListItemId(), ((RelationTest) rel).getDestId());		
 	}
 
 	@Override

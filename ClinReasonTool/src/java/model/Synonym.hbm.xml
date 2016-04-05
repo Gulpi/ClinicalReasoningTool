@@ -20,7 +20,8 @@
 		 <property name="name" column="name" type="string" length="300"/>
 		  <property name="listItemId" column="item_id" type="long" />	
 		<!--  <property name="id" column="id" type="long" />	-->
-		<property name="locale" column="lang" type="locale"/>	
+		<property name="locale" column="lang" type="locale"/>
+		<property name="ratingWeight" column="rating_weight" type="float"/>	
 	 
 </class>
 </hibernate-mapping>

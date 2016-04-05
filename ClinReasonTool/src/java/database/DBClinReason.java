@@ -15,6 +15,7 @@ import beans.IllnessScript;
 import beans.PatientIllnessScript;
 import beans.relation.RelationDiagnosis;
 import beans.relation.RelationProblem;
+import beans.scoring.ScoreBean;
 import controller.IllnessScriptController;
 import model.ListItem;
 import model.Synonym;
@@ -47,8 +48,7 @@ public class DBClinReason /*extends HibernateUtil*/{
         	    s.close();
         }
     }
-    
-    
+        
     /**
      * Saves/updates a collection of objects into the database
      * @param o
@@ -295,6 +295,20 @@ public class DBClinReason /*extends HibernateUtil*/{
     	Synonym li = (Synonym) criteria.uniqueResult();
     	s.close();
     	return li;
+    }
+    
+    
+    public Map<Long, ScoreBean> selectScoreBeansByPatIllScriptId(long patIllScriptId){
+    	Session s = instance.getInternalSession(Thread.currentThread(), false);
+    	Criteria criteria = s.createCriteria(ScoreBean.class,"ScoreBean");
+    	criteria.add(Restrictions.eq("patIllnessScriptId", new Long(patIllScriptId)));
+    	List<ScoreBean> l = criteria.list();
+    	if(l==null || l.isEmpty()) return null;
+    	Map<Long, ScoreBean> scores = new HashMap<Long, ScoreBean>();
+    	for(int i=0; i<l.size(); i++){
+    		scores.put(l.get(i).getScoredItem(), l.get(i));
+    	}
+    	return scores;
     }
     
 

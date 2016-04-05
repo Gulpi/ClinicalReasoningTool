@@ -5,10 +5,10 @@
     xmlns:f="http://java.sun.com/jsf/core">
 
    	<li id="selmng_#{mng.id}">  
-  	 	#{mng.management.name}
-   		<a href="javascript:delMng(#{mng.id});">
+  	 	#{mng.labelOrSynLabel}
+   		<a href="javascript:delManagement(#{mng.id});">
    		<i class="icon-trash-1"></i></a> 
-   		<i class="icon-ok2"></i>
+   		<i class="#{mng.score}"></i>
   	</li>
 
 </ui:composition>

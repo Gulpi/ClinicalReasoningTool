@@ -11,7 +11,10 @@ import javax.servlet.ServletContext;
 import application.AppBean;
 import beans.graph.Graph;
 import beans.relation.Relation;
+import beans.scoring.FeedbackBean;
+import beans.scoring.ScoreContainer;
 import controller.*;
+import database.DBClinReason;
 
 /**
  * The facesContext for a session....
@@ -50,8 +53,10 @@ public class CRTFacesContext /*extends FacesContextWrapper*/ implements Serializ
 		setUserId();
 		//loadAndSetScriptsOfUser(); //this loads all scripts, we do not necessarily have to do that here, only if overview page is opened!
 		boolean isNewPatIllScript = loadAndSetPatIllScript();
+		//TODO is something is wrong with the patScriptId, we have to return here and return an error msg....
+		
 		feedbackBean = new FeedbackBean(false, patillscript.getParentId());
-		if(!isNewPatIllScript) loadScoreContainer();
+		/*if(!isNewPatIllScript)*/ loadScoreContainer();
 	    ServletContext context = (ServletContext) FacesContext.getCurrentInstance().getExternalContext().getContext();
 	    AppBean app = (AppBean) context.getAttribute(AppBean.APP_KEY);
 	    app.addExpertPatIllnessScriptForParentId(patillscript.getParentId());
@@ -82,9 +87,10 @@ public class CRTFacesContext /*extends FacesContextWrapper*/ implements Serializ
 	//public void setGraph(Graph graph) {this.graph = graph;}
 
 	private void loadAndSetScriptsOfUser(){	setScriptsOfUser(isc.loadScriptsOfUser());}
+	
 	private void loadScoreContainer(){
-		//TODO: we have to load previous scores for this patIllScript.:
-		
+		scoreContainer = new ScoreContainer(this.getPatillscript().getId());
+		scoreContainer.initScoreContainer();			
 	}
 	/**
 	 * load PatientIllnessScript based on id or sessionId
@@ -115,7 +121,10 @@ public class CRTFacesContext /*extends FacesContextWrapper*/ implements Serializ
 	}	
 	public List<PatientIllnessScript> getScriptsOfUser() {return this.scriptsOfUser;}
 	private void setScriptsOfUser(List<PatientIllnessScript> scriptsOfUser){this.scriptsOfUser = scriptsOfUser;}	
-	public ScoreContainer getScoreContainer() {return scoreContainer;}
+	public ScoreContainer getScoreContainer() {
+		if(scoreContainer==null) scoreContainer = new ScoreContainer(this.getPatillscript().getId());
+		return scoreContainer;
+	}
 	public void setScoreBean(ScoreContainer scoreContainer) {this.scoreContainer = scoreContainer;}
 
 	/* we land here from an ajax request....*/
@@ -128,4 +137,5 @@ public class CRTFacesContext /*extends FacesContextWrapper*/ implements Serializ
 	/*public FacesContext getWrapped() {
 		return this; //or return this ????
 	}*/
+
 }

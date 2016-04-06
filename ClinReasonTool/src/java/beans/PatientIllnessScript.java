@@ -251,7 +251,7 @@ public class PatientIllnessScript extends Beans/*extends Node*/ implements Illne
 	}
 	
 	private void notifyLog(){
-		LogEntry le = new LogEntry( LogEntry.CRTPATILLSCRIPT_ACTION, this.getSessionId(), -1, this.getId());
+		LogEntry le = new LogEntry( LogEntry.CRTPATILLSCRIPT_ACTION, this.getId(), -1, this.getId());
 		new DBClinReason().saveAndCommit(le);
 	}
 	
@@ -263,8 +263,10 @@ public class PatientIllnessScript extends Beans/*extends Node*/ implements Illne
 	public void updateStage(String stage){
 		if(StringUtils.isNumeric(stage)){
 			int stageNum = Integer.valueOf(stage);
-			if(stageNum > this.currentStage)
-				this.setCurrentStage(stageNum);		
+			if(stageNum > this.currentStage){
+				this.setCurrentStage(stageNum);	
+				save();
+			}
 		}
 	}
 }

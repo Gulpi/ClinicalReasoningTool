@@ -45,7 +45,7 @@ public class ChangeMngAction implements ChgAction, Scoreable{
 	}
 	
 	public void notifyLog(Beans mngToChg, long newMngId){
-		LogEntry le = new LogEntry(LogEntry.CHGMNG_ACTION, patIllScript.getSessionId(), ((Relation)mngToChg).getListItemId(), newMngId);
+		LogEntry le = new LogEntry(LogEntry.CHGMNG_ACTION, patIllScript.getId(), ((Relation)mngToChg).getListItemId(), newMngId);
 		le.save();
 	}
 	

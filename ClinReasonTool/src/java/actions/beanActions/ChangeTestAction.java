@@ -43,7 +43,7 @@ public class ChangeTestAction implements ChgAction, Scoreable{
 	}
 	
 	public void notifyLog(Beans testToChg, long newTestId){
-		LogEntry le = new LogEntry(LogEntry.CHGTEST_ACTION, patIllScript.getSessionId(), ((Relation)testToChg).getListItemId(), newTestId);
+		LogEntry le = new LogEntry(LogEntry.CHGTEST_ACTION, patIllScript.getId(), ((Relation)testToChg).getListItemId(), newTestId);
 		le.save();
 	}
 	

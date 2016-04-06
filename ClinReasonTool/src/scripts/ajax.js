@@ -69,3 +69,21 @@ function displayErrorMsg(response){
 /* callback function if there is nothing to do */
 function doNothing(){}
 
+/*
+ * We store the currently open tab in a cookie, to be able to reopen the same tab after a reload. 
+ */
+function switchTab(tabidx){	
+	Cookies.set('tab', tabidx);
+	if(tabidx==6) updateGraph();
+	//alert(Cookies.get('tab'));
+}
+
+function getCurrentTab(tabidx){	
+	var currTab = Cookies.get('tab');
+	
+	if(currTab=="" || currTab=="undefined" || currTab==undefined){
+		//alert(currTab);
+		currTab = 0;
+	}
+	return currTab;
+}

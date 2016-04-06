@@ -3,6 +3,7 @@ package beans;
 import java.beans.*;
 import java.sql.Timestamp;
 
+import controller.NavigationController;
 import database.DBClinReason;
 
 /**
@@ -43,7 +44,8 @@ public class LogEntry extends Beans{
 	public static final int UPDATENOTE_ACTION = 28;
 	public static final int ADDEPI_ACTION = 29;
 	public static final int DELEPI_ACTION = 30;
-	public static final int CHGEPI_ACTION = 30;
+	public static final int CHGEPI_ACTION = 31;
+	public static final int SUBMITDDX_ACTION = 32;
 
 	
 	/**
@@ -55,7 +57,8 @@ public class LogEntry extends Beans{
 	 */
 	private long id;
 	private Timestamp creationDate; //automatically set in the database
-	private long sessionId; 
+	private long patIllscriptId; 
+	private long sessionId;
 	//private long patIllScriptId; //necessary? We have the sessionId, but might be quicker to access.
 	/**
 	 * E.g. Id of the problem or diagnosis added/removed,... new value for courseOfTime
@@ -65,18 +68,20 @@ public class LogEntry extends Beans{
 	 * e.g. orderNr for problem/diagnosis or targetId for Cnx 
 	 */
 	private long sourceId2;
+	
+	private int stage;
 	//private long oldValue;
 	
 	public LogEntry(){}
-	public LogEntry(int action, long sessionId, long sourceId){
+	public LogEntry(int action, long patIllscriptId, long sourceId){
 		this.action = action; 
-		this.sessionId = sessionId;
+		this.patIllscriptId = patIllscriptId;
 		this.sourceId = sourceId;
 	}
 	
-	public LogEntry(int action, long sessionId, long sourceId, long sourceId2){
+	public LogEntry(int action, long patIllscriptId, long sourceId, long sourceId2){
 		this.action = action; 
-		this.sessionId = sessionId;
+		this.patIllscriptId = patIllscriptId;
 		this.sourceId = sourceId;
 		this.sourceId2 = sourceId2;
 	}
@@ -89,14 +94,22 @@ public class LogEntry extends Beans{
 	public void setSourceId(long sourceId) {this.sourceId = sourceId;}
 	//public long getOldValue() {return oldValue;}
 	//public void setOldValue(long oldValue) {this.oldValue = oldValue;}	
-	public long getId() {return id;}
-	public void setId(long id) {this.id = id;}	
-	public long getSessionId() {return sessionId;}
-	public void setSessionId(long sessionId) {this.sessionId = sessionId;}	
-	public long getSourceId2() {return sourceId2;}
-	public void setSourceId2(long sourceId2) {this.sourceId2 = sourceId2;}
 	
+	public long getId() {return id;}
+	public long getSessionId() {return sessionId;}
+	public void setSessionId(long sessionId) {this.sessionId = sessionId;}
+	public void setId(long id) {this.id = id;}	
+	public long getPatIllscriptId() {return patIllscriptId;}
+	public void setPatIllscriptId(long patIllscriptId) {this.patIllscriptId = patIllscriptId;}	
+	public long getSourceId2() {return sourceId2;}
+	public void setSourceId2(long sourceId2) {this.sourceId2 = sourceId2;}	
+	public int getStage() {return stage;}
+	public void setStage(int stage) {this.stage = stage;}
+	private void setStageBasedOnCurrentStage(){
+		stage = new NavigationController().getCRTFacesContext().getPatillscript().getCurrentStage();
+	}
 	public void save(){
+		setStageBasedOnCurrentStage();
 		new DBClinReason().saveAndCommit(this);
 	}
 		

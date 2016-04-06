@@ -77,6 +77,7 @@ public class AddDiagnosisAction implements AddAction, Scoreable{
 			return;
 		}
 		rel.setOrder(patIllScript.getDiagnoses().size());
+		rel.setStage(patIllScript.getCurrentStage());
 		if(x<0 && y<0) rel.setXAndY(calculateNewItemPosInCanvas());		
 		else rel.setXAndY(new Point(x,y)); //problem has been created from the concept map, therefore we have a position
 
@@ -123,7 +124,7 @@ public class AddDiagnosisAction implements AddAction, Scoreable{
 	 * @see beanActions.AddAction#notifyLog(beans.relation.Relation)
 	 */
 	public void notifyLog(Relation relProb){
-		LogEntry le = new LogEntry(LogEntry.ADDDIAGNOSIS_ACTION, patIllScript.getSessionId(), relProb.getListItemId());
+		LogEntry le = new LogEntry(LogEntry.ADDDIAGNOSIS_ACTION, patIllScript.getId(), relProb.getListItemId());
 		le.save();
 	}
 	

@@ -43,12 +43,12 @@ public class ChangeDiagnosisAction implements ChgAction, Scoreable{
 	}
 	
 	public void notifyLog(Beans ddxToChg, long newDDXId){
-		LogEntry le = new LogEntry(LogEntry.CHGDDX_ACTION, patIllScript.getSessionId(), ((Relation) ddxToChg).getListItemId(), newDDXId);
+		LogEntry le = new LogEntry(LogEntry.CHGDDX_ACTION, patIllScript.getId(), ((Relation) ddxToChg).getListItemId(), newDDXId);
 		le.save();
 	}
 
 	private void notifyMnMLog(Beans ddxToChg, int newMnM){
-		LogEntry le = new LogEntry(LogEntry.CHGDDXMNM_ACTION, patIllScript.getSessionId(), ((Relation) ddxToChg).getListItemId(), newMnM);
+		LogEntry le = new LogEntry(LogEntry.CHGDDXMNM_ACTION, patIllScript.getId(), ((Relation) ddxToChg).getListItemId(), newMnM);
 		le.save();
 	}
 	

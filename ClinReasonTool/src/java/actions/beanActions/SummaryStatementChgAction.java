@@ -22,13 +22,13 @@ public class SummaryStatementChgAction implements ChgAction{
 	 * @see beanActions.ChgAction#notifyLog(java.beans.Beans, long)
 	 */
 	public void notifyLog(Beans b, long newId) {
-		LogEntry le = new LogEntry(LogEntry.CREATESUMMST_ACTION, patIllScript.getSessionId(), newId);
+		LogEntry le = new LogEntry(LogEntry.CREATESUMMST_ACTION, patIllScript.getId(), newId);
 		le.save();
 		
 	}
 	
 	private void notifyLogUpdate(Beans b, long newId) {
-		LogEntry le = new LogEntry(LogEntry.UPDATESUMMST_ACTION, patIllScript.getSessionId(), newId);
+		LogEntry le = new LogEntry(LogEntry.UPDATESUMMST_ACTION, patIllScript.getId(), newId);
 		le.save();		
 	}
 	

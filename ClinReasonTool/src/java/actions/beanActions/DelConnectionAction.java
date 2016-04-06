@@ -32,7 +32,7 @@ public class DelConnectionAction /*implements DelAction*/{
 	 */
 	public void notifyLog(Object o) {
 		Connection c = (Connection) o;
-		LogEntry le = new LogEntry(LogEntry.DELCONNECTION_ACTION, patIllScript.getSessionId(), c.getStartId(), c.getTargetId());
+		LogEntry le = new LogEntry(LogEntry.DELCONNECTION_ACTION, patIllScript.getId(), c.getStartId(), c.getTargetId());
 		le.save();			
 	}
 
@@ -63,7 +63,7 @@ public class DelConnectionAction /*implements DelAction*/{
 			Connection conn = connsToDelete.get(i);
 			updateGraph(conn);
 			patIllScript.getConns().remove(conn);		
-			logs.add(new LogEntry(LogEntry.DELCNXAFTERSTARTNODE_ACTION, patIllScript.getSessionId(), conn.getStartId(), conn.getTargetId()));
+			logs.add(new LogEntry(LogEntry.DELCNXAFTERSTARTNODE_ACTION, patIllScript.getId(), conn.getStartId(), conn.getTargetId()));
 		}
 		new DBClinReason().deleteAndCommit(connsToDelete);
 		new DBClinReason().saveAndCommit(logs);
@@ -80,7 +80,7 @@ public class DelConnectionAction /*implements DelAction*/{
 		for(int i=0; i<connsToDelete.size(); i++){
 			Connection conn = connsToDelete.get(i);
 			patIllScript.getConns().remove(conn);		
-			logs.add(new LogEntry(LogEntry.DELCNXAFTERTARGETNODE_ACTION, patIllScript.getSessionId(), conn.getStartId(), conn.getTargetId()));
+			logs.add(new LogEntry(LogEntry.DELCNXAFTERTARGETNODE_ACTION, patIllScript.getId(), conn.getStartId(), conn.getTargetId()));
 		}
 		new DBClinReason().deleteAndCommit(connsToDelete);
 		new DBClinReason().saveAndCommit(logs);

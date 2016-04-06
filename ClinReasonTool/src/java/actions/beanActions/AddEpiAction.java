@@ -64,6 +64,7 @@ public class AddEpiAction implements AddAction, Scoreable, FeedbackCreator{
 			return;
 		}
 		rel.setOrder(patIllScript.getEpis().size());
+		rel.setStage(patIllScript.getCurrentStage());
 		if(x<0 && y<0) rel.setXAndY(calculateNewItemPosInCanvas());		
 		else rel.setXAndY(new Point(x,y)); //problem has been created from the concept map, therefore we have a position
 		patIllScript.getEpis().add(rel);
@@ -104,7 +105,7 @@ public class AddEpiAction implements AddAction, Scoreable, FeedbackCreator{
 	 * @see beanActions.AddAction#notifyLog(beans.relation.Relation)
 	 */
 	public void notifyLog(Relation relEpi){
-		LogEntry le = new LogEntry(LogEntry.ADDEPI_ACTION, patIllScript.getSessionId(), relEpi.getListItemId());
+		LogEntry le = new LogEntry(LogEntry.ADDEPI_ACTION, patIllScript.getId(), relEpi.getListItemId());
 		le.save();
 	}
 	

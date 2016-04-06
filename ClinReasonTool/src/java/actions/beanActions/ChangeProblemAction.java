@@ -44,7 +44,7 @@ public class ChangeProblemAction implements ChgAction, Scoreable, FeedbackCreato
 	}
 	
 	public void notifyLog(Beans probToChg, long newProbId){
-		LogEntry le = new LogEntry(LogEntry.CHGPROBLEM_ACTION, patIllScript.getSessionId(), ((Relation)probToChg).getListItemId(), newProbId);
+		LogEntry le = new LogEntry(LogEntry.CHGPROBLEM_ACTION, patIllScript.getId(), ((Relation)probToChg).getListItemId(), newProbId);
 		le.save();
 	}
 	

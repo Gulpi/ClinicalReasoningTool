@@ -39,7 +39,7 @@ public class AddMngAction implements AddAction, Scoreable{
 	 * @see beanActions.AddAction#notifyLog(beans.relation.Relation)
 	 */
 	public void notifyLog(Relation rel) {
-		LogEntry le = new LogEntry(LogEntry.ADDMNG_ACTION, patIllScript.getSessionId(), rel.getListItemId());
+		LogEntry le = new LogEntry(LogEntry.ADDMNG_ACTION, patIllScript.getId(), rel.getListItemId());
 		le.save();
 	}
 
@@ -70,6 +70,7 @@ public class AddMngAction implements AddAction, Scoreable{
 			return;
 		}
 		rel.setOrder(patIllScript.getMngs().size());
+		rel.setStage(patIllScript.getCurrentStage());
 		if(x<0 && y<0) rel.setXAndY(calculateNewItemPosInCanvas());		
 		else rel.setXAndY(new Point(x,y)); //problem has been created from the concept map, therefore we have a position
 

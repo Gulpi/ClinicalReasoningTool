@@ -182,6 +182,23 @@ public class Graph extends DirectedWeightedMultigraph<MultiVertex, MultiEdge> {
 		return null;
 	}
 	
+	/**
+	 * Get all MultiVertex objects of the given type (e.g. Diagnosis, Problem,...)
+	 * @param type (see definitions in Relation)
+	 * @return List<MultiVertex> or null
+	 */
+	public List<MultiVertex> getVerticesByType(int type){
+		Set<MultiVertex> verts = this.vertexSet();
+		if(verts==null) return null;
+		List<MultiVertex> list = new ArrayList<MultiVertex>();
+		Iterator<MultiVertex> it = verts.iterator();
+		while(it.hasNext()){
+			MultiVertex mv = it.next();
+			if(mv.getType()==type) list.add(mv);				
+		}
+		return list;
+	}
+	
 	
 	/* (non-Javadoc)
 	 * @see org.jgrapht.graph.AbstractGraph#toString()

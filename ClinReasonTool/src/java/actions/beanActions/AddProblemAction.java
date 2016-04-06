@@ -87,6 +87,7 @@ public class AddProblemAction implements AddAction, Scoreable, FeedbackCreator{
 			return;
 		}
 		rel.setOrder(patIllScript.getProblems().size());
+		rel.setStage(patIllScript.getCurrentStage());
 		if(x<0 && y<0) rel.setXAndY(calculateNewItemPosInCanvas());		
 		else rel.setXAndY(new Point(x,y)); //problem has been created from the concept map, therefore we have a position
 		patIllScript.getProblems().add(rel);
@@ -127,7 +128,7 @@ public class AddProblemAction implements AddAction, Scoreable, FeedbackCreator{
 	 * @see beanActions.AddAction#notifyLog(beans.relation.Relation)
 	 */
 	public void notifyLog(Relation relProb){
-		LogEntry le = new LogEntry(LogEntry.ADDPROBLEM_ACTION, patIllScript.getSessionId(), relProb.getListItemId());
+		LogEntry le = new LogEntry(LogEntry.ADDPROBLEM_ACTION, patIllScript.getId(), relProb.getListItemId());
 		le.save();
 	}
 	

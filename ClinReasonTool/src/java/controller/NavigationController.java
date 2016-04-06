@@ -69,7 +69,7 @@ public class NavigationController implements Serializable {
 	}
 	
 	private void notifyLog(PatientIllnessScript patillscript){
-		LogEntry le = new LogEntry(LogEntry.CLOSEPATILLSCRIPT_ACTION, patillscript.getSessionId(), patillscript.getId());
+		LogEntry le = new LogEntry(LogEntry.CLOSEPATILLSCRIPT_ACTION, patillscript.getId(), patillscript.getId());
 		le.save();
 	}
 }

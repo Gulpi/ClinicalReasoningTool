@@ -136,7 +136,7 @@ function initAddEpi(){ initAddRectangle("epi", "addepi", "epicontainer");}
  * @param type
  */
 function createTempRect(type, x,y,id){
-	var rect = createRect(name,"#cccccc"/*"#99CC99"*/,id);
+	var rect = createRect(name,"#cccccc"/*"#99CC99"*/,id,"0","1");
 	rect.setBackgroundColor("#ffffff");	
 	my_canvas.add(rect, x, y);	
 	my_canvas.addSelection(rect); //necessary to address it after selection from list!
@@ -222,7 +222,7 @@ function editOrAddDDXCM(newValue, label){
 function editOrAddTestCM(newValue, label){
 	var selFigure = my_canvas.getSelection().getPrimary();
 	var id = selFigure.id.substring(6);
-	alert(id);
+	//alert(id);
 	if(id=="-1") //a new problem
 		sendAjaxCM(newValue, testCallBackCM, "addTest", label, selFigure.x, selFigure.y);
 	else //change of existing problem
@@ -232,7 +232,6 @@ function editOrAddTestCM(newValue, label){
 function editOrAddMngCM(newValue, label){
 	var selFigure = my_canvas.getSelection().getPrimary();
 	var id = selFigure.id.substring(6);
-	alert(id);
 	if(id=="-1") //a new problem
 		sendAjaxCM(newValue, managementCallBackCM, "addMng", label, selFigure.x, selFigure.y);
 	else //change of existing problem
@@ -242,12 +241,18 @@ function editOrAddMngCM(newValue, label){
 
 
 /** we create a rectangle & label with the basic settings like size, color,... **/
-function createRect(name, color, id){
+function createRect(name, color, id, exp, learner){
 	var rect = new LabelRectangle();
 	rect.label.text=name;
-	rect.label.setBackgroundColor("#ffffff");
+	//rect.label.setBackgroundColor("#cccccc");
+	//rect.label.setWidth(10);
 	rect.color= new draw2d.util.Color(color);
 	rect.setId(id);
+	if(exp=="1" && learner=="0"){
+		rect.setResizeable(false);
+		rect.setDeleteable(false);
+		//rect.setSelectable(false);
+	}
 	
 	return rect;
 }
@@ -295,7 +300,7 @@ function createAndAddFind(name, x, y, id, shortname,learner, exp, peer){
 	if(!expFeedback && learner=="0") return; //we do not display items that have added by expert if expert feedback is off
 	var color = getColorForRect(exp, learner);
 
-	var rect = createRect(shortname,color/*"#99CC99"*/,id);//new draw2d.shape.basic.Rectangle();
+	var rect = createRect(shortname,color/*"#99CC99"*/,id, exp, learner);//new draw2d.shape.basic.Rectangle();
 	 rect.createPort("output", new draw2d.layout.locator.RightLocator());
 	 designPort(rect.getOutputPort(0));
 	 rect.setBackgroundColor("#ffffff");	 
@@ -309,7 +314,7 @@ function createAndAddEpi(name, x, y, id, shortname,learner, exp, peer){
 	if(!expFeedback && learner=="0") return; //we do not display items that have added by expert if expert feedback is off
 	var color = getColorForRect(exp, learner);
 
-	var rect = createRect(shortname,color/*"#99CC99"*/,id);//new draw2d.shape.basic.Rectangle();
+	var rect = createRect(shortname,color/*"#99CC99"*/,id, exp, learner);//new draw2d.shape.basic.Rectangle();
 	 rect.createPort("output", new draw2d.layout.locator.RightLocator());
 	 designPort(rect.getOutputPort(0));
 	 rect.setBackgroundColor("#ffffff");	 
@@ -322,8 +327,18 @@ function createAndAddEpi(name, x, y, id, shortname,learner, exp, peer){
 function createAndAddHyp(name, x, y, id, shortname,learner, exp, peer){
 	if(!expFeedback && learner=="0") return; //we do not display items that have added by expert if expert feedback is off
 	var color = getColorForRect(exp, learner);
-	
-	var rect = createRect(shortname, color, id/*,"990000"*/); //new draw2d.shape.basic.Rectangle();
+	var rect = new DDXRectangle();
+	rect.label.text=name;
+	//rect.label.setBackgroundColor("#cccccc");
+	//rect.label.setWidth(10);
+	rect.color= new draw2d.util.Color(color);
+	rect.setId(id);
+	if(exp=="1" && learner=="0"){
+		rect.setResizeable(false);
+		rect.setDeleteable(false);
+		//rect.setSelectable(false);
+	}
+	//var rect = createRect(shortname, color, id/*,"990000"*/, exp, learner); //new draw2d.shape.basic.Rectangle();
 	
 	rect.createPort("input");
 	rect.createPort("output");
@@ -346,7 +361,7 @@ function createAndAddHyp(name, x, y, id, shortname,learner, exp, peer){
 function createAndAddDiagnStep(name, x, y, id, shortname,learner, exp, peer){
 	if(!expFeedback && learner=="0") return; //we do not display items that have added by expert if expert feedback is off
 	var color = getColorForRect(exp, learner);
-	var rect = createRect(shortname,color /*"#F6E3CE"*/, id);
+	var rect = createRect(shortname,color /*"#F6E3CE"*/, id, exp, learner);
 	rect.createPort("input");
 	designPort(rect.getInputPort(0)); 
 	rect.setBackgroundColor("#ffffff");
@@ -360,7 +375,7 @@ function createAndAddDiagnStep(name, x, y, id, shortname,learner, exp, peer){
 function createAndAddMng(name, x, y, id, shortname,learner, exp, peer){
 	if(!expFeedback && learner=="0") return; //we do not display items that have added by expert if expert feedback is off
 	var color = getColorForRect(exp, learner);
-	var rect = createRect(shortname,color /*"#FFFF99"*/, id);
+	var rect = createRect(shortname,color /*"#FFFF99"*/, id, exp, learner);
 	rect.createPort("input");
 	designPort(rect.getInputPort(0)); 
 	rect.setBackgroundColor("#ffffff");			
@@ -408,4 +423,24 @@ function getToolTipForRect(element){
 		}
 	}
 	return ""; //element.html(); if tooltip is the same as the label we do not display a tooltip
+}
+
+function handleContextMenuRect(rect, key){
+	if(!rect.getResizeable()) return; //make sure user cannot change anything in the experts' map.
+    switch(key){
+    case "mnm":
+    	rect.setBackgroundColor('#f3546a');
+    	rect.setColor('#f3546a');
+        break;
+   /* case "green":
+        this.setColor('#b9dd69');
+        break;*/
+    case "final":
+    	rect.setColor('#00A8F0');
+        break;
+    case "delete":
+ 	   deleteItem(rect.getId());
+    default:
+        break;
+    }
 }

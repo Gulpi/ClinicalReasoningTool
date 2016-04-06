@@ -7,7 +7,7 @@
    	<li id="selddx_#{ddx.id}">
 		<a href="javascript:toggleMnM('selddx_#{ddx.id}');" title="Is this a Must-Not-Miss diagnosis? E.g. because it is lethal?">
   	 	<i id="mnmicon_selddx_#{ddx.id}" class="icon-attention#{ddx.mnm}"></i></a>
-  	 	<a href="javascript:changeTier('#{ddx.id}');" id="tiera_#{ddx.id}" title="How likely is this diagnosis?"><i id="tiericon_#{ddx.id}" class="icon-circle-tier0"></i></a>
+  	 	<a href="javascript:changeTier('#{ddx.id}');" id="tiera_#{ddx.id}" title="How likely is this diagnosis?"><i id="tiericon_#{ddx.id}" class="icon-circle-tier#{ddx.tier}"></i></a>
   	 	
   	 	#{ddx.labelOrSynLabel}
    		<a href="javascript:delDiagnosis(#{ddx.id});">

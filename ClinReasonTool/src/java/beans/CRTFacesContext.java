@@ -36,6 +36,7 @@ public class CRTFacesContext /*extends FacesContextWrapper*/ implements Serializ
 	private IllnessScriptController isc = new IllnessScriptController();
 	private PatientIllnessScript patillscript;
 	private Graph graph;
+	private UserSetting userSetting;
 
 	/**
 	 * all scripts of the user, needed for the overview/portfolio page to display a list. 
@@ -56,12 +57,12 @@ public class CRTFacesContext /*extends FacesContextWrapper*/ implements Serializ
 		boolean isNewPatIllScript = loadAndSetPatIllScript();
 		//TODO is something is wrong with the patScriptId, we have to return here and return an error msg....
 		setCurrentStage();
+		userSetting = new UserSetting(); //TODO get from Database...
 		feedbackBean = new FeedbackBean(false, patillscript.getParentId());
 		/*if(!isNewPatIllScript)*/ loadScoreContainer();
 	    ServletContext context = (ServletContext) FacesContext.getCurrentInstance().getExternalContext().getContext();
 	    AppBean app = (AppBean) context.getAttribute(AppBean.APP_KEY);
 	    app.addExpertPatIllnessScriptForParentId(patillscript.getParentId());
-	    //app.addIllnessScriptForParentId(patillscript.getParentId());
 	    app.addIllnessScriptForDiagnoses(patillscript.getDiagnoses(), patillscript.getParentId());
 	    FacesContextWrapper.getCurrentInstance().getExternalContext().getSessionMap().put(CRTFacesContext.CRT_FC_KEY, this);
 	    initGraph();
@@ -85,6 +86,8 @@ public class CRTFacesContext /*extends FacesContextWrapper*/ implements Serializ
 	public long getUserId() {return userId;}
 	public void setUserId(long userId) {this.userId = userId;}
 	public Graph getGraph() {return graph;}
+	public UserSetting getUserSetting() {return userSetting;}
+	public void setUserSetting(UserSetting userSetting) {this.userSetting = userSetting;}
 
 	public void setCurrentStage(){
 		new AjaxController().getRequestParamByKey(AjaxController.REQPARAM_STAGE);

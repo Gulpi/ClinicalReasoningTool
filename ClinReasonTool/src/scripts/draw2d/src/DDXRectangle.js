@@ -6,7 +6,7 @@
  * @author Andreas Herz
  * @extend draw2d.Connection
  */
-var LabelRectangle= draw2d.shape.basic.Rectangle.extend({
+var DDXRectangle= draw2d.shape.basic.Rectangle.extend({
     
     init:function(attr)
     {
@@ -20,7 +20,7 @@ var LabelRectangle= draw2d.shape.basic.Rectangle.extend({
     	this.setCssClass("myrect");
 		  // Create any Draw2D figure as decoration for the connection
 		  //
-		  this.label = new MyLabel({text:"I'm a Label", color:"#0d0d0d", fontColor:"#0d0d0d"});
+		  this.label = new DDXLabel({text:"I'm a Label", color:"#0d0d0d", fontColor:"#0d0d0d"});
 		  this.label.setStroke(0);
 		  this.label.setMinHeight(16);
 		  this.label.setHeight(16);
@@ -39,7 +39,7 @@ var LabelRectangle= draw2d.shape.basic.Rectangle.extend({
     
     onDoubleClick:function(emitter){ //open the select box to change label?
     	if(this.isResizeable()){
-    		alert("non expert")
+    		//alert("non expert")
     		openListForCM(this.x, this.y, this.id); //we could also trigger this from the context menu with an edit button
     	}
     	else alert("expert");
@@ -59,12 +59,12 @@ onContextMenu:function(x,y){
         y:y,
         items: 
         {
-        	
-           // "mnm":    {name: "Must-not-miss"},
-           // "final":    {name: "Final DDX"},
+        	//getContextMenuItems();
+            "mnm":    {name: "Must-not-miss"},
+            "final":    {name: "Final DDX"},
             //"green":  {name: "Green", icon: "cut"},
            // "blue":   {name: "Blue", icon: "copy"},
-           // "sep1":   "---------",
+            "sep1":   "---------",
             "delete": {name: "Delete", icon: "delete"}
         }
     });

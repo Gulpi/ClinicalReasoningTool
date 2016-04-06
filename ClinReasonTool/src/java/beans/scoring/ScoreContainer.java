@@ -28,6 +28,11 @@ public class ScoreContainer {
 		scores.put(new Long(score.getScoredItem()), score);
 	}
 	
+	/**
+	 * Be aware: Only call if you are sure that there is only ONE results, which is valif for all list scores and the ddxFinal score. 
+	 * @param type
+	 * @return
+	 */
 	public ScoreBean getScoreBeanByType(int type){
 		if(scores==null || scores.isEmpty()) return null;
 		Iterator<ScoreBean> it = scores.values().iterator();

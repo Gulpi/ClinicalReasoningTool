@@ -22,13 +22,13 @@ public class NoteChgAction implements ChgAction{
 	 * @see beanActions.ChgAction#notifyLog(java.beans.Beans, long)
 	 */
 	public void notifyLog(Beans b, long newId) {
-		LogEntry le = new LogEntry(LogEntry.CREATENOTE_ACTION, patIllScript.getSessionId(), newId);
+		LogEntry le = new LogEntry(LogEntry.CREATENOTE_ACTION, patIllScript.getId(), newId);
 		le.save();
 		
 	}
 	
 	private void notifyLogUpdate(Beans b, long newId) {
-		LogEntry le = new LogEntry(LogEntry.UPDATENOTE_ACTION, patIllScript.getSessionId(), newId);
+		LogEntry le = new LogEntry(LogEntry.UPDATENOTE_ACTION, patIllScript.getId(), newId);
 		le.save();		
 	}
 	

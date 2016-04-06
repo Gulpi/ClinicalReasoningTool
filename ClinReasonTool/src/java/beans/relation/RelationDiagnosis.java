@@ -32,6 +32,12 @@ public class RelationDiagnosis extends Beans implements Relation, Rectangle, Ser
 	public static final int DEFAULT_X = 70; //default x position of problems in canvas
 	public static final String COLOR_DEFAULT = "#ffffff";
 	public static final String COLOR_RED = "#990000";
+	public static final int TIER_NONE = 0; //I do not now
+	public static final int TIER_NOTLIKELY = 3; //Clinically low likelihood
+	public static final int TIER_LIKELY = 2; //Clinically moderate likelihood
+	public static final int TIER_MOSTLIKELY = 1; //Clinically high likelihood
+	public static final int TIER_FINAL = 4; //Final diagnosis
+
 	private long id;
 	/**
 	 * diagnosis id
@@ -49,12 +55,16 @@ public class RelationDiagnosis extends Beans implements Relation, Rectangle, Ser
 	 */
 	private int confidence = -1; //we need levels here (only for PIS)
 
-	private int type = -1; //see definitions above
+	/**
+	 * how likely is this diagnosis, from unlikely to final diagnosis
+	 * see tier definitions above
+	 */
+	private int tier = -1; 
 	
 	/**
 	 * diagnoses: doNotMiss/lethal/important favorite
 	 */
-	private int value = -1; //key finding,...
+	//private int value = -1; //key finding,...
 	
 	//private Timestamp creationDate;
 	private int x;
@@ -64,6 +74,9 @@ public class RelationDiagnosis extends Beans implements Relation, Rectangle, Ser
 	 */
 	private String color; //default: #ffffff
 	private ListItem diagnosis;
+	/**
+	 * Must-not-miss
+	 */
 	private int mnm = 0;
 	private int stage;
 	/**
@@ -86,8 +99,8 @@ public class RelationDiagnosis extends Beans implements Relation, Rectangle, Ser
 	public void setDestId(long destId) {this.destId = destId;}
 	public int getOrder() {return order;}
 	public void setOrder(int order) {this.order = order;}
-	public int getType() {return type;}
-	public void setType(int type) {this.type = type;}
+	public int getTier() {return tier;}
+	public void setTier(int tier) {this.tier = tier;}
 	public ListItem getDiagnosis() {return diagnosis;}
 	public void setDiagnosis(ListItem diagnosis) {this.diagnosis = diagnosis;}	
 	public int getX() {return x;}

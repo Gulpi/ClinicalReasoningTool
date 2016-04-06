@@ -35,14 +35,15 @@
 <script src="../scripts/draw2d/src/draw2d.js"></script>	
 <script src="../scripts/draw2d/src/LabelConnection.js"></script>	
 <script src="../scripts/draw2d/src/LabelRectangle.js"></script>	
-<script src="../scripts/draw2d/src/LabelLMEditor.js"></script>	
+<script src="../scripts/draw2d/src/DDXRectangle.js"></script>	
+<script src="../scripts/draw2d/src/MyLabel.js"></script>	
 <script src="../scripts/draw2d/src/MyCanvas.js"></script>	
 <script src="../scripts/draw2d/lib/jquery.browser.js"></script>
 <script src="../scripts/draw2d/lib/jquery.layout.js"></script>
 <script src="../scripts/mydraw2d.js"></script>
 <script src="../scripts/crt.js"></script>
 <script src="../scripts/ajax.js"></script>
-
+<script src="../scripts/js.cookie.js"></script>
 <script language="JavaScript">
 
 
@@ -54,7 +55,7 @@ var lang = "#{crtContext.patillscript.locale}";
 var my_canvas = null;
 var currentStage = $.getUrlVar('stage');
 var expFeedback = false; //default is that expert feedback is off
-
+var active;
 draw2d.Configuration.factory.createConnection=function(sourcePort, targetPort, callback, dropTarget){
 	 addConnection(sourcePort, targetPort);
 	 return new LabelConnection();
@@ -62,15 +63,20 @@ draw2d.Configuration.factory.createConnection=function(sourcePort, targetPort, c
  
 
 $(function() {
+	//Cookies.remove('tab'); -> activate for cookit tab setting testing....
 	if(lang=="de") listUrl = "jsonp_de.json";
 	$("#dialogCMDDX").hide();
 	$("#dialogCMProb").hide();
 	$("#dialogCMTest").hide();
 	$("#dialogCMMng").hide();
 	$("#dialogCMEpi").hide();
-
-	$( "#tabs" ).tabs({
-    	//active = $( ".selector" ).tabs( "option", "active" ),
+	var tabs = $( "#tabs" ).tabs();
+      
+	$( ".cr-tabs" ).tabs({
+		  active: getCurrentTab() //we get the last open tab from the cookie
+		});
+	
+	$( "#tabs" ).tabs({ //activate to allow activating tabs via mouseover
        // event: "mouseover"
       });
 
@@ -179,17 +185,17 @@ Case placed here...<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
 
 	<div id="tabs" class="cr-tabs">
 	  <ul>
-	    <li><a href="#tabs-1">#{prop['patient']}</a></li> <!-- example for internationalization -->
-	    <li><a href="#tabs-2">#{prop['problems']}</a></li>
-	     <li><a href="#tabs-4">Summary</a></li>
+	    <li><a href="#tabs-0">#{prop['patient']}</a></li> <!-- example for internationalization -->
+	    <li><a href="#tabs-1" onclick="switchTab(1);">Problems</a></li>
+	     <li><a href="#tabs-2">Summary</a></li>
 	    
-	    <li><a href="#tabs-3">DDX</a></li>
-	    <li><a href="#tabs-5">Diagn. Steps</a></li>
-	    <li><a href="#tabs-6">Therapy</a></li>
-	    <li><a href="#tabs-7" onclick="javascript:updateGraph();">Concept map</a></li>
-	    <li><a href="#tabs-8">Notes</a></li>
+	    <li><a href="#tabs-3" onclick="switchTab(3);">DDX</a></li>
+	    <li><a href="#tabs-4" onclick="switchTab(4);">Diagn. Steps</a></li>
+	    <li><a href="#tabs-5" onclick="switchTab(5);">Therapy</a></li>
+	    <li><a href="#tabs-6" onclick="switchTab(6);">Map</a></li>
+	    <li><a href="#tabs-7" onclick="switchTab(7);">Notes</a></li>
 	  </ul>
-		  <div id="tabs-1">
+		  <div id="tabs-0">
 		  <div id="patimg" style="position:relative;right:0px; top:0px; float:right;"><img src="patient.png" width="150px" /></div>
 		  	<div id="descr">
 		  		Name: Delai Johnston<br/>
@@ -217,7 +223,7 @@ Case placed here...<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
 			</div>
 		  </div>
 		  <!-- problems -->
-		  <div id="tabs-2" style="background-color:#cccccc;">	
+		  <div id="tabs-1" style="background-color:#cccccc;">	
 		  			<div class="search"><input class="f_text" id="problems"></input></div>
 					<div class="ddx_left">
 					<h:form id="probform">
@@ -234,7 +240,7 @@ Case placed here...<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
 						</h:commandButton></h:form>
 				</div>			
 		  </div>
-		  <div id="tabs-4">	
+		  <div id="tabs-2">	
 		  		<textarea class="f_textarea" name="summSt" id="summStText" cols="50" rows="10">#{crtContext.patillscript.summSt.text}</textarea><br/>
 		  		<a href="javascript:saveSummSt('#{crtContext.patillscript.summStId}');" title="Save your summary statement"><i class="icon-floppy"></i></a>
 		  </div>
@@ -255,10 +261,10 @@ Case placed here...<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
     						<f:ajax render="@form" onevent="updateCallback"></f:ajax>
 						</h:commandButton></h:form>
 				</div>
-				<div id="confidence_slider" class="conf_slider" title="Level of confidence"></div>
+				<div id="confidence_slider" class="conf_slider" title="Please indicate how confident you are with your current differentials."></div>
 		  </div>
 		  <!-- tests -->
-		  <div id="tabs-5">
+		  <div id="tabs-4">
 		  		<div class="search"><input class="f_text" id="tests"></input></div>
 		  			<div class="ddx_left">
 		  			<h:form id="testform">
@@ -278,7 +284,7 @@ Case placed here...<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
 					</div>
 		  	</div>
 		  <!-- managements -->
-		  <div id="tabs-6">
+		  <div id="tabs-5">
 		  	<div class="search"><input class="f_text" id="mng"></input></div>
 		  	<div class="ddx_left">
 	  			<h:form id="mngform">
@@ -299,7 +305,7 @@ Case placed here...<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
 	  		</div>
 		  
 		  <!-- concept map -->
-		   <div id="tabs-7">
+		   <div id="tabs-6">
 				<div id="canvas" class="canvas"> </div>
 				 	<div class="newElemContainer">
 				 		<span id="findcontainer"></span><div id="addfind" class=" newElem newFind">Problem</div><br/>
@@ -310,7 +316,7 @@ Case placed here...<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
 			    		
 			   		 </div>
 		  		 </div>
-		     <div id="tabs-8">	
+		     <div id="tabs-7">	
 		  		<textarea class="f_textarea" name="notes" id="notes" cols="50" rows="10">#{crtContext.patillscript.note.text}</textarea><br/>
 		  		<a href="javascript:saveNote('#{crtContext.patillscript.noteId}');" title="Save your notes"><i class="icon-floppy"></i></a>
 		  		

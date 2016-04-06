@@ -44,7 +44,7 @@ public class ChangeEpiAction implements ChgAction, Scoreable, FeedbackCreator{
 	}
 	
 	public void notifyLog(Beans epiToChg, long newEpiId){
-		LogEntry le = new LogEntry(LogEntry.CHGPROBLEM_ACTION, patIllScript.getSessionId(), ((Relation)epiToChg).getListItemId(), newEpiId);
+		LogEntry le = new LogEntry(LogEntry.CHGPROBLEM_ACTION, patIllScript.getId(), ((Relation)epiToChg).getListItemId(), newEpiId);
 		le.save();
 	}
 	

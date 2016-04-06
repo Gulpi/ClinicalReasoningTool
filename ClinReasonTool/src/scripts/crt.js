@@ -517,14 +517,14 @@ function updateCallback(data){
  * TODO: change display of lists and include missed items!
  */
 function toggleExpertFedback(){
-	if(expFeedback == 0){
-		expFeedback = 1;
+	if(expFeedback == false){
+		expFeedback = true;
 		$("#expFeedbackButton").attr("class","icon-user-md_on");
 		$("#expFeedbackButton").attr("title", "click to hide expert feedback");
 		
 	}
 	else{
-		expFeedback = 0;
+		expFeedback = false;
 		$("#expFeedbackButton").attr("class", "icon-user-md");
 		$("#expFeedbackButton").attr("title", "click to show expert feedback");
 	}
@@ -535,6 +535,8 @@ function toggleExpertFedback(){
 function tooglePeerFedback(){
 	alert("not yet implemented!");
 }
+
+
 /* this is no longer needed with ajax */
 /*function tmpHelperGetCorrect(problemId){
 	//alert(problemId);

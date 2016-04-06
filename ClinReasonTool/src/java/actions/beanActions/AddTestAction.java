@@ -40,7 +40,7 @@ public class AddTestAction implements AddAction, Scoreable, FeedbackCreator{
 	 * @see actions.beanActions.AddAction#notifyLog(beans.relation.Relation)
 	 */
 	public void notifyLog(Relation rel) {
-		LogEntry le = new LogEntry(LogEntry.ADDTEST_ACTION, patIllScript.getSessionId(), rel.getListItemId());
+		LogEntry le = new LogEntry(LogEntry.ADDTEST_ACTION, patIllScript.getId(), rel.getListItemId());
 		le.save();
 	}
 
@@ -70,6 +70,7 @@ public class AddTestAction implements AddAction, Scoreable, FeedbackCreator{
 			return;
 		}
 		rel.setOrder(patIllScript.getTests().size());
+		rel.setStage(patIllScript.getCurrentStage());
 		if(x<0 && y<0) rel.setXAndY(calculateNewItemPosInCanvas());		
 		else rel.setXAndY(new Point(x,y)); //problem has been created from the concept map, therefore we have a position
 

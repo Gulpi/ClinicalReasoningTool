@@ -17,11 +17,14 @@ public class ScoreBean extends Beans{
 	public static final int TYPE_DDX = Relation.TYPE_DDX;
 	public static final int TYPE_TEST = Relation.TYPE_TEST;
 	public static final int TYPE_MNG = Relation.TYPE_MNG;
+	public static final int TYPE_EPI = Relation.TYPE_EPI;
 	
-	public static final int TYPE_PROBLEM_LIST = 6;
-	public static final int TYPE_DDX_LIST = 7;
-	public static final int TYPE_TEST_LIST = 8;
-	public static final int TYPE_MNG_LIST = 9;
+	public static final int TYPE_PROBLEM_LIST = 7;
+	public static final int TYPE_DDX_LIST = 8;
+	public static final int TYPE_TEST_LIST = 9;
+	public static final int TYPE_MNG_LIST = 10;
+	public static final int TYPE_FINAL_DDX = 11;
+
 	
 	private long id; 
 	private long patIllnessScriptId; 

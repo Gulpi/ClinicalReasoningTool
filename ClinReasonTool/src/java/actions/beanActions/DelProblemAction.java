@@ -31,7 +31,7 @@ public class DelProblemAction implements DelAction{
 	 * @see beanActions.DelAction#notifyLog(beans.relation.Relation)
 	 */
 	public void notifyLog(Object o) {
-		LogEntry le = new LogEntry(LogEntry.DELPROBLEM_ACTION, patIllScript.getSessionId(), ((Relation)o).getListItemId());
+		LogEntry le = new LogEntry(LogEntry.DELPROBLEM_ACTION, patIllScript.getId(), ((Relation)o).getListItemId());
 		le.save();		
 	}
 

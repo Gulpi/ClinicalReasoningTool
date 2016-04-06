@@ -31,8 +31,6 @@
 <script src="../scripts/draw2d/lib/canvg.js"></script>	
 <script src="../scripts/draw2d/lib/Class.js"></script>	
 <script src="../scripts/draw2d/lib/json2.js"></script>	
-
-
 <script src="../scripts/draw2d/lib/pathfinding-browser.min.js"></script>
 <script src="../scripts/draw2d/src/draw2d.js"></script>	
 <script src="../scripts/draw2d/src/LabelConnection.js"></script>	
@@ -49,18 +47,15 @@
 
 
 var msg2="Please connect the hypotheses with the findings";
-var numHyps = 1;
-var numFinds = 0;
-var numDiagnSteps = 0;
-var numMng = 0;
 var sessId = "#{crtContext.patillscript.sessionId}";
 var scriptId = "#{crtContext.patillscript.id}";
-//var jsonConnsMap = '#{crtContext.patillscript.connsJson}';  //connections for concept map 
 var listUrl="jsonp_en.json";
 var lang = "#{crtContext.patillscript.locale}";
 var my_canvas = null;
+var currentStage = $.getUrlVar('stage');
+var expFeedback = false; //default is that expert feedback is off
 
- draw2d.Configuration.factory.createConnection=function(sourcePort, targetPort, callback, dropTarget){
+draw2d.Configuration.factory.createConnection=function(sourcePort, targetPort, callback, dropTarget){
 	 addConnection(sourcePort, targetPort);
 	 return new LabelConnection();
  };
@@ -72,9 +67,9 @@ $(function() {
 	$("#dialogCMProb").hide();
 	$("#dialogCMTest").hide();
 	$("#dialogCMMng").hide();
+	$("#dialogCMEpi").hide();
 
-	//$("#dialogCMNewProb").hide();
-    $( "#tabs" ).tabs({
+	$( "#tabs" ).tabs({
     	//active = $( ".selector" ).tabs( "option", "active" ),
        // event: "mouseover"
       });
@@ -129,6 +124,13 @@ $(function() {
  		}
     });
     $( "#list_problems" ).disableSelection();
+    $( "#list_epi" ).sortable({
+ 		stop: function( event, ui ) {
+ 			var sorted = $( "#list_epi" ).sortable( "serialize", { key: "selEpi" } );
+ 			reOrderEpi(sorted, ui.item.attr("id"));
+ 		}
+    });
+    $( "#list_epi" ).disableSelection();
     $( "#confidence_slider" ).slider({
        orientation: "vertical",
     	min: 0,
@@ -154,6 +156,8 @@ $(function() {
 	initAddFind();
 	initAddMng();
 	initAddTest();
+	initAddEpi();
+
 	my_canvas.on("figure:remove", function(emitter, event){
 		//alert(emitter.getFigure());
 	    //alert("id=" + event.figure.id);
@@ -195,7 +199,20 @@ Case placed here...<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
 				<f:selectItem itemLabel="-" itemValue="-1" />
 				<f:selectItem itemLabel="acute" itemValue="1" />
 				<f:selectItem itemLabel="chronic" itemValue="2" />
-				</h:selectOneMenu>
+				</h:selectOneMenu><br/>
+				Exposures/Epi: <input class="f_text" id="epi"></input>
+				<h:form id="epiform">
+					<h:panelGroup id="epi_group">
+					<ol id="list_epi" class="sortable">
+					   <ui:repeat id="repeatepi" value="#{crtContext.patillscript.epis}" var="epi" varStatus="status">
+					   		<ui:include src="epiline.xhtml" />
+    					</ui:repeat>
+    				</ol>
+    				</h:panelGroup>
+    				     <h:commandButton id="hiddenEpiButton" value="RenderSomething" style="visibility:hidden">
+    						<f:ajax render="@form" onevent="updateCallback"></f:ajax>
+						</h:commandButton></h:form>
+				
 				<!-- <select class="f_select" id="courseTime"><option value="-1">-</option><option value="1">acute</option><option value="2">chronic</option></select> --> 
 			</div>
 		  </div>
@@ -289,6 +306,8 @@ Case placed here...<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
 						<span id="hypcontainer"></span><div id="addhyp" class=" newElem newHyp">Diagnosis</div><br/>
 			   			<span id="dscontainer"></span> <div id="adddtest" class=" newElem newDiagnStep">Diagn. Step</div><br/>
 			    		<span id="mngcontainer"></span> <div id="addmng" class=" newElem  newMng">Managment</div> 
+			    		<span id="epicontainer"></span> <div id="addepi" class=" newElem  newEpi">Epi</div> 
+			    		
 			   		 </div>
 		  		 </div>
 		     <div id="tabs-8">	
@@ -305,8 +324,8 @@ Case placed here...<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
 		    </div>
 			  	<div class="navfooter"><!-- <a href="" title="take notes"><i class="icon-edit"></i></a>-->
 			  	<i class="icon-help-circled" title="not yet working"></i>
-			  	<a href="javascript:getProblemFedback();" title="See an experts' problems"><i class="icon-user-md"></i></a> 
-				<a href="javascript:getProblemPeerFedback();" title="See problems listed by your peers"><i class="icon-users"></i></a>
+			  	<a href="javascript:toggleExpertFedback();" title="See an experts' problems"><i id="expFeedbackButton" class="icon-user-md"></i></a> 
+				<a href="javascript:tooglePeerFedback();" title="See peer responses"><i  class="icon-users"></i></a>
 				<a href="javascript:doSubmitDDX();" title="Submit your final diagnoses and differentials"><i id="uploadddx" class="icon-upload-off"></i></a>
 				<a href="javascript:doDisplayIS();" title="open illness script"><i id="is_icon" class="icon-list-alt"></i></a></div>
 		  	<!--  </div>-->
@@ -316,36 +335,24 @@ Case placed here...<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
 	<h:form id="graphform">
 		<h:panelGroup id="graph">
 			<div id="jsonGraph" >#{crtContext.graph.toJson}</div>
-			<div id="jsonConns">#{crtContext.graph.connsJson}</div> <!--  onnections for concept map -->
+			<div id="jsonConns">#{crtContext.graph.jsonConns}</div> <!-- c onnections for concept map -->
+
+			<!--  <div id="jsonGraphExp" >#{crtContext.graph.toJsonExp}</div>
+			<div id="jsonConnsExp">#{crtContext.graph.jsonConnsExp}</div>--> <!-- c onnections for concept map -->
 			
 		</h:panelGroup>
 		     <h:commandButton id="hiddenGraphButton" value="RenderSomething" style="visibility:hidden">
 				<f:ajax render="@form" onevent="updateCMCallback"></f:ajax>
 			</h:commandButton>
 	</h:form>
-<!--  <h:form>
-   <h:commandLink action="#{navController.openOverview}" value="Overview" >
-   	<f:param name="user_id" value="#{crtContext.userId}" />
-   </h:commandLink>	
-   
-</h:form>	-->
-	<!-- 
-	open questions/issues: 
-		- do we want to keep lists and CP in sync all the time or leave it up to the user and ask if deleting in list or cm?
-		- tabs or accordion display?
-		- how to implement the notes? 
-		- CM preview needed? 
-		- display of rect/label not correct
-		- connection labels just on contextmenu?
-	 --> 
 
-<!-- <a href="portfolio.xhtml">Overview</a>-->
-<div id="jdialog">Are you sure you want to submit Pneumonia as your final diagnosis without any further work-up?<br/>
+<div id="jdialog">Are you sure you want to submit your final diagnosis/-es?<br/>
 <a href="javascript:submitDDXConfirmed();">Yes</a><br/></div>
-<div id="dialogCMProb" class="listdialog" ><input id="cm_prob_sel" class="f_text"></input></div>
+<div id="dialogCMProb" class="listdialog" ><input id="cm_pro_sel" class="f_text"></input></div>
 <div id="dialogCMDDX" class="listdialog"><input id="cm_ddx_sel" class="f_text"></input></div>
 <div id="dialogCMMng" class="listdialog"><input id="cm_mng_sel" class="f_text"></input></div>
 <div id="dialogCMTest" class="listdialog"><input id="cm_ds_sel" class="f_text"></input></div>
+<div id="dialogCMEpi" class="listdialog"><input id="cm_epi_sel" class="f_text"></input></div>
 
 </body>
 </html>

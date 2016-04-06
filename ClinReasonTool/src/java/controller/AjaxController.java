@@ -9,6 +9,8 @@ import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.context.FacesContextWrapper;
 
+import org.apache.commons.lang.StringUtils;
+
 import beans.*;
 import util.*;
 
@@ -18,6 +20,7 @@ public class AjaxController {
 	public static final String REQPARAM_SCRIPT = "script_id";
 	public static final String REQPARAM_VP = "vp_id";
 	public static final String REQPARAM_LOC = "locale";
+	public static final String REQPARAM_STAGE = "stage";
 	
 	public AjaxController(/*CRTFacesContext fc*/){
 		//this.facesContext = fc;
@@ -47,7 +50,9 @@ public class AjaxController {
 	    	String nameStr = reqParams.get("name");
 	    	String x = reqParams.get("x");
 	    	String y = reqParams.get("y");
-	    	String patIllScriptId = reqParams.get(REQPARAM_SCRIPT); //TODO check wether belongs to currently loaded script!
+	    	patillscript.updateStage(reqParams.get(REQPARAM_STAGE));
+
+	    	String patIllScriptId = reqParams.get(REQPARAM_SCRIPT); //TODO check whether belongs to currently loaded script!
 	    	Statement stmt; 
 	    	if(x!=null && !x.trim().equals("")){
 	    		stmt = new Statement(patillscript, methodName, new Object[]{idStr, nameStr,x,y});
@@ -60,12 +65,14 @@ public class AjaxController {
 				stmt.execute();				
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
-				System.out.println(StringUtilities.stackTraceToString(e));
+				Logger.out(StringUtilities.stackTraceToString(e), Logger.LEVEL_PROD);
 			}
 	    	patillscript.toString();
 	    	responseAjax(externalContext, reqParams.get("id"));
 	    }
 	}
+	
+
 	
 	/**
 	 * handles the ajax response (xml)

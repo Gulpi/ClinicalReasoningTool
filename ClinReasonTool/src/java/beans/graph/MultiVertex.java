@@ -1,7 +1,9 @@
 package beans.graph;
 
 import beans.IllnessScriptInterface;
+import beans.relation.Rectangle;
 import beans.relation.Relation;
+import controller.NavigationController;
 /**
  * This is a vertex container, that can contains from which soure this vertex has been added.
  * @author ingahege
@@ -116,6 +118,33 @@ public class MultiVertex /*extends SynonymVertex*/ implements VertexInterface{
 	public int getType() {return type;}
 	public void setType(int type) {this.type = type;}	
 	
+	public String toJson(){
+		StringBuffer sb = new StringBuffer();
+		Relation rel = null; 
+		if(learnerVertex!=null) rel =  learnerVertex;
+		else{ //include expert vertex, but only if we have reached the necessary stage
+			int currentStage = new NavigationController().getCRTFacesContext().getPatillscript().getCurrentStage();
+			if(expertVertex.getStage()<=currentStage) rel = expertVertex; 
+		}
+		if(rel!=null){
+			//if learner has chosen the item, we alsways display the learners labels (could be a synonm)
+			sb.append("{\"label\":\""+rel.getLabelOrSynLabel()+"\",");
+			sb.append("\"shortlabel\":\""+rel.getShortLabelOrSynShortLabel()+"\",");
+			sb.append("\"id\":\""+rel.getIdWithPrefix()+"\",");
+			sb.append("\"x\":\""+((Rectangle)rel).getX()+"\",");
+			sb.append("\"y\":\""+((Rectangle)rel).getY()+"\",");	
+			sb.append("\"type\":\""+rel.getRelationType()+"\",");
+			if(isLearnerVertex()) sb.append("\"l\":\"1\",");
+			else sb.append("\"l\":\"0\",");
+			//if the learner has already picked the item we do not check the experts' stage, but just display it.
+			if(isExpertVertex()) sb.append("\"e\":\"1\",");
+			else sb.append("\"e\":\"0\",");
+			sb.append("\"p\":\""+this.peerNums+"\"");
+			sb.append("},");
+		}
+
+		return sb.toString();
+	}
 	/*public boolean isLearnerAdded() {return learnerAdded;}
 	public void setLearnerAdded(boolean learnerAdded) {this.learnerAdded = learnerAdded;}
 	public boolean isExpAdded() {return expAdded;}

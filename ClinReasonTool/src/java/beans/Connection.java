@@ -4,6 +4,7 @@ import java.beans.Beans;
 import java.io.Serializable;
 import java.sql.Timestamp;
 
+import beans.relation.Relation;
 import controller.ConceptMapController;
 
 /**
@@ -13,6 +14,7 @@ import controller.ConceptMapController;
  *
  */
 public class Connection extends Beans implements Serializable{
+
 
 	private static final long serialVersionUID = 1L;
 	/**
@@ -66,6 +68,7 @@ public class Connection extends Beans implements Serializable{
 		return false;
 	}
 	
+
 	/*public String toJson(){
 		//'[{"id": "cnx_1", "sourceid": "cmddx_6","targetid": "cmddx_3"}]';
 		StringBuffer sb = new StringBuffer();

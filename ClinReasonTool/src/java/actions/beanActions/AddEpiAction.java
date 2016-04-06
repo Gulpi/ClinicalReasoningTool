@@ -28,11 +28,11 @@ import actions.scoringActions.Scoreable;
  * @author ingahege
  *
  */
-public class AddProblemAction implements AddAction, Scoreable, FeedbackCreator{
+public class AddEpiAction implements AddAction, Scoreable, FeedbackCreator{
 
 	private PatientIllnessScript patIllScript;
 	
-	public AddProblemAction(PatientIllnessScript patIllScript){
+	public AddEpiAction(PatientIllnessScript patIllScript){
 		this.patIllScript = patIllScript;
 	}
 	
@@ -51,46 +51,23 @@ public class AddProblemAction implements AddAction, Scoreable, FeedbackCreator{
 	 */
 	public void add(String idStr, String name, String xStr, String yStr){ 
 		new RelationController().initAdd(idStr, name, xStr, yStr, this);
-		/*if(!xStr.equals("-1")){ //then we come from the concept map
-			
-		}*/
-		/*long id;
-		int type = AddAction.ADD_TYPE_MAINITEM;
-		if(idStr.startsWith(Synonym.SYN_VERTEXID_PREFIX)){
-			type = AddAction.ADD_TYPE_SYNITEM;
-			id = Long.valueOf(idStr.substring(Synonym.SYN_VERTEXID_PREFIX.length()));
-		}
-		else id = Long.valueOf(idStr.trim());
-		float x = Float.valueOf(xStr.trim());
-		float y = Float.valueOf(yStr.trim());
-		
-		if(type==AddAction.ADD_TYPE_MAINITEM) addProblem(id, name, (int)x, (int)y);
-		else{
-			//we have to find the parent id of the synonym.
-			Synonym syn = new DBClinReason().selectSynonymById(id);
-			addProblem(syn.getListItemId(), name, (int)x, (int)y, id); //then we add a synonym
-		}*/
 	}
-	/*private void addProblem(long id, String name, int x, int y){
-		addProblem(id, name, x, y, -1);
-	}*/
-	
 	
 	/* (non-Javadoc)
 	 * @see actions.beanActions.AddAction#addRelation(long, java.lang.String, int, int, long)
 	 */
 	public void addRelation(long id, String name, int x, int y, long synId){
-		if(patIllScript.getProblems()==null) patIllScript.setProblems(new ArrayList<RelationProblem>());
-		RelationProblem rel = new RelationProblem(id, patIllScript.getId(), synId);		
-		if(patIllScript.getProblems().contains(rel)){
-			createErrorMessage("Problem already assigned.","optional details", FacesMessage.SEVERITY_WARN);
+		if(patIllScript.getEpis()==null) patIllScript.setEpis(new ArrayList<RelationEpi>());
+		RelationEpi rel = new RelationEpi(id, patIllScript.getId(), synId);		
+		if(patIllScript.getEpis().contains(rel)){
+			createErrorMessage("Epi already assigned.","optional details", FacesMessage.SEVERITY_WARN);
 			return;
 		}
-		rel.setOrder(patIllScript.getProblems().size());
+		rel.setOrder(patIllScript.getEpis().size());
 		if(x<0 && y<0) rel.setXAndY(calculateNewItemPosInCanvas());		
 		else rel.setXAndY(new Point(x,y)); //problem has been created from the concept map, therefore we have a position
-		patIllScript.getProblems().add(rel);
-		rel.setProblem(new DBClinReason().selectListItemById(id));
+		patIllScript.getEpis().add(rel);
+		rel.setEpi(new DBClinReason().selectListItemById(id));
 		save(rel);
 		notifyLog(rel);
 		updateGraph(rel);
@@ -112,10 +89,10 @@ public class AddProblemAction implements AddAction, Scoreable, FeedbackCreator{
 	 */
 	private Point calculateNewItemPosInCanvas(){
 		int y = 5;
-		if(patIllScript.getProblems()!=null || !patIllScript.getProblems().isEmpty()){
-			y = patIllScript.getProblems().size() * 25; //CAVE max y! 
+		if(patIllScript.getEpis()!=null || !patIllScript.getEpis().isEmpty()){
+			y = patIllScript.getEpis().size() * 25; //CAVE max y! 
 		}
-		return new Point(RelationProblem.DEFAULT_X,y);
+		return new Point(RelationEpi.DEFAULT_X,y);
 	}
 	
 	/* (non-Javadoc)
@@ -126,8 +103,8 @@ public class AddProblemAction implements AddAction, Scoreable, FeedbackCreator{
 	/* (non-Javadoc)
 	 * @see beanActions.AddAction#notifyLog(beans.relation.Relation)
 	 */
-	public void notifyLog(Relation relProb){
-		LogEntry le = new LogEntry(LogEntry.ADDPROBLEM_ACTION, patIllScript.getSessionId(), relProb.getListItemId());
+	public void notifyLog(Relation relEpi){
+		LogEntry le = new LogEntry(LogEntry.ADDEPI_ACTION, patIllScript.getSessionId(), relEpi.getListItemId());
 		le.save();
 	}
 	
@@ -135,8 +112,8 @@ public class AddProblemAction implements AddAction, Scoreable, FeedbackCreator{
 	/* (non-Javadoc)
 	 * @see actions.scoringActions.Scoreable#triggerScoringAction(java.beans.Beans)
 	 */
-	public void triggerScoringAction(Beans relProb){		
-		new ScoringAddAction().scoreAction(((RelationProblem) relProb).getListItemId(), ((RelationProblem) relProb).getDestId());
+	public void triggerScoringAction(Beans relEpi){		
+		new ScoringAddAction().scoreAction(((RelationEpi) relEpi).getListItemId(), ((RelationEpi) relEpi).getDestId());
 	}
 
 	@Override

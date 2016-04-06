@@ -1,3 +1,28 @@
+/* copied from http://jquery-howto.blogspot.com/2009/09/get-url-parameters-values-with-jquery.html
+ * to access the query params we get from the hosting system.
+ * access: 
+ * // Get object of URL parameters
+ * var allVars = $.getUrlVars();
+ * // Getting URL var by its nam
+ * var byName = $.getUrlVar('name');
+ */
+$.extend({
+	  getUrlVars: function(){
+	    var vars = [], hash;
+	    var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+	    for(var i = 0; i < hashes.length; i++)
+	    {
+	      hash = hashes[i].split('=');
+	      vars.push(hash[0]);
+	      vars[hash[0]] = hash[1];
+	    }
+	    return vars;
+	  },
+	  getUrlVar: function(name){
+	    return $.getUrlVars()[name];
+	  }
+	});
+
 /**
  * we start an ajax call with changed params. We also include always the session id!
  * id = id of the problem/diagnosis,...
@@ -9,7 +34,7 @@ function sendAjax(id, callback, type, name){
 	$.ajax({
 		  method: "POST",
 		  url: "tabs_ajax.xhtml",
-		  data: { type: type, id: id, session_id: sessId, name: name, script_id: scriptId }
+		  data: { type: type, id: id, session_id: sessId, name: name, script_id: scriptId, stage:currentStage }
 		})
 	  .done(function( response ) {
 		  handleResponse(response, callback, name);		
@@ -20,7 +45,7 @@ function sendAjaxCM(id, callback, type, name, x, y){
 	$.ajax({
 		  method: "POST",
 		  url: "tabs_ajax.xhtml",
-		  data: { type: type, id: id, session_id: sessId, name: name, x: x, y: y, script_id: scriptId }
+		  data: { type: type, id: id, session_id: sessId, name: name, x: x, y: y, script_id: scriptId, stage:currentStage }
 		})
 	  .done(function( response ) {	
 		  handleResponse(response, callback, name);
@@ -43,3 +68,4 @@ function displayErrorMsg(response){
 
 /* callback function if there is nothing to do */
 function doNothing(){}
+

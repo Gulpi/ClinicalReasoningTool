@@ -6,10 +6,14 @@ import java.util.*;
 
 import javax.faces.bean.*;
 
+import org.apache.commons.lang.StringUtils;
+
 import actions.beanActions.*;
 import beans.relation.*;
 import controller.AjaxController;
 import controller.ConceptMapController;
+import controller.GraphController;
+import controller.NavigationController;
 import database.DBClinReason;
 
 /**
@@ -35,13 +39,16 @@ public class PatientIllnessScript extends Beans/*extends Node*/ implements Illne
 	 * Id of the PatientIllnessScript
 	 */
 	private long id = -1;
-	private Locale locale; // do we need this here to determine which list to load?
-
-	
+	private Locale locale; // do we need this here to determine which list to load?	
 	private SummaryStatement summSt;
 	private long summStId = -1;
 	private Note note;
 	private long noteId;
+	/**
+	 * If we get this information from the VP (or other) system, we store it here.
+	 */
+	private int currentStage;
+	
 	//epi data:
 	//private Patient patient; //data from the patient object attached to a case
 	/**
@@ -65,6 +72,7 @@ public class PatientIllnessScript extends Beans/*extends Node*/ implements Illne
 	private List<RelationDiagnosis> diagnoses; //contains all diagnoses, including the final(s)?
 	private List<RelationManagement> mngs;
 	private List<RelationTest> tests;
+	private List<RelationEpi> epis;
 		
 	/**
 	 * key = cnxId (Long), value = Connection object
@@ -113,7 +121,9 @@ public class PatientIllnessScript extends Beans/*extends Node*/ implements Illne
 	public List<RelationManagement> getMngs() {return mngs;}
 	public void setMngs(List<RelationManagement> mngs) {this.mngs = mngs;}	
 	public List<RelationTest> getTests() {return tests;}
-	public void setTests(List<RelationTest> tests) {this.tests = tests;}
+	public void setTests(List<RelationTest> tests) {this.tests = tests;}	
+	public List<RelationEpi> getEpis() {return epis;}
+	public void setEpis(List<RelationEpi> epis) {this.epis = epis;}
 	public Map<Long,Connection> getConns() {return conns;}
 	public void setConns(Map<Long,Connection> conns) {this.conns = conns;}
 	public long getUserId() {return userId;}
@@ -128,8 +138,11 @@ public class PatientIllnessScript extends Beans/*extends Node*/ implements Illne
 	public void setNote(Note note) {this.note = note;}
 	public long getNoteId() {return noteId;}
 	public void setNoteId(long noteId) {this.noteId = noteId;}
-	
-	public void addProblem(String idStr, String name){ new AddProblemAction(this).add(idStr, name);}
+	public int getCurrentStage() {return currentStage;}
+	public void setCurrentStage(int currentStage) {this.currentStage = currentStage;}	
+	public boolean isSubmitted() {return submitted;}
+	public void setSubmitted(boolean submitted) {this.submitted = submitted;}
+	public void addProblem(String idStr, String name){new AddProblemAction(this).add(idStr, name);}
 	public void addProblem(String idStr, String name, String x, String y){ new AddProblemAction(this).add(idStr, name, x,y);}
 	public void addDiagnosis(String idStr, String name){ new AddDiagnosisAction(this).add(idStr, name);}
 	public void addDiagnosis(String idStr, String name, String x, String y){ new AddDiagnosisAction(this).add(idStr, name, x,y);}
@@ -137,11 +150,14 @@ public class PatientIllnessScript extends Beans/*extends Node*/ implements Illne
 	public void addTest(String idStr, String name, String x, String y){ new AddTestAction(this).add(idStr, name, x,y);}
 	public void addMng(String idStr, String name){ new AddMngAction(this).add(idStr, name);}
 	public void addMng(String idStr, String name, String x, String y){ new AddMngAction(this).add(idStr, name, x,y);}
+	public void addEpi(String idStr, String name){ new AddEpiAction(this).add(idStr, name);}
+	public void addEpi(String idStr, String name, String x, String y){ new AddEpiAction(this).add(idStr, name, x,y);}
 	
 	public void delProblem(String idStr){ new DelProblemAction(this).delete(idStr);}
 	public void delDiagnosis(String idStr){ new DelDiagnosisAction(this).delete(idStr);}
 	public void delTest(String idStr){ new DelTestAction(this).delete(idStr);}
 	public void delMng(String idStr){ new DelMngAction(this).delete(idStr);}
+	public void delEpi(String idStr){ new DelEpiAction(this).delete(idStr);}
 
 	public void reorderProblems(String idStr, String newOrderStr){ new MoveProblemAction(this).reorder(idStr, newOrderStr);}
 	public void reorderDiagnoses(String idStr, String newOrderStr){ new MoveDiagnosisAction(this).reorder(idStr, newOrderStr);}
@@ -152,22 +168,17 @@ public class PatientIllnessScript extends Beans/*extends Node*/ implements Illne
 	public void changeDiagnosis(String probRelIdStr,String newProbId){new ChangeDiagnosisAction(this).changeDiagnosis(probRelIdStr, newProbId);}
 	public void changeTest(String probRelIdStr,String newProbId){new ChangeTestAction(this).changeTest(probRelIdStr, newProbId);}
 	public void changeMng(String probRelIdStr,String newProbId){new ChangeMngAction(this).changeMng(probRelIdStr, newProbId);}
+	public void changeEpi(String probRelIdStr,String newProbId){new ChangeEpiAction(this).changeEpi(probRelIdStr, newProbId);}
 
 	public void changeMnM(String idStr, String newValue){new ChangeDiagnosisAction(this).toggleMnM(idStr, newValue);}
 	public void addConnection(String sourceId, String targetId){new AddConnectionAction(this).add(sourceId,targetId);}
 	public void delConnection(String idStr){new DelConnectionAction(this).delete(idStr);}
 
-/*	public String getProblemsJson(){ return new ConceptMapController().getRelationsToJson(problems);}
-	public String getDdxJson(){return new ConceptMapController().getRelationsToJson(diagnoses);}
-	public String getTestsJson(){return new ConceptMapController().getRelationsToJson(tests);}
-	public String getMngsJson(){return new ConceptMapController().getRelationsToJson(mngs);}*/
-	public String getConnsJson(){return new ConceptMapController().getConnsToJson(conns);}	
-	public void saveSummStatement(String idStr, String text){
-		new SummaryStatementChgAction(this).updateOrCreateSummaryStatement( idStr, text);
-	}
-	public void saveNote(String idStr, String text){
-		new NoteChgAction(this).updateOrCreateNote( idStr, text);
-	}
+	public void saveSummStatement(String idStr, String text){new SummaryStatementChgAction(this).updateOrCreateSummaryStatement( idStr, text);}
+	public void saveNote(String idStr, String text){new NoteChgAction(this).updateOrCreateNote( idStr, text);}
+	public void submitDDX(String idStr, String text){new DiagnosisSubmitAction(this).submitDDX();}
+	public void changeTier(String idStr, String tierStr){new DiagnosisSubmitAction(this).changeTier(idStr, tierStr);}
+
 	public void save(){
 		boolean isNew = false;
 		if(getId()<=0) isNew = true;
@@ -185,10 +196,6 @@ public class PatientIllnessScript extends Beans/*extends Node*/ implements Illne
 		}
 		return false;
 	}
-	
-	/*public void addPropertyChangeListener(PropertyChangeListener listener) {
-        this.addPropertyChangeListener(listener);
-    }*/
 
 	/* (non-Javadoc)
 	 * @see java.beans.PropertyChangeListener#propertyChange(java.beans.PropertyChangeEvent)
@@ -199,20 +206,18 @@ public class PatientIllnessScript extends Beans/*extends Node*/ implements Illne
 		}		
 	}
 	
-	//public RelationProblem getProblemBySourceId(long id){return (RelationProblem) getRelationByListItemId(problems, id);}	
+	public RelationEpi getEpiById(long id){return (RelationEpi) getRelationById(epis, id);}	
 	public RelationProblem getProblemById(long id){return (RelationProblem) getRelationById(problems, id);}	
-	//public RelationDiagnosis getDiagnosisBySourceId(long id){return (RelationDiagnosis) getRelationByListItemId(diagnoses, id);}
 	public RelationDiagnosis getDiagnosisById(long id){return (RelationDiagnosis) getRelationById(diagnoses, id);}	
-	//public RelationTest getTestBySourceId(long id){return (RelationTest) getRelationByListItemId(tests, id);}	
 	public RelationTest getTestById(long id){return (RelationTest) getRelationById(tests, id);}		
-	//public RelationManagement getMngBySourceId(long id){return (RelationManagement) getRelationByListItemId(mngs, id);}	
 	public RelationManagement getMngById(long id){return (RelationManagement) getRelationById(mngs, id);}	
 
 	public Relation getRelationByListItemIdAndType(long id, int type){
-		if(type==ConceptMapController.TYPE_PROB) return getRelationByListItemId(this.problems, id);
-		if(type==ConceptMapController.TYPE_DDX) return getRelationByListItemId(this.diagnoses, id);
-		if(type==ConceptMapController.TYPE_MNG) return getRelationByListItemId(this.mngs, id);
-		if(type==ConceptMapController.TYPE_TEST) return getRelationByListItemId(this.tests, id);
+		if(type==Relation.TYPE_PROBLEM) return getRelationByListItemId(this.problems, id);
+		if(type==Relation.TYPE_DDX) return getRelationByListItemId(this.diagnoses, id);
+		if(type==Relation.TYPE_MNG) return getRelationByListItemId(this.mngs, id);
+		if(type==Relation.TYPE_TEST) return getRelationByListItemId(this.tests, id);
+		if(type==Relation.TYPE_EPI) return getRelationByListItemId(this.epis, id);
 		
 		return null;
 	}
@@ -236,10 +241,11 @@ public class PatientIllnessScript extends Beans/*extends Node*/ implements Illne
 	}
 	
 	public Relation getRelationByIdAndType(long id, int type){
-		if(type==ConceptMapController.TYPE_PROB) return getRelationById(this.problems, id);
-		if(type==ConceptMapController.TYPE_DDX) return getRelationById(this.diagnoses, id);
-		if(type==ConceptMapController.TYPE_MNG) return getRelationById(this.mngs, id);
-		if(type==ConceptMapController.TYPE_TEST) return getRelationById(this.tests, id);
+		if(type==Relation.TYPE_PROBLEM) return getRelationById(this.problems, id);
+		if(type==Relation.TYPE_DDX) return getRelationById(this.diagnoses, id);
+		if(type==Relation.TYPE_MNG) return getRelationById(this.mngs, id);
+		if(type==Relation.TYPE_TEST) return getRelationById(this.tests, id);
+		if(type==Relation.TYPE_EPI) return getRelationById(this.epis, id);
 		
 		return null;
 	}
@@ -247,5 +253,18 @@ public class PatientIllnessScript extends Beans/*extends Node*/ implements Illne
 	private void notifyLog(){
 		LogEntry le = new LogEntry( LogEntry.CRTPATILLSCRIPT_ACTION, this.getSessionId(), -1, this.getId());
 		new DBClinReason().saveAndCommit(le);
+	}
+	
+	/**
+	 * We save the current stage the user is in in the Script. We do not change the current stage if the stage 
+	 * is before the current stage (can happen e.g. if the user goes back in a VP)
+	 * @param stage
+	 */
+	public void updateStage(String stage){
+		if(StringUtils.isNumeric(stage)){
+			int stageNum = Integer.valueOf(stage);
+			if(stageNum > this.currentStage)
+				this.setCurrentStage(stageNum);		
+		}
 	}
 }

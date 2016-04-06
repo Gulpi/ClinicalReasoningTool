@@ -21,25 +21,6 @@ public class RelationController {
 		return null; //TODO Error handling, this should not happen!
 	}
 	
-	public String getRelationToJson(Relation rel){
-		StringBuffer sb = new StringBuffer();
-		/*String label = rel.getListItem().getName();
-		String shortLabel = rel.getListItem().getShortName(); 
-		if(rel.getSynId()>0){
-			label = rel.getSynonym().getName();
-			shortLabel= rel.getSynonym().getShortName();
-		}*/
-		sb.append("{\"label\":\""+rel.getLabelOrSynLabel()+"\",");
-		sb.append("\"shortlabel\":\""+rel.getShortLabelOrSynShortLabel()+"\",");
-		sb.append("\"id\":\""+rel.getIdWithPrefix()+"\",");
-		sb.append("\"x\":\""+((Rectangle)rel).getX()+"\",");
-		sb.append("\"y\":\""+((Rectangle)rel).getY()+"\",");	
-		sb.append("\"type\":\""+rel.getRelationType()+"\"");
-		sb.append("}");
-
-		return sb.toString();
-	}
-	
 	public void initAdd(String idStr, String name, String xStr, String yStr, AddAction aa){
 		long id;
 		int type = AddAction.ADD_TYPE_MAINITEM;

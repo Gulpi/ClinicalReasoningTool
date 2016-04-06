@@ -20,6 +20,7 @@ import beans.relation.RelationTest;
 import controller.NavigationController;
 import controller.RelationController;
 import database.DBClinReason;
+import util.Logger;
 
 public class AddTestAction implements AddAction, Scoreable, FeedbackCreator{
 	
@@ -124,7 +125,6 @@ public class AddTestAction implements AddAction, Scoreable, FeedbackCreator{
 		for(int i=0; i < patIllScript.getDiagnoses().size(); i++){
 			graph.addImplicitEdge(patIllScript.getDiagnoses().get(i).getListItemId(), rel.getListItemId(), IllnessScriptInterface.TYPE_LEARNER_CREATED);
 		}
-
+		Logger.out(graph.toString(), Logger.LEVEL_TEST);
 	}
-
 }

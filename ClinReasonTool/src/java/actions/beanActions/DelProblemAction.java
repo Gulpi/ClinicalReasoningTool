@@ -10,6 +10,7 @@ import beans.graph.MultiVertex;
 import beans.relation.*;
 import controller.NavigationController;
 import database.DBClinReason;
+import util.Logger;
 
 public class DelProblemAction implements DelAction{
 	private PatientIllnessScript patIllScript;
@@ -60,9 +61,9 @@ public class DelProblemAction implements DelAction{
 		//remove complete edge param for all these edges:
 		if( patIllScript.getDiagnoses()!=null){
 			for(int i=0; i < patIllScript.getDiagnoses().size(); i++){
-				graph.removeEdgeWeight(rel.getListItemId(), patIllScript.getDiagnoses().get(i).getListItemId(), IllnessScriptInterface.TYPE_LEARNER_CREATED);
+				graph.removeEdgeWeight(rel.getListItemId(), patIllScript.getDiagnoses().get(i).getListItemId());
 			}
 		}
-		System.out.println(graph.toString());
+		Logger.out(graph.toString(), Logger.LEVEL_TEST);
 	}
 }

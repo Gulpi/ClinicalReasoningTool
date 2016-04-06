@@ -8,6 +8,7 @@ import java.util.Set;
 import org.apache.commons.lang3.StringUtils;
 
 import controller.ConceptMapController;
+import controller.GraphController;
 import controller.RelationController;
 import controller.ScoringController;
 import model.ListItem;
@@ -70,7 +71,7 @@ public class RelationManagement extends Beans implements Relation, Rectangle, Se
 	public long getId() {return id;}	
 	public int getStage() {return stage;}
 	public void setStage(int stage) {this.stage = stage;}
-	public String getIdWithPrefix(){ return ConceptMapController.PREFIX_MNG+this.getId();}
+	public String getIdWithPrefix(){ return GraphController.PREFIX_MNG+this.getId();}
 
 	
 	/* (non-Javadoc)
@@ -87,12 +88,9 @@ public class RelationManagement extends Beans implements Relation, Rectangle, Se
 	/* (non-Javadoc)
 	 * @see beans.relation.Rectangle#toJson()
 	 */
-	public String toJson(){
+	/*public String toJson(){
 		return new RelationController().getRelationToJson(this);
-		/*StringBuffer sb = new StringBuffer();		
-		sb.append("{\"label\":\""+this.getManagement().getName()+"\",\"shortlabel\":\""+this.getManagement().getShortName()+"\",\"id\": \""+getIdWithPrefix()+"\",\"x\": "+this.x+",\"y\":"+this.y+"}");		
-		return sb.toString();*/
-	}
+	}*/
 	
 
 	/* (non-Javadoc)

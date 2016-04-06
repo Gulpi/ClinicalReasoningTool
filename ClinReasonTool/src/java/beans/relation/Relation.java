@@ -22,6 +22,7 @@ public interface Relation{
 	public static final int TYPE_TEST = 3;
 	public static final int TYPE_MNG = 4;
 	public static final int TYPE_CNX = 5;
+	public static final int TYPE_EPI = 6;
 
 	/**
 	 * ListItemId

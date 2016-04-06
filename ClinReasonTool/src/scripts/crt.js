@@ -11,6 +11,48 @@ function changeCourseOfTime(){
 	sendAjax(courseTime, doNothing, "chgCourseOfTime", "");
 }
 
+/******************** epi tab*******************************/
+
+/**
+ * a problem is added to the list of the already added problems:
+ **/
+function addEpi(problemId, name){
+	//here we have to trigger an ajax call... 
+	//var problemId = $("#problems").val();
+	if(name!="") sendAjax(problemId, epiCallBack, "addEpi", name);
+}
+
+
+/* if the answer was correct, but there is a better choice we offer the learner to change it by clicking on the checkmark*/
+/*function chgEpi(orgId, toChgId){
+	var confirmMsg = confirm("The term you have chosen is correct, however, a better choice would have been Dyspnea. Do you want to change your choice?");
+	if(confirmMsg){
+		$("#selprob_"+orgId).html("Dyspnea<i class=\"icon-ok2\"></i>");
+		$("#selprob_"+orgId).attr("id","selprob_"+toChgId);
+		//also trigger an ajax call to store the change....
+	}
+}*/
+
+function delEpi(id){
+	sendAjax(id, epiCallBack, "delEpi", "");
+}
+
+function epiCallBack(problemId, selProblem){
+	$("#epi").val("");	
+	//we update the problems list and the json string
+	$("[id='epiform:hiddenEpiButton']").click();	
+}
+
+function epiCallBackCM(epiId, selEpi){
+	//we update the problems list and the json string
+	$("[id='epiform:hiddenEpibButton']").click();	
+	$("[id='graphform:hiddenGraphButton']").click();
+}
+
+
+function reOrderEpi(newOrder, id){
+	sendAjax(id, epiCallBack, "reorderEpi", newOrder);
+}
 
 /******************** problems tab*******************************/
 
@@ -126,7 +168,7 @@ function doSubmitDDX(){
 
 /* user has confirmed that he wants to submit disgnoses/-is*/
 function submitDDXConfirmed(){
-	
+	sendAjax(id, submitDDXConfirmedCallBack, "submitDDX",  newClass);
 	submitDDXConfirmedCallBack();
 }
 
@@ -149,6 +191,7 @@ function changeTier(id){
 	$("#"+id2).addClass("icon-circle-tier"+num);
 	$("#tiera_"+id).prop("title",tiermsg[num]);
 	toggleSubmit();	
+	sendAjax(id, doNothing, "changeTier",  num);
 }
 
 /* we activate the upload button to submit DDX*/ 
@@ -268,7 +311,22 @@ var active = $( "#tabs" ).tabs( "option", "active" ); //we have to determine the
 	          });
 	        }
 	      });
-	    
+	    $.ajax({ //list for epi (list view)
+	        url: listUrl,
+	        dataType: "json",
+	        success: function( data ) {
+	          $( "#epi" ).autocomplete({
+	            source: data,
+	            minLength: 3,
+	            select: function( event, ui ) {
+	            	addEpi(ui.item.value, ui.item.label);
+	            },
+	  	      close: function(ui) {
+	  	        $("#epi").val("");
+	  	      }
+	          });
+	        }
+	      });	    
 	    $.ajax({ //list for diagnoses (list view)
 	        url: listUrl,
 	        dataType: "json",
@@ -340,6 +398,25 @@ var active = $( "#tabs" ).tabs( "option", "active" ); //we have to determine the
 	  	        $("#cm_prob_sel").val("");
 	  	        $("#dialogCMProb" ).hide();
 	  	        $("#cm_prob_sel").autocomplete( "close" );
+	  	        delTempRect();
+	  	      }
+	          });
+	        }
+	      });
+	    $.ajax({ //list for epi from concept map
+	        url: listUrl,
+	        dataType: "json",
+	        success: function( data ) {
+	          $( "#cm_epi_sel" ).autocomplete({
+	            source: data,
+	            minLength: 3,
+	            select: function( event, ui ) {
+	            	editOrAddProblemCM(ui.item.value, ui.item.label);
+	            },
+	  	      close: function(ui) {
+	  	        $("#cm_epi_sel").val("");
+	  	        $("#dialogCMEpi" ).hide();
+	  	        $("#cm_epi_sel").autocomplete( "close" );
 	  	        delTempRect();
 	  	      }
 	          });
@@ -433,6 +510,31 @@ function updateCallback(data){
 	}
 }
 
+/******************** Feedback *******************************/
+
+/*
+ * we change the display of the concept map 
+ * TODO: change display of lists and include missed items!
+ */
+function toggleExpertFedback(){
+	if(expFeedback == 0){
+		expFeedback = 1;
+		$("#expFeedbackButton").attr("class","icon-user-md_on");
+		$("#expFeedbackButton").attr("title", "click to hide expert feedback");
+		
+	}
+	else{
+		expFeedback = 0;
+		$("#expFeedbackButton").attr("class", "icon-user-md");
+		$("#expFeedbackButton").attr("title", "click to show expert feedback");
+	}
+	my_canvas.clear();
+	initConceptMap();
+}
+
+function tooglePeerFedback(){
+	alert("not yet implemented!");
+}
 /* this is no longer needed with ajax */
 /*function tmpHelperGetCorrect(problemId){
 	//alert(problemId);

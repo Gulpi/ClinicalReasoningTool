@@ -91,7 +91,8 @@ public class HibernateSession {
 			cfg.addClass(model.ListItem.class);
 			cfg.addClass(model.Synonym.class);
 			cfg.addClass(beans.PatientIllnessScript.class);	
-			cfg.addClass(beans.relation.RelationProblem.class);	
+			cfg.addClass(beans.relation.RelationProblem.class);
+			cfg.addClass(beans.relation.RelationEpi.class);	
 			cfg.addClass(beans.relation.RelationDiagnosis.class);	
 			cfg.addClass(beans.LogEntry.class);
 			cfg.addClass(beans.Connection.class);

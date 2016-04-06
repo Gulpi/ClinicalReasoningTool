@@ -31,7 +31,7 @@ var LabelRectangle= draw2d.shape.basic.Rectangle.extend({
 		  
 		  // add the new decoration to the connection with a position locator.
 		  //
-		  this.add(this.label, new draw2d.layout.locator.XYRelPortLocator(0,20)); //CenterLocator(this));
+		  this.add(this.label, new draw2d.layout.locator.XYRelPortLocator(5,5)); //CenterLocator(this));
 		  this.label.setCssClass("mylabel");
 		// this.label.installEditor(new draw2d.ui.LabelLMEditor());
     },
@@ -50,16 +50,16 @@ onContextMenu:function(x,y){
         callback: $.proxy(function(key, options) 
         {
            switch(key){
-           case "red":
+           case "mnm":
                this.setBackgroundColor('#f3546a');
                this.setColor('#f3546a');
                break;
           /* case "green":
                this.setColor('#b9dd69');
-               break;
-           case "blue":
-               this.setColor('#00A8F0');
                break;*/
+           case "final":
+               this.setColor('#00A8F0');
+               break;
            case "delete":
                // without undo/redo support
           //     this.getCanvas().remove(this);
@@ -77,7 +77,8 @@ onContextMenu:function(x,y){
         y:y,
         items: 
         {
-            "red":    {name: "Red", icon: "edit"},
+            "mnm":    {name: "Must-not-miss"},
+            "final":    {name: "Final DDX"},
             /*"green":  {name: "Green", icon: "cut"},
             "blue":   {name: "Blue", icon: "copy"},
             "sep1":   "---------",*/

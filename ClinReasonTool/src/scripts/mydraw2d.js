@@ -7,22 +7,21 @@ var counter = 0;
  * read the json strings and place the rectangles and connection on the canvas.
  */
 function initConceptMap(){
-	//alert("initConceptMap");
-	var conns = jQuery.parseJSON($("#jsonConnsMap").html());
+	//initConeptMap2("jsonGraph", "jsonConns");
+	var conns = jQuery.parseJSON($("#jsonConns").html());
 	var jsonRects = jQuery.parseJSON($("#jsonGraph").html());
-	//alert(jsonRects);
 	for(i=0; i<jsonRects.length;i++){
-		createAndAddRectangle(jsonRects[i].label, jsonRects[i].x, jsonRects[i].y, jsonRects[i].id, jsonRects[i].shortlabel, jsonRects[i].type);
+		createAndAddRectangle(jsonRects[i].label, jsonRects[i].x, jsonRects[i].y, jsonRects[i].id, jsonRects[i].shortlabel, jsonRects[i].type, jsonRects[i].l, jsonRects[i].e, jsonRects[i].p );
 	}
 	
-	//if(jsonConnsMap!='') conns =  jQuery.parseJSON(jsonConnsMap);
-
 	if(conns!=''){
-		for(i=0; i<conns.length;i++){
-			createConnection(conns[i].id, conns[i].sourceid, conns[i].targetid);
+		for(j=0; j<conns.length;j++){
+			createConnection(conns[j].id, conns[j].sourceid, conns[j].targetid);
 		}
 	}
 }
+
+
 /*
  * When the learner clicks on the concept map tab we init an ajax call to make sure that the graph json representation 
  * is up-to-date.
@@ -72,7 +71,11 @@ function createConnection(id, sourceId, targetId){
  * a connection is added to the canvas, we save the start- and endpoint and label.
  */
 function addConnection(sourcePort, targetPort){
-	sendAjax(sourcePort.getParent().id, doNothing, "addConnection", targetPort.getParent().id);
+	sendAjax(sourcePort.getParent().id, updateGraph, "addConnection", targetPort.getParent().id);
+}
+
+function delConnection(id){
+	sendAjax(id, updateGraph, "delConnection", "");
 }
 
 
@@ -113,59 +116,18 @@ function initAddHyp(){
 /**
  * init the drag&drop rectangle for adding a new problem
  */
-function initAddFind(){
-	initAddRectangle("prob", "addfind", "findcontainer");
-	/*$( "#addfind" ).draggable({ //add a new hypothesis
-	  start: function( event, ui ) {
-			 $("#addfind").clone().prependTo($("#findcontainer")); 
-		  } , 
-		  stop: function( event, ui ) {	
-			  this.remove();	
-			  var canvasX = ui.offset.left- my_canvas.html.offset().left;
-	 		  var canvasY = ui.offset.top - my_canvas.html.offset().top;
-	 		  createTempRect("prob", canvasX, canvasY, "cmprob_-1");	 
-	 		  openListForCM(canvasX,canvasY, "cmprob_-1");
-		  }
-	  });	*/
-}
+function initAddFind(){initAddRectangle("prob", "addfind", "findcontainer");}
 
 /**
  * init the drag&drop rectangle for adding a new management item
  */
-function initAddMng(){
-	initAddRectangle("mng", "addmng", "mngcontainer");
-	/* $( "#addmng" ).draggable({ //add a new hypothesis
-		  start: function( event, ui ) {
-			 $("#addmng").clone().prependTo($("#mngcontainer")); 
-		  } , 
-		  stop: function( event, ui ) {	
-			  this.remove();	
-			  var canvasX = ui.offset.left- my_canvas.html.offset().left;
-	 		  var canvasY = ui.offset.top - my_canvas.html.offset().top;
-		  	  createAndAddMng("new mng", canvasX, canvasY, "cmmng_-1");	  	
-		      updatePreview();
-		  }
-	 });*/	
-}
+function initAddMng(){ initAddRectangle("mng", "addmng", "mngcontainer");}
 
 /**
  * init the drag&drop rectangle for adding a new diagnostic step
  */
-function initAddTest(){
-	initAddRectangle("ds", "adddiagnstep", "dscontainer");
-	/* $( "#adddiagnstep" ).draggable({ //add a new hypothesis
-		  start: function( event, ui ) {
-			 $("#adddiagnstep").clone().prependTo($("#dscontainer")); 
-		  } , 
-		  stop: function( event, ui ) {	
-			  this.remove();	
-			  var canvasX = ui.offset.left- my_canvas.html.offset().left;
-	 		  var canvasY = ui.offset.top - my_canvas.html.offset().top;
-			  createAndAddTest("new test", canvasX, canvasY,"cmds_-1");	  	
-		  	updatePreview();
-		  }
-	}); */
-}
+function initAddTest(){ initAddRectangle("ds", "adddiagnstep", "dscontainer");}
+function initAddEpi(){ initAddRectangle("epi", "addepi", "epicontainer");}
 
 /**
  * open the list for a new item, that has been dragged to the canvas
@@ -209,7 +171,11 @@ function openListForCM(x,y, clickedId){
 	if(clickedId.startsWith("cmmng")){
 		dialogName = "dialogCMMng";	
 		inputFieldName = "cm_mng_sel";
-	}		
+	}	
+	if(clickedId.startsWith("cmepi")){
+		dialogName = "dialogCMEpi";	
+		inputFieldName = "cm_epi_sel";
+	}	
 	//display:
 	$("#"+dialogName ).show();
 	$("#"+inputFieldName).focus();
@@ -233,6 +199,15 @@ function editOrAddProblemCM(newValue, label){
 		sendAjaxCM(newValue, problemCallBackCM, "addProblem", label, selFigure.x, selFigure.y);
 	else //change of existing problem
 		sendAjax(newValue, problemCallBackCM, "changeProblem", id);
+}
+
+function editOrAddEpiCM(newValue, label){
+	var selFigure = my_canvas.getSelection().getPrimary();
+	var id = selFigure.id.substring(6);
+	if(id=="-1") //a new problem
+		sendAjaxCM(newValue, epiCallBackCM, "addEpi", label, selFigure.x, selFigure.y);
+	else //change of existing problem
+		sendAjax(newValue, epiCallBackCM, "changeEpi", id);
 }
 
 function editOrAddDDXCM(newValue, label){
@@ -283,38 +258,73 @@ function designPort(port){
 	port.setRadius(3);
 }
 
-function createAndAddRectangle(name, x, y, id, shortname, type){
+/*
+ * learner = 0|1 (0=not added by learner, 1= added by learner)
+ * exp = 0|1
+ * peer = number of peers that have chosen this
+ */
+function createAndAddRectangle(name, x, y, id, shortname, type, learner, exp, peer){
 	if(shortname!=""){
 		lookUpLabels[counter] = name;
 		lookUpShortLabels[counter] = shortname;
 		counter++;
 	}
 	else shortname = name;
-	var rect;
+	var rect=null;
 	//we need individual functions here, to be able to adapt the number and types of ports
-	if(type=="1") rect = createAndAddFind(name, x, y, id, shortname);
-	if(type=="2") rect = createAndAddHyp(name, x, y, id, shortname);
-	if(type=="3") rect = createAndAddDiagnStep(name, x, y, id, shortname);
-	if(type=="4") rect = createAndAddMng(name, x, y, id, shortname);
-	my_canvas.add(rect, Number(x), Number(y));		
+	if(type=="1") rect = createAndAddFind(name, x, y, id, shortname, learner, exp, peer);
+	if(type=="2") rect = createAndAddHyp(name, x, y, id, shortname, learner, exp, peer);
+	if(type=="3") rect = createAndAddDiagnStep(name, x, y, id, shortname, learner, exp, peer);
+	if(type=="4") rect = createAndAddMng(name, x, y, id, shortname), learner, exp, peer;
+	if(type=="6") rect = createAndAddEpi(name, x, y, id, shortname), learner, exp, peer;
+
+	if(rect!=null) my_canvas.add(rect, Number(x), Number(y));		
+}
+
+function getColorForRect(exp, learner){
+	var color = "#cccccc"; 
+	if(expFeedback && exp=="1" && learner=="1") //learner and exp have added this item
+		color="#088A29";
+	
+	return color;
 }
 /**
  * create a new problem rectangle and add it to the canvas (including label and ports)
  **/
-function createAndAddFind(name, x, y, id, shortname){
-	 var rect = createRect(shortname,"#cccccc"/*"#99CC99"*/,id);//new draw2d.shape.basic.Rectangle();
+function createAndAddFind(name, x, y, id, shortname,learner, exp, peer){
+	if(!expFeedback && learner=="0") return; //we do not display items that have added by expert if expert feedback is off
+	var color = getColorForRect(exp, learner);
+
+	var rect = createRect(shortname,color/*"#99CC99"*/,id);//new draw2d.shape.basic.Rectangle();
 	 rect.createPort("output", new draw2d.layout.locator.RightLocator());
 	 designPort(rect.getOutputPort(0));
-	 rect.setBackgroundColor("#ffffff");
-	 
+	 rect.setBackgroundColor("#ffffff");	 
+	 return rect;
+}
+
+/**
+ * create a new problem rectangle and add it to the canvas (including label and ports)
+ **/
+function createAndAddEpi(name, x, y, id, shortname,learner, exp, peer){
+	if(!expFeedback && learner=="0") return; //we do not display items that have added by expert if expert feedback is off
+	var color = getColorForRect(exp, learner);
+
+	var rect = createRect(shortname,color/*"#99CC99"*/,id);//new draw2d.shape.basic.Rectangle();
+	 rect.createPort("output", new draw2d.layout.locator.RightLocator());
+	 designPort(rect.getOutputPort(0));
+	 rect.setBackgroundColor("#ffffff");	 
 	 return rect;
 }
 
 /**
  * create a new hypothesis rectangle and add it to the canvas (including label and ports)
  **/
-function createAndAddHyp(name, x, y, id, shortname){
-	var rect = createRect(shortname,"#cccccc", id/*,"990000"*/); //new draw2d.shape.basic.Rectangle();
+function createAndAddHyp(name, x, y, id, shortname,learner, exp, peer){
+	if(!expFeedback && learner=="0") return; //we do not display items that have added by expert if expert feedback is off
+	var color = getColorForRect(exp, learner);
+	
+	var rect = createRect(shortname, color, id/*,"990000"*/); //new draw2d.shape.basic.Rectangle();
+	
 	rect.createPort("input");
 	rect.createPort("output");
 	//rect.getInputPort(0).setCssClass("ports");
@@ -325,9 +335,7 @@ function createAndAddHyp(name, x, y, id, shortname){
 		rect.label.installEditor(editor);
 		editor.start(rect.label);
 	}*/
-	rect.setBackgroundColor("#ffffff");
-	
-	//my_canvas.add(rect, x, y);	
+	rect.setBackgroundColor("#ffffff");	
 	return rect;
 	//initAddHyp(); //we have to re-init this here, because we have created a clone!!!
 }
@@ -335,9 +343,12 @@ function createAndAddHyp(name, x, y, id, shortname){
 /**
  * create a new diagnostic step rectangle and add it to the canvas (including label and ports)
  **/
-function createAndAddDiagnStep(name, x, y, id, shortname){
-	var rect = createRect(shortname,"#cccccc" /*"#F6E3CE"*/, id);
+function createAndAddDiagnStep(name, x, y, id, shortname,learner, exp, peer){
+	if(!expFeedback && learner=="0") return; //we do not display items that have added by expert if expert feedback is off
+	var color = getColorForRect(exp, learner);
+	var rect = createRect(shortname,color /*"#F6E3CE"*/, id);
 	rect.createPort("input");
+	designPort(rect.getInputPort(0)); 
 	rect.setBackgroundColor("#ffffff");
 	return rect;
 	//initAddTest();
@@ -346,9 +357,12 @@ function createAndAddDiagnStep(name, x, y, id, shortname){
 /**
  * create a new management item rectangle and add it to the canvas (including label and ports)
  **/
-function createAndAddMng(name, x, y, id, shortname){
-	var rect = createRect(shortname,"#cccccc" /*"#FFFF99"*/, id);
+function createAndAddMng(name, x, y, id, shortname,learner, exp, peer){
+	if(!expFeedback && learner=="0") return; //we do not display items that have added by expert if expert feedback is off
+	var color = getColorForRect(exp, learner);
+	var rect = createRect(shortname,color /*"#FFFF99"*/, id);
 	rect.createPort("input");
+	designPort(rect.getInputPort(0)); 
 	rect.setBackgroundColor("#ffffff");			
 	return rect;
 }
@@ -374,6 +388,9 @@ function deleteItem(idWithPrefix){
         break;   
     case "cmmng": 
     	delManagement(id);
+        break;
+    case "cmepi": 
+    	delEpi(id);
         break;
     case "success": // This is called right after update of HTML DOM.
     	

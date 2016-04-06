@@ -14,21 +14,21 @@ var LabelConnection= draw2d.Connection.extend({
     
       // Create any Draw2D figure as decoration for the connection
       //
-      this.label = new draw2d.shape.basic.Label({
+     /* this.label = new draw2d.shape.basic.Label({
           text:"...",
           color:"#0d0d0d",
           fontColor:"#0d0d0d",
           bgColor:"#cccccc",
           fontSize:"8pt"
-      });
+      });*/
      
       // add the new decoration to the connection with a position locator.
       //
-      this.add(this.label, new draw2d.layout.locator.ManhattanMidpointLocator());
+    //  this.add(this.label, new draw2d.layout.locator.ManhattanMidpointLocator());
       
       // Register a label editor with a dialog
       //
-      this.label.installEditor(new draw2d.ui.LabelInplaceEditor());
+     // this.label.installEditor(new draw2d.ui.LabelInplaceEditor());
       
       this.attr({
           router:new draw2d.layout.connection.InteractiveManhattanConnectionRouter(),
@@ -59,22 +59,28 @@ var LabelConnection= draw2d.Connection.extend({
             callback: $.proxy(function(key, options) 
             {
                switch(key){
-               case "red":
-                   this.setColor('#f3546a');
+               case "highly related": //we could also change the thickness of the connections?
+                   this.setColor('#009933');
+                   //trigger ajax call....
                    break;
-               case "green":
-                   this.setColor('#b9dd69');
+               case "somewhat related":
+                   this.setColor('#00e64d');
                    break;
               /* case "blue":
                    this.setColor('#00A8F0');
                    break;*/
-               case "delete":
-                   // without undo/redo support
-              //     this.getCanvas().remove(this);
+               case "slightly related":
+            	   this.setColor('#e6ffee');
+            	   break;
+            	
+               case "delete":                   
+            	   //this.getCanvas().remove(this); // without undo/redo support
                    
-                   // with undo/redo support
-                   var cmd = new draw2d.command.CommandDelete(this);
+                   // with undo/redo support:
+            	   var cmd = new draw2d.command.CommandDelete(this);
                    this.getCanvas().getCommandStack().execute(cmd);
+            	   //alert(this.id);
+                   delConnection(this.id)
                default:
                    break;
                }
@@ -84,8 +90,9 @@ var LabelConnection= draw2d.Connection.extend({
             y:y,
             items: 
             {
-                "red":    {name: "Red", icon: "edit"},
-                "green":  {name: "Green", icon: "cut"},
+                "highly related":    {name: "highly related" /*, icon: "edit"*/},
+                "somewhat related":  {name: "somewhat related", icon: "cut"},
+                "slightly related":  {name: "slightly related", icon: "cut"},
                 /*"blue":   {name: "Blue", icon: "copy"},*/
                 "sep1":   "---------",
                 "delete": {name: "Delete", icon: "delete"}

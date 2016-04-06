@@ -11,6 +11,7 @@ import beans.PatientIllnessScript;
 import beans.graph.Graph;
 import beans.relation.Relation;
 import controller.ConceptMapController;
+import controller.GraphController;
 import controller.NavigationController;
 import beans.Connection;
 import beans.IllnessScriptInterface;
@@ -44,13 +45,13 @@ public class AddConnectionAction implements Scoreable{
 	public void add(String sourceIdStr, String targetIdStr) {
 		String startType = sourceIdStr.substring(0, sourceIdStr.indexOf("_")+1);
 		String targetType = targetIdStr.substring(0, targetIdStr.indexOf("_")+1);
-		ConceptMapController cmc = new ConceptMapController();
+		//ConceptMapController cmc = new ConceptMapController();
 		sourceIdStr = sourceIdStr.substring(sourceIdStr.indexOf("_")+1);
 		targetIdStr = targetIdStr.substring(targetIdStr.indexOf("_")+1);
 		long sourceId = Long.valueOf(sourceIdStr);
 		long targetId = Long.valueOf(targetIdStr);
 		
-		addConnection(sourceId, targetId, cmc.getTypeByPrefix(startType), cmc.getTypeByPrefix(targetType));
+		addConnection(sourceId, targetId, GraphController.getTypeByPrefix(startType), GraphController.getTypeByPrefix(targetType));
 	}
 	
 	private void addConnection(long sourceId, long targetId, int startType, int targetType){

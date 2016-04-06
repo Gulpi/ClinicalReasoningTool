@@ -36,6 +36,7 @@ public class CRTFacesContext /*extends FacesContextWrapper*/ implements Serializ
 	private IllnessScriptController isc = new IllnessScriptController();
 	private PatientIllnessScript patillscript;
 	private Graph graph;
+
 	/**
 	 * all scripts of the user, needed for the overview/portfolio page to display a list. 
 	 * TODO: we only need id and a name, so maybe we do not have to load the full objects? or get 
@@ -54,7 +55,7 @@ public class CRTFacesContext /*extends FacesContextWrapper*/ implements Serializ
 		//loadAndSetScriptsOfUser(); //this loads all scripts, we do not necessarily have to do that here, only if overview page is opened!
 		boolean isNewPatIllScript = loadAndSetPatIllScript();
 		//TODO is something is wrong with the patScriptId, we have to return here and return an error msg....
-		
+		setCurrentStage();
 		feedbackBean = new FeedbackBean(false, patillscript.getParentId());
 		/*if(!isNewPatIllScript)*/ loadScoreContainer();
 	    ServletContext context = (ServletContext) FacesContext.getCurrentInstance().getExternalContext().getContext();
@@ -84,8 +85,10 @@ public class CRTFacesContext /*extends FacesContextWrapper*/ implements Serializ
 	public long getUserId() {return userId;}
 	public void setUserId(long userId) {this.userId = userId;}
 	public Graph getGraph() {return graph;}
-	//public void setGraph(Graph graph) {this.graph = graph;}
 
+	public void setCurrentStage(){
+		new AjaxController().getRequestParamByKey(AjaxController.REQPARAM_STAGE);
+	}
 	private void loadAndSetScriptsOfUser(){	setScriptsOfUser(isc.loadScriptsOfUser());}
 	
 	private void loadScoreContainer(){

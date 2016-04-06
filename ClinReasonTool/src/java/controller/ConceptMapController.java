@@ -14,7 +14,7 @@ import beans.relation.Rectangle;
  *@deprecated
  */
 public class ConceptMapController {
-	public static final String PREFIX_PROB = "cmprob_";
+	/*public static final String PREFIX_PROB = "cmprob_";
 	public static final String PREFIX_DDX = "cmddx_";
 	public static final String PREFIX_MNG = "cmmng_";
 	public static final String PREFIX_CNX = "cmcnx_";
@@ -24,7 +24,7 @@ public class ConceptMapController {
 	public static final int TYPE_DDX = 2;
 	public static final int TYPE_TEST = 3;
 	public static final int TYPE_MNG = 4;
-	public static final int TYPE_CNX = 5;
+	public static final int TYPE_CNX = 5;*/
 	
 	
 	/*public String getConnsToJson(Map m){
@@ -79,7 +79,7 @@ public class ConceptMapController {
 		return sb.toString();
 	}*/
 	
-	public int getTypeByPrefix(String prefix){
+	/*public int getTypeByPrefix(String prefix){
 		if(prefix==null) return 0;
 		if(prefix.equals(PREFIX_PROB)) return TYPE_PROB;
 		if(prefix.equals(PREFIX_DDX)) return TYPE_DDX;
@@ -90,5 +90,5 @@ public class ConceptMapController {
 		if(type==TYPE_PROB) return PREFIX_PROB;
 		if(type==TYPE_DDX) return PREFIX_DDX;
 		return "";
-	}
+	}*/
 }

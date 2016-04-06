@@ -11,9 +11,9 @@ import beans.IllnessScriptInterface;
 import beans.PatientIllnessScript;
 import beans.relation.Rectangle;
 import beans.relation.Relation;
-import controller.ConceptMapController;
 import controller.GraphController;
 import model.Synonym;
+import util.Logger;
 
 /**
  * A Graph that models the components of (Patient-)IllnessScripts in a MultiGraph. 
@@ -78,13 +78,24 @@ public class Graph extends DirectedWeightedMultigraph<MultiVertex, MultiEdge> {
 	/**
 	 * We change the edge weight for this illnessScriptType to implicit if it was explicit. This needs to be done
 	 *  when a user deletes a connection from the concept map.
+	 *  Can only be called for learner scripts!
 	 * @param cnx
-	 * @param illScriptType
 	 */
-	public void removeExplicitEdgeWeight(Connection cnx, int illScriptType){
-		MultiEdge edge = this.getEdge(this.getVertexById(cnx.getStartId()), this.getVertexById(cnx.getTargetId()));
+	public void removeExplicitEdgeWeight(long cnxId){
+		MultiEdge edge = getEdgeByCnxId(IllnessScriptInterface.TYPE_LEARNER_CREATED, cnxId);//this.getEdge(this.getVertexById(sourceId), this.getVertexById(targetId));
 		if(edge==null) return; //should not happen
-		edge.removeExplicitWeight(illScriptType);
+		edge.removeExplicitWeight();
+	}
+	
+	private MultiEdge getEdgeByCnxId(int illScriptType, long cnxId){
+		if(this.edgeSet()==null) return null;
+		Iterator<MultiEdge> it = this.edgeSet().iterator();
+		while(it.hasNext()){
+			MultiEdge edge = it.next();
+			if(illScriptType == IllnessScriptInterface.TYPE_LEARNER_CREATED && edge.getLearnerCnxId()==cnxId) return edge;
+			if(illScriptType == IllnessScriptInterface.TYPE_EXPERT_CREATED && edge.getExpCnxId()==cnxId) return edge;			
+		}
+		return null;
 	}
 	
 	/**
@@ -94,12 +105,11 @@ public class Graph extends DirectedWeightedMultigraph<MultiVertex, MultiEdge> {
 	 * @param targetId
 	 * @param illScriptType
 	 */
-	public void removeEdgeWeight(long sourceId, long targetId, int illScriptType){
+	public void removeEdgeWeight(long sourceId, long targetId){
 		MultiEdge edge = this.getEdge(this.getVertexById(sourceId), this.getVertexById(targetId));
 		if(edge==null) return; //should not happen
-		edge.removeWeight(illScriptType);
+		edge.removeWeight(IllnessScriptInterface.TYPE_LEARNER_CREATED);
 	}
-
 	
 	/**
 	 * We can call this for any addAction, no matter of main ListItem or Synonym, 
@@ -130,11 +140,11 @@ public class Graph extends DirectedWeightedMultigraph<MultiVertex, MultiEdge> {
 	public void addExplicitEdge(Connection cnx, PatientIllnessScript patIllScript, int type){
 		Relation source = patIllScript.getRelationByIdAndType(cnx.getStartId(), cnx.getStartType());
 		Relation target = patIllScript.getRelationByIdAndType(cnx.getTargetId(), cnx.getTargetType());
-		addOrUpdateEdge(getVertexById(source.getListItemId()), getVertexById(target.getListItemId()), type, MultiEdge.WEIGHT_EXPLICIT);
+		addOrUpdateEdge(getVertexById(source.getListItemId()), getVertexById(target.getListItemId()), type, MultiEdge.WEIGHT_EXPLICIT, cnx.getId(), patIllScript.getType());
 	}
 	
 	public void addImplicitEdge(long sourceId, long targetId, int type){
-		addOrUpdateEdge(this.getVertexById(sourceId), this.getVertexById(targetId), type, MultiEdge.WEIGHT_IMPLICIT);
+		addOrUpdateEdge(this.getVertexById(sourceId), this.getVertexById(targetId), type, MultiEdge.WEIGHT_IMPLICIT, -1, -1);
 	}
 	
 	/**
@@ -146,16 +156,20 @@ public class Graph extends DirectedWeightedMultigraph<MultiVertex, MultiEdge> {
 	 * @param weight (implicit or explicit - see defintions in MultiEdge)
 	 * @return
 	 */
-	private boolean addOrUpdateEdge(MultiVertex source, MultiVertex target, int type, int weight){
+	private boolean addOrUpdateEdge(MultiVertex source, MultiVertex target, int type, int weight, long cnxId, int patIllScriptType){
 		if(source==null || target==null)
 			return false;
+		
 		MultiEdge e = getEdge(source, target); 
 		if(e==null){
 			e = new MultiEdge(type, weight); 
-			return addEdge(source, target, e);
+			addEdge(source, target, e);
 		}
 		else e.addParam(type, weight);
-		return false; //edge already there, but we have changed the params of it.
+		if(cnxId>0 && patIllScriptType==IllnessScriptInterface.TYPE_LEARNER_CREATED) e.setLearnerCnxId(cnxId);
+		if(cnxId>0 && patIllScriptType==IllnessScriptInterface.TYPE_EXPERT_CREATED) e.setExpCnxId(cnxId);
+
+		return true; //edge created or we have changed the params of it.
 		
 	}
 
@@ -194,11 +208,35 @@ public class Graph extends DirectedWeightedMultigraph<MultiVertex, MultiEdge> {
 	}	
 		
 	/**
-	 * Format: {"label":"Cough","shortlabel":"Cough","id":"12345","x": "10","y":"200", "type":"1"}");		
+	 * 
+	 * Format: {"label":"Cough","shortlabel":"Cough","id":"12345","x": "10","y":"200", "type":"1", "l":"1", "e":"0", "p":"23"}");	
+	 * l = learner (1 = added, 0 = not added)
+	 * e = expert ( ")
+	 * p = peer nums
+	 * 
+	 * currently returns only the learners items.	
 	 * 
 	 * @return learners' patIllScript
 	 */
 	public String getToJson(){
+		Set<MultiVertex> vertices = this.vertexSet();
+		if(vertices==null || vertices.isEmpty()) return ""; 
+		Iterator<MultiVertex> it = vertices.iterator();
+		StringBuffer sb = new StringBuffer("[");
+		
+		while(it.hasNext()){
+			MultiVertex mv = it.next();
+			//Rectangle learnerRel = (Rectangle) mv.getLearnerVertex();
+			//if(learnerRel!=null)
+				sb.append(mv.toJson());
+		}
+		sb.replace(sb.length()-1, sb.length(), ""); //remove the last ","
+		sb.append("]");
+		Logger.out(sb.toString(), Logger.LEVEL_TEST);
+		return sb.toString();
+	}
+	
+	/*public String getToJsonExp(){
 		Set<MultiVertex> vertices = this.vertexSet();
 		if(vertices==null || vertices.isEmpty()) return ""; 
 		Iterator<MultiVertex> it = vertices.iterator();
@@ -212,26 +250,34 @@ public class Graph extends DirectedWeightedMultigraph<MultiVertex, MultiEdge> {
 		}
 		sb.replace(sb.length()-1, sb.length(), ""); //remove the last ","
 		sb.append("]");
+		Logger.out(sb.toString(), Logger.LEVEL_TEST);
 		return sb.toString();
-	}
+	}*/
 	
+	/**
+	 * Currently only returns the learners graph.
+	 * @return
+	 */
 	public String getJsonConns(){
 		Set<MultiEdge> edges = this.edgeSet();
 		if(edges==null || edges.isEmpty()) return "";
 		Iterator<MultiEdge> it = edges.iterator();
 		StringBuffer sb = new StringBuffer("[");
+		int elemCounter = 0;
 		while(it.hasNext()){
 			MultiEdge edge = it.next();
 			if(edge.getLearnerWeight()==MultiEdge.WEIGHT_EXPLICIT){ //then we add the edge to the concept map
-				MultiVertex sourceVertex = this.getVertexById(edge.getSourceId());
-				MultiVertex targetVertex = this.getVertexById(edge.getTargetId());
-				String startIdWithPrefix = edge.getPrefixByType(sourceVertex.getType())+edge.getSourceId(); 	
-				String targetIdWithPrefix = edge.getPrefixByType(targetVertex.getType())+edge.getTargetId();
-				
-				return"{\"id\":\""+MultiEdge.PREFIX_CNX + this.getId()+"\",\"sourceid\": \""+startIdWithPrefix+"\",\"targetid\": \""+targetIdWithPrefix+"\"}");		
-
+				MultiVertex sourceVertex = edge.getSource();
+				MultiVertex targetVertex = edge.getTarget();
+				String startIdWithPrefix = GraphController.getPrefixByType(sourceVertex.getType())+sourceVertex.getLearnerVertex().getId(); 	
+				String targetIdWithPrefix = GraphController.getPrefixByType(targetVertex.getType())+targetVertex.getLearnerVertex().getId();
+				elemCounter++;
+				sb.append("{\"id\":\""+GraphController.PREFIX_CNX + edge.getLearnerCnxId()+"\",\"sourceid\": \""+startIdWithPrefix+"\",\"targetid\": \""+targetIdWithPrefix+"\"},");		
 			}	
 		}
+		sb.replace(sb.length()-1, sb.length(), ""); //remove the last ","
+		sb.append("]");
+		Logger.out(sb.toString(), Logger.LEVEL_TEST);
+		return sb.toString();
 	}
-	
 }

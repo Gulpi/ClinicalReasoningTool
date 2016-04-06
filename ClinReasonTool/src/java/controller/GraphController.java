@@ -21,6 +21,12 @@ import model.Synonym;
  */
 public class GraphController {
 
+	public static final String PREFIX_PROB = "cmprb_";
+	public static final String PREFIX_EPI = "cmepi_";
+	public static final String PREFIX_DDX = "cmddx_";
+	public static final String PREFIX_MNG = "cmmng_";
+	public static final String PREFIX_CNX = "cmcnx_";
+	public static final String PREFIX_TEST = "cmtes_";
 	private Graph graph;
 	
 	public GraphController(Graph g){
@@ -84,6 +90,8 @@ public class GraphController {
 		 addVertices( patIllScript.getDiagnoses(), illnessScriptType);
 		 addVertices( patIllScript.getMngs(), illnessScriptType);
 		 addVertices( patIllScript.getTests(), illnessScriptType);
+		 addVertices( patIllScript.getEpis(), illnessScriptType);
+
 	}
 	
 	/**
@@ -130,17 +138,6 @@ public class GraphController {
 		}
 	}
 	
-	public String graphToJson(){ 
-		Set<MultiVertex> allVertices = graph.vertexSet();
-		if(allVertices == null || allVertices.isEmpty()) return "";
-		Iterator<MultiVertex> it = allVertices.iterator();
-		while (it.hasNext()){
-			MultiVertex vi = it.next();
-		}
-		return "";
-		//return new ConceptMapController().getRelationsToJson(problems);
-	}
-	
 	/**
 	 * 1 = no feedback
 	 * 2 = exp feedback
@@ -152,7 +149,7 @@ public class GraphController {
 	private boolean[] getDisplayModusOfVertex(VertexInterface vertex, boolean[] feedbackModus){
 		feedbackModus = new boolean[]{true, true, false, false}; //show learner and expert, TODO get from user settings and/or store in FacesContext
 		boolean[] displayModus = new boolean[]{false, false, false, false}; //learner, expert, illscript, peer 
-		int currentStage = 1;	
+		int currentStage = new NavigationController().getCRTFacesContext().getPatillscript().getCurrentStage();	
 		/*boolean showExp = false; 
 		boolean showLearner = false; 
 		boolean showIllScript = false; 
@@ -179,5 +176,26 @@ public class GraphController {
 			
 		}*/
 		
+	}
+	
+	public static int getTypeByPrefix(String prefix){
+		if(prefix==null) return 0;
+		if(prefix.equals(PREFIX_PROB)) return Relation.TYPE_PROBLEM;
+		if(prefix.equals(PREFIX_DDX)) return Relation.TYPE_DDX;
+		if(prefix.equals(PREFIX_TEST)) return Relation.TYPE_TEST;
+		if(prefix.equals(PREFIX_MNG)) return Relation.TYPE_MNG;
+		if(prefix.equals(PREFIX_EPI)) return Relation.TYPE_EPI;
+
+		return 0;
+	}
+	
+	public static String getPrefixByType(int type){
+		if(type==Relation.TYPE_PROBLEM) return PREFIX_PROB;
+		if(type==Relation.TYPE_DDX) return PREFIX_DDX;
+		if(type==Relation.TYPE_TEST) return PREFIX_TEST;
+		if(type==Relation.TYPE_MNG) return PREFIX_MNG;
+		if(type==Relation.TYPE_EPI) return PREFIX_EPI;
+
+		return "";
 	}
 }

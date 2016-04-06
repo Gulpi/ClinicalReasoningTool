@@ -18,11 +18,7 @@ public class MultiEdge extends DefaultWeightedEdge{
 	public static final int WEIGHT_NONE = 0;	
 	public static final int WEIGHT_IMPLICIT = 1; //a connection has made in the concept map, tests have been associated to DDX  
 	public static final int WEIGHT_EXPLICIT = 2; //implicit connection - being in the same illnessScript
-	public static final String PREFIX_PROB = "cmprob_";
-	public static final String PREFIX_DDX = "cmddx_";
-	public static final String PREFIX_MNG = "cmmng_";
-	public static final String PREFIX_CNX = "cmcnx_";
-	public static final String PREFIX_TEST = "cmds_";
+
 	/**
 	 * key = type (see definition in IllnessScriptInterface)
 	 * value = weight (for peers the number of conx)
@@ -35,6 +31,8 @@ public class MultiEdge extends DefaultWeightedEdge{
 	private int edgeInIllScript = WEIGHT_NONE; //can be none or explicit (no implicit!)*/
 	private long sourceId;
 	private long targetId; 
+	private long learnerCnxId;
+	private long expCnxId;
 	public MultiEdge(){}
 	public MultiEdge(int type, int weight){
 		addParam(type, weight);
@@ -57,11 +55,17 @@ public class MultiEdge extends DefaultWeightedEdge{
 				types.put(new Integer(type), new Integer(weight));
 			}
 		}
-	}
-	
-	public void removeExplicitWeight(int illScriptType){
-		if(types==null || types.get(new Integer(illScriptType))==null) return;
-		types.put(new Integer(illScriptType),new Integer(WEIGHT_IMPLICIT));		
+	}	
+	public long getLearnerCnxId() {return learnerCnxId;}
+	public void setLearnerCnxId(long learnerCnxId) {this.learnerCnxId = learnerCnxId;}
+	public long getExpCnxId() {return expCnxId;}
+	public void setExpCnxId(long expCnxId) {this.expCnxId = expCnxId;}
+	/**
+	 * Changes can only be made for learners' scripts
+	 */
+	public void removeExplicitWeight(){
+		if(types==null || types.get(new Integer(IllnessScriptInterface.TYPE_LEARNER_CREATED))==null) return;
+		types.put(new Integer(IllnessScriptInterface.TYPE_LEARNER_CREATED),new Integer(WEIGHT_IMPLICIT));		
 	}
 	
 	public void removeWeight(int illScriptType){
@@ -140,17 +144,21 @@ public class MultiEdge extends DefaultWeightedEdge{
 		//return sb.toString();		
 	}*/
 	
-	protected int getTypeByPrefix(String prefix){
+	/*protected int getTypeByPrefix(String prefix){
 		if(prefix==null) return 0;
 		if(prefix.equals(PREFIX_PROB)) return Relation.TYPE_PROBLEM;
 		if(prefix.equals(PREFIX_DDX)) return Relation.TYPE_DDX;
+		if(prefix.equals(PREFIX_TEST)) return Relation.TYPE_TEST;
+		if(prefix.equals(PREFIX_MNG)) return Relation.TYPE_MNG;
 		return 0;
 	}
 	
 	protected String getPrefixByType(int type){
 		if(type==Relation.TYPE_PROBLEM) return PREFIX_PROB;
 		if(type==Relation.TYPE_DDX) return PREFIX_DDX;
+		if(type==Relation.TYPE_TEST) return PREFIX_TEST;
+		if(type==Relation.TYPE_MNG) return PREFIX_MNG;
 		return "";
-	}
+	}*/
 	
 }

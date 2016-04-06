@@ -10,6 +10,7 @@ import beans.PatientIllnessScript;
 import beans.graph.Graph;
 import controller.NavigationController;
 import database.DBClinReason;
+import util.Logger;
 
 public class DelConnectionAction /*implements DelAction*/{
 	private PatientIllnessScript patIllScript;
@@ -46,6 +47,7 @@ public class DelConnectionAction /*implements DelAction*/{
 		patIllScript.getConns().remove(new Long(id));
 		//new ActionHelper().reOrderItems(patIllScript.getProblems());
 		notifyLog(conn);
+		updateGraph(conn);
 		save(conn);		
 	}
 	
@@ -120,8 +122,7 @@ public class DelConnectionAction /*implements DelAction*/{
 	
 	private void updateGraph(Connection connToDel){
 		Graph graph = new NavigationController().getCRTFacesContext().getGraph();
-		graph.removeExplicitEdgeWeight(connToDel, IllnessScriptInterface.TYPE_LEARNER_CREATED);
-		System.out.println(graph.toString());
+		graph.removeExplicitEdgeWeight(connToDel.getId());
+		Logger.out(graph.toString(), Logger.LEVEL_TEST);
 	}
-
 }

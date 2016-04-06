@@ -10,6 +10,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import beans.scoring.ScoreContainer;
 import controller.ConceptMapController;
+import controller.GraphController;
 import controller.NavigationController;
 import controller.RelationController;
 import controller.ScoringController;
@@ -110,7 +111,7 @@ public class RelationProblem extends Beans implements Relation, Rectangle, Seria
 	//public Timestamp getCreationDate() {return creationDate;}
 	//public void setCreationDate(Timestamp creationDate) {this.creationDate = creationDate;}
 	public String getIdWithPrefix(){ 
-		/*if(synId<=0)*/ return ConceptMapController.PREFIX_PROB+this.getId();
+		/*if(synId<=0)*/ return GraphController.PREFIX_PROB+this.getId();
 		//return ConceptMapController.PREFIX_PROB+synId;
 	}
 	
@@ -125,17 +126,9 @@ public class RelationProblem extends Beans implements Relation, Rectangle, Seria
 	/* (non-Javadoc)
 	 * @see beans.relation.Rectangle#toJson()
 	 */
-	public String toJson(){
+	/*public String toJson(){
 		return new RelationController().getRelationToJson(this);
-		/*StringBuffer sb = new StringBuffer();
-		if(synId<=0)
-			sb.append("{\"label\":\""+this.getProblem().getName()+"\",\"shortlabel\":\""+this.getProblem().getShortName()+"\",\"id\": \""+getIdWithPrefix()+"\",\"x\": "+this.x+",\"y\":"+this.y+"}");		
-		else{
-			sb.append("{\"label\":\""+this.getSynonym().getName()+"\",\"shortlabel\":\""+this.getSynonym().getShortName()+"\",\"id\": \""+getIdWithPrefix()+"\",\"x\": "+this.x+",\"y\":"+this.y+"}");		
-
-		}
-		return sb.toString();*/
-	}
+	}*/
 	
 	/* (non-Javadoc)
 	 * @see beans.relation.Relation#getRelationType()

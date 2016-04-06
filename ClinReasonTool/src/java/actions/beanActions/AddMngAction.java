@@ -19,6 +19,7 @@ import beans.relation.RelationManagement;
 import controller.NavigationController;
 import controller.RelationController;
 import database.DBClinReason;
+import util.Logger;
 
 public class AddMngAction implements AddAction, Scoreable{
 	
@@ -120,6 +121,6 @@ public class AddMngAction implements AddAction, Scoreable{
 				graph.addImplicitEdge(patIllScript.getDiagnoses().get(i).getListItemId(), rel.getListItemId(), IllnessScriptInterface.TYPE_LEARNER_CREATED);
 			}
 		}
-		System.out.println(graph.toString());
+		Logger.out(graph.toString(), Logger.LEVEL_TEST);
 	}
 }

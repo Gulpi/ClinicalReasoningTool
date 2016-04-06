@@ -12,10 +12,10 @@ import controller.NavigationController;
 import database.DBClinReason;
 import util.Logger;
 
-public class DelMngAction implements DelAction{
+public class DelEpiAction implements DelAction{
 	private PatientIllnessScript patIllScript;
 	
-	public DelMngAction(PatientIllnessScript patIllScript){
+	public DelEpiAction(PatientIllnessScript patIllScript){
 		this.patIllScript = patIllScript;
 	}
 	
@@ -24,14 +24,14 @@ public class DelMngAction implements DelAction{
 	 */
 	public void save(Object rel) {
 		new DBClinReason().deleteAndCommit(rel);
-		new DBClinReason().saveAndCommit(patIllScript.getMngs()); //orderNrs have changed, so we have to save all
+		new DBClinReason().saveAndCommit(patIllScript.getEpis()); //orderNrs have changed, so we have to save all
 	}
 
 	/* (non-Javadoc)
 	 * @see beanActions.DelAction#notifyLog(beans.relation.Relation)
 	 */
 	public void notifyLog(Object o) {
-		LogEntry le = new LogEntry(LogEntry.DELMNG_ACTION, patIllScript.getSessionId(), ((Relation)o).getListItemId());
+		LogEntry le = new LogEntry(LogEntry.DELEPI_ACTION, patIllScript.getSessionId(), ((Relation)o).getListItemId());
 		le.save();		
 	}
 
@@ -39,22 +39,20 @@ public class DelMngAction implements DelAction{
 	 * @see beanActions.DelAction#delete(java.lang.String)
 	 */
 	public void delete(String id) {
-		if(id==null || id.trim().equals("") || patIllScript==null || patIllScript.getMngs()==null || patIllScript.getMngs().isEmpty()){
+		if(id==null || id.trim().equals("") || patIllScript==null || patIllScript.getEpis()==null || patIllScript.getEpis().isEmpty()){
 			//todo error msg
 			return;		
 		}
-		RelationManagement rel = patIllScript.getMngById(Long.parseLong(id));
-		patIllScript.getMngs().remove(rel);
-		updateGraph(rel);
-		new ActionHelper().reOrderItems(patIllScript.getMngs());		
+		RelationEpi rel = patIllScript.getEpiById(Long.parseLong(id));
+		patIllScript.getEpis().remove(rel);
+		new ActionHelper().reOrderItems(patIllScript.getEpis());		
 		notifyLog(rel);
-		new DelConnectionAction(patIllScript).deleteConnsByTargetId(rel.getId());
+		updateGraph(rel);
+		new DelConnectionAction(patIllScript).deleteConnsByStartId(rel.getId());
 		save(rel);
+		
 	}
 	
-	/* (non-Javadoc)
-	 * @see actions.beanActions.DelAction#updateGraph(beans.relation.Relation)
-	 */
 	public void updateGraph(Relation rel){
 		Graph graph = new NavigationController().getCRTFacesContext().getGraph();
 		MultiVertex vertex = graph.getVertexById(rel.getListItemId());
@@ -63,7 +61,7 @@ public class DelMngAction implements DelAction{
 		//remove complete edge param for all these edges:
 		if( patIllScript.getDiagnoses()!=null){
 			for(int i=0; i < patIllScript.getDiagnoses().size(); i++){
-				graph.removeEdgeWeight(patIllScript.getDiagnoses().get(i).getListItemId(), rel.getListItemId());
+				graph.removeEdgeWeight(rel.getListItemId(), patIllScript.getDiagnoses().get(i).getListItemId());
 			}
 		}
 		Logger.out(graph.toString(), Logger.LEVEL_TEST);

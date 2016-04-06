@@ -1,0 +1,11 @@
+ <ui:composition 
+    xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core">
+
+ <li id="selEpi_#{epi.id}">#{epi.labelOrSynLabel}
+ 	<a href="javascript:delEpi(#{epi.id});"><i class="icon-trash-1"></i></a> 
+ 	<i class="#{epi.score}"></i>
+ </li>
+</ui:composition>

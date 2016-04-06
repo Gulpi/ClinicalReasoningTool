@@ -10,6 +10,7 @@ import beans.graph.MultiVertex;
 import beans.relation.*;
 import controller.NavigationController;
 import database.DBClinReason;
+import util.Logger;
 
 public class DelDiagnosisAction implements DelAction{
 	private PatientIllnessScript patIllScript;
@@ -62,19 +63,19 @@ public class DelDiagnosisAction implements DelAction{
 		//remove complete edge param for all these edges:
 		if(patIllScript.getTests()!=null){
 			for(int i=0; i < patIllScript.getTests().size(); i++){
-				graph.removeEdgeWeight(rel.getListItemId(), patIllScript.getTests().get(i).getListItemId(), IllnessScriptInterface.TYPE_LEARNER_CREATED);
+				graph.removeEdgeWeight(rel.getListItemId(), patIllScript.getTests().get(i).getListItemId());
 			}
 		}
 		if(patIllScript.getMngs()!=null){
 			for(int i=0; i < patIllScript.getMngs().size(); i++){
-				graph.removeEdgeWeight(rel.getListItemId(), patIllScript.getMngs().get(i).getListItemId(), IllnessScriptInterface.TYPE_LEARNER_CREATED);
+				graph.removeEdgeWeight(rel.getListItemId(), patIllScript.getMngs().get(i).getListItemId());
 			}
 		}
 		if(patIllScript.getProblems()!=null){
 			for(int i=0; i < patIllScript.getProblems().size(); i++){
-				graph.removeEdgeWeight(patIllScript.getProblems().get(i).getListItemId(), rel.getListItemId(), IllnessScriptInterface.TYPE_LEARNER_CREATED);
+				graph.removeEdgeWeight(patIllScript.getProblems().get(i).getListItemId(), rel.getListItemId());
 			}
 		}
-		System.out.println(graph.toString());
+		Logger.out(graph.toString(), Logger.LEVEL_TEST);
 	}
 }

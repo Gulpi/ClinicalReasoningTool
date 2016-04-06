@@ -13,6 +13,7 @@ import javax.faces.context.FacesContextWrapper;
 import org.apache.commons.lang3.StringUtils;
 
 import controller.ConceptMapController;
+import controller.GraphController;
 import controller.RelationController;
 import controller.ScoringController;
 import model.ListItem;
@@ -100,7 +101,7 @@ public class RelationDiagnosis extends Beans implements Relation, Rectangle, Ser
 	
 	//public Timestamp getCreationDate() {return creationDate;}
 	//public void setCreationDate(Timestamp creationDate) {this.creationDate = creationDate;}
-	public String getIdWithPrefix(){ return ConceptMapController.PREFIX_DDX+this.getId();}
+	public String getIdWithPrefix(){ return GraphController.PREFIX_DDX+this.getId();}
 	public int getMnm() {return mnm;}
 	public void setMnm(int mnm) {this.mnm = mnm;}
 	public boolean isMnM(){
@@ -110,13 +111,10 @@ public class RelationDiagnosis extends Beans implements Relation, Rectangle, Ser
 	/* (non-Javadoc)
 	 * @see beans.relation.Rectangle#toJson()
 	 */
-	public String toJson(){
+	/*public String toJson(){
 		return new RelationController().getRelationToJson(this);
-		/*FacesContext facesContext2 = FacesContextWrapper.getCurrentInstance();
-		StringBuffer sb = new StringBuffer();
-		sb.append("{\"label\":\""+this.getDiagnosis().getName()+"\",\"shortlabel\":\""+this.getDiagnosis().getShortName()+"\",\"id\": \""+getIdWithPrefix()+"\",\"x\": "+this.x+",\"y\":"+this.y+",\"color\": \""+this.color+"\"}");		
-		return sb.toString();*/
-	}
+
+	}*/
 	
 
 	/* (non-Javadoc)

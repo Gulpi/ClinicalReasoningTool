@@ -4,6 +4,6 @@ public interface Rectangle {
 
 	public int getX();
 	public int getY();
-	public String toJson();
+	//public String toJson();
 	//public int getDefaultX();
 }

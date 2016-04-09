@@ -140,7 +140,10 @@ public class Graph extends DirectedWeightedMultigraph<MultiVertex, MultiEdge> {
 	public void addExplicitEdge(Connection cnx, PatientIllnessScript patIllScript, int type){
 		Relation source = patIllScript.getRelationByIdAndType(cnx.getStartId(), cnx.getStartType());
 		Relation target = patIllScript.getRelationByIdAndType(cnx.getTargetId(), cnx.getTargetType());
-		addOrUpdateEdge(getVertexById(source.getListItemId()), getVertexById(target.getListItemId()), type, MultiEdge.WEIGHT_EXPLICIT, cnx.getId(), patIllScript.getType());
+		//the weight has to be minimum of the explicit weight or a specified higher weight:s
+		int weight = MultiEdge.WEIGHT_EXPLICIT;
+		if(cnx.getWeight()>MultiEdge.WEIGHT_EXPLICIT) weight = cnx.getWeight();
+		addOrUpdateEdge(getVertexById(source.getListItemId()), getVertexById(target.getListItemId()), type, weight, cnx.getId(), patIllScript.getType());
 	}
 	
 	public void addImplicitEdge(long sourceId, long targetId, int type){
@@ -273,6 +276,7 @@ public class Graph extends DirectedWeightedMultigraph<MultiVertex, MultiEdge> {
 	
 	/**
 	 * Currently only returns the learners graph.
+	 * format: [{"id":"cmcnx_1", "sourceid":"cmprb_1234","targetid":"cmddx_47673", "l":"0", "e":"1", weight_l":"3","weight_e":"4"},....]
 	 * @return
 	 */
 	public String getJsonConns(){
@@ -280,19 +284,28 @@ public class Graph extends DirectedWeightedMultigraph<MultiVertex, MultiEdge> {
 		if(edges==null || edges.isEmpty()) return "";
 		Iterator<MultiEdge> it = edges.iterator();
 		StringBuffer sb = new StringBuffer("[");
-		int elemCounter = 0;
 		while(it.hasNext()){
 			MultiEdge edge = it.next();
-			if(edge.getLearnerWeight()==MultiEdge.WEIGHT_EXPLICIT){ //then we add the edge to the concept map
+			if(edge.getLearnerWeight()>=MultiEdge.WEIGHT_EXPLICIT || edge.getExpertWeight()>=MultiEdge.WEIGHT_EXPLICIT){ //then we add the edge to the concept map
+				long cnxId = 0;
+				String l = "0";
+				String e = "0";
+				if(edge.getLearnerCnxId()>0){
+					cnxId = edge.getLearnerCnxId();
+					l = "1";
+				}
+				else cnxId = edge.getExpCnxId();
+				if(edge.getExpCnxId()>0) e = "1";
 				MultiVertex sourceVertex = edge.getSource();
 				MultiVertex targetVertex = edge.getTarget();
+				//if(sourceVertex)
 				String startIdWithPrefix = GraphController.getPrefixByType(sourceVertex.getType())+sourceVertex.getLearnerVertex().getId(); 	
 				String targetIdWithPrefix = GraphController.getPrefixByType(targetVertex.getType())+targetVertex.getLearnerVertex().getId();
-				elemCounter++;
-				sb.append("{\"id\":\""+GraphController.PREFIX_CNX + edge.getLearnerCnxId()+"\",\"sourceid\": \""+startIdWithPrefix+"\",\"targetid\": \""+targetIdWithPrefix+"\"},");		
+
+				sb.append("{\"id\":\""+GraphController.PREFIX_CNX + cnxId+"\",\"l\":\""+l+"\", \"e\":\""+e+"\", \"sourceid\": \""+startIdWithPrefix+"\",\"targetid\": \""+targetIdWithPrefix+"\",\"weight_l\": \""+edge.getLearnerWeight()+"\", \"weight_e\": \""+edge.getExpertWeight()+"\"},");		
 			}	
 		}
-		sb.replace(sb.length()-1, sb.length(), ""); //remove the last ","
+		if(sb.length()>1) sb.replace(sb.length()-1, sb.length(), ""); //remove the last ","
 		sb.append("]");
 		Logger.out(sb.toString(), Logger.LEVEL_TEST);
 		return sb.toString();

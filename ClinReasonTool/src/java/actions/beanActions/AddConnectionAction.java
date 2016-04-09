@@ -35,7 +35,7 @@ public class AddConnectionAction implements Scoreable{
 
 	public void notifyLog(Relation rel) {}	
 	public void notifyLog(Connection cnx) {
-		LogEntry le = new LogEntry(LogEntry.ADDCONNECTION_ACTION, patIllScript.getId(), cnx.getStartId());
+		LogEntry le = new LogEntry(LogEntry.ADDCONNECTION_ACTION, patIllScript.getId(), cnx.getStartId(), cnx.getTargetId());
 		le.save();	
 	}
 

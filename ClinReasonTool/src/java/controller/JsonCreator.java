@@ -3,7 +3,6 @@ package controller;
 import java.io.*;
 import java.util.*;
 
-import beans.graph.SynonymVertex;
 import database.DBClinReason;
 import model.ListItem;
 import model.Synonym;
@@ -29,7 +28,6 @@ public class JsonCreator {
 	//configurations: TODO get from property file
 	private boolean createOneList = true; //if false, we create multiple lists for problems, ddx, etc.
 	private boolean includeSynonyma = true;
-	private String language="en";
 	
 	
 	public synchronized void initJsonExport(){
@@ -79,6 +77,13 @@ public class JsonCreator {
 	 */
 	private boolean doAddItem(ListItem item){
 		if(item.getItemType().equals("D") && item.getLevel()>=10) return false;
+		if(item.getFirstCode().startsWith("D20.0") || item.getFirstCode().startsWith("D20.1")) return false;
+		if(item.getFirstCode().startsWith("D20.3") || item.getFirstCode().startsWith("D20.4")) return false;
+		if(item.getFirstCode().startsWith("D20.7") || item.getFirstCode().startsWith("D20.8")) return false;
+		if(item.getFirstCode().startsWith("D20.9")) return false;
+		if(item.getFirstCode().startsWith("D27.")) return false;
+		if(item.getFirstCode().startsWith("D26.2")) return false;
+		if(item.getFirstCode().startsWith("C22")) return false; //Animal diseases
 		if(item.getName().startsWith("1") || item.getName().startsWith("2") || item.getName().startsWith("3")) return false;
 		if(item.getName().startsWith("4-") || item.getName().startsWith("4,")) return false;
 		if(item.getName().startsWith("5") || item.getName().startsWith("6") || item.getName().startsWith("7")) return false;

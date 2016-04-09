@@ -48,14 +48,6 @@ public class PatientIllnessScript extends Beans/*extends Node*/ implements Illne
 	 * If we get this information from the VP (or other) system, we store it here.
 	 */
 	private int currentStage;
-	
-	//epi data:
-	//private Patient patient; //data from the patient object attached to a case
-	/**
-	 * We might want to link the illness script directly here, might be faster for comparisons than going through
-	 * the session. If final diagnosis is wrong the relation might not be doable thru it...
-	 */
-	//private long illnessScriptId = -1; 
 	/**
 	 * 1=acute, 2=subacute, 3=chronic
 	 */	
@@ -78,17 +70,14 @@ public class PatientIllnessScript extends Beans/*extends Node*/ implements Illne
 	 * key = cnxId (Long), value = Connection object
 	 */
 	private Map<Long,Connection> conns;
-	/**
-	 * we might want to have this separately for quicker access, since this enables accessing IS
-	 * more than one? Or do we have to have then multiple PIS/VP???
-	 */
-	//private Rel_IS_Diagnosis finalDiagnosis; 
 	
 	/**
 	 * have the components of the IS been submitted by the learner? If yes for certain components no more changes 
 	 * can be made (?)
 	 */
-	private boolean submitted;
+	private int submittedStage;
+	
+	private List<Error> errors;
 	
 	public PatientIllnessScript(){}
 	public PatientIllnessScript(long sessionId, long userId, long vpId, Locale loc){
@@ -139,9 +128,16 @@ public class PatientIllnessScript extends Beans/*extends Node*/ implements Illne
 	public long getNoteId() {return noteId;}
 	public void setNoteId(long noteId) {this.noteId = noteId;}
 	public int getCurrentStage() {return currentStage;}
-	public void setCurrentStage(int currentStage) {this.currentStage = currentStage;}	
-	public boolean isSubmitted() {return submitted;}
-	public void setSubmitted(boolean submitted) {this.submitted = submitted;}
+	public void setCurrentStage(int currentStage) {this.currentStage = currentStage;}		
+	public List<Error> getErrors() {return errors;}
+	public void setErrors(List<Error> errors) {this.errors = errors;}
+	public boolean isSubmitted() {
+		if(submittedStage>0) return true;
+		return false;
+	}	
+	public int getSubmittedStage() {return submittedStage;}
+	public void setSubmittedStage(int submittedStage) {this.submittedStage = submittedStage;}
+	//public void setSubmitted(boolean submitted) {this.submitted = submitted;}
 	public void addProblem(String idStr, String name){new AddProblemAction(this).add(idStr, name);}
 	public void addProblem(String idStr, String name, String x, String y){ new AddProblemAction(this).add(idStr, name, x,y);}
 	public void addDiagnosis(String idStr, String name){ new AddDiagnosisAction(this).add(idStr, name);}
@@ -163,20 +159,22 @@ public class PatientIllnessScript extends Beans/*extends Node*/ implements Illne
 	public void reorderDiagnoses(String idStr, String newOrderStr){ new MoveDiagnosisAction(this).reorder(idStr, newOrderStr);}
 	public void reorderTests(String idStr, String newOrderStr){ new MoveTestAction(this).reorder(idStr, newOrderStr);}
 	public void reorderMngs(String idStr, String newOrderStr){ new MoveMngAction(this).reorder(idStr, newOrderStr);}
+	public void moveItem(String idStr, String newOrderStr, String x, String y){ new DragDropAction(this).move(idStr, x, y);}
 
 	public void changeProblem(String probRelIdStr,String newProbId){new ChangeProblemAction(this).changeProblem(probRelIdStr, newProbId);}
 	public void changeDiagnosis(String probRelIdStr,String newProbId){new ChangeDiagnosisAction(this).changeDiagnosis(probRelIdStr, newProbId);}
 	public void changeTest(String probRelIdStr,String newProbId){new ChangeTestAction(this).changeTest(probRelIdStr, newProbId);}
 	public void changeMng(String probRelIdStr,String newProbId){new ChangeMngAction(this).changeMng(probRelIdStr, newProbId);}
 	public void changeEpi(String probRelIdStr,String newProbId){new ChangeEpiAction(this).changeEpi(probRelIdStr, newProbId);}
-
-	public void changeMnM(String idStr, String newValue){new ChangeDiagnosisAction(this).toggleMnM(idStr, newValue);}
+	public void changeMnM(String idStr/*, String newValue*/){new ChangeDiagnosisAction(this).toggleMnM(idStr/*, newValue*/);}
+	
 	public void addConnection(String sourceId, String targetId){new AddConnectionAction(this).add(sourceId,targetId);}
 	public void delConnection(String idStr){new DelConnectionAction(this).delete(idStr);}
+	public void chgConnection(String idStr, String weightStr){new ChgConnectionAction(this).chgConnection(idStr, weightStr);}
 
 	public void saveSummStatement(String idStr, String text){new SummaryStatementChgAction(this).updateOrCreateSummaryStatement( idStr, text);}
 	public void saveNote(String idStr, String text){new NoteChgAction(this).updateOrCreateNote( idStr, text);}
-	public void submitDDX(String idStr, String text){new DiagnosisSubmitAction(this).submitDDX();}
+	public void submitDDX(String idStr){new DiagnosisSubmitAction(this).submitDDX();}
 	public void changeTier(String idStr, String tierStr){new DiagnosisSubmitAction(this).changeTier(idStr, tierStr);}
 
 	public void save(){

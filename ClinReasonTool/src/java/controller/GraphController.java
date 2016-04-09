@@ -126,6 +126,11 @@ public class GraphController {
 				//graph.addImplicitEdge(sourceId, targetId, type);
 				graph.addImplicitEdge(patIllScript.getProblems().get(j).getListItemId(), patIllScript.getDiagnoses().get(i).getListItemId(), illScriptType);
 			}
+			for(int j=0; j < patIllScript.getEpis().size(); j++){
+				//graph.addImplicitEdge(sourceId, targetId, type);
+				graph.addImplicitEdge(patIllScript.getEpis().get(j).getListItemId(), patIllScript.getDiagnoses().get(i).getListItemId(), illScriptType);
+			}
+
 			//add ddx -> tests
 			for(int j=0; j < patIllScript.getTests().size(); j++){
 				graph.addImplicitEdge(patIllScript.getDiagnoses().get(i).getListItemId(), patIllScript.getTests().get(j).getListItemId(), illScriptType);

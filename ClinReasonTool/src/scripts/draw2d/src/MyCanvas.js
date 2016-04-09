@@ -11,7 +11,11 @@ var MyCanvas= draw2d.Canvas.extend({
     init:function(attr)
     {
       this._super(attr);
-    }
+    },
+
+/*onDrop:function( dropTarget, x, y, shiftKey, ctrlKey ){
+	alert("drop");
+}*/
     
    /* onClick:function(emitter){ //open the select box to change label?
     	//var editor = new draw2d.ui.LabelLMEditor();

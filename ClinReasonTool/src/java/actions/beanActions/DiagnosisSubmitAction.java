@@ -4,9 +4,12 @@ import java.beans.Beans;
 
 import actions.scoringActions.Scoreable;
 import actions.scoringActions.ScoringFinalDDXAction;
+import actions.scoringActions.ScoringListAction;
 import beans.LogEntry;
 import beans.PatientIllnessScript;
+import beans.relation.Relation;
 import beans.relation.RelationDiagnosis;
+import controller.NavigationController;
 import database.DBClinReason;
 
 /**
@@ -23,8 +26,9 @@ public class DiagnosisSubmitAction implements Scoreable{
 	}
 	
 	public void submitDDX(){
-		patIllScript.setSubmitted(true);
+		patIllScript.setSubmittedStage(patIllScript.getCurrentStage());
 		new DBClinReason().saveAndCommit(patIllScript);
+		notifyLog();
 		
 		//all the final ddx should have been tagged before, so no need to save the final ddx here....
 		//we could now display some feedback, experts final diagnoses.
@@ -39,6 +43,7 @@ public class DiagnosisSubmitAction implements Scoreable{
 		RelationDiagnosis rel = patIllScript.getDiagnosisById(id);
 		rel.setTier(Integer.valueOf(tierStr.trim()));
 		new DBClinReason().saveAndCommit(rel);
+		new ScoringListAction(patIllScript).scoreList(Relation.TYPE_DDX);
 	}
 
 	public void triggerScoringAction(Beans beanToScore) {
@@ -48,6 +53,7 @@ public class DiagnosisSubmitAction implements Scoreable{
 	
 	private void notifyLog(){
 		LogEntry log = new LogEntry(LogEntry.SUBMITDDX_ACTION, patIllScript.getId(), -1);
+		log.save();
 	}
 
 }

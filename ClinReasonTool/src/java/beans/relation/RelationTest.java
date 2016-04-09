@@ -22,35 +22,35 @@ import model.Synonym;
  * @author ingahege
  *
  */
-public class RelationTest extends Beans implements Relation, Rectangle, Serializable{
+public class RelationTest extends Relation implements Rectangle, Serializable{
 
 	private static final long serialVersionUID = 1L;
 	public static final int QUALIFIER_RARE = 0; 
 	public static final int QUALIFIER_MEDIUM = 1;
 	public static final int QUALIFIER_OFTEN = 2;
-	public static final int DEFAULT_X = 5; //default x position of problems in canvas
+	public static final int DEFAULT_X = 245; //default x position of problems in canvas
 	
 	
-	private long id;
+	//private long id;
 	/**
 	 * can be problem, test, management, diagnosis
 	 */
-	private long listItemId; 
+	//private long listItemId; 
 	/**
 	 * (Patient)Illnesscript
 	 */
-	private long destId; 
+	//private long destId; 
 	
-	private int order;
+	//private int order;
 	
 	/**
 	 * x position of the problem in the concept map canvas
 	 */
-	private int x;
+	//private int x;
 	/**
 	 * y position of the problem in the concept map canvas
 	 */
-	private int y;
+	//private int y;
 	
 	//also include height/width
 	/**
@@ -63,7 +63,7 @@ public class RelationTest extends Beans implements Relation, Rectangle, Serializ
 	 */
 	private int qualifier;
 	
-	private int stage;
+	//private int stage;
 	
 	//private Timestamp creationDate;
 	
@@ -72,41 +72,41 @@ public class RelationTest extends Beans implements Relation, Rectangle, Serializ
 	 * In case the learner has selected the not the main item, but a synonyma, we save the id here.
 	 * We do not need the object, since it is already stored in the ListItem 
 	 */
-	private long synId;
+	//private long synId;
 	
 	public RelationTest(){}
 	public RelationTest(long listItemId, long destId, long synId){
 		this.setListItemId(listItemId);
 		this.setDestId(destId);
-		if(synId>0) this.synId = synId;
+		if(getSynId()>0) setSynId(synId);
 	}
-	public long getListItemId() {return listItemId;}
-	public void setListItemId(long listItemId) {this.listItemId = listItemId;}
-	public long getDestId() {return destId;}
-	public void setDestId(long destId) {this.destId = destId;}	
-	public long getId() {return id;}
-	public void setId(long id) {this.id = id;}	
-	public int getOrder() {return order;}
-	public void setOrder(int order) {this.order = order;}	
+	//public long getListItemId() {return listItemId;}
+	//public void setListItemId(long listItemId) {this.listItemId = listItemId;}
+//	public long getDestId() {return destId;}
+//	public void setDestId(long destId) {this.destId = destId;}	
+	//public long getId() {return id;}
+	//public void setId(long id) {this.id = id;}	
+	//public int getOrder() {return order;}
+	//public void setOrder(int order) {this.order = order;}	
 	public ListItem getTest() {return test;}
 	public void setTest(ListItem test) {this.test = test;}		
-	public int getX() {return x;}
+	/*public int getX() {return x;}
 	public void setX(int x) {this.x = x;}
 	public int getY() {return y;}
-	public void setY(int y) {this.y = y;}	
+	public void setY(int y) {this.y = y;}	*/
 	//public Timestamp getCreationDate() {return creationDate;}
 	//public void setCreationDate(Timestamp creationDate) {this.creationDate = creationDate;}
 	public String getIdWithPrefix(){ return GraphController.PREFIX_TEST+this.getId();}
 	
-	public int getStage() {return stage;}
-	public void setStage(int stage) {this.stage = stage;}
+/*	public int getStage() {return stage;}
+	public void setStage(int stage) {this.stage = stage;}*/
 	
 	/* (non-Javadoc)
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	public boolean equals(Object o){
 		if(o!=null){
-			if(o instanceof RelationTest && ((RelationTest)o).getListItemId()==this.listItemId && ((RelationTest)o).getDestId()==this.destId)
+			if(o instanceof RelationTest && ((RelationTest)o).getListItemId()==getListItemId() && ((RelationTest)o).getDestId()==getDestId())
 				return true;
 		}
 		return false;
@@ -134,7 +134,7 @@ public class RelationTest extends Beans implements Relation, Rectangle, Serializ
 	/* (non-Javadoc)
 	 * @see beans.relation.Relation#getSynonym()
 	 */
-	public Synonym getSynonym(){ return new RelationController().getSynonym(this.synId,this);}
+	//public Synonym getSynonym(){ return new RelationController().getSynonym(this.synId,this);}
 	/* (non-Javadoc)
 	 * @see beans.relation.Relation#getSynonyma()
 	 */
@@ -142,29 +142,29 @@ public class RelationTest extends Beans implements Relation, Rectangle, Serializ
 	/* (non-Javadoc)
 	 * @see beans.relation.Relation#getSynId()
 	 */
-	public long getSynId() {return synId;}
-	public void setXAndY(Point p){
+	//public long getSynId() {return synId;}
+	/*public void setXAndY(Point p){
 		this.setX(p.x);
 		this.setY(p.y);
-	}
+	}*/
 	
 	/* (non-Javadoc)
 	 * @see beans.relation.Relation#getLabelOrSynLabel()
 	 */
 	public String getLabelOrSynLabel(){		
-		if(synId<=0) return test.getName();
+		if(getSynId()<=0) return test.getName();
 		else return getSynonym().getName();
 	}
 	
 	/* (non-Javadoc)
 	 * @see beans.relation.Relation#getShortLabelOrSynShortLabel()
 	 */
-	public String getShortLabelOrSynShortLabel(){		
+/*	public String getShortLabelOrSynShortLabel(){		
 		return StringUtils.abbreviate(getLabelOrSynLabel(), ListItem.MAXLENGTH_NAME);
-	}
+	}*/
 	
-	public String getScore(){
+	/*public String getScore(){
 		return new ScoringController().getIconForScore(this.getListItemId());
 		//sreturn "icon-ok2";
-	}
+	}*/
 }

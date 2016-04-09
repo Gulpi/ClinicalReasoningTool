@@ -15,36 +15,43 @@ import database.DBClinReason;
 public class LogEntry extends Beans{
 
 	public static final int ADDPROBLEM_ACTION = 1;
-	public static final int DELPROBLEM_ACTION = 2;
-	public static final int CHGCOURSETIME_ACTION = 3; 
-	public static final int MOVEPROBLEM_ACTION = 4; 
+	public static final int ADDTEST_ACTION = 17;
+	public static final int ADDMNG_ACTION = 18;
 	public static final int ADDDIAGNOSIS_ACTION = 5;
+	public static final int ADDEPI_ACTION = 29;
+	public static final int ADDCONNECTION_ACTION = 8; 
+
+	public static final int DELPROBLEM_ACTION = 2;
 	public static final int DELDIAGNOSIS_ACTION = 6;
 	public static final int DELMNG_ACTION = 15;
 	public static final int DELTEST_ACTION = 16;
-	public static final int MOVEDIAGNOSIS_ACTION = 7; 
-	public static final int ADDCONNECTION_ACTION = 8; 
 	public static final int DELCONNECTION_ACTION = 9; 
+	public static final int DELEPI_ACTION = 30;
+	public static final int DELCNXAFTERSTARTNODE_ACTION = 11; //a connection is deleted because the related start point has been deleted
+	public static final int DELCNXAFTERTARGETNODE_ACTION = 12; //a connection is deleted because the related target point has been deleted
+	
 	public static final int CHGPROBLEM_ACTION = 10; 
 	public static final int CHGDDX_ACTION = 13; 
 	public static final int CHGDDXMNM_ACTION = 14; //change MnM flag
-	public static final int ADDTEST_ACTION = 17;
-	public static final int ADDMNG_ACTION = 18;
-	public static final int MOVETEST_ACTION = 19; 
-	public static final int MOVEMNG_ACTION = 20; 
+	public static final int CHGCOURSETIME_ACTION = 3; 
 	public static final int CHGTEST_ACTION = 21; 
 	public static final int CHGMNG_ACTION = 22; 
+	public static final int CHGEPI_ACTION = 31;
+	public static final int CHGCNXWEIGHT_ACTION = 33;
+	
+	public static final int MOVEPROBLEM_ACTION = 4; 	
+	public static final int MOVETEST_ACTION = 19; 
+	public static final int MOVEMNG_ACTION = 20; 
+	public static final int MOVEDIAGNOSIS_ACTION = 7; 
+	public static final int DRAGDROP_ACTION = 34;
+	
 	public static final int CRTPATILLSCRIPT_ACTION = 23;
 	public static final int CLOSEPATILLSCRIPT_ACTION = 24;
-	public static final int DELCNXAFTERSTARTNODE_ACTION = 11; //a connection is deleted because the related start point has been deleted
-	public static final int DELCNXAFTERTARGETNODE_ACTION = 12; //a connection is deleted because the related target point has been deleted
+	
 	public static final int CREATESUMMST_ACTION = 25;
 	public static final int UPDATESUMMST_ACTION = 26;
 	public static final int CREATENOTE_ACTION = 27;
 	public static final int UPDATENOTE_ACTION = 28;
-	public static final int ADDEPI_ACTION = 29;
-	public static final int DELEPI_ACTION = 30;
-	public static final int CHGEPI_ACTION = 31;
 	public static final int SUBMITDDX_ACTION = 32;
 
 	

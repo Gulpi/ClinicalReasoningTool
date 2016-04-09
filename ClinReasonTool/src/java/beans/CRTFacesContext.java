@@ -56,7 +56,7 @@ public class CRTFacesContext /*extends FacesContextWrapper*/ implements Serializ
 		//loadAndSetScriptsOfUser(); //this loads all scripts, we do not necessarily have to do that here, only if overview page is opened!
 		boolean isNewPatIllScript = loadAndSetPatIllScript();
 		//TODO is something is wrong with the patScriptId, we have to return here and return an error msg....
-		setCurrentStage();
+		//setCurrentStage();
 		userSetting = new UserSetting(); //TODO get from Database...
 		feedbackBean = new FeedbackBean(false, patillscript.getParentId());
 		/*if(!isNewPatIllScript)*/ loadScoreContainer();
@@ -89,10 +89,10 @@ public class CRTFacesContext /*extends FacesContextWrapper*/ implements Serializ
 	public UserSetting getUserSetting() {return userSetting;}
 	public void setUserSetting(UserSetting userSetting) {this.userSetting = userSetting;}
 
-	public void setCurrentStage(){
+	/*public void setCurrentStage(){
 		new AjaxController().getRequestParamByKey(AjaxController.REQPARAM_STAGE);
-	}
-	private void loadAndSetScriptsOfUser(){	setScriptsOfUser(isc.loadScriptsOfUser());}
+	}*/
+	//private void loadAndSetScriptsOfUser(){	setScriptsOfUser(isc.loadScriptsOfUser());}
 	
 	private void loadScoreContainer(){
 		scoreContainer = new ScoreContainer(this.getPatillscript().getId());
@@ -126,7 +126,7 @@ public class CRTFacesContext /*extends FacesContextWrapper*/ implements Serializ
 		//FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put(PATILLSCRIPT_KEY, patillscript);
 	}	
 	public List<PatientIllnessScript> getScriptsOfUser() {return this.scriptsOfUser;}
-	private void setScriptsOfUser(List<PatientIllnessScript> scriptsOfUser){this.scriptsOfUser = scriptsOfUser;}	
+	//private void setScriptsOfUser(List<PatientIllnessScript> scriptsOfUser){this.scriptsOfUser = scriptsOfUser;}	
 	public ScoreContainer getScoreContainer() {
 		if(scoreContainer==null) scoreContainer = new ScoreContainer(this.getPatillscript().getId());
 		return scoreContainer;

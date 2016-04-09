@@ -10,13 +10,17 @@ function initConceptMap(){
 	//initConeptMap2("jsonGraph", "jsonConns");
 	var conns = jQuery.parseJSON($("#jsonConns").html());
 	var jsonRects = jQuery.parseJSON($("#jsonGraph").html());
+	//var jsonDDXRects = jQuery.parseJSON($("#jsonDDXs").html());
 	for(i=0; i<jsonRects.length;i++){
-		createAndAddRectangle(jsonRects[i].label, jsonRects[i].x, jsonRects[i].y, jsonRects[i].id, jsonRects[i].shortlabel, jsonRects[i].type, jsonRects[i].l, jsonRects[i].e, jsonRects[i].p );
+		if(jsonRects[i].type=="2")
+			createAndAddHyp(jsonRects[i].label, jsonRects[i].x, jsonRects[i].y, jsonRects[i].id, jsonRects[i].shortlabel, jsonRects[i].l, jsonRects[i].e, jsonRects[i].p, jsonRects[i].mnm );
+		else createAndAddRectangle(jsonRects[i].label, jsonRects[i].x, jsonRects[i].y, jsonRects[i].id, jsonRects[i].shortlabel, jsonRects[i].type, jsonRects[i].l, jsonRects[i].e, jsonRects[i].p );
+
 	}
 	
 	if(conns!=''){
 		for(j=0; j<conns.length;j++){
-			createConnection(conns[j].id, conns[j].sourceid, conns[j].targetid);
+			createConnection(conns[j].id, conns[j].sourceid, conns[j].targetid, conns[j].l, conns[j].e,  conns[j].weight_e,  conns[j].weight_l);
 		}
 	}
 }
@@ -52,11 +56,19 @@ function updateCMCallback(data){
 }
 /**
  * called when initializing the concept map on load.
+ * createConnection(conns[j].id, conns[j].sourceid, conns[j].targetid, conns[j].l, conns[j].e,  conns[j].weight_e,  conns[j].weight_l);
  * @param id
  * @param sourceId
  * @param targetId
+ * @param learner is it a connection added by learner (0|1)
+ * @param learner is it a connection added by learner (0|1)
+ * @param exp is it a connection added by expert (0|1)
+ * @param expWeight weight of the expert cnx (see weight definitions in Graph)
+ * @param learnerWeight weight of the learner cnx (see weight definitions in Graph)
+
  */
-function createConnection(id, sourceId, targetId){
+function createConnection(id, sourceId, targetId, learner, exp, expWeight, learnerWeight){
+	if(!expFeedback && learner=="0") return; //leaner has not added cnx and exp cnx shall not be displayed, so, we return here. 
 	var lc = new LabelConnection();
 	lc.setId(id);
 	var sourceRect  = my_canvas.getFigure(sourceId); //source: Problem
@@ -64,6 +76,10 @@ function createConnection(id, sourceId, targetId){
 	if(sourceRect!=null && targetRect!=null){
 		lc.setSource(sourceRect.getOutputPort(0));
 		lc.setTarget(targetRect.getInputPort(0));
+		if(learner=="1") lc.setColor(getWeightToColor(learnerWeight));
+		else if(expFeedback && leaner=="0") lc.setColor(getWeightToColor(expWeight));
+		//Todo if both have added the cnx we have to choose a different weight! 
+		//todo if only expert has added the cnx we have to prevent and changes/deleting
 		my_canvas.add(lc);	
 	}
 }
@@ -78,6 +94,10 @@ function delConnection(id){
 	sendAjax(id, updateGraph, "delConnection", "");
 }
 
+function chgConnectionWeight(cnxId, weight){
+	sendAjax(cnxId, doNothing, "chgConnection", weight);
+}
+
 
 function initAddRectangle(prefix, name, containerName){
 	$( "#"+name ).draggable({ //add a new hypothesis
@@ -88,7 +108,7 @@ function initAddRectangle(prefix, name, containerName){
 				  this.remove();	
 				  var canvasX = ui.offset.left- my_canvas.html.offset().left;
 		 		  var canvasY = ui.offset.top - my_canvas.html.offset().top;
-		 		  createTempRect(" ", canvasX, canvasY, "cm"+prefix+"_-1");	 
+		 		  createTempRect(prefix, canvasX, canvasY, "cm"+prefix+"_-1");	 
 		 		  openListForCM(canvasX,canvasY, "cm"+prefix+"_-1");
 			  }
 		  });	
@@ -98,20 +118,7 @@ function initAddRectangle(prefix, name, containerName){
  */
 function initAddHyp(){
 	initAddRectangle("ddx", "addhyp", "hypcontainer");
-  /*$( "#addhyp" ).draggable({ //add a new hypothesis
-	  start: function( event, ui ) {
-		 $("#addhyp").clone().prependTo($("#hypcontainer")); 
-	  } , 
-	  stop: function( event, ui ) {	
-		  this.remove();	  
-		  var canvasX = ui.offset.left- my_canvas.html.offset().left;
- 		  var canvasY = ui.offset.top - my_canvas.html.offset().top;
- 		  createTempRect("ddx", canvasX, canvasY, "cmddx_-1");
- 		  openListForCM(canvasX,canvasY, "cmddx_-1");
-	  }
-  });	*/
 }
-
 
 /**
  * init the drag&drop rectangle for adding a new problem
@@ -278,10 +285,10 @@ function createAndAddRectangle(name, x, y, id, shortname, type, learner, exp, pe
 	var rect=null;
 	//we need individual functions here, to be able to adapt the number and types of ports
 	if(type=="1") rect = createAndAddFind(name, x, y, id, shortname, learner, exp, peer);
-	if(type=="2") rect = createAndAddHyp(name, x, y, id, shortname, learner, exp, peer);
+	//if(type=="2") rect = createAndAddHyp(name, x, y, id, shortname, learner, exp, peer);
 	if(type=="3") rect = createAndAddDiagnStep(name, x, y, id, shortname, learner, exp, peer);
-	if(type=="4") rect = createAndAddMng(name, x, y, id, shortname), learner, exp, peer;
-	if(type=="6") rect = createAndAddEpi(name, x, y, id, shortname), learner, exp, peer;
+	if(type=="4") rect = createAndAddMng(name, x, y, id, shortname, learner, exp, peer);
+	if(type=="6") rect = createAndAddEpi(name, x, y, id, shortname, learner, exp, peer);
 
 	if(rect!=null) my_canvas.add(rect, Number(x), Number(y));		
 }
@@ -301,9 +308,12 @@ function createAndAddFind(name, x, y, id, shortname,learner, exp, peer){
 	var color = getColorForRect(exp, learner);
 
 	var rect = createRect(shortname,color/*"#99CC99"*/,id, exp, learner);//new draw2d.shape.basic.Rectangle();
-	 rect.createPort("output", new draw2d.layout.locator.RightLocator());
-	 designPort(rect.getOutputPort(0));
-	 rect.setBackgroundColor("#ffffff");	 
+	if(learner=="1"){ //only add ports if the learner has created this item:
+		rect.createPort("output", new draw2d.layout.locator.RightLocator());
+		designPort(rect.getOutputPort(0));
+	}
+	 rect.setBackgroundColor("#ffffff");	
+	 initAddFind();
 	 return rect;
 }
 
@@ -315,44 +325,54 @@ function createAndAddEpi(name, x, y, id, shortname,learner, exp, peer){
 	var color = getColorForRect(exp, learner);
 
 	var rect = createRect(shortname,color/*"#99CC99"*/,id, exp, learner);//new draw2d.shape.basic.Rectangle();
-	 rect.createPort("output", new draw2d.layout.locator.RightLocator());
-	 designPort(rect.getOutputPort(0));
-	 rect.setBackgroundColor("#ffffff");	 
-	 return rect;
+	if(learner=="1"){ //only add ports if the learner has created this item: 
+		rect.createPort("output", new draw2d.layout.locator.RightLocator());
+		designPort(rect.getOutputPort(0));
+	}
+	rect.setBackgroundColor("#ffffff");	 
+	initAddEpi();
+	return rect;
 }
 
 /**
  * create a new hypothesis rectangle and add it to the canvas (including label and ports)
  **/
-function createAndAddHyp(name, x, y, id, shortname,learner, exp, peer){
+function createAndAddHyp(name, x, y, id, shortname,learner, exp, peer, mnm){
+	if(shortname!=""){
+		lookUpLabels[counter] = name;
+		lookUpShortLabels[counter] = shortname;
+		counter++;
+	}
+	else shortname = name;
 	if(!expFeedback && learner=="0") return; //we do not display items that have added by expert if expert feedback is off
 	var color = getColorForRect(exp, learner);
 	var rect = new DDXRectangle();
-	rect.label.text=name;
+	rect.label.text=shortname;
 	//rect.label.setBackgroundColor("#cccccc");
 	//rect.label.setWidth(10);
 	rect.color= new draw2d.util.Color(color);
 	rect.setId(id);
-	if(exp=="1" && learner=="0"){
+	if(learner=="0"){
 		rect.setResizeable(false);
 		rect.setDeleteable(false);
-		//rect.setSelectable(false);
 	}
-	//var rect = createRect(shortname, color, id/*,"990000"*/, exp, learner); //new draw2d.shape.basic.Rectangle();
-	
-	rect.createPort("input");
-	rect.createPort("output");
-	//rect.getInputPort(0).setCssClass("ports");
-	designPort(rect.getInputPort(0)); 
-	designPort(rect.getOutputPort(0));
+	if(learner=="1"){ 
+		rect.createPort("input");
+		rect.createPort("output");
+		designPort(rect.getInputPort(0)); 
+		designPort(rect.getOutputPort(0));
+	}
 	/*if(name==""){ //then it is a new hyp from drag&drop and we have to attach an editor to select a label:
 		var editor = new draw2d.ui.LabelLMEditor();
 		rect.label.installEditor(editor);
 		editor.start(rect.label);
 	}*/
-	rect.setBackgroundColor("#ffffff");	
-	return rect;
-	//initAddHyp(); //we have to re-init this here, because we have created a clone!!!
+	//alert(mnm);
+	if(mnm=="0") rect.setBackgroundColor("#ffffff");
+	else rect.setBackgroundColor("#f3546a");
+	
+	if(rect!=null) my_canvas.add(rect, Number(x), Number(y));
+	initAddHyp(); //we have to re-init this here, because we have created a clone!!!	
 }
 
 /**
@@ -362,11 +382,13 @@ function createAndAddDiagnStep(name, x, y, id, shortname,learner, exp, peer){
 	if(!expFeedback && learner=="0") return; //we do not display items that have added by expert if expert feedback is off
 	var color = getColorForRect(exp, learner);
 	var rect = createRect(shortname,color /*"#F6E3CE"*/, id, exp, learner);
-	rect.createPort("input");
-	designPort(rect.getInputPort(0)); 
+	if(learner=="1"){ 
+		rect.createPort("input");
+		designPort(rect.getInputPort(0)); 
+	}
 	rect.setBackgroundColor("#ffffff");
+	initAddTest();
 	return rect;
-	//initAddTest();
 }
 
 /**
@@ -376,9 +398,12 @@ function createAndAddMng(name, x, y, id, shortname,learner, exp, peer){
 	if(!expFeedback && learner=="0") return; //we do not display items that have added by expert if expert feedback is off
 	var color = getColorForRect(exp, learner);
 	var rect = createRect(shortname,color /*"#FFFF99"*/, id, exp, learner);
-	rect.createPort("input");
-	designPort(rect.getInputPort(0)); 
+	if(learner=="1"){ 
+		rect.createPort("input");
+		designPort(rect.getInputPort(0)); 
+	}
 	rect.setBackgroundColor("#ffffff");			
+	initAddMng();
 	return rect;
 }
 
@@ -392,23 +417,22 @@ function deleteItem(idWithPrefix){
 	var id = idWithPrefix.substring(idWithPrefix.indexOf("_")+1);
 	
 	switch (idPrefix) {
-    case "cmprob": 
-        delProblem(id);
+    case "cmprb": 
+        delProblemCM(id);
         break;
     case "cmddx": 
-    	delDiagnosis(id);
+    	delDiagnosisCM(id);
         break;       
-    case "cmds": 
-    	delTest(id);
+    case "cmtes": 
+    	delTestCM(id);
         break;   
     case "cmmng": 
-    	delManagement(id);
+    	delManagementCM(id);
         break;
     case "cmepi": 
-    	delEpi(id);
+    	delEpiCM(id);
         break;
     case "success": // This is called right after update of HTML DOM.
-    	
         break;
 	}
 }
@@ -426,9 +450,10 @@ function getToolTipForRect(element){
 }
 
 function handleContextMenuRect(rect, key){
-	if(!rect.getResizeable()) return; //make sure user cannot change anything in the experts' map.
+	if(!rect.isResizeable()) return; //make sure user cannot change anything in the experts' map.
     switch(key){
     case "mnm":
+    	sendAjaxCM(rect.id.substring(6), doNothing, "changeMnM", "");
     	rect.setBackgroundColor('#f3546a');
     	rect.setColor('#f3546a');
         break;
@@ -443,4 +468,27 @@ function handleContextMenuRect(rect, key){
     default:
         break;
     }
+}
+
+var xDragStart=-1;
+var yDragStart=-1;
+/* learner has drag&dropped a rectangle -> we check whether the move was large enough to trigger an ajax call,
+ * otherwise every tiny movement woul fire an event.
+ * 
+ * */
+function handleRectDrop(rect){
+	//alert(rect.x + ", " + xDragStart);
+	//alert(rect.y + ", " + yDragStart);
+	if((xDragStart>-1 && xDragStart>-1) && rect.x >= xDragStart+5 || rect.x <= xDragStart-5 || rect.y >= yDragStart+5 || rect.y <= yDragStart-5){
+		//alert("send");
+		//sendAjaxCM(rect.id, doNothing, "moveItem", name, rect.x, rect.y);
+	}
+	else {
+		//alert("nosend");
+		xDragStart = -1;
+		yDragStart = -1;
+	}
+
+	//salert("end: " + xDragStart);
+	
 }

@@ -48,6 +48,7 @@ public class DelDiagnosisAction implements DelAction{
 		new ActionHelper().reOrderItems(patIllScript.getDiagnoses());
 		updateGraph(rel);
 		new DelConnectionAction(patIllScript).deleteConnsByTargetId(rel.getId());
+		new DelConnectionAction(patIllScript).deleteConnsByStartId(rel.getId());
 		notifyLog(rel);
 		save(rel);
 	}

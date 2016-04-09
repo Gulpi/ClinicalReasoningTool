@@ -30,12 +30,12 @@ public class Connection extends Beans implements Serializable{
 	 */
 	private long targetId;
 	private long illScriptId;
-	private String label; 
-	private String color; //define default color
+	//private String label; 
+	//private String color; //define default color
 	private Timestamp creationDate;
 	private int startType; //see definitions in ConceptMapController
 	private int targetType; //see definitions in ConceptMapController
-	
+	private int weight; 
 	public Connection(){}
 	public Connection(long startId, long targetId, long illScriptId, int startType, int targetType){
 		this.startId = startId;
@@ -58,7 +58,9 @@ public class Connection extends Beans implements Serializable{
 	public int getStartType() {return startType;}
 	public void setStartType(int startType) {this.startType = startType;}
 	public int getTargetType() {return targetType;}
-	public void setTargetType(int targetType) {this.targetType = targetType;}
+	public void setTargetType(int targetType) {this.targetType = targetType;}	
+	public int getWeight() {return weight;}
+	public void setWeight(int weight) {this.weight = weight;}
 	
 	public boolean equals(Object o){
 		if(o!=null){

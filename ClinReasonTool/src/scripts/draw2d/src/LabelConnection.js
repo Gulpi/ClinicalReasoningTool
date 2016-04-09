@@ -58,41 +58,48 @@ var LabelConnection= draw2d.Connection.extend({
             },
             callback: $.proxy(function(key, options) 
             {
-               switch(key){
-               case "highly related": //we could also change the thickness of the connections?
+            	if(key=="delete"){
+             	   var cmd = new draw2d.command.CommandDelete(this);
+                   this.getCanvas().getCommandStack().execute(cmd);
+            	   //alert(this.id);
+                   delConnection(this.id)
+            	}
+            	else{
+            		chgConnectionWeight(this.id, key);
+            		this.setColor(getWeightToColor(key));
+            	}
+            		//switch(key){
+           /*    case "5": //we could also change the thickness of the connections?
                    this.setColor('#009933');
-                   //trigger ajax call....
+                   chgConnectionWeight(this.id, key);
                    break;
-               case "somewhat related":
+               case "4":
                    this.setColor('#00e64d');
+                   chgConnectionWeight(this.id, key);
                    break;
-              /* case "blue":
-                   this.setColor('#00A8F0');
-                   break;*/
-               case "slightly related":
-            	   this.setColor('#e6ffee');
+
+               case "3":
+            	   this.setColor(getWeightToColor("3"));
+            	   chgConnectionWeight(this.id, key);
             	   break;
             	
                case "delete":                   
             	   //this.getCanvas().remove(this); // without undo/redo support
                    
                    // with undo/redo support:
-            	   var cmd = new draw2d.command.CommandDelete(this);
-                   this.getCanvas().getCommandStack().execute(cmd);
-            	   //alert(this.id);
-                   delConnection(this.id)
+
                default:
                    break;
-               }
+               }*/
             
             },this),
             x:x,
             y:y,
             items: 
             {
-                "highly related":    {name: "highly related" /*, icon: "edit"*/},
-                "somewhat related":  {name: "somewhat related", icon: "cut"},
-                "slightly related":  {name: "slightly related", icon: "cut"},
+                "5":    {name: "highly related" /*, icon: "edit"*/},
+                "4":  {name: "somewhat related", icon: "cut"},
+                "3":  {name: "slightly related", icon: "cut"},
                 /*"blue":   {name: "Blue", icon: "copy"},*/
                 "sep1":   "---------",
                 "delete": {name: "Delete", icon: "delete"}
@@ -100,3 +107,16 @@ var LabelConnection= draw2d.Connection.extend({
         });
    }
 });
+
+function getWeightToColor(weight){
+	switch(weight){
+	case "5": 
+		return "#009933";
+	case "4": return "#00e64d";
+	case "3": return "#e6ffee";
+	default: 
+		return "#000000";
+	}
+}
+
+

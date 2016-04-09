@@ -36,6 +36,9 @@ function addEpi(problemId, name){
 function delEpi(id){
 	sendAjax(id, epiCallBack, "delEpi", "");
 }
+function delEpiCM(id){
+	sendAjax(id, epiCallBackCM, "delEpi", "");
+}
 
 function epiCallBack(problemId, selProblem){
 	$("#epi").val("");	
@@ -80,6 +83,10 @@ function delProblem(id){
 	sendAjax(id, problemCallBack, "delProblem", "");
 }
 
+function delProblemCM(id){
+	sendAjax(id, problemCallBackCM, "delProblem", "");
+}
+
 function problemCallBack(problemId, selProblem){
 	$("#problems").val("");	
 	//we update the problems list and the json string
@@ -109,6 +116,10 @@ function addDiagnosis(diagnId, name){
 
 function delDiagnosis(id){
 	sendAjax(id, diagnosisCallBack, "delDiagnosis", "");
+}
+
+function delDiagnosisCM(id){
+	sendAjax(id, diagnosisCallBackCM, "delDiagnosis", "");
 }
 
 function diagnosisCallBack(ddxId, selDDX){
@@ -147,7 +158,7 @@ function toggleMnM(id){
 	$("#"+id2).addClass(newClass);
 	id = id.substring(7);
 	var newClass = newClass.substring(14);
-	sendAjax(id, toggleMnMCallback, "changeMnM",  newClass);
+	sendAjax(id, toggleMnMCallback, "changeMnM",  "");
 }
 
 function toggleMnMCallback(){
@@ -168,15 +179,15 @@ function doSubmitDDX(){
 
 /* user has confirmed that he wants to submit disgnoses/-is*/
 function submitDDXConfirmed(){
-	sendAjax(id, submitDDXConfirmedCallBack, "submitDDX",  newClass);
+	sendAjax("", submitDDXConfirmedCallBack, "submitDDX",  "");
 	submitDDXConfirmedCallBack();
 }
 
 function submitDDXConfirmedCallBack(){
 	//we retrieve scoring of diagnoses and display it here, also whether an error has occured. 
-	$("div[id=jdialog]").html("Correct! Final diagnosis of expert is Bronchopneumonia. Differentials include acute bronchits.");
+	/*$("div[id=jdialog]").html("Correct! Final diagnosis of expert is Bronchopneumonia. Differentials include acute bronchits.");
 	$("#is_icon").removeClass("icon-list-off");
-	$("#is_icon").addClass("icon-list-on");	
+	$("#is_icon").addClass("icon-list-on");	*/
 }
 
 var tiermsg=["I do not now","Clinically high likelyhood","Clinically moderate likelyhood","Clinically low likelyhood","My final diagnosis"];
@@ -225,6 +236,10 @@ function delManagement(id){
 	sendAjax(id, managementCallBack, "delMng", "");
 }
 
+function delManagementCM(id){
+	sendAjax(id, managementCallBackCM, "delMng", "");
+}
+
 function managementCallBack(mngId, selMng){
 	$("#mng").val("");	
 	//we update the problems list and the json string
@@ -254,6 +269,10 @@ function addTest(testId, name){
 
 function delTest(id){
 	sendAjax(id, testCallBack, "delTest", "");
+}
+
+function delTestCM(id){
+	sendAjax(id, testCallBackCM, "delTest", "");
 }
 
 function testCallBack(testId, selTest){
@@ -411,7 +430,7 @@ var active = $( "#tabs" ).tabs( "option", "active" ); //we have to determine the
 	            source: data,
 	            minLength: 3,
 	            select: function( event, ui ) {
-	            	editOrAddProblemCM(ui.item.value, ui.item.label);
+	            	editOrAddEpiCM(ui.item.value, ui.item.label);
 	            },
 	  	      close: function(ui) {
 	  	        $("#cm_epi_sel").val("");

@@ -3,6 +3,7 @@ package beans.graph;
 import beans.IllnessScriptInterface;
 import beans.relation.Rectangle;
 import beans.relation.Relation;
+import beans.relation.RelationDiagnosis;
 import controller.NavigationController;
 /**
  * This is a vertex container, that can contains from which soure this vertex has been added.
@@ -122,7 +123,7 @@ public class MultiVertex /*extends SynonymVertex*/ implements VertexInterface{
 		StringBuffer sb = new StringBuffer();
 		Relation rel = null; 
 		if(learnerVertex!=null) rel =  learnerVertex;
-		else{ //include expert vertex, but only if we have reached the necessary stage
+		else if(expertVertex!=null){ //include expert vertex, but only if we have reached the necessary stage
 			int currentStage = new NavigationController().getCRTFacesContext().getPatillscript().getCurrentStage();
 			if(expertVertex.getStage()<=currentStage) rel = expertVertex; 
 		}
@@ -140,6 +141,9 @@ public class MultiVertex /*extends SynonymVertex*/ implements VertexInterface{
 			if(isExpertVertex()) sb.append("\"e\":\"1\",");
 			else sb.append("\"e\":\"0\",");
 			sb.append("\"p\":\""+this.peerNums+"\"");
+			if(rel.getRelationType()==Relation.TYPE_DDX ){
+				/*if(isLearnerVertex())*/ sb.append(", \"mnm\":\""+((RelationDiagnosis) rel).getMnm() +"\"");				
+			}
 			sb.append("},");
 		}
 

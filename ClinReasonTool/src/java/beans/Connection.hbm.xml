@@ -16,6 +16,7 @@
 		<property name="illScriptId" column="illscript_id" type="long"/>
 		<property name="startType" column="start_type" type="int"/>
 		<property name="targetType" column="target_type" type="int"/>
+		<property name="weight" column="weight" type="int"/>
 		
 		<!--  <property name="creationDate" column="creation_date" update="false" type="date"/>-->
 		

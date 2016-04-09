@@ -35,15 +35,32 @@ var DDXRectangle= draw2d.shape.basic.Rectangle.extend({
 		  //this.label.setCssClass("mylabel");
 		 //this.label.installEditor(new draw2d.ui.LabelLMEditor());
     },
-    
-    
-    onDoubleClick:function(emitter){ //open the select box to change label?
+   /* onSelect:function(emitter){
+    	alert("onselect");
+    	if(this.isResizeable()){
+    		xDragStart = this.x;
+    		yDragStart = this.y;
+    	}
+    }, */
+    /*onDrop:function(emitter){
+    	if(this.isResizeable()){
+    		handleRectDrop(this);
+    	}
+    },*/
+    onDragEnd:function(emitter){
+    	if(this.isResizeable()){ //we do not save if expert items are moved!
+    		handleRectDrop(this);
+    		//alert("enddrag");
+    	}
+    },
+
+/*    onDoubleClick:function(){ //open the select box to change label?
     	if(this.isResizeable()){
     		//alert("non expert")
     		openListForCM(this.x, this.y, this.id); //we could also trigger this from the context menu with an edit button
     	}
     	else alert("expert");
-    },
+    },*/
 onContextMenu:function(x,y){
     $.contextMenu({
         selector: 'body', 

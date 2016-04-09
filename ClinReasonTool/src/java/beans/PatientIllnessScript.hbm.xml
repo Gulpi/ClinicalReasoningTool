@@ -17,7 +17,7 @@
 		<property name="courseOfTime" column="courseoftime" type="int"/>	
 		<property name="parentId" column="parent_id" type="long"/>	
 		<property name="summStId" column="summst_id" type="long"/>
-		<property name="submitted" column="ddx_submitted" type="boolean"/>
+		<property name="submittedStage" column="ddx_submitted" type="int"/>
 		<property name="type" column="type" type="int"/>
 		<property name="locale" column="locale" update="false" type="locale"/>	
 		<property name="currentStage" column="stage" type="int"/>	

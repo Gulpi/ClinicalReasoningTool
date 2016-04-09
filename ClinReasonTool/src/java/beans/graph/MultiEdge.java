@@ -18,6 +18,9 @@ public class MultiEdge extends DefaultWeightedEdge{
 	public static final int WEIGHT_NONE = 0;	
 	public static final int WEIGHT_IMPLICIT = 1; //a connection has made in the concept map, tests have been associated to DDX  
 	public static final int WEIGHT_EXPLICIT = 2; //implicit connection - being in the same illnessScript
+	public int WEIGHT_SLIGHTLY_RELATED = 3;
+	public int WEIGHT_SOMEWHAT_RELATED = 4;
+	public int WEIGHT_HIGHLY_RELATED = 5;
 
 	/**
 	 * key = type (see definition in IllnessScriptInterface)

@@ -61,15 +61,16 @@ public class ChangeDiagnosisAction implements ChgAction, Scoreable{
 	 * @param idStr
 	 * @param newVal "0"|"1"
 	 */
-	public void toggleMnM(String idStr, String newVal){
+	public void toggleMnM(String idStr/*, String newVal*/){
 		long id = Long.valueOf(idStr.trim());
-		int mnm = Integer.valueOf(newVal.trim());
+		//int mnm = Integer.valueOf(newVal.trim());
 		RelationDiagnosis ddxToChg = patIllScript.getDiagnosisById(id);
-		ddxToChg.setMnm(mnm);
-		if(ddxToChg.isMnM()) ddxToChg.setColor(RelationDiagnosis.COLOR_RED);
-		else  ddxToChg.setColor(RelationDiagnosis.COLOR_DEFAULT);
+		if(ddxToChg.getMnm()==0) ddxToChg.setMnm(1);
+		else ddxToChg.setMnm(0);
+		//if(ddxToChg.isMnM()) ddxToChg.setColor(RelationDiagnosis.COLOR_RED);
+		//else  ddxToChg.setColor(RelationDiagnosis.COLOR_DEFAULT);
 		save(ddxToChg);
-		notifyMnMLog(ddxToChg, mnm);
+		notifyMnMLog(ddxToChg, ddxToChg.getMnm());
 	}
 
 	@Override

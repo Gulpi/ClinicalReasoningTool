@@ -33,11 +33,11 @@
 <script src="../scripts/draw2d/lib/json2.js"></script>	
 <script src="../scripts/draw2d/lib/pathfinding-browser.min.js"></script>
 <script src="../scripts/draw2d/src/draw2d.js"></script>	
-<script src="../scripts/draw2d/src/LabelConnection.js"></script>	
-<script src="../scripts/draw2d/src/LabelRectangle.js"></script>	
-<script src="../scripts/draw2d/src/DDXRectangle.js"></script>	
-<script src="../scripts/draw2d/src/MyLabel.js"></script>	
-<script src="../scripts/draw2d/src/MyCanvas.js"></script>	
+<script src="../scripts/mydraw2d/LabelConnection.js"></script>	
+<script src="../scripts/mydraw2d/LabelRectangle.js"></script>	
+<script src="../scripts/mydraw2d/DDXRectangle.js"></script>	
+<script src="../scripts/mydraw2d/MyLabel.js"></script>	
+<script src="../scripts/mydraw2d/MyCanvas.js"></script>	
 <script src="../scripts/draw2d/lib/jquery.browser.js"></script>
 <script src="../scripts/draw2d/lib/jquery.layout.js"></script>
 <script src="../scripts/mydraw2d.js"></script>
@@ -186,9 +186,9 @@ Case placed here...<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
 
 	<div id="tabs" class="cr-tabs">
 	  <ul>
-	    <li><a href="#tabs-0">#{prop['patient']}</a></li> <!-- example for internationalization -->
+	    <li><a href="#tabs-0"  onclick="switchTab(0);">#{prop['patient']}</a></li> <!-- example for internationalization -->
 	    <li><a href="#tabs-1" onclick="switchTab(1);">Problems</a></li>
-	     <li><a href="#tabs-2">Summary</a></li>
+	     <li><a href="#tabs-2" onclick="switchTab(2);">Summary</a></li>
 	    
 	    <li><a href="#tabs-3" onclick="switchTab(3);">DDX</a></li>
 	    <li><a href="#tabs-4" onclick="switchTab(4);">Diagn. Steps</a></li>
@@ -208,6 +208,7 @@ Case placed here...<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
 				<f:selectItem itemLabel="chronic" itemValue="2" />
 				</h:selectOneMenu><br/>
 				Exposures/Epi: <input class="f_text" id="epi"></input>
+				<div class="ddx_left">
 				<h:form id="epiform">
 					<h:panelGroup id="epi_group">
 					<ol id="list_epi" class="sortable">
@@ -219,7 +220,7 @@ Case placed here...<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
     				     <h:commandButton id="hiddenEpiButton" value="RenderSomething" style="visibility:hidden">
     						<f:ajax render="@form" onevent="updateCallback"></f:ajax>
 						</h:commandButton></h:form>
-				
+				</div>
 				<!-- <select class="f_select" id="courseTime"><option value="-1">-</option><option value="1">acute</option><option value="2">chronic</option></select> --> 
 			</div>
 		  </div>

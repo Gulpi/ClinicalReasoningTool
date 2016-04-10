@@ -479,14 +479,14 @@ var yDragStart=-1;
 function handleRectDrop(rect){
 	//alert(rect.x + ", " + xDragStart);
 	//alert(rect.y + ", " + yDragStart);
-	if((xDragStart>-1 && xDragStart>-1) && rect.x >= xDragStart+5 || rect.x <= xDragStart-5 || rect.y >= yDragStart+5 || rect.y <= yDragStart-5){
-		//alert("send");
+	if((xDragStart>-1 && xDragStart>-1) && rect.x >= xDragStart+10 || rect.x <= xDragStart-10 || rect.y >= yDragStart+10 || rect.y <= yDragStart-10){
+		alert("send");
 		//sendAjaxCM(rect.id, doNothing, "moveItem", name, rect.x, rect.y);
 	}
 	else {
 		//alert("nosend");
-		xDragStart = -1;
-		yDragStart = -1;
+		//xDragStart = -1;
+		//yDragStart = -1;
 	}
 
 	//salert("end: " + xDragStart);

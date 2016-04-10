@@ -75,14 +75,12 @@ function doNothing(){}
 function switchTab(tabidx){	
 	Cookies.set('tab', tabidx);
 	if(tabidx==6) updateGraph();
-	//alert(Cookies.get('tab'));
 }
 
 function getCurrentTab(tabidx){	
 	var currTab = Cookies.get('tab');
 	
 	if(currTab=="" || currTab=="undefined" || currTab==undefined){
-		//alert(currTab);
 		currTab = 0;
 	}
 	return currTab;

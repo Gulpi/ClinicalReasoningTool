@@ -240,6 +240,10 @@ input.f_text, textarea.f_textarea {
 	background-color: #ffffff; /*#F6E3CE;*/
 }
 
+.newEpi{
+	background-color: #ffffff; /*#F6E3CE;*/
+}
+
 /* tabs elements....*/
 .cr-tabs {
 	position: relative;/* position: relative prevents IE scroll bug (element with position: relative inside container with overflow: auto appear as "fixed") */

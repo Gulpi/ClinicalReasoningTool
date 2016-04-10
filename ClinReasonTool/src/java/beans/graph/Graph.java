@@ -250,7 +250,7 @@ public class Graph extends DirectedWeightedMultigraph<MultiVertex, MultiEdge> {
 			//if(learnerRel!=null)
 				sb.append(mv.toJson());
 		}
-		sb.replace(sb.length()-1, sb.length(), ""); //remove the last ","
+		if(sb.length()>1) sb.replace(sb.length()-1, sb.length(), ""); //remove the last ","
 		sb.append("]");
 		Logger.out(sb.toString(), Logger.LEVEL_TEST);
 		return sb.toString();

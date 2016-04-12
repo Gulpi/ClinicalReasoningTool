@@ -1,1 +1,0 @@
-Ext.data.JsonP.locators({"guide":"<h1 id='locators-section-header'>Header</h1>\n\n<p>Locators</p>\n","title":"Locators"});

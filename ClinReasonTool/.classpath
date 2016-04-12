@@ -40,9 +40,9 @@
 	<classpathentry kind="lib" path="WEB-INF/lib/hibernate.jar"/>
 	<classpathentry kind="lib" path="WEB-INF/lib/jFuzzyLogic.jar"/>
 	<classpathentry kind="lib" path="/Tomcats/apache-tomcat-7/lib/servlet-api.jar"/>
-	<classpathentry kind="lib" path="/CASUS/lib/jgrapht.jar"/>
 	<classpathentry kind="lib" path="WEB-INF/lib/commons-lang3-3.4-javadoc.jar"/>
 	<classpathentry kind="lib" path="WEB-INF/lib/commons-lang.jar"/>
 	<classpathentry kind="lib" path="WEB-INF/lib/commons-lang3-3.4.jar"/>
+	<classpathentry kind="lib" path="WEB-INF/lib/jgrapht.jar"/>
 	<classpathentry kind="output" path="WEB-INF/classes"/>
 </classpath>

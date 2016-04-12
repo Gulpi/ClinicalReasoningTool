@@ -1,8 +1,12 @@
 package actions.beanActions;
 
 import beans.Connection;
+import beans.IllnessScriptInterface;
 import beans.LogEntry;
 import beans.PatientIllnessScript;
+import beans.graph.Graph;
+import beans.graph.MultiEdge;
+import controller.NavigationController;
 import database.DBClinReason;
 
 /**
@@ -28,6 +32,7 @@ public class ChgConnectionAction {
 		int newWeight = Integer.parseInt(weightStr);
 		conn.setWeight(newWeight);
 		save(conn);
+		updateGraph(conn);
 		notifyLog(conn);
 	}
 	
@@ -38,5 +43,13 @@ public class ChgConnectionAction {
 	private void notifyLog(Connection cnx){
 		LogEntry le = new LogEntry(LogEntry.CHGCNXWEIGHT_ACTION, patIllScript.getId(), cnx.getStartId(), cnx.getTargetId());
 		le.save();
+	}
+	
+	private void updateGraph(Connection cnx) {
+		Graph graph = new NavigationController().getCRTFacesContext().getGraph();
+		MultiEdge edge = graph.getEdgeByCnxId(IllnessScriptInterface.TYPE_LEARNER_CREATED, cnx.getId());
+		edge.changeExplicitWeight(cnx.getWeight());
+		//graph.addExplicitEdge(cnx, patIllScript, IllnessScriptInterface.TYPE_LEARNER_CREATED);
+		System.out.println(graph.toString());
 	}
 }

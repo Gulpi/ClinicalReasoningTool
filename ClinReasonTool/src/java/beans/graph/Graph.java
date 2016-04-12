@@ -87,7 +87,7 @@ public class Graph extends DirectedWeightedMultigraph<MultiVertex, MultiEdge> {
 		edge.removeExplicitWeight();
 	}
 	
-	private MultiEdge getEdgeByCnxId(int illScriptType, long cnxId){
+	public MultiEdge getEdgeByCnxId(int illScriptType, long cnxId){
 		if(this.edgeSet()==null) return null;
 		Iterator<MultiEdge> it = this.edgeSet().iterator();
 		while(it.hasNext()){
@@ -240,7 +240,7 @@ public class Graph extends DirectedWeightedMultigraph<MultiVertex, MultiEdge> {
 	 */
 	public String getToJson(){
 		Set<MultiVertex> vertices = this.vertexSet();
-		if(vertices==null || vertices.isEmpty()) return ""; 
+		if(vertices==null || vertices.isEmpty()) return "[]"; 
 		Iterator<MultiVertex> it = vertices.iterator();
 		StringBuffer sb = new StringBuffer("[");
 		
@@ -281,7 +281,7 @@ public class Graph extends DirectedWeightedMultigraph<MultiVertex, MultiEdge> {
 	 */
 	public String getJsonConns(){
 		Set<MultiEdge> edges = this.edgeSet();
-		if(edges==null || edges.isEmpty()) return "";
+		if(edges==null || edges.isEmpty()) return "[]";
 		Iterator<MultiEdge> it = edges.iterator();
 		StringBuffer sb = new StringBuffer("[");
 		while(it.hasNext()){

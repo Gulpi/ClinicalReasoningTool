@@ -154,7 +154,7 @@ input.f_text, textarea.f_textarea {
 }
 .icon-circle:before { content: '\e805'; } /
 .icon-circle-empty:before { content: '\e806'; } 
-
+.icon-circle-tier-1:before { content: '\e805'; color:#C2C2C2; font-size: 0.8em;}
 .icon-circle-tier0:before { content: '\e805'; color:#C2C2C2; font-size: 0.8em;} 
 .icon-circle-tier1:before { content: '\e805'; color:#088A29; font-size: 0.8em;} /* color:#088A29;*/
 .icon-circle-tier2:before { content: '\e805'; color:#81F79F; font-size: 0.8em;} 

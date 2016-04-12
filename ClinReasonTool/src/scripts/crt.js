@@ -91,6 +91,7 @@ function problemCallBack(problemId, selProblem){
 	$("#problems").val("");	
 	//we update the problems list and the json string
 	$("[id='probform:hiddenProbButton']").click();	
+	//initLists();
 	//$("[id='probform:hiddenGraphButton']").click();
 }
 
@@ -503,6 +504,44 @@ var active = $( "#tabs" ).tabs( "option", "active" ); //we have to determine the
 	      });
 	  });
 
+  function initLists(){
+	    $( "#list_diagnoses" ).sortable({
+	 		stop: function( event, ui ) {
+	 			var sorted = $( "#list_diagnoses" ).sortable( "serialize", { key: "selddx" } );
+	 			reOrderDiagnoses(sorted, ui.item.attr("id"));
+	 		}
+	    });
+	    $( "#list_diagnoses" ).disableSelection();
+	    $( "#list_tests" ).sortable({
+	 		stop: function( event, ui ) {
+	 			var sorted = $( "#list_tests" ).sortable( "serialize", { key: "selds" } );
+	 			reOrderTests(sorted, ui.item.attr("id"));
+	 		}
+	    });
+	    $( "#list_tests" ).disableSelection();
+	    $( "#list_mngs" ).sortable({
+	 		stop: function( event, ui ) {
+	 			var sorted = $( "#list_mngs" ).sortable( "serialize", { key: "selmng" } );
+	 			reOrderMngs(sorted, ui.item.attr("id"));
+	 		}
+	    });
+	    $( "#list_mngs" ).disableSelection();
+	    $( "#list_problems" ).sortable({
+	 		stop: function( event, ui ) {
+	 			var sorted = $( "#list_problems" ).sortable( "serialize", { key: "selProb" } );
+	 			reOrderProblems(sorted, ui.item.attr("id"));
+	 		}
+	    });
+	    $( "#list_problems" ).disableSelection();
+	    $( "#list_epi" ).sortable({
+	 		stop: function( event, ui ) {
+	 			var sorted = $( "#list_epi" ).sortable( "serialize", { key: "selEpi" } );
+	 			reOrderEpi(sorted, ui.item.attr("id"));
+	 		}
+	    });
+	    $( "#list_epi" ).disableSelection();
+  }
+  
 function doDisplayIS(){
 	if($("#is_icon").attr("class")=="icon-list-on")
 		alert("Display of the Illness Script(s) for the (correct) final diagnoses");
@@ -523,8 +562,9 @@ function updateCallback(data){
 
     case "success": // This is called right after update of HTML DO, we do no longer update map here, this is only done when clicking on tab.
     	//my_canvas.clear();   	
-    	alert("updateCallback");
+    	//alert("updateCallback");
     	//initConceptMap();
+    	initLists();
         break;
 	}
 }

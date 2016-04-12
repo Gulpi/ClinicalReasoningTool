@@ -39,6 +39,7 @@ var LabelConnection= draw2d.Connection.extend({
           radius:2
       });
     },
+
     /**
      * @method
      * called by the framework if the figure should show the contextmenu.</br>
@@ -110,8 +111,7 @@ var LabelConnection= draw2d.Connection.extend({
 
 function getWeightToColor(weight){
 	switch(weight){
-	case "5": 
-		return "#009933";
+	case "5": return "#009933";
 	case "4": return "#00e64d";
 	case "3": return "#e6ffee";
 	default: 

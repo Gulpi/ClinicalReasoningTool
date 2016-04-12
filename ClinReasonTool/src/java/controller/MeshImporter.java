@@ -15,6 +15,8 @@ import util.*;
  * We import a Mesh ACSII file into the database
  * TODO: exclude similar synonyma already upon import, exclude synonyma containing a |, include mechanism 
  * to assign unique ids to synonyma.
+ * 
+ * use ids > 240.000 - 240.500 to add new entries manually.
  * @author ingahege
  *
  */

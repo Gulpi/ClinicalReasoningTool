@@ -1,5 +1,6 @@
 package controller;
 
+import java.io.Serializable;
 import java.util.*;
 
 import javax.faces.context.FacesContext;
@@ -19,7 +20,7 @@ import model.Synonym;
  * @author ingahege
  *
  */
-public class GraphController {
+public class GraphController implements Serializable{
 
 	public static final String PREFIX_PROB = "cmprb_";
 	public static final String PREFIX_EPI = "cmepi_";

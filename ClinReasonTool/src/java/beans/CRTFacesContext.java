@@ -53,19 +53,21 @@ public class CRTFacesContext /*extends FacesContextWrapper*/ implements Serializ
 	
 	public CRTFacesContext(){
 		setUserId();
-		//loadAndSetScriptsOfUser(); //this loads all scripts, we do not necessarily have to do that here, only if overview page is opened!
+		loadAndSetScriptsOfUser(); //this loads all scripts, we do not necessarily have to do that here, only if overview page is opened!
 		boolean isNewPatIllScript = loadAndSetPatIllScript();
 		//TODO is something is wrong with the patScriptId, we have to return here and return an error msg....
 		//setCurrentStage();
 		userSetting = new UserSetting(); //TODO get from Database...
-		feedbackBean = new FeedbackBean(false, patillscript.getParentId());
+		//feedbackBean = new FeedbackBean(false, patillscript.getParentId());
 		/*if(!isNewPatIllScript)*/ loadScoreContainer();
 	    ServletContext context = (ServletContext) FacesContext.getCurrentInstance().getExternalContext().getContext();
 	    AppBean app = (AppBean) context.getAttribute(AppBean.APP_KEY);
-	    app.addExpertPatIllnessScriptForParentId(patillscript.getParentId());
-	    app.addIllnessScriptForDiagnoses(patillscript.getDiagnoses(), patillscript.getParentId());
+	    if(patillscript!=null){
+	    	app.addExpertPatIllnessScriptForParentId(patillscript.getParentId());
+	    	app.addIllnessScriptForDiagnoses(patillscript.getDiagnoses(), patillscript.getParentId());
+	    }
 	    FacesContextWrapper.getCurrentInstance().getExternalContext().getSessionMap().put(CRTFacesContext.CRT_FC_KEY, this);
-	    initGraph();
+	    if(patillscript!=null) initGraph();
 		//ServletContext context2 = (ServletContext) FacesContext.getCurrentInstance().getExternalContext().getContext();
 		//ApplicationWrapper app = (ApplicationWrapper) context2.getAttribute("CRTInit");
 		//ApplicationFactory factory = (ApplicationFactory) FactoryFinder.getFactory(FactoryFinder.APPLICATION_FACTORY);
@@ -88,15 +90,18 @@ public class CRTFacesContext /*extends FacesContextWrapper*/ implements Serializ
 	public Graph getGraph() {return graph;}
 	public UserSetting getUserSetting() {return userSetting;}
 	public void setUserSetting(UserSetting userSetting) {this.userSetting = userSetting;}
+	public void setScriptsOfUser(List<PatientIllnessScript> scriptsOfUser) {this.scriptsOfUser = scriptsOfUser;}
 
 	/*public void setCurrentStage(){
 		new AjaxController().getRequestParamByKey(AjaxController.REQPARAM_STAGE);
 	}*/
-	//private void loadAndSetScriptsOfUser(){	setScriptsOfUser(isc.loadScriptsOfUser());}
+	private void loadAndSetScriptsOfUser(){	setScriptsOfUser(isc.loadScriptsOfUser());}
 	
 	private void loadScoreContainer(){
-		scoreContainer = new ScoreContainer(this.getPatillscript().getId());
-		scoreContainer.initScoreContainer();			
+		if(this.getPatillscript()!=null) {
+			scoreContainer = new ScoreContainer(this.getPatillscript().getId());
+			scoreContainer.initScoreContainer();	
+		}
 	}
 	/**
 	 * load PatientIllnessScript based on id or sessionId

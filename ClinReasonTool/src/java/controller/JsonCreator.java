@@ -19,8 +19,11 @@ public class JsonCreator {
 	public static final String TYPE_PROBLEM = "C";
 	public static final String TYPE_DDX = "C";
 	public static final String TYPE_TEST = "E";
+	public static final String TYPE_EPI = "F";
 	public static final String TYPE_DRUGS = "D";
 	public static final String TYPE_MNG = "E";
+	public static final String TYPE_PERSONS = "M";
+	public static final String TYPE_MANUALLY_ADDED = "MA";
 	private static final String fileNameOneListEN = "jsonp_en.json"; //TODO we need the path to the HTML folder!!!
 	private static final String fileNameOneListDE = "jsonp_de.json";
 	//A=Anatomy,B=Organisms, F=Psychiatry/Psychology, G=Phenomena and Processes, H=Disciplines/Occupations
@@ -41,7 +44,7 @@ public class JsonCreator {
 	//TODO also load item which have a corresponding (secondary code)
 	private void exportOneList(Locale loc){
 		//setIdsForSyn();
-		List<ListItem> items = new DBClinReason().selectListItemsByTypesAndLang(loc, new String[]{TYPE_PROBLEM, TYPE_TEST,TYPE_DRUGS});
+		List<ListItem> items = new DBClinReason().selectListItemsByTypesAndLang(loc, new String[]{TYPE_PROBLEM, TYPE_TEST,TYPE_DRUGS, TYPE_EPI, TYPE_MANUALLY_ADDED, TYPE_PERSONS});
 		if(items==null || items.isEmpty()) return; //then something went really wrong!
 		try{
 			File f = null;
@@ -76,14 +79,20 @@ public class JsonCreator {
 	 * @return
 	 */
 	private boolean doAddItem(ListItem item){
+		//D:
 		if(item.getItemType().equals("D") && item.getLevel()>=10) return false;
+		if(item.getFirstCode()==null) return true;
 		if(item.getFirstCode().startsWith("D20.0") || item.getFirstCode().startsWith("D20.1")) return false;
 		if(item.getFirstCode().startsWith("D20.3") || item.getFirstCode().startsWith("D20.4")) return false;
 		if(item.getFirstCode().startsWith("D20.7") || item.getFirstCode().startsWith("D20.8")) return false;
 		if(item.getFirstCode().startsWith("D20.9")) return false;
 		if(item.getFirstCode().startsWith("D27.")) return false;
 		if(item.getFirstCode().startsWith("D26.2")) return false;
+		//F
+		if(item.getFirstCode().startsWith("F") && !item.getFirstCode().startsWith("F01.145")) return false;
+		//C
 		if(item.getFirstCode().startsWith("C22")) return false; //Animal diseases
+		
 		if(item.getName().startsWith("1") || item.getName().startsWith("2") || item.getName().startsWith("3")) return false;
 		if(item.getName().startsWith("4-") || item.getName().startsWith("4,")) return false;
 		if(item.getName().startsWith("5") || item.getName().startsWith("6") || item.getName().startsWith("7")) return false;

@@ -86,8 +86,18 @@ function createConnection(id, sourceId, targetId, learner, exp, expWeight, learn
 /**
  * a connection is added to the canvas, we save the start- and endpoint and label.
  */
-function addConnection(sourcePort, targetPort){
-	sendAjax(sourcePort.getParent().id, updateGraph, "addConnection", targetPort.getParent().id);
+function addMyConnection(/*sourcePort, targetPort*/figure){
+ 	var mycssclass = figure.getCssClass();
+ 	//alert(mycssclass);
+ 	var check = ( mycssclass == "draw2d_Connection");
+ 	var check2 = figure.id.startsWith("cm")
+ 	if(check==true/* && check2==0*/ && !check2) {
+ 		//alert("we send");
+ 		sendAjax(figure.getSource().getParent().id, updateGraph, "addConnection", figure.getTarget().getParent().id);
+ 	}
+ 	else{
+ 		//alert("we do not send");
+ 	}
 }
 
 function delConnection(id){
@@ -480,8 +490,8 @@ function handleRectDrop(rect){
 	//alert(rect.x + ", " + xDragStart);
 	//alert(rect.y + ", " + yDragStart);
 	if((xDragStart>-1 && xDragStart>-1) && rect.x >= xDragStart+10 || rect.x <= xDragStart-10 || rect.y >= yDragStart+10 || rect.y <= yDragStart-10){
-		alert("send");
-		//sendAjaxCM(rect.id, doNothing, "moveItem", name, rect.x, rect.y);
+		//alert("send");
+		sendAjaxCM(rect.id, doNothing, "moveItem", name, rect.x, rect.y);
 	}
 	else {
 		//alert("nosend");

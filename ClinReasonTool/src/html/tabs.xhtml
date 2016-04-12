@@ -56,10 +56,11 @@ var my_canvas = null;
 var currentStage = $.getUrlVar('stage');
 var expFeedback = false; //default is that expert feedback is off
 var active;
-draw2d.Configuration.factory.createConnection=function(sourcePort, targetPort, callback, dropTarget){
+
+/*draw2d.Configuration.factory.createConnection=function(sourcePort, targetPort, callback, dropTarget){
 	 addConnection(sourcePort, targetPort);
 	 return new LabelConnection();
- };
+ };*/
  
 
 $(function() {
@@ -102,41 +103,7 @@ $(function() {
         
     });
     //$( ".draggable" ).draggable();	
-    $( "#list_diagnoses" ).sortable({
- 		stop: function( event, ui ) {
- 			var sorted = $( "#list_diagnoses" ).sortable( "serialize", { key: "selddx" } );
- 			reOrderDiagnoses(sorted, ui.item.attr("id"));
- 		}
-    });
-    $( "#list_diagnoses" ).disableSelection();
-    $( "#list_tests" ).sortable({
- 		stop: function( event, ui ) {
- 			var sorted = $( "#list_tests" ).sortable( "serialize", { key: "selds" } );
- 			reOrderTests(sorted, ui.item.attr("id"));
- 		}
-    });
-    $( "#list_tests" ).disableSelection();
-    $( "#list_mngs" ).sortable({
- 		stop: function( event, ui ) {
- 			var sorted = $( "#list_mngs" ).sortable( "serialize", { key: "selmng" } );
- 			reOrderMngs(sorted, ui.item.attr("id"));
- 		}
-    });
-    $( "#list_mngs" ).disableSelection();
-    $( "#list_problems" ).sortable({
- 		stop: function( event, ui ) {
- 			var sorted = $( "#list_problems" ).sortable( "serialize", { key: "selProb" } );
- 			reOrderProblems(sorted, ui.item.attr("id"));
- 		}
-    });
-    $( "#list_problems" ).disableSelection();
-    $( "#list_epi" ).sortable({
- 		stop: function( event, ui ) {
- 			var sorted = $( "#list_epi" ).sortable( "serialize", { key: "selEpi" } );
- 			reOrderEpi(sorted, ui.item.attr("id"));
- 		}
-    });
-    $( "#list_epi" ).disableSelection();
+	initLists();
     $( "#confidence_slider" ).slider({
        orientation: "vertical",
     	min: 0,
@@ -152,12 +119,18 @@ $(function() {
 	
 	my_canvas  = new MyCanvas("canvas");
     initConceptMap(); 
-
-	my_canvas.getCommandStack().addEventListener(function(e){
+    my_canvas.installEditPolicy(new draw2d.policy.connection.DragConnectionCreatePolicy({
+        createConnection: function(){
+        	
+        	//alert(this.getSource());
+        //	addConnection(sourcePort, targetPort);
+            return new LabelConnection();
+        }
+	/*my_canvas.getCommandStack().addEventListener(function(e){
 	      if(e.isPostChangeEvent()){
 	          //updatePreview();
-	  } 
-	});
+	  } */
+	}));
 	
 	initAddHyp();
 	initAddFind();
@@ -165,11 +138,15 @@ $(function() {
 	initAddTest();
 	initAddEpi();
 
-	my_canvas.on("figure:remove", function(emitter, event){
+	/*my_canvas.on("figure:remove", function(emitter, event){
 		//alert(emitter.getFigure());
 	    //alert("id=" + event.figure.id);
 	    //deleteItem(event.figure.id);
-	 });
+	 });*/
+	 my_canvas.on("figure:add", function(emitter, event){
+		 addMyConnection(event.figure);
+		 });
+
 
 	toggleSubmit();
 });
@@ -342,8 +319,8 @@ Case placed here...<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
 	</div> <br clear="all"/>  
 	<h:form id="graphform">
 		<h:panelGroup id="graph">
-			<div id="jsonGraph" >#{crtContext.graph.toJson}</div>
-			<div id="jsonConns">#{crtContext.graph.jsonConns}</div> <!-- c onnections for concept map -->
+			<div id="jsonGraph" style="display:none;">#{crtContext.graph.toJson}</div>
+			<div id="jsonConns" style="display:none;">#{crtContext.graph.jsonConns}</div> <!-- c onnections for concept map -->
 			<!--<div id="jsonDDXs">#{crtContext.graph.jsonDDXConns}</div>-->
 			<!--  <div id="jsonGraphExp" >#{crtContext.graph.toJsonExp}</div>
 			<div id="jsonConnsExp">#{crtContext.graph.jsonConnsExp}</div>--> <!-- c onnections for concept map -->

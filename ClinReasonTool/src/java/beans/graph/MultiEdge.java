@@ -71,6 +71,11 @@ public class MultiEdge extends DefaultWeightedEdge{
 		types.put(new Integer(IllnessScriptInterface.TYPE_LEARNER_CREATED),new Integer(WEIGHT_IMPLICIT));		
 	}
 	
+	public void changeExplicitWeight(int newWeight){
+		if(types==null || types.get(new Integer(IllnessScriptInterface.TYPE_LEARNER_CREATED))==null) return;
+		types.put(new Integer(IllnessScriptInterface.TYPE_LEARNER_CREATED),new Integer(newWeight));		
+	}
+	
 	public void removeWeight(int illScriptType){
 		if(types==null || types.get(new Integer(illScriptType))==null) return;
 		types.remove(new Integer(illScriptType));		

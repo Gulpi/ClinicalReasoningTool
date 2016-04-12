@@ -1,0 +1,43 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html>
+<head>
+ <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+
+<title>Short n' SIMPLE - 65-year-old man with cough - Mr. Johnston</title>
+<link rel="stylesheet" type="text/css" href="../scripts/jquery112/ui-lightness/jquery-ui.css" /> 
+<script type="text/javascript" src="../scripts/jquery112/jquery.js"></script>
+<script type="text/javascript" src="../scripts/jquery112/jquery-ui.min.js"></script>
+<script type="text/javascript" src="../scripts/jquery112/jquery-ui.js"></script>
+<link rel="stylesheet" href="../styles/clinreason.css" />
+
+<style>
+/*for prototype:  */
+.icon-left-open:before { content: '\e833'; color:#ffffff;}
+.icon-right-open:before { content: '\e82b'; color:#ffffff;}
+</style>
+<script>
+$(function() {
+	$( "#crtool" ).draggable({
+		cursor:"move"
+	});
+});
+
+</script>
+</head>
+
+<body style="font-family:arial;">
+<div style="background-color: #8b1b3f;color:#ffffff;padding:5px; height:30px;">Short n' SIMPLE - 65-year-old man with cough - Mr. Johnston</div>
+<br/>
+<div style="width:850px; float:left;"><br/> 
+image of chest x-ray -> increased lung volumes & nodule or mass<br/>
+CBC within normal limits<br/>
+Based on the test results, which is your final diagnosis?  
+</div>
+ <div id="crtool" style="float:right; position:absolute; top:55px; right:0px; background-color:#cccccc;"><br/>
+<iframe id="ctrframe" src="tabs.xhtml?script_id=2&user_id=1&stage=4" height="330" width="500" style="border:none"></iframe>
+</div>
+<div style="background-color: #8b1b3f;color:#ffffff;padding:5px; height:30px; width:95%; bottom:0px; position:absolute;"> 
+<span style="float:right;padding:0px;"> <a href="prototype_fs3.html"><i class="icon-left-open"></i></a>&nbsp;&nbsp;&nbsp;&nbsp;<a href="prototype_fs4.html"><i class="icon-right-open"></i></a></span></div>
+</body>
+</html>

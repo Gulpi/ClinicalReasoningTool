@@ -136,7 +136,7 @@ public class StringUtilities {
 				if(!isMatch[i]) isFinallyMatch = false; //if one entry is false (no Match) we return false.
 				break;
 			}
-			System.out.println("boolean: "+  isFinallyMatch +" ,Item1Arr: "+ sb1.toString() + " , Item2Arr: " + sb2.toString());
+			//System.out.println("boolean: "+  isFinallyMatch +" ,Item1Arr: "+ sb1.toString() + " , Item2Arr: " + sb2.toString());
 			return isFinallyMatch;
 		//}
 		

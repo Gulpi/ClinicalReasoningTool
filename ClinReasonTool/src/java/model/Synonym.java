@@ -14,6 +14,7 @@ public class Synonym implements Serializable{
 	 */
 	private long listItemId;
 	private Locale locale;
+	private String source; //"MESH" or "ADDED" if manually added, currently just in database, no mapping necessary
 	
 	/**
 	 * Synonyma can be scored differently if they are not 100%the same as the main listItem. For example the 

@@ -112,13 +112,13 @@ public class RelationProblem extends Relation implements Rectangle, Serializable
 	//public void setCreationDate(Timestamp creationDate) {this.creationDate = creationDate;}
 	public String getIdWithPrefix(){return GraphController.PREFIX_PROB+this.getId();}
 	
-	public boolean equals(Object o){
+	/*public boolean equals(Object o){
 		if(o!=null){
 			if(o instanceof RelationProblem && ((RelationProblem)o).getListItemId()==getListItemId() && ((RelationProblem)o).getDestId()==getDestId())
 				return true;
 		}
 		return false;
-	}
+	}*/
 	
 	/* (non-Javadoc)
 	 * @see beans.relation.Rectangle#toJson()

@@ -115,4 +115,15 @@ public abstract class Relation extends Beans{
 	
 	public String getShortLabelOrSynShortLabel(){return StringUtils.abbreviate(getLabelOrSynLabel(), ListItem.MAXLENGTH_NAME);}
 	public String getScore(){ return new ScoringController().getIconForScore(this.getListItemId());}
+	
+	/* (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	public boolean equals(Object o){
+		if(o!=null){
+			if(o instanceof Relation && ((Relation)o).getId()==id)
+				return true;
+		}
+		return false;
+	}
 }

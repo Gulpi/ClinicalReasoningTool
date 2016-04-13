@@ -16,14 +16,17 @@
 		<property name="sessionId" column="session_id" type="long" />
 		<property name="courseOfTime" column="courseoftime" type="int"/>	
 		<property name="parentId" column="parent_id" type="long"/>	
-		<property name="summStId" column="summst_id" type="long"/>
 		<property name="submittedStage" column="ddx_submitted" type="int"/>
 		<property name="type" column="type" type="int"/>
 		<property name="locale" column="locale" update="false" type="locale"/>	
 		<property name="currentStage" column="stage" type="int"/>	
-		<property name="creationDate" column="creation_date" update="false" type="timestamp"/>
-	    <many-to-one name="summSt" column="summst_id" lazy="false" not-null="false" update="false" insert="false" />
-		
+		<!--  <property name="creationDate" column="creation_date" update="false" type="timestamp"/>-->
+	    <!-- <many-to-one name="summSt" column="summst_id" not-null="false" update="false" insert="false" lazy="false" />-->
+	    <property name="summStId" column="summst_id" type="long"/>
+	    
+ 		<!--  <many-to-one name="courseIcon" column="course_icon" not-null="false" update="false" insert="false"/>
+		<property name="icon_id" column="course_icon" type="long"/>-->
+ 		
 		<list name="problems" table="crt.relation_problem" cascade="all" lazy="false"> <!-- table="crt.relation_problem"-->
     		<key column="dest_id"/> <!-- dest_id = patientIllnessScript id -->
     		<list-index column="idx" base="0"/>
@@ -49,7 +52,11 @@
     		<list-index column="idx" base="0"/>
     		<one-to-many class="beans.relation.RelationManagement"/>   		
 		</list>	
-		
+		<list name="errors" table="crt.error" cascade="all" lazy="false"> <!-- table="crt.relation_problem"-->
+    		<key column="dest_id"/> <!-- dest_id = patientIllnessScript id -->
+    		<list-index column="type" base="1"/>
+    		<one-to-many class="beans.error.MyError"/>   		
+		</list>			
 		<map name="conns" table="crt.connection" lazy="false" cascade="all" order-by="id" >
 	   		<key column="illscript_id" />
 	   		<map-key column="id" type="long"/>	   		

@@ -104,13 +104,13 @@ public class RelationTest extends Relation implements Rectangle, Serializable{
 	/* (non-Javadoc)
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
-	public boolean equals(Object o){
+	/*public boolean equals(Object o){
 		if(o!=null){
 			if(o instanceof RelationTest && ((RelationTest)o).getListItemId()==getListItemId() && ((RelationTest)o).getDestId()==getDestId())
 				return true;
 		}
 		return false;
-	}
+	}*/
 	
 	/* (non-Javadoc)
 	 * @see beans.relation.Rectangle#toJson()

@@ -30,19 +30,20 @@ public class NavigationController implements Serializable {
 	
 	/**
 	 * User has clicked on a link to open a patientIllnessScript, a sessionId has to be included as a request param
+	 * called from AjaxController
 	 * @return
 	 */
 	public String openPatIllScript(){
-		long id = new AjaxController().getIdRequestParamByKey(AjaxController.REQPARAM_SCRIPT);
-		getCRTFacesContext().loadAndSetPatIllScript(id);
+		//long id = new AjaxController().getIdRequestParamByKey(AjaxController.REQPARAM_SCRIPT);
+		getCRTFacesContext().loadAndSetPatIllScript();
 		//TODO error handling
-		return "tabs";
+		return "prototype_fs";
 	}
 	
 	public String openPatIllScript(String s){
 		getCRTFacesContext().loadAndSetPatIllScript();
 		//TODO error handling
-		return "tabs";
+		return "prototype_fs";
 	}
 	
 	public String logout(){

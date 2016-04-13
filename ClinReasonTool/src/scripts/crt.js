@@ -180,15 +180,16 @@ function doSubmitDDX(){
 
 /* user has confirmed that he wants to submit disgnoses/-is*/
 function submitDDXConfirmed(){
-	sendAjax("", submitDDXConfirmedCallBack, "submitDDX",  "");
-	submitDDXConfirmedCallBack();
+	$("[id='ddxsubmitform:hiddenDDXSubmitButton']").click();	
+
+	//sendAjax("", submitDDXConfirmedCallBack, "submitDDX",  "");
+	//submitDDXConfirmedCallBack();
 }
 
 function submitDDXConfirmedCallBack(){
-	//we retrieve scoring of diagnoses and display it here, also whether an error has occured. 
-	/*$("div[id=jdialog]").html("Correct! Final diagnosis of expert is Bronchopneumonia. Differentials include acute bronchits.");
-	$("#is_icon").removeClass("icon-list-off");
-	$("#is_icon").addClass("icon-list-on");	*/
+	$("#jdialog" ).dialog( "close" );
+	//reload
+	
 }
 
 var tiermsg=["I do not now","Clinically high likelyhood","Clinically moderate likelyhood","Clinically low likelyhood","My final diagnosis"];
@@ -209,7 +210,7 @@ function changeTier(id){
 /* we activate the upload button to submit DDX*/ 
 function toggleSubmit(){
 	var hasFinalDiagnosis = hasAFinalDiagnosis();
-	if(hasFinalDiagnosis){
+	if(hasFinalDiagnosis && submitted!="true"){
 		//if($("#uploadddx").attr("class")=="icon-upload-on") return;
 		$("#uploadddx").removeClass("icon-upload-off");
 		$("#uploadddx").addClass("icon-upload-on");
@@ -595,6 +596,14 @@ function tooglePeerFedback(){
 	alert("not yet implemented!");
 }
 
+function openErrorDialog(){
+	$("#jdialogError").dialog( "option", "width", ['200'] );
+	$("#jdialogError").dialog( "option", "height", ['200'] );
+	$("#jdialogError").dialog( "option", "title", "Potential errors" );
+	$("#jdialogError").dialog( "option", "buttons", [ ] );
+	$("#jdialogError" ).dialog( "open" );
+	$("#jdialogError").show();
+}
 
 /* this is no longer needed with ajax */
 /*function tmpHelperGetCorrect(problemId){

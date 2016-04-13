@@ -5,6 +5,7 @@ import java.util.*;
 
 import javax.faces.context.FacesContext;
 import beans.PatientIllnessScript;
+import beans.SummaryStatement;
 import beans.relation.Relation;
 import database.DBClinReason;
 
@@ -35,11 +36,11 @@ public class IllnessScriptController implements Serializable{
 		return null;
 	}
 	//TODO: we could also get the current script from the already loaded list -> reduces DB calls!
-	public PatientIllnessScript loadPatIllScriptById(long id){
+	public PatientIllnessScript loadPatIllScriptById(long id, long userId){
 		if(id>0){
 			PatientIllnessScript patillscript = new DBClinReason().selectPatIllScriptById(id);
 			if(patillscript==null){
-				patillscript = createAndSaveNewPatientIllnessScript(); 
+				patillscript = createAndSaveNewPatientIllnessScript(userId); 
 			}
 			return patillscript;
 		}
@@ -54,15 +55,23 @@ public class IllnessScriptController implements Serializable{
 	 * @param parentId
 	 * @return
 	 */
-	/*public List<IllnessScript> loadIllnessScriptsByParentId(long parentId){
-		return new DBClinReason().selectIllScriptByParentId(parentId);
-	}*/
+	public PatientIllnessScript loadIllnessScriptsByParentId(long userId, long parentId){
+		if(parentId>0 && userId>0){
+			PatientIllnessScript patillscript =new DBClinReason().selectPatIllScriptsByUserIdAndParentId(userId, parentId);
+		
+			if(patillscript==null)
+				patillscript = createAndSaveNewPatientIllnessScript(userId); 
+			
+			return patillscript;
+		}
+		return null;
+	}
 	
-	public PatientIllnessScript loadPatIllScriptBySessionId(long sessionId){
+	public PatientIllnessScript loadPatIllScriptBySessionId(long sessionId, long userId){
 		if(sessionId>0){
 			PatientIllnessScript patillscript = new DBClinReason().selectPatIllScriptBySessionId(sessionId);
 			if(patillscript==null){
-				patillscript = createAndSaveNewPatientIllnessScript(); 
+				patillscript = createAndSaveNewPatientIllnessScript(userId); 
 			}
 			return patillscript;
 		}
@@ -71,14 +80,18 @@ public class IllnessScriptController implements Serializable{
 			//TODO error message?
 		}
 	}
+	
+
 		
 	/**We create a new PatientIllnessScript and save it. 
 	 * @param sessionId
 	 */
-	private PatientIllnessScript createAndSaveNewPatientIllnessScript(){
-		long userId = new AjaxController().getIdRequestParamByKey(AjaxController.REQPARAM_USER);
+	private PatientIllnessScript createAndSaveNewPatientIllnessScript(long userId){
+		
+		//long userId = new AjaxController().getIdRequestParamByKey(AjaxController.REQPARAM_USER);
 		long sessionId = new AjaxController().getIdRequestParamByKey(AjaxController.REQPARAM_SESSION);
 		long vpId = new AjaxController().getIdRequestParamByKey(AjaxController.REQPARAM_VP);
+		if((sessionId<=0 && vpId<=0) || userId<=0) return null;
 		Locale loc = FacesContext.getCurrentInstance().getApplication().getViewHandler().calculateLocale(FacesContext.getCurrentInstance());
 		PatientIllnessScript patillscript = new PatientIllnessScript(sessionId, userId, vpId, loc);
 		patillscript.save();

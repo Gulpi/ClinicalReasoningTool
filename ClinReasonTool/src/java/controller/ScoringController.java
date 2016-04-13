@@ -17,6 +17,8 @@ public class ScoringController {
 	public static final float FULL_SCORE = (float) 1;
 	public static final float HALF_SCORE = (float) 0.5; //e.g. a synonyma entered....
 	public static final float NO_SCORE = (float) 0; //might be 0.25 if we want to give the learner credit for doing something...
+	public static final float RED_SCORE_LATESTAGE = (float) 0;
+	
 	public static final String ICON_PREFIX = "icon-ok";
 	//define possible scoring algorithms:
 	public static final int SCORING_ALGORITHM_BASIC = 1;

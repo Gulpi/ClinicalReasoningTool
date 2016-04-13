@@ -100,7 +100,7 @@ public class AddMngAction implements AddAction, Scoreable{
 	 * @see actions.scoringActions.Scoreable#triggerScoringAction(java.beans.Beans)
 	 */
 	public void triggerScoringAction(Beans rel) {
-		new ScoringAddAction().scoreAction(((RelationManagement) rel).getListItemId(), ((RelationManagement) rel).getDestId());		
+		new ScoringAddAction().scoreAction(((RelationManagement) rel).getListItemId(), this.patIllScript);		
 	}
 
 	@Override

@@ -3,15 +3,18 @@
 	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 <hibernate-mapping package="beans.error">
 
-	<class name="Error" table="crt.error">
+	<class name="MyError" table="crt.error">
 		<cache usage="nonstrict-read-write" />
-		<comment>Error</comment>	
+		<comment>MyError</comment>	
 		<id name="id" type="long" column="id">
 			<generator class="sequence">
 				<param name ="sequence">CRT.CR_SEQ</param>
 			</generator>
 		</id>	
+		<discriminator column="discr" type="string" />
+		
 		<property name="patIllScriptId" column="dest_id" type="long" />
-		<property name="type" column="type" type="int"/>		
+		<property name="type" column="type" type="int"/>
+	 <subclass name="PrematureClosure" discriminator-value="1"></subclass>
 </class>
 </hibernate-mapping>

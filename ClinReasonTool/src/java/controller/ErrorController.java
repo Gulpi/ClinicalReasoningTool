@@ -5,7 +5,7 @@ import java.util.*;
 import application.AppBean;
 import beans.PatientIllnessScript;
 import beans.error.*;
-import beans.error.Error;
+import beans.error.MyError;
 import beans.relation.Relation;
 import beans.scoring.ScoreBean;
 import database.DBClinReason;
@@ -18,27 +18,30 @@ import database.DBClinReason;
  */
 public class ErrorController {
 
-	public List<Error> checkError(ScoreBean scoreBean, List<Relation> leanerFinals,List<Relation >expFinals){
-		List<Error> errors = new ArrayList<Error>();
+	public List<MyError> checkError(ScoreBean scoreBean, List<Relation> leanerFinals,List<Relation >expFinals){
+		List<MyError> errors = new ArrayList<MyError>();
 		PatientIllnessScript patIllScript = new NavigationController().getCRTFacesContext().getPatillscript();
 		PatientIllnessScript expIllScript = AppBean.getExpertPatIllScript(patIllScript.getParentId());
 		
 		if(leanerFinals==null || leanerFinals.isEmpty() || expFinals==null || expFinals.isEmpty()) return null;
-		errors.add(isPrematureClosure(expIllScript, patIllScript));
-		errors.add(isAvailabilityError());
-		new DBClinReason().saveAndCommit(errors);
+		patIllScript.addError(isPrematureClosure(expIllScript, patIllScript));
+		patIllScript.addError(isAvailabilityError());
+		//new DBClinReason().saveAndCommit(errors);
 		
 		return errors;
 	}
 	
 	
-	private Error isPrematureClosure(PatientIllnessScript expIllScript, PatientIllnessScript patIllScript){
-		
-			if(patIllScript.getSubmittedStage()< expIllScript.getSubmittedStage()) return new PrematureClosure();
+	private MyError isPrematureClosure(PatientIllnessScript expIllScript, PatientIllnessScript patIllScript){		
+			if(patIllScript.getSubmittedStage()< expIllScript.getSubmittedStage()){
+				PrematureClosure pcl =  new PrematureClosure(patIllScript.getId());
+				new DBClinReason().saveAndCommit(pcl);
+				return pcl;
+			}
 			return null;
 	}
 	
-	private Error isAvailabilityError(){
+	private MyError isAvailabilityError(){
 		//we have to check here the last x scripts/VPs of the user and whether it involved the diagnosis he has come up with 
 		//here...
 		return null;

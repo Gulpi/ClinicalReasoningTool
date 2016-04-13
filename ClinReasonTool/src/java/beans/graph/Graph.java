@@ -299,10 +299,18 @@ public class Graph extends DirectedWeightedMultigraph<MultiVertex, MultiEdge> {
 				MultiVertex sourceVertex = edge.getSource();
 				MultiVertex targetVertex = edge.getTarget();
 				//if(sourceVertex)
-				String startIdWithPrefix = GraphController.getPrefixByType(sourceVertex.getType())+sourceVertex.getLearnerVertex().getId(); 	
-				String targetIdWithPrefix = GraphController.getPrefixByType(targetVertex.getType())+targetVertex.getLearnerVertex().getId();
-
-				sb.append("{\"id\":\""+GraphController.PREFIX_CNX + cnxId+"\",\"l\":\""+l+"\", \"e\":\""+e+"\", \"sourceid\": \""+startIdWithPrefix+"\",\"targetid\": \""+targetIdWithPrefix+"\",\"weight_l\": \""+edge.getLearnerWeight()+"\", \"weight_e\": \""+edge.getExpertWeight()+"\"},");		
+				String startIdWithPrefix=null;
+				String targetIdWithPrefix=null;
+				if(sourceVertex.getLearnerVertex()!=null){
+					startIdWithPrefix = GraphController.getPrefixByType(sourceVertex.getType())+sourceVertex.getLearnerVertex().getId(); 	
+					targetIdWithPrefix = GraphController.getPrefixByType(targetVertex.getType())+targetVertex.getLearnerVertex().getId();
+				}
+				else if(sourceVertex.getExpertVertex()!=null){
+					startIdWithPrefix = GraphController.getPrefixByType(sourceVertex.getType())+sourceVertex.getExpertVertex().getId(); 	
+					targetIdWithPrefix = GraphController.getPrefixByType(targetVertex.getType())+targetVertex.getExpertVertex().getId();
+				}
+				if(startIdWithPrefix!=null && targetIdWithPrefix!=null)
+					sb.append("{\"id\":\""+GraphController.PREFIX_CNX + cnxId+"\",\"l\":\""+l+"\", \"e\":\""+e+"\", \"sourceid\": \""+startIdWithPrefix+"\",\"targetid\": \""+targetIdWithPrefix+"\",\"weight_l\": \""+edge.getLearnerWeight()+"\", \"weight_e\": \""+edge.getExpertWeight()+"\"},");		
 			}	
 		}
 		if(sb.length()>1) sb.replace(sb.length()-1, sb.length(), ""); //remove the last ","

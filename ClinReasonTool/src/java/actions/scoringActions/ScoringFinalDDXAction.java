@@ -2,17 +2,15 @@ package actions.scoringActions;
 
 import java.util.*;
 
+import application.AppBean;
+import beans.PatientIllnessScript;
 import beans.graph.Graph;
 import beans.graph.MultiVertex;
-import beans.relation.Relation;
-import beans.relation.RelationDiagnosis;
+import beans.relation.*;
 import beans.scoring.*;
-import controller.ErrorController;
-import controller.NavigationController;
-import controller.ScoringController;
+import controller.*;
 import database.DBClinReason;
-import util.Logger;
-import util.StringUtilities;
+import util.*;
 
 /**
  * We score the final diagnoses a learner has submitted
@@ -26,25 +24,27 @@ public class ScoringFinalDDXAction implements ScoringAction{
 	 * expert: 
 	 * @param patIllScriptId
 	 */
-	public void scoreAction(long listItem, long patIllScriptId){
-		Graph g = new NavigationController().getCRTFacesContext().getGraph();
+	public ScoreBean scoreAction(long listItem, PatientIllnessScript patIllScript){
+		NavigationController nav = new NavigationController();
+		Graph g = nav.getCRTFacesContext().getGraph();
+		
 		List<MultiVertex> mvertices = g.getVerticesByType(Relation.TYPE_DDX);
 		ScoreContainer scoreContainer = new NavigationController().getCRTFacesContext().getScoreContainer();
 		
 		ScoreBean scoreBean = scoreContainer.getScoreBeanByType(ScoreBean.TYPE_FINAL_DDX);
 		if(scoreBean==null){ //then this action has not yet been scored: 
-			scoreBean = new ScoreBean(patIllScriptId, -1, ScoreBean.TYPE_FINAL_DDX);
+			scoreBean = new ScoreBean(patIllScript.getId(), -1, ScoreBean.TYPE_FINAL_DDX);
 			if(g.getExpertPatIllScriptId()>0) //otherwise we do not have an experts' patIllScript to compare with				
-				calculateAddActionScoreBasedOnExpert(mvertices, scoreBean);				
+				calculateAddActionScoreBasedOnExpert(mvertices, scoreBean, patIllScript);				
 						
 			//if(g.getPeerNums()>MIN_PEERS) //we have enough peers, so we can score based on this as well:
 			//	calculateAddActionScoreBasedOnPeers(mvertex, scoreBean, g.getPeerNums());
 			
 			scoreContainer.addScore(scoreBean);
 			//TODO calculateOverallScore(scoreBean); 
-			new DBClinReason().saveAndCommit(scoreBean);
+			new DBClinReason().saveAndCommit(scoreBean);			
 		}
-		
+		return scoreBean;
 	}
 	
 	/**
@@ -52,26 +52,30 @@ public class ScoringFinalDDXAction implements ScoringAction{
 	 * @param ddxs
 	 * @param scoreBean
 	 */
-	private void calculateAddActionScoreBasedOnExpert(List<MultiVertex>ddxs, ScoreBean scoreBean){
+	private void calculateAddActionScoreBasedOnExpert(List<MultiVertex>ddxs, ScoreBean scoreBean, PatientIllnessScript patIllScript){
 		try{
 			int correctNum = 0; 
 			int partlyCorrectNum = 0; 
 			int numFinalDDXLearner = 0; 
 			int numFinalDDXExp = 0;
+			PatientIllnessScript expIllScript = AppBean.getExpertPatIllScript(patIllScript.getParentId());
+			//if learner submits the diagnoses too late, we reduce the score:
+			scoreBean.setTiming(patIllScript.getSubmittedStage(), expIllScript.getSubmittedStage());
+				
 			List<Relation> expFinals= new ArrayList<Relation>();
 			List<Relation> leanerFinals= new ArrayList<Relation>();
 			for(int i=0; i<ddxs.size(); i++){
 				MultiVertex vert = ddxs.get(i);
 				RelationDiagnosis expRel = (RelationDiagnosis)vert.getExpertVertex(); 
-				RelationDiagnosis learnerRel = (RelationDiagnosis)vert.getExpertVertex(); 
+				RelationDiagnosis learnerRel = (RelationDiagnosis)vert.getLearnerVertex(); 
 				
-				if(learnerRel.getTier() == RelationDiagnosis.TIER_FINAL &&  expRel.getTier() == RelationDiagnosis.TIER_FINAL){
+				if(learnerRel!=null && learnerRel.getTier() == RelationDiagnosis.TIER_FINAL &&  expRel.getTier() == RelationDiagnosis.TIER_FINAL){
 					//then both have defined the same vertex as final diagnosis, now look for synonyma: 
 					if(learnerRel.getSynId()>0 && expRel.getSynId()<=0) //learner has used synonym, expert not
 						partlyCorrectNum++; 
 					else  correctNum++;
 				}
-				if(learnerRel.getTier() == RelationDiagnosis.TIER_FINAL){
+				if(learnerRel!=null && learnerRel.getTier() == RelationDiagnosis.TIER_FINAL){
 					leanerFinals.add(learnerRel);
 					numFinalDDXLearner++;
 				}
@@ -81,17 +85,21 @@ public class ScoringFinalDDXAction implements ScoringAction{
 				}
 				
 			}
+			float expScore = 0;
 			if(correctNum==0 && partlyCorrectNum==0){
 				//TODO check here also whether the expert has listed the diagnosis in his list and give at least some credit?
 				//or is this already covered with the list score? 
-				scoreBean.setScoreBasedOnExp(ScoringController.NO_SCORE);
-				return;
+				expScore = ScoringController.NO_SCORE;
+				//return;
 			}
-			//TODO we probably also have to include the weight of the synonyma here: 
-			float corrScore = (correctNum *ScoringController.FULL_SCORE + partlyCorrectNum * ScoringController.HALF_SCORE)/ (correctNum+partlyCorrectNum);
-			float expScore = (corrScore - (numFinalDDXLearner - numFinalDDXExp))/numFinalDDXExp;
+			else {
+				//TODO we probably also have to include the weight of the synonyma here: 
+				float corrScore = (correctNum *ScoringController.FULL_SCORE + partlyCorrectNum * ScoringController.HALF_SCORE)/ (correctNum+partlyCorrectNum);
+				expScore = (corrScore - (numFinalDDXLearner - numFinalDDXExp))/numFinalDDXExp;				
+			}
 			scoreBean.setScoreBasedOnExp(expScore);
-			if(expScore == ScoringController.NO_SCORE) new ErrorController().checkError(scoreBean, leanerFinals,expFinals);
+			if(expScore == ScoringController.NO_SCORE) 
+				patIllScript.addErrors(new ErrorController().checkError(scoreBean, leanerFinals,expFinals));
 		}
 		catch (Exception e){
 			Logger.out(StringUtilities.stackTraceToString(e), Logger.LEVEL_PROD);

@@ -80,4 +80,9 @@ public class ListItem implements Serializable{
 		return this.name + ", Id: " + this.item_id;
 	}
 	
+	public boolean equals(Object o){
+		if(o instanceof ListItem && ((ListItem)o).getItem_id()==item_id) return true;
+		return false;
+	}
+	
 }

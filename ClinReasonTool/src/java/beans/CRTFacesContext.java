@@ -23,6 +23,7 @@ import database.DBClinReason;
  * @author ingahege
  *
  */
+//TODO current stage setting!!!
 @ManagedBean(name = "crtContext", eager = true)
 @SessionScoped
 public class CRTFacesContext /*extends FacesContextWrapper*/ implements Serializable{
@@ -54,24 +55,10 @@ public class CRTFacesContext /*extends FacesContextWrapper*/ implements Serializ
 	public CRTFacesContext(){
 		setUserId();
 		loadAndSetScriptsOfUser(); //this loads all scripts, we do not necessarily have to do that here, only if overview page is opened!
-		boolean isNewPatIllScript = loadAndSetPatIllScript();
-		//TODO is something is wrong with the patScriptId, we have to return here and return an error msg....
-		//setCurrentStage();
+		loadAndSetPatIllScript();
 		userSetting = new UserSetting(); //TODO get from Database...
-		//feedbackBean = new FeedbackBean(false, patillscript.getParentId());
-		/*if(!isNewPatIllScript)*/ loadScoreContainer();
-	    ServletContext context = (ServletContext) FacesContext.getCurrentInstance().getExternalContext().getContext();
-	    AppBean app = (AppBean) context.getAttribute(AppBean.APP_KEY);
-	    if(patillscript!=null){
-	    	app.addExpertPatIllnessScriptForParentId(patillscript.getParentId());
-	    	app.addIllnessScriptForDiagnoses(patillscript.getDiagnoses(), patillscript.getParentId());
-	    }
 	    FacesContextWrapper.getCurrentInstance().getExternalContext().getSessionMap().put(CRTFacesContext.CRT_FC_KEY, this);
-	    if(patillscript!=null) initGraph();
-		//ServletContext context2 = (ServletContext) FacesContext.getCurrentInstance().getExternalContext().getContext();
-		//ApplicationWrapper app = (ApplicationWrapper) context2.getAttribute("CRTInit");
-		//ApplicationFactory factory = (ApplicationFactory) FactoryFinder.getFactory(FactoryFinder.APPLICATION_FACTORY);
-		//System.out.println("");
+	    //if(patillscript!=null) 
 	}
 	
 	private void initGraph(){
@@ -103,33 +90,50 @@ public class CRTFacesContext /*extends FacesContextWrapper*/ implements Serializ
 			scoreContainer.initScoreContainer();	
 		}
 	}
+	
 	/**
 	 * load PatientIllnessScript based on id or sessionId
 	 */
-	public boolean loadAndSetPatIllScript(){ 
+	public void loadAndSetPatIllScript(){ 
 		long id = new AjaxController().getIdRequestParamByKey(AjaxController.REQPARAM_SCRIPT);
+		if(this.patillscript!=null && this.patillscript.getId()==id) return; //current script loaded....
 		long sessionId = new AjaxController().getIdRequestParamByKey(AjaxController.REQPARAM_SESSION);
-		boolean isNew = true;
+		long vpId = new AjaxController().getIdRequestParamByKey(AjaxController.REQPARAM_VP);
+		if(id<=0 && sessionId<=0 && vpId<=0) return; //then user has opened the overview page...y
+		//boolean isNew = true;
 		if(id>0){
-			isNew = false;
-			setPatillscript(isc.loadPatIllScriptById(id));
+			setPatillscript(isc.loadPatIllScriptById(id, userId));
 		}
-		else setPatillscript(isc.loadPatIllScriptBySessionId(sessionId));
-		
+		else if(sessionId>0) setPatillscript(isc.loadPatIllScriptBySessionId(sessionId, userId));
+		else if(vpId>0 && this.userId>0) setPatillscript(isc.loadIllnessScriptsByParentId(this.userId, vpId));
 		//TODO error handling!!!!
-		return isNew;
+		loadExpScripts();
+		loadScoring();
+		initGraph();
+		//return isNew;
 	}
-	public void loadAndSetPatIllScript(long id){ setPatillscript(isc.loadPatIllScriptById(id));}
 	
-	public PatientIllnessScript getPatillscript() { 
-		return patillscript;
-		//FacesContext fc = FacesContextWrapper.getCurrentInstance();
-		//return (PatientIllnessScript) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get(PATILLSCRIPT_KEY);
+	private void loadScoring(){
+		feedbackBean = new FeedbackBean(false, patillscript.getParentId());
+		loadScoreContainer();
 	}
-	public void setPatillscript(PatientIllnessScript patillscript) { 
-		this.patillscript = patillscript;
-		//FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put(PATILLSCRIPT_KEY, patillscript);
-	}	
+	
+	private void loadExpScripts(){
+	    ServletContext context = (ServletContext) FacesContext.getCurrentInstance().getExternalContext().getContext();
+	    AppBean app = (AppBean) context.getAttribute(AppBean.APP_KEY);
+	    app.addExpertPatIllnessScriptForParentId(patillscript.getParentId());
+	    app.addIllnessScriptForDiagnoses(patillscript.getDiagnoses(), patillscript.getParentId());
+
+	}
+	/*public void loadAndSetPatIllScript(long id){ 
+		setPatillscript(isc.loadPatIllScriptById(id, userId));
+		loadExpScripts();
+		loadScoring();
+		initGraph();
+	}*/
+	
+	public PatientIllnessScript getPatillscript() { return patillscript;}
+	public void setPatillscript(PatientIllnessScript patillscript) { this.patillscript = patillscript;}	
 	public List<PatientIllnessScript> getScriptsOfUser() {return this.scriptsOfUser;}
 	//private void setScriptsOfUser(List<PatientIllnessScript> scriptsOfUser){this.scriptsOfUser = scriptsOfUser;}	
 	public ScoreContainer getScoreContainer() {

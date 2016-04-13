@@ -99,6 +99,17 @@ public class MultiVertex /*extends SynonymVertex*/ implements VertexInterface{
 		return true;
 	}
 	
+	/**
+	 * has the expert added this vertex at the current stage?
+	 * @param stage
+	 * @return
+	 */
+	public boolean isExpertVertexAtStage(int stage){
+		if(expertVertex==null) return false;
+		if(expertVertex.getStage()<= stage) return true;
+		return false;
+	}
+	
 	public boolean isIllScriptVertex(){
 		if(illScriptVertex==null) return false;
 		return true;
@@ -122,9 +133,9 @@ public class MultiVertex /*extends SynonymVertex*/ implements VertexInterface{
 	public String toJson(){
 		StringBuffer sb = new StringBuffer();
 		Relation rel = null; 
+		int currentStage = new NavigationController().getCRTFacesContext().getPatillscript().getCurrentStage();
 		if(learnerVertex!=null) rel =  learnerVertex;
-		else if(expertVertex!=null){ //include expert vertex, but only if we have reached the necessary stage
-			int currentStage = new NavigationController().getCRTFacesContext().getPatillscript().getCurrentStage();
+		else if(expertVertex!=null){ //include expert vertex, but only if we have reached the necessary stage			
 			if(expertVertex.getStage()<=currentStage) rel = expertVertex; 
 		}
 		if(rel!=null){
@@ -138,7 +149,7 @@ public class MultiVertex /*extends SynonymVertex*/ implements VertexInterface{
 			if(isLearnerVertex()) sb.append("\"l\":\"1\",");
 			else sb.append("\"l\":\"0\",");
 			//if the learner has already picked the item we do not check the experts' stage, but just display it.
-			if(isExpertVertex()) sb.append("\"e\":\"1\",");
+			if(isExpertVertexAtStage(currentStage)) sb.append("\"e\":\"1\",");
 			else sb.append("\"e\":\"0\",");
 			sb.append("\"p\":\""+this.peerNums+"\"");
 			if(rel.getRelationType()==Relation.TYPE_DDX ){

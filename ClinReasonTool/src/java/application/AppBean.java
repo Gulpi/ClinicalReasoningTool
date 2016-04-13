@@ -78,6 +78,8 @@ public class AppBean extends ApplicationWrapper implements HttpSessionListener{
 		//MeshImporter.main("de");
 	}
 	
+
+	
 	/**
 	 * We have one experts' patientIllnessScript per parentId (=VPId). If it has not yet been loaded (by another 
 	 * learner working on the same VP, we load it and put it into the expertPatIllScripts Map.

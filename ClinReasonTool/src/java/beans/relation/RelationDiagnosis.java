@@ -38,17 +38,11 @@ public class RelationDiagnosis extends Relation implements Rectangle, Serializab
 	public static final int TIER_MOSTLIKELY = 1; //Clinically high likelihood
 	public static final int TIER_FINAL = 4; //Final diagnosis
 
-	//private long id;
 	/**
-	 * diagnosis id
+	 * has this diagnosis been submitted as final the learner? If yes for certain components no more changes 
+	 * can be made (?).
 	 */
-	//private long listItemId; 
-	/**
-	 * (Patient)Illnesscript
-	 */
-	//private long destId; 
-	
-	//private int order;
+	//private int submittedStage;
 		
 	/**
 	 * -1 = not stated, todo: define levels here (slider with Percentage?)
@@ -60,30 +54,13 @@ public class RelationDiagnosis extends Relation implements Rectangle, Serializab
 	 * see tier definitions above
 	 */
 	private int tier = -1; 
-	
-	/**
-	 * diagnoses: doNotMiss/lethal/important favorite
-	 */
-	//private int value = -1; //key finding,...
-	
-	//private Timestamp creationDate;
-	//private int x;
-	//private int y;
-	/**
-	 * Backgroundcolor of the diagnosis rectangle
-	 */
-	//private String color; //default: #ffffff
+
 	private ListItem diagnosis;
 	/**
 	 * Must-not-miss
 	 */
 	private int mnm = 0;
-	//private int stage;
-	/**
-	 * In case the learner has selected the not the main item, but a synonyma, we save the id here.
-	 * We do not need the object, since it is already stored in the ListItem 
-	 */
-	//private long synId;
+
 	
 	public RelationDiagnosis(){}
 	public RelationDiagnosis(long lisItemId, long destId, long synId){
@@ -91,29 +68,14 @@ public class RelationDiagnosis extends Relation implements Rectangle, Serializab
 		this.setDestId(destId);
 		if(synId>0) setSynId(synId);
 	}
-	//public long getListItemId() { return listItemId;}
-	//public void setListItemId(long listItemId) {this.listItemId = listItemId;}
-	//public long getId() {return id;}
-	//public void setId(long id) {this.id = id;}
-	//public long getDestId() {return destId;}
-	//public void setDestId(long destId) {this.destId = destId;}
-	//public int getOrder() {return order;}
-	//public void setOrder(int order) {this.order = order;}
+
 	public int getTier() {return tier;}
 	public void setTier(int tier) {this.tier = tier;}
 	public ListItem getDiagnosis() {return diagnosis;}
-	public void setDiagnosis(ListItem diagnosis) {this.diagnosis = diagnosis;}	
-	/*public int getX() {return x;}
-	public void setX(int x) {this.x = x;}
-	public int getY() {return y;}
-	public void setY(int y) {this.y = y;}	*/
-	//public String getColor() {return color;}
-	//public void setColor(String color) {this.color = color;}	
-	/*public int getStage() {return stage;}
-	public void setStage(int stage) {this.stage = stage;}*/
+	public void setDiagnosis(ListItem diagnosis) {this.diagnosis = diagnosis;}		
+	//public int getSubmittedStage() {return submittedStage;}
+	//public void setSubmittedStage(int submittedStage) {this.submittedStage = submittedStage;}
 	
-	//public Timestamp getCreationDate() {return creationDate;}
-	//public void setCreationDate(Timestamp creationDate) {this.creationDate = creationDate;}
 	public String getIdWithPrefix(){ return GraphController.PREFIX_DDX+this.getId();}
 	public int getMnm() {return mnm;}
 	public void setMnm(int mnm) {this.mnm = mnm;}
@@ -121,25 +83,8 @@ public class RelationDiagnosis extends Relation implements Rectangle, Serializab
 		if(mnm==1) return true;
 		return false;
 	}
-	/* (non-Javadoc)
-	 * @see beans.relation.Rectangle#toJson()
-	 */
-	/*public String toJson(){
-		return new RelationController().getRelationToJson(this);
 
-	}*/
-	
 
-	/* (non-Javadoc)
-	 * @see java.lang.Object#equals(java.lang.Object)
-	 */
-	public boolean equals(Object o){
-		if(o!=null){
-			if(o instanceof RelationDiagnosis && ((RelationDiagnosis)o).getListItemId()==getListItemId() && ((RelationDiagnosis)o).getDestId()==getDestId())
-				return true;
-		}
-		return false;
-	}
 
 
 	/* (non-Javadoc)
@@ -154,18 +99,11 @@ public class RelationDiagnosis extends Relation implements Rectangle, Serializab
 	 * @see beans.relation.Relation#getListItem()
 	 */
 	public ListItem getListItem() {return diagnosis;}
-	/*public Synonym getSynonym(){
-		return new RelationController().getSynonym(getSynId(),this);
-	}*/
-	//public long getSynId() {return synId;}
+
 	/* (non-Javadoc)
 	 * @see beans.relation.Relation#getSynonyma()
 	 */
 	public Set<Synonym> getSynonyma(){ return diagnosis.getSynonyma();}
-	/*public void setXAndY(Point p){
-		this.setX(p.x);
-		this.setY(p.y);
-	}*/
 	
 	/* (non-Javadoc)
 	 * @see beans.relation.Relation#getLabelOrSynLabel()
@@ -178,12 +116,12 @@ public class RelationDiagnosis extends Relation implements Rectangle, Serializab
 	/* (non-Javadoc)
 	 * @see beans.relation.Relation#getShortLabelOrSynShortLabel()
 	 */
-	public String getShortLabelOrSynShortLabel(){		
+	/*public String getShortLabelOrSynShortLabel(){		
 		return StringUtils.abbreviate(getLabelOrSynLabel(), ListItem.MAXLENGTH_NAME);
-	}
+	}*/
 	
-	public String getScore(){
+	/*public String getScore(){
 		return new ScoringController().getIconForScore(this.getListItemId());
 		//sreturn "icon-ok2";
-	}
+	}*/
 }

@@ -9,6 +9,7 @@ import javax.faces.bean.*;
 import org.apache.commons.lang.StringUtils;
 
 import actions.beanActions.*;
+import beans.error.MyError;
 import beans.relation.*;
 import controller.AjaxController;
 import controller.ConceptMapController;
@@ -72,12 +73,11 @@ public class PatientIllnessScript extends Beans/*extends Node*/ implements Illne
 	private Map<Long,Connection> conns;
 	
 	/**
-	 * have the components of the IS been submitted by the learner? If yes for certain components no more changes 
-	 * can be made (?)
+	 * at which stage have the ddx of this script been submitted by the learner? this is important to detect certain errors
 	 */
 	private int submittedStage;
 	
-	private List<Error> errors;
+	private List<MyError> errors;
 	
 	public PatientIllnessScript(){}
 	public PatientIllnessScript(long sessionId, long userId, long vpId, Locale loc){
@@ -85,6 +85,7 @@ public class PatientIllnessScript extends Beans/*extends Node*/ implements Illne
 		if(userId>0) this.userId = userId;
 		if(vpId>0) this.parentId = vpId;
 		this.locale = loc;
+		//this.summSt = new SummaryStatement();
 	}
 	
 	public long getId() {return id;}
@@ -120,22 +121,42 @@ public class PatientIllnessScript extends Beans/*extends Node*/ implements Illne
 	public Locale getLocale() {return locale;}
 	public void setLocale(Locale locale) {this.locale = locale;}	
 	public SummaryStatement getSummSt() {return summSt;}
-	public void setSummSt(SummaryStatement summSt) {this.summSt = summSt;}	
+	public void setSummSt(SummaryStatement summSt) {
+		this.summSt = summSt;
+		//if(summSt!=null) summStId= summSt.getId();
+	
+	}	
 	public long getSummStId() {return summStId;}
 	public void setSummStId(long summStId) {this.summStId = summStId;}	
 	public Note getNote() {return note;}
 	public void setNote(Note note) {this.note = note;}
 	public long getNoteId() {return noteId;}
 	public void setNoteId(long noteId) {this.noteId = noteId;}
-	public int getCurrentStage() {return currentStage;}
-	public void setCurrentStage(int currentStage) {this.currentStage = currentStage;}		
-	public List<Error> getErrors() {return errors;}
-	public void setErrors(List<Error> errors) {this.errors = errors;}
-	public boolean isSubmitted() {
+	public int getCurrentStage() {
+		updateStage(new AjaxController().getRequestParamByKey(AjaxController.REQPARAM_STAGE));
+		return currentStage;
+	}
+	public void setCurrentStage(int currentStage) {
+		this.currentStage = currentStage;
+		}		
+	public List<MyError> getErrors() {return errors;}
+	public void setErrors(List<MyError> errors) {this.errors = errors;}
+	public void addErrors(List<MyError> list){
+		if(list==null || list.isEmpty()) return;
+		if(errors==null) errors = new ArrayList<MyError>();
+		errors.addAll(list);
+	}
+	public void addError(MyError err){
+		if(err==null) return;
+		if(errors==null) errors = new ArrayList<MyError>();
+		errors.add(err);
+	}	
+	public boolean getSubmitted() {
 		if(submittedStage>0) return true;
 		return false;
 	}	
 	public int getSubmittedStage() {return submittedStage;}
+
 	public void setSubmittedStage(int submittedStage) {this.submittedStage = submittedStage;}
 	//public void setSubmitted(boolean submitted) {this.submitted = submitted;}
 	public void addProblem(String idStr, String name){new AddProblemAction(this).add(idStr, name);}
@@ -175,6 +196,7 @@ public class PatientIllnessScript extends Beans/*extends Node*/ implements Illne
 	public void saveSummStatement(String idStr, String text){new SummaryStatementChgAction(this).updateOrCreateSummaryStatement( idStr, text);}
 	public void saveNote(String idStr, String text){new NoteChgAction(this).updateOrCreateNote( idStr, text);}
 	public void submitDDX(String idStr){new DiagnosisSubmitAction(this).submitDDX();}
+	public void submitDDX(){new DiagnosisSubmitAction(this).submitDDX();}
 	public void changeTier(String idStr, String tierStr){new DiagnosisSubmitAction(this).changeTier(idStr, tierStr);}
 
 	public void save(){
@@ -266,5 +288,10 @@ public class PatientIllnessScript extends Beans/*extends Node*/ implements Illne
 				save();
 			}
 		}
+	}
+	
+	public int getErrorNum(){
+		if(errors==null) return 0;
+		return errors.size();
 	}
 }

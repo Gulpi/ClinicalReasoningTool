@@ -13,6 +13,7 @@ import org.hibernate.criterion.*;
 import beans.CRTFacesContext;
 import beans.IllnessScript;
 import beans.PatientIllnessScript;
+import beans.SummaryStatement;
 import beans.relation.RelationDiagnosis;
 import beans.relation.RelationProblem;
 import beans.scoring.ScoreBean;
@@ -195,9 +196,11 @@ public class DBClinReason /*extends HibernateUtil*/{
     	Criteria criteria = s.createCriteria(PatientIllnessScript.class,"PatientIllnessScript");
     	criteria.add(Restrictions.eq("parentId", new Long(parentId)));
     	criteria.add(Restrictions.eq("type", new Integer(PatientIllnessScript.TYPE_EXPERT_CREATED)));
-    	PatientIllnessScript ps =  (PatientIllnessScript) criteria.uniqueResult();
+    	PatientIllnessScript patIllScript =  (PatientIllnessScript) criteria.uniqueResult();
     	s.close();
-    	return ps;    	
+    	if(patIllScript!=null)
+    		patIllScript.setSummSt(loadSummSt(patIllScript.getSummStId()));
+    	return patIllScript;  	
     }
    
     
@@ -215,9 +218,11 @@ public class DBClinReason /*extends HibernateUtil*/{
     	Criteria criteria = s.createCriteria(PatientIllnessScript.class,"PatientIllnessScript");
     	criteria.add(Restrictions.eq(identifier, new Long(id)));
     	criteria.add(Restrictions.eq("type", new Integer(PatientIllnessScript.TYPE_LEARNER_CREATED)));
-    	PatientIllnessScript ps =  (PatientIllnessScript) criteria.uniqueResult();
+    	PatientIllnessScript patIllScript =  (PatientIllnessScript) criteria.uniqueResult();
     	s.close();
-    	return ps;    	
+    	if(patIllScript!=null)
+    		patIllScript.setSummSt(loadSummSt(patIllScript.getSummStId()));
+    	return patIllScript;
     }
 
     /**
@@ -229,8 +234,32 @@ public class DBClinReason /*extends HibernateUtil*/{
     	Session s = instance.getInternalSession(Thread.currentThread(), false);
     	Criteria criteria = s.createCriteria(PatientIllnessScript.class,"PatientIllnessScript");
     	criteria.add(Restrictions.eq("userId", new Long(userId)));
+    	//CAVE summStatement not loaded!
     	return  criteria.list();
     }
+    
+    /**
+     * Select the PatientIllnessScripts for the userId and parentId from the database. 
+     * @param sessionId
+     * @return PatientIllnessScript or null
+     */
+    public PatientIllnessScript selectPatIllScriptsByUserIdAndParentId(long userId, long parentId){
+    	Session s = instance.getInternalSession(Thread.currentThread(), false);
+    	Criteria criteria = s.createCriteria(PatientIllnessScript.class,"PatientIllnessScript");
+    	criteria.add(Restrictions.eq("userId", new Long(userId)));
+    	criteria.add(Restrictions.eq("parentId", new Long(parentId)));
+    	PatientIllnessScript patIllScript =  (PatientIllnessScript) criteria.uniqueResult();
+    	if(patIllScript!=null)
+    		patIllScript.setSummSt(loadSummSt(patIllScript.getSummStId()));
+    	return patIllScript;
+    }
+	private SummaryStatement loadSummSt(long id){
+		if(id<=0) return null;
+		Session s = instance.getInternalSession(Thread.currentThread(), false);
+		Criteria criteria = s.createCriteria(SummaryStatement.class,"SummaryStatement");
+		criteria.add(Restrictions.eq("id", new Long(id)));
+		return (SummaryStatement) criteria.uniqueResult();
+	}
     
     /**
      * Select the ListItem with the given id from the database.

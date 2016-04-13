@@ -114,7 +114,7 @@ public class AddEpiAction implements AddAction, Scoreable, FeedbackCreator{
 	 * @see actions.scoringActions.Scoreable#triggerScoringAction(java.beans.Beans)
 	 */
 	public void triggerScoringAction(Beans relEpi){		
-		new ScoringAddAction().scoreAction(((RelationEpi) relEpi).getListItemId(), ((RelationEpi) relEpi).getDestId());
+		new ScoringAddAction().scoreAction(((RelationEpi) relEpi).getListItemId(), this.patIllScript);
 	}
 
 	@Override

@@ -99,7 +99,7 @@ public class AddTestAction implements AddAction, Scoreable, FeedbackCreator{
 	 * @see actions.scoringActions.Scoreable#triggerScoringAction(java.beans.Beans)
 	 */
 	public void triggerScoringAction(Beans rel) {
-		new ScoringAddAction().scoreAction(((RelationTest) rel).getListItemId(), ((RelationTest) rel).getDestId());		
+		new ScoringAddAction().scoreAction(((RelationTest) rel).getListItemId(), this.patIllScript);		
 	}
 
 	@Override

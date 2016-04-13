@@ -56,7 +56,8 @@ var my_canvas = null;
 var currentStage = $.getUrlVar('stage');
 var expFeedback = false; //default is that expert feedback is off
 var active;
-
+//var errorNum = "#{crtContext.patillscript.errorNum}";
+var submitted = "#{crtContext.patillscript.submitted}";
 /*draw2d.Configuration.factory.createConnection=function(sourcePort, targetPort, callback, dropTarget){
 	 addConnection(sourcePort, targetPort);
 	 return new LabelConnection();
@@ -71,6 +72,8 @@ $(function() {
 	$("#dialogCMTest").hide();
 	$("#dialogCMMng").hide();
 	$("#dialogCMEpi").hide();
+	$("#jdialogError").hide();
+	
 	var tabs = $( "#tabs" ).tabs();
       
 	$( ".cr-tabs" ).tabs({
@@ -111,6 +114,12 @@ $(function() {
     	step: 1,
     });
 	$("#jdialog").dialog({
+		autoOpen: false,
+		modal: true,
+		width: "auto",
+		height: "auto"
+	});
+	$("#jdialogError").dialog({
 		autoOpen: false,
 		modal: true,
 		width: "auto",
@@ -307,15 +316,21 @@ Case placed here...<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
 		    		#{msg.summary},  #{msg.detail}
 	       		</ui:repeat>-->
 		    </div>
-			  	<div class="navfooter"><!-- <a href="" title="take notes"><i class="icon-edit"></i></a>-->
+			  	<div class="navfooter"><h:form id="ddxsubmitform"><!-- <a href="" title="take notes"><i class="icon-edit"></i></a>-->
 			  	<i class="icon-help-circled" title="not yet working"></i>
-			  	<a href="javascript:toggleExpertFedback();" title="See an experts' problems"><i id="expFeedbackButton" class="icon-user-md"></i></a> 
+			  	<a href="javascript:toggleExpertFedback();" title="See the author's suggestions"><i id="expFeedbackButton" class="icon-user-md"></i></a> 
 				<a href="javascript:tooglePeerFedback();" title="See peer responses"><i  class="icon-users"></i></a>
-				<a href="javascript:doSubmitDDX();" title="Submit your final diagnoses and differentials"><i id="uploadddx" class="icon-upload-off"></i></a>
-				<a href="javascript:doDisplayIS();" title="open illness script"><i id="is_icon" class="icon-list-alt"></i></a></div>
-		  	<!--  </div>-->
-		  	<!--  <div class="cm-preview"><a href="javascript:openCanvas();" title="click to open concept map"><img id="preview_img" style="border-radius:5px;overflow:auto; width:50px; height:50px;"/> </a></div> -->
-		 <!--   </div>-->
+
+	<h:panelGroup id="ddxubmitPG">
+		<a href="javascript:openErrorDialog();" title="Potential Errors (#{crtContext.patillscript.errorNum})"><i class="icon-attention-circled"></i></a>		
+    </h:panelGroup>
+    	  <h:commandLink id="hiddenDDXSubmitButton" action="#{crtContext.patillscript.submitDDX}" value="" style="visibility:collapse" >
+		</h:commandLink>			
+				
+				<a href="javascript:doSubmitDDX();" title="Submit your final diagnoses"><i id="uploadddx" class="icon-upload-off"></i></a>
+				<a href="javascript:doDisplayIS();" title="open illness script"><i id="is_icon" class="icon-list-alt"></i></a>
+		  	</h:form>	</div>
+
 	</div> <br clear="all"/>  
 	<h:form id="graphform">
 		<h:panelGroup id="graph">
@@ -333,6 +348,12 @@ Case placed here...<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
 
 <div id="jdialog">Are you sure you want to submit your final diagnosis/-es?<br/>
 <a href="javascript:submitDDXConfirmed();">Yes</a><br/></div>
+<div id="jdialogError">				
+	<ul id="errors">
+		<ui:repeat value="#{crtContext.patillscript.errors}" var="err" varStatus="status">
+			<ui:include src="errorline.xhtml" />
+ 		</ui:repeat>				
+	</ul>More information ....</div>
 <div id="dialogCMProb" class="listdialog" ><input id="cm_pro_sel" class="f_text"></input></div>
 <div id="dialogCMDDX" class="listdialog"><input id="cm_ddx_sel" class="f_text"></input></div>
 <div id="dialogCMMng" class="listdialog"><input id="cm_mng_sel" class="f_text"></input></div>

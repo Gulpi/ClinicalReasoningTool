@@ -101,7 +101,7 @@ public class HibernateSession {
 			cfg.addClass(beans.SummaryStatement.class);	
 			cfg.addClass(beans.helper.Range.class);
 			cfg.addClass(beans.scoring.ScoreBean.class);
-			cfg.addClass(beans.error.Error.class);
+			cfg.addClass(beans.error.MyError.class);
 			
 			if (factory==null) {
 				//init_setHibernateDialect();

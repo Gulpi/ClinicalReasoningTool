@@ -1,5 +1,7 @@
 package actions.scoringActions;
 
+import application.AppBean;
+import beans.PatientIllnessScript;
 import beans.graph.Graph;
 import beans.graph.MultiVertex;
 import beans.relation.Relation;
@@ -25,16 +27,16 @@ public class ScoringAddAction implements ScoringAction{
 	 * @param patIllScript
 	 * @param rel
 	 */
-	public void scoreAction(long vertexId, long patIllScriptId){
+	public ScoreBean scoreAction(long vertexId, PatientIllnessScript patIllScript){
 		Graph g = new NavigationController().getCRTFacesContext().getGraph();
 		MultiVertex mvertex = g.getVertexById(vertexId);
 		ScoreContainer scoreContainer = new NavigationController().getCRTFacesContext().getScoreContainer();
 		
 		ScoreBean scoreBean = scoreContainer.getScoreBeanByScoredItem(vertexId);
 		if(scoreBean==null){ //then this item has not yet been scored: 
-			scoreBean = new ScoreBean(patIllScriptId, mvertex.getVertexId(), mvertex.getType());
+			scoreBean = new ScoreBean(patIllScript.getId(), mvertex.getVertexId(), mvertex.getType());
 			if(g.getExpertPatIllScriptId()>0) //otherwise we do not have an experts' patIllScript to compare with				
-				calculateAddActionScoreBasedOnExpert(mvertex, scoreBean);				
+				calculateAddActionScoreBasedOnExpert(mvertex, scoreBean, patIllScript.getParentId(), patIllScript.getCurrentStage());				
 						
 			if(g.getPeerNums()>MIN_PEERS) //we have enough peers, so we can score based on this as well:
 				calculateAddActionScoreBasedOnPeers(mvertex, scoreBean, g.getPeerNums());
@@ -42,9 +44,11 @@ public class ScoringAddAction implements ScoringAction{
 			scoreContainer.addScore(scoreBean);
 			calculateOverallScore(scoreBean); 
 			new DBClinReason().saveAndCommit(scoreBean);
+			
 		}
 		
 		scoreOverallList(scoreContainer); //update this to also consider problems the learner has not (yet) come up with  
+		return scoreBean;
 	}
 	
 	/** TODO we could consider all components and calculate based on these an overall score.
@@ -62,7 +66,9 @@ public class ScoringAddAction implements ScoringAction{
 	 * 0 = problem is not at all in the experts' list (no check) 
 	 * TODO consider position? probably not possible on add, but on move! 
 	 */	
-	private void calculateAddActionScoreBasedOnExpert(MultiVertex mvertex, ScoreBean scoreBean){		
+	private void calculateAddActionScoreBasedOnExpert(MultiVertex mvertex, ScoreBean scoreBean, long parentId, int currentStage){
+		PatientIllnessScript expIllScript = AppBean.getExpertPatIllScript(parentId);
+		scoreBean.setTiming(currentStage, expIllScript.getSubmittedStage());
 		Relation expRel = mvertex.getExpertVertex();
 		Relation learnerRel = mvertex.getLearnerVertex();
 		if(expRel!=null /*&& expRel.getSynId()<=0*/){ //expert has chosen this item (not synonym)

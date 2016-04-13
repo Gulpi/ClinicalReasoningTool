@@ -37,10 +37,13 @@ $( document ).tooltip({
  <div class="header">My Patient Illness Scripts</div>
 	<h:form><ul id="list_diagnoses" class="plainList">
 		<ui:repeat value="#{crtContext.scriptsOfUser}" var="scripts" varStatus="status">
-		<li> <h:commandLink action="#{navController.openPatIllScript}" value="#{scripts.id}" >
+		<li> <!-- <h:outputLink value="prototype_fs.xhtml">
+				<h:outputText value="#{scripts.id}" />
+				<f:param name="script_id" value="#{scripts.id}" />
+			</h:outputLink>-->
+		  <h:commandLink action="#{navController.openPatIllScript}" value="Prototype" >
 				<f:param name="script_id" value="#{scripts.id}" />
 			</h:commandLink>
-			<!-- <li><a href="tabs.xhtml?session_id=#{scripts.sessionId}">#{scripts.id}</a>-->
 				<i class="icon-sitemap"></i><i class="icon-list-on"></i></li>
  		</ui:repeat>					
 	</ul></h:form>

@@ -13,19 +13,30 @@ import javax.faces.bean.SessionScoped;
  *
  */
 @SessionScoped
-public class PrematureClosure extends Error{
+public class PrematureClosure extends MyError{
 	//do we need any specifics here?
 	
 	public PrematureClosure(){
-		setType(Error.TYPE_PREMATURE_CLOUSRE);
+		setType(MyError.TYPE_PREMATURE_CLOUSRE);
+		setDiscr(String.valueOf(MyError.TYPE_PREMATURE_CLOUSRE));
+	}
+	
+	public PrematureClosure(long parentId){
+		setType(MyError.TYPE_PREMATURE_CLOUSRE);
+		setDiscr(String.valueOf(MyError.TYPE_PREMATURE_CLOUSRE));
+		setPatIllScriptId(parentId);
 	}
 	
 	/* (non-Javadoc)
 	 * @see beans.error.Error#getType()
 	 */
-	public long getType() {
-		return Error.TYPE_PREMATURE_CLOUSRE;
+	public int getType() {
+		return MyError.TYPE_PREMATURE_CLOUSRE;
 	}
+	public String getDiscr() {return String.valueOf(MyError.TYPE_PREMATURE_CLOUSRE);}
+	public String getDescription(){ return "Accepting a diagnosis too early .... etc...";}
+	public String getName(){return "Premature Closure";}
+
 	
 
 }

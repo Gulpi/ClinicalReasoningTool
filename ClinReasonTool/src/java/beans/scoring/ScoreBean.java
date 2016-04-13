@@ -24,7 +24,9 @@ public class ScoreBean extends Beans{
 	public static final int TYPE_TEST_LIST = 9;
 	public static final int TYPE_MNG_LIST = 10;
 	public static final int TYPE_FINAL_DDX = 11;
-
+	public static final int TIME_OK = 0;
+	public static final int TIME_LATE = 1;
+	public static final int TIME_EARLY = 2;
 	
 	private long id; 
 	private long patIllnessScriptId; 
@@ -37,6 +39,7 @@ public class ScoreBean extends Beans{
 	private float overallScore;
 	private long scoredItem; //e.g. the problemRelationId, summStId
 	private Timestamp creationDate; 
+	private int timing = -1;
 	/**
 	 * e.g. problem, ddx, but also problemList... see definitions above
 	 */
@@ -68,8 +71,15 @@ public class ScoreBean extends Beans{
 	public int getWeight() {return weight;}
 	public void setWeight(int weight) {this.weight = weight;}		
 	public float getOverallScore() {return overallScore;}
-	public void setOverallScore(float overallScore) {this.overallScore = overallScore;}
+	public void setOverallScore(float overallScore) {this.overallScore = overallScore;}	
+	public int getTiming() {return timing;}
+	public void setTiming(int timing) {this.timing = timing;}
 	
+	public void setTiming(int learnerStage, int expStage){
+		if(learnerStage>expStage) setTiming(TIME_LATE);
+		if(learnerStage==expStage) setTiming(TIME_OK);
+		if(learnerStage<expStage) setTiming(TIME_EARLY);
+	}
 	/* (non-Javadoc)
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */

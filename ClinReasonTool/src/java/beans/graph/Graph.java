@@ -143,7 +143,8 @@ public class Graph extends DirectedWeightedMultigraph<MultiVertex, MultiEdge> {
 		//the weight has to be minimum of the explicit weight or a specified higher weight:s
 		int weight = MultiEdge.WEIGHT_EXPLICIT;
 		if(cnx.getWeight()>MultiEdge.WEIGHT_EXPLICIT) weight = cnx.getWeight();
-		addOrUpdateEdge(getVertexById(source.getListItemId()), getVertexById(target.getListItemId()), type, weight, cnx.getId(), patIllScript.getType());
+		if(source!=null && target!=null) 
+			addOrUpdateEdge(getVertexById(source.getListItemId()), getVertexById(target.getListItemId()), type, weight, cnx.getId(), patIllScript.getType());
 	}
 	
 	public void addImplicitEdge(long sourceId, long targetId, int type){
@@ -301,11 +302,11 @@ public class Graph extends DirectedWeightedMultigraph<MultiVertex, MultiEdge> {
 				//if(sourceVertex)
 				String startIdWithPrefix=null;
 				String targetIdWithPrefix=null;
-				if(sourceVertex.getLearnerVertex()!=null){
+				if(sourceVertex.getLearnerVertex()!=null && targetVertex.getLearnerVertex()!=null){
 					startIdWithPrefix = GraphController.getPrefixByType(sourceVertex.getType())+sourceVertex.getLearnerVertex().getId(); 	
 					targetIdWithPrefix = GraphController.getPrefixByType(targetVertex.getType())+targetVertex.getLearnerVertex().getId();
 				}
-				else if(sourceVertex.getExpertVertex()!=null){
+				else if(sourceVertex.getExpertVertex()!=null && targetVertex.getExpertVertex()!=null){
 					startIdWithPrefix = GraphController.getPrefixByType(sourceVertex.getType())+sourceVertex.getExpertVertex().getId(); 	
 					targetIdWithPrefix = GraphController.getPrefixByType(targetVertex.getType())+targetVertex.getExpertVertex().getId();
 				}

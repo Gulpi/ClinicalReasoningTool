@@ -42,7 +42,7 @@ public class DragDropAction {
 	 * @see beanActions.AddAction#notifyLog(beans.relation.Relation)
 	 */
 	public void notifyLog(Relation relProb){
-		LogEntry le = new LogEntry(LogEntry.DRAGDROP_ACTION, patIllScript.getId(), relProb.getListItemId());
+		LogEntry le = new LogEntry(LogEntry.DRAGDROP_ACTION, patIllScript.getId(), relProb.getListItemId(), relProb.getOrder());
 		le.save();
 	}
 

@@ -67,7 +67,7 @@ public class DiagnosisSubmitAction /*implements Scoreable*/{
 		rel.setTier(Integer.valueOf(tierStr.trim()));
 		new DBClinReason().saveAndCommit(rel);
 		new ScoringListAction(patIllScript).scoreList(Relation.TYPE_DDX);
-		
+		notifyLogChgTier(rel.getId(), rel.getTier());
 	}
 
 	public ScoreBean triggerScoringAction(Beans beanToScore) {
@@ -77,6 +77,11 @@ public class DiagnosisSubmitAction /*implements Scoreable*/{
 	
 	private void notifyLog(){
 		LogEntry log = new LogEntry(LogEntry.SUBMITDDX_ACTION, patIllScript.getId(), -1);
+		log.save();
+	}
+	
+	private void notifyLogChgTier(long relId, int tier){
+		LogEntry log = new LogEntry(LogEntry.CHGDDXTIER_ACTION, patIllScript.getId(), relId, tier);
 		log.save();
 	}
 

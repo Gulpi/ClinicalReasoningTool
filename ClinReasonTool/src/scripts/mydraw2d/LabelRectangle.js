@@ -37,30 +37,22 @@ var LabelRectangle= draw2d.shape.basic.Rectangle.extend({
     },
     
     
-    onDoubleClick:function(){ //open the select box to change label?
+   /* onDoubleClick:function(){ //open the select box to change label?
     	if(this.isResizeable()){
     		//alert("non expert")
     		openListForCM(this.x, this.y, this.id); //we could also trigger this from the context menu with an edit button
     	}
-    	//else alert("expert");
-    },
-/*    onDragStart:function(emitter){
-    	if(this.isResizeable()){
-    		xDragStart = this.x
-    		yDragStart = this.y
-    	}
-    }, */
+    	
+    },*/
+
     onMouseEnter( )
     {
     	xDragStart = this.x;
     	yDragStart = this.y;
-    	///this._super();
-    	//alert(this.x);
     },
     onDragEnd:function(emitter){
     	if(this.isResizeable()){ //we do not save if expert items are moved!
     		handleRectDrop(this);
-    		//alert("enddrag");
     	}
     },
 onContextMenu:function(x,y){

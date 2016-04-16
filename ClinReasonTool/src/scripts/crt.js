@@ -188,6 +188,7 @@ function submitDDXConfirmed(){
 
 function submitDDXConfirmedCallBack(){
 	$("#jdialog" ).dialog( "close" );
+	toggleSubmit();
 	//reload
 	
 }
@@ -210,10 +211,12 @@ function changeTier(id){
 /* we activate the upload button to submit DDX*/ 
 function toggleSubmit(){
 	var hasFinalDiagnosis = hasAFinalDiagnosis();
+
 	if(hasFinalDiagnosis && submitted!="true"){
 		//if($("#uploadddx").attr("class")=="icon-upload-on") return;
 		$("#uploadddx").removeClass("icon-upload-off");
 		$("#uploadddx").addClass("icon-upload-on");
+		$("#submitDDXHref").title="Submit your final diagnoses";
 	}
 	else{
 		//if($("#uploadddx").attr("class")=="icon-upload-off") return;
@@ -221,6 +224,11 @@ function toggleSubmit(){
 		$("#uploadddx").addClass("icon-upload-off");
 		$("#is_icon").removeClass("icon-list-on");
 		$("#is_icon").addClass("icon-list-off");
+		if(submitted =="true")
+			$("#submitDDXHref").title="Final diagnoses already submitted.";
+		else 
+			$("#submitDDXHref").title="Select a final diagnosis in order to submit.";
+
 	}
 }
 
@@ -544,9 +552,10 @@ var active = $( "#tabs" ).tabs( "option", "active" ); //we have to determine the
   }
   
 function doDisplayIS(){
-	if($("#is_icon").attr("class")=="icon-list-on")
+	alert("Not yet implemented - related illness scripts would be displayed here...");
+	/*if($("#is_icon").attr("class")=="icon-list-on")
 		alert("Display of the Illness Script(s) for the (correct) final diagnoses");
-	else alert("You can access the Illness Script only after submitting your final diagnoses.");
+	else alert("You can access the Illness Script only after submitting your final diagnoses.");*/
 }
 
 

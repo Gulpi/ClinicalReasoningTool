@@ -74,10 +74,19 @@ function createConnection(id, sourceId, targetId, learner, exp, expWeight, learn
 	var sourceRect  = my_canvas.getFigure(sourceId); //source: Problem
 	var targetRect  = my_canvas.getFigure(targetId); //target: DDX
 	if(sourceRect!=null && targetRect!=null){
+		if(sourceRect.getOutputPort(0)==null){
+			sourceRect.createPort("output");
+			designPort(sourceRect.getOutputPort(0)); 
+		}
+		if(targetRect.getInputPort(0)==null){
+			targetRect.createPort("input");
+			designPort(targetRect.getInputPort(0)); 
+		}
 		lc.setSource(sourceRect.getOutputPort(0));
 		lc.setTarget(targetRect.getInputPort(0));
 		if(learner=="1") lc.setColor(getWeightToColor(learnerWeight));
-		else if(expFeedback && leaner=="0") lc.setColor(getWeightToColor(expWeight));
+		else if(expFeedback && learner=="0") 
+			lc.setColor(getWeightToColor(expWeight));
 		//Todo if both have added the cnx we have to choose a different weight! 
 		//todo if only expert has added the cnx we have to prevent and changes/deleting
 		my_canvas.add(lc);	
@@ -258,19 +267,19 @@ function editOrAddMngCM(newValue, label){
 
 
 /** we create a rectangle & label with the basic settings like size, color,... **/
-function createRect(name, color, id, exp, learner){
+function createRect(name/*, color*/, id, exp, learner){
 	var rect = new LabelRectangle();
 	rect.label.text=name;
-	//rect.label.setBackgroundColor("#cccccc");
-	//rect.label.setWidth(10);
-	rect.color= new draw2d.util.Color(color);
+
 	rect.setId(id);
 	if(exp=="1" && learner=="0"){
 		rect.setResizeable(false);
 		rect.setDeleteable(false);
 		//rect.setSelectable(false);
 	}
-	
+	rect.label.fontColor = new draw2d.util.Color(getFontColorForRect(learner, exp));
+	rect.setColor(new draw2d.util.Color(getBorderColorForRect(exp, learner)));
+	 rect.setBackgroundColor("#ffffff");
 	return rect;
 }
 
@@ -303,10 +312,17 @@ function createAndAddRectangle(name, x, y, id, shortname, type, learner, exp, pe
 	if(rect!=null) my_canvas.add(rect, Number(x), Number(y));		
 }
 
-function getColorForRect(exp, learner){
+function getBorderColorForRect(exp, learner){
 	var color = "#cccccc"; 
 	if(expFeedback && exp=="1" && learner=="1") //learner and exp have added this item
 		color="#088A29";
+	
+	return color;
+}
+function getFontColorForRect(learner, exp){
+	var color = "#000000"; 
+	if(expFeedback && exp=="0" && learner=="1") //learner and exp have added this item
+		color="#cccccc";
 	
 	return color;
 }
@@ -315,16 +331,14 @@ function getColorForRect(exp, learner){
  **/
 function createAndAddFind(name, x, y, id, shortname,learner, exp, peer){
 	if(!expFeedback && learner=="0") return; //we do not display items that have added by expert if expert feedback is off
-	var color = getColorForRect(exp, learner);
 
-	var rect = createRect(shortname,color/*"#99CC99"*/,id, exp, learner);//new draw2d.shape.basic.Rectangle();
+	var rect = createRect(shortname,id, exp, learner);//new draw2d.shape.basic.Rectangle();
 	if(learner=="1"){ //only add ports if the learner has created this item:
 		rect.createPort("output", new draw2d.layout.locator.RightLocator());
 		designPort(rect.getOutputPort(0));
 	}
-	 rect.setBackgroundColor("#ffffff");	
-	 initAddFind();
-	 return rect;
+		initAddFind();
+	return rect;
 }
 
 /**
@@ -332,14 +346,12 @@ function createAndAddFind(name, x, y, id, shortname,learner, exp, peer){
  **/
 function createAndAddEpi(name, x, y, id, shortname,learner, exp, peer){
 	if(!expFeedback && learner=="0") return; //we do not display items that have added by expert if expert feedback is off
-	var color = getColorForRect(exp, learner);
 
-	var rect = createRect(shortname,color/*"#99CC99"*/,id, exp, learner);//new draw2d.shape.basic.Rectangle();
+	var rect = createRect(shortname/*"#99CC99"*/,id, exp, learner);//new draw2d.shape.basic.Rectangle();
 	if(learner=="1"){ //only add ports if the learner has created this item: 
 		rect.createPort("output", new draw2d.layout.locator.RightLocator());
 		designPort(rect.getOutputPort(0));
 	}
-	rect.setBackgroundColor("#ffffff");	 
 	initAddEpi();
 	return rect;
 }
@@ -355,12 +367,11 @@ function createAndAddHyp(name, x, y, id, shortname,learner, exp, peer, mnm){
 	}
 	else shortname = name;
 	if(!expFeedback && learner=="0") return; //we do not display items that have added by expert if expert feedback is off
-	var color = getColorForRect(exp, learner);
 	var rect = new DDXRectangle();
 	rect.label.text=shortname;
 	//rect.label.setBackgroundColor("#cccccc");
 	//rect.label.setWidth(10);
-	rect.color= new draw2d.util.Color(color);
+	//rect.color= new draw2d.util.Color(color);
 	rect.setId(id);
 	if(learner=="0"){
 		rect.setResizeable(false);
@@ -372,14 +383,12 @@ function createAndAddHyp(name, x, y, id, shortname,learner, exp, peer, mnm){
 		designPort(rect.getInputPort(0)); 
 		designPort(rect.getOutputPort(0));
 	}
-	/*if(name==""){ //then it is a new hyp from drag&drop and we have to attach an editor to select a label:
-		var editor = new draw2d.ui.LabelLMEditor();
-		rect.label.installEditor(editor);
-		editor.start(rect.label);
-	}*/
-	//alert(mnm);
+
 	if(mnm=="0") rect.setBackgroundColor("#ffffff");
 	else rect.setBackgroundColor("#f3546a");
+	
+	rect.label.fontColor = new draw2d.util.Color(getFontColorForRect(learner, exp));
+	rect.setColor(new draw2d.util.Color(getBorderColorForRect(exp, learner)));
 	
 	if(rect!=null) my_canvas.add(rect, Number(x), Number(y));
 	initAddHyp(); //we have to re-init this here, because we have created a clone!!!	
@@ -390,13 +399,12 @@ function createAndAddHyp(name, x, y, id, shortname,learner, exp, peer, mnm){
  **/
 function createAndAddDiagnStep(name, x, y, id, shortname,learner, exp, peer){
 	if(!expFeedback && learner=="0") return; //we do not display items that have added by expert if expert feedback is off
-	var color = getColorForRect(exp, learner);
-	var rect = createRect(shortname,color /*"#F6E3CE"*/, id, exp, learner);
+	var rect = createRect(shortname/*"#F6E3CE"*/, id, exp, learner);
+	//rect.setBorderColor(new draw2d.util.Color(getBorderColorForRect(exp, learner)));
 	if(learner=="1"){ 
 		rect.createPort("input");
 		designPort(rect.getInputPort(0)); 
 	}
-	rect.setBackgroundColor("#ffffff");
 	initAddTest();
 	return rect;
 }
@@ -406,13 +414,13 @@ function createAndAddDiagnStep(name, x, y, id, shortname,learner, exp, peer){
  **/
 function createAndAddMng(name, x, y, id, shortname,learner, exp, peer){
 	if(!expFeedback && learner=="0") return; //we do not display items that have added by expert if expert feedback is off
-	var color = getColorForRect(exp, learner);
-	var rect = createRect(shortname,color /*"#FFFF99"*/, id, exp, learner);
+	//var color = getBorderColorForRect(exp, learner);
+	var rect = createRect(shortname /*"#FFFF99"*/, id, exp, learner);
 	if(learner=="1"){ 
 		rect.createPort("input");
 		designPort(rect.getInputPort(0)); 
 	}
-	rect.setBackgroundColor("#ffffff");			
+	//rect.label.fontColor = new draw2d.util.Color(getFontColorForRect(learner, exp));	
 	initAddMng();
 	return rect;
 }

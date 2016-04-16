@@ -132,13 +132,21 @@ public class MultiVertex /*extends SynonymVertex*/ implements VertexInterface{
 	
 	public String toJson(){
 		StringBuffer sb = new StringBuffer();
-		Relation rel = null; 
+		//Relation rel = null; 
 		int currentStage = new NavigationController().getCRTFacesContext().getPatillscript().getCurrentStage();
-		if(learnerVertex!=null) rel =  learnerVertex;
-		else if(expertVertex!=null){ //include expert vertex, but only if we have reached the necessary stage			
-			if(expertVertex.getStage()<=currentStage) rel = expertVertex; 
-		}
-		if(rel!=null){
+		//if(learnerVertex!=null) rel =  learnerVertex;
+		//else if(expertVertex!=null){ //include expert vertex, but only if we have reached the necessary stage			
+			/*if(expertVertex.getStage()<=currentStage)*/ //rel = expertVertex; 
+		//}
+		if(this.label.equals("Cough"))
+			System.out.println("cough");
+			if(learnerVertex!=null && expertVertex==null )
+				sb.append(createLearnerJson());
+			else if(learnerVertex!=null && expertVertex!=null)
+				sb.append(createLearnerAndExpertJson(currentStage));
+				else if(learnerVertex==null && expertVertex!=null)	
+					sb.append(createExpertJson(currentStage));
+		/*if(rel!=null){
 			//if learner has chosen the item, we alsways display the learners labels (could be a synonm)
 			sb.append("{\"label\":\""+rel.getLabelOrSynLabel()+"\",");
 			sb.append("\"shortlabel\":\""+rel.getShortLabelOrSynShortLabel()+"\",");
@@ -149,23 +157,90 @@ public class MultiVertex /*extends SynonymVertex*/ implements VertexInterface{
 			if(isLearnerVertex()) sb.append("\"l\":\"1\",");
 			else sb.append("\"l\":\"0\",");
 			//if the learner has already picked the item we do not check the experts' stage, but just display it.
-			if(isExpertVertexAtStage(currentStage)) sb.append("\"e\":\"1\",");
+			if(isExpertVertexAtStage(currentStage) || (isExpertVertex() && isLearnerVertex())) sb.append("\"e\":\"1\",");
 			else sb.append("\"e\":\"0\",");
 			sb.append("\"p\":\""+this.peerNums+"\"");
 			if(rel.getRelationType()==Relation.TYPE_DDX ){
-				/*if(isLearnerVertex())*/ sb.append(", \"mnm\":\""+((RelationDiagnosis) rel).getMnm() +"\"");				
-			}
-			sb.append("},");
-		}
+				 sb.append(", \"mnm\":\""+((RelationDiagnosis) rel).getMnm() +"\"");				
+			}*/
+			//sb.append("},");
+		//}
 
 		return sb.toString();
 	}
-	/*public boolean isLearnerAdded() {return learnerAdded;}
-	public void setLearnerAdded(boolean learnerAdded) {this.learnerAdded = learnerAdded;}
-	public boolean isExpAdded() {return expAdded;}
-	public void setExpAdded(boolean expAdded) {this.expAdded = expAdded;}
-	public boolean isIllScriptAdded() {return illScriptAdded;}
-	public void setIllScriptAdded(boolean illScriptAdded) {this.illScriptAdded = illScriptAdded;}
-	public void setPeerNums(int peerNums) {this.peerNums = peerNums;}*/
+	
+	/**
+	 * Learner and expert have chosen the item.
+	 * @param currentStage
+	 * @return
+	 */
+	private String createLearnerAndExpertJson(int currentStage){
+		StringBuffer sb = new StringBuffer();
+		sb.append("{\"label\":\""+learnerVertex.getLabelOrSynLabel()+"\",");
+		sb.append("\"shortlabel\":\""+learnerVertex.getShortLabelOrSynShortLabel()+"\",");
+		sb.append("\"id\":\""+learnerVertex.getIdWithPrefix()+"\",");
+		sb.append("\"x\":\""+((Rectangle)learnerVertex).getX()+"\",");
+		sb.append("\"y\":\""+((Rectangle)learnerVertex).getY()+"\",");	
+		sb.append("\"type\":\""+learnerVertex.getRelationType()+"\",");
+		sb.append("\"l\":\"1\",");
+		//if the learner has already picked the item we do not check the experts' stage, but just display it.
+		if(isExpertVertexAtStage(currentStage) || (isExpertVertex() && isLearnerVertex())) sb.append("\"e\":\"1\",");
+		else sb.append("\"e\":\"0\",");
+		sb.append("\"p\":\""+this.peerNums+"\"");
+		if(learnerVertex.getRelationType()==Relation.TYPE_DDX ){
+			sb.append(", \"mnm\":\""+((RelationDiagnosis) learnerVertex).getMnm() +"\"");				
+		}
+		sb.append("},");
+		return sb.toString();
+	}
+	
+	/**
+	 * Only expert has chosen the item at this stage
+	 * @param currentStage
+	 * @return
+	 */
+	private String createExpertJson(int currentStage){
+		if(!isExpertVertexAtStage(currentStage)) return ""; //learner has not yet reached the stage where the expert has entered this item, so we do not display it.
+		StringBuffer sb = new StringBuffer();
+		sb.append("{\"label\":\""+expertVertex.getLabelOrSynLabel()+"\",");
+		sb.append("\"shortlabel\":\""+expertVertex.getShortLabelOrSynShortLabel()+"\",");
+		sb.append("\"id\":\""+expertVertex.getIdWithPrefix()+"\",");
+		sb.append("\"x\":\""+((Rectangle)expertVertex).getX()+"\",");
+		sb.append("\"y\":\""+((Rectangle)expertVertex).getY()+"\",");	
+		sb.append("\"type\":\""+expertVertex.getRelationType()+"\",");
+		sb.append("\"l\":\"0\",");
+		sb.append("\"e\":\"1\",");
+		
+		sb.append("\"p\":\""+this.peerNums+"\"");
+		if(expertVertex.getRelationType()==Relation.TYPE_DDX ){
+			sb.append(", \"mnm\":\""+((RelationDiagnosis) expertVertex).getMnm() +"\"");				
+		}
+		sb.append("},");
+		return sb.toString();
+	}
+	/**
+	 * Creates the learnerVertex without any experts solution (expert did not choose this item)
+	 * @return
+	 */
+	private String createLearnerJson(){
+		StringBuffer sb = new StringBuffer();
+		if(learnerVertex!=null){
+			//if learner has chosen the item, we alsways display the learners labels (could be a synonm)
+			sb.append("{\"label\":\""+learnerVertex.getLabelOrSynLabel()+"\",");
+			sb.append("\"shortlabel\":\""+learnerVertex.getShortLabelOrSynShortLabel()+"\",");
+			sb.append("\"id\":\""+learnerVertex.getIdWithPrefix()+"\",");
+			sb.append("\"x\":\""+((Rectangle)learnerVertex).getX()+"\",");
+			sb.append("\"y\":\""+((Rectangle)learnerVertex).getY()+"\",");	
+			sb.append("\"type\":\""+learnerVertex.getRelationType()+"\",");
+			 sb.append("\"l\":\"1\",");
+			sb.append("\"e\":\"0\",");
+			sb.append("\"p\":\""+this.peerNums+"\"");
+			if(learnerVertex.getRelationType()==Relation.TYPE_DDX ){
+				sb.append(", \"mnm\":\""+((RelationDiagnosis) learnerVertex).getMnm() +"\"");				
+			}
+		}
+		sb.append("},");
+		return sb.toString();
+	}
 	
 }

@@ -174,26 +174,30 @@ Case placed here...<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
 	  <ul>
 	    <li><a href="#tabs-0"  onclick="switchTab(0);">#{prop['patient']}</a></li> <!-- example for internationalization -->
 	    <li><a href="#tabs-1" onclick="switchTab(1);">Problems</a></li>
-	     <li><a href="#tabs-2" onclick="switchTab(2);">Summary</a></li>
+	    <!--  <li><a href="#tabs-2" onclick="switchTab(2);">Summary</a></li>-->
 	    
-	    <li><a href="#tabs-3" onclick="switchTab(3);">DDX</a></li>
-	    <li><a href="#tabs-4" onclick="switchTab(4);">Diagn. Steps</a></li>
-	    <li><a href="#tabs-5" onclick="switchTab(5);">Therapy</a></li>
-	    <li><a href="#tabs-6" onclick="switchTab(6);">Map</a></li>
-	    <li><a href="#tabs-7" onclick="switchTab(7);">Notes</a></li>
+	    <li><a href="#tabs-2" onclick="switchTab(2);">DDX</a></li>
+	    <li><a href="#tabs-3" onclick="switchTab(3);">Diagn. Steps</a></li>
+	    <li><a href="#tabs-4" onclick="switchTab(4);">Therapy</a></li>
+	    <li><a href="#tabs-5" onclick="switchTab(5);">Map</a></li>
+	   <!--  <li><a href="#tabs-7" onclick="switchTab(7);">Notes</a></li>-->
 	  </ul>
 		  <div id="tabs-0">
-		  <div id="patimg" style="position:relative;right:0px; top:0px; float:right;"><img src="patient.png" width="150px" /></div>
+		  <div id="patimg" style="position:relative;right:0px; top:0px; float:right;"><img src="patient.png" width="100px" /><br/>Delai Johnston</div>
 		  	<div id="descr">
-		  		Name: Delai Johnston<br/>
-			  	Age: 65, Gender: M <br/>
+		  		<!--Name: Delai Johnston<br/>
+			  	  Age: 65, Gender: M <br/>-->
 				Course of Time: 
 				<h:selectOneMenu onchange="javascript:changeCourseOfTime();" class="f_select" id="courseTime" value="#{crtContext.patillscript.courseOfTime}">
 				<f:selectItem itemLabel="-" itemValue="-1" />
 				<f:selectItem itemLabel="acute" itemValue="1" />
 				<f:selectItem itemLabel="chronic" itemValue="2" />
-				</h:selectOneMenu><br/>
-				Exposures/Epi: <input class="f_text" id="epi"></input>
+				</h:selectOneMenu><br/><br/>
+				Summary Statement<br/>
+				<textarea class="f_textarea" name="summSt" id="summStText" cols="40" rows="7">#{crtContext.patillscript.summSt.text}</textarea><br/>
+		  		<a href="javascript:saveSummSt('#{crtContext.patillscript.summStId}');" title="Save your summary statement"><i class="icon-floppy"></i></a>
+				
+				<!--  Exposures/Epi: <input class="f_text" id="epi"></input>
 				<div class="ddx_left">
 				<h:form id="epiform">
 					<h:panelGroup id="epi_group">
@@ -206,13 +210,12 @@ Case placed here...<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
     				     <h:commandButton id="hiddenEpiButton" value="RenderSomething" style="visibility:hidden">
     						<f:ajax render="@form" onevent="updateCallback"></f:ajax>
 						</h:commandButton></h:form>
-				</div>
-				<!-- <select class="f_select" id="courseTime"><option value="-1">-</option><option value="1">acute</option><option value="2">chronic</option></select> --> 
+				</div>-->
 			</div>
 		  </div>
 		  <!-- problems -->
-		  <div id="tabs-1" style="background-color:#cccccc;">	
-		  			<div class="search"><input class="f_text" id="problems"></input></div>
+		  <div id="tabs-1" >	<!--  style="background-color:#cccccc;"-->
+		  			<div class="search"><input class="f_text" id="problems" title="Please add any problems, findings, exposures, or risk factors."></input></div>
 					<div class="ddx_left">
 					<h:form id="probform">
 					<h:panelGroup id="problems_group">
@@ -228,12 +231,12 @@ Case placed here...<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
 						</h:commandButton></h:form>
 				</div>			
 		  </div>
-		  <div id="tabs-2">	
+		 <!-- <div id="tabs-2">	
 		  		<textarea class="f_textarea" name="summSt" id="summStText" cols="50" rows="10">#{crtContext.patillscript.summSt.text}</textarea><br/>
 		  		<a href="javascript:saveSummSt('#{crtContext.patillscript.summStId}');" title="Save your summary statement"><i class="icon-floppy"></i></a>
-		  </div>
+		  </div>-->
 		  <!--  diagnoses -->
-		  <div id="tabs-3">			  		
+		  <div id="tabs-2">			  		
 		  			<div class="search"><input class="f_text" id="ddx"></input></div>
 		  			<div class="ddx_left">
 		  			<h:form id="ddxform">
@@ -252,7 +255,7 @@ Case placed here...<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
 				<div id="confidence_slider" class="conf_slider" title="Please indicate how confident you are with your current differentials."></div>
 		  </div>
 		  <!-- tests -->
-		  <div id="tabs-4">
+		  <div id="tabs-3">
 		  		<div class="search"><input class="f_text" id="tests"></input></div>
 		  			<div class="ddx_left">
 		  			<h:form id="testform">
@@ -272,7 +275,7 @@ Case placed here...<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
 					</div>
 		  	</div>
 		  <!-- managements -->
-		  <div id="tabs-5">
+		  <div id="tabs-4">
 		  	<div class="search"><input class="f_text" id="mng"></input></div>
 		  	<div class="ddx_left">
 	  			<h:form id="mngform">
@@ -293,22 +296,22 @@ Case placed here...<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
 	  		</div>
 		  
 		  <!-- concept map -->
-		   <div id="tabs-6">
+		   <div id="tabs-5">
 				<div id="canvas" class="canvas"> </div>
 				 	<div class="newElemContainer">
 				 		<span id="findcontainer"></span><div id="addfind" class=" newElem newFind">Problem</div><br/>
 						<span id="hypcontainer"></span><div id="addhyp" class=" newElem newHyp">Diagnosis</div><br/>
 			   			<span id="dscontainer"></span> <div id="adddtest" class=" newElem newDiagnStep">Diagn. Step</div><br/>
 			    		<span id="mngcontainer"></span> <div id="addmng" class=" newElem  newMng">Managment</div> 
-			    		<span id="epicontainer"></span> <div id="addepi" class=" newElem  newEpi">Epi</div> 
+			    		<!--<span id="epicontainer"></span> <div id="addepi" class=" newElem  newEpi">Epi</div> -->
 			    		
 			   		 </div>
 		  		 </div>
-		     <div id="tabs-7">	
+		     <!-- <div id="tabs-7">	
 		  		<textarea class="f_textarea" name="notes" id="notes" cols="50" rows="10">#{crtContext.patillscript.note.text}</textarea><br/>
 		  		<a href="javascript:saveNote('#{crtContext.patillscript.noteId}');" title="Save your notes"><i class="icon-floppy"></i></a>
 		  		
-		  </div>
+		  </div>-->
 		    <div id="trashbindiv" class="trashbindiv"><!-- <i class="icon-trash-1"></i>--><div class="msg" id="msg"></div>
 		    
 		    	
@@ -327,7 +330,7 @@ Case placed here...<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
     	  <h:commandLink id="hiddenDDXSubmitButton" action="#{crtContext.patillscript.submitDDX}" value="" style="visibility:collapse" >
 		</h:commandLink>			
 				
-				<a href="javascript:doSubmitDDX();" title="Submit your final diagnoses"><i id="uploadddx" class="icon-upload-off"></i></a>
+				<a id="submitDDXHref" href="javascript:doSubmitDDX();" title="Submit your final diagnoses"><i id="uploadddx" class="icon-upload-off"></i></a>
 				<a href="javascript:doDisplayIS();" title="open illness script"><i id="is_icon" class="icon-list-alt"></i></a>
 		  	</h:form>	</div>
 

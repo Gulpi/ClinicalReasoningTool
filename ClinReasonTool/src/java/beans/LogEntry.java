@@ -33,6 +33,8 @@ public class LogEntry extends Beans{
 	public static final int CHGPROBLEM_ACTION = 10; 
 	public static final int CHGDDX_ACTION = 13; 
 	public static final int CHGDDXMNM_ACTION = 14; //change MnM flag
+	public static final int CHGDDXTIER_ACTION = 35; //change tier flag
+
 	public static final int CHGCOURSETIME_ACTION = 3; 
 	public static final int CHGTEST_ACTION = 21; 
 	public static final int CHGMNG_ACTION = 22; 

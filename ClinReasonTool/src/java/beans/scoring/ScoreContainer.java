@@ -1,7 +1,7 @@
 package beans.scoring;
 
 import java.beans.Beans;
-
+import java.io.Serializable;
 import java.util.*;
 
 import database.DBClinReason;
@@ -11,8 +11,10 @@ import database.DBClinReason;
  * @author ingahege
  *
  */
-public class ScoreContainer {
-	//private long sessionId;
+public class ScoreContainer implements Serializable{
+
+	private static final long serialVersionUID = 1L;
+
 	private long patIllScriptId; //maybe not necessary
 	
 	private Map<Long, ScoreBean> scores; //maybe have a map with actionType as key and then a list of ScoreBean objects?

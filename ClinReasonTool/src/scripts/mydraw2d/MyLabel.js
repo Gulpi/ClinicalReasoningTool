@@ -14,12 +14,12 @@ var MyLabel= draw2d.shape.basic.Label.extend({ //label for all rects except DDX 
     },
     
     
-onDoubleClick:function(emitter){ //open the select box to change label?
+/*onDoubleClick:function(emitter){ //open the select box to change label?
     	if(this.parent.isResizeable()){
     		openListForCM(this.parent.x, this.parent.y, this.parent.id); //we could also trigger this from the context menu with an edit button
     	}
     	else alert("expert");
-    },
+    },*/
 onContextMenu:function(x,y){
     $.contextMenu({
         selector: 'body', 
@@ -54,12 +54,12 @@ var DDXLabel= draw2d.shape.basic.Label.extend({
     },
     
     
-onDoubleClick:function(emitter){ //open the select box to change label?
+/*onDoubleClick:function(emitter){ //open the select box to change label?
     	if(this.parent.isResizeable()){
     		openListForCM(this.parent.x, this.parent.y, this.parent.id); //we could also trigger this from the context menu with an edit button
     	}
     	else alert("expert");
-    },
+    },*/
 onContextMenu:function(x,y){
     $.contextMenu({
         selector: 'body', 

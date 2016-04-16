@@ -64,7 +64,7 @@ input.f_text, textarea.f_textarea {
 	position:relative;
 	width:250px;
 	height:200px;
-	overflow: scroll;
+	overflow: auto;
 	overflow-x: hidden;
 }
 /* vertical slider for confidence layout*/

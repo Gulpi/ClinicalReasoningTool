@@ -35,29 +35,14 @@ var DDXRectangle= draw2d.shape.basic.Rectangle.extend({
 		  //this.label.setCssClass("mylabel");
 		 //this.label.installEditor(new draw2d.ui.LabelLMEditor());
     },
-   /* onSelect:function(emitter){
-    	alert("onselect");
-    	if(this.isResizeable()){
-    		xDragStart = this.x;
-    		yDragStart = this.y;
-    	}
-    }, */
-    /*onDrop:function(emitter){
-    	if(this.isResizeable()){
-    		handleRectDrop(this);
-    	}
-    },*/
     onMouseEnter( )
     {
     	xDragStart = this.x;
     	yDragStart = this.y;
-    	///this._super();
-    	//alert(this.x);
     },
     onDragEnd:function(emitter){
     	if(this.isResizeable()){ //we do not save if expert items are moved!
     		handleRectDrop(this);
-    		//alert("enddrag");
     	}
     },
 

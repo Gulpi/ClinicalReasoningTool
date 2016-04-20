@@ -5,8 +5,8 @@
       xmlns:f="http://java.sun.com/jsf/core">
 
  <li id="selProb_#{prob.id}">#{prob.labelOrSynLabel}
- 	<a href="javascript:delProblem(#{prob.id});"><i class="icon-trash-1"></i></a> 
+ 	<a href="javascript:delProblem(#{prob.id});"><i class="icon-trash-1" title="Delete this item"></i></a> 
  	<!-- <i class="icon-ok2"></i>-->
- 	<i class="#{prob.score}"></i>
+ 	<span class="list_score" id="score_#{prob.id}"><a href="" title="An explanation could be displayed here..."><i class="#{prob.score}"></i></a></span>
  </li>
 </ui:composition>

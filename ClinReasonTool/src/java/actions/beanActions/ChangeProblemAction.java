@@ -2,12 +2,12 @@ package actions.beanActions;
 
 import java.beans.Beans;
 
-import actions.feedbackActions.FeedbackCreator;
 import actions.scoringActions.Scoreable;
 import beans.LogEntry;
 import beans.PatientIllnessScript;
 import beans.relation.*;
 import database.DBClinReason;
+import database.DBList;
 import model.ListItem;
 
 /**
@@ -16,7 +16,7 @@ import model.ListItem;
  * @author ingahege
  *
  */
-public class ChangeProblemAction implements ChgAction, Scoreable, FeedbackCreator{
+public class ChangeProblemAction implements ChgAction, Scoreable{
 
 	private PatientIllnessScript patIllScript;
 	
@@ -32,8 +32,8 @@ public class ChangeProblemAction implements ChgAction, Scoreable, FeedbackCreato
 	
 	public void changeProblem(long newProbId, long probRel){
 		RelationProblem probToChg = patIllScript.getProblemById(probRel);
-		ListItem oldProblem = new DBClinReason().selectListItemById(probToChg.getListItemId());
-		ListItem newProblem = new DBClinReason().selectListItemById(newProbId);
+		ListItem oldProblem = new DBList().selectListItemById(probToChg.getListItemId());
+		ListItem newProblem = new DBList().selectListItemById(newProbId);
 		if(probToChg!=null && newProblem!=null && oldProblem!=null){
 			notifyLog(probToChg, newProbId);
 			probToChg.setProblem(newProblem);
@@ -54,12 +54,6 @@ public class ChangeProblemAction implements ChgAction, Scoreable, FeedbackCreato
 
 	@Override
 	public void triggerScoringAction(Beans beanToScore) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void triggerFeedbackAction() {
 		// TODO Auto-generated method stub
 		
 	}

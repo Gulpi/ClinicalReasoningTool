@@ -55,6 +55,7 @@ var lang = "#{crtContext.patillscript.locale}";
 var my_canvas = null;
 var currentStage = $.getUrlVar('stage');
 var expFeedback = false; //default is that expert feedback is off
+var peerFeedback = false; //default is that expert feedback is off
 var active;
 //var errorNum = "#{crtContext.patillscript.errorNum}";
 var submitted = "#{crtContext.patillscript.submitted}";
@@ -84,6 +85,7 @@ $(function() {
        // event: "mouseover"
       });
 
+	//toggleExpertFeedbackOnLoad();
     $( document ).tooltip({
     	items: " rect, [title], text, tspan",
     	content: function() {
@@ -237,7 +239,7 @@ Case placed here...<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
 		  </div>-->
 		  <!--  diagnoses -->
 		  <div id="tabs-2">			  		
-		  			<div class="search"><input class="f_text" id="ddx"></input></div>
+		  			<div class="search"><input class="f_text" id="ddx" title="Please add your differentials"></input></div>
 		  			<div class="ddx_left">
 		  			<h:form id="ddxform">
 					<h:panelGroup id="ddx_group">
@@ -256,7 +258,7 @@ Case placed here...<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
 		  </div>
 		  <!-- tests -->
 		  <div id="tabs-3">
-		  		<div class="search"><input class="f_text" id="tests"></input></div>
+		  		<div class="search"><input class="f_text" id="tests" title="Please add any tests or examinations you want to order or perform."></input></div>
 		  			<div class="ddx_left">
 		  			<h:form id="testform">
 		  			<h:panelGroup id="test_group">
@@ -276,7 +278,7 @@ Case placed here...<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
 		  	</div>
 		  <!-- managements -->
 		  <div id="tabs-4">
-		  	<div class="search"><input class="f_text" id="mng"></input></div>
+		  	<div class="search"><input class="f_text" id="mng" title="Please add any management decisions for your patient."></input></div>
 		  	<div class="ddx_left">
 	  			<h:form id="mngform">
 	  			<h:panelGroup id="mng_group">

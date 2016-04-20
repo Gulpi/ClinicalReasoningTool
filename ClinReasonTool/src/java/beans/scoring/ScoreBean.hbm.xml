@@ -12,7 +12,7 @@
 				<param name ="sequence">CRT.CR_SEQ</param>
 			</generator>
 		</id>
-		<property name="patIllnessScriptId" column="patientillnessscript_id" type="long" />			
+		<property name="patIllScriptId" column="patientillnessscript_id" type="long" />			
 		<property name="scoreBasedOnExp" column="score_exp" type="float" />
 		<property name="scoreBasedOnPeer" column="score_peer" type="float" />
 		<property name="scoreBasedOnIllScript" column="score_illscr" type="float" />
@@ -21,6 +21,7 @@
 		<property name="type" column="item_type" type="int"/>	
 		<property name="weight" column="weight" type="int"/>
 		<property name="timing" column="timing" type="int"/>
+		<property name="feedbackOn" column="feedback" type="int"/>
 		
 </class>
 </hibernate-mapping>

@@ -2,12 +2,12 @@ package actions.beanActions;
 
 import java.beans.Beans;
 
-import actions.feedbackActions.FeedbackCreator;
 import actions.scoringActions.Scoreable;
 import beans.LogEntry;
 import beans.PatientIllnessScript;
 import beans.relation.*;
 import database.DBClinReason;
+import database.DBList;
 import model.ListItem;
 
 /**
@@ -16,7 +16,7 @@ import model.ListItem;
  * @author ingahege
  *
  */
-public class ChangeEpiAction implements ChgAction, Scoreable, FeedbackCreator{
+public class ChangeEpiAction implements ChgAction, Scoreable{
 
 	private PatientIllnessScript patIllScript;
 	
@@ -32,8 +32,8 @@ public class ChangeEpiAction implements ChgAction, Scoreable, FeedbackCreator{
 	
 	public void changeEpi(long newEpiId, long epiRel){
 		RelationEpi epiToChg = patIllScript.getEpiById(epiRel);
-		ListItem oldEpi = new DBClinReason().selectListItemById(epiToChg.getListItemId());
-		ListItem newEpi = new DBClinReason().selectListItemById(newEpiId);
+		ListItem oldEpi = new DBList().selectListItemById(epiToChg.getListItemId());
+		ListItem newEpi = new DBList().selectListItemById(newEpiId);
 		if(epiToChg!=null && newEpi!=null && oldEpi!=null){
 			notifyLog(epiToChg, newEpiId);
 			epiToChg.setEpi(newEpi);
@@ -58,9 +58,4 @@ public class ChangeEpiAction implements ChgAction, Scoreable, FeedbackCreator{
 		
 	}
 
-	@Override
-	public void triggerFeedbackAction() {
-		// TODO Auto-generated method stub
-		
-	}
 }

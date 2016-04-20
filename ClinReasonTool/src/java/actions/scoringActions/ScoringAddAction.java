@@ -1,10 +1,12 @@
 package actions.scoringActions;
 
 import application.AppBean;
+import beans.CRTFacesContext;
 import beans.PatientIllnessScript;
 import beans.graph.Graph;
 import beans.graph.MultiVertex;
 import beans.relation.Relation;
+import beans.scoring.FeedbackBean;
 import beans.scoring.ScoreBean;
 import beans.scoring.ScoreContainer;
 //import errors.WrongProblemError;
@@ -36,7 +38,7 @@ public class ScoringAddAction implements ScoringAction{
 		if(scoreBean==null){ //then this item has not yet been scored: 
 			scoreBean = new ScoreBean(patIllScript.getId(), mvertex.getVertexId(), mvertex.getType());
 			if(g.getExpertPatIllScriptId()>0) //otherwise we do not have an experts' patIllScript to compare with				
-				calculateAddActionScoreBasedOnExpert(mvertex, scoreBean, patIllScript.getParentId(), patIllScript.getCurrentStage());				
+				calculateAddActionScoreBasedOnExpert(mvertex, scoreBean, patIllScript);				
 						
 			if(g.getPeerNums()>MIN_PEERS) //we have enough peers, so we can score based on this as well:
 				calculateAddActionScoreBasedOnPeers(mvertex, scoreBean, g.getPeerNums());
@@ -66,11 +68,13 @@ public class ScoringAddAction implements ScoringAction{
 	 * 0 = problem is not at all in the experts' list (no check) 
 	 * TODO consider position? probably not possible on add, but on move! 
 	 */	
-	private void calculateAddActionScoreBasedOnExpert(MultiVertex mvertex, ScoreBean scoreBean, long parentId, int currentStage){
-		PatientIllnessScript expIllScript = AppBean.getExpertPatIllScript(parentId);
-		scoreBean.setTiming(currentStage, expIllScript.getSubmittedStage());
+	private void calculateAddActionScoreBasedOnExpert(MultiVertex mvertex, ScoreBean scoreBean, PatientIllnessScript patIllScript){
+		PatientIllnessScript expIllScript = AppBean.getExpertPatIllScript(patIllScript.getParentId());
+		
 		Relation expRel = mvertex.getExpertVertex();
 		Relation learnerRel = mvertex.getLearnerVertex();
+		scoreBean.setTiming(learnerRel.getStage(), expRel.getStage());
+		setFeedbackInfo(scoreBean);
 		if(expRel!=null /*&& expRel.getSynId()<=0*/){ //expert has chosen this item (not synonym)
 			if(learnerRel!=null && learnerRel.getSynId()<=0) scoreBean.setScoreBasedOnExp(SCORE_EXP_SAMEAS_LEARNER);
 			if(learnerRel!=null && learnerRel.getSynId()>0){//learner has chosen a synonym:
@@ -80,6 +84,20 @@ public class ScoringAddAction implements ScoringAction{
 		}
 		else //expert has not picked this item (nor a synonym)
 			scoreBean.setScoreBasedOnExp(SCORE_NOEXP_BUT_LEARNER);		
+	}
+	
+	/**
+	 * We store in the ScoreBean whether at this time the learner has already seen the expert's/peer feedback for
+	 * the item he has just added.
+	 * @param scoreBean
+	 */
+	private void setFeedbackInfo(ScoreBean scoreBean){
+		CRTFacesContext crtContext = new NavigationController().getCRTFacesContext();
+		boolean expFBOn = crtContext.getFeedbackContainer().isExpFeedbackOn(scoreBean.getType());
+		boolean peerFBOn = crtContext.getFeedbackContainer().isPeerFeedbackOn(scoreBean.getType());
+		if(expFBOn) scoreBean.setFeedbackOn(FeedbackBean.FEEDBACK_EXP);
+		if(peerFBOn) scoreBean.setFeedbackOn(FeedbackBean.FEEDBACK_PEER);
+		if(expFBOn && peerFBOn) scoreBean.setFeedbackOn(FeedbackBean.FEEDBACK_EXP_PEER);		
 	}
 	
 	private void calculateAddActionScoreBasedOnPeers(MultiVertex mvertex, ScoreBean scoreBean, int overallPeers){

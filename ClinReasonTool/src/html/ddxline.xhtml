@@ -11,8 +11,8 @@
   	 	
   	 	#{ddx.labelOrSynLabel}
    		<a href="javascript:delDiagnosis(#{ddx.id});">
-   		<i class="icon-trash-1"></i></a> 
-   		<i class="#{ddx.score}"></i>
+   		<i class="icon-trash-1" title="Delete this diagnosis"></i></a> 
+   		<span class="list_score" id="score_#{ddx.id}"><a href="" title="An explanation could be displayed here..."><i class="#{ddx.score}"></i></a></span>
   	</li>
 
 </ui:composition>

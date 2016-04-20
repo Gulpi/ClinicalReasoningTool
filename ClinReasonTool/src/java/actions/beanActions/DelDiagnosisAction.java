@@ -2,7 +2,6 @@ package actions.beanActions;
 
 import java.util.*;
 
-import beans.IllnessScriptInterface;
 import beans.LogEntry;
 import beans.PatientIllnessScript;
 import beans.graph.Graph;

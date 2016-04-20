@@ -7,6 +7,7 @@ import beans.LogEntry;
 import beans.PatientIllnessScript;
 import beans.relation.*;
 import database.DBClinReason;
+import database.DBList;
 import model.ListItem;
 
 /**
@@ -31,8 +32,8 @@ public class ChangeDiagnosisAction implements ChgAction, Scoreable{
 	
 	public void changeDiagnosis(long newDDXId, long ddxRel){
 		RelationDiagnosis ddxToChg = patIllScript.getDiagnosisById(ddxRel);
-		ListItem oldDDX = new DBClinReason().selectListItemById(ddxToChg.getListItemId());
-		ListItem newDDX = new DBClinReason().selectListItemById(newDDXId);
+		ListItem oldDDX = new DBList().selectListItemById(ddxToChg.getListItemId());
+		ListItem newDDX = new DBList().selectListItemById(newDDXId);
 		if(ddxToChg!=null && newDDX!=null && oldDDX!=null){
 			notifyLog(ddxToChg, newDDXId);
 			ddxToChg.setDiagnosis(newDDX);

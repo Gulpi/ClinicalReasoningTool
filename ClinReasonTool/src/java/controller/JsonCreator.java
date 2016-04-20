@@ -3,7 +3,7 @@ package controller;
 import java.io.*;
 import java.util.*;
 
-import database.DBClinReason;
+import database.DBList;
 import model.ListItem;
 import model.Synonym;
 import util.StringUtilities;
@@ -44,7 +44,7 @@ public class JsonCreator {
 	//TODO also load item which have a corresponding (secondary code)
 	private void exportOneList(Locale loc){
 		//setIdsForSyn();
-		List<ListItem> items = new DBClinReason().selectListItemsByTypesAndLang(loc, new String[]{TYPE_PROBLEM, TYPE_TEST,TYPE_DRUGS, TYPE_EPI, TYPE_MANUALLY_ADDED, TYPE_PERSONS});
+		List<ListItem> items = new DBList().selectListItemsByTypesAndLang(loc, new String[]{TYPE_PROBLEM, TYPE_TEST,TYPE_DRUGS, TYPE_EPI, TYPE_MANUALLY_ADDED, TYPE_PERSONS});
 		if(items==null || items.isEmpty()) return; //then something went really wrong!
 		try{
 			File f = null;

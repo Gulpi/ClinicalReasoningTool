@@ -15,9 +15,9 @@ import beans.relation.*;
 import controller.NavigationController;
 import controller.RelationController;
 import database.DBClinReason;
+import database.DBList;
 import model.Synonym;
 import util.Logger;
-import actions.feedbackActions.FeedbackCreator;
 import actions.scoringActions.ScoringAddAction;
 import actions.scoringActions.Scoreable;
 
@@ -28,7 +28,7 @@ import actions.scoringActions.Scoreable;
  * @author ingahege
  *
  */
-public class AddEpiAction implements AddAction, Scoreable, FeedbackCreator{
+public class AddEpiAction implements AddAction, Scoreable{
 
 	private PatientIllnessScript patIllScript;
 	
@@ -68,7 +68,7 @@ public class AddEpiAction implements AddAction, Scoreable, FeedbackCreator{
 		if(x<0 && y<0) rel.setXAndY(calculateNewItemPosInCanvas());		
 		else rel.setXAndY(new Point(x,y)); //problem has been created from the concept map, therefore we have a position
 		patIllScript.getEpis().add(rel);
-		rel.setEpi(new DBClinReason().selectListItemById(id));
+		rel.setEpi(new DBList().selectListItemById(id));
 		save(rel);
 		notifyLog(rel);
 		updateGraph(rel);
@@ -118,10 +118,10 @@ public class AddEpiAction implements AddAction, Scoreable, FeedbackCreator{
 	}
 
 	@Override
-	public void triggerFeedbackAction() {
+	/*public void triggerFeedbackAction() {
 		// TODO Auto-generated method stub
 		
-	}
+	}*/
 
 	/* (non-Javadoc)
 	 * @see actions.beanActions.AddAction#updateGraph(beans.relation.Relation)

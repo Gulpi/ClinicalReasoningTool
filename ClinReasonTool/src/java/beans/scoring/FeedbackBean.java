@@ -2,50 +2,75 @@ package beans.scoring;
 
 import java.beans.Beans;
 import java.io.Serializable;
-import java.util.*;
+import java.sql.Timestamp;
 
-import javax.faces.bean.SessionScoped;
 import database.DBClinReason;
 
 /**
- * Contains all elements we need for the different types of Feedback, such as the illnessScripts,
- * patientIllnessScript of the expert for this VP, or any peer stuff we want to display.
- * 
+ * At which stage on which tab (for which items) has the user seen/consulted feedback...This is 
+ * important for the learning analytics (scoring?), so that we know whether a learner has performed an action based 
+ * on feedback he already had (or on his own)
+ * We create a FeedbackBean object every time the learner clicks on the feedback button or switches to another task (tab)
+ * during feedbackOn status.
  * @author ingahege
  *
  */
-@SessionScoped
 public class FeedbackBean extends Beans implements Serializable{
-
+	public static final int FEEDBACK_NONE = 0;
+	public static final int FEEDBACK_EXP = 1;
+	public static final int FEEDBACK_PEER = 2;
+	public static final int FEEDBACK_EXP_PEER = 3;
 	/**
-	 * the patientIllnessScript created by the expert based on the VP
+	 * an internal id...
 	 */
-	//private PatientIllnessScript expertPatIllScript;
+	private long id;
+	private int stage; 
 	/**
-	 * A patient can suffer from more than one diagnosis, therefore, a patientIllnessScript can be attached 
-	 * to more than one IllnessScript. We load the illnessScripts based on diagnoses attached to the expertPatIllScript
-	 * OR if there is no expertPatIllScript we have to load them based on the diagnoses in the learners patientIllnessScript.
-	 * 
+	 * did the user see the feedback concerning problems, ddx, etc (see static definitions in Relation)
 	 */
-	//private List<IllnessScript> relatedIllnessScripts;
-
+	private int itemType;
+	private long patIllScriptId; 
+	private int type; 
+	/**
+	 * is it on (true) or off (false)
+	 */
+	private boolean value; 
+	private Timestamp creationDate;
 	
-	public FeedbackBean(){};
-	/**
-	 * @param loadExpScript load the PatientIllnessScript of the expert for this VP
-	 * @param loadAllIllScripts load related IllnessScripts for this VP 
-	 * @param parentId id of the parent object, e.g. VP 
-	 */
-	public FeedbackBean(boolean loadAllIllScripts, long parentId){
-		//if(loadAllIllScripts) -> this is already done when opening the tool for a VP
-		//	this.relatedIllnessScripts = new DBClinReason().selectIllScriptByParentId(parentId);
-		//we always have to load the expert' script because expert feedback is based on it. 
-		//this.expertPatIllScript = new DBClinReason().selectExpertPatIllScript(parentId);
+	public FeedbackBean(){}
+	public FeedbackBean(int stage, int type, int itemType, long patIllScriptId){
+		this.stage = stage;
+		this.type = type; 
+		this.itemType = itemType;
+		this.patIllScriptId = patIllScriptId;
+	}
+	public int getStage() {return stage;}
+	public void setStage(int stage) {this.stage = stage;}
+	public int getItemType() {return itemType;}
+	public void setItemType(int itemType) {this.itemType = itemType;}
+	public long getPatIllScriptId() {return patIllScriptId;}
+	public void setPatIllScriptId(long patIllScriptId) {this.patIllScriptId = patIllScriptId;}
+	public boolean isValue() {return value;}
+	public void setValue(boolean value) {this.value = value;}
+	public int getType() {return type;}
+	public void setType(int type) {this.type = type;}
+	public long getId() {return id;}
+	public void setId(long id) {this.id = id;} 
+	
+	public void save(){
+		new DBClinReason().saveAndCommit(this);
 	}
 	
-	/*public PatientIllnessScript getExpertPatIllScript() {return expertPatIllScript;}
-	public void setExpertPatIllScript(PatientIllnessScript expertPatIllScript) {this.expertPatIllScript = expertPatIllScript;}	
-	public List<IllnessScript> getRelatedIllnessScripts() {return relatedIllnessScripts;}
-	public void setRelatedIllnessScripts(List<IllnessScript> relatedIllnessScripts) {this.relatedIllnessScripts = relatedIllnessScripts;}
-*/
+	/* (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	public boolean equals(Object o){
+		if(o instanceof FeedbackBean){
+			FeedbackBean fb = (FeedbackBean) o;
+			if(fb.getId()==this.id) return true;
+			if(fb.getStage()==this.stage && fb.getItemType()==this.itemType && fb.type==this.type && fb.getPatIllScriptId()==this.patIllScriptId) return true;
+		}
+		return false;
+	}
+			
 }

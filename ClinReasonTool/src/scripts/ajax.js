@@ -31,9 +31,26 @@ $.extend({
  * name = name of problem, diagnosis,...
  */
 function sendAjax(id, callback, type, name){
+	sendAjaxUrl(id, callback, type, name, "tabs_ajax.xhtml");
+}
+
+
+/**
+ * This is for calls not directly related to the patientIllnessScript, but for the context
+ * we start an ajax call with changed params. We also include always the session id!
+ * id = id of the problem/diagnosis,...
+ * callback = function to call when coming back from ajax cal
+ * type = method name to call server-side to handle the call.
+ * name = name of problem, diagnosis,...
+ */
+function sendAjaxContext(id, callback, type, name){
+	sendAjaxUrl(id, callback, type, name, "tabs_ajax2.xhtml");
+}
+
+function sendAjaxUrl(id, callback, type, name, url){
 	$.ajax({
 		  method: "POST",
-		  url: "tabs_ajax.xhtml",
+		  url: url,
 		  data: { type: type, id: id, session_id: sessId, name: name, script_id: scriptId, stage:currentStage }
 		})
 	  .done(function( response ) {
@@ -51,6 +68,7 @@ function sendAjaxCM(id, callback, type, name, x, y){
 		  handleResponse(response, callback, name);
 	  });	
 }
+
 /* display msg and call callback function*/
 function handleResponse(response, callback, name){
 	 displayErrorMsg(response);
@@ -74,7 +92,13 @@ function doNothing(){}
  */
 function switchTab(tabidx){	
 	Cookies.set('tab', tabidx);
-	if(tabidx==4) updateGraph();
+	if(tabidx==5) updateGraph();
+	
+	if(expFeedback==true || peerFeedback==true){ //we only have to trigger a call if the expert feedback is on 
+		sendAjaxContext(tabidx, doNothing, "toogleExpFeedback", tabidx);
+		//TODO peerfeedback...
+	}
+	
 }
 
 function getCurrentTab(){	

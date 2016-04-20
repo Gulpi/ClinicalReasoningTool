@@ -9,6 +9,7 @@ import beans.relation.Relation;
 import beans.relation.RelationManagement;
 
 import database.DBClinReason;
+import database.DBList;
 import model.ListItem;
 
 /**
@@ -33,8 +34,8 @@ public class ChangeMngAction implements ChgAction, Scoreable{
 	
 	public void changeMng(long newMngId, long mngRel){
 		RelationManagement mngToChg = patIllScript.getMngById(mngRel);
-		ListItem oldMng = new DBClinReason().selectListItemById(mngToChg.getListItemId());
-		ListItem newMng = new DBClinReason().selectListItemById(newMngId);
+		ListItem oldMng = new DBList().selectListItemById(mngToChg.getListItemId());
+		ListItem newMng = new DBList().selectListItemById(newMngId);
 		if(mngToChg!=null && newMng!=null && oldMng!=null){
 			notifyLog(mngToChg, newMngId);
 			mngToChg.setManagement(newMng);

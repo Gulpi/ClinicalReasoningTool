@@ -5,6 +5,8 @@ import java.io.Serializable;
 import java.util.*;
 
 import database.DBClinReason;
+import database.DBScoring;
+import util.Logger;
 
 /**
  * Contains all scores for the PatientIllnessScript
@@ -47,17 +49,11 @@ public class ScoreContainer implements Serializable{
 	public ScoreBean getScoreBeanByScoredItem(long itemId){
 		if(scores==null || scores.isEmpty()) return null;
 		return scores.get(new Long(itemId));
-		/*Iterator<ScoreBean> it = scores.keyset().iterator();
-		while(it.hasNext()){
-			Long id 
-			ScoreBean sb = it.next(); 
-			if(sb.getScoredItem() == itemId) return sb;
-		}*/
 	}
 	
 	public void initScoreContainer(){
-		scores = new DBClinReason().selectScoreBeansByPatIllScriptId(this.patIllScriptId);
-		System.out.println("ScoreCOntainer init done");
+		scores = new DBScoring().selectScoreBeansByPatIllScriptId(this.patIllScriptId);
+		Logger.out("ScoreContainer init done");
 	}
 
 }

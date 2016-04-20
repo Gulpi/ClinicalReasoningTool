@@ -55,6 +55,9 @@ public class LogEntry extends Beans{
 	public static final int CREATENOTE_ACTION = 27;
 	public static final int UPDATENOTE_ACTION = 28;
 	public static final int SUBMITDDX_ACTION = 32;
+	
+	public static final int FEEDBACK_ON_ACTION = 36;
+	public static final int FEEDBACK_OFF_ACTION = 37;
 
 	
 	/**

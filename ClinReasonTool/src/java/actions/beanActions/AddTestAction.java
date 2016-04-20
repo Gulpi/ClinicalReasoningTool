@@ -7,7 +7,6 @@ import java.util.*;
 import javax.faces.application.FacesMessage;
 import javax.faces.application.FacesMessage.Severity;
 
-import actions.feedbackActions.FeedbackCreator;
 import actions.scoringActions.Scoreable;
 import actions.scoringActions.ScoringAddAction;
 import beans.IllnessScriptInterface;
@@ -20,9 +19,10 @@ import beans.relation.RelationTest;
 import controller.NavigationController;
 import controller.RelationController;
 import database.DBClinReason;
+import database.DBList;
 import util.Logger;
 
-public class AddTestAction implements AddAction, Scoreable, FeedbackCreator{
+public class AddTestAction implements AddAction, Scoreable/*, FeedbackCreator*/{
 	
 	private PatientIllnessScript patIllScript;
 	
@@ -75,7 +75,7 @@ public class AddTestAction implements AddAction, Scoreable, FeedbackCreator{
 		else rel.setXAndY(new Point(x,y)); //problem has been created from the concept map, therefore we have a position
 
 		patIllScript.getTests().add(rel);
-		rel.setTest(new DBClinReason().selectListItemById(id));
+		rel.setTest(new DBList().selectListItemById(id));
 		save(rel);
 		updateGraph(rel);
 		notifyLog(rel);
@@ -108,12 +108,6 @@ public class AddTestAction implements AddAction, Scoreable, FeedbackCreator{
 		
 	}
 
-
-	@Override
-	public void triggerFeedbackAction() {
-		// TODO Auto-generated method stub
-		
-	}
 	
 	/* (non-Javadoc)
 	 * @see actions.beanActions.AddAction#updateGraph(beans.relation.Relation)

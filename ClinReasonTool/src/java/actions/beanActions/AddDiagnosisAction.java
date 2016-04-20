@@ -16,6 +16,7 @@ import beans.relation.*;
 import controller.NavigationController;
 import controller.RelationController;
 import database.DBClinReason;
+import database.DBList;
 import model.Synonym;
 import util.Logger;
 
@@ -44,30 +45,7 @@ public class AddDiagnosisAction implements AddAction, Scoreable{
 	 */
 	public void add(String idStr, String name, String xStr, String yStr){ 
 		new RelationController().initAdd(idStr, name, xStr, yStr, this);
-		/*long id;
-		int type = AddAction.ADD_TYPE_MAINITEM;
-		if(idStr.startsWith(Synonym.SYN_VERTEXID_PREFIX)){
-			type = AddAction.ADD_TYPE_SYNITEM;
-			id = Long.valueOf(idStr.substring(Synonym.SYN_VERTEXID_PREFIX.length()));
-		}
-		else id = Long.valueOf(idStr.trim());
-		float x = Float.valueOf(xStr.trim());
-		float y = Float.valueOf(yStr.trim());
-		
-		if(type==AddAction.ADD_TYPE_MAINITEM) addDiagnosis(id, name, (int)x, (int)y);
-		else{
-			//we have to find the parent id of the synonym.
-			Synonym syn = new DBClinReason().selectSynonymById(id);
-			addDiagnosis(syn.getListItemId(), name, (int)x, (int)y, id); //then we add a synonym
-		}
-		/*long id = Long.valueOf(idStr.trim());
-		float x = Float.valueOf(xStr.trim());
-		float y = Float.valueOf(yStr.trim());		
-		addDiagnosis(id, name, (int)x, (int)y);*/
 	}
-	/*private void addDiagnosis(long id, String name, int x, int y){
-		addDiagnosis(id, name, x, y, -1);
-	}*/
 	
 	public void addRelation(long id, String name, int x, int y, long synId){
 		if(patIllScript.getDiagnoses()==null) patIllScript.setDiagnoses(new ArrayList<RelationDiagnosis>());
@@ -82,7 +60,7 @@ public class AddDiagnosisAction implements AddAction, Scoreable{
 		else rel.setXAndY(new Point(x,y)); //problem has been created from the concept map, therefore we have a position
 
 		patIllScript.getDiagnoses().add(rel);
-		rel.setDiagnosis(new DBClinReason().selectListItemById(id));
+		rel.setDiagnosis(new DBList().selectListItemById(id));
 		save(rel);
 		notifyLog(rel);
 		updateGraph(rel);

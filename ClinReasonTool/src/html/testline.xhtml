@@ -7,8 +7,8 @@
    	<li id="selds_#{test.id}">  
   	 	#{test.labelOrSynLabel}
    		<a href="javascript:delTest(#{test.id});">
-   		<i class="icon-trash-1"></i></a> 
-   		<i class="#{test.score}"></i>
+   		<i class="icon-trash-1" title="Delete this item"></i></a> 
+   		<span class="list_score" id="score_#{test.id}"><a href="" title="An explanation could be displayed here..."><i class="#{test.score}"></i></a></span>
   	</li>
 
 </ui:composition>

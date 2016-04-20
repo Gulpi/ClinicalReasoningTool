@@ -10,14 +10,12 @@ import javax.faces.context.FacesContext;
 
 import beans.*;
 import beans.graph.Graph;
-import beans.graph.MultiEdge;
 import beans.relation.*;
 import controller.NavigationController;
 import controller.RelationController;
 import database.DBClinReason;
-import model.Synonym;
+import database.DBList;
 import util.Logger;
-import actions.feedbackActions.FeedbackCreator;
 import actions.scoringActions.ScoringAddAction;
 import actions.scoringActions.Scoreable;
 
@@ -28,7 +26,7 @@ import actions.scoringActions.Scoreable;
  * @author ingahege
  *
  */
-public class AddProblemAction implements AddAction, Scoreable, FeedbackCreator{
+public class AddProblemAction implements AddAction, Scoreable{
 
 	private PatientIllnessScript patIllScript;
 	
@@ -91,7 +89,7 @@ public class AddProblemAction implements AddAction, Scoreable, FeedbackCreator{
 		if(x<0 && y<0) rel.setXAndY(calculateNewItemPosInCanvas());		
 		else rel.setXAndY(new Point(x,y)); //problem has been created from the concept map, therefore we have a position
 		patIllScript.getProblems().add(rel);
-		rel.setProblem(new DBClinReason().selectListItemById(id));
+		rel.setProblem(new DBList().selectListItemById(id));
 		save(rel);
 		notifyLog(rel);
 		updateGraph(rel);
@@ -141,10 +139,10 @@ public class AddProblemAction implements AddAction, Scoreable, FeedbackCreator{
 	}
 
 	@Override
-	public void triggerFeedbackAction() {
+	/*public void triggerFeedbackAction() {
 		// TODO Auto-generated method stub
 		
-	}
+	}*/
 
 	/* (non-Javadoc)
 	 * @see actions.beanActions.AddAction#updateGraph(beans.relation.Relation)

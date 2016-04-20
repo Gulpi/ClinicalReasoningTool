@@ -46,22 +46,16 @@ public class HibernateSession {
 	 */
 	public boolean add_all_classes = true;
 	
-	public HibernateSession() {
-		
-	}
+	public HibernateSession() {}
 	
-	public HibernateSession(Properties p) {
-		alternativeProperties = p;
-	}
+	public HibernateSession(Properties p) {alternativeProperties = p;}
 	
 	/**
 	 * @return Returns the session factory. If null, an init-methode will be called first.
 	 */
 	public SessionFactory getFactory() 
 	{ 
-		if(factory==null)
-			initHibernate();
-
+		if(factory==null) initHibernate();
 		return factory;
 	}
 	
@@ -70,9 +64,7 @@ public class HibernateSession {
 			cfg = null;
 			factory = null;
 		}
-		catch(Throwable th) {
-			//ok
-		}
+		catch(Throwable th) {}
 	}
 	
 	/**
@@ -102,6 +94,7 @@ public class HibernateSession {
 			cfg.addClass(beans.helper.Range.class);
 			cfg.addClass(beans.scoring.ScoreBean.class);
 			cfg.addClass(beans.error.MyError.class);
+			cfg.addClass(beans.scoring.FeedbackBean.class);
 			
 			if (factory==null) {
 				//init_setHibernateDialect();
@@ -134,205 +127,7 @@ public class HibernateSession {
 		}
 	}
 
-	/*private void addAutoHSQLDBConfig() {
-		if (CasusConfiguration.getGlobalBooleanValue("HibernateSession.overwriteDSSettingWithContextHsqldbSettings", false)) {
-			//Logger.info("HibernateSession.initHibernate ", "HibernateSession.overwriteDSSettingWithContextHsqldbSettings!!!");
-
-			cfg.setProperty("hibernate.connection.datasource", "");
-			cfg.getProperties().remove("hibernate.connection.datasource");
-			cfg.setProperty("hibernate.dialect", "org.hibernate.dialect.HSQLDialect");
-			cfg.setProperty("hibernate.connection.driver_class", "org.hsqldb.jdbcDriver");
-			cfg.setProperty("hibernate.connection.username", "sa");
-			cfg.setProperty("hibernate.connection.password", "");
-			
-			String tmpDBSUffix = CasusConfiguration.getGlobalValue( "Hsqldb.defaultAbsUrlPath","../webapps/pp/hsqldb/casus3");
-			String pathdelimiter = Character.toString(File.separatorChar);
-			tmpDBSUffix = StringUtilities.replace(tmpDBSUffix, "/", pathdelimiter);
-			cfg.setProperty("hibernate.connection.url", "jdbc:hsqldb:file:" + tmpDBSUffix);
-			Logger.info("HibernateSession.initHibernate ", "cfg.setProperty(hibernate.connection.url)=" + cfg.getProperty("hibernate.connection.url"));
-		
-			try {
-				String dbName = CasusConfiguration.getGlobalValue( "Hsqldb.defaultAbsUrlPath","../webapps/pp/hsqldb/casus3");
-				dbName = StringUtilities.replace(dbName, "/", pathdelimiter);
-				File myDB = new File(dbName);
-				String[] files = myDB.getParentFile().list(new HTMLConfigurableFileFilter("true file;" + myDB.getName() + ".%"));
-				List myList = new ArrayList();
-				for (int i=0; files != null&& i<files.length;i++) {
-					myList.add(new File(myDB.getParentFile(),files[i]));
-				}
-				File rmt_db = new File(myDB.getParentFile(),myDB.getName() +  "_rmt_tmp.zip");
-				String rmtUrl = CasusConfiguration.getGlobalValue( "Hsqldb.remoteUrl");
-				if (StringUtilities.isValidString(rmtUrl)) {
-
-					int httpresult = MyHttpClient.getInstance().getToFile( rmtUrl, null, rmt_db, null);
-					if (httpresult == 200) {
-						if (myList != null && myList.size()>0) {
-							DateFormat dateformat = new SimpleDateFormat("yyyyMMdd_HHmmssSSS",Locale.ENGLISH);
-							String timeStamp = dateformat.format(new Date());
-							File bu_db = new File(myDB.getParentFile(),myDB.getName() +  "_" + timeStamp + ".zip");
-							Logger.info("HibernateSession.initHibernate ", "myFile=" + bu_db.getAbsolutePath());
-							IOUtilities.createZipFile(bu_db , myList);
-						}
-						List<File> extractList = IOUtilities.extractZipFile(rmt_db, myDB.getParentFile());
-						if (extractList != null) {
-							Iterator<File> it = extractList.iterator();
-							StringBuffer sb = new StringBuffer();
-							while(it.hasNext()) {
-								File myFile = it.next(); 
-								Logger.info("HibernateSession.initHibernate ", "myFile=" + myFile.getAbsolutePath());
-								 sb.append(myFile.getName());
-								 sb.append("\n");
-							}
-							CasusConfiguration.addGlobalKey("Hsqldb.loadedRmtDB", sb.toString());
-						}
-					}
-				}
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-	}*/
-	
-
-
-
-
-
-	/**
-	 * 
-	 */
-	/*private void init_setHibernateDialect() {
-		if (net.casus.util.CasusConfiguration.getGlobalBooleanValue("HibernateSession.setDialectFromDSUrl",true)) {
-			try {
-		        Context initContext = new InitialContext();
-		        Context envContext  = (Context)initContext.lookup("java:/comp/env");
-		        
-		        //org.apache.tomcat.dbcp.dbcp2.BasicDataSource
-		        DataSource  ds = (DataSource)envContext.lookup(net.casus.util.CasusConfiguration.getGlobalValue("Database.DataSource.Name","jdbc/myoracle"));
-		        Logger.info("HibernateSession.init_setHibernateDialect", "ds class:" + (ds!=null?ds.getClass():"null"));
-		        
-		        if (ds.getClass().toString().equals("org.apache.tomcat.dbcp.dbcp.BasicDataSource")) {
-		        	org.apache.tomcat.dbcp.dbcp.BasicDataSource bds = (org.apache.tomcat.dbcp.dbcp.BasicDataSource) ds;
-		        	String dialect = null;
-		        	if (bds.getDriverClassName() != null && bds.getDriverClassName().toLowerCase().contains("hsqldb")) {
-		        		dialect = net.casus.util.CasusConfiguration.getGlobalValue("Database.DataSource.HibernateDialect.hsqldb","org.hibernate.dialect.HSQLDialect");
-		        	}
-		        	else if (bds.getDriverClassName() != null && bds.getDriverClassName().toLowerCase().contains("oracle")) {
-		        		dialect = net.casus.util.CasusConfiguration.getGlobalValue("Database.DataSource.HibernateDialect.oracle","org.hibernate.dialect.OracleDialect");
-		        	}
-		        	else if (bds.getDriverClassName() != null && bds.getDriverClassName().toLowerCase().contains("mysql")) {
-		        		dialect = net.casus.util.CasusConfiguration.getGlobalValue("Database.DataSource.HibernateDialect.mysql","org.hibernate.dialect.MySQLDialect");
-		        	}
-        			Logger.info("init_setHibernateDialect", "dialect:" + dialect);
-	        		if (dialect != null) {
-	        			cfg.setProperty("hibernate.dialect",dialect);
-	        		}
-	        	}
-		        else {
-		        	Method m = JavaReflectionUtilities.getMethodByName(ds.getClass(), "getDriverClassName", null, JavaReflectionUtilities.EMPTY_PARAMETER_LIST);
-		        	Object driverNameObj = m.invoke(ds, JavaReflectionUtilities.NO_PARAMETERS);
-	        		Logger.info("init_setHibernateDialect", "driverNameObj:" + driverNameObj);
-	        		if (driverNameObj != null) {
-		        		String dialect = null;
-		        		String driverName = driverNameObj.toString().toLowerCase();
-		        		if (driverName.contains("hsqldb")) {
-			        		dialect = net.casus.util.CasusConfiguration.getGlobalValue("Database.DataSource.HibernateDialect.hsqldb","org.hibernate.dialect.HSQLDialect");
-			        	}
-			        	else if (driverName.contains("oracle")) {
-			        		dialect = net.casus.util.CasusConfiguration.getGlobalValue("Database.DataSource.HibernateDialect.oracle","org.hibernate.dialect.OracleDialect");
-			        	}
-			        	else if (driverName.contains("mysql")) {
-			        		dialect = net.casus.util.CasusConfiguration.getGlobalValue("Database.DataSource.HibernateDialect.mysql","org.hibernate.dialect.MySQLDialect");
-			        	}
-		        		Logger.info("init_setHibernateDialect", "dialect:" + dialect);
-		        		if (dialect != null) {
-		        			cfg.setProperty("hibernate.dialect",dialect);
-		        		}
-		        	}
-		        }
-		    }
-		    catch(Throwable x) {
-		        Logger.serious("HibernateSession.init_setHibernateDialect", "x:" + Utility.stackTraceToString(x));
-		    }
-		}
-		
-		try {
-			cfg.addSqlFunction("greatest", new VarArgsSQLFunction("greatest(", ",", ")"));
-			cfg.addSqlFunction("least", new VarArgsSQLFunction("least(", ",", ")"));
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}*/
-	
-	/**
-	 * TODO please comment!!!!
-	 * @param key
-	 */
-	/*private void addClasses(String key) {
-		// Add other intl configuartions:
-		String addClasses = net.casus.util.CasusConfiguration.getGlobalValue(key);
-		Logger.important("HibernateSession.initHibernate","HibernateSession.addClasses(" + key + "): " + addClasses);
-		if (add_all_classes && StringUtilities.isValidString(addClasses)) {
-			try {
-				String[] addClasses_array = StringUtilities.getStringArrayFromString(addClasses, ",");
-				for (int i = 0; i < addClasses_array.length; i++) {
-					try {
-						Class myClass = Class.forName(addClasses_array[i]);
-						cfg.addClass(myClass);
-						Logger.important("HibernateSession.initHibernate","HibernateUtil.addClasses: " + myClass.getName());
-					}
-					catch(Exception x) {
-						Logger.serious("HibernateUtil.initHibernate","X: " + Utility.stackTraceToString(x));
-					}
-				}
-			}
-			catch(Exception langX) {
-			}
-		}
-	}*/
-	
-	/**
-	 * This method adds classes specified by CasusConfiguration key name to the hibernate configuration!
-	 * 
-	 * Must be performed BEFORE cfg.buildSessionFactory() (in initHibernate())
-	 * 
-	 * @param inClassName
-	 */
-	/*public void addClassesByConfigurationPrefix2HibCfg(String conf_keyname) {
-		String s= net.casus.util.CasusConfiguration.getGlobalValue(conf_keyname);
-		if (StringUtilities.isValidString(s)) {
-			StringTokenizer st = new StringTokenizer (s,",");
-			while (st.hasMoreTokens()){
-				String className = st.nextToken();
-				this.addClassByName2HibCfg(className);
-			}
-		}
-	}*/
-
-	/**
-	 * This method adds a class specified by full class name to the hibernate configuration!
-	 * 
-	 * Must be performed BEFORE cfg.buildSessionFactory() (in initHibernate())
-	 * 
-	 * @param inClassName
-	 */
-	/*public void addClassByName2HibCfg(String inClassName) {
-		try {
-			Class myClass = Class.forName(inClassName);
-			if (myClass != null) {
-				this.getConfiguration().addClass(myClass);
-			}
-		}
-		catch(Exception x) {
-			Logger.serious("HibernateSession.addClassByName2HibCfg ", "x:" + Utility.stackTraceToString(x));
-		}
-	}*/
-	
-	public Configuration getConfiguration() {
-		return cfg;
-	}
+	public Configuration getConfiguration() {return cfg;}
 	
 	public Configuration getOrCreateConfiguration() {
 		if (cfg == null) {
@@ -341,13 +136,11 @@ public class HibernateSession {
 		return cfg;
 	}
 	
-	public Configuration createNewConfiguration() {
-		return new Configuration();
-	}
+	public Configuration createNewConfiguration() { return new Configuration();}
 	
-	public Map getAllSessions() {
+	/*public Map getAllSessions() {
 		return new HashMap(sessions);
-	}
+	}*/
 	
 	/**
 	 * opens and returns a session from the session factory.
@@ -397,11 +190,6 @@ public class HibernateSession {
 				}
 			}
 		}
-		else {
-			//Logger.debug ("HibernateSession.getSessionByThread","t:" + t.hashCode() + ", sessionList==null");
-		}
-		
-		
 		return null;
 	}
 	
@@ -649,15 +437,15 @@ public class HibernateSession {
 		}
 	}
 	
-	public List getMyThreadExceptionList() {
+	/*public List getMyThreadExceptionList() {
 		return threadExceptionList.get();
 	}
 	
 	public void removeMyThreadExceptionList() {
 		threadExceptionList.remove();
-	}
+	}*/
 	
-	public void add2ThreadExceptionList(Throwable th) {
+	/*public void add2ThreadExceptionList(Throwable th) {
 		if (th != null) {
 			if (th instanceof NullPointerException) {
 				//Logger.info("HibernateSesison.add2ThreadExceptionList","npX:" + Utility.stackTraceToString(th));
@@ -675,14 +463,14 @@ public class HibernateSession {
 				myThreadExceptionList.add(th);
 			}
 		}
-	}
+	}*/
 
-	public ThreadLocal<List> getThreadExceptionList() {
+	/*public ThreadLocal<List> getThreadExceptionList() {
 		return threadExceptionList;
-	}
+	}*/
 
-	public void setThreadExceptionList(ThreadLocal<List> threadExceptionList) {
+	/*public void setThreadExceptionList(ThreadLocal<List> threadExceptionList) {
 		this.threadExceptionList = threadExceptionList;
-	}
+	}*/
 	
 }

@@ -29,7 +29,7 @@ public class ScoreBean extends Beans{
 	public static final int TIME_EARLY = 2;
 	
 	private long id; 
-	private long patIllnessScriptId; 
+	private long patIllScriptId; 
 	private float scoreBasedOnExp = -1;
 	private float scoreBasedOnPeer = -1;
 	private float scoreBasedOnIllScript = -1;
@@ -39,7 +39,16 @@ public class ScoreBean extends Beans{
 	private float overallScore;
 	private long scoredItem; //e.g. the problemRelationId, summStId
 	private Timestamp creationDate; 
+	/**
+	 * Was the item added at the same stage (or later/earlier) as the expert has added it?
+	 */
 	private int timing = -1;
+	
+	/**
+	 * has any type of feedback be seen before adding this item?
+	 * 0= no, 1=expert, 2=peer, 3 = exp&peer
+	 */
+	private int feedbackOn;
 	/**
 	 * e.g. problem, ddx, but also problemList... see definitions above
 	 */
@@ -48,7 +57,7 @@ public class ScoreBean extends Beans{
 	
 	public ScoreBean(){}
 	public ScoreBean(long patIllId, long scoredItem, int type){
-		this.patIllnessScriptId = patIllId;
+		this.patIllScriptId = patIllId;
 		this.scoredItem = scoredItem;
 		//this.score = score;
 		this.type = type;
@@ -56,8 +65,8 @@ public class ScoreBean extends Beans{
 	}
 	public long getId() {return id;}
 	public void setId(long id) {this.id = id;}
-	public long getPatIllnessScriptId() {return patIllnessScriptId;}
-	public void setPatIllnessScriptId(long patIllnessScriptId) {this.patIllnessScriptId = patIllnessScriptId;}
+	public long getPatIllScriptId() {return patIllScriptId;}
+	public void setPatIllScriptId(long patIllScriptId) {this.patIllScriptId = patIllScriptId;}
 	public float getScoreBasedOnExp() {return scoreBasedOnExp;}
 	public void setScoreBasedOnExp(float scoreBasedOnExp) {this.scoreBasedOnExp = scoreBasedOnExp;}
 	public float getScoreBasedOnPeer() {return scoreBasedOnPeer;}
@@ -73,7 +82,9 @@ public class ScoreBean extends Beans{
 	public float getOverallScore() {return overallScore;}
 	public void setOverallScore(float overallScore) {this.overallScore = overallScore;}	
 	public int getTiming() {return timing;}
-	public void setTiming(int timing) {this.timing = timing;}
+	public void setTiming(int timing) {this.timing = timing;}	
+	public int getFeedbackOn() {return feedbackOn;}
+	public void setFeedbackOn(int feedbackOn) {this.feedbackOn = feedbackOn;}
 	
 	public void setTiming(int learnerStage, int expStage){
 		if(learnerStage>expStage) setTiming(TIME_LATE);

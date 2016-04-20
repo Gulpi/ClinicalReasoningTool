@@ -11,7 +11,7 @@ import javax.servlet.ServletContext;
 import application.AppBean;
 import beans.graph.Graph;
 import beans.relation.Relation;
-import beans.scoring.FeedbackBean;
+import beans.scoring.FeedbackContainer;
 import beans.scoring.ScoreContainer;
 import controller.*;
 import database.DBClinReason;
@@ -23,7 +23,6 @@ import database.DBClinReason;
  * @author ingahege
  *
  */
-//TODO current stage setting!!!
 @ManagedBean(name = "crtContext", eager = true)
 @SessionScoped
 public class CRTFacesContext /*extends FacesContextWrapper*/ implements Serializable{
@@ -38,6 +37,7 @@ public class CRTFacesContext /*extends FacesContextWrapper*/ implements Serializ
 	private PatientIllnessScript patillscript;
 	private Graph graph;
 	private UserSetting userSetting;
+	//private boolean feedbackOn;
 
 	/**
 	 * all scripts of the user, needed for the overview/portfolio page to display a list. 
@@ -46,7 +46,7 @@ public class CRTFacesContext /*extends FacesContextWrapper*/ implements Serializ
 	 */
 	private List<PatientIllnessScript> scriptsOfUser;
 	
-	private FeedbackBean feedbackBean;
+	private FeedbackContainer feedbackContainer;
 	/**
 	 * Detailed scores for this patIllScript
 	 */
@@ -84,10 +84,12 @@ public class CRTFacesContext /*extends FacesContextWrapper*/ implements Serializ
 	}*/
 	private void loadAndSetScriptsOfUser(){	setScriptsOfUser(isc.loadScriptsOfUser());}
 	
-	private void loadScoreContainer(){
+	private void loadScoreAndFeedbackContainer(){
 		if(this.getPatillscript()!=null) {
 			scoreContainer = new ScoreContainer(this.getPatillscript().getId());
+			feedbackContainer = new FeedbackContainer(this.getPatillscript().getId());
 			scoreContainer.initScoreContainer();	
+			feedbackContainer.initFeedbackContainer();
 		}
 	}
 	
@@ -109,13 +111,13 @@ public class CRTFacesContext /*extends FacesContextWrapper*/ implements Serializ
 		//TODO error handling!!!!
 		loadExpScripts();
 		loadScoring();
-		initGraph();
-		//return isNew;
+		initGraph();		
 	}
 	
 	private void loadScoring(){
-		feedbackBean = new FeedbackBean(false, patillscript.getParentId());
-		loadScoreContainer();
+		
+		//todo call loading from DB method
+		loadScoreAndFeedbackContainer();
 	}
 	
 	private void loadExpScripts(){
@@ -125,12 +127,6 @@ public class CRTFacesContext /*extends FacesContextWrapper*/ implements Serializ
 	    app.addIllnessScriptForDiagnoses(patillscript.getDiagnoses(), patillscript.getParentId());
 
 	}
-	/*public void loadAndSetPatIllScript(long id){ 
-		setPatillscript(isc.loadPatIllScriptById(id, userId));
-		loadExpScripts();
-		loadScoring();
-		initGraph();
-	}*/
 	
 	public PatientIllnessScript getPatillscript() { return patillscript;}
 	public void setPatillscript(PatientIllnessScript patillscript) { this.patillscript = patillscript;}	
@@ -140,11 +136,22 @@ public class CRTFacesContext /*extends FacesContextWrapper*/ implements Serializ
 		if(scoreContainer==null) scoreContainer = new ScoreContainer(this.getPatillscript().getId());
 		return scoreContainer;
 	}
+	
+	public FeedbackContainer getFeedbackContainer() {
+		if(feedbackContainer==null) feedbackContainer = new FeedbackContainer(this.getPatillscript().getId());
+		return feedbackContainer;
+	}
 	public void setScoreBean(ScoreContainer scoreContainer) {this.scoreContainer = scoreContainer;}
-
-	/* we land here from an ajax request....*/
+	public void toogleExpFeedback(String toggleStr, String taskStr){feedbackContainer.toogleExpFeedback(toggleStr, taskStr);}
+	//public void setExpFeedbackTask(String toogleStr, String taskStr){feedbackContainer.setExpFeedback(toogleStr, taskStr);}
+	/* we land here from an ajax request for any actions concerning the patientIllnessScript....*/
 	public void ajaxResponseHandler() throws IOException {
 		new AjaxController().receiveAjax(this.getPatillscript());
+	}
+	
+	/* we land here from an ajax request for any actions concerning the facesContext....*/	
+	public void ajaxResponseHandler2() throws IOException {
+		new AjaxController().receiveAjax(this);
 	}
 	/* (non-Javadoc)
 	 * @see javax.faces.context.FacesContextWrapper#getWrapped()

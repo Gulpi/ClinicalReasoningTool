@@ -590,12 +590,16 @@ function toggleExpertFedback(){
 		expFeedback = true;
 		$("#expFeedbackButton").attr("class","icon-user-md_on");
 		$("#expFeedbackButton").attr("title", "click to hide expert feedback");
+		$(".list_score").show();
+		sendAjaxContext(1, doNothing, "toogleExpFeedback",  getCurrentTab());
 		
 	}
 	else{
 		expFeedback = false;
 		$("#expFeedbackButton").attr("class", "icon-user-md");
 		$("#expFeedbackButton").attr("title", "click to show expert feedback");
+		$(".list_score").hide();
+		sendAjaxContext(0, doNothing, "toogleExpFeedback", getCurrentTab());
 	}
 	my_canvas.clear();
 	initConceptMap();

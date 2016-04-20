@@ -6,6 +6,7 @@ import actions.beanActions.AddAction;
 import beans.relation.Rectangle;
 import beans.relation.Relation;
 import database.DBClinReason;
+import database.DBList;
 import model.ListItem;
 import model.Synonym;
 
@@ -35,7 +36,7 @@ public class RelationController {
 		if(type==AddAction.ADD_TYPE_MAINITEM) aa.addRelation(id, name, (int)x, (int)y, -1);
 		else{
 			//we have to find the parent id of the synonym.
-			Synonym syn = new DBClinReason().selectSynonymById(id);
+			Synonym syn = new DBList().selectSynonymById(id);
 			aa.addRelation(syn.getListItemId(), name, (int)x, (int)y, id); //then we add a synonym
 		}
 	}

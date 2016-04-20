@@ -19,6 +19,7 @@ import beans.relation.RelationManagement;
 import controller.NavigationController;
 import controller.RelationController;
 import database.DBClinReason;
+import database.DBList;
 import util.Logger;
 
 public class AddMngAction implements AddAction, Scoreable{
@@ -75,7 +76,7 @@ public class AddMngAction implements AddAction, Scoreable{
 		else rel.setXAndY(new Point(x,y)); //problem has been created from the concept map, therefore we have a position
 
 		patIllScript.getMngs().add(rel);
-		rel.setManagement(new DBClinReason().selectListItemById(id));
+		rel.setManagement(new DBList().selectListItemById(id));
 		save(rel);
 		updateGraph(rel);
 		notifyLog(rel);

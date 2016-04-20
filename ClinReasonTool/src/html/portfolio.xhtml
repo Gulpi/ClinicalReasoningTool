@@ -13,6 +13,8 @@
  <script type="text/javascript" src="../scripts/jquery112/jquery.js"></script>
 <script type="text/javascript" src="../scripts/jquery112/jquery-ui.min.js"></script>
 <script type="text/javascript" src="../scripts/jquery112/jquery-ui.js"></script>
+<script src="../scripts/portfolio.js"></script>
+
 <link rel="stylesheet" type="text/css" href="../scripts/jquery112/ui-lightness/jquery-ui.css" /> 
 <link rel="stylesheet" type="text/css" href="../scripts/draw2d/css/contextmenu.css"  />
 <link rel="stylesheet" href="../styles/clinreason.css" />
@@ -32,7 +34,12 @@ $( document ).tooltip({
 </script>
  </head>
  <body>
- <div class="portfsearch"><input id="searchfield" class="f_text"></input></div> 
+ 
+ <div class="portfsearch"><input id="searchfield" class="f_text" title="Search function - not yet implemented"></input>
+ </div> <br/><br/>
+<div> This dashboard page is just an example, if the tool is used as CASUS plugin this information will be integrated 
+ into the CASUS student dashboard. In the future the tool can be connected to an e-portfolio where learners can collect and share.
+ their illness scripts</div>
  <div id="myScripts" class="portfoliodiv">
  <div class="header">My Patient Illness Scripts</div>
 	<h:form><ul id="list_diagnoses" class="plainList">
@@ -41,25 +48,32 @@ $( document ).tooltip({
 				<h:outputText value="#{scripts.id}" />
 				<f:param name="script_id" value="#{scripts.id}" />
 			</h:outputLink>-->
-		  <h:commandLink action="#{navController.openPatIllScript}" value="Prototype" >
+		  <h:commandLink action="#{navController.openPatIllScript}" value="Prototype" title="Open the prototype">
 				<f:param name="script_id" value="#{scripts.id}" />
 			</h:commandLink>
-				<i class="icon-sitemap"></i><i class="icon-list-on"></i></li>
+				<a href="javascript:alert('Not yet implemented');" title="Show concept map for this script"><i class="icon-sitemap"></i></a>
+				<a href="javascript:alert('Not yet implemented');" title="Show related illness scripts"><i class="icon-list-on"></i></a>
+				<a href="javascript:alert('Not yet implemented');" title="Share with instructor/peer"><i class="icon-users"></i></a>
+				
+				</li>
  		</ui:repeat>					
 	</ul></h:form>
  		<!--<li><a href="tabs.xhtml?session_id=12346">Henry Rodin</a> <i class="icon-sitemap"></i></li>-->
- <div class="footer"><a href="javascript:createNewScript();" title="create new illness script"><i class="icon-plus-circled"></i></a></div>
+ <div class="footer"><a href="javascript:createNewScript();" title="Create new illness script"><i class="icon-plus-circled"></i></a></div>
  </div>
   <div class="portfoliodiv"><div class="header">Illness Scripts</div>
  ...</div>
   <div class="portfoliodiv"><div class="header">Resources</div>
   <ul class="plainList"> 
-  	<li> <i class="icon-video"></i>What is clinical reasoning</li>
-  	<li> <i class="icon-video"></i>...</li>
+  	<li> <i class="icon-video"></i> What is clinical reasoning</li>
+  	<li> <i class="icon-video"></i> ...</li>
+  	<li> Errors, Biases,...</li>
   	</ul>
   </div>
     <div class="portfoliodiv"><div class="header">Achievements</div>
   <ul class="plainList"> 
+  	<li>Individual strengths/weaknesses for each clinical reasoning step</li><br/>
+  	<li>Learning curves, performance compared to peers, badges</li><br/>
   	<li>...</li>
   	</ul>
   </div>

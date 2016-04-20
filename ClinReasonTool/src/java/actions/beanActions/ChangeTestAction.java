@@ -7,6 +7,7 @@ import beans.LogEntry;
 import beans.PatientIllnessScript;
 import beans.relation.*;
 import database.DBClinReason;
+import database.DBList;
 import model.ListItem;
 
 /**
@@ -31,8 +32,8 @@ public class ChangeTestAction implements ChgAction, Scoreable{
 	
 	public void changeTest(long newProbId, long probRel){
 		RelationTest testToChg = patIllScript.getTestById(probRel);
-		ListItem oldTest = new DBClinReason().selectListItemById(testToChg.getListItemId());
-		ListItem newTest = new DBClinReason().selectListItemById(newProbId);
+		ListItem oldTest = new DBList().selectListItemById(testToChg.getListItemId());
+		ListItem newTest = new DBList().selectListItemById(newProbId);
 		if(testToChg!=null && newTest!=null && oldTest!=null){
 			notifyLog(testToChg, newProbId);
 			testToChg.setTest(newTest);

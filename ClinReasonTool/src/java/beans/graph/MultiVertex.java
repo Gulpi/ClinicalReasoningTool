@@ -1,5 +1,7 @@
 package beans.graph;
 
+import java.io.Serializable;
+
 import beans.IllnessScriptInterface;
 import beans.relation.Rectangle;
 import beans.relation.Relation;
@@ -10,8 +12,9 @@ import controller.NavigationController;
  * @author ingahege
  *
  */
-public class MultiVertex /*extends SynonymVertex*/ implements VertexInterface{
+public class MultiVertex /*extends SynonymVertex*/ implements VertexInterface, Serializable{
 
+	private static final long serialVersionUID = 1L;
 	/**
 	 * how many peers have added this item (e.g. Problem) to their PatientIllnessScript, this includes all synonyma
 	 */

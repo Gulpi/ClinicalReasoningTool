@@ -72,7 +72,50 @@ public class AjaxController {
 	    }
 	}
 	
+	/**
+	 * Receive an ajax call and process it. 
+	 * params: type = method to call, id=id to add/remove...
+	 * @param patillscript
+	 * @throws IOException
+	 */
+	public void receiveAjax(CRTFacesContext crContext) throws IOException {
+		ExternalContext externalContext = FacesContextWrapper.getCurrentInstance().getExternalContext();
+	    //ExternalContext externalContext = facesContext2.getExternalContext();
+	    //ExternalContext ec = fcw.getExternalContext();
+	   // Map<String, Object> sessionMap = externalContext.getSessionMap().get("patIll);
+	    Map<String, String> reqParams = externalContext.getRequestParameterMap();
+	    if(reqParams!=null){
+	    	String patillscriptId = reqParams.get(REQPARAM_SCRIPT);
+	    	if(crContext==null || patillscriptId==null|| Long.parseLong(patillscriptId)!=crContext.getPatillscript().getId()){
+	    		Logger.out("Error: receiveAjax", Logger.LEVEL_PROD);
+	    		return; //TODO we need some more error handling here, how can this happen? What shall we do? 
+	    	}
+	    	String methodName = reqParams.get("type");
+	    	String idStr = reqParams.get("id");
+	    	String nameStr = reqParams.get("name");
+	    	String x = reqParams.get("x");
+	    	String y = reqParams.get("y");
+	    	//patillscript.updateStage(reqParams.get(REQPARAM_STAGE));
 
+	    	//String patIllScriptId = reqParams.get(REQPARAM_SCRIPT); //TODO check whether belongs to currently loaded script!
+	    	Statement stmt; 
+	    	if(x!=null && !x.trim().equals("")){
+	    		stmt = new Statement(crContext, methodName, new Object[]{idStr, nameStr,x,y});
+	    	}
+	    	else if(nameStr!=null && !nameStr.trim().equals("")) 
+	    		stmt = new Statement(crContext, methodName, new Object[]{idStr, nameStr});
+	    	else stmt = new Statement(crContext, methodName, new Object[]{idStr});
+	    	
+	    	try {
+				stmt.execute();				
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				Logger.out(StringUtilities.stackTraceToString(e), Logger.LEVEL_PROD);
+			}
+	    	//patillscript.toString();
+	    	responseAjax(externalContext, reqParams.get("id"));
+	    }
+	}
 	
 	/**
 	 * handles the ajax response (xml)

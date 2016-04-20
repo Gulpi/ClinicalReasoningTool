@@ -49,6 +49,12 @@ public class PatientIllnessScript extends Beans/*extends Node*/ implements Illne
 	 * If we get this information from the VP (or other) system, we store it here.
 	 */
 	private int currentStage;
+	
+	/**
+	 * Which task (e.g. problem list, summary st,...) is currently open. We need this to identify which feedback
+	 * the learner has seen.
+	 */
+	//private int currentOpenTask;
 	/**
 	 * 1=acute, 2=subacute, 3=chronic
 	 */	
@@ -199,6 +205,7 @@ public class PatientIllnessScript extends Beans/*extends Node*/ implements Illne
 	public void submitDDX(){new DiagnosisSubmitAction(this).submitDDX();}
 	public void changeTier(String idStr, String tierStr){new DiagnosisSubmitAction(this).changeTier(idStr, tierStr);}
 
+
 	public void save(){
 		boolean isNew = false;
 		if(getId()<=0) isNew = true;
@@ -286,6 +293,7 @@ public class PatientIllnessScript extends Beans/*extends Node*/ implements Illne
 			if(stageNum > this.currentStage){
 				this.setCurrentStage(stageNum);	
 				save();
+				//we also have to update the feedbackContainer if currently feedback is on....
 			}
 		}
 	}

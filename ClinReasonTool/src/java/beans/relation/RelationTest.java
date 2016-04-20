@@ -28,7 +28,7 @@ public class RelationTest extends Relation implements Rectangle, Serializable{
 	public static final int QUALIFIER_RARE = 0; 
 	public static final int QUALIFIER_MEDIUM = 1;
 	public static final int QUALIFIER_OFTEN = 2;
-	public static final int DEFAULT_X = 245; //default x position of problems in canvas
+	public static final int DEFAULT_X = 165; //245; //default x position of problems in canvas
 	
 	
 	//private long id;
@@ -79,45 +79,11 @@ public class RelationTest extends Relation implements Rectangle, Serializable{
 		this.setListItemId(listItemId);
 		this.setDestId(destId);
 		if(getSynId()>0) setSynId(synId);
-	}
-	//public long getListItemId() {return listItemId;}
-	//public void setListItemId(long listItemId) {this.listItemId = listItemId;}
-//	public long getDestId() {return destId;}
-//	public void setDestId(long destId) {this.destId = destId;}	
-	//public long getId() {return id;}
-	//public void setId(long id) {this.id = id;}	
-	//public int getOrder() {return order;}
-	//public void setOrder(int order) {this.order = order;}	
+	}	
 	public ListItem getTest() {return test;}
 	public void setTest(ListItem test) {this.test = test;}		
-	/*public int getX() {return x;}
-	public void setX(int x) {this.x = x;}
-	public int getY() {return y;}
-	public void setY(int y) {this.y = y;}	*/
-	//public Timestamp getCreationDate() {return creationDate;}
-	//public void setCreationDate(Timestamp creationDate) {this.creationDate = creationDate;}
 	public String getIdWithPrefix(){ return GraphController.PREFIX_TEST+this.getId();}
 	
-/*	public int getStage() {return stage;}
-	public void setStage(int stage) {this.stage = stage;}*/
-	
-	/* (non-Javadoc)
-	 * @see java.lang.Object#equals(java.lang.Object)
-	 */
-	/*public boolean equals(Object o){
-		if(o!=null){
-			if(o instanceof RelationTest && ((RelationTest)o).getListItemId()==getListItemId() && ((RelationTest)o).getDestId()==getDestId())
-				return true;
-		}
-		return false;
-	}*/
-	
-	/* (non-Javadoc)
-	 * @see beans.relation.Rectangle#toJson()
-	 */
-	/*public String toJson(){
-		return new RelationController().getRelationToJson(this);
-	}*/
 
 	/* (non-Javadoc)
 	 * @see beans.relation.Relation#getRelationType()
@@ -131,22 +97,11 @@ public class RelationTest extends Relation implements Rectangle, Serializable{
 	 * @see beans.relation.Relation#getListItem()
 	 */
 	public ListItem getListItem(){return test;}
-	/* (non-Javadoc)
-	 * @see beans.relation.Relation#getSynonym()
-	 */
-	//public Synonym getSynonym(){ return new RelationController().getSynonym(this.synId,this);}
+
 	/* (non-Javadoc)
 	 * @see beans.relation.Relation#getSynonyma()
 	 */
 	public Set<Synonym> getSynonyma(){ return test.getSynonyma();}
-	/* (non-Javadoc)
-	 * @see beans.relation.Relation#getSynId()
-	 */
-	//public long getSynId() {return synId;}
-	/*public void setXAndY(Point p){
-		this.setX(p.x);
-		this.setY(p.y);
-	}*/
 	
 	/* (non-Javadoc)
 	 * @see beans.relation.Relation#getLabelOrSynLabel()

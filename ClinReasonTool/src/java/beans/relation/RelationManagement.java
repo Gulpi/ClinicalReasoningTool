@@ -16,7 +16,7 @@ import model.Synonym;
 
 public class RelationManagement extends Relation implements Rectangle, Serializable{
 	
-	public static final int DEFAULT_X = 325; //default x position of problems in canvas
+	public static final int DEFAULT_X = 245; //325; //default x position of problems in canvas
 
 	private static final long serialVersionUID = 1L;
 	//private long id;
@@ -61,36 +61,9 @@ public class RelationManagement extends Relation implements Rectangle, Serializa
 	public void setY(int y) {this.y = y;}*/
 	public ListItem getManagement() {return management;}
 	public void setManagement(ListItem management) {this.management = management;}
-	//public void setId(long id) {this.id = id;}	
-	//public long getListItemId() {return listItemId;}
-	//public void setListItemId(long listItemId) {this.listItemId = listItemId;}
-	//public long getDestId() {return destId;}
-	//public void setDestId(long destId) {this.destId = destId;}
-	//public int getOrder() {return order;}
-	//public void setOrder(int order) {this.order = order;}
-	//public long getId() {return id;}	
-	/*public int getStage() {return stage;}
-	public void setStage(int stage) {this.stage = stage;}*/
 	public String getIdWithPrefix(){ return GraphController.PREFIX_MNG+this.getId();}
 
-	
-	/* (non-Javadoc)
-	 * @see java.lang.Object#equals(java.lang.Object)
-	 */
-	/*public boolean equals(Object o){
-		if(o!=null){
-			if(o instanceof RelationManagement && ((RelationManagement)o).getListItemId()==getListItemId() && ((RelationManagement)o).getDestId()==getDestId())
-				return true;
-		}
-		return false;
-	}*/
-	
-	/* (non-Javadoc)
-	 * @see beans.relation.Rectangle#toJson()
-	 */
-	/*public String toJson(){
-		return new RelationController().getRelationToJson(this);
-	}*/
+
 	
 
 	/* (non-Javadoc)

@@ -49,30 +49,8 @@ public class AddProblemAction implements AddAction, Scoreable{
 	 */
 	public void add(String idStr, String name, String xStr, String yStr){ 
 		new RelationController().initAdd(idStr, name, xStr, yStr, this);
-		/*if(!xStr.equals("-1")){ //then we come from the concept map
-			
-		}*/
-		/*long id;
-		int type = AddAction.ADD_TYPE_MAINITEM;
-		if(idStr.startsWith(Synonym.SYN_VERTEXID_PREFIX)){
-			type = AddAction.ADD_TYPE_SYNITEM;
-			id = Long.valueOf(idStr.substring(Synonym.SYN_VERTEXID_PREFIX.length()));
-		}
-		else id = Long.valueOf(idStr.trim());
-		float x = Float.valueOf(xStr.trim());
-		float y = Float.valueOf(yStr.trim());
-		
-		if(type==AddAction.ADD_TYPE_MAINITEM) addProblem(id, name, (int)x, (int)y);
-		else{
-			//we have to find the parent id of the synonym.
-			Synonym syn = new DBClinReason().selectSynonymById(id);
-			addProblem(syn.getListItemId(), name, (int)x, (int)y, id); //then we add a synonym
-		}*/
+
 	}
-	/*private void addProblem(long id, String name, int x, int y){
-		addProblem(id, name, x, y, -1);
-	}*/
-	
 	
 	/* (non-Javadoc)
 	 * @see actions.beanActions.AddAction#addRelation(long, java.lang.String, int, int, long)

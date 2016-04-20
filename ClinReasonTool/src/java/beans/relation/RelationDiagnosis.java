@@ -29,7 +29,7 @@ public class RelationDiagnosis extends Relation implements Rectangle, Serializab
 	public static final int REL_TYPE_DDX = 2; //differential diagnosis 
 	public static final int REL_TYPE_COMPL = 3; //complication of IS diagnosis 
 	public static final int REL_TYPE_RELATED = 4; //otherwise related diagnosis 
-	public static final int DEFAULT_X = 165; //default x position of problems in canvas
+	public static final int DEFAULT_X = 80; //165; //default x position of problems in canvas
 	//public static final String COLOR_DEFAULT = "#ffffff";
 	//public static final String COLOR_RED = "#990000";
 	public static final int TIER_NONE = 0; //I do not now

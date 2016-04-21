@@ -18,7 +18,7 @@ import controller.RelationController;
 import database.DBClinReason;
 import database.DBList;
 import model.Synonym;
-import util.Logger;
+import util.CRTLogger;
 
 public class AddDiagnosisAction implements AddAction, Scoreable{
 
@@ -137,6 +137,6 @@ public class AddDiagnosisAction implements AddAction, Scoreable{
 				graph.addImplicitEdge(patIllScript.getProblems().get(i).getListItemId(), rel.getListItemId(), IllnessScriptInterface.TYPE_LEARNER_CREATED);
 			}
 		}
-		Logger.out(graph.toString(), Logger.LEVEL_TEST);
+		CRTLogger.out(graph.toString(), CRTLogger.LEVEL_TEST);
 	}
 }

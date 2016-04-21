@@ -8,6 +8,7 @@ import beans.graph.Graph;
 import beans.graph.MultiEdge;
 import controller.NavigationController;
 import database.DBClinReason;
+import util.CRTLogger;
 
 /**
  * Learner changes the weight of a connection
@@ -50,6 +51,5 @@ public class ChgConnectionAction {
 		MultiEdge edge = graph.getEdgeByCnxId(IllnessScriptInterface.TYPE_LEARNER_CREATED, cnx.getId());
 		edge.changeExplicitWeight(cnx.getWeight());
 		//graph.addExplicitEdge(cnx, patIllScript, IllnessScriptInterface.TYPE_LEARNER_CREATED);
-		System.out.println(graph.toString());
-	}
+		CRTLogger.out(graph.toString(), CRTLogger.LEVEL_TEST);	}
 }

@@ -20,7 +20,7 @@ import controller.NavigationController;
 import controller.RelationController;
 import database.DBClinReason;
 import database.DBList;
-import util.Logger;
+import util.CRTLogger;
 
 public class AddMngAction implements AddAction, Scoreable{
 	
@@ -123,6 +123,6 @@ public class AddMngAction implements AddAction, Scoreable{
 				graph.addImplicitEdge(patIllScript.getDiagnoses().get(i).getListItemId(), rel.getListItemId(), IllnessScriptInterface.TYPE_LEARNER_CREATED);
 			}
 		}
-		Logger.out(graph.toString(), Logger.LEVEL_TEST);
+		CRTLogger.out(graph.toString(), CRTLogger.LEVEL_TEST);
 	}
 }

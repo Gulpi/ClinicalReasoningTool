@@ -42,7 +42,8 @@ public class AjaxController {
 	    if(reqParams!=null){
 	    	String patillscriptId = reqParams.get(REQPARAM_SCRIPT);
 	    	if(patillscript==null || patillscriptId==null|| Long.parseLong(patillscriptId)!=patillscript.getId()){
-	    		System.out.println("Error: patillscriptId is:"+ patillscriptId + ", patIllScript.sessionId="+patillscript.getSessionId());
+	    		
+	    		CRTLogger.out("Error: patillscriptId is:"+ patillscriptId + ", patIllScript.sessionId="+patillscript.getSessionId(), CRTLogger.LEVEL_PROD);
 	    		return; //TODO we need some more error handling here, how can this happen? What shall we do? 
 	    	}
 	    	String methodName = reqParams.get("type");
@@ -65,7 +66,7 @@ public class AjaxController {
 				stmt.execute();				
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
-				Logger.out(StringUtilities.stackTraceToString(e), Logger.LEVEL_PROD);
+				CRTLogger.out(StringUtilities.stackTraceToString(e), CRTLogger.LEVEL_PROD);
 			}
 	    	patillscript.toString();
 	    	responseAjax(externalContext, reqParams.get("id"));
@@ -87,7 +88,7 @@ public class AjaxController {
 	    if(reqParams!=null){
 	    	String patillscriptId = reqParams.get(REQPARAM_SCRIPT);
 	    	if(crContext==null || patillscriptId==null|| Long.parseLong(patillscriptId)!=crContext.getPatillscript().getId()){
-	    		Logger.out("Error: receiveAjax", Logger.LEVEL_PROD);
+	    		CRTLogger.out("Error: receiveAjax", CRTLogger.LEVEL_PROD);
 	    		return; //TODO we need some more error handling here, how can this happen? What shall we do? 
 	    	}
 	    	String methodName = reqParams.get("type");
@@ -110,7 +111,7 @@ public class AjaxController {
 				stmt.execute();				
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
-				Logger.out(StringUtilities.stackTraceToString(e), Logger.LEVEL_PROD);
+				CRTLogger.out(StringUtilities.stackTraceToString(e), CRTLogger.LEVEL_PROD);
 			}
 	    	//patillscript.toString();
 	    	responseAjax(externalContext, reqParams.get("id"));
@@ -168,7 +169,7 @@ public class AjaxController {
 		Map<String,String[]> p = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterValuesMap();
 		String[] p1 = p.get(key);
 		if (p1 != null && p1.length>0){
-			System.out.println(p1[0]);
+			//System.out.println(p1[0]);
 			return p1[0];
 			//this.sessionId = (Long.valueOf(p1[0]).longValue());
 		}

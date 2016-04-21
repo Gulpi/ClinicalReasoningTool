@@ -221,7 +221,7 @@ function openListForCM(x,y, clickedId){
 function editOrAddProblemCM(newValue, label){
 	var selFigure = my_canvas.getSelection().getPrimary();
 	var id = selFigure.id.substring(7);
-	if(id=="-1") //a new problem
+	if(id=="-1" || id=="") //a new problem
 		sendAjaxCM(newValue, problemCallBackCM, "addProblem", label, selFigure.x, selFigure.y);
 	else //change of existing problem
 		sendAjax(newValue, problemCallBackCM, "changeProblem", id);
@@ -230,7 +230,7 @@ function editOrAddProblemCM(newValue, label){
 function editOrAddEpiCM(newValue, label){
 	var selFigure = my_canvas.getSelection().getPrimary();
 	var id = selFigure.id.substring(6);
-	if(id=="-1") //a new problem
+	if(id=="-1" || id=="") //a new problem
 		sendAjaxCM(newValue, epiCallBackCM, "addEpi", label, selFigure.x, selFigure.y);
 	else //change of existing problem
 		sendAjax(newValue, epiCallBackCM, "changeEpi", id);
@@ -239,7 +239,7 @@ function editOrAddEpiCM(newValue, label){
 function editOrAddDDXCM(newValue, label){
 	var selFigure = my_canvas.getSelection().getPrimary();
 	var id = selFigure.id.substring(6);
-	if(id=="-1") //a new problem
+	if(id=="-1" || id=="") //a new problem
 		sendAjaxCM(newValue, diagnosisCallBackCM, "addDiagnosis", label, selFigure.x, selFigure.y);
 	else //change of existing problem
 		sendAjax(newValue, diagnosisCallBackCM, "changeDiagnosis", id);
@@ -249,7 +249,7 @@ function editOrAddTestCM(newValue, label){
 	var selFigure = my_canvas.getSelection().getPrimary();
 	var id = selFigure.id.substring(6);
 	//alert(id);
-	if(id=="-1") //a new problem
+	if(id=="-1" || id=="") //a new problem
 		sendAjaxCM(newValue, testCallBackCM, "addTest", label, selFigure.x, selFigure.y);
 	else //change of existing problem
 		sendAjax(newValue, testCallBackCM, "changeTest", id);
@@ -258,7 +258,7 @@ function editOrAddTestCM(newValue, label){
 function editOrAddMngCM(newValue, label){
 	var selFigure = my_canvas.getSelection().getPrimary();
 	var id = selFigure.id.substring(6);
-	if(id=="-1") //a new problem
+	if(id=="-1" || id=="") //a new problem
 		sendAjaxCM(newValue, managementCallBackCM, "addMng", label, selFigure.x, selFigure.y);
 	else //change of existing problem
 		sendAjax(newValue, managementCallBackCM, "changeMng", id);
@@ -491,22 +491,12 @@ function handleContextMenuRect(rect, key){
 var xDragStart=-1;
 var yDragStart=-1;
 /* learner has drag&dropped a rectangle -> we check whether the move was large enough to trigger an ajax call,
- * otherwise every tiny movement woul fire an event.
+ * otherwise every tiny movement would fire an event.
  * 
  * */
 function handleRectDrop(rect){
-	//alert(rect.x + ", " + xDragStart);
-	//alert(rect.y + ", " + yDragStart);
 	if((xDragStart>-1 && xDragStart>-1) && rect.x >= xDragStart+10 || rect.x <= xDragStart-10 || rect.y >= yDragStart+10 || rect.y <= yDragStart-10){
-		//alert("send");
-		sendAjaxCM(rect.id, doNothing, "moveItem", name, rect.x, rect.y);
+		sendAjaxCM(rect.id, updateGraph, "moveItem", name, rect.x, rect.y);
+		 //we have to do this here, because if user clicks on feedback on/off the move-change is not displayed.
 	}
-	else {
-		//alert("nosend");
-		//xDragStart = -1;
-		//yDragStart = -1;
-	}
-
-	//salert("end: " + xDragStart);
-	
 }

@@ -10,7 +10,7 @@ import beans.graph.MultiVertex;
 import beans.relation.*;
 import controller.NavigationController;
 import database.DBClinReason;
-import util.Logger;
+import util.CRTLogger;
 
 public class DelEpiAction implements DelAction{
 	private PatientIllnessScript patIllScript;
@@ -64,6 +64,6 @@ public class DelEpiAction implements DelAction{
 				graph.removeEdgeWeight(rel.getListItemId(), patIllScript.getDiagnoses().get(i).getListItemId());
 			}
 		}
-		Logger.out(graph.toString(), Logger.LEVEL_TEST);
+		CRTLogger.out(graph.toString(), CRTLogger.LEVEL_TEST);
 	}
 }

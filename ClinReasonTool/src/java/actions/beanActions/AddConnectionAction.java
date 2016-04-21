@@ -18,6 +18,7 @@ import beans.Connection;
 import beans.IllnessScriptInterface;
 import beans.LogEntry;
 import database.DBClinReason;
+import util.CRTLogger;
 
 public class AddConnectionAction implements Scoreable{
 
@@ -89,6 +90,6 @@ public class AddConnectionAction implements Scoreable{
 	public void updateGraph(Connection cnx) {
 		Graph graph = new NavigationController().getCRTFacesContext().getGraph();
 		graph.addExplicitEdge(cnx, patIllScript, IllnessScriptInterface.TYPE_LEARNER_CREATED);
-		System.out.println(graph.toString());
+		CRTLogger.out(graph.toString(), CRTLogger.LEVEL_TEST);
 	}
 }

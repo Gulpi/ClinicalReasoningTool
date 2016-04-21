@@ -6,7 +6,7 @@ import java.util.*;
 
 import database.DBClinReason;
 import database.DBScoring;
-import util.Logger;
+import util.CRTLogger;
 
 /**
  * Contains all scores for the PatientIllnessScript
@@ -53,7 +53,7 @@ public class ScoreContainer implements Serializable{
 	
 	public void initScoreContainer(){
 		scores = new DBScoring().selectScoreBeansByPatIllScriptId(this.patIllScriptId);
-		Logger.out("ScoreContainer init done");
+		CRTLogger.out("ScoreContainer init done", CRTLogger.LEVEL_TEST);
 	}
 
 }

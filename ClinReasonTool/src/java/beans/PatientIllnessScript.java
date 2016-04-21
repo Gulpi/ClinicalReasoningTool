@@ -16,6 +16,7 @@ import controller.ConceptMapController;
 import controller.GraphController;
 import controller.NavigationController;
 import database.DBClinReason;
+import util.CRTLogger;
 
 /**
  * This is the Illness script the learner creates during the VP session.
@@ -229,7 +230,8 @@ public class PatientIllnessScript extends Beans/*extends Node*/ implements Illne
 	 */
 	public void propertyChange(PropertyChangeEvent evt) {
 		if(evt!=null){
-			System.out.println(evt.getPropertyName());
+			CRTLogger.out(evt.getPropertyName(), CRTLogger.LEVEL_TEST);	
+
 		}		
 	}
 	

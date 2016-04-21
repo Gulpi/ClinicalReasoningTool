@@ -54,7 +54,7 @@ public class MeshImporter {
 				if(readNextLine2 && line.contains("<String>")){
 					str[2] = StringUtils.substringBetween(line, "<String>", "</String>");
 					readNextLine2 = false;
-					System.out.println(str[0]+", " + str[1] + ", " + str[2]);
+					CRTLogger.out(str[0]+", " + str[1] + ", " + str[2], CRTLogger.LEVEL_TEST);
 					l.add(str);
 					str = new String[3];
 				}
@@ -62,7 +62,7 @@ public class MeshImporter {
 			importListItemDE(l);
 		}
 		catch (Exception e){
-			System.out.println("MeshImporter_de: Exception= " + StringUtilities.stackTraceToString(e));
+			CRTLogger.out("MeshImporter_de: Exception= " + StringUtilities.stackTraceToString(e), CRTLogger.LEVEL_PROD);
 
 		}
 	}
@@ -97,7 +97,6 @@ public class MeshImporter {
 				dbcr.saveAndCommit(syn);
 			}
 		}
-		System.out.println("");
 	}
 	
 	private static void createRecord(){

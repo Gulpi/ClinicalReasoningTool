@@ -57,6 +57,7 @@ var currentStage = $.getUrlVar('stage');
 var expFeedback = false; //default is that expert feedback is off
 var peerFeedback = false; //default is that expert feedback is off
 var active;
+var minLengthTypeAhead = 4;
 //var errorNum = "#{crtContext.patillscript.errorNum}";
 var submitted = "#{crtContext.patillscript.submitted}";
 /*draw2d.Configuration.factory.createConnection=function(sourcePort, targetPort, callback, dropTarget){
@@ -359,7 +360,7 @@ Case placed here...<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
 			<ui:include src="errorline.xhtml" />
  		</ui:repeat>				
 	</ul>More information ....</div>
-<div id="dialogCMProb" class="listdialog" ><input id="cm_pro_sel" class="f_text"></input></div>
+<div id="dialogCMProb" class="listdialog" ><input id="cm_prob_sel" class="f_text"></input></div>
 <div id="dialogCMDDX" class="listdialog"><input id="cm_ddx_sel" class="f_text"></input></div>
 <div id="dialogCMMng" class="listdialog"><input id="cm_mng_sel" class="f_text"></input></div>
 <div id="dialogCMTest" class="listdialog"><input id="cm_ds_sel" class="f_text"></input></div>

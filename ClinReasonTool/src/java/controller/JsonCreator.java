@@ -6,6 +6,7 @@ import java.util.*;
 import database.DBList;
 import model.ListItem;
 import model.Synonym;
+import util.CRTLogger;
 import util.StringUtilities;
 
 /**
@@ -65,10 +66,10 @@ public class JsonCreator {
 			pw.print(sb.toString());
 			pw.flush();
 		    pw.close();
-		    System.out.println("lines exported: " + lines);
+		    CRTLogger.out("lines exported: " + lines, CRTLogger.LEVEL_PROD);
 		}
 		catch( Exception e){
-			System.out.println(StringUtilities.stackTraceToString(e));
+			CRTLogger.out(StringUtilities.stackTraceToString(e), CRTLogger.LEVEL_PROD);
 		}
 	}
 	

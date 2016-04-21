@@ -15,6 +15,7 @@ import beans.scoring.FeedbackContainer;
 import beans.scoring.ScoreContainer;
 import controller.*;
 import database.DBClinReason;
+import util.CRTLogger;
 
 /**
  * The facesContext for a session....
@@ -64,7 +65,7 @@ public class CRTFacesContext /*extends FacesContextWrapper*/ implements Serializ
 	private void initGraph(){
 		if(graph!=null) return; //nothing todo, can this happen?
 		graph = new Graph(patillscript.getParentId());
-		System.out.println(graph.toString());		
+		CRTLogger.out(graph.toString(), CRTLogger.LEVEL_TEST);	
 	}
 
 	private void setUserId(){

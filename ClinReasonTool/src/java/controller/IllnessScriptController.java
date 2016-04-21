@@ -8,6 +8,7 @@ import beans.PatientIllnessScript;
 import beans.SummaryStatement;
 import beans.relation.Relation;
 import database.DBClinReason;
+import util.CRTLogger;
 
 /**
  * Helper class for creating and loading Illness scripts based on sessionId, userId, or id....
@@ -96,7 +97,7 @@ public class IllnessScriptController implements Serializable{
 		PatientIllnessScript patillscript = new PatientIllnessScript(sessionId, userId, vpId, loc);
 		patillscript.save();
 
-		System.out.println("New PatIllScript created for session_id: " + sessionId);
+		CRTLogger.out("New PatIllScript created for session_id: " + sessionId, CRTLogger.LEVEL_PROD);
 		return patillscript;
 	}
 	

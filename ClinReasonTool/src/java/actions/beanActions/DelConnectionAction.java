@@ -10,7 +10,7 @@ import beans.PatientIllnessScript;
 import beans.graph.Graph;
 import controller.NavigationController;
 import database.DBClinReason;
-import util.Logger;
+import util.CRTLogger;
 
 public class DelConnectionAction /*implements DelAction*/{
 	private PatientIllnessScript patIllScript;
@@ -123,6 +123,6 @@ public class DelConnectionAction /*implements DelAction*/{
 	private void updateGraph(Connection connToDel){
 		Graph graph = new NavigationController().getCRTFacesContext().getGraph();
 		graph.removeExplicitEdgeWeight(connToDel.getId());
-		Logger.out(graph.toString(), Logger.LEVEL_TEST);
+		CRTLogger.out(graph.toString(), CRTLogger.LEVEL_TEST);
 	}
 }

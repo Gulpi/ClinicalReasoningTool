@@ -135,39 +135,14 @@ public class MultiVertex /*extends SynonymVertex*/ implements VertexInterface, S
 	
 	public String toJson(){
 		StringBuffer sb = new StringBuffer();
-		//Relation rel = null; 
 		int currentStage = new NavigationController().getCRTFacesContext().getPatillscript().getCurrentStage();
-		//if(learnerVertex!=null) rel =  learnerVertex;
-		//else if(expertVertex!=null){ //include expert vertex, but only if we have reached the necessary stage			
-			/*if(expertVertex.getStage()<=currentStage)*/ //rel = expertVertex; 
-		//}
-		if(this.label.equals("Cough"))
-			System.out.println("cough");
-			if(learnerVertex!=null && expertVertex==null )
-				sb.append(createLearnerJson());
-			else if(learnerVertex!=null && expertVertex!=null)
-				sb.append(createLearnerAndExpertJson(currentStage));
-				else if(learnerVertex==null && expertVertex!=null)	
-					sb.append(createExpertJson(currentStage));
-		/*if(rel!=null){
-			//if learner has chosen the item, we alsways display the learners labels (could be a synonm)
-			sb.append("{\"label\":\""+rel.getLabelOrSynLabel()+"\",");
-			sb.append("\"shortlabel\":\""+rel.getShortLabelOrSynShortLabel()+"\",");
-			sb.append("\"id\":\""+rel.getIdWithPrefix()+"\",");
-			sb.append("\"x\":\""+((Rectangle)rel).getX()+"\",");
-			sb.append("\"y\":\""+((Rectangle)rel).getY()+"\",");	
-			sb.append("\"type\":\""+rel.getRelationType()+"\",");
-			if(isLearnerVertex()) sb.append("\"l\":\"1\",");
-			else sb.append("\"l\":\"0\",");
-			//if the learner has already picked the item we do not check the experts' stage, but just display it.
-			if(isExpertVertexAtStage(currentStage) || (isExpertVertex() && isLearnerVertex())) sb.append("\"e\":\"1\",");
-			else sb.append("\"e\":\"0\",");
-			sb.append("\"p\":\""+this.peerNums+"\"");
-			if(rel.getRelationType()==Relation.TYPE_DDX ){
-				 sb.append(", \"mnm\":\""+((RelationDiagnosis) rel).getMnm() +"\"");				
-			}*/
-			//sb.append("},");
-		//}
+
+		if(learnerVertex!=null && expertVertex==null )
+			sb.append(createLearnerJson());
+		else if(learnerVertex!=null && expertVertex!=null)
+			sb.append(createLearnerAndExpertJson(currentStage));
+			else if(learnerVertex==null && expertVertex!=null)	
+				sb.append(createExpertJson(currentStage));
 
 		return sb.toString();
 	}

@@ -102,7 +102,7 @@ public class ScoringFinalDDXAction implements ScoringAction{
 				patIllScript.addErrors(new ErrorController().checkError(scoreBean, leanerFinals,expFinals));
 		}
 		catch (Exception e){
-			Logger.out(StringUtilities.stackTraceToString(e), Logger.LEVEL_PROD);
+			CRTLogger.out(StringUtilities.stackTraceToString(e), CRTLogger.LEVEL_PROD);
 		}
 			
 		

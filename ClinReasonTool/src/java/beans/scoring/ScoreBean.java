@@ -1,6 +1,7 @@
 package beans.scoring;
 
 import java.beans.Beans;
+import java.io.Serializable;
 import java.sql.Timestamp;
 
 import beans.relation.Relation;
@@ -11,7 +12,7 @@ import beans.relation.Relation;
  * @author ingahege
  *
  */
-public class ScoreBean extends Beans{
+public class ScoreBean extends Beans implements Serializable{
 
 	public static final int TYPE_PROBLEM = Relation.TYPE_PROBLEM;
 	public static final int TYPE_DDX = Relation.TYPE_DDX;

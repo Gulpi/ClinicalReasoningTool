@@ -10,7 +10,7 @@ import beans.LogEntry;
 import controller.NavigationController;
 import database.DBClinReason;
 import database.DBScoring;
-import util.Logger;
+import util.CRTLogger;
 
 /**
  * Contains all elements we need for the different types of Feedback, such as the illnessScripts,
@@ -142,6 +142,6 @@ public class FeedbackContainer implements Serializable{
 	public void initFeedbackContainer(){
 		feedbackBeans = new DBScoring().selectFeedbackBeansByPatIllScriptId(this.patIllScriptId);
 		//feedbackBeans = new DBClinReason().selectScoreBeansByPatIllScriptId(this.patIllScriptId);
-		Logger.out("FeedbackContainer init done");
+		CRTLogger.out("FeedbackContainer init done", CRTLogger.LEVEL_TEST);
 	}
 }

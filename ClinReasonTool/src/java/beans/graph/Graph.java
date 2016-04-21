@@ -13,7 +13,7 @@ import beans.relation.Rectangle;
 import beans.relation.Relation;
 import controller.GraphController;
 import model.Synonym;
-import util.Logger;
+import util.CRTLogger;
 
 /**
  * A Graph that models the components of (Patient-)IllnessScripts in a MultiGraph. 
@@ -253,7 +253,7 @@ public class Graph extends DirectedWeightedMultigraph<MultiVertex, MultiEdge> {
 		}
 		if(sb.length()>1) sb.replace(sb.length()-1, sb.length(), ""); //remove the last ","
 		sb.append("]");
-		Logger.out(sb.toString(), Logger.LEVEL_TEST);
+		CRTLogger.out(sb.toString(), CRTLogger.LEVEL_TEST);
 		return sb.toString();
 	}
 	
@@ -316,7 +316,7 @@ public class Graph extends DirectedWeightedMultigraph<MultiVertex, MultiEdge> {
 		}
 		if(sb.length()>1) sb.replace(sb.length()-1, sb.length(), ""); //remove the last ","
 		sb.append("]");
-		Logger.out(sb.toString(), Logger.LEVEL_TEST);
+		CRTLogger.out(sb.toString(), CRTLogger.LEVEL_TEST);
 		return sb.toString();
 	}
 }

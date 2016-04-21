@@ -330,7 +330,7 @@ var active = $( "#tabs" ).tabs( "option", "active" ); //we have to determine the
 	        success: function( data ) {
 	          $( "#problems" ).autocomplete({
 	            source: data,
-	            minLength: 3,
+	            minLength: minLengthTypeAhead,
 	            select: function( event, ui ) {
 	            	addProblem(ui.item.value, ui.item.label);
 	            },
@@ -346,7 +346,7 @@ var active = $( "#tabs" ).tabs( "option", "active" ); //we have to determine the
 	        success: function( data ) {
 	          $( "#epi" ).autocomplete({
 	            source: data,
-	            minLength: 3,
+	            minLength: minLengthTypeAhead,
 	            select: function( event, ui ) {
 	            	addEpi(ui.item.value, ui.item.label);
 	            },
@@ -362,7 +362,7 @@ var active = $( "#tabs" ).tabs( "option", "active" ); //we have to determine the
 	        success: function( data ) {
 	          $( "#ddx" ).autocomplete({
 	            source: data,
-	            minLength: 3,
+	            minLength: minLengthTypeAhead,
 	            select: function( event, ui ) {
 	            	addDiagnosis(ui.item.value, ui.item.label);
 	            },
@@ -380,7 +380,7 @@ var active = $( "#tabs" ).tabs( "option", "active" ); //we have to determine the
 	        success: function( data ) {
 	          $( "#tests" ).autocomplete({
 	            source: data,
-	            minLength: 3,
+	            minLength: minLengthTypeAhead,
 	            select: function( event, ui ) {
 	            	addTest(ui.item.value, ui.item.label);
 	            },
@@ -399,7 +399,7 @@ var active = $( "#tabs" ).tabs( "option", "active" ); //we have to determine the
 	        success: function( data ) {
 	          $( "#mng" ).autocomplete({
 	            source: data,
-	            minLength: 3,
+	            minLength: minLengthTypeAhead,
 	            select: function( event, ui ) {
 	            	addManagement(ui.item.value, ui.item.label);
 	            },
@@ -419,7 +419,7 @@ var active = $( "#tabs" ).tabs( "option", "active" ); //we have to determine the
 	        success: function( data ) {
 	          $( "#cm_prob_sel" ).autocomplete({
 	            source: data,
-	            minLength: 3,
+	            minLength: minLengthTypeAhead,
 	            select: function( event, ui ) {
 	            	editOrAddProblemCM(ui.item.value, ui.item.label);
 	            },
@@ -438,7 +438,7 @@ var active = $( "#tabs" ).tabs( "option", "active" ); //we have to determine the
 	        success: function( data ) {
 	          $( "#cm_epi_sel" ).autocomplete({
 	            source: data,
-	            minLength: 3,
+	            minLength: minLengthTypeAhead,
 	            select: function( event, ui ) {
 	            	editOrAddEpiCM(ui.item.value, ui.item.label);
 	            },
@@ -457,7 +457,7 @@ var active = $( "#tabs" ).tabs( "option", "active" ); //we have to determine the
 	        success: function( data ) {
 	          $( "#cm_ddx_sel" ).autocomplete({
 	            source: data,
-	            minLength: 3,
+	            minLength: minLengthTypeAhead,
 	            select: function( event, ui ) {
 	            	editOrAddDDXCM(ui.item.value, ui.item.label);
 	            },
@@ -477,7 +477,7 @@ var active = $( "#tabs" ).tabs( "option", "active" ); //we have to determine the
 	        success: function( data ) {
 	          $( "#cm_ds_sel" ).autocomplete({
 	            source: data,
-	            minLength: 3,
+	            minLength: minLengthTypeAhead,
 	            select: function( event, ui ) {
 	            	editOrAddTestCM(ui.item.value, ui.item.label);
 	            },
@@ -497,7 +497,7 @@ var active = $( "#tabs" ).tabs( "option", "active" ); //we have to determine the
 	        success: function( data ) {
 	          $( "#cm_mng_sel" ).autocomplete({
 	            source: data,
-	            minLength: 3,
+	            minLength: minLengthTypeAhead,
 	            select: function( event, ui ) {
 	            	editOrAddMngCM(ui.item.value, ui.item.label);
 	            },

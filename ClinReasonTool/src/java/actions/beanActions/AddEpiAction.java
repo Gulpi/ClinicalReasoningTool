@@ -17,7 +17,7 @@ import controller.RelationController;
 import database.DBClinReason;
 import database.DBList;
 import model.Synonym;
-import util.Logger;
+import util.CRTLogger;
 import actions.scoringActions.ScoringAddAction;
 import actions.scoringActions.Scoreable;
 
@@ -132,6 +132,6 @@ public class AddEpiAction implements AddAction, Scoreable{
 		for(int i=0; i<patIllScript.getDiagnoses().size(); i++){
 			graph.addImplicitEdge(rel.getListItemId(), patIllScript.getDiagnoses().get(i).getListItemId(), IllnessScriptInterface.TYPE_LEARNER_CREATED);
 		}
-		Logger.out(graph.toString(), Logger.LEVEL_TEST);
+		CRTLogger.out(graph.toString(), CRTLogger.LEVEL_TEST);
 	}
 }

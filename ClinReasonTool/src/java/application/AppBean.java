@@ -20,6 +20,7 @@ import beans.relation.RelationDiagnosis;
 import controller.JsonCreator;
 import database.DBClinReason;
 import database.HibernateUtil;
+import util.CRTLogger;
 
 /**
  * We init here some application stuff, like hibernate,....
@@ -74,8 +75,9 @@ public class AppBean extends ApplicationWrapper implements HttpSessionListener{
 	    catch(Exception e){}
 	    //does not have to be done on every restart:
 	   // new JsonCreator().initJsonExport(); 
-	    System.out.println("Init done");
+	   
 		//MeshImporter.main("de");
+	    CRTLogger.out("Init done", CRTLogger.LEVEL_PROD);
 	}
 	
 

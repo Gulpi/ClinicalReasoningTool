@@ -34,7 +34,7 @@ public class ScoringAddAction implements ScoringAction{
 		MultiVertex mvertex = g.getVertexById(vertexId);
 		ScoreContainer scoreContainer = new NavigationController().getCRTFacesContext().getScoreContainer();
 		
-		ScoreBean scoreBean = scoreContainer.getScoreBeanByScoredItem(vertexId);
+		ScoreBean scoreBean = scoreContainer.getScoreBeanByTypeAndItemId(mvertex.getType(), vertexId);
 		if(scoreBean==null){ //then this item has not yet been scored: 
 			scoreBean = new ScoreBean(patIllScript.getId(), mvertex.getVertexId(), mvertex.getType());
 			if(g.getExpertPatIllScriptId()>0) //otherwise we do not have an experts' patIllScript to compare with				
@@ -49,7 +49,7 @@ public class ScoringAddAction implements ScoringAction{
 			
 		}
 		
-		scoreOverallList(scoreContainer); //update this to also consider problems the learner has not (yet) come up with  
+		//scoreOverallList(scoreContainer); //update this to also consider problems the learner has not (yet) come up with  
 		return scoreBean;
 	}
 	
@@ -109,19 +109,9 @@ public class ScoringAddAction implements ScoringAction{
 	}
 	
 	
-	/**
-	 * This can only be done at the end of the session or when diagnoses are committed? 
-	 * We cannot do this from the beginning on, because this might change. 
-	 * But, we can do it throughout the process and update it each time a problem has been added or changed (not deleted?)
-	 * Algorithm? Based on single scores and overall number of problems
-	 * Include when problem was created? (or only in LA piece)?  
-	 * 0 = learner has not created any list
-	 * 0.? something in between
-	 * 1 = experts' list contains no additional problems, learner has captured all (or at least synonyma)
-	 * This is probably not for feedback, just for LA- relevant scoring
-	 */
-	private void scoreOverallList(ScoreContainer scoreContainer){
+
+	/*private void scoreOverallList(ScoreContainer scoreContainer){
 		//scoreContainer.getScoreBeanByType(type)
-	}
+	}*/
 	
 }

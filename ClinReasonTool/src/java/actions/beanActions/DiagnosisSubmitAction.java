@@ -25,6 +25,7 @@ import database.DBClinReason;
 public class DiagnosisSubmitAction /*implements Scoreable*/{
 
 	private PatientIllnessScript patIllScript;
+	private static final float scoreForAllowReSubmit = (float) 0.5; //of learner gets less than 50% correct on final diagnoses, we allow re-submit
 	
 	public DiagnosisSubmitAction(PatientIllnessScript patIllScript){
 		this.patIllScript = patIllScript;
@@ -36,9 +37,9 @@ public class DiagnosisSubmitAction /*implements Scoreable*/{
 			return; //todo error message
 		}
 		
-		ScoreBean scoreBean = triggerScoringAction(patIllScript);
-		//if learner submits the wrong diagnoses we allow him to submit 
-		if(scoreBean.getScoreBasedOnExp()==0){
+		float score = triggerScoringAction(patIllScript);
+		//if learner submits the wrong diagnoses we allow him to re-submit 
+		if(score<scoreForAllowReSubmit){
 			patIllScript.setSubmittedStage(patIllScript.getCurrentStage());
 			new DBClinReason().saveAndCommit(patIllScript);
 		}
@@ -66,11 +67,12 @@ public class DiagnosisSubmitAction /*implements Scoreable*/{
 		RelationDiagnosis rel = patIllScript.getDiagnosisById(id);
 		rel.setTier(Integer.valueOf(tierStr.trim()));
 		new DBClinReason().saveAndCommit(rel);
-		new ScoringListAction(patIllScript).scoreList(Relation.TYPE_DDX);
+		//re-score the ddx list.... or re-score the item?
+		//new ScoringListAction(patIllScript).scoreList(ScoreBean.TYPE_DDX_LIST, Relation.TYPE_DDX);
 		notifyLogChgTier(rel.getId(), rel.getTier());
 	}
 
-	public ScoreBean triggerScoringAction(Beans beanToScore) {
+	public float triggerScoringAction(Beans beanToScore) {
 		return new ScoringFinalDDXAction().scoreAction(-1, patIllScript);
 		
 	}

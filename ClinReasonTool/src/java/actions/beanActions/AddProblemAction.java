@@ -11,12 +11,14 @@ import javax.faces.context.FacesContext;
 import beans.*;
 import beans.graph.Graph;
 import beans.relation.*;
+import beans.scoring.ScoreBean;
 import controller.NavigationController;
 import controller.RelationController;
 import database.DBClinReason;
 import database.DBList;
 import util.CRTLogger;
 import actions.scoringActions.ScoringAddAction;
+import actions.scoringActions.ScoringListAction;
 import actions.scoringActions.Scoreable;
 
 /**
@@ -114,6 +116,8 @@ public class AddProblemAction implements AddAction, Scoreable{
 	 */
 	public void triggerScoringAction(Beans relProb){		
 		new ScoringAddAction().scoreAction(((RelationProblem) relProb).getListItemId(), this.patIllScript);
+		new ScoringListAction(this.patIllScript).scoreList(ScoreBean.TYPE_PROBLEM_LIST, Relation.TYPE_PROBLEM);
+
 	}
 
 	@Override

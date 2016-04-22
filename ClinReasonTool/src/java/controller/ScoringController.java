@@ -24,10 +24,10 @@ public class ScoringController {
 	public static final int SCORING_ALGORITHM_BASIC = 1;
 	public ScoringController(){}
 	
-	public String getIconForScore(long itemId){
+	public String getIconForScore(int type, long itemId){
 		ScoreContainer scoreContainer = new NavigationController().getCRTFacesContext().getScoreContainer();
 		if (scoreContainer==null) return ""; //no icon
-		ScoreBean scoreBean = scoreContainer.getScoreBeanByScoredItem(itemId);
+		ScoreBean scoreBean = scoreContainer.getScoreBeanByTypeAndItemId(type,itemId);
 		if(scoreBean==null || scoreBean.getOverallScore()<=0) return "";
 		if(scoreBean.getOverallScore()==1) return ICON_PREFIX+1;
 		if(scoreBean.getOverallScore()<1) return ICON_PREFIX+2;

@@ -14,11 +14,11 @@ import beans.relation.Relation;
  */
 public class ScoreBean extends Beans implements Serializable{
 
-	public static final int TYPE_PROBLEM = Relation.TYPE_PROBLEM;
-	public static final int TYPE_DDX = Relation.TYPE_DDX;
-	public static final int TYPE_TEST = Relation.TYPE_TEST;
-	public static final int TYPE_MNG = Relation.TYPE_MNG;
-	public static final int TYPE_EPI = Relation.TYPE_EPI;
+	public static final int TYPE_ADD_PROBLEM = Relation.TYPE_PROBLEM;
+	public static final int TYPE_ADD_DDX = Relation.TYPE_DDX;
+	public static final int TYPE_ADD_TEST = Relation.TYPE_TEST;
+	public static final int TYPE_ADD_MNG = Relation.TYPE_MNG;
+	public static final int TYPE_ADD_EPI = Relation.TYPE_EPI;
 	
 	public static final int TYPE_PROBLEM_LIST = 7;
 	public static final int TYPE_DDX_LIST = 8;

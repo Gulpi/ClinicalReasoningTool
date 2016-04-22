@@ -17,9 +17,7 @@
 	<classpathentry kind="lib" path="WEB-INF/lib/javassist-3.12.0.GA.jar"/>
 	<classpathentry kind="lib" path="WEB-INF/lib/javax.el-2.2.6.jar"/>
 	<classpathentry kind="lib" path="WEB-INF/lib/javax.el-api-2.2.5.jar"/>
-	<classpathentry kind="lib" path="WEB-INF/lib/jsoup-1.7.3.jar"/>
 	<classpathentry kind="lib" path="WEB-INF/lib/jstl-1.1.0.jar"/>
-	<classpathentry kind="lib" path="WEB-INF/lib/log4j-1.2.17.jar"/>
 	<classpathentry kind="lib" path="WEB-INF/lib/myfaces-api-2.0.23.jar"/>
 	<classpathentry kind="lib" path="WEB-INF/lib/myfaces-impl-2.0.23.jar"/>
 	<classpathentry kind="lib" path="WEB-INF/lib/openwebbeans-impl-1.1.7.jar"/>
@@ -44,5 +42,6 @@
 	<classpathentry kind="lib" path="WEB-INF/lib/commons-lang.jar"/>
 	<classpathentry kind="lib" path="WEB-INF/lib/commons-lang3-3.4.jar"/>
 	<classpathentry kind="lib" path="WEB-INF/lib/jgrapht.jar"/>
+	<classpathentry kind="lib" path="/Tomcats/apache-tomcat-7/lib/log4j.jar"/>
 	<classpathentry kind="output" path="WEB-INF/classes"/>
 </classpath>

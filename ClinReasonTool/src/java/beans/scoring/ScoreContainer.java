@@ -1,10 +1,7 @@
 package beans.scoring;
 
-import java.beans.Beans;
 import java.io.Serializable;
 import java.util.*;
-
-import database.DBClinReason;
 import database.DBScoring;
 import util.CRTLogger;
 
@@ -32,24 +29,25 @@ public class ScoreContainer implements Serializable{
 		scores.put(new Long(score.getScoredItem()), score);
 	}
 	
-	/**
-	 * Be aware: Only call if you are sure that there is only ONE results, which is valif for all list scores and the ddxFinal score. 
+	/** 
 	 * @param type
 	 * @return
 	 */
-	public ScoreBean getScoreBeanByType(int type){
+	public ScoreBean getScoreBeanByTypeAndItemId(int type, long itemId){
 		if(scores==null || scores.isEmpty()) return null;
 		Iterator<ScoreBean> it = scores.values().iterator();
+		//List<ScoreBean> scores = new ArrayList<ScoreBean>();
 		while(it.hasNext()){
 			ScoreBean sb = it.next(); 
-			if(sb.getType()==type) return sb;
+			if(sb.getType()==type && sb.getScoredItem()==itemId) return sb;
 		}
 		return null;
 	}
-	public ScoreBean getScoreBeanByScoredItem(long itemId){
+	
+	/*public ScoreBean getScoreBeanByScoredItem(long itemId){
 		if(scores==null || scores.isEmpty()) return null;
 		return scores.get(new Long(itemId));
-	}
+	}*/
 	
 	public void initScoreContainer(){
 		scores = new DBScoring().selectScoreBeansByPatIllScriptId(this.patIllScriptId);

@@ -10,9 +10,11 @@ import javax.faces.context.FacesContext;
 
 import actions.scoringActions.Scoreable;
 import actions.scoringActions.ScoringAddAction;
+import actions.scoringActions.ScoringListAction;
 import beans.*;
 import beans.graph.Graph;
 import beans.relation.*;
+import beans.scoring.ScoreBean;
 import controller.NavigationController;
 import controller.RelationController;
 import database.DBClinReason;
@@ -111,6 +113,7 @@ public class AddDiagnosisAction implements AddAction, Scoreable{
 	 */
 	public void triggerScoringAction(Beans relDDX){
 		new ScoringAddAction().scoreAction(((RelationDiagnosis) relDDX).getListItemId(), this.patIllScript);
+		new ScoringListAction(this.patIllScript).scoreList(ScoreBean.TYPE_DDX_LIST, Relation.TYPE_DDX);
 
 	}
 	

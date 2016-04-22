@@ -7,7 +7,7 @@ public class CRTLogger {
 	public static final int LEVEL_PROD = 2;
 	public static final int LEVEL_ERROR = 3;
 	public static int currentLogLevel = LEVEL_TEST; //TODO get from properties
-	private static final String logfile = "crt.log";
+	private static final String logfile = "logs/crt.log";
 	
 	/**
 	 * Write the string into the console and into a logfile (crt.log)

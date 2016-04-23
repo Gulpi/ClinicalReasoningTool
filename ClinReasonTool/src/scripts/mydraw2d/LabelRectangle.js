@@ -18,6 +18,7 @@ var LabelRectangle= draw2d.shape.basic.Rectangle.extend({
     	//this.setId(id);
     	//this.setHeight(22);
     	this.setCssClass("myrect");
+    
 		  // Create any Draw2D figure as decoration for the connection
 		  //
 		  this.label = new MyLabel({text:"I'm a Label", color:"#0d0d0d", fontColor:"#0d0d0d"});

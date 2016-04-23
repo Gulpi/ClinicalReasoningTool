@@ -95,7 +95,7 @@ public class FeedbackContainer implements Serializable{
 				if(addFeedbackBean(fb)) fb.save();
 			}
 		}
-		else{
+		else{ //Currently we do not have to do anything here for 1-4 because we do not display the missing items.
 			fb = new FeedbackBean(currStage, FeedbackBean.FEEDBACK_EXP, task, patIllScriptId);
 			//fb.save();
 			if(addFeedbackBean(fb)) fb.save();
@@ -112,7 +112,7 @@ public class FeedbackContainer implements Serializable{
 			return true;
 		}
 		else{
-			List l= feedbackBeans.get(new Integer(currStage));
+			List<FeedbackBean> l= feedbackBeans.get(new Integer(currStage));
 			if(l.contains(fb)) return false;
 			feedbackBeans.get(new Integer(currStage)).add(fb);
 			return true;

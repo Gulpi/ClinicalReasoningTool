@@ -88,13 +88,13 @@ $(function() {
       });
 
 	//toggleExpertFeedbackOnLoad();
-    $( document ).tooltip({
-    	items: " rect, [title], text, tspan",
-    	content: function() {
-    		var element = $( this );
-            if ( element.is( "[title]" ) ) { //this is a "normal" tooltip returning the title of an element
-                return element.attr( "title" );
-              }
+  //  $( document ).tooltip({
+   // 	items: " rect, [title], text, tspan",
+   // 	content: function() {
+   // 		var element = $( this );
+    //        if ( element.is( "[title]" ) ) { //this is a "normal" tooltip returning the title of an element
+     //           return element.attr( "title" );
+      //        }
 			//these are element of the concept map, we return the label text:
     	 	 //if(element.is("rect")){    			
     	 		 //return element.attr("userData"); //not working, find a workaround?
@@ -102,13 +102,13 @@ $(function() {
 			/*if(element.is("text")){
     			return element.text;
     		}*/
-			if(element.is("tspan")){ 
+			/*if(element.is("tspan")){ 
 				var tooltip = getToolTipForRect(element);
 				if(tooltip!="") return tooltip;
-			}
-    	}
+			}*/
+    //	}
         
-    });
+   // });
     //$( ".draggable" ).draggable();	
 	initLists();
     $( "#confidence_slider" ).slider({

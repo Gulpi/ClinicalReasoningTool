@@ -73,7 +73,7 @@ public class ScoringAddAction implements ScoringAction{
 		
 		Relation expRel = mvertex.getExpertVertex();
 		Relation learnerRel = mvertex.getLearnerVertex();
-		scoreBean.setTiming(learnerRel.getStage(), expRel.getStage());
+		if(learnerRel!=null && expRel!=null) scoreBean.setTiming(learnerRel.getStage(), expRel.getStage());
 		setFeedbackInfo(scoreBean);
 		if(expRel!=null /*&& expRel.getSynId()<=0*/){ //expert has chosen this item (not synonym)
 			if(learnerRel!=null && learnerRel.getSynId()<=0) scoreBean.setScoreBasedOnExp(SCORE_EXP_SAMEAS_LEARNER);

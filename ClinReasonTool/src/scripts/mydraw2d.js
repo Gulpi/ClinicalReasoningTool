@@ -369,6 +369,7 @@ function createAndAddHyp(name, x, y, id, shortname,learner, exp, peer, mnm){
 	if(!expFeedback && learner=="0") return; //we do not display items that have added by expert if expert feedback is off
 	var rect = new DDXRectangle();
 	rect.label.text=shortname;
+	rect.attr({"title": name, userData:name});
 	//rect.label.setBackgroundColor("#cccccc");
 	//rect.label.setWidth(10);
 	//rect.color= new draw2d.util.Color(color);

@@ -1,5 +1,7 @@
 package beans;
 
+import java.io.Serializable;
+
 import javax.faces.bean.SessionScoped;
 
 /**
@@ -9,7 +11,7 @@ import javax.faces.bean.SessionScoped;
  *
  */
 @SessionScoped
-public class UserSetting {
+public class UserSetting implements Serializable{
 	//feedback setting?
 	
 }

@@ -4,6 +4,7 @@ import java.io.*;
 import java.util.*;
 import java.beans.*;
 
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.*;
 import javax.faces.context.*;
 import javax.servlet.ServletContext;
@@ -44,6 +45,7 @@ public class CRTFacesContext /*extends FacesContextWrapper*/ implements Serializ
 	 * all scripts of the user, needed for the overview/portfolio page to display a list. 
 	 * TODO: we only need id and a name, so maybe we do not have to load the full objects? or get 
 	 * them from view?
+	 * We load it from the portfolio view and also here (in case user does not come from portfolio)
 	 */
 	private List<PatientIllnessScript> scriptsOfUser;
 	
@@ -55,11 +57,14 @@ public class CRTFacesContext /*extends FacesContextWrapper*/ implements Serializ
 	
 	public CRTFacesContext(){
 		setUserId();
-		loadAndSetScriptsOfUser(); //this loads all scripts, we do not necessarily have to do that here, only if overview page is opened!
-		loadAndSetPatIllScript();
-		userSetting = new UserSetting(); //TODO get from Database...
-	    FacesContextWrapper.getCurrentInstance().getExternalContext().getSessionMap().put(CRTFacesContext.CRT_FC_KEY, this);
-	    //if(patillscript!=null) 
+		if(this.userId>0){
+			if(scriptsOfUser==null) loadAndSetScriptsOfUser(); //this loads all scripts, we do not necessarily have to do that here, only if overview page is opened!
+			initSession();
+			userSetting = new UserSetting(); //TODO get from Database...
+		    FacesContextWrapper.getCurrentInstance().getExternalContext().getSessionMap().put(CRTFacesContext.CRT_FC_KEY, this);
+		} 
+	    CRTLogger.out(FacesContextWrapper.getCurrentInstance().getApplication().getStateManager().getViewState(FacesContext.getCurrentInstance()), CRTLogger.LEVEL_TEST);
+
 	}
 	
 	private void initGraph(){
@@ -71,11 +76,16 @@ public class CRTFacesContext /*extends FacesContextWrapper*/ implements Serializ
 	private void setUserId(){
 		String setUserIdStr = new AjaxController().getRequestParamByKey(AjaxController.REQPARAM_USER);
 		if(setUserIdStr!=null) this.userId = (Long.valueOf(setUserIdStr).longValue());
+		else{
+			CRTLogger.out("Userid is null", CRTLogger.LEVEL_ERROR);
+			FacesContextWrapper.getCurrentInstance().addMessage("",new FacesMessage(FacesMessage.SEVERITY_ERROR, "userid is null",""));
+		}
 	}
 
 	public long getUserId() {return userId;}
 	public void setUserId(long userId) {this.userId = userId;}
 	public Graph getGraph() {return graph;}
+	public void resetGraph(){this.graph = null;}
 	public UserSetting getUserSetting() {return userSetting;}
 	public void setUserSetting(UserSetting userSetting) {this.userSetting = userSetting;}
 	public void setScriptsOfUser(List<PatientIllnessScript> scriptsOfUser) {this.scriptsOfUser = scriptsOfUser;}
@@ -83,7 +93,7 @@ public class CRTFacesContext /*extends FacesContextWrapper*/ implements Serializ
 	/*public void setCurrentStage(){
 		new AjaxController().getRequestParamByKey(AjaxController.REQPARAM_STAGE);
 	}*/
-	private void loadAndSetScriptsOfUser(){	setScriptsOfUser(isc.loadScriptsOfUser());}
+	private void loadAndSetScriptsOfUser(){setScriptsOfUser(isc.loadScriptsOfUser());}
 	
 	private void loadScoreAndFeedbackContainer(){
 		if(this.getPatillscript()!=null) {
@@ -97,15 +107,15 @@ public class CRTFacesContext /*extends FacesContextWrapper*/ implements Serializ
 	/**
 	 * load PatientIllnessScript based on id or sessionId
 	 */
-	public void loadAndSetPatIllScript(){ 
+	public void initSession(){ 
 		long id = new AjaxController().getIdRequestParamByKey(AjaxController.REQPARAM_SCRIPT);
 		if(this.patillscript!=null && this.patillscript.getId()==id) return; //current script loaded....
 		long sessionId = new AjaxController().getIdRequestParamByKey(AjaxController.REQPARAM_SESSION);
 		long vpId = new AjaxController().getIdRequestParamByKey(AjaxController.REQPARAM_VP);
 		if(id<=0 && sessionId<=0 && vpId<=0) return; //then user has opened the overview page...y
-		//boolean isNew = true;
+
 		if(id>0){
-			setPatillscript(isc.loadPatIllScriptById(id, userId));
+			this.patillscript = isc.loadPatIllScriptById(id, userId);
 		}
 		else if(sessionId>0) setPatillscript(isc.loadPatIllScriptBySessionId(sessionId, userId));
 		else if(vpId>0 && this.userId>0) setPatillscript(isc.loadIllnessScriptsByParentId(this.userId, vpId));
@@ -113,6 +123,11 @@ public class CRTFacesContext /*extends FacesContextWrapper*/ implements Serializ
 		loadExpScripts();
 		loadScoring();
 		initGraph();		
+	}
+	
+	public boolean getInitSession(){
+		initSession();
+		return true;
 	}
 	
 	private void loadScoring(){
@@ -145,7 +160,10 @@ public class CRTFacesContext /*extends FacesContextWrapper*/ implements Serializ
 	public void setScoreBean(ScoreContainer scoreContainer) {this.scoreContainer = scoreContainer;}
 	public void toogleExpFeedback(String toggleStr, String taskStr){feedbackContainer.toogleExpFeedback(toggleStr, taskStr);}
 	//public void setExpFeedbackTask(String toogleStr, String taskStr){feedbackContainer.setExpFeedback(toogleStr, taskStr);}
-	/* we land here from an ajax request for any actions concerning the patientIllnessScript....*/
+	
+	/** 
+	 * we land here from an ajax request for any actions concerning the patientIllnessScript....
+	 **/
 	public void ajaxResponseHandler() throws IOException {
 		new AjaxController().receiveAjax(this.getPatillscript());
 	}

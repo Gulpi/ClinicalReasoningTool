@@ -35,13 +35,15 @@ public class NavigationController implements Serializable {
 	 */
 	public String openPatIllScript(){
 		//long id = new AjaxController().getIdRequestParamByKey(AjaxController.REQPARAM_SCRIPT);
-		getCRTFacesContext().loadAndSetPatIllScript();
+		CRTFacesContext context = getCRTFacesContext(); 
+		if(context!=null) context.initSession();
 		//TODO error handling
 		return "prototype_fs";
 	}
 	
 	public String openPatIllScript(String s){
-		getCRTFacesContext().loadAndSetPatIllScript();
+		CRTFacesContext context = getCRTFacesContext(); 
+		if(context!=null) context.initSession();
 		//TODO error handling
 		return "prototype_fs";
 	}
@@ -56,17 +58,20 @@ public class NavigationController implements Serializable {
 	 * TODO move to CRTFacesContext???? 
 	 * we have to remove the current patIllScript (if there is one) and sessionId from the externalContext
 	 */
-	private void removePatIllScript(){
+	public void removePatIllScript(){
 		CRTFacesContext crtFacesContext = getCRTFacesContext();
 		if(crtFacesContext!=null && crtFacesContext.getPatillscript()!=null){
 			//crtFacesContext.setSessionId(-1);
 			notifyLog(crtFacesContext.getPatillscript());
 			crtFacesContext.setPatillscript(null);
+			crtFacesContext.resetGraph();
 		}
 	}
 	
 	public CRTFacesContext getCRTFacesContext(){
-		return (CRTFacesContext) FacesContextWrapper.getCurrentInstance().getExternalContext().getSessionMap().get(CRTFacesContext.CRT_FC_KEY);
+		CRTFacesContext cnxt =  (CRTFacesContext) FacesContextWrapper.getCurrentInstance().getExternalContext().getSessionMap().get(CRTFacesContext.CRT_FC_KEY);
+		/*if(cnxt!=null)*/ return cnxt;
+		//return new CRTFacesContext();
 	}
 	
 	private void notifyLog(PatientIllnessScript patillscript){

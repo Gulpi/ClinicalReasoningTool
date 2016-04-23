@@ -46,7 +46,7 @@
 <script src="../scripts/js.cookie.js"></script>
 <script language="JavaScript">
 
-
+var test = "#{crtContext.initSession}";
 var msg2="Please connect the hypotheses with the findings";
 var sessId = "#{crtContext.patillscript.sessionId}";
 var scriptId = "#{crtContext.patillscript.id}";
@@ -60,6 +60,7 @@ var active;
 var minLengthTypeAhead = 4;
 //var errorNum = "#{crtContext.patillscript.errorNum}";
 var submitted = "#{crtContext.patillscript.submitted}";
+
 /*draw2d.Configuration.factory.createConnection=function(sourcePort, targetPort, callback, dropTarget){
 	 addConnection(sourcePort, targetPort);
 	 return new LabelConnection();

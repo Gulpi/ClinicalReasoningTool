@@ -162,7 +162,7 @@ function initAddEpi(){ initAddRectangle("epi", "addepi", "epicontainer");}
  * @param type
  */
 function createTempRect(type, x,y,id){
-	var rect = createRect(name,"#cccccc"/*"#99CC99"*/,id,"0","1");
+	var rect = createRect(name,/*"#cccccc""#99CC99"*/id,"0","1");
 	rect.setBackgroundColor("#ffffff");	
 	my_canvas.add(rect, x, y);	
 	my_canvas.addSelection(rect); //necessary to address it after selection from list!

@@ -120,9 +120,10 @@ public abstract class Relation extends Beans{
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	public boolean equals(Object o){
-		if(o!=null){
-			if(o instanceof Relation && ((Relation)o).getId()==id)
-				return true;
+		if(o!=null && o instanceof Relation){
+			Relation rel = (Relation)o;
+			if(rel.getId()==id) return true;
+			if(rel.getListItemId() == this.listItemId && rel.getRelationType() == this.getRelationType()) return true;
 		}
 		return false;
 	}

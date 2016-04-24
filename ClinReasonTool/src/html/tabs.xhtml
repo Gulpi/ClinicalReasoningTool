@@ -41,8 +41,8 @@
 <script src="../scripts/mydraw2d/DDXRectangle.js"></script>	
 <script src="../scripts/mydraw2d/MyLabel.js"></script>	
 <script src="../scripts/mydraw2d/MyCanvas.js"></script>	
-<script src="../scripts/draw2d/lib/jquery.browser.js"></script>
-<script src="../scripts/draw2d/lib/jquery.layout.js"></script>
+<!-- <script src="../scripts/draw2d/lib/jquery.browser.js"></script>
+<script src="../scripts/draw2d/lib/jquery.layout.js"></script>-->
 <script src="../scripts/mydraw2d.js"></script>
 <script src="../scripts/crt.js"></script>
 <script src="../scripts/ajax.js"></script>
@@ -73,11 +73,12 @@ var submitted = "#{crtContext.patillscript.submitted}";
 $(function() {
 	//Cookies.remove('tab'); -> activate for cookit tab setting testing....
 	if(lang=="de") listUrl = "jsonp_de.json";
-	$("#dialogCMDDX").hide();
-	$("#dialogCMProb").hide();
-	$("#dialogCMTest").hide();
+	//$("#dialogCMDDX").hide();
+	//$("#dialogCMProb").hide();
+	$(".listdialog").hide();
+	/*$("#dialogCMTest").hide();
 	$("#dialogCMMng").hide();
-	$("#dialogCMEpi").hide();
+	$("#dialogCMEpi").hide();*/
 	$("#jdialogError").hide();
 	
 	var tabs = $( "#tabs" ).tabs();
@@ -148,6 +149,7 @@ $(function() {
 	  } */
 	}));
 	
+    
 	initAddHyp();
 	initAddFind();
 	initAddMng();
@@ -308,7 +310,7 @@ Case placed here...<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
 				 	<div class="newElemContainer">
 				 		<span id="findcontainer"></span><div id="addfind" class=" newElem newFind">Problem</div><br/>
 						<span id="hypcontainer"></span><div id="addhyp" class=" newElem newHyp">Diagnosis</div><br/>
-			   			<span id="dscontainer"></span> <div id="adddtest" class=" newElem newDiagnStep">Diagn. Step</div><br/>
+			   			<span id="dscontainer"></span> <div id="addtest" class=" newElem newDiagnStep">Diagn. Step</div><br/>
 			    		<span id="mngcontainer"></span> <div id="addmng" class=" newElem  newMng">Managment</div> 
 			    		<!--<span id="epicontainer"></span> <div id="addepi" class=" newElem  newEpi">Epi</div> -->
 			    		
@@ -364,11 +366,21 @@ Case placed here...<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
 			<ui:include src="errorline.xhtml" />
  		</ui:repeat>				
 	</ul>More information ....</div>
-<div id="dialogCMProb" class="listdialog" ><input id="cm_prob_sel" class="f_text"></input></div>
-<div id="dialogCMDDX" class="listdialog"><input id="cm_ddx_sel" class="f_text"></input></div>
-<div id="dialogCMMng" class="listdialog"><input id="cm_mng_sel" class="f_text"></input></div>
-<div id="dialogCMTest" class="listdialog"><input id="cm_ds_sel" class="f_text"></input></div>
-<div id="dialogCMEpi" class="listdialog"><input id="cm_epi_sel" class="f_text"></input></div>
+<!-- <div id="dialogCMProb" class="listdialog" >-->
+<span class="listdialog" id="cm_prob"><input id="cm_prob_sel" class="f_text" style="width:100px;"></input>
+<a href="javascript:cancelCMList('cm_prob_sel', 'cmprob');" title="cancel" ><i class="icon-cancel-circled"></i></a></span> <!-- </div>-->
+
+<span class="listdialog" id="cm_ddx"><input id="cm_ddx_sel" class="f_text" style="width:100px;"></input>
+<a href="javascript:cancelCMList('cm_ddx_sel', 'cmddx');" title="cancel" ><i class="icon-cancel-circled"></i></a></span><!-- </div>-->
+
+<span class="listdialog" id="cm_mng"><input id="cm_mng_sel" class="f_text" style="width:100px;"></input>
+<a href="javascript:cancelCMList('cm_mng_sel', 'cmmng');" title="cancel" ><i class="icon-cancel-circled"></i></a></span><!-- </div>-->
+
+<span class="listdialog" id="cm_ds"><input id="cm_ds_sel" class="f_text" style="width:100px;"></input>
+<a href="javascript:cancelCMList('cm_ds_sel', 'cmds');" title="cancel" ><i class="icon-cancel-circled"></i></a></span><!-- </div>-->
+
+<span class="listdialog" id="cm_epi"><input id="cm_epi_sel" class="f_text" style="width:100px;"></input>
+<a href="javascript:cancelCMList('cm_epi_sel', 'cmepi');" title="cancel" ><i class="icon-cancel-circled"></i></a></span><!-- </div>-->
 
 </body>
 </html>

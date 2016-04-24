@@ -132,6 +132,8 @@ function initAddRectangle(prefix, name, containerName){
 			  }
 		  });	
 }
+
+
 /**
  * init the drag&drop rectangle for adding a new hypothesis
  */
@@ -152,7 +154,7 @@ function initAddMng(){ initAddRectangle("mng", "addmng", "mngcontainer");}
 /**
  * init the drag&drop rectangle for adding a new diagnostic step
  */
-function initAddTest(){ initAddRectangle("ds", "adddiagnstep", "dscontainer");}
+function initAddTest(){ initAddRectangle("ds", "addtest", "dscontainer");}
 function initAddEpi(){ initAddRectangle("epi", "addepi", "epicontainer");}
 
 /**
@@ -168,9 +170,11 @@ function createTempRect(type, x,y,id){
 	my_canvas.addSelection(rect); //necessary to address it after selection from list!
 }
 
-function delTempRect(){
-	var newRect = my_canvas.getFigure("cmddx_-1"); 
-	if(newRect!=null) my_canvas.remove(newRect);
+function delTempRect(id){
+	var newRect = my_canvas.getFigure(id); 
+	if(newRect!=null){
+		my_canvas.remove(newRect);
+	}
 }
 
 /**
@@ -183,23 +187,24 @@ function openListForCM(x,y, clickedId){
 	canvasY = $("#canvas").offset().top;
 	xOfDialog = canvasX + x; 
 	yOfDialog = canvasY + y;
-	var dialogName = "dialogCMProb";
+	var dialogName = "cm_prob";
+	
 	var inputFieldName = "cm_prob_sel";
 	//getting type of item the user has clicked on: 
 	if(clickedId.startsWith("cmddx")){
-		dialogName = "dialogCMDDX";	
+		dialogName = "cm_ddx";	
 		inputFieldName = "cm_ddx_sel";
 	}
 	if(clickedId.startsWith("cmds")){
-		dialogName = "dialogCMTest";	
+		dialogName = "cm_ds";	
 		inputFieldName = "cm_ds_sel";
 	}	
 	if(clickedId.startsWith("cmmng")){
-		dialogName = "dialogCMMng";	
+		dialogName = "cm_mng";	
 		inputFieldName = "cm_mng_sel";
 	}	
 	if(clickedId.startsWith("cmepi")){
-		dialogName = "dialogCMEpi";	
+		dialogName = "cm_epi";	
 		inputFieldName = "cm_epi_sel";
 	}	
 	//display:

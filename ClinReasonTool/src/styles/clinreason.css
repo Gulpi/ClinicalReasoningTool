@@ -183,6 +183,7 @@ input.f_text, textarea.f_textarea {
 .icon-plus-circled:before { content: '\e851'; } 
 .icon-floppy:before { content: '\e801'; }
 .icon-attention-circled:before { content: '\e871'; }
+.icon-cancel-circled:before { content: '\e84f'; }
 
 
 /* end i-icons code */
@@ -410,7 +411,7 @@ body .ui-tooltip {
 .listdialog{
 	/*visibility:hidden;*/
 	width:180px; 
-	height:30px; 
+	/*height:30px; */
 	position:absolute;
 	background-color:#cccccc";
 }

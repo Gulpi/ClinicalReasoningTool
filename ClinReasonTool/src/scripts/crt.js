@@ -315,6 +315,8 @@ function saveNote(id){
 	//TODO let user know that was saved
 }
 
+var map_autocomplete_instance = null;
+
 /** init the lists for selecting problems, diagnoses etc.*/
 var active = $( "#tabs" ).tabs( "option", "active" ); //we have to determine the active tab, to be able to adapt the nav icons!
   
@@ -417,17 +419,20 @@ var active = $( "#tabs" ).tabs( "option", "active" ); //we have to determine the
 	        url: listUrl,
 	        dataType: "json",
 	        success: function( data ) {
-	          $( "#cm_prob_sel" ).autocomplete({
+	        	map_autocomplete_instance = $( "#cm_prob_sel" ).autocomplete({
 	            source: data,
 	            minLength: minLengthTypeAhead,
 	            select: function( event, ui ) {
 	            	editOrAddProblemCM(ui.item.value, ui.item.label);
 	            },
 	  	      close: function(ui) {
-	  	        $("#cm_prob_sel").val("");
-	  	        $("#dialogCMProb" ).hide();
-	  	        $("#cm_prob_sel").autocomplete( "close" );
-	  	        delTempRect();
+		  	    	cancelCMList("cm_prob_sel", "cmprob");
+
+	  	    	  /*$("#cm_prob_sel").val("");	  	      
+	  	    	  $("#cm_prob" ).hide();
+	  	    	  //  $("#dialogCMProb" ).hide();
+	  	    	  $("#cm_prob_sel").autocomplete( "close" );
+	  	    	  delTempRect("cmprob_-1");*/
 	  	      }
 	          });
 	        }
@@ -443,10 +448,11 @@ var active = $( "#tabs" ).tabs( "option", "active" ); //we have to determine the
 	            	editOrAddEpiCM(ui.item.value, ui.item.label);
 	            },
 	  	      close: function(ui) {
-	  	        $("#cm_epi_sel").val("");
-	  	        $("#dialogCMEpi" ).hide();
+	  	    	cancelCMList("cm_epi_sel", "cmepi");
+	  	      /*  $("#cm_epi_sel").val("");
+	  	        $("#cm_epi_sel" ).hide();
 	  	        $("#cm_epi_sel").autocomplete( "close" );
-	  	        delTempRect();
+	  	        delTempRect("cmepi_-1");*/
 	  	      }
 	          });
 	        }
@@ -462,11 +468,12 @@ var active = $( "#tabs" ).tabs( "option", "active" ); //we have to determine the
 	            	editOrAddDDXCM(ui.item.value, ui.item.label);
 	            },
 	  	      close: function(ui) {
-	  	        $("#cm_ddx_sel").val("");
-	  	        $("#dialogCMDDX" ).hide();
+	  	    	cancelCMList("cm_ddx_sel", "cmddx");
+	  	      /*  $("#cm_ddx_sel").val("");
+	  	        $("#cm_ddx_sel" ).hide();
 	  	        $("#cm_ddx_sel").autocomplete( "close" );
 	  	        //if we had opened a new one, we have to remove it from the canvas:
-	  	        delTempRect();
+	  	        delTempRect("cmddx_-1");*/
 	  	      }
 	          });
 	        }
@@ -482,11 +489,12 @@ var active = $( "#tabs" ).tabs( "option", "active" ); //we have to determine the
 	            	editOrAddTestCM(ui.item.value, ui.item.label);
 	            },
 	  	      close: function(ui) {
-	  	        $("#cm_ds_sel").val("");
-	  	        $("#dialogCMTest" ).hide();
+	  	    	cancelCMList("cm_ds_sel", "cmds");
+	  	       /* $("#cm_ds_sel").val("");
+	  	        $("#cm_ds_sel" ).hide();
 	  	        $("#cm_ds_sel").autocomplete( "close" );
 	  	        //if we had opened a new one, we have to remove it from the canvas:
-	  	        delTempRect();
+	  	        delTempRect("cmds_-1");*/
 	  	      }
 	          });
 	        }
@@ -502,17 +510,35 @@ var active = $( "#tabs" ).tabs( "option", "active" ); //we have to determine the
 	            	editOrAddMngCM(ui.item.value, ui.item.label);
 	            },
 	  	      close: function(ui) {
-	  	        $("#cm_mng_sel").val("");
-	  	        $("#dialogCMMng" ).hide();
+	  	    	cancelCMList("cm_mng_sel", "cmmng");
+	  	        /*$("#cm_mng_sel").val("");
+	  	        $("#cm_mng_sel" ).hide();
 	  	        $("#cm_mng_sel").autocomplete( "close" );
 	  	        //if we had opened a new one, we have to remove it from the canvas:
-	  	        delTempRect();
+	  	        delTempRect("cmmng_-1");*/
 	  	      }
 	          });
 	        }
 	      });
 	  });
 
+  /*
+   * user does not enter anything into the textfield and clicks on cancel, so, we have to remove all the dialog stuff
+   */
+  function cancelCMList(id, rectPrefix){
+	  $("#"+id).val("");
+	  $(".listdialog" ).hide();
+	  $("#"+id).autocomplete( "close" );
+      //if we had opened a new one, we have to remove it from the canvas:
+      delTempRect(rectPrefix+"_-1");
+  	  initAddHyp();
+  	  initAddFind();
+  	  initAddMng();
+  	  initAddTest();
+  	  initAddEpi();  
+  s}
+  
+  
   function initLists(){
 	    $( "#list_diagnoses" ).sortable({
 	 		stop: function( event, ui ) {

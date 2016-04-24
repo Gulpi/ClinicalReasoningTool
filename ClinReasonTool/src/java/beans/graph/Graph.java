@@ -120,6 +120,8 @@ public class Graph extends DirectedWeightedMultigraph<MultiVertex, MultiEdge> {
 	 * @param illnessScriptType
 	 */
 	public void addVertex(Relation rel, int illScriptType){
+		if(rel==null)
+			return;
 		MultiVertex multiVertex = getVertexById(rel.getListItemId());
 		if(multiVertex==null){ //create a new one:
 			multiVertex = new MultiVertex(rel, illScriptType); 

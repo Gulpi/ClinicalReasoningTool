@@ -78,7 +78,7 @@ public class RelationTest extends Relation implements Rectangle, Serializable{
 	public RelationTest(long listItemId, long destId, long synId){
 		this.setListItemId(listItemId);
 		this.setDestId(destId);
-		if(getSynId()>0) setSynId(synId);
+		if(synId>0) setSynId(synId);
 	}	
 	public ListItem getTest() {return test;}
 	public void setTest(ListItem test) {this.test = test;}		
@@ -110,16 +110,4 @@ public class RelationTest extends Relation implements Rectangle, Serializable{
 		if(getSynId()<=0) return test.getName();
 		else return getSynonym().getName();
 	}
-	
-	/* (non-Javadoc)
-	 * @see beans.relation.Relation#getShortLabelOrSynShortLabel()
-	 */
-/*	public String getShortLabelOrSynShortLabel(){		
-		return StringUtils.abbreviate(getLabelOrSynLabel(), ListItem.MAXLENGTH_NAME);
-	}*/
-	
-	/*public String getScore(){
-		return new ScoringController().getIconForScore(this.getListItemId());
-		//sreturn "icon-ok2";
-	}*/
 }

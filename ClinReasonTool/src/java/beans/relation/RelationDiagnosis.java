@@ -112,16 +112,4 @@ public class RelationDiagnosis extends Relation implements Rectangle, Serializab
 		if(getSynId()<=0) return diagnosis.getName();
 		else return getSynonym().getName();
 	}
-	
-	/* (non-Javadoc)
-	 * @see beans.relation.Relation#getShortLabelOrSynShortLabel()
-	 */
-	/*public String getShortLabelOrSynShortLabel(){		
-		return StringUtils.abbreviate(getLabelOrSynLabel(), ListItem.MAXLENGTH_NAME);
-	}*/
-	
-	/*public String getScore(){
-		return new ScoringController().getIconForScore(this.getListItemId());
-		//sreturn "icon-ok2";
-	}*/
 }

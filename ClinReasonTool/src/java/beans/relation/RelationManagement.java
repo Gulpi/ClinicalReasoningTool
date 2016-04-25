@@ -19,52 +19,19 @@ public class RelationManagement extends Relation implements Rectangle, Serializa
 	public static final int DEFAULT_X = 245; //325; //default x position of problems in canvas
 
 	private static final long serialVersionUID = 1L;
-	//private long id;
-	/**
-	 * can be problem, test, management, diagnosis
-	 */
-	//private long listItemId; 
-	/**
-	 * (Patient)Illnesscript
-	 */
-	//private long destId; 
-	
-	//private int order;
-	
-	/**
-	 * x position of the problem in the concept map canvas
-	 */
-	//private int x;
-	/**
-	 * y position of the problem in the concept map canvas
-	 */
-	//private int y;
-	
 	private ListItem management;
-	/**
-	 * In case the learner has selected the not the main item, but a synonyma, we save the id here.
-	 * We do not need the object, since it is already stored in the ListItem 
-	 */
-	//private long synId;
+
 	
-//	private int stage;
 	public RelationManagement(){}
 	public RelationManagement(long listItemId, long destId, long synId){
 		this.setListItemId(listItemId);
 		this.setDestId(destId);
-		if(getSynId()>0) setSynId(synId);
+		if(synId>0) setSynId(synId);
 	}
 		
-	/*public int getX() {return x;}
-	public void setX(int x) {this.x = x;}
-	public int getY() {return y;}
-	public void setY(int y) {this.y = y;}*/
 	public ListItem getManagement() {return management;}
 	public void setManagement(ListItem management) {this.management = management;}
 	public String getIdWithPrefix(){ return GraphController.PREFIX_MNG+this.getId();}
-
-
-	
 
 	/* (non-Javadoc)
 	 * @see beans.relation.Relation#getRelationType()
@@ -79,21 +46,11 @@ public class RelationManagement extends Relation implements Rectangle, Serializa
 	 * @see beans.relation.Relation#getListItem()
 	 */
 	public ListItem getListItem() {return management;}
-	//public Synonym getSynonym(){ return new RelationController().getSynonym(getSynId(),this);}
 	
 	/* (non-Javadoc)
 	 * @see beans.relation.Relation#getSynonyma()
 	 */
 	public Set<Synonym> getSynonyma(){ return management.getSynonyma();}
-	/* (non-Javadoc)
-	 * @see beans.relation.Relation#getSynId()
-	 */
-	//public long getSynId() {return getSynId();}
-	
-	/*public void setXAndY(Point p){
-		this.setX(p.x);
-		this.setY(p.y);
-	}*/
 	
 	/* (non-Javadoc)
 	 * @see beans.relation.Relation#getLabelOrSynLabel()
@@ -102,16 +59,4 @@ public class RelationManagement extends Relation implements Rectangle, Serializa
 		if(getSynId()<=0) return management.getName();
 		else return getSynonym().getName();
 	}
-	
-	/* (non-Javadoc)
-	 * @see beans.relation.Relation#getShortLabelOrSynShortLabel()
-	 */
-	/*public String getShortLabelOrSynShortLabel(){		
-		return StringUtils.abbreviate(getLabelOrSynLabel(), ListItem.MAXLENGTH_NAME);
-	}*/
-	
-	/*public String getScore(){
-		return new ScoringController().getIconForScore(this.getListItemId());
-		//sreturn "icon-ok2";
-	}*/
 }

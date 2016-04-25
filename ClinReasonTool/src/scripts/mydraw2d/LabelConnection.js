@@ -98,9 +98,10 @@ var LabelConnection= draw2d.Connection.extend({
             y:y,
             items: 
             {
-                "5":    {name: "highly related" /*, icon: "edit"*/},
+                "5":  {name: "highly related" /*, icon: "edit"*/},
                 "4":  {name: "somewhat related", icon: "cut"},
                 "3":  {name: "slightly related", icon: "cut"},
+                "6":    {name: "speaks against", icon: "cut"},
                 /*"blue":   {name: "Blue", icon: "copy"},*/
                 "sep1":   "---------",
                 "delete": {name: "Delete", icon: "delete"}
@@ -111,6 +112,7 @@ var LabelConnection= draw2d.Connection.extend({
 
 function getWeightToColor(weight){
 	switch(weight){
+	case "6": return "#cccccc";
 	case "5": return "#009933";
 	case "4": return "#00e64d";
 	case "3": return "#e6ffee";

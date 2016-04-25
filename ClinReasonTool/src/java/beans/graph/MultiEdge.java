@@ -21,7 +21,7 @@ public class MultiEdge extends DefaultWeightedEdge{
 	public int WEIGHT_SLIGHTLY_RELATED = 3;
 	public int WEIGHT_SOMEWHAT_RELATED = 4;
 	public int WEIGHT_HIGHLY_RELATED = 5;
-
+	public int WEIGHT_SPEAKS_AGAINST = 6;
 	/**
 	 * key = type (see definition in IllnessScriptInterface)
 	 * value = weight (for peers the number of conx)

@@ -92,10 +92,17 @@ $(function() {
       });
 
 	//toggleExpertFeedbackOnLoad();
-  //  $( document ).tooltip({
-   // 	items: " rect, [title], text, tspan",
-   // 	content: function() {
-   // 		var element = $( this );
+    $( document ).tooltip({
+    	//items: " rect, [title], text, tspan",
+    	items: "tspan",
+    	content: function() {
+    		var element = $( this );
+    		if(element.is("tspan")){ 
+				var tooltip = getToolTipForRect(element);
+				element.attr("title", tooltip);
+    		}
+    	}
+    });
     //        if ( element.is( "[title]" ) ) { //this is a "normal" tooltip returning the title of an element
      //           return element.attr( "title" );
       //        }

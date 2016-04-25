@@ -536,7 +536,7 @@ var active = $( "#tabs" ).tabs( "option", "active" ); //we have to determine the
   	  initAddMng();
   	  initAddTest();
   	  initAddEpi();  
-  s}
+  }
   
   
   function initLists(){

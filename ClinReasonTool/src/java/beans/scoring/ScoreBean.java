@@ -4,6 +4,9 @@ import java.beans.Beans;
 import java.io.Serializable;
 import java.sql.Timestamp;
 
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.SessionScoped;
+
 import beans.relation.Relation;
 
 /**
@@ -12,19 +15,27 @@ import beans.relation.Relation;
  * @author ingahege
  *
  */
+@ManagedBean(name = "score", eager = true)
+@SessionScoped
 public class ScoreBean extends Beans implements Serializable{
 
-	public static final int TYPE_ADD_PROBLEM = Relation.TYPE_PROBLEM;
-	public static final int TYPE_ADD_DDX = Relation.TYPE_DDX;
-	public static final int TYPE_ADD_TEST = Relation.TYPE_TEST;
-	public static final int TYPE_ADD_MNG = Relation.TYPE_MNG;
-	public static final int TYPE_ADD_EPI = Relation.TYPE_EPI;
+	public static final int TYPE_ADD_PROBLEM = Relation.TYPE_PROBLEM; //1
+	public static final int TYPE_ADD_DDX = Relation.TYPE_DDX; //2
+	public static final int TYPE_ADD_TEST = Relation.TYPE_TEST; //3
+	public static final int TYPE_ADD_MNG = Relation.TYPE_MNG; //4
+	public static final int TYPE_ADD_EPI = Relation.TYPE_EPI; //6
+	public static final int TYPE_ADD_CNX = Relation.TYPE_CNX; //5
 	
 	public static final int TYPE_PROBLEM_LIST = 7;
 	public static final int TYPE_DDX_LIST = 8;
 	public static final int TYPE_TEST_LIST = 9;
 	public static final int TYPE_MNG_LIST = 10;
 	public static final int TYPE_FINAL_DDX = 11;
+	public static final int TYPE_CNXS = 12;
+	public static final int TYPE_COURSETIME = 13;
+	public static final int TYPE_SUMMST = 14;
+	public static final int TYPE_EPI_LIST = 15;
+	
 	public static final int TIME_OK = 0;
 	public static final int TIME_LATE = 1;
 	public static final int TIME_EARLY = 2;
@@ -32,6 +43,9 @@ public class ScoreBean extends Beans implements Serializable{
 	private long id; 
 	private long patIllScriptId; 
 	private float scoreBasedOnExp = -1;
+	/**
+	 * percentage of other users who have chosen this item, or average score of peers....
+	 */
 	private float scoreBasedOnPeer = -1;
 	private float scoreBasedOnIllScript = -1;
 	/**
@@ -55,13 +69,15 @@ public class ScoreBean extends Beans implements Serializable{
 	 */
 	private int type; 
 	private int weight = 1; //per default all items have the same weight.
+	private int stage = -1;
 	
 	public ScoreBean(){}
-	public ScoreBean(long patIllId, long scoredItem, int type){
+	public ScoreBean(long patIllId, long scoredItem, int type, int stage){
 		this.patIllScriptId = patIllId;
 		this.scoredItem = scoredItem;
 		//this.score = score;
 		this.type = type;
+		this.stage = stage;
 		
 	}
 	public long getId() {return id;}
@@ -86,6 +102,8 @@ public class ScoreBean extends Beans implements Serializable{
 	public void setTiming(int timing) {this.timing = timing;}	
 	public int getFeedbackOn() {return feedbackOn;}
 	public void setFeedbackOn(int feedbackOn) {this.feedbackOn = feedbackOn;}
+	public int getStage() {return stage;}
+	public void setStage(int stage) {this.stage = stage;}
 	
 	public void setTiming(int learnerStage, int expStage){
 		if(learnerStage>expStage) setTiming(TIME_LATE);
@@ -98,7 +116,13 @@ public class ScoreBean extends Beans implements Serializable{
 	public boolean equals(Object o){
 		if(o instanceof ScoreBean){
 			if(this.id == ((ScoreBean) o).getId()) return true;
+			if(this.type==((ScoreBean) o).getType() && this.scoredItem==((ScoreBean) o).getScoredItem() && this.stage == ((ScoreBean) o).getStage()) return true;
 		}
+		return false;
+	}
+	
+	public boolean isListScoreBean(){
+		if(type==TYPE_PROBLEM_LIST  || type == TYPE_DDX_LIST || type==TYPE_MNG_LIST || type==TYPE_TEST_LIST || type==TYPE_EPI_LIST) return true;
 		return false;
 	}
 	

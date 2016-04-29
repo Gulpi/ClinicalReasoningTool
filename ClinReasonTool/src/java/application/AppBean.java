@@ -17,7 +17,9 @@ import beans.IllnessScript;
 import beans.PatientIllnessScript;
 import beans.graph.Graph;
 import beans.relation.RelationDiagnosis;
+import beans.scoring.PeerContainer;
 import controller.JsonCreator;
+import controller.PeerSyncController;
 import database.DBClinReason;
 import database.HibernateUtil;
 import util.CRTLogger;
@@ -56,7 +58,8 @@ public class AppBean extends ApplicationWrapper implements HttpSessionListener{
 	public static Map<Long, List<IllnessScript>> ilnessScripts;
 
 	public static Map<Long, Graph> graph;
-	
+
+	private static PeerContainer peers = new PeerContainer();
 	/**
 	 * called when the application is started... We init Hibernate and a ViewHandler (for Locale handling)
 	 * We also put this AppBean into the ServletContext for later access to the applicationScoped scripts
@@ -78,10 +81,13 @@ public class AppBean extends ApplicationWrapper implements HttpSessionListener{
 	   
 		//MeshImporter.main("de");
 	    CRTLogger.out("Init done", CRTLogger.LEVEL_PROD);
+	    new PeerSyncController(peers).sync();
 	}
 	
 
 	
+	//public static Monitor getMonitor() {return monitor;}
+
 	/**
 	 * We have one experts' patientIllnessScript per parentId (=VPId). If it has not yet been loaded (by another 
 	 * learner working on the same VP, we load it and put it into the expertPatIllScripts Map.
@@ -107,9 +113,6 @@ public class AppBean extends ApplicationWrapper implements HttpSessionListener{
 		}
 	}
 	
-	
-	
-	
 	public static PatientIllnessScript getExpertPatIllScript(long parentId) {
 		if(expertPatIllScripts!=null)
 			return expertPatIllScripts.get(new Long(parentId));
@@ -118,6 +121,10 @@ public class AppBean extends ApplicationWrapper implements HttpSessionListener{
 	public static List<IllnessScript> getIlnessScripts(long parentId) {
 		return ilnessScripts.get(new Long(parentId));
 	}
+	
+	
+	public static PeerContainer getPeers() {return peers;}
+
 	/* (non-Javadoc)
 	 * @see javax.faces.application.ApplicationWrapper#getWrapped()
 	 */

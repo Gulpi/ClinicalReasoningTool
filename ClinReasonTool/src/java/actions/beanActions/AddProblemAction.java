@@ -116,7 +116,7 @@ public class AddProblemAction implements AddAction, Scoreable{
 	 */
 	public void triggerScoringAction(Beans relProb){		
 		new ScoringAddAction().scoreAction(((RelationProblem) relProb).getListItemId(), this.patIllScript);
-		new ScoringListAction(this.patIllScript).scoreList(ScoreBean.TYPE_PROBLEM_LIST, Relation.TYPE_PROBLEM);
+		//new ScoringListAction(this.patIllScript).scoreList(ScoreBean.TYPE_PROBLEM_LIST, Relation.TYPE_PROBLEM);
 
 	}
 

@@ -113,7 +113,7 @@ public class AddDiagnosisAction implements AddAction, Scoreable{
 	 */
 	public void triggerScoringAction(Beans relDDX){
 		new ScoringAddAction().scoreAction(((RelationDiagnosis) relDDX).getListItemId(), this.patIllScript);
-		new ScoringListAction(this.patIllScript).scoreList(ScoreBean.TYPE_DDX_LIST, Relation.TYPE_DDX);
+		//new ScoringListAction(this.patIllScript).scoreList(ScoreBean.TYPE_DDX_LIST, Relation.TYPE_DDX);
 
 	}
 	

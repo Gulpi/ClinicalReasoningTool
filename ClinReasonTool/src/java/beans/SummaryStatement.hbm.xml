@@ -12,6 +12,7 @@
 			</generator>
 		</id>	
 		<property name="text" column="text" type="string" />
+		<property name="stage" column="stage" type="int" />
 		
 
 </class>

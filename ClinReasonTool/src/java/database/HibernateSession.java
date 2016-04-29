@@ -95,6 +95,7 @@ public class HibernateSession {
 			cfg.addClass(beans.scoring.ScoreBean.class);
 			cfg.addClass(beans.error.MyError.class);
 			cfg.addClass(beans.scoring.FeedbackBean.class);
+			cfg.addClass(beans.scoring.PeerBean.class);
 			
 			if (factory==null) {
 				//init_setHibernateDialect();

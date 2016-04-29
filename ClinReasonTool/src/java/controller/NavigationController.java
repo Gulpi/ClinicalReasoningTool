@@ -63,8 +63,7 @@ public class NavigationController implements Serializable {
 		if(crtFacesContext!=null && crtFacesContext.getPatillscript()!=null){
 			//crtFacesContext.setSessionId(-1);
 			notifyLog(crtFacesContext.getPatillscript());
-			crtFacesContext.setPatillscript(null);
-			crtFacesContext.resetGraph();
+			crtFacesContext.reset();
 		}
 	}
 	

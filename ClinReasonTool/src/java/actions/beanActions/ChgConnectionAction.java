@@ -1,5 +1,6 @@
 package actions.beanActions;
 
+import actions.scoringActions.ScoringCnxChgAction;
 import beans.Connection;
 import beans.IllnessScriptInterface;
 import beans.LogEntry;
@@ -51,5 +52,10 @@ public class ChgConnectionAction {
 		MultiEdge edge = graph.getEdgeByCnxId(IllnessScriptInterface.TYPE_LEARNER_CREATED, cnx.getId());
 		edge.changeExplicitWeight(cnx.getWeight());
 		//graph.addExplicitEdge(cnx, patIllScript, IllnessScriptInterface.TYPE_LEARNER_CREATED);
-		CRTLogger.out(graph.toString(), CRTLogger.LEVEL_TEST);	}
+		CRTLogger.out(graph.toString(), CRTLogger.LEVEL_TEST);	
+	}
+	
+	/*private void triggerScoringAction(long cnxId){
+		new ScoringCnxChgAction().scoreAction(cnxId, patIllScript);
+	}*/
 }

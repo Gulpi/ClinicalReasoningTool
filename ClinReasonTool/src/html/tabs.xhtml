@@ -57,6 +57,7 @@ var listUrl="jsonp_en.json";
 var lang = "#{crtContext.patillscript.locale}";
 var my_canvas = null;
 var currentStage = $.getUrlVar('stage');
+var currentStageScript = "#{crtContext.patillscript.currentStage}";
 var expFeedback = false; //default is that expert feedback is off
 var peerFeedback = false; //default is that expert feedback is off
 var active;
@@ -71,14 +72,8 @@ var submitted = "#{crtContext.patillscript.submitted}";
  
 
 $(function() {
-	//Cookies.remove('tab'); -> activate for cookit tab setting testing....
 	if(lang=="de") listUrl = "jsonp_de.json";
-	//$("#dialogCMDDX").hide();
-	//$("#dialogCMProb").hide();
 	$(".listdialog").hide();
-	/*$("#dialogCMTest").hide();
-	$("#dialogCMMng").hide();
-	$("#dialogCMEpi").hide();*/
 	$("#jdialogError").hide();
 	
 	var tabs = $( "#tabs" ).tabs();
@@ -127,7 +122,9 @@ $(function() {
     	min: 0,
     	max: 100,
     	step: 1,
+    	change: submitSliderChange
     });
+    $( "#confidence_slider" ).slider( "value", #{crtContext.patillscript.confidence} );
 	$("#jdialog").dialog({
 		autoOpen: false,
 		modal: true,
@@ -144,9 +141,7 @@ $(function() {
 	my_canvas  = new MyCanvas("canvas");
     initConceptMap(); 
     my_canvas.installEditPolicy(new draw2d.policy.connection.DragConnectionCreatePolicy({
-        createConnection: function(){
-        	
-        	//alert(this.getSource());
+        createConnection: function(){        	
         //	addConnection(sourcePort, targetPort);
             return new LabelConnection();
         }
@@ -200,7 +195,7 @@ Case placed here...<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
 	  </ul>
 		  <div id="tabs-0">
 		  <div id="patimg" style="position:relative;right:0px; top:0px; float:right;"><img src="patient.png" width="100px" /><br/>Delai Johnston</div>
-		  	<div id="descr">
+		  	<div id="descr" style="float:left;position:absolute;">
 		  		<!--Name: Delai Johnston<br/>
 			  	  Age: 65, Gender: M <br/>-->
 				Course of Time: 
@@ -208,11 +203,12 @@ Case placed here...<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
 				<f:selectItem itemLabel="-" itemValue="-1" />
 				<f:selectItem itemLabel="acute" itemValue="1" />
 				<f:selectItem itemLabel="chronic" itemValue="2" />
-				</h:selectOneMenu><br/><br/>
+				</h:selectOneMenu>
+				<span class="list_score" style="float:left;position:absolute;vertical-align:middle;">&nbsp;<i class="#{crtContext.patillscript.courseOfTimeScore}"></i></span><br/><br/>
 				Summary Statement<br/>
 				<textarea class="f_textarea" name="summSt" id="summStText" cols="40" rows="7">#{crtContext.patillscript.summSt.text}</textarea><br/>
 		  		<a href="javascript:saveSummSt('#{crtContext.patillscript.summStId}');" title="Save your summary statement"><i class="icon-floppy"></i></a>
-				
+			 	<span class="list_score" style="color:green;"> #{crtContext.patillscript.summStExp}</span> 
 				<!--  Exposures/Epi: <input class="f_text" id="epi"></input>
 				<div class="ddx_left">
 				<h:form id="epiform">

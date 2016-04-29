@@ -2,7 +2,13 @@ package controller;
 
 import java.util.*;
 
+import actions.scoringActions.ScoringCnxsAction;
+import actions.scoringActions.ScoringListAction;
+import actions.scoringActions.ScoringSummStAction;
+import beans.CRTFacesContext;
+import beans.PatientIllnessScript;
 import beans.graph.Graph;
+import beans.scoring.FeedbackBean;
 import beans.scoring.ScoreBean;
 import beans.scoring.ScoreContainer;
 
@@ -18,6 +24,12 @@ public class ScoringController {
 	public static final float HALF_SCORE = (float) 0.5; //e.g. a synonyma entered....
 	public static final float NO_SCORE = (float) 0; //might be 0.25 if we want to give the learner credit for doing something...
 	public static final float RED_SCORE_LATESTAGE = (float) 0;
+	public static final float ADD_LISTITEM_RED_SCORE = (float) 0.05; //we deduct 5% of the overall list score for each additional item.
+	public static final float ADD_CNX_RED_SCORE = (float) 0.01; //we deduct 1% of the overall cnxs score for each additional cnx.
+	
+	public static final float SCORE_EXP_SAMEAS_LEARNER = FULL_SCORE;
+	public static final float SCORE_NOEXP_BUT_LEARNER = NO_SCORE; //we score with 0 points, BUT the action itself will be honored in the LA part
+	public static final float MIN_PEERS = 20;
 	
 	public static final String ICON_PREFIX = "icon-ok";
 	//define possible scoring algorithms:
@@ -33,4 +45,37 @@ public class ScoringController {
 		if(scoreBean.getOverallScore()<1) return ICON_PREFIX+2;
 		return "";
 	}
+	
+	/**
+	 * We store in the ScoreBean whether at this time the learner has already seen the expert's/peer feedback for
+	 * the item he has just added.
+	 * @param scoreBean
+	 */
+	public void setFeedbackInfo(ScoreBean scoreBean){
+		CRTFacesContext crtContext = new NavigationController().getCRTFacesContext();
+		boolean expFBOn = crtContext.getFeedbackContainer().isExpFeedbackOn(scoreBean.getType());
+		boolean peerFBOn = crtContext.getFeedbackContainer().isPeerFeedbackOn(scoreBean.getType());
+		if(expFBOn) scoreBean.setFeedbackOn(FeedbackBean.FEEDBACK_EXP);
+		if(peerFBOn) scoreBean.setFeedbackOn(FeedbackBean.FEEDBACK_PEER);
+		if(expFBOn && peerFBOn) scoreBean.setFeedbackOn(FeedbackBean.FEEDBACK_EXP_PEER);		
+	}
+	
+	/**
+	 * Before learner goes to the next stage (card) we score the lists he has created so far...
+	 * @param patIllScript
+	 */
+	public void scoringListsForStage(PatientIllnessScript patIllScript, int stage){
+		if(stage<0) return;
+		ScoringListAction scla = new ScoringListAction(patIllScript);
+		scla.scoreList(ScoreBean.TYPE_DDX_LIST, ScoreBean.TYPE_ADD_DDX);
+		scla.scoreList(ScoreBean.TYPE_PROBLEM_LIST, ScoreBean.TYPE_ADD_PROBLEM);
+		scla.scoreList(ScoreBean.TYPE_TEST_LIST, ScoreBean.TYPE_ADD_TEST);
+		scla.scoreList(ScoreBean.TYPE_MNG_LIST, ScoreBean.TYPE_ADD_MNG);
+		//score all connections
+		new ScoringCnxsAction(patIllScript).scoreConnections(stage);
+		//score summaryStatement at this stage: 
+		new ScoringSummStAction().scoreAction(patIllScript, stage);
+	}
+	
+
 }

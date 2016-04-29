@@ -8,11 +8,14 @@ import javax.faces.application.FacesMessage;
 import javax.faces.bean.*;
 import javax.faces.context.*;
 import javax.servlet.ServletContext;
+import javax.servlet.http.HttpSession;
 
 import application.AppBean;
+import application.Monitor;
 import beans.graph.Graph;
 import beans.relation.Relation;
 import beans.scoring.FeedbackContainer;
+import beans.scoring.LearningAnalyticsBean;
 import beans.scoring.ScoreContainer;
 import controller.*;
 import database.DBClinReason;
@@ -53,10 +56,11 @@ public class CRTFacesContext /*extends FacesContextWrapper*/ implements Serializ
 	/**
 	 * Detailed scores for this patIllScript
 	 */
-	private ScoreContainer scoreContainer;
-	
+	//private ScoreContainer scoreContainer;
+	private LearningAnalyticsBean learningAnalytics;
 	public CRTFacesContext(){
 		setUserId();
+		
 		if(this.userId>0){
 			if(scriptsOfUser==null) loadAndSetScriptsOfUser(); //this loads all scripts, we do not necessarily have to do that here, only if overview page is opened!
 			initSession();
@@ -64,6 +68,7 @@ public class CRTFacesContext /*extends FacesContextWrapper*/ implements Serializ
 		    FacesContextWrapper.getCurrentInstance().getExternalContext().getSessionMap().put(CRTFacesContext.CRT_FC_KEY, this);
 		} 
 	    CRTLogger.out(FacesContextWrapper.getCurrentInstance().getApplication().getStateManager().getViewState(FacesContext.getCurrentInstance()), CRTLogger.LEVEL_TEST);
+	    Monitor.addHttpSession((HttpSession)FacesContextWrapper.getCurrentInstance().getExternalContext().getSession(true));
 
 	}
 	
@@ -85,22 +90,28 @@ public class CRTFacesContext /*extends FacesContextWrapper*/ implements Serializ
 	public long getUserId() {return userId;}
 	public void setUserId(long userId) {this.userId = userId;}
 	public Graph getGraph() {return graph;}
-	public void resetGraph(){this.graph = null;}
+
 	public UserSetting getUserSetting() {return userSetting;}
 	public void setUserSetting(UserSetting userSetting) {this.userSetting = userSetting;}
 	public void setScriptsOfUser(List<PatientIllnessScript> scriptsOfUser) {this.scriptsOfUser = scriptsOfUser;}
+	public LearningAnalyticsBean getLearningAnalytics() {return learningAnalytics;}
+	public void setLearningAnalytics(LearningAnalyticsBean learningAnalytics) {this.learningAnalytics = learningAnalytics;}
 
 	/*public void setCurrentStage(){
 		new AjaxController().getRequestParamByKey(AjaxController.REQPARAM_STAGE);
 	}*/
 	private void loadAndSetScriptsOfUser(){setScriptsOfUser(isc.loadScriptsOfUser());}
-	
+
+	/**
+	 * Init of the scoreContainer (in LearningAnalytics), learningAnalytics object, and FeedbackBean container 
+	 * @param parentId
+	 */
 	private void loadScoreAndFeedbackContainer(){
-		if(this.getPatillscript()!=null) {
-			scoreContainer = new ScoreContainer(this.getPatillscript().getId());
-			feedbackContainer = new FeedbackContainer(this.getPatillscript().getId());
-			scoreContainer.initScoreContainer();	
+		if(patillscript!=null) {
+			learningAnalytics = new LearningAnalyticsBean(patillscript.getId(), userId);
+			feedbackContainer = new FeedbackContainer(patillscript.getId());				
 			feedbackContainer.initFeedbackContainer();
+			new PeerSyncController().loadPeersForPatIllScript(patillscript.getParentId());
 		}
 	}
 	
@@ -121,7 +132,7 @@ public class CRTFacesContext /*extends FacesContextWrapper*/ implements Serializ
 		else if(vpId>0 && this.userId>0) setPatillscript(isc.loadIllnessScriptsByParentId(this.userId, vpId));
 		//TODO error handling!!!!
 		loadExpScripts();
-		loadScoring();
+		loadScoreAndFeedbackContainer();
 		initGraph();		
 	}
 	
@@ -130,18 +141,22 @@ public class CRTFacesContext /*extends FacesContextWrapper*/ implements Serializ
 		return true;
 	}
 	
-	private void loadScoring(){
+	/*private void loadScoring(){
 		
 		//todo call loading from DB method
 		loadScoreAndFeedbackContainer();
-	}
+	}*/
 	
 	private void loadExpScripts(){
-	    ServletContext context = (ServletContext) FacesContext.getCurrentInstance().getExternalContext().getContext();
-	    AppBean app = (AppBean) context.getAttribute(AppBean.APP_KEY);
+		AppBean app = getAppBean();
 	    app.addExpertPatIllnessScriptForParentId(patillscript.getParentId());
 	    app.addIllnessScriptForDiagnoses(patillscript.getDiagnoses(), patillscript.getParentId());
-
+	}
+	
+	public AppBean getAppBean(){
+	    ServletContext context = (ServletContext) FacesContext.getCurrentInstance().getExternalContext().getContext();
+	   return (AppBean) context.getAttribute(AppBean.APP_KEY);
+		
 	}
 	
 	public PatientIllnessScript getPatillscript() { return patillscript;}
@@ -149,15 +164,15 @@ public class CRTFacesContext /*extends FacesContextWrapper*/ implements Serializ
 	public List<PatientIllnessScript> getScriptsOfUser() {return this.scriptsOfUser;}
 	//private void setScriptsOfUser(List<PatientIllnessScript> scriptsOfUser){this.scriptsOfUser = scriptsOfUser;}	
 	public ScoreContainer getScoreContainer() {
-		if(scoreContainer==null) scoreContainer = new ScoreContainer(this.getPatillscript().getId());
-		return scoreContainer;
+		if(learningAnalytics==null)  learningAnalytics = new LearningAnalyticsBean(patillscript.getId(), userId);
+		return learningAnalytics.getScoreContainer();		
 	}
 	
 	public FeedbackContainer getFeedbackContainer() {
 		if(feedbackContainer==null) feedbackContainer = new FeedbackContainer(this.getPatillscript().getId());
 		return feedbackContainer;
 	}
-	public void setScoreBean(ScoreContainer scoreContainer) {this.scoreContainer = scoreContainer;}
+	//public void setScoreBean(ScoreContainer scoreContainer) {this.scoreContainer = scoreContainer;}
 	public void toogleExpFeedback(String toggleStr, String taskStr){feedbackContainer.toogleExpFeedback(toggleStr, taskStr);}
 	//public void setExpFeedbackTask(String toogleStr, String taskStr){feedbackContainer.setExpFeedback(toogleStr, taskStr);}
 	
@@ -172,11 +187,16 @@ public class CRTFacesContext /*extends FacesContextWrapper*/ implements Serializ
 	public void ajaxResponseHandler2() throws IOException {
 		new AjaxController().receiveAjax(this);
 	}
-	/* (non-Javadoc)
-	 * @see javax.faces.context.FacesContextWrapper#getWrapped()
+	
+	/**
+	 * reset all objects related to the current patientIllnessScript. Call this when the user opens another 
+	 * VP
 	 */
-	/*public FacesContext getWrapped() {
-		return this; //or return this ????
-	}*/
+	public void reset(){
+		this.graph = null;
+		setPatillscript(null);
+		this.learningAnalytics = null;
+		this.feedbackContainer = null;
+	}
 
 }

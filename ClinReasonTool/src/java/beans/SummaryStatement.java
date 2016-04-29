@@ -18,7 +18,7 @@ public class SummaryStatement extends Beans implements Serializable{
 	private String text; 
 	private long id = -1; //shall we link to the current SummaryStatementAnswerView?
 	private Timestamp creationDate;
-	
+	private int stage = -1;
 	public SummaryStatement(){}
 	public SummaryStatement(String text){
 		this.text = text;
@@ -28,6 +28,9 @@ public class SummaryStatement extends Beans implements Serializable{
 	public long getId() {return id;}
 	public void setId(long id) {this.id = id;}	
 	
+	public int getStage() {return stage;}
+	public void setStage(int stage) {this.stage = stage;}
+	
 	/* (non-Javadoc)
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
@@ -36,6 +39,5 @@ public class SummaryStatement extends Beans implements Serializable{
 			if(((SummaryStatement) o).getId() == this.id) return true;
 		}
 		return false;
-	}
-	
+	}	
 }

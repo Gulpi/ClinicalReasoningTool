@@ -245,6 +245,33 @@ public class DBClinReason /*extends HibernateUtil*/{
     	return patIllScript;
     }
     
+    /**
+     * Select the PatientIllnessScripts for the userId and parentId from the database. 
+     * @param sessionId
+     * @return PatientIllnessScript or null
+     */
+    public List<PatientIllnessScript> selectLearnerPatIllScriptsByPeerSync(){
+    	Session s = instance.getInternalSession(Thread.currentThread(), false);
+    	Criteria criteria = s.createCriteria(PatientIllnessScript.class,"PatientIllnessScript");
+    	criteria.add(Restrictions.eq("peerSync", new Boolean(false)));
+    	criteria.add(Restrictions.eq("type", new Integer(PatientIllnessScript.TYPE_LEARNER_CREATED)));
+    	return criteria.list();
+    }
+    
+    /**
+     * Select the PatientIllnessScripts for the userId and parentId from the database. 
+     * @param sessionId
+     * @return PatientIllnessScript or null
+     */
+    /*public List<PatientIllnessScript> selectLearnerPatIllScriptsByDate(){
+    	Session s = instance.getInternalSession(Thread.currentThread(), false);
+    	Criteria criteria = s.createCriteria(PatientIllnessScript.class,"PatientIllnessScript");
+    	//criteria.add(Restrictions.eq("peerSync", new Boolean(false)));
+    	criteria.add(Restrictions.eq("type", new Integer(PatientIllnessScript.TYPE_LEARNER_CREATED)));
+    	//TODO for peer calculation, we have to add a date range otherwise this is too much....
+    	return criteria.list();
+    }*/
+    
 	private SummaryStatement loadSummSt(long id){
 		if(id<=0) return null;
 		Session s = instance.getInternalSession(Thread.currentThread(), false);

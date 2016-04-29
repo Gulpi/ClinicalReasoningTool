@@ -232,6 +232,14 @@ function toggleSubmit(){
 	}
 }
 
+/*
+ * user has changed the confidence slider, so, we send the new value via ajax.
+ */
+function submitSliderChange(){
+	var confVal = $( "#confidence_slider" ).slider( "value" );
+	sendAjax(-1, doNothing, "changeConfidence",  confVal);
+}
+
 /******************** management *******************************/
 
 /*

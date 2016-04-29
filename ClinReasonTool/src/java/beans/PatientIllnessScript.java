@@ -9,12 +9,16 @@ import javax.faces.bean.*;
 import org.apache.commons.lang.StringUtils;
 
 import actions.beanActions.*;
+import actions.scoringActions.ScoringCourseOfTimeAction;
+import application.AppBean;
 import beans.error.MyError;
 import beans.relation.*;
+import beans.scoring.ScoreBean;
 import controller.AjaxController;
 import controller.ConceptMapController;
 import controller.GraphController;
 import controller.NavigationController;
+import controller.ScoringController;
 import database.DBClinReason;
 import util.CRTLogger;
 
@@ -52,10 +56,9 @@ public class PatientIllnessScript extends Beans/*extends Node*/ implements Illne
 	private int currentStage;
 	
 	/**
-	 * Which task (e.g. problem list, summary st,...) is currently open. We need this to identify which feedback
-	 * the learner has seen.
+	 * How confident is the learner with his ddxs. (1-100)
 	 */
-	//private int currentOpenTask;
+	private int confidence;
 	/**
 	 * 1=acute, 2=subacute, 3=chronic
 	 */	
@@ -86,6 +89,11 @@ public class PatientIllnessScript extends Beans/*extends Node*/ implements Illne
 	
 	private List<MyError> errors;
 	
+	/**
+	 * Has this script added to the peer table?
+	 */
+	private boolean peerSync = false;
+	
 	public PatientIllnessScript(){}
 	public PatientIllnessScript(long sessionId, long userId, long vpId, Locale loc){
 		if(sessionId>0) this.sessionId = sessionId;
@@ -101,10 +109,6 @@ public class PatientIllnessScript extends Beans/*extends Node*/ implements Illne
 	public void setSessionId(long sessionId) {this.sessionId = sessionId;}
 	public int getCourseOfTime() {return courseOfTime;}
 	public void setCourseOfTime(int courseOfTime) {this.courseOfTime = courseOfTime;}
-	public void chgCourseOfTime(String courseOfTimeStr) { 
-		setCourseOfTime(Integer.parseInt(courseOfTimeStr));
-		save();
-	}
 	public List<RelationProblem> getProblems() {return problems;}
 	public void setProblems(List<RelationProblem> problems) {this.problems = problems;}
 	public Timestamp getCreationDate(){ return this.creationDate;} //setting is done in DB	
@@ -128,24 +132,25 @@ public class PatientIllnessScript extends Beans/*extends Node*/ implements Illne
 	public Locale getLocale() {return locale;}
 	public void setLocale(Locale locale) {this.locale = locale;}	
 	public SummaryStatement getSummSt() {return summSt;}
-	public void setSummSt(SummaryStatement summSt) {
-		this.summSt = summSt;
-		//if(summSt!=null) summStId= summSt.getId();
-	
-	}	
+	public void setSummSt(SummaryStatement summSt) {this.summSt = summSt;	}		
+	public boolean isPeerSync() {return peerSync;}
+	public boolean getPeerSync() {return peerSync;}
+	public void setPeerSync(boolean peerSync) {this.peerSync = peerSync;}
+	public int getConfidence() {return confidence;}
+	public void setConfidence(int confidence) {this.confidence = confidence;}
 	public long getSummStId() {return summStId;}
 	public void setSummStId(long summStId) {this.summStId = summStId;}	
 	public Note getNote() {return note;}
 	public void setNote(Note note) {this.note = note;}
 	public long getNoteId() {return noteId;}
 	public void setNoteId(long noteId) {this.noteId = noteId;}
-	public int getCurrentStage() {
+	public int getCurrentStage() {return currentStage;}
+	
+	public int getCurrentStageWithUpdate() {
 		updateStage(new AjaxController().getRequestParamByKey(AjaxController.REQPARAM_STAGE));
 		return currentStage;
-	}
-	public void setCurrentStage(int currentStage) {
-		this.currentStage = currentStage;
-		}		
+	}	
+	public void setCurrentStage(int currentStage) { this.currentStage = currentStage;}		
 	public List<MyError> getErrors() {return errors;}
 	public void setErrors(List<MyError> errors) {this.errors = errors;}
 	public void addErrors(List<MyError> list){
@@ -163,6 +168,7 @@ public class PatientIllnessScript extends Beans/*extends Node*/ implements Illne
 		return false;
 	}	
 	public int getSubmittedStage() {return submittedStage;}
+	
 
 	public void setSubmittedStage(int submittedStage) {this.submittedStage = submittedStage;}
 	//public void setSubmitted(boolean submitted) {this.submitted = submitted;}
@@ -205,6 +211,8 @@ public class PatientIllnessScript extends Beans/*extends Node*/ implements Illne
 	public void submitDDX(String idStr){new DiagnosisSubmitAction(this).submitDDX();}
 	public void submitDDX(){new DiagnosisSubmitAction(this).submitDDX();}
 	public void changeTier(String idStr, String tierStr){new DiagnosisSubmitAction(this).changeTier(idStr, tierStr);}
+	public void changeConfidence(String idStr, String confVal){new ChgPatIllScriptAction(this).changeConfidence(idStr, confVal);}
+	public void chgCourseOfTime(String courseOfTimeStr) { new ChgPatIllScriptAction(this).chgCourseOfTime(courseOfTimeStr);}
 
 
 	public void save(){
@@ -228,12 +236,12 @@ public class PatientIllnessScript extends Beans/*extends Node*/ implements Illne
 	/* (non-Javadoc)
 	 * @see java.beans.PropertyChangeListener#propertyChange(java.beans.PropertyChangeEvent)
 	 */
-	public void propertyChange(PropertyChangeEvent evt) {
+	/*public void propertyChange(PropertyChangeEvent evt) {
 		if(evt!=null){
 			CRTLogger.out(evt.getPropertyName(), CRTLogger.LEVEL_TEST);	
 
 		}		
-	}
+	}*/
 	
 	public RelationEpi getEpiById(long id){return (RelationEpi) getRelationById(epis, id);}	
 	public RelationProblem getProblemById(long id){return (RelationProblem) getRelationById(problems, id);}	
@@ -293,9 +301,9 @@ public class PatientIllnessScript extends Beans/*extends Node*/ implements Illne
 		if(StringUtils.isNumeric(stage)){
 			int stageNum = Integer.valueOf(stage);
 			if(stageNum > this.currentStage){
+				new ScoringController().scoringListsForStage(this, currentStage);
 				this.setCurrentStage(stageNum);	
 				save();
-				//we also have to update the feedbackContainer if currently feedback is on....
 			}
 		}
 	}
@@ -304,4 +312,21 @@ public class PatientIllnessScript extends Beans/*extends Node*/ implements Illne
 		if(errors==null) return 0;
 		return errors.size();
 	}
+	
+	public String getCourseOfTimeScore(){ 
+		return new ScoringController().getIconForScore(ScoreBean.TYPE_COURSETIME, -1);
+	}
+	/**
+	 * return the expert's summary statement at the current stage...
+	 * @return
+	 */
+	public String getSummStExp(){
+		if(this.type==IllnessScriptInterface.TYPE_LEARNER_CREATED){
+			PatientIllnessScript expScript = AppBean.getExpertPatIllScript(this.parentId);
+			if(expScript==null || expScript.getSummSt()==null || expScript.getSummSt().getStage()>currentStage) return "No summary statement available at this stage.";
+			return expScript.getSummSt().getText();
+		}
+		return "";
+	}
+
 }

@@ -102,7 +102,7 @@ public class AddTestAction implements AddAction, Scoreable/*, FeedbackCreator*/{
 	 */
 	public void triggerScoringAction(Beans rel) {
 		new ScoringAddAction().scoreAction(((RelationTest) rel).getListItemId(), this.patIllScript);
-		new ScoringListAction(this.patIllScript).scoreList(ScoreBean.TYPE_TEST_LIST, Relation.TYPE_TEST);
+		//new ScoringListAction(this.patIllScript).scoreList(ScoreBean.TYPE_TEST_LIST, Relation.TYPE_TEST);
 
 	}
 

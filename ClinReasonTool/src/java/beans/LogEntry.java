@@ -58,7 +58,9 @@ public class LogEntry extends Beans{
 	
 	public static final int FEEDBACK_ON_ACTION = 36;
 	public static final int FEEDBACK_OFF_ACTION = 37;
-
+	public static final int CHG_CONFIDENCE_ACTION = 38;
+	public static final int CHG_COURSEOFTIME_ACTION = 39;
+	
 	
 	/**
 	 * action triggered by user, e.g. add a problem,... (see static definitions above)

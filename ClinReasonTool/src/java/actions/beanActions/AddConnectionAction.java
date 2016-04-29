@@ -7,7 +7,7 @@ import javax.faces.application.FacesMessage;
 import javax.faces.application.FacesMessage.Severity;
 
 import actions.scoringActions.Scoreable;
-import actions.scoringActions.ScoringCnxAction;
+import actions.scoringActions.ScoringAddCnxAction;
 import beans.PatientIllnessScript;
 import beans.graph.Graph;
 import beans.relation.Relation;
@@ -75,7 +75,7 @@ public class AddConnectionAction implements Scoreable{
 	 * @see actions.scoringActions.Scoreable#triggerScoringAction(java.beans.Beans)
 	 */
 	public void triggerScoringAction(Beans cnx) {
-		new ScoringCnxAction().scoreAction(((Connection)cnx).getId(), this.patIllScript);
+		new ScoringAddCnxAction().scoreAction(((Connection)cnx).getId(), this.patIllScript);
 		
 	}
 

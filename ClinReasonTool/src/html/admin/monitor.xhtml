@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"   
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      >
+<head>
+<meta http-equiv="EXPIRES" content="0" />
+<meta http-equiv="PRAGMA" content="NO-CACHE" />
+<meta http-equiv="CACHE-CONTROL" content="NO-CACHE" />
+</head>
+<body>
+
+	<h:form>
+	HTTPSessions for CRT: (sessionId, creationTime, lastAccessedTime)
+		<ul id="httpsessions" class="plainList">
+		<ui:repeat value="#{monitor.httpSessions}" var="sessions" varStatus="status">
+			<li>#{sessions.id}, 
+			<h:outputText value="#{sessions.creationTime}">
+    		<f:convertDateTime type="both" timeStyle="full"/>
+			</h:outputText>, 
+						
+			<h:outputText value="#{sessions.lastAccessedTime}">
+    		<f:convertDateTime type="both" timeStyle="full"/>
+			</h:outputText>
+			</li>
+		</ui:repeat></ul>
+	</h:form>
+</body>
+</html>

@@ -20,9 +20,11 @@
 		<property name="type" column="type" type="int"/>
 		<property name="locale" column="locale" update="false" type="locale"/>	
 		<property name="currentStage" column="stage" type="int"/>	
+		<property name="confidence" column="confidence" type="int"/>	
 		<!--  <property name="creationDate" column="creation_date" update="false" type="timestamp"/>-->
 	    <!-- <many-to-one name="summSt" column="summst_id" not-null="false" update="false" insert="false" lazy="false" />-->
 	    <property name="summStId" column="summst_id" type="long"/>
+	    <property name="peerSync" column="peer_sync" type="boolean"/>
 	    
  		<!--  <many-to-one name="courseIcon" column="course_icon" not-null="false" update="false" insert="false"/>
 		<property name="icon_id" column="course_icon" type="long"/>-->

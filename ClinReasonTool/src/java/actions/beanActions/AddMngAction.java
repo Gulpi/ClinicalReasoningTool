@@ -18,6 +18,7 @@ import beans.relation.Relation;
 import beans.relation.RelationDiagnosis;
 import beans.relation.RelationManagement;
 import beans.scoring.ScoreBean;
+import controller.ErrorMessageController;
 import controller.NavigationController;
 import controller.RelationController;
 import database.DBClinReason;
@@ -106,11 +107,9 @@ public class AddMngAction implements AddAction, Scoreable{
 		new ScoringAddAction().scoreAction(((RelationManagement) rel).getListItemId(), this.patIllScript);
 		new ScoringListAction(this.patIllScript).scoreList(ScoreBean.TYPE_MNG_LIST, Relation.TYPE_MNG);
 	}
-
-	@Override
+	
 	public void createErrorMessage(String summary, String details, Severity sev) {
-		// TODO Auto-generated method stub
-		
+		new ErrorMessageController().addErrorMessage(summary, details, sev);		
 	}
 	
 	/* (non-Javadoc)

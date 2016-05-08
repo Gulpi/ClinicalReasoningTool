@@ -95,8 +95,8 @@ public class PatientIllnessScript extends Beans/*extends Node*/ implements Illne
 	private boolean peerSync = false;
 	
 	public PatientIllnessScript(){}
-	public PatientIllnessScript(long sessionId, long userId, long vpId, Locale loc){
-		if(sessionId>0) this.sessionId = sessionId;
+	public PatientIllnessScript(long userId, long vpId, Locale loc){
+		//if(sessionId>0) this.sessionId = sessionId;
 		if(userId>0) this.userId = userId;
 		if(vpId>0) this.parentId = vpId;
 		this.locale = loc;

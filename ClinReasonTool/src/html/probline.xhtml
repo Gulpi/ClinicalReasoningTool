@@ -8,5 +8,6 @@
  	<a href="javascript:delProblem(#{prob.id});"><i class="icon-trash-1" title="Delete this item"></i></a> 
  	<!-- <i class="icon-ok2"></i>-->
  	<span class="list_score" id="score_#{prob.id}"><a href="" title="An explanation could be displayed here..."><i class="#{prob.score}"></i></a></span>
- </li>
+ 	
+ </li><span class="peer_score" title="Percentage of peers who have added this problem as well" style="white-space: nowrap" id="peerscore#{prob.id}"> (#{prob.peerPercentage})</span><br/>
 </ui:composition>

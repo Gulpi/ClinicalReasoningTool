@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"   
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      >
+<head>
+<meta http-equiv="EXPIRES" content="0" />
+<meta http-equiv="PRAGMA" content="NO-CACHE" />
+<meta http-equiv="CACHE-CONTROL" content="NO-CACHE" />
+ <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+ <script type="text/javascript" src="../scripts/jquery112/jquery.js"></script>
+<script type="text/javascript" src="../scripts/jquery112/jquery-ui.min.js"></script>
+<script type="text/javascript" src="../scripts/jquery112/jquery-ui.js"></script>
+<script src="../scripts/d3.js"></script>
+<script src="../scripts/nv.d3.js"></script>
+
+<script src="../scripts/d3utils.js"></script>
+<!--  <script src="../scripts/d3grouped.js"></script>-->
+
+<link rel="stylesheet" type="text/css" href="../scripts/jquery112/ui-lightness/jquery-ui.css" /> 
+<link rel="stylesheet" type="text/css" href="../scripts/draw2d/css/contextmenu.css"  />
+<link rel="stylesheet" href="../styles/clinreason.css" />
+<link rel="stylesheet" href="../styles/portfolio.css" />
+<style>
+
+.chart rect {
+    fill: steelblue;
+  }
+
+  .axis path,
+  .axis line {
+    fill: none;
+    stroke: #000;
+    shape-rendering: crispEdges;
+  }
+
+  .axis text {
+    font-size: 8px;
+  }
+  
+  text {
+            font-size: 8px;
+        }
+
+  .chart .current {
+    fill: green;
+    cursor: pointer;
+  }
+  
+  .nvd3 .nv-axis {
+    pointer-events:none;
+    opacity: 1;
+}
+
+.nvd3 .nv-axis path {
+    fill: none;
+    stroke: #000;
+    stroke-opacity: .75;
+    shape-rendering: crispEdges;
+}
+
+.nvd3 .nv-axis path.domain {
+    stroke-opacity: .75;
+}
+
+.nvd3 .nv-axis.nv-x path.domain {
+    stroke-opacity: 0;
+}
+
+.nvd3 .nv-axis line {
+    fill: none;
+    stroke: #e5e5e5;
+    shape-rendering: crispEdges;
+}
+
+.nvd3 .nv-axis .zero line,
+    /*this selector may not be necessary*/ .nvd3 .nv-axis line.zero {
+    stroke-opacity: .75;
+}
+
+.nvd3 .nv-axis .nv-axisMaxMin text {
+    font-weight: bold;
+}
+
+.nvd3 .x  .nv-axis .nv-axisMaxMin text,
+.nvd3 .x2 .nv-axis .nv-axisMaxMin text,
+.nvd3 .x3 .nv-axis .nv-axisMaxMin text {
+    text-anchor: middle
+}
+
+.nvd3 .nv-axis.nv-disabled {
+    opacity: 0;
+}
+</style>
+<!--  <svg class="chart"></svg>-->
+
+</head>
+<body>
+	<div id="chart-container">Items added/stage for VP prototype and comparison to your peers:
+		<div>
+			<svg id="probchart" class="chart"></svg>
+			<svg id="ddxchart" class="chart"></svg>
+			<svg id="testchart" class="chart"></svg>
+			<svg id="mngchart" class="chart"></svg>
+		</div>
+		<!-- <svg id="probchart" class="chart"></svg><br/>
+		<svg id="ddxchart" class="chart"></svg> -->
+ 	 </div>
+	<br/>
+	<div id="chart-container">Overall performance over the past VPs (to be put in dahsboard)
+		<div>
+			<svg id="overallProbchart" class="chart"></svg>
+			<svg id="overallDDXchart" class="chart"></svg>
+		</div>
+	</div>
+Also possible: Summary score (including subscores)<br/>
+Area of improvement: ... (also related to self-set goals) <br/>
+Recommended next resources: <a href="">VP xy</a>, <a href="">Video xy</a>
+Suugestions: Redefine goal, focus on....
+
+	
+<script language="JavaScript">
+var probdata = [];
+var probpeerdata = [];
+<ui:repeat value="#{crtContext.learningAnalytics.problemScoreStages}" var="scoreItem">
+	probdata.push({ x: "#{scoreItem.stage}", y: #{scoreItem.scoreBasedOnExpPerc} });
+</ui:repeat>
+<ui:repeat value="#{crtContext.learningAnalytics.problemPeerStages}" var="scoreItemP">
+	probpeerdata.push({ x: "#{scoreItemP.stage}", y: #{scoreItemP.peerPercentagePerc} });
+</ui:repeat>
+
+printGroupedBarChart(probdata, probpeerdata, 150, 250, "probchart");
+ 
+var ddxdata = [];
+var ddxpeerdata = [];
+<ui:repeat value="#{crtContext.learningAnalytics.DDXScoreStages}" var="scoreItem2">
+	ddxdata.push({ x: "#{scoreItem2.stage}", y: #{scoreItem2.scoreBasedOnExpPerc} });
+</ui:repeat>
+<ui:repeat value="#{crtContext.learningAnalytics.DDXPeerStages}" var="scoreItemP">
+	ddxpeerdata.push({ x: "#{scoreItemP.stage}", y: #{scoreItemP.peerPercentagePerc} });
+</ui:repeat>
+
+printGroupedBarChart(ddxdata, ddxpeerdata, 150, 250,  "ddxchart");
+
+var testdata = [];
+var testpeerdata = [];
+<ui:repeat value="#{crtContext.learningAnalytics.testScoreStages}" var="scoreItem3">
+	testdata.push({ label: "#{scoreItem3.stage}", value: #{scoreItem3.scoreBasedOnExp} });
+</ui:repeat>
+<ui:repeat value="#{crtContext.learningAnalytics.testPeerStages}" var="scoreItemP">
+	testpeerdata.push({ x: "#{scoreItemP.stage}", y: #{scoreItemP.peerPercentagePerc} });
+</ui:repeat>
+printGroupedBarChart(testdata, testpeerdata, 150, 250, "testchart","Diagnostic steps");
+
+var mngdata = [];
+var mngpeerdata = [];
+
+<ui:repeat value="#{crtContext.learningAnalytics.mngScoreStages}" var="scoreItem4">
+	mngdata.push({ label: "#{scoreItem4.stage}", value: #{scoreItem4.scoreBasedOnExp} });
+</ui:repeat>
+<ui:repeat value="#{crtContext.learningAnalytics.mngPeerStages}" var="scoreItemP">
+	mngpeerdata.push({ x: "#{scoreItemP.stage}", y: #{scoreItemP.peerPercentagePerc} });
+</ui:repeat>
+printGroupedBarChart(mngdata, mngpeerdata, 150, 250, "mngchart","Management");
+
+testPrint2(250);
+</script>
+</body>
+</html>

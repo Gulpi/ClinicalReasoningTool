@@ -33,4 +33,52 @@ public class PeerContainer {
 			peerBeans.put(new Long(parentId), l);
 		}
 	}
+	
+	public PeerBean getPeerBeanByActionParentIdAndItemId(int actionType, long parentId, long itemId){
+		if(peerBeans==null || peerBeans.get(new Long(parentId))==null) return null;
+		List<PeerBean> beans = peerBeans.get(new Long(parentId));
+		for(int i=0; i<beans.size(); i++){
+			PeerBean pb = beans.get(i);
+			if(pb.getAction()==actionType && pb.getItemId()==itemId) return pb;
+		}
+		return null;
+	}
+	
+	/**
+	 * returns the PeerBean for the action of creation of an patientIllnessScript for the given 
+	 * parentId or null if no script has been created so far. 
+	 * We use this to store the overall number of peers who have created a script.
+	 *  
+	 * @param parentId
+	 * @return
+	 */
+	public PeerBean getPeerBeanByIllScriptCreationActionAndParentId(long parentId){
+		if(peerBeans==null || peerBeans.get(new Long(parentId))==null) return null;
+		List<PeerBean> beans = peerBeans.get(new Long(parentId));
+		for(int i=0; i<beans.size(); i++){
+			PeerBean pb = beans.get(i);
+			if(pb.getAction()==ScoreBean.TYPE_SCRIPT_CREATION) return pb;
+		}
+		return null;
+	}
+	
+	/**
+	 * returns the PeerBean for the action of creation of an patientIllnessScript for the given 
+	 * parentId or null if no script has been created so far. 
+	 * We use this to store the overall number of peers who have created a script.
+	 *  
+	 * @param parentId
+	 * @return
+	 */
+	public List<PeerBean> getPeerBeansByActionAndParentId(long parentId, int action){
+		if(peerBeans==null || peerBeans.get(new Long(parentId))==null) return null;
+		List<PeerBean> beans = peerBeans.get(new Long(parentId));
+		List<PeerBean> actionBeeans = new ArrayList();
+		for(int i=0; i<beans.size(); i++){
+			PeerBean pb = beans.get(i);
+			if(pb.getAction()==action) actionBeeans.add(pb);
+		}
+		if(actionBeeans.isEmpty()) return null;
+		return actionBeeans;
+	}
 }

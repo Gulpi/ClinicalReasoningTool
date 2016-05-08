@@ -18,6 +18,7 @@ import beans.relation.Relation;
 import beans.relation.RelationManagement;
 import beans.relation.RelationTest;
 import beans.scoring.ScoreBean;
+import controller.ErrorMessageController;
 import controller.NavigationController;
 import controller.RelationController;
 import database.DBClinReason;
@@ -105,11 +106,8 @@ public class AddTestAction implements AddAction, Scoreable/*, FeedbackCreator*/{
 		//new ScoringListAction(this.patIllScript).scoreList(ScoreBean.TYPE_TEST_LIST, Relation.TYPE_TEST);
 
 	}
-
-	@Override
 	public void createErrorMessage(String summary, String details, Severity sev) {
-		// TODO Auto-generated method stub
-		
+		new ErrorMessageController().addErrorMessage(summary, details, sev);		
 	}
 
 	

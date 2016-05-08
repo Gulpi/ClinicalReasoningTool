@@ -5,10 +5,12 @@ import java.util.*;
 import actions.scoringActions.ScoringCnxsAction;
 import actions.scoringActions.ScoringListAction;
 import actions.scoringActions.ScoringSummStAction;
+import application.AppBean;
 import beans.CRTFacesContext;
 import beans.PatientIllnessScript;
 import beans.graph.Graph;
 import beans.scoring.FeedbackBean;
+import beans.scoring.PeerBean;
 import beans.scoring.ScoreBean;
 import beans.scoring.ScoreContainer;
 
@@ -53,8 +55,8 @@ public class ScoringController {
 	 */
 	public void setFeedbackInfo(ScoreBean scoreBean){
 		CRTFacesContext crtContext = new NavigationController().getCRTFacesContext();
-		boolean expFBOn = crtContext.getFeedbackContainer().isExpFeedbackOn(scoreBean.getType());
-		boolean peerFBOn = crtContext.getFeedbackContainer().isPeerFeedbackOn(scoreBean.getType());
+		boolean expFBOn = crtContext.getFeedbackContainer().isExpFeedbackOn(scoreBean.getType(), scoreBean.getStage());
+		boolean peerFBOn = crtContext.getFeedbackContainer().isPeerFeedbackOn(scoreBean.getType(), scoreBean.getStage());
 		if(expFBOn) scoreBean.setFeedbackOn(FeedbackBean.FEEDBACK_EXP);
 		if(peerFBOn) scoreBean.setFeedbackOn(FeedbackBean.FEEDBACK_PEER);
 		if(expFBOn && peerFBOn) scoreBean.setFeedbackOn(FeedbackBean.FEEDBACK_EXP_PEER);		
@@ -77,5 +79,21 @@ public class ScoringController {
 		new ScoringSummStAction().scoreAction(patIllScript, stage);
 	}
 	
-
+	/**
+	 * Percentage of peers who have added the given item
+	 * @param actionType
+	 * @param patIllScriptId
+	 * @param itemId
+	 * @return
+	 */
+	public String getPeerPercentageForAction(int actionType, long patIllScriptId, long itemId){
+		CRTFacesContext crtContext = new NavigationController().getCRTFacesContext();
+		long parentId = crtContext.getPatillscript().getParentId();
+		PeerBean peer = AppBean.getPeers().getPeerBeanByActionParentIdAndItemId(actionType, parentId, itemId);
+		PeerBean overallNum = AppBean.getPeers().getPeerBeanByIllScriptCreationActionAndParentId(parentId);
+		if(peer==null || overallNum==null) return "0%";
+		float percentage =  peer.getPeerPercentage(overallNum.getPeerNum());
+		if(percentage<=0) return "";
+		return (int)((percentage * 100)) + "%";
+	}
 }

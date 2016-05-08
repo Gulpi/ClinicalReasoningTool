@@ -15,6 +15,7 @@ import beans.*;
 import beans.graph.Graph;
 import beans.relation.*;
 import beans.scoring.ScoreBean;
+import controller.ErrorMessageController;
 import controller.NavigationController;
 import controller.RelationController;
 import database.DBClinReason;
@@ -73,10 +74,7 @@ public class AddDiagnosisAction implements AddAction, Scoreable{
 	 * @see beanActions.AddAction#createErrorMessage(java.lang.String, java.lang.String, javax.faces.application.FacesMessage.Severity)
 	 */
 	public void createErrorMessage(String summary, String details, Severity sev){
-		 // MyFacesContextFactory factory = (MyFacesContextFactory) FactoryFinder.getFactory("MyFacesContextFactory");
-		 // CRTFacesContext facesContext = factory.getFacesContextBySessionId(patIllScript.getSessionId());
-		FacesContext facesContext = FacesContext.getCurrentInstance(); 
-		facesContext.addMessage("",new FacesMessage(sev, summary,details));
+		new ErrorMessageController().addErrorMessage(summary, details, sev);
 	}
 	
 	/**

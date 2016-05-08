@@ -127,7 +127,7 @@ public class PeerSyncController {
 	 * @param patIllScriptId
 	 * @return
 	 */
-	private PeerBean createNewPeerBean(int action, long parentId, long itemId, float score, int stage){
+	PeerBean createNewPeerBean(int action, long parentId, long itemId, float score, int stage){
 		PeerBean pb = new PeerBean(action, parentId, 1, itemId);
 		pb.setScoreSum(score);
 		pb.setStage(stage);

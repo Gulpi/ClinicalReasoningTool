@@ -47,27 +47,57 @@
 <!--  <svg class="chart"></svg>-->
 		<svg id="probchart" class="chart"></svg>
 		<svg id="ddxchart" class="chart"></svg>
+		<svg id="testchart" class="chart"></svg>
+		<svg id="mngchart" class="chart"></svg>
+		<svg id="probitemschart" class="chart"></svg>
+		<svg id="ddxitemschart" class="chart"></svg>
+		<svg id="overallchart" class="chart"></svg>
+		
 <script language="JavaScript">
-var probdata = [];
-<ui:repeat value="#{crtContext.learningAnalytics.problemScoreStages}" var="scoreItem">
-probdata.push({ label: "#{scoreItem.stage}", value: #{scoreItem.scoreBasedOnExp} });
+var probpeerdata = [];
+
+<ui:repeat value="#{crtContext.learningAnalytics.problemPeerStages}" var="scoreItemP">
+probpeerdata.push({ label: "#{scoreItemP.stage}", value: #{scoreItemP.peerPercentage} });
 </ui:repeat>
 
-printBarChar(150, 250, probdata,"probchart", "Problems");
+printBarChar(150, 250, probpeerdata,"probchart", "Problems");
 
 var ddxdata = [];
-<ui:repeat value="#{crtContext.learningAnalytics.DDXScoreStages}" var="scoreItem2">
-ddxdata.push({ label: "#{scoreItem2.stage}", value: #{scoreItem2.scoreBasedOnExp} });
+<ui:repeat value="#{crtContext.learningAnalytics.DDXPeerStages}" var="scoreItem2">
+ddxdata.push({ label: "#{scoreItem2.stage}", value: #{scoreItem2.peerPercentage} });
 </ui:repeat>
 
 printBarChar(150, 250, ddxdata, "ddxchart","Differentials");
 
+
+var testdata = [];
+<ui:repeat value="#{crtContext.learningAnalytics.testPeerStages}" var="scoreItem3">
+testdata.push({ label: "#{scoreItem3.stage}", value: #{scoreItem3.peerPercentage} });
+</ui:repeat>
+
+printBarChar(150, 250, testdata, "testchart","Diagnostic steps");
+
+var mngdata = [];
+<ui:repeat value="#{crtContext.learningAnalytics.mngPeerStages}" var="scoreItem4">
+mngdata.push({ label: "#{scoreItem4.stage}", value: #{scoreItem4.peerPercentage} });
+</ui:repeat>
+
+printBarChar(150, 250, mngdata, "mngchart","Management");
+
+testPrint();
+
+
+
 </script>
 </head>
 <body>
-	<div class="chart-container">
+Peer Performance for VP prototype<br/>
+<select class="f_select"><option value="-1">Select VP</option><option value="1212" selected="selected">Prototype</option> </select>
+	<div id="chart-container">
 		<!-- <svg id="probchart" class="chart"></svg><br/>
 		<svg id="ddxchart" class="chart"></svg> -->
  	 </div>
+ 	 also possible: overall engagement, calculated difficulty of VP (based on data), summary statement scores (icnluding subscores), 
+ 	 
 </body>
 </html>

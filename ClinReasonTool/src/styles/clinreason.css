@@ -44,6 +44,7 @@ input.f_text, textarea.f_textarea {
 	list-style-type: none; 
 	-ms-touch-action:none;
 	cursor:move;
+	width:300px;
 	/*background-color:#006699;*/
 	
 }
@@ -51,6 +52,8 @@ input.f_text, textarea.f_textarea {
 	border: 1px solid #b0cbdc;
 	padding:5px;
 	background-color:#ffffff;
+	display:inline-block;
+	width:200px;
 }
 
 /*search box */
@@ -62,7 +65,7 @@ input.f_text, textarea.f_textarea {
 .ddx_left{
 	float:left;
 	position:relative;
-	width:250px;
+	width:350px;
 	height:200px;
 	overflow: auto;
 	overflow-x: hidden;
@@ -165,6 +168,7 @@ input.f_text, textarea.f_textarea {
 .icon-trash-1:before { content: '\e872';  color:#000000; font-size: 0.8em; float: right;} /*color:#088A29;*/
 .icon-ok1:before { content: '\e804'; color:#088A29; font-size: 0.8em; float: right;} /*displayed when score =100% */
 .icon-ok2:before { content: '\e804'; color:#CEF6CE; font-size: 0.8em; float: right;} /*displayed when score between less than 100% but more than 1% */
+.icon-ok3:before { content: '\e804'; color:#c2c2c2; font-size: 0.8em; float: right;} /*displayed when score between less than 100% but more than 1% */
 
 .icon-upload-off:before { content: '\e81a'; color:#C2C2C2; font-size: 1.3em;}
 .icon-upload-on:before { content: '\e81a'; color:#000000; font-size: 1.3em;}/*color:#088A29;*/
@@ -417,6 +421,10 @@ body .ui-tooltip {
 }
 
 .list_score{
+	display:none;
+}
+
+.peer_score{
 	display:none;
 }
 

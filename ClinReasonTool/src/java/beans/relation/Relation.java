@@ -49,7 +49,7 @@ public abstract class Relation extends Beans{
 	private int y;
 	/**
 	 * When during a session was the item added (e.g. on which card number, if provided by 
-	 * the API), minimun 2 stages (before & after diagnosis submission)
+	 * the API), minimum 2 stages (before & after diagnosis submission)
 	 */
 	private int stage;
 	
@@ -91,16 +91,13 @@ public abstract class Relation extends Beans{
 	public int getStage() {return stage;}
 	public void setStage(int stage) {this.stage = stage;}
 
-	//public abstract Synonym getSynonym(); 
 	public abstract Set<Synonym> getSynonyma();
-	//public abstract long getSynId();
 	public long getSynId() {return synId;}
 	public void setSynId(long synId) {this.synId = synId;}
 
 	public abstract String getIdWithPrefix();
 	
 	public abstract String getLabelOrSynLabel();
-	//public abstract String getShortLabelOrSynShortLabel();
 	
 	public void setXAndY(Point p){
 		this.setX(p.x);
@@ -115,6 +112,7 @@ public abstract class Relation extends Beans{
 	
 	public String getShortLabelOrSynShortLabel(){return StringUtils.abbreviate(getLabelOrSynLabel(), ListItem.MAXLENGTH_NAME);}
 	public String getScore(){ return new ScoringController().getIconForScore(this.getRelationType(), this.getListItemId());}
+	public String getPeerPercentage(){return new ScoringController().getPeerPercentageForAction(getRelationType(), getDestId(), getListItemId());}
 	
 	/* (non-Javadoc)
 	 * @see java.lang.Object#equals(java.lang.Object)

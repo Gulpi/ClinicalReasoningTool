@@ -16,7 +16,7 @@ import util.*;
 
 public class AjaxController {
 	public static final String REQPARAM_USER = "user_id";
-	public static final String REQPARAM_SESSION = "session_id";
+	//public static final String REQPARAM_SESSION = "session_id";
 	public static final String REQPARAM_SCRIPT = "script_id";
 	public static final String REQPARAM_VP = "vp_id";
 	public static final String REQPARAM_LOC = "locale";
@@ -152,17 +152,7 @@ public class AjaxController {
 	 * @param xmlResponse
 	 */
 	private void appendMessage(StringBuffer xmlResponse){
-		List<FacesMessage> msgs = FacesContext.getCurrentInstance().getMessageList();
-		if(msgs!=null && !msgs.isEmpty()){ //per default we only display last message
-			FacesMessage fmsg = msgs.get(0);	
-		//if(((CRTFacesContext) facesContext).getCurrentMessage()!=null){ //then we have to include a message into the response:
-			//String msg = "";facesContext.getCurrentMessage().getSummary();
-			/*if(msg!=null)*/ 
-		if(fmsg.getSummary()!=null && !fmsg.getSummary().trim().equals(""))
-				xmlResponse.append("<msg>"+fmsg.getSummary()+"</msg>");
-				xmlResponse.append("<ok>0</ok>"); //indicates that an error has occured
-		}
-		else xmlResponse.append("<ok>1</ok>"); //no error has occured
+		new ErrorMessageController().toXml(xmlResponse);
 	}
 	
 	public String getRequestParamByKey(String key){

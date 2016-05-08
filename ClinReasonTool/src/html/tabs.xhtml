@@ -184,11 +184,11 @@ Case placed here...<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
 	<div id="tabs" class="cr-tabs">
 	  <ul>
 	    <li><a href="#tabs-0"  onclick="switchTab(0);">#{prop['patient']}</a></li> <!-- example for internationalization -->
-	    <li><a href="#tabs-1" onclick="switchTab(1);">Problems</a></li>
+	    <li><a href="#tabs-1" onclick="switchTab(1);">Findings</a></li>
 	    <!--  <li><a href="#tabs-2" onclick="switchTab(2);">Summary</a></li>-->
 	    
 	    <li><a href="#tabs-2" onclick="switchTab(2);">DDX</a></li>
-	    <li><a href="#tabs-3" onclick="switchTab(3);">Diagn. Steps</a></li>
+	    <li><a href="#tabs-3" onclick="switchTab(3);">Tests</a></li>
 	    <li><a href="#tabs-4" onclick="switchTab(4);">Therapy</a></li>
 	    <li><a href="#tabs-5" onclick="switchTab(5);">Map</a></li>
 	   <!--  <li><a href="#tabs-7" onclick="switchTab(7);">Notes</a></li>-->
@@ -227,7 +227,7 @@ Case placed here...<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
 		  </div>
 		  <!-- problems -->
 		  <div id="tabs-1" >	<!--  style="background-color:#cccccc;"-->
-		  			<div class="search"><input class="f_text" id="problems" title="Please add any problems, findings, exposures, or risk factors."></input></div>
+		  			<div class="search"><input class="f_text" id="problems" title="Please add any problems, findings, exposures, or risk factors you consider as relevant"></input></div>
 					<div class="ddx_left">
 					<h:form id="probform">
 					<h:panelGroup id="problems_group">
@@ -311,10 +311,10 @@ Case placed here...<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
 		   <div id="tabs-5">
 				<div id="canvas" class="canvas"> </div>
 				 	<div class="newElemContainer">
-				 		<span id="findcontainer"></span><div id="addfind" class=" newElem newFind">Problem</div><br/>
-						<span id="hypcontainer"></span><div id="addhyp" class=" newElem newHyp">Diagnosis</div><br/>
-			   			<span id="dscontainer"></span> <div id="addtest" class=" newElem newDiagnStep">Diagn. Step</div><br/>
-			    		<span id="mngcontainer"></span> <div id="addmng" class=" newElem  newMng">Managment</div> 
+				 		<span id="findcontainer"></span><div id="addfind" class=" newElem newFind" title="Add a new finding">Finding</div><br/>
+						<span id="hypcontainer"></span><div id="addhyp" class=" newElem newHyp" title="Add a new diagnosis">Diagnosis</div><br/>
+			   			<span id="dscontainer"></span> <div id="addtest" class=" newElem newDiagnStep" title="Add a new test">Test</div><br/>
+			    		<span id="mngcontainer"></span> <div id="addmng" class=" newElem  newMng" title="Add a new therapy option">Therapy</div> 
 			    		<!--<span id="epicontainer"></span> <div id="addepi" class=" newElem  newEpi">Epi</div> -->
 			    		
 			   		 </div>
@@ -343,7 +343,7 @@ Case placed here...<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
 		</h:commandLink>			
 				
 				<a id="submitDDXHref" href="javascript:doSubmitDDX();" title="Submit your final diagnoses"><i id="uploadddx" class="icon-upload-off"></i></a>
-				<a href="javascript:doDisplayIS();" title="open illness script"><i id="is_icon" class="icon-list-alt"></i></a>
+				<!--  <a href="javascript:doDisplayIS();" title="open illness script"><i id="is_icon" class="icon-list-alt"></i></a>-->
 		  	</h:form>	</div>
 
 	</div> <br clear="all"/>  

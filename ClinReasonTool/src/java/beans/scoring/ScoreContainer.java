@@ -59,7 +59,7 @@ public class ScoreContainer implements Serializable{
 			ScoreBean score = scores.get(i);
 			if(score.getType()==type) scoresForType.add(score);
 		}
-		return scoresForType; //TODO sort for stage
+		return scoresForType;
 	}
 	
 	public void initScoreContainer(){

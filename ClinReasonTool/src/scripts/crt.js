@@ -625,6 +625,7 @@ function toggleExpertFedback(){
 		$("#expFeedbackButton").attr("class","icon-user-md_on");
 		$("#expFeedbackButton").attr("title", "click to hide expert feedback");
 		$(".list_score").show();
+		$(".peer_score").show();
 		sendAjaxContext(1, doNothing, "toogleExpFeedback",  getCurrentTab());
 		
 	}
@@ -633,6 +634,7 @@ function toggleExpertFedback(){
 		$("#expFeedbackButton").attr("class", "icon-user-md");
 		$("#expFeedbackButton").attr("title", "click to show expert feedback");
 		$(".list_score").hide();
+		$(".peer_score").hide();
 		sendAjaxContext(0, doNothing, "toogleExpFeedback", getCurrentTab());
 	}
 	my_canvas.clear();

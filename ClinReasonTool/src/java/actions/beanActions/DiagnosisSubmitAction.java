@@ -14,6 +14,7 @@ import beans.PatientIllnessScript;
 import beans.relation.Relation;
 import beans.relation.RelationDiagnosis;
 import beans.scoring.ScoreBean;
+import controller.ErrorMessageController;
 import controller.NavigationController;
 import database.DBClinReason;
 
@@ -53,8 +54,7 @@ public class DiagnosisSubmitAction /*implements Scoreable*/{
 	 * @see beanActions.AddAction#createErrorMessage(java.lang.String, java.lang.String, javax.faces.application.FacesMessage.Severity)
 	 */
 	private void createErrorMessage(String summary, String details, Severity sev){
-		FacesContext facesContext = FacesContext.getCurrentInstance(); 
-		facesContext.addMessage("",new FacesMessage(sev, summary,details));
+		new ErrorMessageController().addErrorMessage(summary, details, sev);
 	}
 
 	

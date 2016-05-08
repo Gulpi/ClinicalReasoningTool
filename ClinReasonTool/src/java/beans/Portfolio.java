@@ -24,32 +24,34 @@ import util.CRTLogger;
 @ViewScoped
 public class Portfolio implements Serializable{
 
+	private static final long serialVersionUID = 1L;
 	//TODO we have now these two variables as duplicates here and in the CRTFacesContext....
 	private long userId;
-	private List<PatientIllnessScript> scriptsOfUser;
+	//private List<PatientIllnessScript> scriptsOfUser;
 	
 	public Portfolio(){
 		CRTFacesContext crtContext = new NavigationController().getCRTFacesContext();
 		setUserId();
 		if(userId>0 ){
-			loadAndSetScriptsOfUser();
+			//loadAndSetScriptsOfUser();
 			//crtContext.loadAndSetScriptsOfUser(); //this loads all scripts, we do not necessarily have to do that here, only if overview page is opened!
 			if(crtContext!=null){
 				crtContext.setUserId(userId);
-				crtContext.setScriptsOfUser(scriptsOfUser);
+				crtContext.initScriptContainer();
 				new NavigationController().removePatIllScript();
 			}
 		}
 	}
 	
-	public List<PatientIllnessScript> getScriptsOfUser() {
-		return scriptsOfUser;
+	//public List<PatientIllnessScript> getScriptsOfUser() {
+	//	return null; //scriptsOfUser;
 		/*if(new NavigationController().getCRTFacesContext()!=null) 
 			return new NavigationController().getCRTFacesContext().getScriptsOfUser();	
 		return null;*/
-	}
+	//}
 	
 	private void setUserId(){
+		if(userId>0) return;
 		String setUserIdStr = new AjaxController().getRequestParamByKey(AjaxController.REQPARAM_USER);
 		if(setUserIdStr!=null) this.userId = (Long.valueOf(setUserIdStr).longValue());
 		else{
@@ -59,8 +61,8 @@ public class Portfolio implements Serializable{
 	}
 	public long getUserId(){ return userId;}
 	
-	private void loadAndSetScriptsOfUser(){
+	/*private void loadAndSetScriptsOfUser(){
 		scriptsOfUser = new IllnessScriptController().loadScriptsOfUser();
-	}
+	}*/
 
 }

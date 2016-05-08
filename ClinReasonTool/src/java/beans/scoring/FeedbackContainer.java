@@ -33,11 +33,13 @@ public class FeedbackContainer implements Serializable{
 	private Map<Integer, List<FeedbackBean>> feedbackBeans;
 	//private Map<Integer, Integer> peerFeedbackOn;
 	private long patIllScriptId;
-	private int currStage = new NavigationController().getCRTFacesContext().getPatillscript().getCurrentStage();
+	//private int currStage = 1;
 
 	
 	public FeedbackContainer(long patIllScriptId){
 		this.patIllScriptId = patIllScriptId;
+		//if()
+		//stage = new NavigationController().getCRTFacesContext().getPatillscript().getCurrentStage();
 	}
 
 	/**
@@ -45,8 +47,8 @@ public class FeedbackContainer implements Serializable{
 	 * @param itemType
 	 * @return
 	 */
-	public boolean isExpFeedbackOn(int itemType) {
-		if(getFeedbackBean(FeedbackBean.FEEDBACK_EXP, itemType)==null) return false;
+	public boolean isExpFeedbackOn(int itemType, int currStage) {
+		if(getFeedbackBean(FeedbackBean.FEEDBACK_EXP, itemType, currStage)==null) return false;
 		return true;
 	}
 
@@ -55,12 +57,12 @@ public class FeedbackContainer implements Serializable{
 	 * @param itemType
 	 * @return
 	 */
-	public boolean isPeerFeedbackOn(int itemType) {
-		if(getFeedbackBean(FeedbackBean.FEEDBACK_PEER, itemType)==null) return false;
+	public boolean isPeerFeedbackOn(int itemType, int currStage) {
+		if(getFeedbackBean(FeedbackBean.FEEDBACK_PEER, itemType, currStage)==null) return false;
 		return true;
 	}
 	
-	private FeedbackBean getFeedbackBean(int feedbackType, int itemType){
+	private FeedbackBean getFeedbackBean(int feedbackType, int itemType, int currStage){
 		if(feedbackBeans==null) return null;
 		List<FeedbackBean> beans = feedbackBeans.get(new Integer(currStage)); 
 		if(beans==null || beans.isEmpty()) return null;
@@ -72,10 +74,10 @@ public class FeedbackContainer implements Serializable{
 	}
 	
 	
-	public void toogleExpFeedback(String toggle, String taskStr){
+	public void toogleExpFeedback(String toggle, String taskStr, int currStage){
 		if(toggle==null) return;
 		if(toggle.equals("0")) expFeedbackOff();
-		else setExpFeedback(taskStr);
+		else setExpFeedback(taskStr,currStage);
 	}
 	
 	/**
@@ -83,27 +85,27 @@ public class FeedbackContainer implements Serializable{
 	 * container.
 	 * @param taskStr
 	 */
-	public void setExpFeedback(String taskStr){
+	public void setExpFeedback(String taskStr, int currStage){
 		if(taskStr==null) return;
 		int task = Integer.parseInt(taskStr);
-		FeedbackBean fb = getFeedbackBean(FeedbackBean.FEEDBACK_EXP, task);
+		FeedbackBean fb = getFeedbackBean(FeedbackBean.FEEDBACK_EXP, task, currStage);
 		if(fb!=null) return; //already set
 		if(task==5){ //concept map -> 1-4 are true
 			for(int i=0; i<5; i++){
 				fb = new FeedbackBean(currStage, FeedbackBean.FEEDBACK_EXP, i, patIllScriptId);
 				
-				if(addFeedbackBean(fb)) fb.save();
+				if(addFeedbackBean(fb, currStage)) fb.save();
 			}
 		}
 		else{ //Currently we do not have to do anything here for 1-4 because we do not display the missing items.
 			fb = new FeedbackBean(currStage, FeedbackBean.FEEDBACK_EXP, task, patIllScriptId);
 			//fb.save();
-			if(addFeedbackBean(fb)) fb.save();
+			if(addFeedbackBean(fb, currStage)) fb.save();
 		}
 
 	}
 		
-	private boolean addFeedbackBean(FeedbackBean fb){
+	private boolean addFeedbackBean(FeedbackBean fb, int currStage){
 		if(feedbackBeans==null) feedbackBeans = new HashMap<Integer, List<FeedbackBean>>();
 		if(feedbackBeans.get(new Integer(currStage))==null){
 			List<FeedbackBean> l = new ArrayList<FeedbackBean>();

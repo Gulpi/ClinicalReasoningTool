@@ -1,22 +1,24 @@
 package beans.scoring;
 
 import java.beans.Beans;
+import java.io.Serializable;
 import java.util.*;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 
+import application.AppBean;
 import beans.LogEntry;
 import beans.PatientIllnessScript;
 
 /**
- * LearninAnalytics takes into account all users' actions, scores, and goals. 
+ * LearninAnalytics takes into account all users' actions, scores, and goals for one VP.
  * @author ingahege
  *
  */
 @ManagedBean(name = "analytics", eager = true)
 @SessionScoped
-public class LearningAnalyticsBean extends Beans{
+public class LearningAnalyticsBean extends Beans implements Serializable{
 	//categories based on the MOT model
 	public static final int CATEGORY_PROBLEM_IDENT = 1; 		//MOT: Determine objectives of encounter
 	public static final int SUBCATEGORY_EARLYCUE_IDENT = 2; 	//MOT: identify early cues
@@ -36,6 +38,9 @@ public class LearningAnalyticsBean extends Beans{
 	
 	
 	private long userId; 
+	/**
+	 * All scores for the VP this LearningAnalyticsBean belongs to.
+	 */
 	private ScoreContainer scoreContainer; //all items that have been scored
 	private List<LogEntry> logs; //all actions the user has performed, this includes any clicks on links, etc...
 	//private PatientIllnessScript patIllScript; //all scripts of the user 
@@ -46,11 +51,13 @@ public class LearningAnalyticsBean extends Beans{
 	//TODO any emotions? can we measure those somehow? ask? 
 	//TODO include when an action was performed? E.g. problems created at end or throughout session? 
 	private long patIllScriptId;
+	private long parentId;
 	
 	public LearningAnalyticsBean(){}
-	public LearningAnalyticsBean(long patIllScripId, long userId){
+	public LearningAnalyticsBean(long patIllScripId, long userId, long parentId){
 		this.patIllScriptId = patIllScripId;
 		this.userId = userId;
+		this.parentId = parentId;
 		scoreContainer = new ScoreContainer(patIllScripId);
 		scoreContainer.initScoreContainer();
 	}
@@ -67,20 +74,46 @@ public class LearningAnalyticsBean extends Beans{
 		//something like that to return detailed performance for each CR step (based on MOT model?) 
 		//should also correspond to the goals
 	}
-	public List<ScoreBean> getProblemScoreStages(){ //etc....
+	public List<ScoreBean> getProblemScoreStages(){ 
 		//less challenging than diagnoses creation, just careful reading, so this is a different level. 
 		if(scoreContainer==null) return null; 
-		List<ScoreBean> probScores = scoreContainer.getScoresByType(ScoreBean.TYPE_PROBLEM_LIST);
-		return probScores;
+		return scoreContainer.getScoresByType(ScoreBean.TYPE_PROBLEM_LIST);
 	}
 	
-	public List<ScoreBean> getDDXScoreStages(){ //etc....
-		//less challenging than diagnoses creation, just careful reading, so this is a different level. 
+	public List<PeerBean> getProblemPeerStages(){
+		if(AppBean.getPeers()==null) return null;
+		return AppBean.getPeers().getPeerBeansByActionAndParentId(parentId, ScoreBean.TYPE_PROBLEM_LIST);
+	}
+	
+	public List<ScoreBean> getDDXScoreStages(){ 
 		if(scoreContainer==null) return null; 
-		List<ScoreBean> ddxScores = scoreContainer.getScoresByType(ScoreBean.TYPE_DDX_LIST);
-		return ddxScores;
+		return scoreContainer.getScoresByType(ScoreBean.TYPE_DDX_LIST);
+	}
+
+	public List<PeerBean> getDDXPeerStages(){
+		if(AppBean.getPeers()==null) return null;
+		return AppBean.getPeers().getPeerBeansByActionAndParentId(parentId, ScoreBean.TYPE_DDX_LIST);
 	}
 	
+	public List<ScoreBean> getTestScoreStages(){ 
+		if(scoreContainer==null) return null; 
+		return scoreContainer.getScoresByType(ScoreBean.TYPE_TEST_LIST);
+	}
+	
+	public List<PeerBean> getTestPeerStages(){
+		if(AppBean.getPeers()==null) return null;
+		return AppBean.getPeers().getPeerBeansByActionAndParentId(parentId, ScoreBean.TYPE_TEST_LIST);
+	}
+	
+	public List<ScoreBean> getMngScoreStages(){ 
+		if(scoreContainer==null) return null; 
+		return scoreContainer.getScoresByType(ScoreBean.TYPE_MNG_LIST);
+	}
+	
+	public List<PeerBean> getMngPeerStages(){
+		if(AppBean.getPeers()==null) return null;
+		return AppBean.getPeers().getPeerBeansByActionAndParentId(parentId, ScoreBean.TYPE_MNG_LIST);
+	}
 	public void levelOfEngagement(){
 		//passive vs active user, non-user, regular users, glancers (<2min), interrupter 
 		
@@ -90,7 +123,5 @@ public class LearningAnalyticsBean extends Beans{
 		if(scoreContainer==null) scoreContainer = new ScoreContainer(patIllScriptId);
 		return scoreContainer;
 	}
-
-	
 	
 }

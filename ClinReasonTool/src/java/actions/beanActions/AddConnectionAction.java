@@ -12,6 +12,7 @@ import beans.PatientIllnessScript;
 import beans.graph.Graph;
 import beans.relation.Relation;
 import controller.ConceptMapController;
+import controller.ErrorMessageController;
 import controller.GraphController;
 import controller.NavigationController;
 import beans.Connection;
@@ -80,7 +81,7 @@ public class AddConnectionAction implements Scoreable{
 	}
 
 	public void createErrorMessage(String summary, String details, Severity sev) {
-		// TODO Auto-generated method stub
+		new ErrorMessageController().addErrorMessage(summary, details, sev);
 		
 	}
 	

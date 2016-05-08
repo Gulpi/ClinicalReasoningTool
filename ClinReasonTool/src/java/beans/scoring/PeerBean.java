@@ -81,6 +81,33 @@ public class PeerBean extends Beans{
 	public void incrScoreSum(float score){
 		if(score>=0) this.scoreSum += score;
 		if(this.scoreSum<0) this.scoreSum = 0;
-		
+	}
+	
+	/**
+	 * Average score of peers for this action (only useful for list scoring)
+	 * @return
+	 */
+	public float getPeerPercentage(){
+		if(peerNum<=0) return 0;
+		return (float) scoreSum/peerNum;
+	}
+
+	/**
+	 * Average score of peers for this action (only useful for list scoring)
+	 * @return
+	 */
+	public int getPeerPercentagePerc(){
+		if(peerNum<=0) return 0;
+		return (int) (scoreSum/peerNum * 100);
+	}
+	/**
+	 * How many peers have added this item in comparison to the overall number of peers who have created 
+	 * an illnessScript
+	 * @param overallNum
+	 * @return
+	 */
+	public float getPeerPercentage(int overallNum){
+		if(peerNum<=0 || overallNum<=0) return 0;
+		return (float) peerNum/overallNum;
 	}
 }

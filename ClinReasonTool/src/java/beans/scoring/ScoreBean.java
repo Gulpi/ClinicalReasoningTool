@@ -19,6 +19,8 @@ import beans.relation.Relation;
 @SessionScoped
 public class ScoreBean extends Beans implements Serializable{
 
+	private static final long serialVersionUID = 1L;
+	
 	public static final int TYPE_ADD_PROBLEM = Relation.TYPE_PROBLEM; //1
 	public static final int TYPE_ADD_DDX = Relation.TYPE_DDX; //2
 	public static final int TYPE_ADD_TEST = Relation.TYPE_TEST; //3
@@ -35,6 +37,7 @@ public class ScoreBean extends Beans implements Serializable{
 	public static final int TYPE_COURSETIME = 13;
 	public static final int TYPE_SUMMST = 14;
 	public static final int TYPE_EPI_LIST = 15;
+	public static final int TYPE_SCRIPT_CREATION = 16; //we use this for PeerBean creation 
 	
 	public static final int TIME_OK = 0;
 	public static final int TIME_LATE = 1;
@@ -104,7 +107,8 @@ public class ScoreBean extends Beans implements Serializable{
 	public void setFeedbackOn(int feedbackOn) {this.feedbackOn = feedbackOn;}
 	public int getStage() {return stage;}
 	public void setStage(int stage) {this.stage = stage;}
-	
+	public int getScoreBasedOnExpPerc() {return (int)(scoreBasedOnExp*100);}
+
 	public void setTiming(int learnerStage, int expStage){
 		if(learnerStage>expStage) setTiming(TIME_LATE);
 		if(learnerStage==expStage) setTiming(TIME_OK);

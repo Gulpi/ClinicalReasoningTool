@@ -13,12 +13,8 @@ import javax.servlet.http.HttpSession;
 import application.AppBean;
 import application.Monitor;
 import beans.graph.Graph;
-import beans.relation.Relation;
-import beans.scoring.FeedbackContainer;
-import beans.scoring.LearningAnalyticsBean;
-import beans.scoring.ScoreContainer;
+import beans.scoring.*;
 import controller.*;
-import database.DBClinReason;
 import util.CRTLogger;
 
 /**
@@ -30,7 +26,7 @@ import util.CRTLogger;
  */
 @ManagedBean(name = "crtContext", eager = true)
 @SessionScoped
-public class CRTFacesContext /*extends FacesContextWrapper*/ implements Serializable{
+public class CRTFacesContext extends FacesContextWrapper /*implements Serializable*/{
 	//public static final String PATILLSCRIPT_KEY = "patillscript";
 	//public static final String PATILLSCRIPTS_KEY = "patillscripts";
 	public static final String CRT_FC_KEY = "crtfc";
@@ -50,22 +46,24 @@ public class CRTFacesContext /*extends FacesContextWrapper*/ implements Serializ
 	 * them from view?
 	 * We load it from the portfolio view and also here (in case user does not come from portfolio)
 	 */
-	private List<PatientIllnessScript> scriptsOfUser;
-	
-	private FeedbackContainer feedbackContainer;
+	//private List<PatientIllnessScript> scriptsOfUser;
+	private PatIllScriptContainer scriptContainer;
 	/**
-	 * Detailed scores for this patIllScript
+	 * This is only related to the current patIllScript and contains a FeedbackBean per stage
+	 * We store the feedback Information in the ScoreBean, so, we do not need the feedbackContainer in the 
+	 * LearningAnalyticsContainer.
 	 */
-	//private ScoreContainer scoreContainer;
-	private LearningAnalyticsBean learningAnalytics;
+	private FeedbackContainer feedbackContainer;
+
+	//private LearningAnalyticsBean learningAnalytics;
+	private LearningAnalyticsContainer analyticsContainer; // = new LearningAnalyticsContainer();
 	public CRTFacesContext(){
 		setUserId();
 		
 		if(this.userId>0){
-			if(scriptsOfUser==null) loadAndSetScriptsOfUser(); //this loads all scripts, we do not necessarily have to do that here, only if overview page is opened!
+		    FacesContextWrapper.getCurrentInstance().getExternalContext().getSessionMap().put(CRTFacesContext.CRT_FC_KEY, this);
 			initSession();
 			userSetting = new UserSetting(); //TODO get from Database...
-		    FacesContextWrapper.getCurrentInstance().getExternalContext().getSessionMap().put(CRTFacesContext.CRT_FC_KEY, this);
 		} 
 	    CRTLogger.out(FacesContextWrapper.getCurrentInstance().getApplication().getStateManager().getViewState(FacesContext.getCurrentInstance()), CRTLogger.LEVEL_TEST);
 	    Monitor.addHttpSession((HttpSession)FacesContextWrapper.getCurrentInstance().getExternalContext().getSession(true));
@@ -93,14 +91,20 @@ public class CRTFacesContext /*extends FacesContextWrapper*/ implements Serializ
 
 	public UserSetting getUserSetting() {return userSetting;}
 	public void setUserSetting(UserSetting userSetting) {this.userSetting = userSetting;}
-	public void setScriptsOfUser(List<PatientIllnessScript> scriptsOfUser) {this.scriptsOfUser = scriptsOfUser;}
-	public LearningAnalyticsBean getLearningAnalytics() {return learningAnalytics;}
-	public void setLearningAnalytics(LearningAnalyticsBean learningAnalytics) {this.learningAnalytics = learningAnalytics;}
+	//public void setScriptsOfUser(List<PatientIllnessScript> scriptsOfUser) {this.scriptsOfUser = scriptsOfUser;}
+	public LearningAnalyticsBean getLearningAnalytics() {
+		if(analyticsContainer==null) analyticsContainer = new LearningAnalyticsContainer(userId);
+		return analyticsContainer.getLearningAnalyticsBeanByPatIllScriptId(patillscript.getId(), patillscript.getParentId());
+	}
+	//public void setLearningAnalytics(LearningAnalyticsBean learningAnalytics) {this.learningAnalytics = learningAnalytics;}
 
 	/*public void setCurrentStage(){
 		new AjaxController().getRequestParamByKey(AjaxController.REQPARAM_STAGE);
 	}*/
-	private void loadAndSetScriptsOfUser(){setScriptsOfUser(isc.loadScriptsOfUser());}
+	public void initScriptContainer(){
+		if(scriptContainer==null) scriptContainer = new PatIllScriptContainer(userId);
+		scriptContainer.loadScriptsOfUser();
+	}
 
 	/**
 	 * Init of the scoreContainer (in LearningAnalytics), learningAnalytics object, and FeedbackBean container 
@@ -108,7 +112,8 @@ public class CRTFacesContext /*extends FacesContextWrapper*/ implements Serializ
 	 */
 	private void loadScoreAndFeedbackContainer(){
 		if(patillscript!=null) {
-			learningAnalytics = new LearningAnalyticsBean(patillscript.getId(), userId);
+			if(analyticsContainer == null) analyticsContainer = new LearningAnalyticsContainer(userId);
+			analyticsContainer.addLearningAnalyticsBean(patillscript.getId(), patillscript.getParentId());
 			feedbackContainer = new FeedbackContainer(patillscript.getId());				
 			feedbackContainer.initFeedbackContainer();
 			new PeerSyncController().loadPeersForPatIllScript(patillscript.getParentId());
@@ -119,18 +124,23 @@ public class CRTFacesContext /*extends FacesContextWrapper*/ implements Serializ
 	 * load PatientIllnessScript based on id or sessionId
 	 */
 	public void initSession(){ 
+		if(userId<=0)setUserId();
 		long id = new AjaxController().getIdRequestParamByKey(AjaxController.REQPARAM_SCRIPT);
-		if(this.patillscript!=null && this.patillscript.getId()==id) return; //current script loaded....
-		long sessionId = new AjaxController().getIdRequestParamByKey(AjaxController.REQPARAM_SESSION);
+		if(this.patillscript!=null && this.patillscript.getId()==id) return; //current script already loaded....
 		long vpId = new AjaxController().getIdRequestParamByKey(AjaxController.REQPARAM_VP);
-		if(id<=0 && sessionId<=0 && vpId<=0) return; //then user has opened the overview page...y
+		if(id<=0 && vpId<=0) return; //then user has opened the overview page...y
 
-		if(id>0){
+		if(id>0){ //open an created script
 			this.patillscript = isc.loadPatIllScriptById(id, userId);
 		}
-		else if(sessionId>0) setPatillscript(isc.loadPatIllScriptBySessionId(sessionId, userId));
-		else if(vpId>0 && this.userId>0) setPatillscript(isc.loadIllnessScriptsByParentId(this.userId, vpId));
+		else if(vpId>0 && this.userId>0){ //look whether script created, if not create it...
+			this.patillscript = isc.loadIllnessScriptsByParentId(this.userId, vpId);
+			if(this.patillscript==null){
+				this.patillscript = isc.createAndSaveNewPatientIllnessScript(userId, vpId);
+			}
+		}
 		//TODO error handling!!!!
+		initScriptContainer(); //this loads all scripts, we do not necessarily have to do that here, only if overview page is opened!
 		loadExpScripts();
 		loadScoreAndFeedbackContainer();
 		initGraph();		
@@ -148,6 +158,7 @@ public class CRTFacesContext /*extends FacesContextWrapper*/ implements Serializ
 	}*/
 	
 	private void loadExpScripts(){
+		if(patillscript==null) return;
 		AppBean app = getAppBean();
 	    app.addExpertPatIllnessScriptForParentId(patillscript.getParentId());
 	    app.addIllnessScriptForDiagnoses(patillscript.getDiagnoses(), patillscript.getParentId());
@@ -159,22 +170,23 @@ public class CRTFacesContext /*extends FacesContextWrapper*/ implements Serializ
 		
 	}
 	
-	public PatientIllnessScript getPatillscript() { return patillscript;}
+	public PatientIllnessScript getPatillscript() { 
+		return patillscript;
+	}
 	public void setPatillscript(PatientIllnessScript patillscript) { this.patillscript = patillscript;}	
-	public List<PatientIllnessScript> getScriptsOfUser() {return this.scriptsOfUser;}
+	//public List<PatientIllnessScript> getScriptsOfUser() {return this.scriptsOfUser;}
 	//private void setScriptsOfUser(List<PatientIllnessScript> scriptsOfUser){this.scriptsOfUser = scriptsOfUser;}	
 	public ScoreContainer getScoreContainer() {
-		if(learningAnalytics==null)  learningAnalytics = new LearningAnalyticsBean(patillscript.getId(), userId);
-		return learningAnalytics.getScoreContainer();		
+		return getLearningAnalytics().getScoreContainer();
 	}
 	
 	public FeedbackContainer getFeedbackContainer() {
 		if(feedbackContainer==null) feedbackContainer = new FeedbackContainer(this.getPatillscript().getId());
 		return feedbackContainer;
 	}
-	//public void setScoreBean(ScoreContainer scoreContainer) {this.scoreContainer = scoreContainer;}
-	public void toogleExpFeedback(String toggleStr, String taskStr){feedbackContainer.toogleExpFeedback(toggleStr, taskStr);}
-	//public void setExpFeedbackTask(String toogleStr, String taskStr){feedbackContainer.setExpFeedback(toogleStr, taskStr);}
+	public void toogleExpFeedback(String toggleStr, String taskStr){
+		feedbackContainer.toogleExpFeedback(toggleStr, taskStr, this.patillscript.getCurrentStage());
+	}
 	
 	/** 
 	 * we land here from an ajax request for any actions concerning the patientIllnessScript....
@@ -195,8 +207,13 @@ public class CRTFacesContext /*extends FacesContextWrapper*/ implements Serializ
 	public void reset(){
 		this.graph = null;
 		setPatillscript(null);
-		this.learningAnalytics = null;
+		//this.learningAnalytics = null;
 		this.feedbackContainer = null;
+	}
+
+	@Override
+	public FacesContext getWrapped() {
+		return FacesContext.getCurrentInstance();
 	}
 
 }

@@ -79,6 +79,8 @@ public class RelationProblem extends Relation implements Rectangle, Serializable
 		else return getSynonym().getName();
 	}
 	
+
+	
 	
 	/* (non-Javadoc)
 	 * @see beans.relation.Relation#getSynonyma()

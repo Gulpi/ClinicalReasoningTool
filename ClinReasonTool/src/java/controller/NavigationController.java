@@ -3,7 +3,9 @@ package controller;
 import java.io.Serializable;
 
 import javax.enterprise.context.RequestScoped;
+import javax.enterprise.context.SessionScoped;
 import javax.faces.bean.ManagedBean;
+import javax.faces.context.FacesContext;
 import javax.faces.context.FacesContextWrapper;
 
 import beans.*;
@@ -68,7 +70,7 @@ public class NavigationController implements Serializable {
 	}
 	
 	public CRTFacesContext getCRTFacesContext(){
-		CRTFacesContext cnxt =  (CRTFacesContext) FacesContextWrapper.getCurrentInstance().getExternalContext().getSessionMap().get(CRTFacesContext.CRT_FC_KEY);
+		CRTFacesContext cnxt =  (CRTFacesContext) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get(CRTFacesContext.CRT_FC_KEY);
 		/*if(cnxt!=null)*/ return cnxt;
 		//return new CRTFacesContext();
 	}

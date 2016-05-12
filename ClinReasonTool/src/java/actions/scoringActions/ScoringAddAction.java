@@ -1,5 +1,7 @@
 package actions.scoringActions;
 
+import java.util.*;
+
 import beans.PatientIllnessScript;
 import beans.graph.Graph;
 import beans.graph.MultiVertex;
@@ -18,6 +20,13 @@ import model.Synonym;
  */
 public class ScoringAddAction implements ScoringAction{
 
+	private boolean isChg = false; //true if scoring is repeated after user has changed an item
+	
+	public ScoringAddAction(){}
+	public ScoringAddAction(boolean isChg){
+		this.isChg = isChg;
+	}
+
 	/**
 	 * We try to compare the users entry with the experts list of problems and score based on whether the 
 	 * problem is in the list, the learner has used the correct term, etc. 
@@ -31,10 +40,11 @@ public class ScoringAddAction implements ScoringAction{
 		ScoreContainer scoreContainer = new NavigationController().getCRTFacesContext().getScoreContainer();
 		
 		ScoreBean scoreBean = scoreContainer.getScoreBeanByTypeAndItemId(mvertex.getType(), vertexId);
-		if(scoreBean!=null) return; //then this item has already been scored: 
-		scoreBean = new ScoreBean(patIllScript.getId(), mvertex.getVertexId(), mvertex.getType(), patIllScript.getCurrentStage());
+		if(scoreBean!=null && !isChg) return; //then this item has already been scored and we do not want a rescore
+		
+		if(scoreBean==null) scoreBean = new ScoreBean(patIllScript.getId(), mvertex.getVertexId(), mvertex.getType(), patIllScript.getCurrentStage());
 		if(g.getExpertPatIllScriptId()>0) //otherwise we do not have an experts' patIllScript to compare with				
-			calculateAddActionScoreBasedOnExpert(mvertex, scoreBean, patIllScript);				
+			calculateAddActionScoreBasedOnExpert(mvertex, scoreBean, patIllScript, g);				
 					
 		if(g.getPeerNums()>ScoringController.MIN_PEERS) //we have enough peers, so we can score based on this as well:
 			calculateAddActionScoreBasedOnPeers(mvertex, scoreBean, g.getPeerNums());
@@ -42,7 +52,6 @@ public class ScoringAddAction implements ScoringAction{
 		scoreContainer.addScore(scoreBean);
 		calculateOverallScore(scoreBean); 
 		new DBScoring().saveAndCommit(scoreBean);			
-		//}
 	}
 	
 	/** TODO we could consider all components and calculate based on these an overall score.
@@ -60,25 +69,70 @@ public class ScoringAddAction implements ScoringAction{
 	 * 0 = problem is not at all in the experts' list (no check) 
 	 * TODO consider position? probably not possible on add, but on move! 
 	 */	
-	private void calculateAddActionScoreBasedOnExpert(MultiVertex mvertex, ScoreBean scoreBean, PatientIllnessScript patIllScript){
-		//PatientIllnessScript expIllScript = AppBean.getExpertPatIllScript(patIllScript.getParentId());
-		
+	private void calculateAddActionScoreBasedOnExpert(MultiVertex mvertex, ScoreBean scoreBean, PatientIllnessScript patIllScript, Graph g){		
 		Relation expRel = mvertex.getExpertVertex();
 		Relation learnerRel = mvertex.getLearnerVertex();
+		scoreBean.setScoreBasedOnExp(ScoringController.SCORE_NOEXP_BUT_LEARNER, isChg);
 		if(learnerRel!=null && expRel!=null) scoreBean.setTiming(learnerRel.getStage(), expRel.getStage());
-		new ScoringController().setFeedbackInfo(scoreBean);
-		if(expRel!=null /*&& expRel.getSynId()<=0*/){ //expert has chosen this item (not synonym)
-			if(learnerRel!=null && learnerRel.getSynId()<=0) scoreBean.setScoreBasedOnExp(ScoringController.SCORE_EXP_SAMEAS_LEARNER);
+		new ScoringController().setFeedbackInfo(scoreBean, isChg);
+		if(expRel!=null){ //expert has chosen this item (not synonym)
+			if(learnerRel!=null && learnerRel.getSynId()<=0){
+				if(learnerRel.getPrefix()==expRel.getPrefix())
+					scoreBean.setScoreBasedOnExp(ScoringController.SCORE_EXP_SAMEAS_LEARNER, isChg);
+				else scoreBean.setScoreBasedOnExp(ScoringController.NO_SCORE, isChg);
+				return;
+			}
 			if(learnerRel!=null && learnerRel.getSynId()>0){//learner has chosen a synonym:
 				Synonym learnerSyn = learnerRel.getSynonym();
-				scoreBean.setScoreBasedOnExp(learnerSyn.getRatingWeight());
+				if(learnerRel.getPrefix()==expRel.getPrefix()){
+					scoreBean.setScoreBasedOnExp(learnerSyn.getRatingWeight(), isChg);
+				}
+				else scoreBean.setScoreBasedOnExp(ScoringController.NO_SCORE, isChg);
+				scoreBean.setExpItemId(expRel.getListItemId());
+				return;
 			}
 		}
-		else //expert has not picked this item (nor a synonym)
-			scoreBean.setScoreBasedOnExp(ScoringController.SCORE_NOEXP_BUT_LEARNER);		
+		
+		else{ //expert has not picked this item (nor a synonym), we check whether a more specific/general item has been chosen.
+			scoreHierarchyBasedOnExp(g, scoreBean, mvertex, learnerRel);						
+			//if(!scored) scoreBean.setScoreBasedOnExp(ScoringController.SCORE_NOEXP_BUT_LEARNER);
+		}
 	}
-	
 
+	/**
+	 * Check and score if the learner has chosen a child or parent item of the expert's choice.
+	 * if it is is child item (more specific) we do not reduce the score. If it is a parent item we reduce the score 
+	 * depending on the distance to the expert's choice.
+	 * We cannot score a parent choice, if the expert has chosen more than one child item (e.g. learner has chosen 
+	 * "Respiratory disease", and expert has entered "Asthma" and "COPD".)
+	 * @param g
+	 * @param scoreBean
+	 * @param mvertex
+	 * @param learnerRel
+	 */
+	private void scoreHierarchyBasedOnExp(Graph g, ScoreBean scoreBean, MultiVertex mvertex,Relation learnerRel){
+		MultiVertex expVertex = g.getExpParentVertex(mvertex); //check whether user has picked a more specific item than expert
+		if(expVertex!=null){ //user was more specific than expert, we score 100%
+			//int distance = g.getDistance(expVertex, mvertex); //in this case distance is not considered for scoring
+			scoreBean.setScoreBasedOnExp(ScoringController.SCORE_LEARNER_MORE_SPECIFIC, isChg);
+			scoreBean.setTiming(learnerRel.getStage(), expVertex.getExpertVertex().getStage());
+			scoreBean.setExpItemId(expVertex.getVertexId());
+			return;
+		}
+		//check whether learner has picked something more general than expert -> can be more than one item!
+		List<MultiVertex>expVertices = g.getExpChildVertices(mvertex); 
+		if(expVertices!=null && !expVertices.isEmpty() && expVertices.size()==1){ //user picked something more general
+			int distance = g.getDistance(mvertex, expVertices.get(0)); //how far away is the learners choice from the experts?
+			float score = (float) ScoringController.SCORE_EXP_SAMEAS_LEARNER/(distance+1);
+			scoreBean.setScoreBasedOnExp(score, isChg);
+			scoreBean.setExpItemId(expVertices.get(0).getVertexId());
+		}
+		//we have more than one childs of the expert:
+		else if(expVertices!=null && !expVertices.isEmpty() && expVertices.size()>1){
+			scoreBean.setScoreBasedOnExp(ScoringController.SCORE_LEARNER_MORE_GENERAL_MULT_EXP, isChg);
+			scoreBean.setExpItemId(ScoringController.MULTIPLE_EXPERT_CHLDS);
+		}
+	}
 	
 	private void calculateAddActionScoreBasedOnPeers(MultiVertex mvertex, ScoreBean scoreBean, int overallPeers){
 		Relation learnerRel = mvertex.getLearnerVertex();

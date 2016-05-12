@@ -172,7 +172,7 @@ public class PatientIllnessScript extends Beans/*extends Node*/ implements Illne
 
 	public void setSubmittedStage(int submittedStage) {this.submittedStage = submittedStage;}
 	//public void setSubmitted(boolean submitted) {this.submitted = submitted;}
-	public void addProblem(String idStr, String name){new AddProblemAction(this).add(idStr, name);}
+	public void addProblem(String idStr, String prefix){new AddProblemAction(this).add(idStr, prefix);}
 	public void addProblem(String idStr, String name, String x, String y){ new AddProblemAction(this).add(idStr, name, x,y);}
 	public void addDiagnosis(String idStr, String name){ new AddDiagnosisAction(this).add(idStr, name);}
 	public void addDiagnosis(String idStr, String name, String x, String y){ new AddDiagnosisAction(this).add(idStr, name, x,y);}
@@ -195,11 +195,17 @@ public class PatientIllnessScript extends Beans/*extends Node*/ implements Illne
 	public void reorderMngs(String idStr, String newOrderStr){ new MoveMngAction(this).reorder(idStr, newOrderStr);}
 	public void moveItem(String idStr, String newOrderStr, String x, String y){ new DragDropAction(this).move(idStr, x, y);}
 
-	public void changeProblem(String probRelIdStr,String newProbId){new ChangeProblemAction(this).changeProblem(probRelIdStr, newProbId);}
-	public void changeDiagnosis(String probRelIdStr,String newProbId){new ChangeDiagnosisAction(this).changeDiagnosis(probRelIdStr, newProbId);}
-	public void changeTest(String probRelIdStr,String newProbId){new ChangeTestAction(this).changeTest(probRelIdStr, newProbId);}
-	public void changeMng(String probRelIdStr,String newProbId){new ChangeMngAction(this).changeMng(probRelIdStr, newProbId);}
-	public void changeEpi(String probRelIdStr,String newProbId){new ChangeEpiAction(this).changeEpi(probRelIdStr, newProbId);}
+	public void changeProblem(String idStr,String changeMode){new ChangeProblemAction(this).changeProblem(idStr, changeMode);}
+	//public void changeProblem(String relIdStr){new ChangeProblemAction(this).changeProblem(relIdStr);}
+	//public void toggleProblem(String probRelIdStr){new ChangeProblemAction(this).toggleProblem(probRelIdStr);}
+	//public void changeDiagnosis(String relIdStr){new ChangeDiagnosisAction(this).changeDiagnosis(relIdStr);}
+	//public void changeMng(String relIdStr){new ChangeMngAction(this).changeMng(relIdStr);}
+	//public void changeTest(String relIdStr){new ChangeTestAction(this).changeTest(relIdStr);}
+
+	public void changeDiagnosis(String idStr,String changeMode){new ChangeDiagnosisAction(this).changeDiagnosis(idStr, changeMode);}
+	public void changeTest(String idStr,String changeMode){new ChangeTestAction(this).changeTest(idStr, changeMode);}
+	public void changeMng(String idStr,String changeMode){new ChangeMngAction(this).changeMng(idStr, changeMode);}
+	public void changeEpi(String idStr,String changeMode){new ChangeEpiAction(this).changeEpi(idStr, changeMode);}
 	public void changeMnM(String idStr/*, String newValue*/){new ChangeDiagnosisAction(this).toggleMnM(idStr/*, newValue*/);}
 	
 	public void addConnection(String sourceId, String targetId){new AddConnectionAction(this).add(sourceId,targetId);}
@@ -208,8 +214,8 @@ public class PatientIllnessScript extends Beans/*extends Node*/ implements Illne
 
 	public void saveSummStatement(String idStr, String text){new SummaryStatementChgAction(this).updateOrCreateSummaryStatement( idStr, text);}
 	public void saveNote(String idStr, String text){new NoteChgAction(this).updateOrCreateNote( idStr, text);}
-	public void submitDDX(String idStr){new DiagnosisSubmitAction(this).submitDDX();}
-	public void submitDDX(){new DiagnosisSubmitAction(this).submitDDX();}
+	public void submitDDX(String idStr){new DiagnosisSubmitAction(this).submitDDX(idStr);}
+	//public void submitDDX(){new DiagnosisSubmitAction(this).submitDDX();}
 	public void changeTier(String idStr, String tierStr){new DiagnosisSubmitAction(this).changeTier(idStr, tierStr);}
 	public void changeConfidence(String idStr, String confVal){new ChgPatIllScriptAction(this).changeConfidence(idStr, confVal);}
 	public void chgCourseOfTime(String courseOfTimeStr) { new ChgPatIllScriptAction(this).chgCourseOfTime(courseOfTimeStr);}

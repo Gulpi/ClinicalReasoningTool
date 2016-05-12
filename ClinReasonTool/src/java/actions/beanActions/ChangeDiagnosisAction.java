@@ -3,9 +3,16 @@ package actions.beanActions;
 import java.beans.Beans;
 
 import actions.scoringActions.Scoreable;
+import actions.scoringActions.ScoringAddAction;
 import beans.LogEntry;
 import beans.PatientIllnessScript;
+import beans.graph.Graph;
+import beans.graph.MultiVertex;
 import beans.relation.*;
+import beans.scoring.ScoreBean;
+import controller.GraphController;
+import controller.NavigationController;
+import controller.ScoringController;
 import database.DBClinReason;
 import database.DBList;
 import model.ListItem;
@@ -30,7 +37,40 @@ public class ChangeDiagnosisAction implements ChgAction, Scoreable{
 		changeDiagnosis(oldDDXId, newDDXId);
 	}
 	
-	public void changeDiagnosis(long newDDXId, long ddxRel){
+	/**
+	 * called from lists, where we only have the the current id, we change it to the new id, which is stored in the
+	 * scoreBean.
+	 * @param oldProbIdStr
+	 */
+	public void changeDiagnosis(String oldDDXIdStr){
+		if(oldDDXIdStr==null || oldDDXIdStr.equals("")) return;
+		long oldDDXId = Long.valueOf(oldDDXIdStr).longValue();
+		RelationDiagnosis ddxToChg = patIllScript.getDiagnosisById(oldDDXId);
+		ScoreBean score = new ScoringController().getScoreBeanForItem(Relation.TYPE_DDX, ddxToChg.getListItemId());
+		//change in RelationProblem & Vertex:
+		
+		Graph g = new NavigationController().getCRTFacesContext().getGraph();
+		MultiVertex expVertex = g.getVertexById(score.getExpItemId());
+		MultiVertex learnerVertexOld = g.getVertexById(ddxToChg.getListItemId());
+		if(!expVertex.equals(learnerVertexOld)){ //then it is NOT a synonyma, but a hierarchy node
+				new GraphController(g).transferEdges(learnerVertexOld, expVertex);		
+				g.removeVertex(learnerVertexOld);
+				if(expVertex.getLearnerVertex()==null) expVertex.setLearnerVertex(ddxToChg);
+		}
+		changeRelation(expVertex, ddxToChg);	
+		//we re-score the item:
+		new ScoringAddAction(true).scoreAction(expVertex.getVertexId(), patIllScript);
+	}
+	
+	private void changeRelation(MultiVertex expVertex, RelationDiagnosis relToChg){
+		notifyLog(relToChg, expVertex.getExpertVertex().getListItem().getItem_id());
+		relToChg.setDiagnosis(expVertex.getExpertVertex().getListItem());
+		relToChg.setListItemId(expVertex.getExpertVertex().getListItem().getItem_id());
+		relToChg.setSynId(-1);	
+		save(relToChg);		
+	}
+	
+	private void changeDiagnosis(long newDDXId, long ddxRel){
 		RelationDiagnosis ddxToChg = patIllScript.getDiagnosisById(ddxRel);
 		ListItem oldDDX = new DBList().selectListItemById(ddxToChg.getListItemId());
 		ListItem newDDX = new DBList().selectListItemById(newDDXId);

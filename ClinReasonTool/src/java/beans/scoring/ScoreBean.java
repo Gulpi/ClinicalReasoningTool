@@ -45,7 +45,14 @@ public class ScoreBean extends Beans implements Serializable{
 	
 	private long id; 
 	private long patIllScriptId; 
+	/**
+	 * current score for this action, is constantly updated, when the user makes changes.
+	 */
 	private float scoreBasedOnExp = -1;
+	/**
+	 * We store the oroginal score here, which is not changed no matter which changes the learner makes 
+	 */
+	private float orgScoreBasedOnExp = -1;
 	/**
 	 * percentage of other users who have chosen this item, or average score of peers....
 	 */
@@ -55,7 +62,15 @@ public class ScoreBean extends Beans implements Serializable{
 	 * We can calculate an overall score based on the components expert, peer, illScript,...
 	 */
 	private float overallScore;
-	private long scoredItem; //e.g. the problemRelationId, summStId
+	/**
+	 * itemId which was scored (NOT relationId)
+	 */
+	private long scoredItem; 
+	/**
+	 *  //e.g. the problemRelationId, summStId
+	 *  just in case we need it, we store this id here as well
+	 */
+	private long scoredRelId;
 	private Timestamp creationDate; 
 	/**
 	 * Was the item added at the same stage (or later/earlier) as the expert has added it?
@@ -73,14 +88,19 @@ public class ScoreBean extends Beans implements Serializable{
 	private int type; 
 	private int weight = 1; //per default all items have the same weight.
 	private int stage = -1;
+	/**
+	 * if learner has not chosen same item as expert, but we can map it, we store the expertListItem id here
+	 */
+	private long expItemId; 
 	
 	public ScoreBean(){}
-	public ScoreBean(long patIllId, long scoredItem, int type, int stage){
+	public ScoreBean(long patIllId, long scoredItem, int type, int stage/*, long relId*/){
 		this.patIllScriptId = patIllId;
 		this.scoredItem = scoredItem;
 		//this.score = score;
 		this.type = type;
 		this.stage = stage;
+		//this.scoredRelId = relId;
 		
 	}
 	public long getId() {return id;}
@@ -89,6 +109,10 @@ public class ScoreBean extends Beans implements Serializable{
 	public void setPatIllScriptId(long patIllScriptId) {this.patIllScriptId = patIllScriptId;}
 	public float getScoreBasedOnExp() {return scoreBasedOnExp;}
 	public void setScoreBasedOnExp(float scoreBasedOnExp) {this.scoreBasedOnExp = scoreBasedOnExp;}
+	public void setScoreBasedOnExp(float scoreBasedOnExp, boolean isChg) {
+		this.scoreBasedOnExp = scoreBasedOnExp;
+		if(!isChg) this.orgScoreBasedOnExp = scoreBasedOnExp;
+	}
 	public float getScoreBasedOnPeer() {return scoreBasedOnPeer;}
 	public void setScoreBasedOnPeer(float scoreBasedOnPeer) {this.scoreBasedOnPeer = scoreBasedOnPeer;}
 	public float getScoreBasedOnIllScript() {return scoreBasedOnIllScript;}
@@ -108,7 +132,12 @@ public class ScoreBean extends Beans implements Serializable{
 	public int getStage() {return stage;}
 	public void setStage(int stage) {this.stage = stage;}
 	public int getScoreBasedOnExpPerc() {return (int)(scoreBasedOnExp*100);}
-
+	public long getExpItemId() {return expItemId;}
+	public void setExpItemId(long expItemId) {this.expItemId = expItemId;}	
+	public long getScoredRelId() {return scoredRelId;}
+	public void setScoredRelId(long scoredRelId) {this.scoredRelId = scoredRelId;}	
+	public float getOrgScoreBasedOnExp() {return orgScoreBasedOnExp;}
+	public void setOrgScoreBasedOnExp(float orgScoreBasedOnExp) {this.orgScoreBasedOnExp = orgScoreBasedOnExp;}
 	public void setTiming(int learnerStage, int expStage){
 		if(learnerStage>expStage) setTiming(TIME_LATE);
 		if(learnerStage==expStage) setTiming(TIME_OK);

@@ -22,7 +22,7 @@ import model.Synonym;
  * connects a Diagnosis object to a (Patient)IllnessScript object with some attributes.
  * @author ingahege
  */
-public class RelationDiagnosis extends Relation implements Rectangle, Serializable {
+public class RelationDiagnosis extends Relation implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	public static final int REL_TYPE_FINAL = 1; //final diagnosis (for PIS only)
@@ -37,6 +37,7 @@ public class RelationDiagnosis extends Relation implements Rectangle, Serializab
 	public static final int TIER_LIKELY = 2; //Clinically moderate likelihood
 	public static final int TIER_MOSTLIKELY = 1; //Clinically high likelihood
 	public static final int TIER_FINAL = 4; //Final diagnosis
+	public static final int TIER_RULEDOUT = 5;
 
 	/**
 	 * has this diagnosis been submitted as final the learner? If yes for certain components no more changes 
@@ -84,8 +85,15 @@ public class RelationDiagnosis extends Relation implements Rectangle, Serializab
 		return false;
 	}
 
+	public void toggleFinal(){
+		if(tier!=TIER_FINAL) tier = TIER_FINAL;
+		else tier = TIER_NONE;
+	}
 
-
+	public void toggleRuledOut(){
+		if(tier!=TIER_RULEDOUT) tier = TIER_RULEDOUT;
+		else tier = TIER_NONE;
+	}
 
 	/* (non-Javadoc)
 	 * @see beans.relation.Relation#getRelationType()

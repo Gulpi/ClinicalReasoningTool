@@ -61,7 +61,7 @@ var currentStageScript = "#{crtContext.patillscript.currentStage}";
 var expFeedback = false; //default is that expert feedback is off
 var peerFeedback = false; //default is that expert feedback is off
 var active;
-var minLengthTypeAhead = 4;
+var minLengthTypeAhead = 3;
 //var errorNum = "#{crtContext.patillscript.errorNum}";
 var submitted = "#{crtContext.patillscript.submitted}";
 
@@ -168,7 +168,7 @@ $(function() {
 		 });
 
 
-	toggleSubmit();
+	//toggleSubmit();
 });
 
 
@@ -185,19 +185,17 @@ Case placed here...<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
 	  <ul>
 	    <li><a href="#tabs-0"  onclick="switchTab(0);">#{prop['patient']}</a></li> <!-- example for internationalization -->
 	    <li><a href="#tabs-1" onclick="switchTab(1);">Findings</a></li>
-	    <!--  <li><a href="#tabs-2" onclick="switchTab(2);">Summary</a></li>-->
+	    <li><a href="#tabs-2" onclick="switchTab(2);">Summary</a></li>
 	    
-	    <li><a href="#tabs-2" onclick="switchTab(2);">DDX</a></li>
-	    <li><a href="#tabs-3" onclick="switchTab(3);">Tests</a></li>
-	    <li><a href="#tabs-4" onclick="switchTab(4);">Therapy</a></li>
-	    <li><a href="#tabs-5" onclick="switchTab(5);">Map</a></li>
+	    <li><a href="#tabs-3" onclick="switchTab(3);">DDX</a></li>
+	    <li><a href="#tabs-4" onclick="switchTab(4);">Tests</a></li>
+	    <li><a href="#tabs-5" onclick="switchTab(5);">Therapy</a></li>
+	    <li><a href="#tabs-6" onclick="switchTab(6);">Map</a></li>
 	   <!--  <li><a href="#tabs-7" onclick="switchTab(7);">Notes</a></li>-->
 	  </ul>
 		  <div id="tabs-0">
 		  <div id="patimg" style="position:relative;right:0px; top:0px; float:right;"><img src="patient.png" width="100px" /><br/>Delai Johnston</div>
 		  	<div id="descr" style="float:left;position:absolute;">
-		  		<!--Name: Delai Johnston<br/>
-			  	  Age: 65, Gender: M <br/>-->
 				Course of Time: 
 				<h:selectOneMenu onchange="javascript:changeCourseOfTime();" class="f_select" id="courseTime" value="#{crtContext.patillscript.courseOfTime}">
 				<f:selectItem itemLabel="-" itemValue="-1" />
@@ -205,10 +203,6 @@ Case placed here...<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
 				<f:selectItem itemLabel="chronic" itemValue="2" />
 				</h:selectOneMenu>
 				<span class="list_score" style="float:left;position:absolute;vertical-align:middle;">&nbsp;<i class="#{crtContext.patillscript.courseOfTimeScore}"></i></span><br/><br/>
-				Summary Statement<br/>
-				<textarea class="f_textarea" name="summSt" id="summStText" cols="40" rows="7">#{crtContext.patillscript.summSt.text}</textarea><br/>
-		  		<a href="javascript:saveSummSt('#{crtContext.patillscript.summStId}');" title="Save your summary statement"><i class="icon-floppy"></i></a>
-			 	<span class="list_score" style="color:green;"> #{crtContext.patillscript.summStExp}</span> 
 				<!--  Exposures/Epi: <input class="f_text" id="epi"></input>
 				<div class="ddx_left">
 				<h:form id="epiform">
@@ -227,47 +221,49 @@ Case placed here...<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
 		  </div>
 		  <!-- problems -->
 		  <div id="tabs-1" >	<!--  style="background-color:#cccccc;"-->
-		  			<div class="search"><input class="f_text" id="problems" title="Please add any problems, findings, exposures, or risk factors you consider as relevant"></input></div>
+		  			<div class="search"><span class="icon"><i class="icon-search"></i></span>
+		  			<select class="f_select" id="fdg_prefix"><option value="0">-</option><option value="1">No</option></select><input class="f_text" id="problems" placeholder="Search..." title="Please add any problems, findings, exposures, or risk factors you consider as relevant"></input></div>
 					<div class="ddx_left">
-					<h:form id="probform">
-					<h:panelGroup id="problems_group">
-					<ol id="list_problems" class="sortable">
-					   <ui:repeat id="repeatprob" value="#{crtContext.patillscript.problems}" var="prob" varStatus="status">
-					   		<ui:include src="probline.xhtml" />
-    					</ui:repeat>
-    				</ol>
-    				<!-- <div id="jsonProbMap">#{crtContext.patillscript.problemsJson}</div>-->
-    				</h:panelGroup>
+						<h:form id="probform">
+						<h:panelGroup id="problems_group">
+						<ol id="list_problems" class="sortable">
+						   <ui:repeat id="repeatprob" value="#{crtContext.patillscript.problems}" var="prob" varStatus="status">
+						   		<ui:include src="probline.xhtml" />
+	    					</ui:repeat>
+	    				</ol>
+	    				<!-- <div id="jsonProbMap">#{crtContext.patillscript.problemsJson}</div>-->
+	    				</h:panelGroup>
     				     <h:commandButton id="hiddenProbButton" value="RenderSomething" style="visibility:hidden">
     						<f:ajax render="@form" onevent="updateCallback"></f:ajax>
 						</h:commandButton></h:form>
 				</div>			
 		  </div>
-		 <!-- <div id="tabs-2">	
-		  		<textarea class="f_textarea" name="summSt" id="summStText" cols="50" rows="10">#{crtContext.patillscript.summSt.text}</textarea><br/>
+		 <div id="tabs-2">	
+				Summary Statement<br/>
+				<textarea class="f_textarea" name="summSt" id="summStText" cols="40" rows="7">#{crtContext.patillscript.summSt.text}</textarea><br/>
 		  		<a href="javascript:saveSummSt('#{crtContext.patillscript.summStId}');" title="Save your summary statement"><i class="icon-floppy"></i></a>
-		  </div>-->
+			 	<span class="list_score" style="color:green;"> #{crtContext.patillscript.summStExp}</span> 		  
+		</div>
 		  <!--  diagnoses -->
-		  <div id="tabs-2">			  		
+		  <div id="tabs-3">			  		
 		  			<div class="search"><input class="f_text" id="ddx" title="Please add your differentials"></input></div>
 		  			<div class="ddx_left">
-		  			<h:form id="ddxform">
-					<h:panelGroup id="ddx_group">
-					<ol id="list_diagnoses" class="sortable">
-						<ui:repeat value="#{crtContext.patillscript.diagnoses}" var="ddx" varStatus="status">
-							<ui:include src="ddxline.xhtml" />
-     					</ui:repeat>					
-					</ol>
-					<!-- <div id="jsonDDXMap" style="visibility:hidden" >#{crtContext.patillscript.ddxJson}</div>-->
-    				</h:panelGroup>
-    				     <h:commandButton id="hiddenDDXButton" value="RenderSomething" style="visibility:hidden">
-    						<f:ajax render="@form" onevent="updateCallback"></f:ajax>
-						</h:commandButton></h:form>
-				</div>
-				<div id="confidence_slider" class="conf_slider" title="Please indicate how confident you are with your current differentials."></div>
+			  			<h:form id="ddxform">
+						<h:panelGroup id="ddx_group">
+						<ol id="list_diagnoses" class="sortable">
+							<ui:repeat value="#{crtContext.patillscript.diagnoses}" var="ddx" varStatus="status">
+								<ui:include src="ddxline.xhtml" />
+	     					</ui:repeat>					
+						</ol>
+	    				</h:panelGroup>
+	    				     <h:commandButton id="hiddenDDXButton" value="RenderSomething" style="visibility:hidden">
+	    						<f:ajax render="@form" onevent="updateCallback"></f:ajax>
+							</h:commandButton></h:form>
+					</div>
+					<div id="confidence_slider" class="conf_slider" title="Please indicate how confident you are with your current differentials."></div>
 		  </div>
 		  <!-- tests -->
-		  <div id="tabs-3">
+		  <div id="tabs-4">
 		  		<div class="search"><input class="f_text" id="tests" title="Please add any tests or examinations you want to order or perform."></input></div>
 		  			<div class="ddx_left">
 		  			<h:form id="testform">
@@ -287,7 +283,7 @@ Case placed here...<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
 					</div>
 		  	</div>
 		  <!-- managements -->
-		  <div id="tabs-4">
+		  <div id="tabs-5">
 		  	<div class="search"><input class="f_text" id="mng" title="Please add any management decisions for your patient."></input></div>
 		  	<div class="ddx_left">
 	  			<h:form id="mngform">
@@ -308,7 +304,7 @@ Case placed here...<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
 	  		</div>
 		  
 		  <!-- concept map -->
-		   <div id="tabs-5">
+		   <div id="tabs-6">
 				<div id="canvas" class="canvas"> </div>
 				 	<div class="newElemContainer">
 				 		<span id="findcontainer"></span><div id="addfind" class=" newElem newFind" title="Add a new finding">Finding</div><br/>
@@ -334,15 +330,15 @@ Case placed here...<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
 			  	<div class="navfooter"><h:form id="ddxsubmitform"><!-- <a href="" title="take notes"><i class="icon-edit"></i></a>-->
 			  	<i class="icon-help-circled" title="not yet working"></i>
 			  	<a href="javascript:toggleExpertFedback();" title="See the author's suggestions"><i id="expFeedbackButton" class="icon-user-md"></i></a> 
-				<a href="javascript:tooglePeerFedback();" title="See peer responses"><i  class="icon-users"></i></a>
+				<a href="javascript:togglePeerFeedback();" title="See peer responses"><i  id="peerFeedbackButton" class="icon-users"></i></a>
 
 	<h:panelGroup id="ddxubmitPG">
 		<a href="javascript:openErrorDialog();" title="Potential Errors (#{crtContext.patillscript.errorNum})"><i class="icon-attention-circled"></i></a>		
     </h:panelGroup>
-    	  <h:commandLink id="hiddenDDXSubmitButton" action="#{crtContext.patillscript.submitDDX}" value="" style="visibility:collapse" >
-		</h:commandLink>			
+    	<!-- <h:commandLink id="hiddenDDXSubmitButton" action="#{crtContext.patillscript.submitDDX}" value="" style="visibility:collapse" >
+		</h:commandLink>		
 				
-				<a id="submitDDXHref" href="javascript:doSubmitDDX();" title="Submit your final diagnoses"><i id="uploadddx" class="icon-upload-off"></i></a>
+				<a id="submitDDXHref" href="javascript:doSubmitDDX();" title="Submit your final diagnoses"><i id="uploadddx" class="icon-upload-off"></i></a>-->
 				<!--  <a href="javascript:doDisplayIS();" title="open illness script"><i id="is_icon" class="icon-list-alt"></i></a>-->
 		  	</h:form>	</div>
 

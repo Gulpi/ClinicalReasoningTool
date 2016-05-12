@@ -104,7 +104,7 @@ public class ScoringFinalDDXAction /*implements ScoringAction*/{
 					float corrScore = (correctNum *ScoringController.FULL_SCORE + partlyCorrectNum * ScoringController.HALF_SCORE)/ (correctNum+partlyCorrectNum);
 					expScore = (corrScore - (numFinalDDXLearner - numFinalDDXExp))/numFinalDDXExp;				
 				}
-				scoreBean.setScoreBasedOnExp(expScore);
+				scoreBean.setScoreBasedOnExp(expScore, false);
 				score += expScore;
 				if(expScore == ScoringController.NO_SCORE) 
 					patIllScript.addErrors(new ErrorController().checkError(scoreBean, leanerFinals,expFinals));

@@ -60,6 +60,32 @@ input.f_text, textarea.f_textarea {
 .search{
 	/*border-bottom: 1px solid #b0cbdc;*/
 	width:100%;
+	  vertical-align: middle;
+  white-space: nowrap;
+  position: relative;
+}
+
+.search input.f_text{
+  /*width: 300px;*/
+  /*height: 50px;*/
+ /* background: #2b303b;*/
+ /* border: none;
+  font-size: 10pt;
+  float: left;
+  color: #63717f;*/
+  padding-left: 45px;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  border-radius: 5px;
+}
+
+.search .icon{
+  position: absolute;
+ /* top: 30%;*/
+  margin-left: 57px;
+  margin-top: 5px;
+  z-index: 1;
+  color: #4f5b66;
 }
 /* list of diagnoses container*/
 .ddx_left{
@@ -84,6 +110,17 @@ input.f_text, textarea.f_textarea {
 	background: -o-linear-gradient(top, #088A29 0%, #FE2E2E 100%, #ffffff 100%);
 	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#088A29, endColorstr=#ffffff,GradientType=1);
 }
+
+/* final diagnosis style */
+.ddxtier_4{
+	font-weight: bold;		
+}
+
+/* ruled out diagnosis style */
+.ddxtier_5{
+	color:#cccccc;	
+}
+
 
 /* footer with nav icons and concept map preview */
 .footer{
@@ -174,7 +211,9 @@ input.f_text, textarea.f_textarea {
 .icon-upload-on:before { content: '\e81a'; color:#000000; font-size: 1.3em;}/*color:#088A29;*/
 .icon-user-md:before { content: '\e8ef'; color:#000000; font-size: 1.3em;} /*color:#088A29;*/ 
 .icon-user-md_on:before { content: '\e8ef'; color:#088A29; font-size: 1.3em;}
-.icon-users:before { content: '\e8f8'; color:#000000; font-size: 1.3em;} /*color:#088A29;*/
+.icon-users:before { content: '\e8f1'; color:#000000; font-size: 1.3em;} /*color:#088A29;*/
+.icon-users_on:before { content: '\e8f1'; color:#088A29; font-size: 1.3em;} /*color:#088A29;*/
+
 .icon-edit:before { content: '\e86b'; font-size: 1.3em;}
 .icon-list-alt:before { content: '\e907';}
 .icon-list-on:before { content: '\e907'; color:#000000;} /*color:#088A29;*/
@@ -188,6 +227,8 @@ input.f_text, textarea.f_textarea {
 .icon-floppy:before { content: '\e801'; }
 .icon-attention-circled:before { content: '\e871'; }
 .icon-cancel-circled:before { content: '\e84f'; }
+.icon-search:before { content: '\e81e'; }
+.icon-down-open:before { content: '\e829'; }
 
 
 /* end i-icons code */
@@ -426,5 +467,32 @@ body .ui-tooltip {
 
 .peer_score{
 	display:none;
+}
+
+/* dropdown menus for each added item:*/
+.dropdown{
+	cursor: pointer;
+}
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #f9f9f9;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    text-decoration:none;
+}
+.dropdown-content li a{
+    text-decoration:none;
+}
+.dropdown:hover .dropdown-content {
+    display: block;
+}
+
+.dropd_false{
+	display: none !important;
+}
+
+.dropd_true{
+	text-decoration:none;
 }
 

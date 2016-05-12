@@ -4,10 +4,17 @@
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:f="http://java.sun.com/jsf/core">
 
- <li id="selProb_#{prob.id}">#{prob.labelOrSynLabel}
+ <li id="selProb_#{prob.id}">#{prob.prefixStr} #{prob.labelOrSynLabel}
  	<a href="javascript:delProblem(#{prob.id});"><i class="icon-trash-1" title="Delete this item"></i></a> 
  	<!-- <i class="icon-ok2"></i>-->
- 	<span class="list_score" id="score_#{prob.id}"><a href="" title="An explanation could be displayed here..."><i class="#{prob.score}"></i></a></span>
+ 	<span class="dropdown"><i class="icon-down-open"></i>
+ 	<ul class="dropdown-content">Change to:<br/>
+ 		<li><a href="javascript:chgProblem(#{prob.id}, 1);">#{prob.toggledPrefixStr} #{prob.labelOrSynLabel}</a></li> <!-- item toggled prefix, always enabled -->	 	
+ 		<li class="dropd_#{prob.isExpertHierarchyItem}"><a href="javascript:chgProblem(#{prob.id}, 2);">#{prob.expItemLabel}</a></li> <!-- Hierarchy -->
+ 		<li class="dropd_#{prob.isSynonyma}"><a href="javascript:chgProblem(#{prob.id}, 3);">#{prob.synonym.name}</a></li> <!-- Synonym -->
+ 	</ul>
+ 	</span>
+ 	<span class="list_score" id="score_#{prob.id}"><a href="javascript:chgProblem(#{prob.id},#{prob.chgAllowed}, '#{prob.expItemLabel}');" title="#{prob.feedback}"><i class="#{prob.score}"></i></a></span>
  	
  </li><span class="peer_score" title="Percentage of peers who have added this problem as well" style="white-space: nowrap" id="peerscore#{prob.id}"> (#{prob.peerPercentage})</span><br/>
 </ui:composition>

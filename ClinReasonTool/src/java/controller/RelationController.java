@@ -1,13 +1,10 @@
 package controller;
 
-import java.util.Iterator;
+import java.util.*;
 
 import actions.beanActions.AddAction;
-import beans.relation.Rectangle;
 import beans.relation.Relation;
-import database.DBClinReason;
 import database.DBList;
-import model.ListItem;
 import model.Synonym;
 
 public class RelationController {

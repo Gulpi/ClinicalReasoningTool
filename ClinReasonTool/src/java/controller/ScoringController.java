@@ -30,9 +30,11 @@ public class ScoringController {
 	public static final float ADD_CNX_RED_SCORE = (float) 0.01; //we deduct 1% of the overall cnxs score for each additional cnx.
 	
 	public static final float SCORE_EXP_SAMEAS_LEARNER = FULL_SCORE;
+	public static final float SCORE_LEARNER_MORE_SPECIFIC = FULL_SCORE;
+	public static final float SCORE_LEARNER_MORE_GENERAL_MULT_EXP = HALF_SCORE; //learner was more general, multiple childs by expert
 	public static final float SCORE_NOEXP_BUT_LEARNER = NO_SCORE; //we score with 0 points, BUT the action itself will be honored in the LA part
 	public static final float MIN_PEERS = 20;
-	
+	public static final int MULTIPLE_EXPERT_CHLDS = -2;
 	public static final String ICON_PREFIX = "icon-ok";
 	//define possible scoring algorithms:
 	public static final int SCORING_ALGORITHM_BASIC = 1;
@@ -48,18 +50,27 @@ public class ScoringController {
 		return "";
 	}
 	
+	public ScoreBean getScoreBeanForItem(int type, long itemId){
+		ScoreContainer scoreContainer = new NavigationController().getCRTFacesContext().getScoreContainer();
+		if (scoreContainer==null) return null;
+		return scoreContainer.getScoreBeanByTypeAndItemId(type,itemId);
+	}
+	
+	public void setFeedbackInfo(ScoreBean scoreBean){ setFeedbackInfo(scoreBean, false);}
+	
 	/**
 	 * We store in the ScoreBean whether at this time the learner has already seen the expert's/peer feedback for
 	 * the item he has just added.
 	 * @param scoreBean
 	 */
-	public void setFeedbackInfo(ScoreBean scoreBean){
+	public void setFeedbackInfo(ScoreBean scoreBean, boolean isChg){
 		CRTFacesContext crtContext = new NavigationController().getCRTFacesContext();
 		boolean expFBOn = crtContext.getFeedbackContainer().isExpFeedbackOn(scoreBean.getType(), scoreBean.getStage());
 		boolean peerFBOn = crtContext.getFeedbackContainer().isPeerFeedbackOn(scoreBean.getType(), scoreBean.getStage());
 		if(expFBOn) scoreBean.setFeedbackOn(FeedbackBean.FEEDBACK_EXP);
 		if(peerFBOn) scoreBean.setFeedbackOn(FeedbackBean.FEEDBACK_PEER);
-		if(expFBOn && peerFBOn) scoreBean.setFeedbackOn(FeedbackBean.FEEDBACK_EXP_PEER);		
+		if(expFBOn && peerFBOn) scoreBean.setFeedbackOn(FeedbackBean.FEEDBACK_EXP_PEER);
+		if(isChg) scoreBean.setFeedbackOn(FeedbackBean.FEEDBACK_CHG);
 	}
 	
 	/**

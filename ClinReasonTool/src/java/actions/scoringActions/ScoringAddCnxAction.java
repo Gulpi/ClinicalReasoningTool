@@ -44,10 +44,10 @@ public class ScoringAddCnxAction implements ScoringAction{
 		//scoreBean.setTiming(edge.getStage(), expRel.getStage()); Timing not important fro cnxs
 		new ScoringController().setFeedbackInfo(scoreBean);
 		if(edge.getExpCnxId()>0 ){ //expert has als made an explicit connection
-			scoreBean.setScoreBasedOnExp(ScoringController.FULL_SCORE);	
+			scoreBean.setScoreBasedOnExp(ScoringController.FULL_SCORE, false);	
 		}
 		else //expert has not picked this cnx
-			scoreBean.setScoreBasedOnExp(ScoringController.SCORE_NOEXP_BUT_LEARNER);		
+			scoreBean.setScoreBasedOnExp(ScoringController.SCORE_NOEXP_BUT_LEARNER, false);		
 	}
 	
 	private void calculateAddActionScoreBasedOnPeers(MultiEdge edge, ScoreBean scoreBean, int peerNum){

@@ -93,7 +93,7 @@ function doNothing(){}
 function switchTab(tabidx){	
 	Cookies.set('tab', tabidx);
 	$("#msg").html("");
-	if(tabidx==5) updateGraph();
+	if(tabidx==6) updateGraph();
 	
 	if(expFeedback==true || peerFeedback==true){ //we only have to trigger a call if the expert feedback is on 
 		sendAjaxContext(tabidx, doNothing, "toogleExpFeedback", tabidx);

@@ -65,19 +65,27 @@ function reOrderEpi(newOrder, id){
 function addProblem(problemId, name){
 	//here we have to trigger an ajax call... 
 	//var problemId = $("#problems").val();
-	if(name!="") sendAjax(problemId, problemCallBack, "addProblem", name);
+	var prefix = $("#fdg_prefix").val();
+	if(name!="") sendAjax(problemId, problemCallBack, "addProblem", prefix);
 }
-
 
 /* if the answer was correct, but there is a better choice we offer the learner to change it by clicking on the checkmark*/
-function chgProblem(orgId, toChgId){
-	var confirmMsg = confirm("The term you have chosen is correct, however, a better choice would have been Dyspnea. Do you want to change your choice?");
+function chgProblem(id, allowed, expterm){
+	if(allowed!=true) return;
+	var confirmMsg = confirm("The term you have chosen is correct, however, the expert has chosen "+expterm+". Do you want to change your choice?");
 	if(confirmMsg){
-		$("#selprob_"+orgId).html("Dyspnea<i class=\"icon-ok2\"></i>");
-		$("#selprob_"+orgId).attr("id","selprob_"+toChgId);
-		//also trigger an ajax call to store the change....
+		sendAjax(id, problemCallBack, "changeProblem", "");
 	}
 }
+
+function chgProblem(id, type){
+	sendAjax(id, problemCallBack, "changeProblem", type);
+	
+}
+
+/*function toggleProblem(id){
+	sendAjax(id, problemCallBack, "toggleProblem", "");
+}*/
 
 function delProblem(id){
 	sendAjax(id, problemCallBack, "delProblem", "");
@@ -167,36 +175,38 @@ function toggleMnMCallback(){
 }
 
 /* we submit the DDX (or only final diagnoses?) and ask for certainity*/
-function doSubmitDDX(){
+function doSubmitDDX(id){
 	//we check whether there is a final diagnosis, if so we submit, else we display a hint
 	//if()
 	//$("#jdialog").dialog( "option", "position", ['center',50] );
-	$("#jdialog").dialog( "option", "width", ['200'] );
+	/*$("#jdialog").dialog( "option", "width", ['200'] );
 	$("#jdialog").dialog( "option", "height", ['200'] );
 	$("#jdialog").dialog( "option", "title", "Submit final diagnoses" );
 	$("#jdialog").dialog( "option", "buttons", [ ] );
-	$("#jdialog" ).dialog( "open" );
+	$("#jdialog" ).dialog( "open" );*/
+	sendAjax(id, submitDDXConfirmedCallBack, "submitDDX",  "");
+	
 }
 
 /* user has confirmed that he wants to submit disgnoses/-is*/
-function submitDDXConfirmed(){
+/*function submitDDXConfirmed(){
 	$("[id='ddxsubmitform:hiddenDDXSubmitButton']").click();	
 
 	//sendAjax("", submitDDXConfirmedCallBack, "submitDDX",  "");
 	//submitDDXConfirmedCallBack();
-}
+}*/
 
 function submitDDXConfirmedCallBack(){
 	$("#jdialog" ).dialog( "close" );
-	toggleSubmit();
-	//reload
-	
+	$("[id='ddxform:hiddenDDXButton']").click();	
+
+	//now we have to display feedback concerning the ddx submission: 	
 }
 
-var tiermsg=["I do not now","Clinically high likelyhood","Clinically moderate likelyhood","Clinically low likelyhood","My final diagnosis"];
+//var tiermsg=["I do not now","Clinically high likelyhood","Clinically moderate likelyhood","Clinically low likelyhood","My final diagnosis"];
 
 /* we change the tier-color of the corresponding diagnosis*/
-function changeTier(id){
+/*function changeTier(id){
 	var id2 = "tiericon_"+id;
 	var actClass = $("#"+id2).attr("class");
 	var num = Number(actClass.charAt( actClass.length-1 )) +1;
@@ -206,10 +216,16 @@ function changeTier(id){
 	$("#tiera_"+id).prop("title",tiermsg[num]);
 	toggleSubmit();	
 	sendAjax(id, doNothing, "changeTier",  num);
-}
+}*/
+
+/* change tier from dropdown menu*/
+/*function changeTier2(id, tier){
+	toggleSubmit();	
+	sendAjax(id, diagnosisCallBack, "changeTier",  tier);
+}*/
 
 /* we activate the upload button to submit DDX*/ 
-function toggleSubmit(){
+/*function toggleSubmit(){
 	var hasFinalDiagnosis = hasAFinalDiagnosis();
 
 	if(hasFinalDiagnosis && submitted!="true"){
@@ -230,7 +246,7 @@ function toggleSubmit(){
 			$("#submitDDXHref").title="Select a final diagnosis in order to submit.";
 
 	}
-}
+}*/
 
 /*
  * user has changed the confidence slider, so, we send the new value via ajax.
@@ -625,7 +641,7 @@ function toggleExpertFedback(){
 		$("#expFeedbackButton").attr("class","icon-user-md_on");
 		$("#expFeedbackButton").attr("title", "click to hide expert feedback");
 		$(".list_score").show();
-		$(".peer_score").show();
+		//$(".peer_score").show();
 		sendAjaxContext(1, doNothing, "toogleExpFeedback",  getCurrentTab());
 		
 	}
@@ -634,15 +650,36 @@ function toggleExpertFedback(){
 		$("#expFeedbackButton").attr("class", "icon-user-md");
 		$("#expFeedbackButton").attr("title", "click to show expert feedback");
 		$(".list_score").hide();
-		$(".peer_score").hide();
+		//$(".peer_score").hide();
 		sendAjaxContext(0, doNothing, "toogleExpFeedback", getCurrentTab());
 	}
 	my_canvas.clear();
 	initConceptMap();
 }
 
-function tooglePeerFedback(){
-	alert("not yet implemented!");
+/*
+ * we change the display of the concept map 
+ * TODO: change display of lists and include missed items!
+ */
+function togglePeerFeedback(){
+	if(peerFeedback == false){
+		peerFeedback = true;
+		$("#peerFeedbackButton").attr("class","icon-users_on");
+		$("#peerFeedbackButton").attr("title", "click to hide expert feedback");
+		$(".peer_score").show();
+		sendAjaxContext(1, doNothing, "tooglePeerFeedback",  getCurrentTab());
+		
+	}
+	else{
+		peerFeedback = false;
+		$("#peerFeedbackButton").attr("class", "icon-users");
+		$("#peerFeedbackButton").attr("title", "click to show expert feedback");
+		$(".list_score").hide();
+		$(".peer_score").hide();
+		sendAjaxContext(0, doNothing, "tooglePeerFeedback", getCurrentTab());
+	}
+	//my_canvas.clear();
+	//initConceptMap();
 }
 
 function openErrorDialog(){

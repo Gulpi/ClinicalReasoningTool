@@ -75,7 +75,7 @@ public class ScoringListAction {
 		float score = (float)correctNum/(correctNum+missedNum);
 		score = score - (addNum*ScoringController.ADD_LISTITEM_RED_SCORE);
 		if(score<0) score = 0;
-		scoreBean.setScoreBasedOnExp(score);
+		scoreBean.setScoreBasedOnExp(score, false);
 	}
 	
 	private void calculateListScoreBasedOnPeers(List<MultiVertex> mvertices, ScoreBean scoreBean){

@@ -77,9 +77,9 @@ public class AppBean extends ApplicationWrapper implements HttpSessionListener{
 	    }
 	    catch(Exception e){}
 	    //does not have to be done on every restart:
-	   // new JsonCreator().initJsonExport(); 
+	    new JsonCreator().initJsonExport(); 
 	   
-		//MeshImporter.main("de");
+		//MeshImporter.main("en");
 	    CRTLogger.out("Init done", CRTLogger.LEVEL_PROD);
 	    new PeerSyncController(peers).sync();
 	}

@@ -4,9 +4,9 @@ import java.util.*;
 
 import org.hibernate.Criteria;
 import org.hibernate.Session;
+import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
-
 import model.ListItem;
 import model.Synonym;
 
@@ -30,6 +30,8 @@ public class DBList extends DBClinReason {
     	s.close();
     	return li;
     }
+    
+
     
     /**
      * Select the ListItem with the given meshId from the database.
@@ -72,4 +74,55 @@ public class DBList extends DBClinReason {
     	s.close();
     	return li;
     }
+    
+    /**
+     * We select (based on the code of the MESH item all parent and child items. (e.g. for cough the first parent item would be 
+     * "respiratory disorders). 
+     *  
+     * @param li
+     * @return list of ListItem objects or null
+     */
+    public List<ListItem> selectParentAndChildListItems(ListItem li){
+    	if(li==null) return null;
+    	String code = li.getFirstCode();
+    	if(code==null || code.indexOf(".")<0) return null;
+    	List<ListItem> items = new ArrayList<ListItem>();
+    	Session s = instance.getInternalSession(Thread.currentThread(), false);
+    	
+    	//select & add childs:
+		List<ListItem> childs = selectChildListItemsByCode(code, s, li.getLanguage());
+		if(childs!=null && !childs.isEmpty()) items.addAll(childs);
+    	
+		//select and add all parents:
+		while(code.indexOf(".")>0){
+			code = code.substring(0, code.lastIndexOf("."));
+			if(code==null || code.trim().equals("")) break;
+			ListItem l = selectListItemByCode(code, s, li.getLanguage());
+			if(l!=null) items.add(l);
+		}
+
+		s.close();
+		return items;		
+    }
+    
+	/**
+     * Select the ListItem with the given id from the database.
+     * @param id
+     * @return ListItem or null
+     */
+    private ListItem selectListItemByCode(String code, Session s, Locale lang){    	
+    	Criteria criteria = s.createCriteria(ListItem.class,"ListItem");
+    	criteria.add(Restrictions.eq("firstCode", code));
+    	criteria.add(Restrictions.eq("language", lang));
+    	ListItem li = (ListItem) criteria.uniqueResult();
+    	return li;
+    }
+    
+    private List<ListItem> selectChildListItemsByCode(String code, Session s, Locale lang){
+       	Criteria criteria = s.createCriteria(ListItem.class,"ListItem");
+    	criteria.add(Restrictions.like("firstCode", code+".", MatchMode.START));
+    	criteria.add(Restrictions.eq("language", lang));
+    	return criteria.list();
+    }
+     
 }

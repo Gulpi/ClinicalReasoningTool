@@ -7,6 +7,7 @@ import beans.relation.Rectangle;
 import beans.relation.Relation;
 import beans.relation.RelationDiagnosis;
 import controller.NavigationController;
+import model.ListItem;
 /**
  * This is a vertex container, that can contains from which soure this vertex has been added.
  * @author ingahege
@@ -15,19 +16,29 @@ import controller.NavigationController;
 public class MultiVertex /*extends SynonymVertex*/ implements VertexInterface, Serializable{
 
 	private static final long serialVersionUID = 1L;
+	public static final int VERTEX_TYPE_DIRECT = 1; //expert/learner has chosen this vertex
+	public static final int VERTEX_TYPE_HIERARCHY = 2;
+	//public static final int VERTEX_TYPE_CHILD = 2; //the vertex is added because it is a parent/child item of the expert's choice.
+	//public static final int VERTEX_TYPE_PARENT = 3; //the vertex is added because it is a parent/child item of the expert's choice.
+
 	/**
 	 * how many peers have added this item (e.g. Problem) to their PatientIllnessScript, this includes all synonyma
 	 */
 	private int peerNums; 
 	private Relation learnerVertex; //e.g. RelationProblem of learner (can include a synonym)s
 	private Relation expertVertex;
-	private Relation illScriptVertex;
+	//private Relation illScriptVertex;
 	private String label;
 	private long vertexId;
 	/**
 	 * Problem, DDX,... see definitions in Relation
 	 */
 	private int type; 
+	
+	/**
+	 * see definition above, we need this here so that we do not display hierarchy vertices unless chosen by the learner. 
+	 */
+	private int vertexType = VERTEX_TYPE_DIRECT;
 	
 	public MultiVertex(){}
 	
@@ -36,6 +47,13 @@ public class MultiVertex /*extends SynonymVertex*/ implements VertexInterface, S
 		setLabel(rel.getLabel());
 		this.vertexId = rel.getListItemId();
 		this.addRelation(rel, illnessScriptType);
+	}
+	
+	public MultiVertex(ListItem li, int illnessScriptType, int type){
+		this.type = type;
+		this.label = li.getName();
+		this.vertexId = li.getItem_id();
+		vertexType = VERTEX_TYPE_HIERARCHY;
 	}
 	
 	/**
@@ -49,8 +67,8 @@ public class MultiVertex /*extends SynonymVertex*/ implements VertexInterface, S
 			learnerVertex = rel;
 		if(expertVertex==null && illnessScriptType==IllnessScriptInterface.TYPE_EXPERT_CREATED)
 			expertVertex = rel;
-		if(illScriptVertex==null && illnessScriptType==IllnessScriptInterface.TYPE_ILLNESSSCRIPT)
-			illScriptVertex = rel;
+		//if(illScriptVertex==null && illnessScriptType==IllnessScriptInterface.TYPE_ILLNESSSCRIPT)
+		//	illScriptVertex = rel;
 		/*if(illnessScriptType==IllnessScriptInterface.TYPE_LEARNER_CREATED)
 			learnerAdded = true;
 		if(illnessScriptType==IllnessScriptInterface.TYPE_EXPERT_CREATED)
@@ -77,7 +95,7 @@ public class MultiVertex /*extends SynonymVertex*/ implements VertexInterface, S
 	public Relation getRelationByType(int illScriptType){
 		if(illScriptType==IllnessScriptInterface.TYPE_LEARNER_CREATED) return learnerVertex;
 		if(illScriptType==IllnessScriptInterface.TYPE_EXPERT_CREATED) return expertVertex;
-		if(illScriptType==IllnessScriptInterface.TYPE_ILLNESSSCRIPT) return illScriptVertex;
+		//if(illScriptType==IllnessScriptInterface.TYPE_ILLNESSSCRIPT) return illScriptVertex;
 		/*if(expertVertex!=null && expertVertex.equals(rel)) return true;
 		if(illScriptVertex!=null && illScriptVertex.equals(rel)) return true;
 		return false;*/ 
@@ -88,7 +106,7 @@ public class MultiVertex /*extends SynonymVertex*/ implements VertexInterface, S
 	 * @see java.lang.Object#toString()
 	 */
 	public String toString(){
-		return getLabel()+" ("+getVertexId()+"), learner: "+ isLearnerVertex() + ", exp: " + isExpertVertex() + ", illscript: " + isIllScriptVertex();
+		return getLabel()+" ("+getVertexId()+"), learner: "+ isLearnerVertex() + ", exp: " + isExpertVertex();
 
 		//return getLabel()+" ("+getVertexId()+"), learner: "+ isLearnerAdded() + ", exp: " + isExpAdded() + ", illscript: " + isIllScriptAdded();
 	}
@@ -113,10 +131,10 @@ public class MultiVertex /*extends SynonymVertex*/ implements VertexInterface, S
 		return false;
 	}
 	
-	public boolean isIllScriptVertex(){
+	/*public boolean isIllScriptVertex(){
 		if(illScriptVertex==null) return false;
 		return true;
-	}
+	}*/
 	public int getPeerNums() {return peerNums;}
 	/*public Relation getLearnerVertex() {return learnerVertex;}
 	public Relation getExpertVertex() {return expertVertex;}
@@ -131,8 +149,10 @@ public class MultiVertex /*extends SynonymVertex*/ implements VertexInterface, S
 	public String getLabel() {return label;}
 	public void setLabel(String label) {this.label = label;}
 	public int getType() {return type;}
-	public void setType(int type) {this.type = type;}	
-	
+	public void setType(int type) {this.type = type;}		
+	public int getVertexType() {return vertexType;}
+	public void setVertexType(int vertexType) {this.vertexType = vertexType;}
+
 	public String toJson(){
 		StringBuffer sb = new StringBuffer();
 		int currentStage = new NavigationController().getCRTFacesContext().getPatillscript().getCurrentStage();

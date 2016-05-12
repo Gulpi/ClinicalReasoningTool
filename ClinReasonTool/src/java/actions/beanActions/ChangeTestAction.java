@@ -3,9 +3,16 @@ package actions.beanActions;
 import java.beans.Beans;
 
 import actions.scoringActions.Scoreable;
+import actions.scoringActions.ScoringAddAction;
 import beans.LogEntry;
 import beans.PatientIllnessScript;
+import beans.graph.Graph;
+import beans.graph.MultiVertex;
 import beans.relation.*;
+import beans.scoring.ScoreBean;
+import controller.GraphController;
+import controller.NavigationController;
+import controller.ScoringController;
 import database.DBClinReason;
 import database.DBList;
 import model.ListItem;
@@ -30,7 +37,40 @@ public class ChangeTestAction implements ChgAction, Scoreable{
 		changeTest(oldTestId, newTestId);
 	}
 	
-	public void changeTest(long newProbId, long probRel){
+	/**
+	 * called from lists, where we only have the the current id, we change it to the new id, which is stored in the
+	 * scoreBean.
+	 * @param oldRelStr
+	 */
+	public void changeTest(String oldRelStr){
+		if(oldRelStr==null || oldRelStr.equals("")) return;
+		long oldRelId = Long.valueOf(oldRelStr).longValue();
+		RelationTest relToChg = patIllScript.getTestById(oldRelId);
+		ScoreBean score = new ScoringController().getScoreBeanForItem(Relation.TYPE_TEST, relToChg.getListItemId());
+		//change in RelationProblem & Vertex:
+		
+		Graph g = new NavigationController().getCRTFacesContext().getGraph();
+		MultiVertex expVertex = g.getVertexById(score.getExpItemId());
+		MultiVertex learnerVertexOld = g.getVertexById(relToChg.getListItemId());
+		if(!expVertex.equals(learnerVertexOld)){ //then it is NOT a synonyma, but a hierarchy node
+				new GraphController(g).transferEdges(learnerVertexOld, expVertex);		
+				g.removeVertex(learnerVertexOld);
+				if(expVertex.getLearnerVertex()==null) expVertex.setLearnerVertex(relToChg);
+		}
+		changeRelation(expVertex, relToChg);	
+		//we re-score the item:
+		new ScoringAddAction(true).scoreAction(expVertex.getVertexId(), patIllScript);
+	}
+	
+	private void changeRelation(MultiVertex expVertex, RelationTest relToChg){
+		notifyLog(relToChg, expVertex.getExpertVertex().getListItem().getItem_id());
+		relToChg.setTest(expVertex.getExpertVertex().getListItem());
+		relToChg.setListItemId(expVertex.getExpertVertex().getListItem().getItem_id());
+		relToChg.setSynId(-1);	
+		save(relToChg);		
+	}
+	
+	private void changeTest(long newProbId, long probRel){
 		RelationTest testToChg = patIllScript.getTestById(probRel);
 		ListItem oldTest = new DBList().selectListItemById(testToChg.getListItemId());
 		ListItem newTest = new DBList().selectListItemById(newProbId);

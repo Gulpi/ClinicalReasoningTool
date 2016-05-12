@@ -3,11 +3,18 @@ package actions.beanActions;
 import java.beans.Beans;
 
 import actions.scoringActions.Scoreable;
+import actions.scoringActions.ScoringAddAction;
 import beans.LogEntry;
 import beans.PatientIllnessScript;
+import beans.graph.Graph;
+import beans.graph.MultiVertex;
 import beans.relation.Relation;
 import beans.relation.RelationManagement;
-
+import beans.relation.RelationTest;
+import beans.scoring.ScoreBean;
+import controller.GraphController;
+import controller.NavigationController;
+import controller.ScoringController;
 import database.DBClinReason;
 import database.DBList;
 import model.ListItem;
@@ -32,7 +39,40 @@ public class ChangeMngAction implements ChgAction, Scoreable{
 		changeMng(oldProbId, newProbId);
 	}
 	
-	public void changeMng(long newMngId, long mngRel){
+	/**
+	 * called from lists, where we only have the the current id, we change it to the new id, which is stored in the
+	 * scoreBean.
+	 * @param oldRelStr
+	 */
+	public void changeMng(String oldRelStr){
+		if(oldRelStr==null || oldRelStr.equals("")) return;
+		long oldRelId = Long.valueOf(oldRelStr).longValue();
+		RelationManagement relToChg = patIllScript.getMngById(oldRelId);
+		ScoreBean score = new ScoringController().getScoreBeanForItem(Relation.TYPE_MNG, relToChg.getListItemId());
+		//change in RelationProblem & Vertex:
+		
+		Graph g = new NavigationController().getCRTFacesContext().getGraph();
+		MultiVertex expVertex = g.getVertexById(score.getExpItemId());
+		MultiVertex learnerVertexOld = g.getVertexById(relToChg.getListItemId());
+		if(!expVertex.equals(learnerVertexOld)){ //then it is NOT a synonyma, but a hierarchy node
+				new GraphController(g).transferEdges(learnerVertexOld, expVertex);		
+				g.removeVertex(learnerVertexOld);
+				if(expVertex.getLearnerVertex()==null) expVertex.setLearnerVertex(relToChg);
+		}
+		changeRelation(expVertex, relToChg);	
+		//we re-score the item:
+		new ScoringAddAction(true).scoreAction(expVertex.getVertexId(), patIllScript);
+	}
+	
+	private void changeRelation(MultiVertex expVertex, RelationManagement relToChg){
+		notifyLog(relToChg, expVertex.getExpertVertex().getListItem().getItem_id());
+		relToChg.setManagement(expVertex.getExpertVertex().getListItem());
+		relToChg.setListItemId(expVertex.getExpertVertex().getListItem().getItem_id());
+		relToChg.setSynId(-1);	
+		save(relToChg);		
+	}
+	
+	private void changeMng(long newMngId, long mngRel){
 		RelationManagement mngToChg = patIllScript.getMngById(mngRel);
 		ListItem oldMng = new DBList().selectListItemById(mngToChg.getListItemId());
 		ListItem newMng = new DBList().selectListItemById(newMngId);

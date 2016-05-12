@@ -4,15 +4,16 @@ import java.util.*;
 
 import javax.faces.bean.SessionScoped;
 
+import org.jgrapht.alg.DijkstraShortestPath;
 import org.jgrapht.graph.DirectedWeightedMultigraph;
 
 import beans.Connection;
 import beans.IllnessScriptInterface;
 import beans.PatientIllnessScript;
-import beans.relation.Rectangle;
 import beans.relation.Relation;
 import controller.GraphController;
-import model.Synonym;
+import database.DBList;
+import model.ListItem;
 import util.CRTLogger;
 
 /**
@@ -131,6 +132,51 @@ public class Graph extends DirectedWeightedMultigraph<MultiVertex, MultiEdge> {
 			//Relation relInVertex = multiVertex.getRelationByType(illScriptType); 
 			multiVertex.addRelation(rel, illScriptType); //relation not yet added			
 		}
+		if(illScriptType==IllnessScriptInterface.TYPE_EXPERT_CREATED)
+			addParentAndChildVertices(multiVertex);
+	}
+	
+	/**
+	 * For the expert's script we add all parent and child nodes of the current one
+	 * parent: higher in hierarchy (more general)
+	 * child: lower in hierarchy (more specific)
+	 */
+	private void addParentAndChildVertices(MultiVertex vertex){
+		if(vertex==null || vertex.getExpertVertex()==null) return;
+		List<ListItem> items = new DBList().selectParentAndChildListItems(vertex.getExpertVertex().getListItem());
+		if(items==null || items.isEmpty()) return;
+		for(int i=0; i< items.size(); i++){
+			MultiVertex relatedVertex = addVertex(items.get(i), vertex.getExpertVertex().getRelationType());
+			if(vertex.getExpertVertex().getListItem().getFirstCode().length()<items.get(i).getFirstCode().length())
+				addHierarchyEdge(vertex, relatedVertex); //vertex is a parent
+			else //vertex is the child
+				addHierarchyEdge(relatedVertex, vertex);
+		}
+	}
+	
+	/**
+	 * direction  child -> parent with a special parent weight for the edge.
+	 * @param sourcevertex
+	 * @param parentvertex
+	 */
+	private void addHierarchyEdge(MultiVertex childvertex, MultiVertex parentvertex){
+		if(childvertex==null || parentvertex==null) return;		
+		MultiEdge e = getEdge(childvertex, parentvertex); 
+		if(e==null){
+			e = new MultiEdge(IllnessScriptInterface.TYPE_EXPERT_CREATED, MultiEdge.WEIGHT_PARENT); 
+			addEdge(childvertex, parentvertex, e);
+		}
+		else e.addParam(IllnessScriptInterface.TYPE_EXPERT_CREATED, MultiEdge.WEIGHT_PARENT);
+	}
+	
+	private MultiVertex addVertex(ListItem li, int type){
+		MultiVertex multiVertex = getVertexById(li.getItem_id());
+		if(multiVertex==null){ //create a new one:
+			multiVertex = new MultiVertex(li, IllnessScriptInterface.TYPE_EXPERT_CREATED, type); 
+			super.addVertex(multiVertex);
+		}
+		return multiVertex;
+		//else{} -> nothing to do!?! 
 	}
 	
 
@@ -259,24 +305,6 @@ public class Graph extends DirectedWeightedMultigraph<MultiVertex, MultiEdge> {
 		return sb.toString();
 	}
 	
-	/*public String getToJsonExp(){
-		Set<MultiVertex> vertices = this.vertexSet();
-		if(vertices==null || vertices.isEmpty()) return ""; 
-		Iterator<MultiVertex> it = vertices.iterator();
-		StringBuffer sb = new StringBuffer("[");
-		
-		while(it.hasNext()){
-			MultiVertex mv = it.next();
-			Rectangle learnerRel = (Rectangle) mv.getLearnerVertex();
-			if(learnerRel!=null)
-				sb.append(learnerRel.toJson()+",");
-		}
-		sb.replace(sb.length()-1, sb.length(), ""); //remove the last ","
-		sb.append("]");
-		Logger.out(sb.toString(), Logger.LEVEL_TEST);
-		return sb.toString();
-	}*/
-	
 	/**
 	 * Currently only returns the learners graph.
 	 * format: [{"id":"cmcnx_1", "sourceid":"cmprb_1234","targetid":"cmddx_47673", "l":"0", "e":"1", weight_l":"3","weight_e":"4"},....]
@@ -320,5 +348,144 @@ public class Graph extends DirectedWeightedMultigraph<MultiVertex, MultiEdge> {
 		sb.append("]");
 		CRTLogger.out(sb.toString(), CRTLogger.LEVEL_TEST);
 		return sb.toString();
+	}
+	
+	public List<MultiVertex> getParentVertices(MultiVertex vertex){
+		List<MultiVertex> list = new ArrayList();
+		getParentVertices(list, vertex);
+		if(list.isEmpty()) return null;
+		return list;
+	}
+	
+	/**
+	 * look whether the expert has chosen a more general term than the learner, if so return the vertex.
+	 * @param lvertex
+	 * @return
+	 */
+	public MultiVertex getExpParentVertex(MultiVertex lvertex){
+		List<MultiVertex> list = new ArrayList();
+		getParentVertices(list, lvertex);
+		if(list.isEmpty()) return null;
+		for(int i=0; i<list.size(); i++){
+			MultiVertex v = list.get(i);
+			if(v.isExpertVertex()) return v;
+		}
+		return null;
+	}
+	
+	/**
+	 * look whether the expert has chosen a more general term than the learner, if so return the distance between the expert and the 
+	 * learner vertex
+	 * @param lvertex
+	 * @return
+	 */
+	/*public int getExpParentDistance(MultiVertex lvertex){
+		List<MultiVertex> list = new ArrayList();
+		getParentVertices(list, lvertex);
+		if(list.isEmpty()) return -1;
+		for(int i=0; i<list.size(); i++){
+			MultiVertex v = list.get(i);
+			if(v.isExpertVertex()) return i+1;
+		}
+		return -1;
+	}*/
+	
+	/**
+	 * returns the distance between two vertices
+	 * @param source
+	 * @param target
+	 * @return
+	 */
+	public int getDistance(MultiVertex source, MultiVertex target){
+		DijkstraShortestPath shortestPath = new DijkstraShortestPath(this, source, target);
+		return (int) shortestPath.getPathLength();
+	}
+	/**
+	 * look whether the expert has chosen a more specific term than the learner, if so return the vertex.
+	 * Can be more than one!!!! Therefore we return a list! 
+	 * @param lvertex
+	 * @return
+	 */
+	public List<MultiVertex> getExpChildVertices(MultiVertex lvertex){
+		List<MultiVertex> list = new ArrayList<MultiVertex>();
+		getChildVertices(list, lvertex);
+		List<MultiVertex> childs = new ArrayList<MultiVertex>();
+		if(list.isEmpty()) return null;
+		for(int i=0; i<list.size(); i++){
+			MultiVertex v = list.get(i);
+			if(v.isExpertVertex()) childs.add(v);
+		}
+		return childs;
+	}
+	
+	/**
+	 * look whether the expert has chosen a more specific term than the learner, if so return the distance between the 
+	 * learner and the expert.
+	 * @param lvertex
+	 * @return
+	 */
+	/*public int getExpChildDistance(MultiVertex lvertex){
+		List<MultiVertex> list = new ArrayList();
+		getChildVertices(list, lvertex);
+		if(list.isEmpty()) return -1;
+		for(int i=0; i<list.size(); i++){
+			MultiVertex v = list.get(i);
+			if(v.isExpertVertex()) return i+1;
+		}
+		return -1;
+	}*/
+	
+	public List<MultiVertex> getChildVertices(MultiVertex vertex){
+		List<MultiVertex> list = new ArrayList();
+		getChildVertices(list, vertex);
+		if(list.isEmpty()) return null;
+		return list;
+	}
+	
+	/**
+	 * recursive method to find all parent vertices and add them to the list.
+	 * @param list
+	 * @param vertex
+	 */
+	private void getParentVertices(List<MultiVertex> list, MultiVertex vertex){
+		Set<MultiEdge> edges = this.incomingEdgesOf(vertex);
+		if(edges==null) return; 
+		Iterator<MultiEdge> it = edges.iterator(); 
+		while(it.hasNext()){
+			MultiEdge edge = it.next();
+			if(edge.getExpertWeight()==MultiEdge.WEIGHT_PARENT){
+				list.add(edge.getSource());
+				getParentVertices(list, edge.getSource());
+			}
+		}	
+	}
+	
+	/**
+	 * recursive method to find all parent vertices and add them to the list.
+	 * @param list
+	 * @param vertex
+	 */
+	private void getChildVertices(List<MultiVertex> list, MultiVertex vertex){
+		Set<MultiEdge> edges = this.outgoingEdgesOf(vertex);
+		if(edges==null) return; 
+		Iterator<MultiEdge> it = edges.iterator(); 
+		while(it.hasNext()){
+			MultiEdge edge = it.next();
+			if(edge.getExpertWeight()==MultiEdge.WEIGHT_PARENT){
+				list.add(edge.getTarget());
+				getChildVertices(list, edge.getTarget());
+			}
+		}	
+	}
+	
+	public Set<MultiEdge> getExplicitLearnerEdges(MultiVertex v){
+		if(this.edgesOf(v)==null) return null;
+		Iterator<MultiEdge> it = this.edgesOf(v).iterator();
+		Set<MultiEdge> edges = new TreeSet<MultiEdge>();
+		while(it.hasNext()){
+			MultiEdge e = it.next();
+			if(e.isExplicitLearnerEdge()) edges.add(e);
+		}
+		return edges;
 	}
 }

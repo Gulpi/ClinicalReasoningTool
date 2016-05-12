@@ -60,6 +60,7 @@ public class LogEntry extends Beans{
 	public static final int FEEDBACK_OFF_ACTION = 37;
 	public static final int CHG_CONFIDENCE_ACTION = 38;
 	public static final int CHG_COURSEOFTIME_ACTION = 39;
+	public static final int TOGGLE_PREFIX_ACTION = 40;
 	
 	
 	/**

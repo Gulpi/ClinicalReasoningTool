@@ -28,6 +28,10 @@ public class ListItem implements Serializable{
 	private Locale language; //en, de,...
 	private String mesh_ec; //EC
 	private String itemType; //D=Diagnosis, ...
+	/**
+	 * if true, we do not export this item (including synonyma) into the json list.
+	 */
+	private boolean ignored = false;
 	
 	public ListItem(){}
 	public ListItem(String lang,String source, String name){
@@ -35,7 +39,9 @@ public class ListItem implements Serializable{
 		this.source = source;
 		this.name = name;
 	}
-	
+		
+	public boolean isIgnored() {return ignored;}
+	public void setIgnored(boolean ignored) {this.ignored = ignored;}
 	public String getName() {return name;}
 	public void setName(String name) {this.name = name;}
 	public String getMesh_id() {return mesh_id;}

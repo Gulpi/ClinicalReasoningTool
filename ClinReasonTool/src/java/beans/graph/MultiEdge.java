@@ -3,10 +3,7 @@ package beans.graph;
 import java.util.*;
 
 import org.jgrapht.graph.DefaultWeightedEdge;
-
 import beans.IllnessScriptInterface;
-import beans.relation.Relation;
-import controller.ConceptMapController;
 
 
 /**
@@ -17,11 +14,13 @@ public class MultiEdge extends DefaultWeightedEdge{
 
 	public static final int WEIGHT_NONE = 0;	
 	public static final int WEIGHT_IMPLICIT = 1; //a connection has made in the concept map, tests have been associated to DDX  
-	public static final int WEIGHT_EXPLICIT = 2; //implicit connection - being in the same illnessScript
-	public int WEIGHT_SLIGHTLY_RELATED = 3;
-	public int WEIGHT_SOMEWHAT_RELATED = 4;
-	public int WEIGHT_HIGHLY_RELATED = 5;
-	public int WEIGHT_SPEAKS_AGAINST = 6;
+	public static final int WEIGHT_EXPLICIT = 2; //implicit connection - being in the same illnessScript	
+	public static final int WEIGHT_SLIGHTLY_RELATED = 3;
+	public static final int WEIGHT_SOMEWHAT_RELATED = 4;
+	public static final int WEIGHT_HIGHLY_RELATED = 5;
+	public static final int WEIGHT_SPEAKS_AGAINST = 6;
+	public static final int WEIGHT_PARENT = 7;  //an item higher up in the hierarchy
+
 	/**
 	 * key = type (see definition in IllnessScriptInterface)
 	 * value = weight (for peers the number of conx)
@@ -32,13 +31,16 @@ public class MultiEdge extends DefaultWeightedEdge{
 	private int edgeInexpPatIllScript = WEIGHT_NONE; //has expert make a implicit/explicit conx
 	private int edgeInLearnerPatIllScript = WEIGHT_NONE;
 	private int edgeInIllScript = WEIGHT_NONE; //can be none or explicit (no implicit!)*/
-	private long sourceId;
-	private long targetId; 
+	//private long sourceId;
+	//private long targetId; 
 	private long learnerCnxId;
 	private long expCnxId;
 	public MultiEdge(){}
 	public MultiEdge(int type, int weight){
 		addParam(type, weight);
+	}
+	public MultiEdge(Map types){
+		this.types = types;
 	}
 	
 	/**
@@ -59,6 +61,7 @@ public class MultiEdge extends DefaultWeightedEdge{
 			}
 		}
 	}	
+	
 	public long getLearnerCnxId() {return learnerCnxId;}
 	public void setLearnerCnxId(long learnerCnxId) {this.learnerCnxId = learnerCnxId;}
 	public long getExpCnxId() {return expCnxId;}
@@ -79,6 +82,20 @@ public class MultiEdge extends DefaultWeightedEdge{
 	public void removeWeight(int illScriptType){
 		if(types==null || types.get(new Integer(illScriptType))==null) return;
 		types.remove(new Integer(illScriptType));		
+	}
+	
+	public boolean isExplicitLearnerEdge(){
+		return isExplicitEdge(IllnessScriptInterface.TYPE_LEARNER_CREATED);
+	}
+	public boolean isExplicitExpertEdge(){
+		return isExplicitEdge(IllnessScriptInterface.TYPE_EXPERT_CREATED);
+	}
+	
+	private boolean isExplicitEdge(int type){
+		if(types==null || types.get(new Integer(type))==null) return false;
+		int weight = types.get(new Integer(type)).intValue();
+		if(weight>=2 && weight<=6) return true;
+		return false;		
 	}
 	
 	/**
@@ -104,17 +121,18 @@ public class MultiEdge extends DefaultWeightedEdge{
 		if(param==null) return 0;
 		return param.intValue();
 	}
-	public long getSourceId() {return sourceId;}
+	public Map getParams(){ return types;}
+	/*public long getSourceId() {return sourceId;}
 	public void setSourceId(long sourceId) {this.sourceId = sourceId;}
 	public long getTargetId() {return targetId;}
-	public void setTargetId(long targetId) {this.targetId = targetId;}
+	public void setTargetId(long targetId) {this.targetId = targetId;}*/
 	/* (non-Javadoc)
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	public boolean equals(Object o){
 		if(o!=null && o instanceof MultiEdge){
 			MultiEdge e = (MultiEdge) o;
-			if(e.getSourceId()==this.getSourceId() && e.getTargetId()==this.getTargetId()) return true;
+			if(e.getSource().equals(getSource()) && e.getTarget().equals(getTarget())) return true;
 		}
 		return false;
 	}
@@ -141,32 +159,18 @@ public class MultiEdge extends DefaultWeightedEdge{
 		return "edge: " + this.getSource().getLabel()+"-"+this.getTarget().getLabel()+" types: " + types.toString()+"\n";
 	}
 	
-	public void setSource(Object o){}
-	
-/*	public String toJson(Graph g){
-		//'[{"id": "cnx_1", "sourceid": "cmddx_6","targetid": "cmddx_3"}]';
-		String startIdWithPrefix = getPrefixByType(startType)+sourceId; 	
-		String targetIdWithPrefix = getPrefixByType(targetType)+targetId;
-		
-		return"{\"id\":\""+ PREFIX_CNX + this.getId()+"\",\"sourceid\": \""+startIdWithPrefix+"\",\"targetid\": \""+targetIdWithPrefix+"\"}");		
-		//return sb.toString();		
-	}*/
-	
-	/*protected int getTypeByPrefix(String prefix){
-		if(prefix==null) return 0;
-		if(prefix.equals(PREFIX_PROB)) return Relation.TYPE_PROBLEM;
-		if(prefix.equals(PREFIX_DDX)) return Relation.TYPE_DDX;
-		if(prefix.equals(PREFIX_TEST)) return Relation.TYPE_TEST;
-		if(prefix.equals(PREFIX_MNG)) return Relation.TYPE_MNG;
-		return 0;
+	public void mergeParams(Map<Integer, Integer> addtypes){
+		if(addtypes==null) return;
+		Iterator<Integer> it = addtypes.keySet().iterator();
+		while(it.hasNext()){
+			Integer key = it.next();
+			Integer value = addtypes.get(key);
+			if(types.get(key)==null) types.put(key, value); //no param for this key, so add
+			else{
+				//param added, but weaker than the new one:
+				if(types.get(key).equals(new Integer(WEIGHT_IMPLICIT)) || types.get(key).equals(new Integer(WEIGHT_IMPLICIT )))
+					types.put(key, value);				
+			}
+		}
 	}
-	
-	protected String getPrefixByType(int type){
-		if(type==Relation.TYPE_PROBLEM) return PREFIX_PROB;
-		if(type==Relation.TYPE_DDX) return PREFIX_DDX;
-		if(type==Relation.TYPE_TEST) return PREFIX_TEST;
-		if(type==Relation.TYPE_MNG) return PREFIX_MNG;
-		return "";
-	}*/
-	
 }

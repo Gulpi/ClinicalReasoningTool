@@ -21,7 +21,7 @@ import model.Synonym;
  * @author ingahege
  *
  */
-public class RelationEpi extends Relation implements Rectangle, Serializable{
+public class RelationEpi extends Relation implements Serializable{
 
 	private static final long serialVersionUID = 1L;
 	public static final int DEFAULT_X = 5; //default x position of problems in canvas

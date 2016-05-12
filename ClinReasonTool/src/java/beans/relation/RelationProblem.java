@@ -24,7 +24,7 @@ import model.Synonym;
  * @author ingahege
  *
  */
-public class RelationProblem extends Relation implements Rectangle, Serializable{
+public class RelationProblem extends Relation implements Serializable{
 
 	private static final long serialVersionUID = 1L;
 	public static final int QUALIFIER_RARE = 0; 

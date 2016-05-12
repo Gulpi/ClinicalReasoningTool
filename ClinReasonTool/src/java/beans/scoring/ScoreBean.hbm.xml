@@ -14,6 +14,8 @@
 		</id>
 		<property name="patIllScriptId" column="patientillnessscript_id" type="long" />			
 		<property name="scoreBasedOnExp" column="score_exp" type="float" />
+		<property name="orgScoreBasedOnExp" column="org_score_exp" type="float" />
+		
 		<property name="scoreBasedOnPeer" column="score_peer" type="float" />
 		<property name="scoreBasedOnIllScript" column="score_illscr" type="float" />
 		<property name="overallScore" column="score" type="float" />
@@ -23,6 +25,9 @@
 		<property name="timing" column="timing" type="int"/>
 		<property name="feedbackOn" column="feedback" type="int"/>
 		<property name="stage" column="stage" type="int"/>
+		<property name="expItemId" column="expitem_id" type="long"/>
+		
+		
 		
 </class>
 </hibernate-mapping>

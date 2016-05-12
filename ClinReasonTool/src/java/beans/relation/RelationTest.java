@@ -22,7 +22,7 @@ import model.Synonym;
  * @author ingahege
  *
  */
-public class RelationTest extends Relation implements Rectangle, Serializable{
+public class RelationTest extends Relation implements Serializable{
 
 	private static final long serialVersionUID = 1L;
 	public static final int QUALIFIER_RARE = 0; 

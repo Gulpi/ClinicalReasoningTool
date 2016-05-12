@@ -14,7 +14,7 @@ import controller.ScoringController;
 import model.ListItem;
 import model.Synonym;
 
-public class RelationManagement extends Relation implements Rectangle, Serializable{
+public class RelationManagement extends Relation implements Serializable{
 	
 	public static final int DEFAULT_X = 245; //325; //default x position of problems in canvas
 

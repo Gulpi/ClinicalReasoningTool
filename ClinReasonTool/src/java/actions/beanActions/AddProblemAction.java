@@ -8,6 +8,8 @@ import javax.faces.application.FacesMessage;
 import javax.faces.application.FacesMessage.Severity;
 import javax.faces.context.FacesContext;
 
+import org.hibernate.tool.hbm2x.StringUtils;
+
 import beans.*;
 import beans.graph.Graph;
 import beans.relation.*;
@@ -50,20 +52,23 @@ public class AddProblemAction implements AddAction, Scoreable{
 	/* (non-Javadoc)
 	 * @see actions.beanActions.AddAction#add(java.lang.String, java.lang.String, java.lang.String, java.lang.String)
 	 */
-	public void add(String idStr, String name, String xStr, String yStr){ 
-		new RelationController().initAdd(idStr, name, xStr, yStr, this);
+	public void add(String idStr, String prefix, String xStr, String yStr){ 
+		new RelationController().initAdd(idStr, prefix, xStr, yStr, this);
 
 	}
 	
 	/* (non-Javadoc)
 	 * @see actions.beanActions.AddAction#addRelation(long, java.lang.String, int, int, long)
 	 */
-	public void addRelation(long id, String name, int x, int y, long synId){
+	public void addRelation(long id, String prefix, int x, int y, long synId){
 		if(patIllScript.getProblems()==null) patIllScript.setProblems(new ArrayList<RelationProblem>());
 		RelationProblem rel = new RelationProblem(id, patIllScript.getId(), synId);		
 		if(patIllScript.getProblems().contains(rel)){
 			createErrorMessage("Problem already assigned.","optional details", FacesMessage.SEVERITY_WARN);
 			return;
+		}
+		if(StringUtils.isAlphanumeric(prefix)){ //check whether a prefix has been chosen
+			rel.setPrefix(Integer.valueOf(prefix).intValue());
 		}
 		rel.setOrder(patIllScript.getProblems().size());
 		rel.setStage(patIllScript.getCurrentStage());

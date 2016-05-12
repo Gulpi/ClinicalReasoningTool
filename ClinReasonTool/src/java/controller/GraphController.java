@@ -72,8 +72,8 @@ public class GraphController implements Serializable{
 	 * */
 	public void addIllnessScripts(long parentId){
 	    ServletContext context = (ServletContext) FacesContext.getCurrentInstance().getExternalContext().getContext();
-	    AppBean app = (AppBean) context.getAttribute(AppBean.APP_KEY);
-	    List<IllnessScript> illScripts = app.getIlnessScripts(parentId);
+	    //AppBean app = (AppBean) context.getAttribute(AppBean.APP_KEY);
+	    List<IllnessScript> illScripts = AppBean.getIlnessScripts(parentId);
 	    
 	    if(illScripts!=null){
 	    	Iterator<IllnessScript> it = illScripts.iterator();
@@ -203,5 +203,41 @@ public class GraphController implements Serializable{
 		if(type==Relation.TYPE_EPI) return PREFIX_EPI;
 
 		return "";
+	}
+	
+	public void transferEdges(MultiVertex oldVertex, MultiVertex newVertex){
+		//first we have to transfer edges the learner might have had created:
+		Set<MultiEdge> explOldEdges = graph.getExplicitLearnerEdges(oldVertex);
+		if(explOldEdges!=null){
+			Iterator<MultiEdge> it = explOldEdges.iterator();
+			while(it.hasNext()){
+				MultiEdge e = it.next();
+				
+				if(e.getSource()!=null && e.getSource().equals(oldVertex)){ //oldVertex is source of edge
+					
+					MultiEdge newEdge = graph.getEdge(newVertex, e.getTarget());
+					if(newEdge==null){
+						newEdge = new MultiEdge(e.getParams());
+						graph.addEdge(oldVertex, newVertex);
+					}
+					else{ 
+						newEdge.mergeParams(e.getParams());
+					}
+					
+				}
+				if(e.getTarget()!=null && e.getTarget().equals(oldVertex)){ //oldVertex is target of edge
+					
+					MultiEdge newEdge = graph.getEdge(e.getSource(), newVertex);
+					if(newEdge==null){
+						newEdge = new MultiEdge(e.getParams());
+						graph.addEdge(oldVertex, newVertex);
+					}
+					else{ 
+						newEdge.mergeParams(e.getParams());
+					}
+					
+				}
+			}
+		}
 	}
 }

@@ -17,10 +17,12 @@ import database.DBScoring;
  *
  */
 public class ScoringCnxsAction {
-private PatientIllnessScript patillscript;
+	private PatientIllnessScript patillscript;
+	private boolean isChg = false; //true if scoring is repeated after user has changed an item
 	
-	public ScoringCnxsAction(PatientIllnessScript patillscript){
+	public ScoringCnxsAction(PatientIllnessScript patillscript/*, boolean isChg*/){
 		this.patillscript = patillscript;
+		//this.isChg = isChg;
 	}
 	
 	public void scoreConnections(int stage){
@@ -28,7 +30,7 @@ private PatientIllnessScript patillscript;
 		if(g.edgeSet()==null) return; //no one has made connections.
 		ScoreContainer scoreContainer = new NavigationController().getCRTFacesContext().getScoreContainer();		
 		ScoreBean scoreBean = scoreContainer.getListScoreBeanByStage(ScoreBean.TYPE_CNXS, stage);
-		if(scoreBean!=null) return; //already scored....
+		if(scoreBean!=null) isChg = true;//return; //already scored....
 		scoreBean = new ScoreBean(patillscript.getId(), -1, ScoreBean.TYPE_CNXS, stage);
 		scoreContainer.addScore(scoreBean);
 		calculateCnxsScoreBasedOnExpert(g.edgeSet(), scoreBean);	
@@ -57,7 +59,7 @@ private PatientIllnessScript patillscript;
 		float score = correctNum/(correctNum+missedNum);
 		score = score - (addNum*ScoringController.ADD_CNX_RED_SCORE);
 		if(score<0) score = 0;
-		scoreBean.setScoreBasedOnExp(score);
+		scoreBean.setScoreBasedOnExp(score, isChg);
 	}
 	
 	private void calculateCnxsScoreBasedOnPeers(Set<MultiEdge> edges, ScoreBean scoreBean){

@@ -80,6 +80,7 @@ public class JsonCreator {
 	 * @return
 	 */
 	private boolean doAddItem(ListItem item){
+		if(item.isIgnored()) return false;
 		//D:
 		if(item.getItemType().equals("D") && item.getLevel()>=10) return false;
 		if(item.getFirstCode()==null) return true;
@@ -93,6 +94,17 @@ public class JsonCreator {
 		if(item.getFirstCode().startsWith("F") && !item.getFirstCode().startsWith("F01.145")) return false;
 		//C
 		if(item.getFirstCode().startsWith("C22")) return false; //Animal diseases
+		if(item.getFirstCode().startsWith("C02.782.147.")) return false; 
+		if(item.getFirstCode().startsWith("C02.782.791")) return false;
+		if(item.getFirstCode().startsWith("C02.782.310.") ||item.getFirstCode().startsWith("C02.782.600.")) return false; 
+		if(item.getFirstCode().startsWith("C02.782.815")) return false;
+		if(item.getFirstCode().startsWith("C02.782.930")) return false;
+		//B
+		if(item.getFirstCode().startsWith("B04.280.")) return false; //subgroup of DNA viruses (-> fever)
+		if(item.getFirstCode().startsWith("B04.100.")) return false; 
+		if(item.getFirstCode().startsWith("B04.820.")) return false; 
+
+
 		
 		if(item.getName().startsWith("1") || item.getName().startsWith("2") || item.getName().startsWith("3")) return false;
 		if(item.getName().startsWith("4-") || item.getName().startsWith("4,")) return false;
@@ -127,24 +139,26 @@ public class JsonCreator {
 		int counter = 0;
 		while(it.hasNext()){	
 			Synonym syn = it.next();
-			boolean isSimilar = StringUtilities.similarStrings(item.getName(), syn.getName(), item.getLanguage());
-			if(!isSimilar/*distance > MIN_SIMILARITY_DISTANCE*/){ //then it has enough difference to add 
-				//now check similarity to already added synonyma: 
-				boolean doAdd = true;
-				if(addedSyn!=null || !addedSyn.isEmpty()){
-					for(int i=0; i < addedSyn.size(); i++){
-						boolean isSimilar2 = StringUtilities.similarStrings(syn.getName(), addedSyn.get(i).getName(), syn.getLocale());
-						if(isSimilar2/*distance2<=MIN_SIMILARITY_DISTANCE*/){ //then we have found a similar item
-							//System.out.println("not added: " + syn + " - " + addedSyn.get(i).getName());
-							doAdd = false;
-							break;
+			if(!syn.isIgnored()){
+				boolean isSimilar = StringUtilities.similarStrings(item.getName(), syn.getName(), item.getLanguage());
+				if(!isSimilar/*distance > MIN_SIMILARITY_DISTANCE*/){ //then it has enough difference to add 
+					//now check similarity to already added synonyma: 
+					boolean doAdd = true;
+					if(addedSyn!=null || !addedSyn.isEmpty()){
+						for(int i=0; i < addedSyn.size(); i++){
+							boolean isSimilar2 = StringUtilities.similarStrings(syn.getName(), addedSyn.get(i).getName(), syn.getLocale());
+							if(isSimilar2/*distance2<=MIN_SIMILARITY_DISTANCE*/){ //then we have found a similar item
+								//System.out.println("not added: " + syn + " - " + addedSyn.get(i).getName());
+								doAdd = false;
+								break;
+							}
 						}
 					}
-				}
-				addedSyn.add(syn);
-				if(doAdd){
-					sb.append("{\"label\": \""+syn.getName()+"\", \"value\": \""+Synonym.SYN_VERTEXID_PREFIX+syn.getId()+"\"},\n");
-					counter++;
+					addedSyn.add(syn);
+					if(doAdd){
+						sb.append("{\"label\": \""+syn.getName()+"\", \"value\": \""+Synonym.SYN_VERTEXID_PREFIX+syn.getId()+"\"},\n");
+						counter++;
+					}
 				}
 			}
 		}

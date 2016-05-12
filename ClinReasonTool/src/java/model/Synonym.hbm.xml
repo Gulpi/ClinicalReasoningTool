@@ -22,6 +22,8 @@
 		<!--  <property name="id" column="id" type="long" />	-->
 		<property name="locale" column="lang" type="locale"/>
 		<property name="ratingWeight" column="rating_weight" type="float"/>	
+		<property name="ignored" column="ignore" type="boolean"/>
+		
 	 
 </class>
 </hibernate-mapping>

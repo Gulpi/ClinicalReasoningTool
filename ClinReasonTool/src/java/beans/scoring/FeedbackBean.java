@@ -20,6 +20,7 @@ public class FeedbackBean extends Beans implements Serializable{
 	public static final int FEEDBACK_EXP = 1;
 	public static final int FEEDBACK_PEER = 2;
 	public static final int FEEDBACK_EXP_PEER = 3;
+	public static final int FEEDBACK_CHG = 4; //user changes an item based on what the expert entered
 	/**
 	 * an internal id...
 	 */

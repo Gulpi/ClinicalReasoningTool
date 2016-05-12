@@ -47,7 +47,7 @@ public class ScoringSummStAction {
 	 */
 	private void calculateAddActionScoreBasedOnExpert(ScoreBean scoreBean, SummaryStatement expSt, SummaryStatement learnerSt){
 		if(learnerSt==null || learnerSt.getText()==null || learnerSt.getText().trim().equals(""))
-			scoreBean.setScoreBasedOnExp(ScoringController.NO_SCORE);
+			scoreBean.setScoreBasedOnExp(ScoringController.NO_SCORE, false);
 		else{
 			//TODO....
 		}

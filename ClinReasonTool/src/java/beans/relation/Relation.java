@@ -7,6 +7,7 @@ import java.util.*;
 import org.apache.commons.lang3.StringUtils;
 
 import beans.graph.VertexInterface;
+import controller.FeedbackController;
 import controller.RelationController;
 import controller.ScoringController;
 import model.ListItem;
@@ -19,7 +20,7 @@ import model.Synonym;
  * to an (Patient) IllnessScript. 
  * @author ingahege
  */
-public abstract class Relation extends Beans{
+public abstract class Relation extends Beans implements Rectangle{
 
 	public static final int TYPE_PROBLEM = 1;
 	public static final int TYPE_DDX = 2;
@@ -55,6 +56,10 @@ public abstract class Relation extends Beans{
 	
 	private int order;
 	private Timestamp creationDate;
+	/**
+	 * To allow negative findings (e.g. No fever), we need a prefix indicator.
+	 */
+	private int prefix;
 	
 	/**
 	 * In case the learner has selected the not the main item, but a synonyma, we save the id here.
@@ -82,7 +87,22 @@ public abstract class Relation extends Beans{
 	public void setY(int y) {this.y = y;}	
 	public abstract int getRelationType();
 	public int getOrder() {return order;}
-	public void setOrder(int order) {this.order = order;}	
+	public void setOrder(int order) {this.order = order;}		
+	public int getPrefix() {return prefix;}
+	public void setPrefix(int prefix) {this.prefix = prefix;}
+	public String getPrefixStr(){
+		if(prefix<=0) return "";
+		return "No"; //TODO internationalization
+	}
+	public String getToggledPrefixStr(){
+		if(prefix>0) return "";
+		return "No"; //TODO internationalization
+	}
+	
+	public void togglePrefix(){
+		if(prefix<=0) prefix = 1;
+		else prefix = 0;
+	}
 	/**
 	 * When during a session was the item added (e.g. on which card number, if provided by 
 	 * the API), minimun 2 stages (before & after diagnosis submission)
@@ -108,10 +128,32 @@ public abstract class Relation extends Beans{
 	 * @return
 	 */
 	public Synonym getSynonym(){ return new RelationController().getSynonym(getSynId(),this);}
-
+	public boolean getIsSynonyma(){
+		if(synId>0) return true;
+		return false;
+	}
+	public boolean getIsExpertHierarchyItem(){
+		String expLabel = getExpItemLabel();
+		if(expLabel==null || expLabel.isEmpty()) return false;
+		return true;
+	}
 	
 	public String getShortLabelOrSynShortLabel(){return StringUtils.abbreviate(getLabelOrSynLabel(), ListItem.MAXLENGTH_NAME);}
 	public String getScore(){ return new ScoringController().getIconForScore(this.getRelationType(), this.getListItemId());}
+	public String getFeedback(){ return new FeedbackController().getItemFeedback(this.getRelationType(), this.getListItemId());}
+	public String getExpItemLabel(){ return new FeedbackController().getExpItemLabel(this.getRelationType(), this.getListItemId());}
+
+	/**
+	 * Is the learner allowed to change it?
+	 * yes if he has chosen a synonym or a different hierarchy
+	 * @return
+	 */
+	public boolean getChgAllowed(){
+		//if(synId>0) return true;	//we allow changes for synonyma 
+		return new FeedbackController().isChgAllowed(this.getRelationType(), this.getListItemId()); //and diff. hierarchies
+		//return false;
+	}
+
 	public String getPeerPercentage(){return new ScoringController().getPeerPercentageForAction(getRelationType(), getDestId(), getListItemId());}
 	
 	/* (non-Javadoc)

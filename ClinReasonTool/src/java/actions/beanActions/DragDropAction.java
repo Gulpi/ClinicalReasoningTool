@@ -5,6 +5,7 @@ import java.awt.Point;
 
 import beans.LogEntry;
 import beans.PatientIllnessScript;
+import beans.relation.Rectangle;
 import beans.relation.Relation;
 import controller.GraphController;
 import database.DBClinReason;
@@ -22,12 +23,13 @@ public class DragDropAction {
 	}
 	
 	public void move(String idStr, String xStr, String yStr){
-		int type = GraphController.getTypeByPrefix(idStr.substring(0,6));
-		long id = Long.parseLong(idStr.substring(6));
+		if(idStr==null) return;
+		int type = GraphController.getTypeByPrefix(idStr.substring(0,4)); //6 for tabs & map
+		long id = Long.parseLong(idStr.substring(4));
 		Relation rel = patIllScript.getRelationByIdAndType(id, type);
 		if(rel!=null){
 			float x = Float.valueOf(xStr.trim());
-			float y = Float.valueOf(yStr.trim());
+			float y = Float.valueOf(yStr.trim()) - Rectangle.addToY;
 			rel.setXAndY(new Point((int) x, (int) y));
 		}
 		save(rel);

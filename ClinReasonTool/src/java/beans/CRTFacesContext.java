@@ -38,6 +38,10 @@ public class CRTFacesContext extends FacesContextWrapper /*implements Serializab
 	private PatientIllnessScript patillscript;
 	private Graph graph;
 	private UserSetting userSetting;
+	/**
+	 * TODO: get from VP system or calculate from expert script
+	 */
+	private int maxStage = 4;
 	//private boolean feedbackOn;
 
 	/**
@@ -88,6 +92,7 @@ public class CRTFacesContext extends FacesContextWrapper /*implements Serializab
 	public long getUserId() {return userId;}
 	public void setUserId(long userId) {this.userId = userId;}
 	public Graph getGraph() {return graph;}
+	public int getMaxStage() {return maxStage;}
 
 	public UserSetting getUserSetting() {return userSetting;}
 	public void setUserSetting(UserSetting userSetting) {this.userSetting = userSetting;}
@@ -126,7 +131,7 @@ public class CRTFacesContext extends FacesContextWrapper /*implements Serializab
 	public void initSession(){ 
 		if(userId<=0)setUserId();
 		long id = new AjaxController().getIdRequestParamByKey(AjaxController.REQPARAM_SCRIPT);
-		if(this.patillscript!=null && this.patillscript.getId()==id) return; //current script already loaded....
+		if(this.patillscript!=null && (id<0 || this.patillscript.getId()==id)) return; //current script already loaded....
 		long vpId = new AjaxController().getIdRequestParamByKey(AjaxController.REQPARAM_VP);
 		if(id<=0 && vpId<=0) return; //then user has opened the overview page...y
 
@@ -184,8 +189,16 @@ public class CRTFacesContext extends FacesContextWrapper /*implements Serializab
 		if(feedbackContainer==null) feedbackContainer = new FeedbackContainer(this.getPatillscript().getId());
 		return feedbackContainer;
 	}
-	public void toogleExpFeedback(String toggleStr, String taskStr){
-		feedbackContainer.toogleExpFeedback(toggleStr, taskStr, this.patillscript.getCurrentStage());
+	public void toogleExpBoxFeedback(String toggleStr, String taskStr){
+		feedbackContainer.toogleExpBoxFeedback(toggleStr, taskStr, this.patillscript.getCurrentStage());
+	}
+	
+	public void toogleExpFeedback(String toggleStr){
+		feedbackContainer.toogleExpFeedback(toggleStr, this.patillscript.getCurrentStage());
+	}
+	
+	public void tooglePeerBoxFeedback(String toggleStr, String taskStr){
+		feedbackContainer.tooglePeerBoxFeedback(toggleStr, taskStr, this.patillscript.getCurrentStage());
 	}
 	
 	/** 
@@ -215,5 +228,8 @@ public class CRTFacesContext extends FacesContextWrapper /*implements Serializab
 	public FacesContext getWrapped() {
 		return FacesContext.getCurrentInstance();
 	}
-
+	
+	public ExpPatientIllnessScript getExpPatIllScript(){
+		return new ExpPatientIllnessScript(graph, patillscript.getCurrentStage());
+	}
 }

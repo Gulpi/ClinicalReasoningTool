@@ -4,6 +4,8 @@ import java.beans.Beans;
 import java.io.Serializable;
 import java.sql.Timestamp;
 
+import javax.faces.bean.SessionScoped;
+
 import database.DBClinReason;
 
 /**
@@ -15,12 +17,14 @@ import database.DBClinReason;
  * @author ingahege
  *
  */
+@SessionScoped
 public class FeedbackBean extends Beans implements Serializable{
 	public static final int FEEDBACK_NONE = 0;
 	public static final int FEEDBACK_EXP = 1;
 	public static final int FEEDBACK_PEER = 2;
 	public static final int FEEDBACK_EXP_PEER = 3;
 	public static final int FEEDBACK_CHG = 4; //user changes an item based on what the expert entered
+	public static final int FEEDBACK_JOKER = 5; //item was provided to learner as a joker
 	/**
 	 * an internal id...
 	 */
@@ -39,10 +43,10 @@ public class FeedbackBean extends Beans implements Serializable{
 	private Timestamp creationDate;
 	
 	public FeedbackBean(){}
-	public FeedbackBean(int stage, int type, int itemType, long patIllScriptId){
+	public FeedbackBean(int stage, int type/*, int itemType*/, long patIllScriptId){
 		this.stage = stage;
 		this.type = type; 
-		this.itemType = itemType;
+		//this.itemType = itemType;
 		this.patIllScriptId = patIllScriptId;
 	}
 	public int getStage() {return stage;}
@@ -69,7 +73,7 @@ public class FeedbackBean extends Beans implements Serializable{
 		if(o instanceof FeedbackBean){
 			FeedbackBean fb = (FeedbackBean) o;
 			if(fb.getId()==this.id) return true;
-			if(fb.getStage()==this.stage && fb.getItemType()==this.itemType && fb.type==this.type && fb.getPatIllScriptId()==this.patIllScriptId) return true;
+			if(fb.getStage()==this.stage /*&& fb.getItemType()==this.itemType*/ && fb.type==this.type && fb.getPatIllScriptId()==this.patIllScriptId) return true;
 		}
 		return false;
 	}

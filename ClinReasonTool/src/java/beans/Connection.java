@@ -64,8 +64,8 @@ public class Connection extends Beans implements Serializable{
 	
 	public boolean equals(Object o){
 		if(o!=null){
-			if(o instanceof Connection && ((Connection)o).getId()==this.id /*&& ((Connection)o).getTargetId()==this.targetId*/)
-				return true;
+			if(o instanceof Connection && ((Connection)o).getId()==this.id) return true;
+			if(o instanceof Connection && ((Connection)o).getStartId()==this.startId && ((Connection)o).getTargetId()==this.targetId) return true;
 		}
 		return false;
 	}

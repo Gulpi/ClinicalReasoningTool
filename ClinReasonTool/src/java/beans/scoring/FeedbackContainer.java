@@ -6,6 +6,7 @@ import java.util.*;
 
 import javax.faces.bean.SessionScoped;
 
+import beans.ExpPatientIllnessScript;
 import beans.LogEntry;
 import controller.NavigationController;
 import database.DBClinReason;
@@ -48,7 +49,7 @@ public class FeedbackContainer implements Serializable{
 	 * @return
 	 */
 	public boolean isExpFeedbackOn(int itemType, int currStage) {
-		if(getFeedbackBean(FeedbackBean.FEEDBACK_EXP, itemType, currStage)==null) return false;
+		if(getFeedbackBean(FeedbackBean.FEEDBACK_EXP, currStage)==null) return false;
 		return true;
 	}
 
@@ -57,12 +58,12 @@ public class FeedbackContainer implements Serializable{
 	 * @param itemType
 	 * @return
 	 */
-	public boolean isPeerFeedbackOn(int itemType, int currStage) {
+	/*public boolean isPeerFeedbackOn(int itemType, int currStage) {
 		if(getFeedbackBean(FeedbackBean.FEEDBACK_PEER, itemType, currStage)==null) return false;
 		return true;
-	}
+	}*/
 	
-	private FeedbackBean getFeedbackBean(int feedbackType, int itemType, int currStage){
+	/*private FeedbackBean getFeedbackBean(int feedbackType, int itemType, int currStage){
 		if(feedbackBeans==null) return null;
 		List<FeedbackBean> beans = feedbackBeans.get(new Integer(currStage)); 
 		if(beans==null || beans.isEmpty()) return null;
@@ -71,21 +72,62 @@ public class FeedbackContainer implements Serializable{
 			if(fb.getType()==feedbackType && fb.getItemType() == itemType) return fb;
 		}
 		return null;		
+	}*/
+	
+	private FeedbackBean getFeedbackBean(int feedbackType, int currStage){
+		if(feedbackBeans==null) return null;
+		List<FeedbackBean> beans = feedbackBeans.get(new Integer(currStage)); 
+		if(beans==null || beans.isEmpty()) return null;
+		for(int i=0; i<beans.size(); i++){
+			FeedbackBean fb = beans.get(i);
+			if(fb.getType()==feedbackType) return fb;
+		}
+		return null;		
 	}
 	
 	
-	public void toogleExpFeedback(String toggle, String taskStr, int currStage){
+	/*public void toogleExpFeedback(String toggle, String taskStr, int currStage){
 		if(toggle==null) return;
 		if(toggle.equals("0")) expFeedbackOff();
 		else setExpFeedback(taskStr,currStage);
+	}*/
+	
+	/**
+	 * Learner has activated/deactivated the feedback within a box. This does not include the display of missing items.
+	 * Currently we only make a log entry....
+	 * @param toggle
+	 * @param taskStr
+	 * @param currStage
+	 */
+	public void toogleExpBoxFeedback(String toggle, String taskStr, int currStage){
+		if(toggle==null) return;
+		notifyExpToggleLog(Integer.parseInt(toggle), currStage, Integer.parseInt(taskStr));
+	}
+	
+	public void tooglePeerBoxFeedback(String toggle, String taskStr, int currStage){
+		if(toggle==null) return;
+		notifyPeerToggleLog(Integer.parseInt(toggle), currStage, Integer.parseInt(taskStr));
+	}
+	
+	
+	public void toogleExpFeedback(String toggleStr, int currStage){
+		if(toggleStr==null) return;
+		int toggle = Integer.parseInt(toggleStr);
+		notifyExpToggleLog(toggle, currStage, -1);
+		if(toggle ==0) return; //nothing to do
+		
+		FeedbackBean fb = getFeedbackBean(FeedbackBean.FEEDBACK_EXP, currStage);
+		if(fb!=null) return; //already set
+		fb = new FeedbackBean(currStage, FeedbackBean.FEEDBACK_EXP, patIllScriptId);
+		if(addFeedbackBean(fb, currStage)) fb.save();
 	}
 	
 	/**
-	 * If no feedbackBean has been created for this task at this stage, we create on, save it, and store it in the 
+	 * If no feedbackBean has been created for this task at this stage, we create one, save it, and store it in the 
 	 * container.
 	 * @param taskStr
 	 */
-	public void setExpFeedback(String taskStr, int currStage){
+	/*public void setExpFeedback(String taskStr, int currStage){
 		if(taskStr==null) return;
 		int task = Integer.parseInt(taskStr);
 		FeedbackBean fb = getFeedbackBean(FeedbackBean.FEEDBACK_EXP, task, currStage);
@@ -103,7 +145,7 @@ public class FeedbackContainer implements Serializable{
 			if(addFeedbackBean(fb, currStage)) fb.save();
 		}
 
-	}
+	}*/
 		
 	private boolean addFeedbackBean(FeedbackBean fb, int currStage){
 		if(feedbackBeans==null) feedbackBeans = new HashMap<Integer, List<FeedbackBean>>();
@@ -121,29 +163,32 @@ public class FeedbackContainer implements Serializable{
 		}
 	}
 
-	
-	/**
-	 * Not much to do here, we do NOT toogle the values in the database, because learner has already seen the feedback,
-	 * but we store this action in the log
-	 */
-	private void expFeedbackOff(){
-		notifyLog(FeedbackBean.FEEDBACK_NONE);
-	}
 
 	/**
 	 * create and save a log entry for the feedback on/off action
 	 * @param feedbackOn
 	 */
-	private void notifyLog(int feedbackOn){	
+	private void notifyExpToggleLog(int feedbackOn, int stage, int type){	
 		int action = LogEntry.FEEDBACK_ON_ACTION;
 		if(feedbackOn==0) action = LogEntry.FEEDBACK_OFF_ACTION;
-		LogEntry log = new LogEntry(action , patIllScriptId, (long) feedbackOn);
+		LogEntry log = new LogEntry(action , patIllScriptId, type, stage);
+		log.save();
+	}
+	
+	/**
+	 * create and save a log entry for the feedback on/off action
+	 * @param feedbackOn
+	 */
+	private void notifyPeerToggleLog(int feedbackOn, int stage, int type){	
+		int action = LogEntry.PEERFEEDBACK_ON_ACTION;
+		if(feedbackOn==0) action = LogEntry.PEERFEEDBACK_OFF_ACTION;
+		LogEntry log = new LogEntry(action , patIllScriptId, type, stage);
 		log.save();
 	}
 	
 	public void initFeedbackContainer(){
 		feedbackBeans = new DBScoring().selectFeedbackBeansByPatIllScriptId(this.patIllScriptId);
 		//feedbackBeans = new DBClinReason().selectScoreBeansByPatIllScriptId(this.patIllScriptId);
-		CRTLogger.out("FeedbackContainer init done", CRTLogger.LEVEL_TEST);
+		//CRTLogger.out("FeedbackContainer init done", CRTLogger.LEVEL_TEST);
 	}
 }

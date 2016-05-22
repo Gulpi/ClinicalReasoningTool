@@ -53,7 +53,7 @@ public class ChangeEpiAction implements ChgAction, Scoreable{
 	}
 
 	@Override
-	public void triggerScoringAction(Beans beanToScore) {
+	public void triggerScoringAction(Beans beanToScore, boolean isJoker) {
 		// TODO Auto-generated method stub
 		
 	}

@@ -37,7 +37,8 @@ public class DBClinReason /*extends HibernateUtil*/{
         }
         finally{
         	    s.flush();
-        	    s.close();
+        	    s.evict(o);
+        	    s.close();       	   
         }
     }
         
@@ -64,6 +65,7 @@ public class DBClinReason /*extends HibernateUtil*/{
         }
         finally{
     	    s.flush();
+    	    s.evict(o);
     	    s.close();
         }
     }

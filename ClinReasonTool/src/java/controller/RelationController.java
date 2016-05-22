@@ -37,4 +37,5 @@ public class RelationController {
 			aa.addRelation(syn.getListItemId(), name, (int)x, (int)y, id); //then we add a synonym
 		}
 	}
+	
 }

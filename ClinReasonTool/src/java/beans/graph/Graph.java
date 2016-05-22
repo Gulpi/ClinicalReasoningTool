@@ -251,6 +251,25 @@ public class Graph extends DirectedWeightedMultigraph<MultiVertex, MultiEdge> {
 		return list;
 	}
 	
+	/**
+	 * Get all MultiVertex objects of the given type (e.g. Diagnosis, Problem,...), which have 
+	 * only been selected by the expert (for joker handling)
+	 * @param type (see definitions in Relation)
+	 * @return List<MultiVertex> or null
+	 */
+	public List<MultiVertex> getVerticesByTypeAndStageExpOnly(int type, int stage){
+		Set<MultiVertex> verts = this.vertexSet();
+		if(verts==null) return null;
+		List<MultiVertex> list = new ArrayList<MultiVertex>();
+		Iterator<MultiVertex> it = verts.iterator();
+		while(it.hasNext()){
+			MultiVertex mv = it.next();
+			if(mv.getType()==type && mv.getExpertVertex()!=null && mv.getExpertVertex().getStage()== stage && !mv.isLearnerVertex()) 
+				list.add(mv);				
+		}
+		return list;
+	}
+	
 	
 	/* (non-Javadoc)
 	 * @see org.jgrapht.graph.AbstractGraph#toString()
@@ -269,7 +288,8 @@ public class Graph extends DirectedWeightedMultigraph<MultiVertex, MultiEdge> {
 			sb.append("Edges[ ");
 			Iterator<MultiEdge> it = this.edgeSet().iterator();
 			while(it.hasNext()){
-				sb.append(it.next().toString() +"; ");
+				MultiEdge e = it.next();
+				if(e.isExplicitExpertEdge() || e.isExplicitLearnerEdge()) sb.append(e.toString() +"; ");
 			}
 			sb.append("]");
 		}
@@ -301,7 +321,7 @@ public class Graph extends DirectedWeightedMultigraph<MultiVertex, MultiEdge> {
 		}
 		if(sb.length()>1) sb.replace(sb.length()-1, sb.length(), ""); //remove the last ","
 		sb.append("]");
-		CRTLogger.out(sb.toString(), CRTLogger.LEVEL_TEST);
+		//CRTLogger.out(sb.toString(), CRTLogger.LEVEL_TEST);
 		return sb.toString();
 	}
 	
@@ -346,7 +366,7 @@ public class Graph extends DirectedWeightedMultigraph<MultiVertex, MultiEdge> {
 		}
 		if(sb.length()>1) sb.replace(sb.length()-1, sb.length(), ""); //remove the last ","
 		sb.append("]");
-		CRTLogger.out(sb.toString(), CRTLogger.LEVEL_TEST);
+		//CRTLogger.out(sb.toString(), CRTLogger.LEVEL_TEST);
 		return sb.toString();
 	}
 	

@@ -34,7 +34,7 @@ public class ScoringAddAction implements ScoringAction{
 	 * @param patIllScript
 	 * @param rel
 	 */
-	public void scoreAction(long vertexId, PatientIllnessScript patIllScript){
+	public void scoreAction(long vertexId, PatientIllnessScript patIllScript, boolean isJoker){
 		Graph g = new NavigationController().getCRTFacesContext().getGraph();
 		MultiVertex mvertex = g.getVertexById(vertexId);
 		ScoreContainer scoreContainer = new NavigationController().getCRTFacesContext().getScoreContainer();
@@ -44,7 +44,7 @@ public class ScoringAddAction implements ScoringAction{
 		
 		if(scoreBean==null) scoreBean = new ScoreBean(patIllScript.getId(), mvertex.getVertexId(), mvertex.getType(), patIllScript.getCurrentStage());
 		if(g.getExpertPatIllScriptId()>0) //otherwise we do not have an experts' patIllScript to compare with				
-			calculateAddActionScoreBasedOnExpert(mvertex, scoreBean, patIllScript, g);				
+			calculateAddActionScoreBasedOnExpert(mvertex, scoreBean, patIllScript, g, isJoker);				
 					
 		if(g.getPeerNums()>ScoringController.MIN_PEERS) //we have enough peers, so we can score based on this as well:
 			calculateAddActionScoreBasedOnPeers(mvertex, scoreBean, g.getPeerNums());
@@ -69,12 +69,13 @@ public class ScoringAddAction implements ScoringAction{
 	 * 0 = problem is not at all in the experts' list (no check) 
 	 * TODO consider position? probably not possible on add, but on move! 
 	 */	
-	private void calculateAddActionScoreBasedOnExpert(MultiVertex mvertex, ScoreBean scoreBean, PatientIllnessScript patIllScript, Graph g){		
+	private void calculateAddActionScoreBasedOnExpert(MultiVertex mvertex, ScoreBean scoreBean, PatientIllnessScript patIllScript, Graph g, boolean isJoker){		
 		Relation expRel = mvertex.getExpertVertex();
 		Relation learnerRel = mvertex.getLearnerVertex();
 		scoreBean.setScoreBasedOnExp(ScoringController.SCORE_NOEXP_BUT_LEARNER, isChg);
 		if(learnerRel!=null && expRel!=null) scoreBean.setTiming(learnerRel.getStage(), expRel.getStage());
-		new ScoringController().setFeedbackInfo(scoreBean, isChg);
+		
+		new ScoringController().setFeedbackInfo(scoreBean, isChg, isJoker);
 		if(expRel!=null){ //expert has chosen this item (not synonym)
 			if(learnerRel!=null && learnerRel.getSynId()<=0){
 				if(learnerRel.getPrefix()==expRel.getPrefix())

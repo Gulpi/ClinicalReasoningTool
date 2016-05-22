@@ -1,6 +1,7 @@
 package controller;
 
 import java.io.Serializable;
+import java.util.Locale;
 
 import javax.enterprise.context.RequestScoped;
 import javax.enterprise.context.SessionScoped;
@@ -72,7 +73,12 @@ public class NavigationController implements Serializable {
 	public CRTFacesContext getCRTFacesContext(){
 		CRTFacesContext cnxt =  (CRTFacesContext) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get(CRTFacesContext.CRT_FC_KEY);
 		/*if(cnxt!=null)*/ return cnxt;
-		//return new CRTFacesContext();
+	}
+	
+	public static Locale getLocale(){
+		CRTFacesContext cnxt =  (CRTFacesContext) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get(CRTFacesContext.CRT_FC_KEY);
+		if(cnxt==null) return new Locale("en");
+		return cnxt.getViewRoot().getLocale();
 	}
 	
 	private void notifyLog(PatientIllnessScript patillscript){

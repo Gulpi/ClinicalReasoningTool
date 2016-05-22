@@ -18,7 +18,7 @@ import database.DBClinReason;
  */
 public class ErrorController {
 
-	public List<MyError> checkError(ScoreBean scoreBean, List<Relation> leanerFinals,List<Relation >expFinals){
+	public List<MyError> checkError(List<Relation> leanerFinals,List<Relation >expFinals){
 		List<MyError> errors = new ArrayList<MyError>();
 		PatientIllnessScript patIllScript = new NavigationController().getCRTFacesContext().getPatillscript();
 		PatientIllnessScript expIllScript = AppBean.getExpertPatIllScript(patIllScript.getParentId());
@@ -34,8 +34,9 @@ public class ErrorController {
 	
 	private MyError isPrematureClosure(PatientIllnessScript expIllScript, PatientIllnessScript patIllScript){		
 			if(patIllScript.getSubmittedStage()< expIllScript.getSubmittedStage()){
-				PrematureClosure pcl =  new PrematureClosure(patIllScript.getId());
+				PrematureClosure pcl =  new PrematureClosure(patIllScript.getId(), patIllScript.getCurrentStage());
 				new DBClinReason().saveAndCommit(pcl);
+				
 				return pcl;
 			}
 			return null;

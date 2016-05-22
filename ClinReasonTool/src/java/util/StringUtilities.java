@@ -43,6 +43,17 @@ public class StringUtilities {
 		return (s != null && s.compareTo("") != 0);
 	}
 	
+	public static long[] getLongArrFromString(String str, String del){
+		if(str==null || str.isEmpty()) return null;
+		String[] strarr = StringUtils.splitByWholeSeparator(str, del);
+		if(strarr==null || strarr.length==0) return null;
+		long[] longarr = new long[strarr.length];
+		for(int i=0; i<strarr.length; i++){
+			longarr[i] = Long.valueOf(strarr[i]).longValue();
+		}
+		return longarr;
+	}
+	
 	/** Returns the stack trace for the given Thowable as string.
      * if there's a TRACE_LIMIT, the stacktrace will be cut after this line!!
 	 *

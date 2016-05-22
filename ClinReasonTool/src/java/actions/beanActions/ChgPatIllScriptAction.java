@@ -22,9 +22,19 @@ public class ChgPatIllScriptAction {
 	 * @param idStr
 	 * @param confVal
 	 */
-	public void changeConfidence(String idStr, String confVal){
+	public void changeConfidence(String idStr, String confVal){changeConfidence(confVal);}
+	
+	/**
+	 * Learner changes the level of confidence with his/her ddxs.
+	 * @param idStr
+	 * @param confVal
+	 */
+	public void changeConfidence(String confVal){
 		notifyLog(LogEntry.CHG_CONFIDENCE_ACTION, patIllScript.getConfidence());
-		patIllScript.setConfidence(Integer.parseInt(confVal));
+		int newConfidence = Integer.parseInt(confVal);
+		if(patIllScript.getConfidence()==newConfidence) return; //no change, we do not have to do anything...
+		
+		patIllScript.setConfidence(newConfidence);
 		patIllScript.save();
 	}
 	

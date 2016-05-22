@@ -28,7 +28,7 @@ public class ChgConnectionAction {
 			//todo error msg
 			return;		
 		}
-		long id = Long.parseLong(idStr.substring(6));
+		long id = Long.parseLong(idStr.substring(4));
 		Connection conn = patIllScript.getConns().get(new Long(id));
 		if(conn==null) return;
 		int newWeight = Integer.parseInt(weightStr);

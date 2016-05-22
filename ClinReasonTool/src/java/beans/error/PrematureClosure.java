@@ -21,10 +21,11 @@ public class PrematureClosure extends MyError{
 		setDiscr(String.valueOf(MyError.TYPE_PREMATURE_CLOUSRE));
 	}
 	
-	public PrematureClosure(long parentId){
+	public PrematureClosure(long parentId, int stage){
 		setType(MyError.TYPE_PREMATURE_CLOUSRE);
 		setDiscr(String.valueOf(MyError.TYPE_PREMATURE_CLOUSRE));
 		setPatIllScriptId(parentId);
+		setStage(stage);
 	}
 	
 	/* (non-Javadoc)

@@ -1,0 +1,13 @@
+ <ui:composition 
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core">
+ 
+ 
+   	<div id="ddxexp_#{expddx.id}"  title="#{expddx.labelOrSynLabel}" class="expbox expboxstatus" style="border-color:#{expddx.color};color:#{expddx.color};left:#{expddx.x}px; top:#{expddx.boxY}px;">
+  	 	<i id="exptiericon_#{expddxddx.id}" class="icon-circle-tier#{expddxddx.tier}"></i>
+  	 	<i id="expmnmicon_#{expddxddx.id}" class="icon-attention#{expddxddx.mnm}"></i>
+  	 	#{expddx.shortLabelOrSynShortLabel}
+  	</div>
+</ui:composition>

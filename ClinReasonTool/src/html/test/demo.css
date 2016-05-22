@@ -112,3 +112,24 @@
 path, .jsplumb-endpoint { 
 	cursor:pointer; 
 }
+
+
+
+/* dropdown menus for each added item:*/
+.dropdown{
+	cursor: pointer;
+}
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #f9f9f9;
+    min-width: 100px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    text-decoration:none;
+}
+.dropdown-content li a{
+    text-decoration:none;
+}
+.dropdown:hover .dropdown-content {
+    display: block;
+}

@@ -23,6 +23,7 @@ import controller.PeerSyncController;
 import database.DBClinReason;
 import database.HibernateUtil;
 import util.CRTLogger;
+import properties.IntlConfiguration;
 
 /**
  * We init here some application stuff, like hibernate,....
@@ -38,6 +39,7 @@ public class AppBean extends ApplicationWrapper implements HttpSessionListener{
 	public static final String[] ACCEPTED_LOCALES = new String[]{"en", "de"}; //TODO get from properties!
 	public static List<Graph> graphs;
 	public static final String APP_KEY = "AppBean";
+	public static IntlConfiguration intlConf;
 	/**
 	 * Any application-wide properties, file is in WEB-INF/classes/globalsettings.properties
 	 */
@@ -67,6 +69,7 @@ public class AppBean extends ApplicationWrapper implements HttpSessionListener{
 	 */
 	public AppBean(){
 		HibernateUtil.initHibernate();
+		intlConf = new IntlConfiguration();
 		setViewHandler(new CRTViewHandler(FacesContext.getCurrentInstance().getApplication().getViewHandler()));
 	    ServletContext context = (ServletContext) FacesContext.getCurrentInstance().getExternalContext().getContext();
 	    context.setAttribute(APP_KEY, this);
@@ -77,7 +80,7 @@ public class AppBean extends ApplicationWrapper implements HttpSessionListener{
 	    }
 	    catch(Exception e){}
 	    //does not have to be done on every restart:
-	    new JsonCreator().initJsonExport(); 
+	    //new JsonCreator().initJsonExport(); 
 	   
 		//MeshImporter.main("en");
 	    CRTLogger.out("Init done", CRTLogger.LEVEL_PROD);
@@ -105,12 +108,12 @@ public class AppBean extends ApplicationWrapper implements HttpSessionListener{
 	
 	
 	public synchronized void addIllnessScriptForDiagnoses(List diagnoses, long parentId){
-		if(ilnessScripts==null) ilnessScripts = new HashMap<Long, List<IllnessScript>>();
+	/*	if(ilnessScripts==null) ilnessScripts = new HashMap<Long, List<IllnessScript>>();
 		if(parentId>0 && !ilnessScripts.containsKey(new Long(parentId))){
 			List<IllnessScript> scripts = new DBClinReason().selectIllScriptByDiagnoses(diagnoses);
 			if(scripts!=null) ilnessScripts.put(new Long(parentId), scripts);
 			//todo init graphs?
-		}
+		}*/
 	}
 	
 	public static PatientIllnessScript getExpertPatIllScript(long parentId) {
@@ -119,6 +122,7 @@ public class AppBean extends ApplicationWrapper implements HttpSessionListener{
 		return null;
 	}
 	public static List<IllnessScript> getIlnessScripts(long parentId) {
+		if(ilnessScripts==null) return null;
 		return ilnessScripts.get(new Long(parentId));
 	}
 	

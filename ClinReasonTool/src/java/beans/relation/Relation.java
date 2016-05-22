@@ -84,6 +84,13 @@ public abstract class Relation extends Beans implements Rectangle{
 	public int getX() {return x;}
 	public void setX(int x) {this.x = x;}
 	public int getY() {return y;}
+	/**
+	 * if we have the box layout, we have to add some px to the y...
+	 * @return
+	 */
+	public int getBoxY() {
+		return y + addToY;
+	}
 	public void setY(int y) {this.y = y;}	
 	public abstract int getRelationType();
 	public int getOrder() {return order;}
@@ -139,7 +146,7 @@ public abstract class Relation extends Beans implements Rectangle{
 	}
 	
 	public String getShortLabelOrSynShortLabel(){return StringUtils.abbreviate(getLabelOrSynLabel(), ListItem.MAXLENGTH_NAME);}
-	public String getScore(){ return new ScoringController().getIconForScore(this.getRelationType(), this.getListItemId());}
+	public int getScore(){ return new ScoringController().getScore(this.getRelationType(), this.getListItemId());}
 	public String getFeedback(){ return new FeedbackController().getItemFeedback(this.getRelationType(), this.getListItemId());}
 	public String getExpItemLabel(){ return new FeedbackController().getExpItemLabel(this.getRelationType(), this.getListItemId());}
 

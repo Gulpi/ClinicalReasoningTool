@@ -4,5 +4,5 @@ import java.beans.Beans;
 
 public interface Scoreable {
 
-	void triggerScoringAction(Beans beanToScore);
+	void triggerScoringAction(Beans beanToScore, boolean isJoker);
 }

@@ -71,8 +71,10 @@ public class ScoringFinalDDXAction /*implements ScoringAction*/{
 				MultiVertex vert = ddxs.get(i);
 				RelationDiagnosis expRel = (RelationDiagnosis)vert.getExpertVertex(); 
 				RelationDiagnosis learnerRel = (RelationDiagnosis)vert.getLearnerVertex(); 
+				long itemId = vert.getVertexId();
+				if(learnerRel!=null) itemId = learnerRel.getListItemId();
 				ScoreBean scoreBean = cont.getScoreBeanByTypeAndItemId(ScoreBean.TYPE_FINAL_DDX, vert.getVertexId());
-				if(scoreBean == null) scoreBean = new ScoreBean(patIllScript.getId(), learnerRel.getListItemId(), ScoreBean.TYPE_FINAL_DDX, patIllScript.getCurrentStage());
+				if(scoreBean == null) scoreBean = new ScoreBean(patIllScript.getId(), itemId, ScoreBean.TYPE_FINAL_DDX, patIllScript.getCurrentStage());
 
 				scoreBean.setTiming(patIllScript.getSubmittedStage(), expIllScript.getSubmittedStage());
 				if(learnerRel!=null && learnerRel.getTier() == RelationDiagnosis.TIER_FINAL &&  expRel.getTier() == RelationDiagnosis.TIER_FINAL){
@@ -85,7 +87,7 @@ public class ScoringFinalDDXAction /*implements ScoringAction*/{
 					leanerFinals.add(learnerRel);
 					numFinalDDXLearner++;
 				}
-				if(expRel.getTier() == RelationDiagnosis.TIER_FINAL){
+				if(expRel!=null && expRel.getTier() == RelationDiagnosis.TIER_FINAL){
 					expFinals.add(expRel);
 					numFinalDDXExp++;
 				}
@@ -106,9 +108,11 @@ public class ScoringFinalDDXAction /*implements ScoringAction*/{
 				}
 				scoreBean.setScoreBasedOnExp(expScore, false);
 				score += expScore;
-				if(expScore == ScoringController.NO_SCORE) 
-					patIllScript.addErrors(new ErrorController().checkError(scoreBean, leanerFinals,expFinals));
 			}
+			
+			if(score < ScoringController.FULL_SCORE) 
+				patIllScript.addErrors(new ErrorController().checkError(leanerFinals,expFinals));
+
 			return score/ddxs.size();
 		}
 		catch (Exception e){

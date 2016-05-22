@@ -14,6 +14,8 @@
 		<discriminator column="discr" type="string" />
 		
 		<property name="patIllScriptId" column="dest_id" type="long" />
+		<property name="stage" column="stage" type="int" />
+		
 		<property name="type" column="type" type="int"/>
 	 <subclass name="PrematureClosure" discriminator-value="1"></subclass>
 </class>

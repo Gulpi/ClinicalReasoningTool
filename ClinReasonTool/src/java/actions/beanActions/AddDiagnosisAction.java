@@ -11,11 +11,11 @@ import javax.faces.context.FacesContext;
 import actions.scoringActions.Scoreable;
 import actions.scoringActions.ScoringAddAction;
 import actions.scoringActions.ScoringListAction;
+import application.ErrorMessageContainer;
 import beans.*;
 import beans.graph.Graph;
 import beans.relation.*;
 import beans.scoring.ScoreBean;
-import controller.ErrorMessageController;
 import controller.NavigationController;
 import controller.RelationController;
 import database.DBClinReason;
@@ -51,6 +51,11 @@ public class AddDiagnosisAction implements AddAction, Scoreable{
 	}
 	
 	public void addRelation(long id, String name, int x, int y, long synId){
+		 addRelation(id, name, x, y, synId, false);
+
+	}
+	
+	public void addRelation(long id, String name, int x, int y, long synId, boolean isJoker){
 		if(patIllScript.getDiagnoses()==null) patIllScript.setDiagnoses(new ArrayList<RelationDiagnosis>());
 		RelationDiagnosis rel = new RelationDiagnosis(id, patIllScript.getId(), synId);		
 		if(patIllScript.getDiagnoses().contains(rel)){
@@ -67,14 +72,14 @@ public class AddDiagnosisAction implements AddAction, Scoreable{
 		save(rel);
 		notifyLog(rel);
 		updateGraph(rel);
-		triggerScoringAction(rel);		
+		triggerScoringAction(rel, isJoker);		
 	}
 	
 	/* (non-Javadoc)
 	 * @see beanActions.AddAction#createErrorMessage(java.lang.String, java.lang.String, javax.faces.application.FacesMessage.Severity)
 	 */
 	public void createErrorMessage(String summary, String details, Severity sev){
-		new ErrorMessageController().addErrorMessage(summary, details, sev);
+		new ErrorMessageContainer().addErrorMessage(summary, details, sev);
 	}
 	
 	/**
@@ -109,8 +114,8 @@ public class AddDiagnosisAction implements AddAction, Scoreable{
 	/* (non-Javadoc)
 	 * @see beanActions.AddAction#initScoreCalc(beans.relation.Relation)
 	 */
-	public void triggerScoringAction(Beans relDDX){
-		new ScoringAddAction().scoreAction(((RelationDiagnosis) relDDX).getListItemId(), this.patIllScript);
+	public void triggerScoringAction(Beans relDDX, boolean isJoker){
+		new ScoringAddAction().scoreAction(((RelationDiagnosis) relDDX).getListItemId(), this.patIllScript, isJoker);
 		//new ScoringListAction(this.patIllScript).scoreList(ScoreBean.TYPE_DDX_LIST, Relation.TYPE_DDX);
 
 	}

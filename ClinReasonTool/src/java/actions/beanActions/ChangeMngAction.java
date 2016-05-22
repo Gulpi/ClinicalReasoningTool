@@ -61,7 +61,7 @@ public class ChangeMngAction implements ChgAction, Scoreable{
 		}
 		changeRelation(expVertex, relToChg);	
 		//we re-score the item:
-		new ScoringAddAction(true).scoreAction(expVertex.getVertexId(), patIllScript);
+		new ScoringAddAction(true).scoreAction(expVertex.getVertexId(), patIllScript, false);
 	}
 	
 	private void changeRelation(MultiVertex expVertex, RelationManagement relToChg){
@@ -95,7 +95,7 @@ public class ChangeMngAction implements ChgAction, Scoreable{
 	}
 
 	@Override
-	public void triggerScoringAction(Beans beanToScore) {
+	public void triggerScoringAction(Beans beanToScore, boolean isJoker) {
 		// TODO Auto-generated method stub
 		
 	}

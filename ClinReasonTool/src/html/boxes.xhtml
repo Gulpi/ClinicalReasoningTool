@@ -1,0 +1,372 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"   
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      >
+<!-- <html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:f="http://java.sun.com/jsf/core"      
+      xmlns:h="http://java.sun.com/jsf/html">-->
+<head>
+
+<title>Patient Illness Script</title>
+ <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+<meta http-equiv="EXPIRES" content="0" />
+<meta http-equiv="PRAGMA" content="NO-CACHE" />
+<meta http-equiv="CACHE-CONTROL" content="NO-CACHE" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no"/>
+<!--          <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet"/>
+        <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet"/>
+        <link href="//fonts.googleapis.com/css?family=Lato:400,700" rel="stylesheet"/>-->
+<link rel="stylesheet" type="text/css" href="../scripts/jquery112/ui-lightness/jquery-ui.css" /> 
+<link rel="stylesheet" type="text/css" href="../scripts/draw2d/css/contextmenu.css"  />
+<link rel="stylesheet" type="text/css" href="../styles/jsPlumbToolkit-defaults.css" />
+<!--  <link rel="stylesheet" type="text/css" href="<PMW fcache>files/html/scripts/draw2d/css/contextmenu.css"  />-->
+<link rel="stylesheet" href="../styles/clinreason_boxes.css" />
+
+<script type="text/javascript" src="../scripts/jquery112/jquery.js"></script>
+<script type="text/javascript" src="../scripts/jquery112/jquery-ui.min.js"></script>
+<script type="text/javascript" src="../scripts/jquery112/jquery-ui.js"></script>
+
+<script src="../scripts/connection.js"></script>
+
+<script src="../scripts/crt_box.js"></script>
+<script src="../scripts/ajax.js"></script>
+<script src="../scripts/js.cookie.js"></script>
+<script src="../scripts/jsPlumb.min.js"></script>
+  <script src="../scripts/myjsplumb.js"></script>
+<style>
+/** ELEMENT POSITIONS **/
+#pat_box { left:0px;top:5px; }
+#fdg_box { left:240px;top:5px; }
+#ddx_box { left:0px;top:210px; }
+#tst_box { left:240px;top:210px; }
+#sum_box { left:0px;top:420px; }
+#mng_box { left:240px;top:420px; }
+
+</style>
+<script language="JavaScript">
+
+var test = "#{crtContext.initSession}";
+var msg2="Please connect the hypotheses with the findings";
+var sessId = "#{crtContext.patillscript.sessionId}";
+var scriptId = "#{crtContext.patillscript.id}";
+var listUrl="jsonp_en.json";
+var lang = "#{crtContext.patillscript.locale}";
+//var my_canvas = null;
+var currentStage = $.getUrlVar('stage');
+var currentStageScript = "#{crtContext.patillscript.currentStage}";
+var expFeedback = false; //default is that expert feedback is off
+var peerFeedback = false; //default is that expert feedback is off
+var active;
+var minLengthTypeAhead = 3;
+//var errorNum = "#{crtContext.patillscript.errorNum}";
+var submitted = "#{crtContext.patillscript.submitted}";
+var instance;
+var item_arr = new Array();
+ 
+
+$(function() {
+	if(lang=="de") listUrl = "jsonp_de.json";
+	$(".listdialog").hide();
+	$("#jdialogError").hide();
+	$("#connContext").hide();
+	$("#summStText").on('change',function(){
+		//setDirtySummSt();
+		saveSummSt('#{crtContext.patillscript.summStId}');
+	 });
+	//initContainerPos();
+
+	//toggleExpertFeedbackOnLoad();
+  /*  $( document ).tooltip({
+    	//items: " rect, [title], text, tspan",
+    	items: "tspan",
+    	content: function() {
+    		var element = $( this );
+    		if(element.is("tspan")){ 
+				var tooltip = getToolTipForRect(element);
+				element.attr("title", tooltip);
+    		}
+            if ( element.is( "[title]" ) ) { //this is a "normal" tooltip returning the title of an element
+                return element.attr( "title" );
+              }
+    	}
+    });*/
+    
+    $( ".container" ).draggable({
+        stop: function() {
+        	storeContainerPos(this.id, this.offsetLeft, this.offsetTop);
+        }
+      });
+    
+	//initLists();
+    $( "#confidence_slider" ).slider({
+       orientation: "vertical",
+    	min: 0,
+    	max: 100,
+    	step: 1,
+    	change: submitSliderChange
+    });
+    $( "#confidence_slider" ).slider( "value", #{crtContext.patillscript.confidence} );
+	$("#jdialog").dialog({
+		autoOpen: false,
+		modal: true,
+		width: "auto",
+		height: "auto"
+	});
+	
+	$("#connContext").dialog({
+		autoOpen: false,
+		modal: true,
+		width: "auto",
+		height: "auto"
+	});
+	
+	$("#jdialogError").dialog({
+		autoOpen: false,
+		modal: true,
+		width: "auto",
+		height: "auto"
+	});
+
+});
+
+
+jsPlumb.ready(function () {
+
+     	instance = jsPlumb.getInstance({
+        DragOptions: { cursor: 'pointer', zIndex: 2000 },
+        PaintStyle: { strokeStyle: '#666' },
+        EndpointHoverStyle: { fillStyle: "orange" },
+        HoverPaintStyle: { strokeStyle: "orange" },
+        EndpointStyle: { width: 25, height: 15, strokeStyle: '#666' },
+        Endpoint: "Rectangle",
+        Anchors: ["TopCenter", "TopCenter"],
+        Container: "canvas"
+    });
+
+    // suspend drawing and initialise.
+    instance.batch(function () {
+
+        // bind to connection/connectionDetached events, and update the list of connections on screen.
+        instance.bind("connection", function (info, originalEvent) {
+            updateConnections(info.connection);
+        });
+        instance.bind("connectionDetached", function (info, originalEvent) {
+            updateConnections(info.connection, true);
+        });
+
+        instance.bind("connectionMoved", function (info, originalEvent) {
+            //  only remove here, because a 'connection' event is also fired.
+            // in a future release of jsplumb this extra connection event will not
+            // be fired.
+            updateConnections(info.connection, true);
+        });
+
+        instance.bind("click", function (component, originalEvent) {
+        	openConnContext(component.id);
+        });
+
+        instance.draggable(jsPlumb.getSelector(".drag-drop .itembox"));        
+    	//item was moved -> trigger ajax call to update position
+        $( ".drag-drop .itembox" ).draggable({
+        	  stop: function( event, ui ) {
+        		  handleRectDrop(ui);
+        	  }
+        });
+       
+        initGroups(instance);
+       
+    });
+    // collapse/expand group button
+    instance.on(canvas, "click", ".node-collapse", function() {
+    	toggleContainerCollapse(this.parentNode);
+    });
+    $(".itembox").contextmenu(function(event) {
+    	  //alert( "Handler for .contextmenu() called." );
+    	  showDropDown("dd"+this.id);
+    	  event.preventDefault();
+   	 });
+    
+    initConnections();
+    //registers a connection that is made: this code needs to be AFTER the init has happened, otherwise each init 
+    //event triggers this. 
+    instance.bind("connection", function (info, originalEvent){
+    	addConnection(info);
+    });
+    initCnxDisplay();
+    jsPlumb.fire("jsPlumbDemoLoaded", instance);
+    initContainerCollapsed();
+	
+});
+
+item_arr = new Array();
+</script>
+</head>
+<body style="font-family:arial;" data-demo-id="draggableConnectors" data-library="dom"><!-- test: #{crtContext.test}-->
+<div class="options">
+	<a href="javascript:toogleCnxDisplay();" id="cnxtoggle" title="Hide connections"><i class="icon-share-squared"></i></a>
+	<a href="javascript:toggleExpFeedback('expFeedback', 'icon-user-md');"  title="Show expert feedback at this point of time"><i id="expFeedback" class="icon-user-md"></i></a>
+</div>
+<div class="boxes_container">
+	<div id="canvas" class="canvas jtk-surface drag-drop jtk-surface-nopan" >
+		  <div id="pat_box" class="container" group="pat_group">
+		  		<div class="title">Patient</div>
+		   		<div class="node-collapse"></div>
+				 <div id="patimg" class="boxchild" style="position:relative;right:5px; top:30px; float:right;"><img src="patient.png" width="100px" /><br/>Delai Johnston</div>
+		  		<div id="descr" class="boxchild" style="float:left;position:absolute;">
+				Course of Time: 
+				<h:selectOneMenu onchange="javascript:changeCourseOfTime();" class="f_select" id="courseTime" value="#{crtContext.patillscript.courseOfTime}">
+				<f:selectItem itemLabel="-" itemValue="-1" />
+				<f:selectItem itemLabel="acute" itemValue="1" />
+				<f:selectItem itemLabel="chronic" itemValue="2" />
+				</h:selectOneMenu>
+				<span class="list_score" style="float:left;position:absolute;vertical-align:middle;">&nbsp;<i class="#{crtContext.patillscript.courseOfTimeScore}"></i></span><br/><br/>
+			</div>
+		  </div>
+		  <!-- problems -->
+		  <div id="fdg_box"  class="container" group="fdg_group">
+		   		<div class="title">Findings 
+		   			<a href="javascript:addJokerFdg();">gime1</a> 
+		   			<a href="javascript:togglePeersFdg();"><i class="icon-users" id="peerFeedbackFdg"></i></a> 
+		   			<a href="javascript:toggleFdgFeedback();"><i class="icon-user-md" id="expFeedbackFdg"></i></a>
+		   		</div>
+		   		<div class="node-collapse"></div>
+		  			<div class="search boxchild"><span class="icon"><i class="icon-search"></i></span>
+		  			<select class="f_select" id="fdg_prefix"><option value="0">-</option><option value="1">No</option></select>
+		  			<input class="f_text" id="problems" placeholder="Search..." title="Please add any problems, findings, exposures, or risk factors you consider as relevant"></input></div>
+						<h:form id="probform">
+						<h:panelGroup>
+						   <ui:repeat id="repeatprob" value="#{crtContext.patillscript.problems}" var="prob" varStatus="status">
+						   		<ui:include src="probbox.xhtml" />
+	    					</ui:repeat>	    					
+						   <ui:repeat id="repeatexpprob" value="#{crtContext.expPatIllScript.problems}" var="expprob" varStatus="status">
+						   		<ui:include src="probexpbox.xhtml" />
+	    					</ui:repeat>	    					
+	    				</h:panelGroup>
+    				     <h:commandButton id="hiddenProbButton" value="RenderSomething" style="visibility:hidden">
+    						<f:ajax render="@form" onevent="updateItemCallback"></f:ajax>
+						</h:commandButton>
+						
+						<!-- <h:messages errorClass="errorMessage" infoClass="infoMessage" showDetail="true" showSummary="true"/>-->						
+						</h:form>
+						<span class="errormsg" id="msg_probform"></span>
+		  </div>
+		 <div id="sum_box" class="container" group="sum_group">	
+		 	<div class="title">Summary Statement
+		 		<a href="javascript:toggleSumFeedback('expFeedbackSum', 14);"><i class="icon-user-md" id="expFeedbackSum"></i></a>
+		 	</div>
+		 	 <div class="node-collapse"></div>
+		 	 <textarea style="display:none;" id="summStTextHidden" cols="27" rows="7">#{crtContext.patillscript.summSt.text}</textarea>
+				<textarea class="f_textarea boxchild" name="summSt" id="summStText" cols="27" rows="7">#{crtContext.patillscript.summSt.text}</textarea><br/>
+		  		<!-- <a href="javascript:saveSummSt('#{crtContext.patillscript.summStId}');" title="Save your summary statement"><i class="icon-floppy"></i></a>-->
+			 	<span class="errormsg" id="msg_sumstform"></span>
+			 	<span id="list_score_sum" style="color:green; display:none;"> #{crtContext.patillscript.summStExp}</span> 		  
+		</div>
+		  <!--  diagnoses -->
+		  <div id="ddx_box" class="container" group="ddx_group">	
+		  		<div class="title">DDX
+		  			<a href="javascript:addJokerDDX();">gime1</a> 
+		   			<a href="javascript:togglePeersDDX();"><i class="icon-users" id="peerFeedbackDDX"></i></a> 
+		   			<a href="javascript:toggleDDXFeedback();"><i class="icon-user-md" id="expFeedbackDDX"></i></a>
+		  		</div>	
+		  		<div class="node-collapse"></div>	  		
+		  			<div class="search boxchild"><input class="f_text" id="ddx" title="Please add your differentials"></input></div>
+			  			<h:form id="ddxform">
+						<h:panelGroup >
+							<ui:repeat value="#{crtContext.patillscript.diagnoses}" var="ddx" varStatus="status">
+								<ui:include src="ddxbox.xhtml" />
+	     					</ui:repeat>	
+	     					<ui:repeat value="#{crtContext.expPatIllScript.diagnoses}" var="expddx" varStatus="status">
+								<ui:include src="ddxexpbox.xhtml" />
+	     					</ui:repeat>				
+	    				</h:panelGroup>
+	    				     <h:commandButton id="hiddenDDXButton" value="RenderSomething" style="visibility:hidden">
+	    						<f:ajax render="@form" onevent="updateItemCallback"></f:ajax>
+							</h:commandButton></h:form>
+					<span class="errormsg" id="msg_ddxform"></span>
+							
+					<!--  <div id="confidence_slider" class="conf_slider" title="Please indicate how confident you are with your current differentials."></div>-->
+		  		<div class="footer">
+		  			<span class="submitBtn">
+		  				<a href="javascript:doSubmitDDXDialog();" style="color:#ffffff" title="Submit your final diagnoses anytime">Submit</a>
+		  			</span>
+		  			<span class="errors_#{crtContext.patillscript.errorNum}"><h:panelGroup id="ddxubmitPG">
+						<a href="javascript:openErrorDialog();" title="Potential Errors (#{crtContext.patillscript.errorNum})"><i class="icon-attention-circled"></i></a>		
+    				</h:panelGroup></span>
+		  		</div>
+		  </div>
+		  <!-- tests -->
+		  <div id="tst_box" class="container" group="tst_group">
+		  		<div class="title">Tests
+		  			<a href="javascript:addJokerTest();">gime1</a> 
+		   			<a href="javascript:togglePeersTest();"><i class="icon-users" id="peerFeedbackTest"></i></a> 
+		   			<a href="javascript:toggleTestFeedback();"><i class="icon-user-md" id="expFeedbackTest"></i></a>
+		  		</div>
+		 	 	<div class="node-collapse"></div>
+		  		<div class="search boxchild"><input class="f_text" id="tests" title="Please add any tests or examinations you want to order or perform."></input>
+		  			<h:form id="testform">
+		  			<h:panelGroup>
+					
+						<ui:repeat value="#{crtContext.patillscript.tests}" var="test" varStatus="status">
+							<ui:include src="testbox.xhtml" />
+     					</ui:repeat>				
+						<!-- <li id="selds_1">Chest X-ray <select class="f_select"><option value="-1">scanning</option><option>r/c Pneumonia</option></select></li>-->
+					<!--  <div id="jsonTestsMap" style="visibility:hidden">#{crtContext.patillscript.testsJson}</div>-->
+    				</h:panelGroup>
+    				     <h:commandButton id="hiddenTestButton" value="RenderSomething" style="visibility:hidden">
+    						<f:ajax render="@form" onevent="updateItemCallback"></f:ajax>
+						</h:commandButton>
+					</h:form>
+					<span class="errormsg" id="msg_testform"></span>
+					
+					</div>
+		  	</div>
+		  <!-- managements -->
+		  <div id="mng_box" class="container" group="mng_group">
+		  	<div class="title">Management
+		  			<a href="javascript:addJokerMng();">gime1</a> 
+		   			<a href="javascript:togglePeersMng();"><i class="icon-users" id="peerFeedbackMng"></i></a> 
+		   			<a href="javascript:toggleMngFeedback();"><i class="icon-user-md" id="expFeedbackMng"></i></a>
+		  	</div>
+		 	 <div class="node-collapse"></div>
+		  	<div class="search boxchild"><input class="f_text" id="mng" title="Please add any management decisions for your patient."></input></div>
+	  			<h:form id="mngform">
+	  			<h:panelGroup>
+	
+					<ui:repeat value="#{crtContext.patillscript.mngs}" var="mng" varStatus="status">
+						<ui:include src="mngbox.xhtml" />
+	   					</ui:repeat>				
+	  				</h:panelGroup>
+	  				     <h:commandButton id="hiddenMngButton" value="RenderSomething" style="visibility:hidden">
+	  						<f:ajax render="@form" onevent="updateItemCallback"></f:ajax>
+					</h:commandButton>
+				</h:form>
+				<span class="errormsg" id="msg_mngform"></span>
+				
+	  		</div>
+	</div>
+</div>
+<div id="jsonConns" style="display:none;">#{crtContext.graph.jsonConns}</div> 
+
+<div id="jdialog"><ui:include src="submitdialog.xhtml" /></div>
+
+<div id="jdialogError">				
+	<ul id="errors">
+		<ui:repeat value="#{crtContext.patillscript.errors}" var="err" varStatus="status">
+			<ui:include src="errorline.xhtml" />
+ 		</ui:repeat>				
+	</ul><a href="javascript:alert('Not yet available');" title="More information about errors in clinical reasoning">More information</a>
+</div>
+<div id="connContext">
+<span style="display:none;" id="conn_id"></span>
+	<a href="javascript:chgConnectionWeight(5);">highly related</a><br/>
+	<a href="javascript:chgConnectionWeight(4);">somewhat related</a><br/>
+	<a href="javascript:chgConnectionWeight(3);">slightly related</a><br/>
+	<a href="javascript:chgConnectionWeight(6);">speaks against</a><br/>
+	<a href="javascript:delConnection();">delete</a><br/>
+</div>
+</body>
+</html>

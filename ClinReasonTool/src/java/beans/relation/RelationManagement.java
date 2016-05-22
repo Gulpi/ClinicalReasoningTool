@@ -16,7 +16,7 @@ import model.Synonym;
 
 public class RelationManagement extends Relation implements Serializable{
 	
-	public static final int DEFAULT_X = 245; //325; //default x position of problems in canvas
+	public static final int DEFAULT_X = 5; //245; //325; //default x position of problems in canvas
 
 	private static final long serialVersionUID = 1L;
 	private ListItem management;

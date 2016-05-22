@@ -12,7 +12,6 @@ import beans.*;
 import beans.graph.Graph;
 import beans.graph.MultiEdge;
 import beans.relation.*;
-import controller.ErrorMessageController;
 import controller.NavigationController;
 import controller.RelationController;
 import database.DBClinReason;
@@ -20,6 +19,7 @@ import database.DBList;
 import model.Synonym;
 import util.CRTLogger;
 import actions.scoringActions.ScoringAddAction;
+import application.ErrorMessageContainer;
 import actions.scoringActions.Scoreable;
 
 /**
@@ -54,10 +54,14 @@ public class AddEpiAction implements AddAction, Scoreable{
 		new RelationController().initAdd(idStr, name, xStr, yStr, this);
 	}
 	
+	public void addRelation(long id, String name, int x, int y, long synId){
+		addRelation(id, name, x, y, synId, false);
+	}
+	
 	/* (non-Javadoc)
 	 * @see actions.beanActions.AddAction#addRelation(long, java.lang.String, int, int, long)
 	 */
-	public void addRelation(long id, String name, int x, int y, long synId){
+	public void addRelation(long id, String name, int x, int y, long synId, boolean isJoker){
 		if(patIllScript.getEpis()==null) patIllScript.setEpis(new ArrayList<RelationEpi>());
 		RelationEpi rel = new RelationEpi(id, patIllScript.getId(), synId);		
 		if(patIllScript.getEpis().contains(rel)){
@@ -73,14 +77,14 @@ public class AddEpiAction implements AddAction, Scoreable{
 		save(rel);
 		notifyLog(rel);
 		updateGraph(rel);
-		triggerScoringAction(rel);		
+		triggerScoringAction(rel,isJoker);		
 	}
 	
 	/* (non-Javadoc)
 	 * @see beanActions.AddAction#createErrorMessage(java.lang.String, java.lang.String, javax.faces.application.FacesMessage.Severity)
 	 */
 	public void createErrorMessage(String summary, String details, Severity sev){
-		new ErrorMessageController().addErrorMessage(summary, details, sev);
+		new ErrorMessageContainer().addErrorMessage(summary, details, sev);
 	}
 	
 	/**
@@ -113,8 +117,8 @@ public class AddEpiAction implements AddAction, Scoreable{
 	/* (non-Javadoc)
 	 * @see actions.scoringActions.Scoreable#triggerScoringAction(java.beans.Beans)
 	 */
-	public void triggerScoringAction(Beans relEpi){		
-		new ScoringAddAction().scoreAction(((RelationEpi) relEpi).getListItemId(), this.patIllScript);
+	public void triggerScoringAction(Beans relEpi, boolean isJoker){		
+		new ScoringAddAction().scoreAction(((RelationEpi) relEpi).getListItemId(), this.patIllScript, isJoker);
 	}
 
 	@Override

@@ -61,6 +61,8 @@ public class SummaryStatementChgAction implements ChgAction{
 	 * @param text
 	 */
 	private void updateSummaryStatement(String text){
+		if(patIllScript.getSummSt().getText()!=null && patIllScript.getSummSt().getText().equals(text)) 
+			return; //nothing to do, user made no change....
 		patIllScript.getSummSt().setText(text);
 		save(patIllScript.getSummSt());
 		notifyLogUpdate(patIllScript.getSummSt(), patIllScript.getSummSt().getId());

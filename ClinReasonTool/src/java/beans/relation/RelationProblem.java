@@ -6,6 +6,8 @@ import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.*;
 
+import javax.faces.context.FacesContext;
+
 import org.apache.commons.lang3.StringUtils;
 
 import beans.scoring.ScoreContainer;
@@ -74,7 +76,9 @@ public class RelationProblem extends Relation implements Serializable{
 	/* (non-Javadoc)
 	 * @see beans.relation.Relation#getLabelOrSynLabel()
 	 */
-	public String getLabelOrSynLabel(){		
+	public String getLabelOrSynLabel(){	
+		FacesContext  fc = FacesContext.getCurrentInstance();
+		Iterator it = fc.getMessages();
 		if(getSynId()<=0) return problem.getName();
 		else return getSynonym().getName();
 	}

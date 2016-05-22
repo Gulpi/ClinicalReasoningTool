@@ -50,27 +50,48 @@ public class ScoringController {
 		return "";
 	}
 	
+	public int getScore(int type, long itemId){
+		ScoreContainer scoreContainer = new NavigationController().getCRTFacesContext().getScoreContainer();
+		if (scoreContainer==null) return 0; //no icon
+		ScoreBean scoreBean = scoreContainer.getScoreBeanByTypeAndItemId(type,itemId);
+		if(scoreBean==null || scoreBean.getOverallScore()<=0) return 0;
+		if(scoreBean.getOverallScore()==1) return 1;
+		if(scoreBean.getOverallScore()<1) return 2;
+		return 0;
+	}
+	
+	public String getIconForFinalDDXScore(long itemId){
+		ScoreContainer scoreContainer = new NavigationController().getCRTFacesContext().getScoreContainer();
+		if (scoreContainer==null) return ""; //no icon
+		ScoreBean scoreBean = scoreContainer.getScoreBeanByTypeAndItemId(ScoreBean.TYPE_FINAL_DDX,itemId);
+		if(scoreBean==null || scoreBean.getOverallScore()<=0) return "";
+		if(scoreBean.getOverallScore()==1) return ICON_PREFIX+1;
+		if(scoreBean.getOverallScore()<1) return ICON_PREFIX+2;
+		return "";
+	}
+	
 	public ScoreBean getScoreBeanForItem(int type, long itemId){
 		ScoreContainer scoreContainer = new NavigationController().getCRTFacesContext().getScoreContainer();
 		if (scoreContainer==null) return null;
 		return scoreContainer.getScoreBeanByTypeAndItemId(type,itemId);
 	}
 	
-	public void setFeedbackInfo(ScoreBean scoreBean){ setFeedbackInfo(scoreBean, false);}
+	//public void setFeedbackInfo(ScoreBean scoreBean){ setFeedbackInfo(scoreBean, false);}
 	
 	/**
 	 * We store in the ScoreBean whether at this time the learner has already seen the expert's/peer feedback for
 	 * the item he has just added.
 	 * @param scoreBean
 	 */
-	public void setFeedbackInfo(ScoreBean scoreBean, boolean isChg){
+	public void setFeedbackInfo(ScoreBean scoreBean, boolean isChg, boolean isJoker){
 		CRTFacesContext crtContext = new NavigationController().getCRTFacesContext();
 		boolean expFBOn = crtContext.getFeedbackContainer().isExpFeedbackOn(scoreBean.getType(), scoreBean.getStage());
-		boolean peerFBOn = crtContext.getFeedbackContainer().isPeerFeedbackOn(scoreBean.getType(), scoreBean.getStage());
+		//boolean peerFBOn = crtContext.getFeedbackContainer().isPeerFeedbackOn(scoreBean.getStage());
 		if(expFBOn) scoreBean.setFeedbackOn(FeedbackBean.FEEDBACK_EXP);
-		if(peerFBOn) scoreBean.setFeedbackOn(FeedbackBean.FEEDBACK_PEER);
-		if(expFBOn && peerFBOn) scoreBean.setFeedbackOn(FeedbackBean.FEEDBACK_EXP_PEER);
+		//if(peerFBOn) scoreBean.setFeedbackOn(FeedbackBean.FEEDBACK_PEER);
+		//if(expFBOn && peerFBOn) scoreBean.setFeedbackOn(FeedbackBean.FEEDBACK_EXP_PEER);
 		if(isChg) scoreBean.setFeedbackOn(FeedbackBean.FEEDBACK_CHG);
+		if(isJoker) scoreBean.setFeedbackOn(FeedbackBean.FEEDBACK_JOKER);
 	}
 	
 	/**

@@ -1,0 +1,41 @@
+ <ui:composition 
+    xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core">
+<div class="ddxsubmitconf">Please select your final diagnoses and indicate how confident you are with your decision.<br/>
+<h:form id="ddx_submit_form">
+	<h:panelGroup >
+		<ui:repeat value="#{crtContext.patillscript.diagnoses}" var="ddx" varStatus="status">
+			<input type="checkbox" class="chb_ddx tier_#{ddx.tier}" value="#{ddx.id}" /> #{ddx.labelOrSynLabel}
+			<span class="ddxsubmit_score" id="score_#{ddx.id}"><i class="#{ddx.finalDDXScore}"></i>#{ddx.exp}</span>
+ 			<!-- <span class="peer_score" title="Percentage of peers who have added this problem as well" style="white-space: nowrap" id="peerscore#{prob.id}"> (#{prob.peerPercentage})</span>-->
+			
+			<br/>
+		</ui:repeat>
+	</h:panelGroup>
+	<!-- click before opening dialog to reload ddxs (make sure we have all of them) -->
+	<h:commandButton id="hiddenDDXSubmitButton" value="RenderSomething" style="visibility:hidden">
+	    <f:ajax render="@form" onevent="doSubmitDDXDialogCallback"></f:ajax>
+	 </h:commandButton>
+	 <!-- click after scoring the ddxs to load expert's feedback -->
+	 <h:commandButton id="hiddenDDXSubmitScoreButton" value="RenderSomething" style="visibility:hidden">
+	    <f:ajax render="@form" onevent="doScoreDDXDialogCallback"></f:ajax>
+	 </h:commandButton>
+</h:form>
+
+	<a id="ddx_submit_btn" href="javascript:submitDDXConfirmed();">Submit</a>
+	<span class="aftersubmit">
+		<ul id="errors">
+			<ui:repeat value="#{crtContext.patillscript.errorsCurrStage}" var="err" varStatus="status">
+				<ui:include src="errorline.xhtml" />
+	 		</ui:repeat>				
+		</ul>
+		<a class="aftersubmit_cont_#{offerContinueCase}" href="javascript:backToCase();">Continue with case (not max stage OR correct)</a><br/>
+		<a class="aftersubmit_cont_#{offerTryAgain}" href="javascript:tryAgain();">Try again (max stage)</a><br/>
+		<a class="aftersubmit_cont_#{offerSolution}" href="javascript:showSolution();">Give me solution (max stage)</a>
+		<a class="aftersubmit_cont_#{offerSolution}" href="javascript:giveHint();">Give me a hint (max stage)</a>
+	</span>
+</div>
+<div id="confidence_slider" class="conf_slider" title="Please indicate how confident you are with your current differentials."></div>
+</ui:composition>

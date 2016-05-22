@@ -11,6 +11,7 @@ import javax.faces.context.FacesContextWrapper;
 
 import org.apache.commons.lang.StringUtils;
 
+import application.ErrorMessageContainer;
 import beans.*;
 import util.*;
 
@@ -87,7 +88,7 @@ public class AjaxController {
 	    Map<String, String> reqParams = externalContext.getRequestParameterMap();
 	    if(reqParams!=null){
 	    	String patillscriptId = reqParams.get(REQPARAM_SCRIPT);
-	    	if(crContext==null || patillscriptId==null|| Long.parseLong(patillscriptId)!=crContext.getPatillscript().getId()){
+	    	if(crContext==null || patillscriptId==null || crContext.getPatillscript()==null || Long.parseLong(patillscriptId)!=crContext.getPatillscript().getId()){
 	    		CRTLogger.out("Error: receiveAjax", CRTLogger.LEVEL_PROD);
 	    		return; //TODO we need some more error handling here, how can this happen? What shall we do? 
 	    	}
@@ -152,7 +153,7 @@ public class AjaxController {
 	 * @param xmlResponse
 	 */
 	private void appendMessage(StringBuffer xmlResponse){
-		new ErrorMessageController().toXml(xmlResponse);
+		new ErrorMessageContainer().toXml(xmlResponse);
 	}
 	
 	public String getRequestParamByKey(String key){

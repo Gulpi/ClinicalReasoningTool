@@ -15,7 +15,7 @@ import database.DBScoring;
  */
 public class ScoringAddCnxAction implements ScoringAction{
 
-	public void scoreAction(long cnxId, PatientIllnessScript patIllScript){
+	public void scoreAction(long cnxId, PatientIllnessScript patIllScript, boolean isJoker){
 		Graph g = new NavigationController().getCRTFacesContext().getGraph();
 		MultiEdge edge = g.getEdgeByCnxId(IllnessScriptInterface.TYPE_LEARNER_CREATED, cnxId);
 		ScoreContainer scoreContainer = new NavigationController().getCRTFacesContext().getScoreContainer();		
@@ -23,7 +23,7 @@ public class ScoringAddCnxAction implements ScoringAction{
 		if(scoreBean!=null) return; //then this item has already  been scored: 
 		scoreBean = new ScoreBean(patIllScript.getId(), cnxId, ScoreBean.TYPE_ADD_CNX, patIllScript.getCurrentStage());
 		if(g.getExpertPatIllScriptId()>0) //otherwise we do not have an experts' patIllScript to compare with				
-			calculateAddActionScoreBasedOnExpert(edge, scoreBean, patIllScript);				
+			calculateAddActionScoreBasedOnExpert(edge, scoreBean, patIllScript, isJoker);				
 					
 		if(g.getPeerNums()>ScoringController.MIN_PEERS) //we have enough peers, so we can score based on this as well:
 			calculateAddActionScoreBasedOnPeers(edge, scoreBean, g.getPeerNums());
@@ -39,10 +39,10 @@ public class ScoringAddCnxAction implements ScoringAction{
 	 * @param scoreBean
 	 * @param patIllScript
 	 */
-	private void calculateAddActionScoreBasedOnExpert(MultiEdge edge, ScoreBean scoreBean, PatientIllnessScript patIllScript){
+	private void calculateAddActionScoreBasedOnExpert(MultiEdge edge, ScoreBean scoreBean, PatientIllnessScript patIllScript, boolean isJoker){
 		//PatientIllnessScript expIllScript = AppBean.getExpertPatIllScript(patIllScript.getParentId());		
 		//scoreBean.setTiming(edge.getStage(), expRel.getStage()); Timing not important fro cnxs
-		new ScoringController().setFeedbackInfo(scoreBean);
+		new ScoringController().setFeedbackInfo(scoreBean, false,false);
 		if(edge.getExpCnxId()>0 ){ //expert has als made an explicit connection
 			scoreBean.setScoreBasedOnExp(ScoringController.FULL_SCORE, false);	
 		}
@@ -61,4 +61,6 @@ public class ScoringAddCnxAction implements ScoringAction{
 	private void calculateOverallScore(ScoreBean scoreBean){
 		scoreBean.setOverallScore(scoreBean.getScoreBasedOnExp());
 	}
+
+
 }

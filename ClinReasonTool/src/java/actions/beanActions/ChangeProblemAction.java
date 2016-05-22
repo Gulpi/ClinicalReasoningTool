@@ -65,7 +65,7 @@ public class ChangeProblemAction implements ChgAction, Scoreable{
 		notifyLogTogglePrefix(probToChg);
 		//TODO re-score:
 		//ScoreBean score = new ScoringController().getScoreBeanForItem(Relation.TYPE_PROBLEM, probToChg.getListItemId());
-		new ScoringAddAction(true).scoreAction(probToChg.getListItemId(), patIllScript);
+		new ScoringAddAction(true).scoreAction(probToChg.getListItemId(), patIllScript, false);
 	}
 	
 	/**
@@ -88,7 +88,7 @@ public class ChangeProblemAction implements ChgAction, Scoreable{
 		}
 		changeRelation(expVertex, probToChg);	
 		//we re-score the item:
-		new ScoringAddAction(true).scoreAction(expVertex.getVertexId(), patIllScript);
+		new ScoringAddAction(true).scoreAction(expVertex.getVertexId(), patIllScript, false);
 	}
 	
 	private void changeRelation(MultiVertex expVertex, RelationProblem probToChg){
@@ -128,7 +128,7 @@ public class ChangeProblemAction implements ChgAction, Scoreable{
 	}
 
 	@Override
-	public void triggerScoringAction(Beans beanToScore) {
+	public void triggerScoringAction(Beans beanToScore, boolean isJoker) {
 		// TODO Auto-generated method stub
 		
 	}

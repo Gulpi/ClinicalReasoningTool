@@ -14,7 +14,6 @@ import beans.*;
 import beans.graph.Graph;
 import beans.relation.*;
 import beans.scoring.ScoreBean;
-import controller.ErrorMessageController;
 import controller.NavigationController;
 import controller.RelationController;
 import database.DBClinReason;
@@ -22,6 +21,7 @@ import database.DBList;
 import util.CRTLogger;
 import actions.scoringActions.ScoringAddAction;
 import actions.scoringActions.ScoringListAction;
+import application.ErrorMessageContainer;
 import actions.scoringActions.Scoreable;
 
 /**
@@ -54,20 +54,22 @@ public class AddProblemAction implements AddAction, Scoreable{
 	 */
 	public void add(String idStr, String prefix, String xStr, String yStr){ 
 		new RelationController().initAdd(idStr, prefix, xStr, yStr, this);
-
 	}
 	
+	public void addRelation(long id, String prefix, int x, int y, long synId){		
+		addRelation(id, prefix, x, y, synId, false);
+	}
 	/* (non-Javadoc)
 	 * @see actions.beanActions.AddAction#addRelation(long, java.lang.String, int, int, long)
 	 */
-	public void addRelation(long id, String prefix, int x, int y, long synId){
+	public void addRelation(long id, String prefix, int x, int y, long synId, boolean isJoker){
 		if(patIllScript.getProblems()==null) patIllScript.setProblems(new ArrayList<RelationProblem>());
 		RelationProblem rel = new RelationProblem(id, patIllScript.getId(), synId);		
 		if(patIllScript.getProblems().contains(rel)){
 			createErrorMessage("Problem already assigned.","optional details", FacesMessage.SEVERITY_WARN);
 			return;
 		}
-		if(StringUtils.isAlphanumeric(prefix)){ //check whether a prefix has been chosen
+		if(prefix!=null && !prefix.trim().equals("") && StringUtils.isAlphanumeric(prefix)){ //check whether a prefix has been chosen
 			rel.setPrefix(Integer.valueOf(prefix).intValue());
 		}
 		rel.setOrder(patIllScript.getProblems().size());
@@ -79,14 +81,14 @@ public class AddProblemAction implements AddAction, Scoreable{
 		save(rel);
 		notifyLog(rel);
 		updateGraph(rel);
-		triggerScoringAction(rel);		
+		triggerScoringAction(rel, isJoker);		
 	}
 	
 	/* (non-Javadoc)
 	 * @see beanActions.AddAction#createErrorMessage(java.lang.String, java.lang.String, javax.faces.application.FacesMessage.Severity)
 	 */
 	public void createErrorMessage(String summary, String details, Severity sev){
-		new ErrorMessageController().addErrorMessage(summary, details, sev);
+		new ErrorMessageContainer().addErrorMessage(summary, details, sev);
 	}
 	
 	/**
@@ -119,8 +121,8 @@ public class AddProblemAction implements AddAction, Scoreable{
 	/* (non-Javadoc)
 	 * @see actions.scoringActions.Scoreable#triggerScoringAction(java.beans.Beans)
 	 */
-	public void triggerScoringAction(Beans relProb){		
-		new ScoringAddAction().scoreAction(((RelationProblem) relProb).getListItemId(), this.patIllScript);
+	public void triggerScoringAction(Beans relProb, boolean isJoker){		
+		new ScoringAddAction().scoreAction(((RelationProblem) relProb).getListItemId(), this.patIllScript, isJoker);
 		//new ScoringListAction(this.patIllScript).scoreList(ScoreBean.TYPE_PROBLEM_LIST, Relation.TYPE_PROBLEM);
 
 	}

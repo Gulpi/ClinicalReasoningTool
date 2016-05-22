@@ -87,10 +87,19 @@ public class PatientIllnessScript extends Beans/*extends Node*/ implements Illne
 	 */
 	private int submittedStage;
 	
-	private List<MyError> errors;
+	/**
+	 * Stage at which the learner really has to submit a diagnosis, ONLY expert scripts!
+	 */
+	private int maxSubmittedStage = -1;
 	
 	/**
-	 * Has this script added to the peer table?
+	 * key=stage, value=list of errors at this stage
+	 */
+	private Map<Integer, List<MyError>> errors;
+	//private FinalDiagnosisSubmission finalddxs;
+	
+	/**
+	 * Has this script added to the peer table? ONLY learner scripts!
 	 */
 	private boolean peerSync = false;
 	
@@ -144,24 +153,42 @@ public class PatientIllnessScript extends Beans/*extends Node*/ implements Illne
 	public void setNote(Note note) {this.note = note;}
 	public long getNoteId() {return noteId;}
 	public void setNoteId(long noteId) {this.noteId = noteId;}
-	public int getCurrentStage() {return currentStage;}
+	public int getCurrentStage() {return currentStage;}	
+	public int getMaxSubmittedStage() {
+		if(maxSubmittedStage>0) return maxSubmittedStage;
+		return submittedStage; //default
+	}
+	public void setMaxSubmittedStage(int maxSubmittedStage) {this.maxSubmittedStage = maxSubmittedStage;}
 	
 	public int getCurrentStageWithUpdate() {
 		updateStage(new AjaxController().getRequestParamByKey(AjaxController.REQPARAM_STAGE));
 		return currentStage;
 	}	
 	public void setCurrentStage(int currentStage) { this.currentStage = currentStage;}		
-	public List<MyError> getErrors() {return errors;}
-	public void setErrors(List<MyError> errors) {this.errors = errors;}
+	public List<MyError> getErrors() {
+		if(errors==null) return null;
+		return errors.get(new Integer(currentStage));
+	}
+	
+	public List<MyError> getErrorsCurrStage() {
+		if(errors==null) return null;
+		return errors.get(new Integer(currentStage));
+	}
+	
+	public void setErrors(Map<Integer, List<MyError>> errors) {this.errors = errors;}
 	public void addErrors(List<MyError> list){
 		if(list==null || list.isEmpty()) return;
-		if(errors==null) errors = new ArrayList<MyError>();
-		errors.addAll(list);
+		
+		if(errors==null) errors = new HashMap<Integer, List<MyError>>();
+		if (errors.get(new Integer(currentStage))==null)
+			errors.put(new Integer(currentStage), list);
+		else errors.get(new Integer(currentStage)).addAll(list);
 	}
 	public void addError(MyError err){
 		if(err==null) return;
-		if(errors==null) errors = new ArrayList<MyError>();
-		errors.add(err);
+		List<MyError> myList = new ArrayList<MyError>();
+		myList.add(err);
+		addErrors(myList);
 	}	
 	public boolean getSubmitted() {
 		if(submittedStage>0) return true;
@@ -194,6 +221,7 @@ public class PatientIllnessScript extends Beans/*extends Node*/ implements Illne
 	public void reorderTests(String idStr, String newOrderStr){ new MoveTestAction(this).reorder(idStr, newOrderStr);}
 	public void reorderMngs(String idStr, String newOrderStr){ new MoveMngAction(this).reorder(idStr, newOrderStr);}
 	public void moveItem(String idStr, String newOrderStr, String x, String y){ new DragDropAction(this).move(idStr, x, y);}
+	public void moveItem(String idStr, String x, String y){ new DragDropAction(this).move(idStr, x, y);}
 
 	public void changeProblem(String idStr,String changeMode){new ChangeProblemAction(this).changeProblem(idStr, changeMode);}
 	//public void changeProblem(String relIdStr){new ChangeProblemAction(this).changeProblem(relIdStr);}
@@ -215,12 +243,16 @@ public class PatientIllnessScript extends Beans/*extends Node*/ implements Illne
 	public void saveSummStatement(String idStr, String text){new SummaryStatementChgAction(this).updateOrCreateSummaryStatement( idStr, text);}
 	public void saveNote(String idStr, String text){new NoteChgAction(this).updateOrCreateNote( idStr, text);}
 	public void submitDDX(String idStr){new DiagnosisSubmitAction(this).submitDDX(idStr);}
+	public void submitDDXAndConf(String idStr, String confStr){new DiagnosisSubmitAction(this).submitDDXAndConf(idStr, confStr);}
+	public void resetFinalDDX(String idStr){new DiagnosisSubmissionRevertAction(this).revertSubmission();}
+	
 	//public void submitDDX(){new DiagnosisSubmitAction(this).submitDDX();}
 	public void changeTier(String idStr, String tierStr){new DiagnosisSubmitAction(this).changeTier(idStr, tierStr);}
 	public void changeConfidence(String idStr, String confVal){new ChgPatIllScriptAction(this).changeConfidence(idStr, confVal);}
 	public void chgCourseOfTime(String courseOfTimeStr) { new ChgPatIllScriptAction(this).chgCourseOfTime(courseOfTimeStr);}
 
-
+	public void addJoker(String idStr, String type){ new JokerAction(this).addJoker(type);}
+	
 	public void save(){
 		boolean isNew = false;
 		if(getId()<=0) isNew = true;
@@ -283,6 +315,15 @@ public class PatientIllnessScript extends Beans/*extends Node*/ implements Illne
 		return null; //nothing found
 	}
 	
+	public List<RelationDiagnosis> getFinalDiagnoses(){
+		if(diagnoses==null || diagnoses.isEmpty()) return null; 
+		List<RelationDiagnosis> finals = new ArrayList<RelationDiagnosis>();
+		for(int i=0; i<diagnoses.size(); i++){
+			if(diagnoses.get(i).isFinalDiagnosis()) finals.add(diagnoses.get(i));
+		}
+		return finals;
+	}
+	
 	public Relation getRelationByIdAndType(long id, int type){
 		if(type==Relation.TYPE_PROBLEM) return getRelationById(this.problems, id);
 		if(type==Relation.TYPE_DDX) return getRelationById(this.diagnoses, id);
@@ -333,6 +374,37 @@ public class PatientIllnessScript extends Beans/*extends Node*/ implements Illne
 			return expScript.getSummSt().getText();
 		}
 		return "";
+	}
+	
+	/**
+	 * We offer the user to retry the diagnoses submission if he has less than 100%
+	 * TODO: we might make this more specific
+	 * @return
+	 */
+	public boolean getOfferTryAgain(){
+		List<ScoreBean>scores = new NavigationController().getCRTFacesContext().getLearningAnalytics().getScoreContainer().getScoresByType(ScoreBean.TYPE_FINAL_DDX);
+		if(scores==null || scores.isEmpty()) return true;
+		for(int i=0; i<scores.size(); i++){
+			if(scores.get(i).getScoreBasedOnExpPerc()<=DiagnosisSubmitAction.scoreForAllowReSubmit) return true;
+		}
+		return false;
+	}
+	
+	/**
+	 * @return
+	 */
+	public boolean getOfferContinueCase(){
+		//if(!getOfferTryAgain()) return false; //solution was correct anyway
+		if(AppBean.getExpertPatIllScript(this.getParentId())==null) return true; //we have no expert's script....
+		if(getOfferTryAgain() && this.currentStage < AppBean.getExpertPatIllScript(this.getParentId()).getMaxSubmittedStage()) return true;
+		return false; //end of case and/or 100% score
+	}
+	
+	public boolean getOfferSolution(){
+		if(!getOfferTryAgain()) return false; //solution was correct anyway
+		if(AppBean.getExpertPatIllScript(this.getParentId())==null) return true; //we have no expert's script....
+		if(this.currentStage == AppBean.getExpertPatIllScript(this.getParentId()).getMaxSubmittedStage() /*&& this.currentStage >= AppBean.getExpertPatIllScript(this.getParentId()).getSubmittedStage()*/) return true;
+		return false;
 	}
 
 }

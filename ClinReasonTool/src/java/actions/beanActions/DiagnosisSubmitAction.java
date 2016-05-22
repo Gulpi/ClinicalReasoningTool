@@ -6,17 +6,20 @@ import javax.faces.application.FacesMessage;
 import javax.faces.application.FacesMessage.Severity;
 import javax.faces.context.FacesContext;
 
+import org.apache.commons.lang.StringUtils;
+
 import actions.scoringActions.Scoreable;
 import actions.scoringActions.ScoringFinalDDXAction;
 import actions.scoringActions.ScoringListAction;
+import application.ErrorMessageContainer;
 import beans.LogEntry;
 import beans.PatientIllnessScript;
 import beans.relation.Relation;
 import beans.relation.RelationDiagnosis;
 import beans.scoring.ScoreBean;
-import controller.ErrorMessageController;
 import controller.NavigationController;
 import database.DBClinReason;
+import util.StringUtilities;
 
 /**
  * Learner has to actively submit ddx...
@@ -26,12 +29,18 @@ import database.DBClinReason;
 public class DiagnosisSubmitAction /*implements Scoreable*/{
 
 	private PatientIllnessScript patIllScript;
-	private static final float scoreForAllowReSubmit = (float) 0.5; //of learner gets less than 50% correct on final diagnoses, we allow re-submit
+	public static final float scoreForAllowReSubmit = (float) 0.5; //of learner gets less than 50% correct on final diagnoses, we allow re-submit
 	
 	public DiagnosisSubmitAction(PatientIllnessScript patIllScript){
 		this.patIllScript = patIllScript;
 	}
 
+	public void submitDDXAndConf(String idsStr, String confStr){		
+		new ChgPatIllScriptAction(patIllScript).changeConfidence(confStr); //first we handle the confidence stuff....
+		submitDDX(idsStr);
+	}
+	
+	
 	
 	/**
 	 * Called when diagnosis are submitted one at a time (link for submission provided for each diagnosis). 
@@ -39,12 +48,8 @@ public class DiagnosisSubmitAction /*implements Scoreable*/{
 	 * @param idStr
 	 */
 	public void submitDDX(String idStr){
-		/*if(patIllScript.getSubmitted()){
-			createErrorMessage("DDX already submitted", "", FacesMessage.SEVERITY_WARN);
-			return; //todo error message
-		}*/
-		long id = Long.valueOf(idStr.trim());		
-		changeTier(id, RelationDiagnosis.TIER_FINAL);
+		boolean hasDDX = changeTierForDDXs(idStr);
+		if(!hasDDX) return;
 		float score = triggerScoringAction(patIllScript);
 		//if learner submits the wrong diagnoses we allow him to re-submit 
 		if(score<scoreForAllowReSubmit){
@@ -54,36 +59,36 @@ public class DiagnosisSubmitAction /*implements Scoreable*/{
 		notifyLog();
 	}
 	
-	/*public void submitDDX(){ //submission with a general submission button -> low usability
-		if(patIllScript.getSubmitted()){
-			createErrorMessage("DDX already submitted", "", FacesMessage.SEVERITY_WARN);
-			return; //todo error message
+	private boolean changeTierForDDXs(String idStr){
+		long[] ids = StringUtilities.getLongArrFromString(idStr, "#");
+		if(ids==null || ids.length==0){
+			createErrorMessage("Diagnosis submission without DDX", "", FacesMessage.SEVERITY_ERROR);
+			return false;
 		}
-		
-		float score = triggerScoringAction(patIllScript);
-		//if learner submits the wrong diagnoses we allow him to re-submit 
-		if(score<scoreForAllowReSubmit){
-			patIllScript.setSubmittedStage(patIllScript.getCurrentStage());
-			new DBClinReason().saveAndCommit(patIllScript);
+		for(int i=0; i<ids.length; i++){
+			setFinal( ids[i]);
 		}
-		notifyLog();
-		
-		//all the final ddx should have been tagged before, so no need to save the final ddx here....
-		//we could now display some feedback, experts final diagnoses.
-	}*/
+		return true;
+	}
 	
 	/* (non-Javadoc)
 	 * @see beanActions.AddAction#createErrorMessage(java.lang.String, java.lang.String, javax.faces.application.FacesMessage.Severity)
 	 */
 	private void createErrorMessage(String summary, String details, Severity sev){
-		new ErrorMessageController().addErrorMessage(summary, details, sev);
+		new ErrorMessageContainer().addErrorMessage(summary, details, sev);
 	}
 
 
+	private void setFinal(long id){
+		RelationDiagnosis rel = patIllScript.getDiagnosisById(id);
+		if(rel==null || rel.isFinalDiagnosis()) return;	
+		rel.setFinalDiagnosis();
+	}
+	
 	private void changeTier(long id, int tier){
 		RelationDiagnosis rel = patIllScript.getDiagnosisById(id);
 		if(rel==null) return;
-		if(tier == RelationDiagnosis.TIER_FINAL) rel.toggleFinal();
+		//if(tier == RelationDiagnosis.TIER_FINAL) rel.toggleFinal();
 		else if(tier==RelationDiagnosis.TIER_RULEDOUT) rel.toggleRuledOut();
 		
 		new DBClinReason().saveAndCommit(rel);

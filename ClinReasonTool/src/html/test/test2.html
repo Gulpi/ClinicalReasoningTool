@@ -9,13 +9,16 @@
         <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet">
         <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
         <link href="//fonts.googleapis.com/css?family=Lato:400,700" rel="stylesheet">
-
+<script type="text/javascript" src="../../scripts/jquery112/jquery.js"></script>
+<script type="text/javascript" src="../../scripts/jquery112/jquery-ui.min.js"></script>
+<script type="text/javascript" src="../../scripts/jquery112/jquery-ui.js"></script>
   <link rel="stylesheet" href="jsPlumbToolkit-defaults.css" />
 
        <!--  <link rel="stylesheet" href="main.css">-->
         <link rel="stylesheet" href="jsPlumbToolkit-demo.css">
         <link rel="stylesheet" href="demo.css" />
-<script language="JavaScript" src="jsPlumb.min.js"></script>
+<script src="jsPlumb.min.js"></script>
+
 
 <script language="JavaScript">
 //;(function () {
@@ -150,7 +153,9 @@
             instance[collapsed ? "removeClass" : "addClass"](this.parentNode, "collapsed");
             instance[collapsed ? "expandGroup" : "collapseGroup"](g);
         });
-        
+        $(".window").contextmenu(function() {
+        	  alert( "Handler for .contextmenu() called." );
+        });
         jsPlumb.fire("jsPlumbDemoLoaded", instance);
 
     });
@@ -166,8 +171,14 @@
  				 <div class="group-container" id="container1" group="one">
  				  <div class="title">Findings</div>
  				  <div class="node-collapse"></div>
-                		<div class="window" id="dragDropWindow1">Cough<br/><br/><!-- ><a href="#" class="cmdLink hide" rel="dragDropWindow1">toggle connections</a><br/><a href="#" class="cmdLink drag" rel="dragDropWindow1">disable dragging</a><br/><a href="#" class="cmdLink detach" rel="dragDropWindow1">detach all</a>--></div>
-                		<div class="window" id="dragDropWindow2">Fever<br/><br/></div>
+                		<div class="window" id="dragDropWindow1">Cough
+                			<span class="dropdown">x</i>
+							 	<ul class="dropdown-content">Change to:<br/>
+							 		<li><a href="">No cough</a></li> 	 	
+							 	</ul>
+							</span>
+                		<br/><!-- ><a href="#" class="cmdLink hide" rel="dragDropWindow1">toggle connections</a><br/><a href="#" class="cmdLink drag" rel="dragDropWindow1">disable dragging</a><br/><a href="#" class="cmdLink detach" rel="dragDropWindow1">detach all</a>--></div>
+                		<div class="window" id="dragDropWindow2" title="Fever">Fever<br/><br/></div>
                 </div>
                 <div class="group-container" id="container2" group="two">   
                  <div class="title">Differentials</div>            

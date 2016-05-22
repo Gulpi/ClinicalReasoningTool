@@ -8,6 +8,7 @@ import beans.IllnessScriptInterface;
 import beans.LogEntry;
 import beans.PatientIllnessScript;
 import beans.graph.Graph;
+import controller.GraphController;
 import controller.NavigationController;
 import database.DBClinReason;
 import util.CRTLogger;
@@ -41,7 +42,7 @@ public class DelConnectionAction /*implements DelAction*/{
 			//todo error msg
 			return;		
 		}
-		idStr = idStr.substring(6);
+		idStr = idStr.substring(GraphController.PREFIX_CNX.length());
 		long id = Long.parseLong(idStr);
 		Connection conn = (Connection) patIllScript.getConns().get(new Long(id));
 		patIllScript.getConns().remove(new Long(id));

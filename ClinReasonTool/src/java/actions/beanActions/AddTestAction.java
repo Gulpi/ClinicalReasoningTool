@@ -10,6 +10,7 @@ import javax.faces.application.FacesMessage.Severity;
 import actions.scoringActions.Scoreable;
 import actions.scoringActions.ScoringAddAction;
 import actions.scoringActions.ScoringListAction;
+import application.ErrorMessageContainer;
 import beans.IllnessScriptInterface;
 import beans.LogEntry;
 import beans.PatientIllnessScript;
@@ -18,7 +19,6 @@ import beans.relation.Relation;
 import beans.relation.RelationManagement;
 import beans.relation.RelationTest;
 import beans.scoring.ScoreBean;
-import controller.ErrorMessageController;
 import controller.NavigationController;
 import controller.RelationController;
 import database.DBClinReason;
@@ -62,10 +62,13 @@ public class AddTestAction implements AddAction, Scoreable/*, FeedbackCreator*/{
 		new RelationController().initAdd(idStr, name, xStr, yStr, this);
 	}
 	
+	public void addRelation(long id, String prefix, int x, int y, long synId){		
+		addRelation(id, prefix, x, y, synId, false);
+	}
 	/* (non-Javadoc)
 	 * @see actions.beanActions.AddAction#addRelation(long, java.lang.String, int, int, long)
 	 */
-	public void addRelation(long id, String name, int x, int y, long synId){
+	public void addRelation(long id, String name, int x, int y, long synId, boolean isJoker){
 		if(patIllScript.getTests()==null) patIllScript.setTests(new ArrayList<RelationTest>());
 		RelationTest rel = new RelationTest(id, patIllScript.getId(), synId);		
 		if(patIllScript.getTests().contains(rel)){
@@ -82,7 +85,7 @@ public class AddTestAction implements AddAction, Scoreable/*, FeedbackCreator*/{
 		save(rel);
 		updateGraph(rel);
 		notifyLog(rel);
-		triggerScoringAction(rel);				
+		triggerScoringAction(rel, isJoker);				
 	}
 	
 	/**
@@ -101,13 +104,13 @@ public class AddTestAction implements AddAction, Scoreable/*, FeedbackCreator*/{
 	/* (non-Javadoc)
 	 * @see actions.scoringActions.Scoreable#triggerScoringAction(java.beans.Beans)
 	 */
-	public void triggerScoringAction(Beans rel) {
-		new ScoringAddAction().scoreAction(((RelationTest) rel).getListItemId(), this.patIllScript);
+	public void triggerScoringAction(Beans rel, boolean isJoker) {
+		new ScoringAddAction().scoreAction(((RelationTest) rel).getListItemId(), this.patIllScript, isJoker);
 		//new ScoringListAction(this.patIllScript).scoreList(ScoreBean.TYPE_TEST_LIST, Relation.TYPE_TEST);
 
 	}
 	public void createErrorMessage(String summary, String details, Severity sev) {
-		new ErrorMessageController().addErrorMessage(summary, details, sev);		
+		new ErrorMessageContainer().addErrorMessage(summary, details, sev);		
 	}
 
 	

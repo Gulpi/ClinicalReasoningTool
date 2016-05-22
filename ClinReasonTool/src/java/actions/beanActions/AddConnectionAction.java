@@ -8,11 +8,11 @@ import javax.faces.application.FacesMessage.Severity;
 
 import actions.scoringActions.Scoreable;
 import actions.scoringActions.ScoringAddCnxAction;
+import application.ErrorMessageContainer;
 import beans.PatientIllnessScript;
 import beans.graph.Graph;
 import beans.relation.Relation;
 import controller.ConceptMapController;
-import controller.ErrorMessageController;
 import controller.GraphController;
 import controller.NavigationController;
 import beans.Connection;
@@ -59,12 +59,9 @@ public class AddConnectionAction implements Scoreable{
 	
 	private void addConnection(long sourceId, long targetId, int startType, int targetType){
 		if(patIllScript.getConns()==null) patIllScript.setConns(new TreeMap());
-		Connection cnx = new Connection(sourceId, targetId, this.patIllScript.getId(), startType, targetType);		
-		/*if(patIllScript.getConns().contains(relProb)){
-			createErrorMessage("Problem already assigned.","optional details", FacesMessage.SEVERITY_WARN);
-			return;
-		}*/
-		//relProb.setOrder(patIllScript.getProblems().size());
+		Connection cnx = new Connection(sourceId, targetId, this.patIllScript.getId(), startType, targetType);
+		if(patIllScript.getConns().containsValue(cnx)) return; //cnx already made... 
+		
 		save(cnx); //first save to get an id...
 		patIllScript.getConns().put(new Long(cnx.getId()), cnx);
 		updateGraph(cnx);
@@ -75,13 +72,13 @@ public class AddConnectionAction implements Scoreable{
 	/* (non-Javadoc)
 	 * @see actions.scoringActions.Scoreable#triggerScoringAction(java.beans.Beans)
 	 */
-	public void triggerScoringAction(Beans cnx) {
-		new ScoringAddCnxAction().scoreAction(((Connection)cnx).getId(), this.patIllScript);
+	public void triggerScoringAction(Beans cnx, boolean isJoker) {
+		new ScoringAddCnxAction().scoreAction(((Connection)cnx).getId(), this.patIllScript, isJoker);
 		
 	}
 
 	public void createErrorMessage(String summary, String details, Severity sev) {
-		new ErrorMessageController().addErrorMessage(summary, details, sev);
+		new ErrorMessageContainer().addErrorMessage(summary, details, sev);
 		
 	}
 	

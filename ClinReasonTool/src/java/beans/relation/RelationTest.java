@@ -28,31 +28,9 @@ public class RelationTest extends Relation implements Serializable{
 	public static final int QUALIFIER_RARE = 0; 
 	public static final int QUALIFIER_MEDIUM = 1;
 	public static final int QUALIFIER_OFTEN = 2;
-	public static final int DEFAULT_X = 165; //245; //default x position of problems in canvas
+	public static final int DEFAULT_X = 5; //165; //245; //default x position of problems in canvas
 	
 	
-	//private long id;
-	/**
-	 * can be problem, test, management, diagnosis
-	 */
-	//private long listItemId; 
-	/**
-	 * (Patient)Illnesscript
-	 */
-	//private long destId; 
-	
-	//private int order;
-	
-	/**
-	 * x position of the problem in the concept map canvas
-	 */
-	//private int x;
-	/**
-	 * y position of the problem in the concept map canvas
-	 */
-	//private int y;
-	
-	//also include height/width
 	/**
 	 * problems: key-finding, other,... (?)
 	 */
@@ -63,16 +41,7 @@ public class RelationTest extends Relation implements Serializable{
 	 */
 	private int qualifier;
 	
-	//private int stage;
-	
-	//private Timestamp creationDate;
-	
 	private ListItem test;
-	/**
-	 * In case the learner has selected the not the main item, but a synonyma, we save the id here.
-	 * We do not need the object, since it is already stored in the ListItem 
-	 */
-	//private long synId;
 	
 	public RelationTest(){}
 	public RelationTest(long listItemId, long destId, long synId){

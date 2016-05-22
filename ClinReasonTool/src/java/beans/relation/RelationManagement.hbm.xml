@@ -12,6 +12,7 @@
 			</generator>
 		</id>	
 		<property name="destId" column="dest_id" type="long" />
+		<property name="synId" column="syn_id" type="long"/>
 		<property name="order" column="idx" type="int" />
 		<property name="listItemId" column="source_id" type="long"/>	
 		<property name="x" column="x" type="int"/>

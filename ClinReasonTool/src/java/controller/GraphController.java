@@ -26,8 +26,14 @@ public class GraphController implements Serializable{
 	public static final String PREFIX_EPI = "cmepi_";
 	public static final String PREFIX_DDX = "cmddx_";
 	public static final String PREFIX_MNG = "cmmng_";
-	public static final String PREFIX_CNX = "cmcnx_";
+	public static final String PREFIX_CNX = "cnx_";
 	public static final String PREFIX_TEST = "cmtes_";
+	public static final String PREFIX_PROB2 = "fdg_";
+	public static final String PREFIX_EPI2 = "epi_";
+	public static final String PREFIX_DDX2 = "ddx_";
+	public static final String PREFIX_MNG2 = "mng_";
+	public static final String PREFIX_CNX2 = "cnx_";
+	public static final String PREFIX_TEST2 = "tst_";
 	private Graph graph;
 	
 	public GraphController(Graph g){
@@ -125,10 +131,12 @@ public class GraphController implements Serializable{
 			//add problems -> ddx
 			for(int j=0; j < patIllScript.getProblems().size(); j++){
 				//graph.addImplicitEdge(sourceId, targetId, type);
-				graph.addImplicitEdge(patIllScript.getProblems().get(j).getListItemId(), patIllScript.getDiagnoses().get(i).getListItemId(), illScriptType);
+				if(patIllScript.getProblems().get(j)!=null && patIllScript.getDiagnoses().get(i)!=null)
+					graph.addImplicitEdge(patIllScript.getProblems().get(j).getListItemId(), patIllScript.getDiagnoses().get(i).getListItemId(), illScriptType);
 			}
 			for(int j=0; j < patIllScript.getEpis().size(); j++){
 				//graph.addImplicitEdge(sourceId, targetId, type);
+				
 				graph.addImplicitEdge(patIllScript.getEpis().get(j).getListItemId(), patIllScript.getDiagnoses().get(i).getListItemId(), illScriptType);
 			}
 
@@ -186,21 +194,21 @@ public class GraphController implements Serializable{
 	
 	public static int getTypeByPrefix(String prefix){
 		if(prefix==null) return 0;
-		if(prefix.equals(PREFIX_PROB)) return Relation.TYPE_PROBLEM;
-		if(prefix.equals(PREFIX_DDX)) return Relation.TYPE_DDX;
-		if(prefix.equals(PREFIX_TEST)) return Relation.TYPE_TEST;
-		if(prefix.equals(PREFIX_MNG)) return Relation.TYPE_MNG;
-		if(prefix.equals(PREFIX_EPI)) return Relation.TYPE_EPI;
+		if(prefix.equals(PREFIX_PROB) || prefix.equals(PREFIX_PROB2)) return Relation.TYPE_PROBLEM;
+		if(prefix.equals(PREFIX_DDX) || prefix.equals(PREFIX_DDX2)) return Relation.TYPE_DDX;
+		if(prefix.equals(PREFIX_TEST) || prefix.equals(PREFIX_TEST2)) return Relation.TYPE_TEST;
+		if(prefix.equals(PREFIX_MNG) || prefix.equals(PREFIX_MNG2)) return Relation.TYPE_MNG;
+		if(prefix.equals(PREFIX_EPI) || prefix.equals(PREFIX_EPI2) ) return Relation.TYPE_EPI;
 
 		return 0;
 	}
 	
 	public static String getPrefixByType(int type){
-		if(type==Relation.TYPE_PROBLEM) return PREFIX_PROB;
-		if(type==Relation.TYPE_DDX) return PREFIX_DDX;
-		if(type==Relation.TYPE_TEST) return PREFIX_TEST;
-		if(type==Relation.TYPE_MNG) return PREFIX_MNG;
-		if(type==Relation.TYPE_EPI) return PREFIX_EPI;
+		if(type==Relation.TYPE_PROBLEM) return PREFIX_PROB2;
+		if(type==Relation.TYPE_DDX) return PREFIX_DDX2;
+		if(type==Relation.TYPE_TEST) return PREFIX_TEST2;
+		if(type==Relation.TYPE_MNG) return PREFIX_MNG2;
+		if(type==Relation.TYPE_EPI) return PREFIX_EPI2;
 
 		return "";
 	}

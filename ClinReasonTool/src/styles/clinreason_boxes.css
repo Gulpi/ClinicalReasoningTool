@@ -1,6 +1,9 @@
 body{
 	font-family:Arial;
 }
+a{
+	text-decoration:none;
+}
 .ui-widget-content { /*needs to be at the beginning, otherwise the slider background will be overwritten*/
 	border: 1px solid #dddddd;
 	background: #ffffff url("images/ui-bg_highlight-soft_100_eeeeee_1x100.png") 50% top repeat-x;
@@ -77,6 +80,7 @@ input.f_text, textarea.f_textarea {
   -webkit-border-radius: 5px;
   -moz-border-radius: 5px;
   border-radius: 5px;
+  width:95px;
 }
 
 .search .icon{
@@ -141,13 +145,22 @@ input.f_text, textarea.f_textarea {
 	cursor:pointer;
 }
 .submitBtn{
-	width:50px;
+	width:55px;
 	height: 100%;
+	padding-left:5px;
+	padding-right:5px;
+	padding-top:2px;
+	padding-bottom:2px;
 	background-color:#c00815;
 }
+
+.submitBtnOff{
+	background-color:#c2c2c2;
+}
+
 .submitBtn a{
 	color:#ffffff important!;
-	padding-left:5px;
+	/*padding-left:5px;*/
 	vertical-align:middle;
 	font-color:#ffffff;
 	cursor:pointer;
@@ -169,93 +182,6 @@ input.f_text, textarea.f_textarea {
 	width:200px;
 }
 
-/*.cm-preview{
-	float:right;
-	position:relative;
-	bottom:0;
-	width:55px;
-	border: 1px solid #b0cbdc;
-}*/
-
-@font-face {
-  font-family: 'crt';
-  src: url('font/crt.eot?9585197');
-  src: url('font/crt.eot?9585197#iefix') format('embedded-opentype'),
-       url('font/crt.woff?9585197') format('woff'),
-       url('font/crt.ttf?9585197') format('truetype'),
-       url('font/casus.svg?9585197#crt') format('svg');
-  font-weight: normal;
-  font-style: normal;
-}
-
-[class^="icon-"]:before, [class*=" icon-"]:before {
-  font-family: "crt";
-  font-style: normal;
-  font-weight: normal;
-  speak: none;
- 
-  display: inline-block;
-  text-decoration: inherit;
-  width: 1em;
-  margin-right: .2em;
-  text-align: center;
-  /* opacity: .8; */
- 
-  /* For safety - reset parent styles, that can break glyph codes*/
-  font-variant: normal;
-  text-transform: none;
-     
-  /* fix buttons height, for twitter bootstrap */
-  line-height: 1em;
- 
-  /* Animation center compensation - margins should be symmetric */
-  /* remove if not needed */
-  margin-left: .2em;
- 
-  /* you can be more comfortable with increased icons size */
-  /* font-size: 120%; */
- 
-  /* Uncomment for 3D effect */
-  /* text-shadow: 1px 1px 1px rgba(127, 127, 127, 0.3); */
-}
-.icon-circle:before { content: '\e805'; } /
-.icon-circle-empty:before { content: '\e806'; } 
-.icon-circle-tier-1:before { content: '\e805'; color:#C2C2C2; font-size: 0.8em;display:none;}
-.icon-circle-tier0:before { /*content: '\e805'; color:#C2C2C2; font-size: 0.8em;*/ display:none;} 
-/*.icon-circle-tier1:before { content: '\e805'; color:#088A29; font-size: 0.8em;} 
-.icon-circle-tier2:before { content: '\e805'; color:#81F79F; font-size: 0.8em;} 
-.icon-circle-tier3:before { content: '\e805'; color:#CEF6CE; font-size: 0.8em;} */
-.icon-circle-tier4:before { content: '\e84c'; color:#088A29; font-size: 0.8em;} 
-.icon-attention0:before { content: '\e8d8'; display:none; font-size: 0.8em; } 
-.icon-attention1:before { content: '\e8d8'; color:#D60000; font-size: 0.8em; } 
-.icon-trash-1:before { content: '\e872';  color:#000000; font-size: 0.8em;} /*color:#088A29;*/
-.icon-ok1:before { content: '\e804'; color:#088A29; font-size: 0.8em; float: right;} /*displayed when score =100% */
-.icon-ok2:before { content: '\e804'; color:#CEF6CE; font-size: 0.8em; float: right;} /*displayed when score between less than 100% but more than 1% */
-.icon-ok3:before { content: '\e804'; color:#c2c2c2; font-size: 0.8em; float: right;} /*displayed when score between less than 100% but more than 1% */
-
-/*.icon-upload-off:before { content: '\e81a'; color:#C2C2C2; font-size: 1.3em;}*/
-.icon-upload-on:before { content: '\e81a'; color:#000000; font-size: 0.8em;}/*color:#088A29;*/
-.icon-user-md:before { content: '\e8ef'; color:#000000; font-size: 0.8em;} /*color:#088A29;*/ 
-.icon-user-md_on:before { content: '\e8ef'; color:#088A29; font-size: 0.8em;}
-.icon-users:before { content: '\e8f1'; color:#000000; font-size: 0.8em;} /*color:#088A29;*/
-.icon-users_on:before { content: '\e8f1'; color:#088A29; font-size: 0.8em;} /*color:#088A29;*/
-.icon-share-squared:before { content: '\e8fb'; }
-.icon-edit:before { content: '\e86b'; font-size: 1.3em;}
-.icon-list-alt:before { content: '\e907';}
-.icon-list-on:before { content: '\e907'; color:#000000;} /*color:#088A29;*/
-.icon-list-off:before { content: '\e907'; color:#C2C2C2;}
-.icon-file-pdf:before { content: '\e8d9'; font-size: 1.3em;}
-.icon-print:before { content: '\e911'; font-size: 1.3em;} 
-.icon-help-circled:before { content: '\e858'; } 
-.icon-sitemap:before { content: '\e815';font-size: 0.8em;}
-.icon-video:before { content: '\e84a'; font-size: 0.8em;} 
-.icon-plus-circled:before { content: '\e851'; } 
-.icon-floppy:before { content: '\e801'; }
-.icon-attention-circled:before { content: '\e871'; color:"#c00815"; }
-.icon-cancel-circled:before { content: '\e84f'; }
-.icon-search:before { content: '\e81e'; }
-.icon-down-open:before { content: '\e829'; }
-
 .box_1{
 	border-color:#088A29 !important;
 	border: 2px solid #088A29 !important;
@@ -275,8 +201,8 @@ input.f_text, textarea.f_textarea {
 .boxes_container {
     background-color: transparent;
     font-family: Arial,sans-serif;
-    margin-left: auto;
-    margin-right: auto;
+    margin-left: 0px;
+    margin-right: 0px;
     width: 100%;
     max-width:1500px;
     position: relative;
@@ -287,6 +213,7 @@ input.f_text, textarea.f_textarea {
     margin-left: 0px;
     margin-left: 0px;
     height:700px;
+    width:100%;
     max-height:700px;
     border:1px solid #CCC;
     background-color:white;
@@ -387,7 +314,7 @@ input.f_text, textarea.f_textarea {
 .itembox {
     position:absolute;
     width:80px;
-    height:20px;
+    height:25px;
     border:1px solid black;
     font-size:10px;
     border-radius:3px;
@@ -403,7 +330,7 @@ input.f_text, textarea.f_textarea {
 .expbox{
 	position:absolute;
     width:80px;
-    height:20px;
+    height:25px;
     border:1px solid black;
     font-size:10px;
     border-radius:3px;
@@ -419,8 +346,23 @@ input.f_text, textarea.f_textarea {
 	display:none;
 }
 
+/* we need this onLoad for the expboxes to avoid flickering, display:none has side-effects on the 
+endpoint creation, so we can use this only at the very end of the page loading.... */ 
+.expboxinvis{
+	visibility: hidden;
+}
+
+.exp-endpoint svg * {
+    fill: transparent;
+    stroke: transparent;
+}
+
 .expboxstatus_show{
 	display:block;
+}
+
+.showfinal0{
+	display:none;
 }
 
 .boxgrey{
@@ -469,7 +411,7 @@ body .ui-tooltip {
 .ui-state-active, .ui-widget-content .ui-state-active, .ui-widget-header .ui-state-active {
     border: 1px solid #CCCCCC;
     background: #CCCCCC url("images/ui-bg_glass_65_ffffff_1x400.png") repeat-x scroll 50% 50%;
-    font-weight: bold;
+    font-weight: normal;
     /*color: #EB8F00;*/
  }
 .custom-combobox {
@@ -495,9 +437,9 @@ body .ui-tooltip {
 .ui-state-focus,
 .ui-widget-content .ui-state-focus,
 .ui-widget-header .ui-state-focus {
-	border: 1px solid #000000; /*#006699;*/
-	background: #ffffff url("images/ui-bg_glass_100_fdf5ce_1x400.png") 50% 50% repeat-x;
-	/*font-weight: bold;*/
+	border: 0px solid #000000; /*#006699;*/
+	background: #cccccc url("images/ui-bg_glass_100_fdf5ce_1x400.png") 50% 50% repeat-x;
+	font-weight: normal;
 	color: #000000; /*#006699;*/
 }
 .ui-state-hover a,

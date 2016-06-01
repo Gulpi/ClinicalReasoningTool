@@ -1,3 +1,5 @@
+var listUrl="jsonp_en.json";
+
 /**
  * javascript for displaying the illness script tabs representation
  */
@@ -81,18 +83,19 @@ function chgProblem(id, type){
 
 function delProblem(id){
 	clearErrorMsgs();
-	sendAjax(id, problemCallBack, "delProblem", "");
+	sendAjax(id, delProblemCallBack, "delProblem", "");
 }
 
+function delProblemCallBack(problemId, selProblem){
+	deleteEndpoints("fdg_"+problemId);
+	problemCallBack(problemId, selProblem);
+}
 
 function problemCallBack(problemId, selProblem){
-	$("#problems").val("");	
-	
+	$("#problems").val("");		
 	$(".fdgs").remove(); 
 	//we update the problems list and the json string
 	$("[id='probform:hiddenProbButton']").click();	
-	//initLists();
-	//$("[id='probform:hiddenGraphButton']").click();
 }
 
 function addJokerFdg(){
@@ -123,18 +126,27 @@ function addDiagnosis(diagnId, name){
 
 function delDiagnosis(id){
 	clearErrorMsgs();
-	sendAjax(id, diagnosisCallBack, "delDiagnosis", "");
+	sendAjax(id, delDiagnosisCallBack, "delDiagnosis", "");
 }
 
+
+function delDiagnosisCallBack(ddxId, selDDX){
+	//we have to delete the endpoint separately, otherwise they persist....
+	deleteEndpoints("ddx_"+ddxId);
+	diagnosisCallBack(ddxId, selDDX);
+}
 
 function diagnosisCallBack(ddxId, selDDX){
-	$("#ddx").val("");	
-	$(".ddxs").remove();
-	//we update the problems list and the json string
-	$("[id='ddxform:hiddenDDXButton']").click();	
-		
+	$("#ddx").val("");		
+	$(".ddxs").remove();	
+	//we update the ddx boxes (re-printing all boxes)
+	$("[id='ddxform:hiddenDDXButton']").click();			
 }
 
+function updateDDXCallback(){
+	checkSubmitBtn();
+	updateItemCallback();
+}
 
 /*function hasAFinalDiagnosis(){
 	//tiericon_1
@@ -147,13 +159,13 @@ function diagnosisCallBack(ddxId, selDDX){
 function toggleMnM(id){
 	clearErrorMsgs();
 	var id2 = "mnmicon_"+id;
-	if ($("#"+id2).hasClass("icon-attention1")){
-		$("#"+id2).removeClass("icon-attention1");
-		$("#"+id2).addClass("icon-attention0");
+	if ($("#"+id2).hasClass("fa-exclamation-circle1")){
+		$("#"+id2).removeClass("fa-exclamation-circle1");
+		$("#"+id2).addClass("fa-exclamation-circle0");
 	}
 	else{
-		$("#"+id2).removeClass("icon-attention0");
-		$("#"+id2).addClass("icon-attention1");
+		$("#"+id2).removeClass("fa-exclamation-circle0");
+		$("#"+id2).addClass("fa-exclamation-circle1");
 	}
 	sendAjax(id, doNothing, "changeMnM",  "");
 }
@@ -307,7 +319,15 @@ function ruleIn(id){
 	return "#000000";
  }
 
-
+function checkSubmitBtn(){
+	var ddxNum = $( ".ddxs" ).length;
+	if(ddxNum>0){
+		$("#submitBtnSpan").removeClass("submitBtnOff");
+	}
+	else if(ddxNum<=0 && !$("#submitBtnSpan").hasClass("submitBtnOff"))
+		$("#submitBtnSpan").addClass("submitBtnOff");
+		
+}
 /*
  * user has changed the confidence slider, so, we send the new value via ajax.
  * -> now we submit it together with the ddx submission.
@@ -325,12 +345,11 @@ function submitSliderChange(){
 function addManagement(mngId, name){
 	clearErrorMsgs();
 	if(name!="") sendAjax(mngId, managementCallBack, "addMng", name);
-	//if(mngId>-1) addManagementCallBack(mngId, selMng);
 }
 
 function delManagement(id){
 	clearErrorMsgs();
-	sendAjax(id, managementCallBack, "delMng", "");
+	sendAjax(id, delManagementCallBack, "delMng", "");
 }
 
 function chgManagement(id, type){
@@ -338,6 +357,12 @@ function chgManagement(id, type){
 	sendAjax(id, managementCallBack, "changeMng", type);
 	
 }
+
+function delManagementCallBack(mngId, selMng){
+	deleteEndpoints("mng_"+mngId);
+	managementCallBack(mngId, selMng);
+}
+
 function managementCallBack(mngId, selMng){
 	$("#mng").val("");	
 	$(".mngs").remove();
@@ -373,7 +398,12 @@ function addTest(testId, name){
 
 function delTest(id){
 	clearErrorMsgs();
-	sendAjax(id, testCallBack, "delTest", "");
+	sendAjax(id, delTestCallBack, "delTest", "");
+}
+
+function delTestCallBack(testId, selTest){
+	deleteEndpoints("tst_"+testId);
+	testCallBack(testId, selTest);
 }
 
 function testCallBack(testId, selTest){
@@ -541,7 +571,7 @@ var map_autocomplete_instance = null;
    * Does not include missing items!
    */
 function toggleExpBoxFeedback(iconId, itemClass, type){
-	if($("#"+iconId).hasClass("icon-user-md_on")){ //turn feedback off
+	if($("#"+iconId).hasClass("fa-user-md_on")){ //turn feedback off
 		turnExpBoxFeedbackOff(iconId, itemClass);
 		sendAjaxContext(0, doNothing, "toogleExpBoxFeedback", type);
 	}
@@ -552,9 +582,10 @@ function toggleExpBoxFeedback(iconId, itemClass, type){
 }
 
 function turnExpBoxFeedbackOn(iconId, itemClass){
-	if($("#"+iconId).hasClass("icon-user-md_on")) return; //already on
-	
-	$("#"+iconId).attr("class","icon-user-md_on");
+	if($("#"+iconId).hasClass("fa-user-md_on")) return; //already on
+
+	$("#"+iconId).removeClass("fa-user-md_off");
+	$("#"+iconId).addClass("fa-user-md_on");
 	$("#"+iconId).attr("title", "click to hide expert feedback");
 	var items = $("."+itemClass);
 	if(items!=null){
@@ -566,9 +597,10 @@ function turnExpBoxFeedbackOn(iconId, itemClass){
 }
 
 function turnExpBoxFeedbackOff(iconId, itemClass){
-	if($("#"+iconId).hasClass("icon-user-md")) return; //already off
+	if($("#"+iconId).hasClass("fa-user-md_off")) return; //already off
 	
-	$("#"+iconId).attr("class","icon-user-md");
+	$("#"+iconId).removeClass("fa-user-md_on");
+	$("#"+iconId).addClass("fa-user-md_off");
 	$("#"+iconId).attr("title", "click to show expert feedback");
 	var items = $("."+itemClass);
 	if(items!=null){
@@ -585,15 +617,17 @@ function turnExpBoxFeedbackOff(iconId, itemClass){
  */
 function toggleSumFeedback(iconId, type){
 	clearErrorMsgs();
-	if($("#"+iconId).hasClass("icon-user-md_on")){ //turn feedback off
-		$("#"+iconId).attr("class","icon-user-md");
+	if($("#"+iconId).hasClass("fa-user-md_on")){ //turn feedback off
+		$("#"+iconId).removeClass("fa-user-md_on");
+		$("#"+iconId).addClass("fa-user-md_off");		
 		$("#"+iconId).attr("title", "click to show expert feedback");
 		$("#list_score_sum").hide();
 		sendAjaxContext(0, doNothing, "toogleExpBoxFeedback", type);
 
 	}
 	else{ //turn feedback on
-		$("#"+iconId).attr("class","icon-user-md_on");
+		$("#"+iconId).removeClass("fa-user-md_off");	
+		$("#"+iconId).addClass("fa-user-md_on");
 		$("#"+iconId).attr("title", "click to hide expert feedback");
 		$("#list_score_sum").show();
 		sendAjaxContext(1, doNothing, "toogleExpBoxFeedback", type);
@@ -603,8 +637,9 @@ function toggleSumFeedback(iconId, type){
  * we display the peer feedback for the given box/type
  */
 function togglePeerBoxFeedback(iconId, itemClass, type){
-	if($("#"+iconId).hasClass("icon-users_on")){ //turn off
-		$("#"+iconId).addClass("icon-users");
+	if($("#"+iconId).hasClass("fa-users_on")){ //turn off
+		$("#"+iconId).removeClass("fa-users_on");
+		$("#"+iconId).addClass("fa-users_off");		
 		$("#"+iconId).removeClass("icon-users_on");
 		$("#"+iconId).attr("title", "click to hide expert feedback");
 		$("."+itemClass).hide();
@@ -612,8 +647,8 @@ function togglePeerBoxFeedback(iconId, itemClass, type){
 	
 	}	
 	else{ //turn it on
-		$("#"+iconId).addClass("icon-users_on");
-		$("#"+iconId).removeClass("icon-users");
+		$("#"+iconId).removeClass("fa-users_off");	
+		$("#"+iconId).addClass("fa-users_on");
 		$("#"+iconId).attr("title", "click to show expert feedback");
 		$("."+itemClass).show();
 		sendAjaxContext(1, doNothing, "tooglePeerBoxFeedback",  type);
@@ -625,8 +660,9 @@ function togglePeerBoxFeedback(iconId, itemClass, type){
  * display/hide overall expert feedback (including missing items)
  */
 function toggleExpFeedback(iconId, itemClass){
-	if($("#"+iconId).hasClass("icon-user-md_on")){ //turn feedback off
-		$("#"+iconId).attr("class","icon-user-md");
+	if($("#"+iconId).hasClass("fa-user-md_on")){ //turn feedback off
+		$("#"+iconId).removeClass("fa-user-md_on");
+		$("#"+iconId).addClass("fa-user-md_off");	
 		$("#"+iconId).attr("title", "click to show expert feedback");
 		$(".expbox").removeClass("expboxstatus_show");
 		$(".expbox").addClass("expboxstatus");
@@ -638,10 +674,12 @@ function toggleExpFeedback(iconId, itemClass){
 
 	}
 	else{ //turn feedback on
-		$("#"+iconId).attr("class","icon-user-md_on");
+		$("#"+iconId).removeClass("fa-user-md_off");	
+		$("#"+iconId).addClass("fa-user-md_on");
 		$("#"+iconId).attr("title", "click to hide expert feedback");
 		$(".expbox").addClass("expboxstatus_show");
 		$(".expbox").removeClass("expboxstatus");
+		$(".expbox").removeClass("expboxinvis");
 		turnExpBoxFeedbackOn("expFeedbackFdg", "fdgs");
 		turnExpBoxFeedbackOn("expFeedbackDDX", "ddxs");
 		$(".jsplumb-exp-connector").addClass("jsplumb-exp-connector-show");
@@ -659,6 +697,12 @@ function openErrorDialog(){
 	$("#jdialogError").show();
 }
 
+/*
+ * show the expert items as a step-wise process thru the stages
+ */
+function showExpStages(){
+	
+}
 
 
 function showDropDown(id){

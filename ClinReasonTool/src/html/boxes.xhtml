@@ -25,6 +25,7 @@
 <link rel="stylesheet" type="text/css" href="../styles/jsPlumbToolkit-defaults.css" />
 <!--  <link rel="stylesheet" type="text/css" href="<PMW fcache>files/html/scripts/draw2d/css/contextmenu.css"  />-->
 <link rel="stylesheet" href="../styles/clinreason_boxes.css" />
+<link rel="stylesheet" href="../styles/font-awesome/css/font-awesome.css" />
 
 <script type="text/javascript" src="../scripts/jquery112/jquery.js"></script>
 <script type="text/javascript" src="../scripts/jquery112/jquery-ui.min.js"></script>
@@ -53,7 +54,7 @@ var test = "#{crtContext.initSession}";
 var msg2="Please connect the hypotheses with the findings";
 var sessId = "#{crtContext.patillscript.sessionId}";
 var scriptId = "#{crtContext.patillscript.id}";
-var listUrl="jsonp_en.json";
+//var listUrl="jsonp_en.json";
 var lang = "#{crtContext.patillscript.locale}";
 //var my_canvas = null;
 var currentStage = $.getUrlVar('stage');
@@ -66,7 +67,7 @@ var minLengthTypeAhead = 3;
 var submitted = "#{crtContext.patillscript.submitted}";
 var instance;
 var item_arr = new Array();
- 
+var exp_arr = new Array();
 
 $(function() {
 	if(lang=="de") listUrl = "jsonp_de.json";
@@ -77,23 +78,24 @@ $(function() {
 		//setDirtySummSt();
 		saveSummSt('#{crtContext.patillscript.summStId}');
 	 });
+	checkSubmitBtn();
 	//initContainerPos();
 
 	//toggleExpertFeedbackOnLoad();
-  /*  $( document ).tooltip({
+   /* $( document ).tooltip({
     	//items: " rect, [title], text, tspan",
-    	items: "tspan",
+    	//items: "tspan",
     	content: function() {
     		var element = $( this );
-    		if(element.is("tspan")){ 
-				var tooltip = getToolTipForRect(element);
-				element.attr("title", tooltip);
-    		}
-            if ( element.is( "[title]" ) ) { //this is a "normal" tooltip returning the title of an element
+    		if(element.hasClass("jsplumb-connector")){ 
+				//var tooltip = getToolTipForRect(element);
+				return "hallo";
+    		}*/
+           /* if ( element.is( "[title]" ) ) { //this is a "normal" tooltip returning the title of an element
                 return element.attr( "title" );
-              }
-    	}
-    });*/
+              }*/
+    //	}
+   // });
     
     $( ".container" ).draggable({
         stop: function() {
@@ -166,7 +168,10 @@ jsPlumb.ready(function () {
         });
 
         instance.bind("click", function (component, originalEvent) {
-        	openConnContext(component.id);
+        	//todo: ignore expert cnxs....
+        	var id = component.id;
+        	if(!id.startsWith("exp_")) 
+        		openConnContext(component.id);
         });
 
         instance.draggable(jsPlumb.getSelector(".drag-drop .itembox"));        
@@ -191,13 +196,16 @@ jsPlumb.ready(function () {
    	 });
     
     initConnections();
+    initCnxDisplay();
+    $(".jsplumb-connector").attr("title","Click to change or delete");
     //registers a connection that is made: this code needs to be AFTER the init has happened, otherwise each init 
     //event triggers this. 
     instance.bind("connection", function (info, originalEvent){
     	addConnection(info);
     });
-    initCnxDisplay();
+    $(".expbox").addClass("expboxstatus");
     jsPlumb.fire("jsPlumbDemoLoaded", instance);
+    
     initContainerCollapsed();
 	
 });
@@ -207,8 +215,9 @@ item_arr = new Array();
 </head>
 <body style="font-family:arial;" data-demo-id="draggableConnectors" data-library="dom"><!-- test: #{crtContext.test}-->
 <div class="options">
-	<a href="javascript:toogleCnxDisplay();" id="cnxtoggle" title="Hide connections"><i class="icon-share-squared"></i></a>
-	<a href="javascript:toggleExpFeedback('expFeedback', 'icon-user-md');"  title="Show expert feedback at this point of time"><i id="expFeedback" class="icon-user-md"></i></a>
+	<a href="javascript:toogleCnxDisplay();" id="cnxtoggle" title="Hide connections"><i id="cnxtogglei" class="fa fa-conn_on"></i></a>
+	<a href="javascript:toggleExpFeedback('expFeedback', 'icon-user-md');"  title="Show expert feedback at this point of time"><i id="expFeedback" class="fa fa-user-md_off"></i></a>
+	<a href="exp_stages.xhtml" target="new">exp dev</a>
 </div>
 <div class="boxes_container">
 	<div id="canvas" class="canvas jtk-surface drag-drop jtk-surface-nopan" >
@@ -229,9 +238,9 @@ item_arr = new Array();
 		  <!-- problems -->
 		  <div id="fdg_box"  class="container" group="fdg_group">
 		   		<div class="title">Findings 
-		   			<a href="javascript:addJokerFdg();">gime1</a> 
-		   			<a href="javascript:togglePeersFdg();"><i class="icon-users" id="peerFeedbackFdg"></i></a> 
-		   			<a href="javascript:toggleFdgFeedback();"><i class="icon-user-md" id="expFeedbackFdg"></i></a>
+		   			<a href="javascript:addJokerFdg();" title="Joker: Add a random finding"><i class="fa fa-puzzle-piece"></i></a> 
+		   			<a href="javascript:togglePeersFdg();" title="Show peer numbers"><i class="fa fa-users_off" id="peerFeedbackFdg"></i></a> 
+		   			<a href="javascript:toggleFdgFeedback();" title="show expert feedback"><i class="fa fa-user-md_off" id="expFeedbackFdg"></i></a>
 		   		</div>
 		   		<div class="node-collapse"></div>
 		  			<div class="search boxchild"><span class="icon"><i class="icon-search"></i></span>
@@ -256,7 +265,7 @@ item_arr = new Array();
 		  </div>
 		 <div id="sum_box" class="container" group="sum_group">	
 		 	<div class="title">Summary Statement
-		 		<a href="javascript:toggleSumFeedback('expFeedbackSum', 14);"><i class="icon-user-md" id="expFeedbackSum"></i></a>
+		 		<a href="javascript:toggleSumFeedback('expFeedbackSum', 14);" title="show expert's summary statement"><i class="fa fa-user-md_off" id="expFeedbackSum"></i></a>
 		 	</div>
 		 	 <div class="node-collapse"></div>
 		 	 <textarea style="display:none;" id="summStTextHidden" cols="27" rows="7">#{crtContext.patillscript.summSt.text}</textarea>
@@ -267,10 +276,10 @@ item_arr = new Array();
 		</div>
 		  <!--  diagnoses -->
 		  <div id="ddx_box" class="container" group="ddx_group">	
-		  		<div class="title">DDX
-		  			<a href="javascript:addJokerDDX();">gime1</a> 
-		   			<a href="javascript:togglePeersDDX();"><i class="icon-users" id="peerFeedbackDDX"></i></a> 
-		   			<a href="javascript:toggleDDXFeedback();"><i class="icon-user-md" id="expFeedbackDDX"></i></a>
+		  		<div class="title">Differentials
+		  			<a href="javascript:addJokerDDX();" title="Joker: Add a random differential"><i class="fa fa-puzzle-piece"></i></a> 
+		   			<a href="javascript:togglePeersDDX();" title="Show peer numbers"><i class="fa fa-users_off" id="peerFeedbackDDX"></i></a> 
+		   			<a href="javascript:toggleDDXFeedback();" title="show expert feedback"><i class="fa fa-user-md_off" id="expFeedbackDDX"></i></a>
 		  		</div>	
 		  		<div class="node-collapse"></div>	  		
 		  			<div class="search boxchild"><input class="f_text" id="ddx" title="Please add your differentials"></input></div>
@@ -284,35 +293,38 @@ item_arr = new Array();
 	     					</ui:repeat>				
 	    				</h:panelGroup>
 	    				     <h:commandButton id="hiddenDDXButton" value="RenderSomething" style="visibility:hidden">
-	    						<f:ajax render="@form" onevent="updateItemCallback"></f:ajax>
+	    						<f:ajax render="@form" onevent="updateDDXCallback"></f:ajax>
 							</h:commandButton></h:form>
 					<span class="errormsg" id="msg_ddxform"></span>
 							
 					<!--  <div id="confidence_slider" class="conf_slider" title="Please indicate how confident you are with your current differentials."></div>-->
 		  		<div class="footer">
-		  			<span class="submitBtn">
+		  			<span id="submitBtnSpan" class="submitBtn submitBtnOff">
 		  				<a href="javascript:doSubmitDDXDialog();" style="color:#ffffff" title="Submit your final diagnoses anytime">Submit</a>
 		  			</span>
 		  			<span class="errors_#{crtContext.patillscript.errorNum}"><h:panelGroup id="ddxubmitPG">
-						<a href="javascript:openErrorDialog();" title="Potential Errors (#{crtContext.patillscript.errorNum})"><i class="icon-attention-circled"></i></a>		
+						<a href="javascript:openErrorDialog();" title="Potential Errors (#{crtContext.patillscript.errorNum})"><i class="fa fa-exclamation-circle"></i></a>		
     				</h:panelGroup></span>
 		  		</div>
 		  </div>
 		  <!-- tests -->
 		  <div id="tst_box" class="container" group="tst_group">
 		  		<div class="title">Tests
-		  			<a href="javascript:addJokerTest();">gime1</a> 
-		   			<a href="javascript:togglePeersTest();"><i class="icon-users" id="peerFeedbackTest"></i></a> 
-		   			<a href="javascript:toggleTestFeedback();"><i class="icon-user-md" id="expFeedbackTest"></i></a>
+		  			<a href="javascript:addJokerTest();" title="Joker: Add a random test"><i class="fa fa-puzzle-piece"></i></a> 
+		   			<a href="javascript:togglePeersTest();" title="Show peer numbers"><i class="fa fa-users_off" id="peerFeedbackTest"></i></a> 
+		   			<a href="javascript:toggleTestFeedback();" title="show expert feedback"><i class="fa fa-user-md_off" id="expFeedbackTest"></i></a>
 		  		</div>
 		 	 	<div class="node-collapse"></div>
-		  		<div class="search boxchild"><input class="f_text" id="tests" title="Please add any tests or examinations you want to order or perform."></input>
+		  		<div class="search boxchild"><input class="f_text" id="tests" title="Please add any tests or examinations you want to order or perform."></input></div>
 		  			<h:form id="testform">
 		  			<h:panelGroup>
 					
 						<ui:repeat value="#{crtContext.patillscript.tests}" var="test" varStatus="status">
 							<ui:include src="testbox.xhtml" />
-     					</ui:repeat>				
+     					</ui:repeat>	
+     					<ui:repeat value="#{crtContext.expPatIllScript.tests}" var="exptest" varStatus="status">
+							<ui:include src="testexpbox.xhtml" />
+     					</ui:repeat>			
 						<!-- <li id="selds_1">Chest X-ray <select class="f_select"><option value="-1">scanning</option><option>r/c Pneumonia</option></select></li>-->
 					<!--  <div id="jsonTestsMap" style="visibility:hidden">#{crtContext.patillscript.testsJson}</div>-->
     				</h:panelGroup>
@@ -321,15 +333,13 @@ item_arr = new Array();
 						</h:commandButton>
 					</h:form>
 					<span class="errormsg" id="msg_testform"></span>
-					
-					</div>
-		  	</div>
+		</div>
 		  <!-- managements -->
 		  <div id="mng_box" class="container" group="mng_group">
 		  	<div class="title">Management
-		  			<a href="javascript:addJokerMng();">gime1</a> 
-		   			<a href="javascript:togglePeersMng();"><i class="icon-users" id="peerFeedbackMng"></i></a> 
-		   			<a href="javascript:toggleMngFeedback();"><i class="icon-user-md" id="expFeedbackMng"></i></a>
+		  			<a href="javascript:addJokerMng();" title="Joker: Add a random management option"><i class="fa fa-puzzle-piece"></i></a> 
+		   			<a href="javascript:togglePeersMng();" title="Show peer numbers"><i class="fa fa-users_off" id="peerFeedbackMng"></i></a> 
+		   			<a href="javascript:toggleMngFeedback();" title="show expert feedback"><i class="fa fa-user-md_off" id="expFeedbackMng"></i></a>
 		  	</div>
 		 	 <div class="node-collapse"></div>
 		  	<div class="search boxchild"><input class="f_text" id="mng" title="Please add any management decisions for your patient."></input></div>
@@ -338,7 +348,10 @@ item_arr = new Array();
 	
 					<ui:repeat value="#{crtContext.patillscript.mngs}" var="mng" varStatus="status">
 						<ui:include src="mngbox.xhtml" />
-	   					</ui:repeat>				
+	   				</ui:repeat>		
+	   				<ui:repeat value="#{crtContext.expPatIllScript.mngs}" var="expmng" varStatus="status">
+							<ui:include src="mngexpbox.xhtml" />
+     					</ui:repeat>		
 	  				</h:panelGroup>
 	  				     <h:commandButton id="hiddenMngButton" value="RenderSomething" style="visibility:hidden">
 	  						<f:ajax render="@form" onevent="updateItemCallback"></f:ajax>
@@ -362,11 +375,13 @@ item_arr = new Array();
 </div>
 <div id="connContext">
 <span style="display:none;" id="conn_id"></span>
-	<a href="javascript:chgConnectionWeight(5);">highly related</a><br/>
-	<a href="javascript:chgConnectionWeight(4);">somewhat related</a><br/>
-	<a href="javascript:chgConnectionWeight(3);">slightly related</a><br/>
-	<a href="javascript:chgConnectionWeight(6);">speaks against</a><br/>
-	<a href="javascript:delConnection();">delete</a><br/>
+	<ul class="fa-ul">
+	<li><i class="fa-li fa fa-circle" style="color:#009933;"></i><a href="javascript:chgConnectionWeight(5);">highly related</a></li>
+	<li><i class="fa-li fa fa-circle" style="color:#00e64d;"></i><a href="javascript:chgConnectionWeight(4);">somewhat related</a></li>
+	<li><i class="fa-li fa fa-circle" style="color:#e6ffee;"></i><a href="javascript:chgConnectionWeight(3);">slightly related</a></li>
+	<li><i class="fa-li fa fa-circle" style="color:#990000;"></i><a href="javascript:chgConnectionWeight(6);">speaks against</a></li>
+	<li><i class="fa-li fa fa-trash"></i><a href="javascript:delConnection();">delete</a></li>
+	</ul>
 </div>
 </body>
 </html>

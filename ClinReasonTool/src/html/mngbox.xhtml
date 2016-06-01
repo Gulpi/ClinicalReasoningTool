@@ -5,16 +5,15 @@
     xmlns:f="http://java.sun.com/jsf/core">
 
    	<div id="mng_#{mng.id}"   score="#{mng.score}" class="itembox mngs" title="#{mng.labelOrSynLabel}" style="left:#{mng.x}px; top:#{mng.boxY}px;">  
-  	 	#{mng.shortLabelOrSynLabel}
+  	 	#{mng.shortLabelOrSynShortLabel}
   	 	 <script language="Javascript">
  			item_arr.push("mng_#{mng.id}");
  		</script>
- 		<span class="dropdown" ><i class="icon-down-open"></i>
+ 		<span class="dropdown" ><i class="fa fa-chevron-circle-down"></i>
  		<div class="dropdown-content" id="ddmng_#{mng.id}">Change to:<br/>
- 		<a href="javascript:chgManagement(#{mng.id}, 1);">#{mng.toggledPrefixStr} #{mng.labelOrSynLabel}</a><!-- item toggled prefix, always enabled -->	 	
- 		<a  class="dropd_#{mng.isExpertHierarchyItem}" href="javascript:chgManagement(#{mng.id}, 2);">#{mng.expItemLabel}</a> <!-- Hierarchy -->
- 		<a class="dropd_#{mng.isSynonyma}" href="javascript:chgManagement(#{mng.id}, 3);">#{mng.synonym.name}</a> <!-- Synonym -->
- 		<a href="javascript:delManagement(#{mng.id});"><i class="icon-trash-1"></i>Delete</a>
+ 		<span class="dropd_#{mng.isExpertHierarchyItem}"><a  class="dropd_#{mng.isExpertHierarchyItem}" href="javascript:chgManagement(#{mng.id}, 2);">#{mng.expItemLabel}</a><br/></span> <!-- Hierarchy -->
+ 		<span class="dropd_#{mng.isSynonyma}"><a class="dropd_#{mng.isSynonyma}" href="javascript:chgManagement(#{mng.id}, 3);">#{mng.synonym.name}</a><br/></span> <!-- Synonym -->
+ 		<a href="javascript:delManagement(#{mng.id});"><i class="fa fa-trash"></i> Delete</a>
  	</div>
  	</span>
    		<!--  <a href="javascript:delManagement(#{mng.id});">

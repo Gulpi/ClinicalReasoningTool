@@ -190,7 +190,7 @@ public class CRTFacesContext extends FacesContextWrapper /*implements Serializab
 		return feedbackContainer;
 	}
 	public void toogleExpBoxFeedback(String toggleStr, String taskStr){
-		feedbackContainer.toogleExpBoxFeedback(toggleStr, taskStr, this.patillscript.getCurrentStage());
+		feedbackContainer.toogleExpBoxFeedback(toggleStr, taskStr);
 	}
 	
 	public void toogleExpFeedback(String toggleStr){

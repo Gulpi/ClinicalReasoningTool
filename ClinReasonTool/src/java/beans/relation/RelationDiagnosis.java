@@ -12,6 +12,7 @@ import javax.faces.context.FacesContextWrapper;
 
 import org.apache.commons.lang3.StringUtils;
 
+import beans.PatientIllnessScript;
 import beans.graph.Graph;
 import beans.graph.MultiVertex;
 import controller.ConceptMapController;
@@ -80,6 +81,18 @@ public class RelationDiagnosis extends Relation implements Serializable {
 	}
 
 	public int getTier() {return tier;}
+	
+	/**
+	 * We only display the expert's final diagnosis after the user has submitted a diagnosis.... 
+	 * @return
+	 */
+	public int getExptier(){
+		if(tier!=TIER_FINAL) return tier; //everything except finals are displayed... 
+		PatientIllnessScript learnerscript = new NavigationController().getCRTFacesContext().getPatillscript();
+		if(learnerscript.getSubmitted()) return TIER_FINAL;
+		return 0;
+	}
+	
 	public void setTier(int tier) {this.tier = tier;}
 	public ListItem getDiagnosis() {return diagnosis;}
 	public void setDiagnosis(ListItem diagnosis) {this.diagnosis = diagnosis;}	

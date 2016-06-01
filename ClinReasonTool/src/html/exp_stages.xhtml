@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"   
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      >
+<!-- <html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:f="http://java.sun.com/jsf/core"      
+      xmlns:h="http://java.sun.com/jsf/html">-->
+<head>
+
+<title>Patient Illness Script</title>
+ <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+<meta http-equiv="EXPIRES" content="0" />
+<meta http-equiv="PRAGMA" content="NO-CACHE" />
+<meta http-equiv="CACHE-CONTROL" content="NO-CACHE" />
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no"/>
+
+<link rel="stylesheet" type="text/css" href="../scripts/jquery112/ui-lightness/jquery-ui.css" /> 
+<link rel="stylesheet" type="text/css" href="../scripts/draw2d/css/contextmenu.css"  />
+<link rel="stylesheet" type="text/css" href="../styles/jsPlumbToolkit-defaults.css" />
+<link rel="stylesheet" href="../styles/clinreason_boxes.css" />
+
+<script type="text/javascript" src="../scripts/jquery112/jquery.js"></script>
+<script type="text/javascript" src="../scripts/jquery112/jquery-ui.min.js"></script>
+<script type="text/javascript" src="../scripts/jquery112/jquery-ui.js"></script>
+
+<script src="../scripts/connection.js"></script>
+
+<script src="../scripts/ajax.js"></script>
+<script src="../scripts/js.cookie.js"></script>
+<script src="../scripts/jsPlumb.min.js"></script>
+  <script src="../scripts/myjsplumb.js"></script>
+
+<script language="JavaScript">
+
+jsPlumb.ready(function () {
+
+ 	instance = jsPlumb.getInstance({
+    DragOptions: { cursor: 'pointer', zIndex: 2000 },
+    PaintStyle: { strokeStyle: '#666' },
+    EndpointHoverStyle: { fillStyle: "orange" },
+    HoverPaintStyle: { strokeStyle: "orange" },
+    EndpointStyle: { width: 25, height: 15, strokeStyle: '#666' },
+    Endpoint: "Rectangle",
+    Anchors: ["TopCenter", "TopCenter"],
+    Container: "canvas"
+});
+
+// suspend drawing and initialise.
+instance.batch(function () {
+
+    // bind to connection/connectionDetached events, and update the list of connections on screen.
+    instance.bind("connection", function (info, originalEvent) {
+        updateConnections(info.connection);
+    });
+    instance.bind("connectionDetached", function (info, originalEvent) {
+        updateConnections(info.connection, true);
+    });
+
+    instance.bind("connectionMoved", function (info, originalEvent) {
+        //  only remove here, because a 'connection' event is also fired.
+        // in a future release of jsplumb this extra connection event will not
+        // be fired.
+        updateConnections(info.connection, true);
+    });
+
+});
+initConnections();
+$(".jsplumb-exp-connector").addClass("jsplumb-exp-connector-show");
+$(".jsplumb-exp-connector").removeClass("jsplumb-exp-connector-hide");
+jsPlumb.fire("jsPlumbDemoLoaded", instance);
+});
+</script>
+ </head>
+ <body>
+  <a href="">stage back</a> <a href="">stage fwd</a>
+  <div id="canvas" class="canvas jtk-surface drag-drop jtk-surface-nopan" >
+		<h:form id="probform">
+			<h:panelGroup>	    					
+			   <ui:repeat id="repeatexpprob" value="#{crtContext.expPatIllScript.problems}" var="expprob" varStatus="status">
+			   		<ui:include src="probexpbox.xhtml" />
+  				</ui:repeat>	 
+  				<ui:repeat id="repeatexpddx" value="#{crtContext.expPatIllScript.diagnoses}" var="expddx" varStatus="status">
+			   		<ui:include src="ddxexpbox.xhtml" />
+  				</ui:repeat>	   					
+  				</h:panelGroup>
+   		</h:form>
+  </div>
+ <div id="jsonConns" style="display:none;">#{crtContext.graph.jsonConns}</div> 
+ 
+ </body>
+ 
+ </html>

@@ -5,16 +5,15 @@
     xmlns:f="http://java.sun.com/jsf/core">
 
  <div id="tst_#{test.id}"  score="#{test.score}" class="itembox tests" title=">#{test.labelOrSynLabel}" style="left:#{test.x}px; top:#{test.boxY}px;"> 
- #{test.shortLabelOrSynLabel}
+ #{test.shortLabelOrSynShortLabel}
  <script language="Javascript">
  	item_arr.push("tst_#{test.id}");
  </script>
-  		<span class="dropdown" ><i class="icon-down-open"></i>
+  		<span class="dropdown" ><i class="fa fa-chevron-circle-down"></i>
 	 		<div class="dropdown-content" id="ddmng_#{mng.id}">Change to:<br/>
-	 		<a href="javascript:chgTest(#{test.id}, 1);">#{test.labelOrSynLabel}</a><!-- item toggled prefix, always enabled -->	 	
-	 		<a  class="dropd_#{test.isExpertHierarchyItem}" href="javascript:chgTest(#{test.id}, 2);">#{test.expItemLabel}</a> <!-- Hierarchy -->
-	 		<a class="dropd_#{test.isSynonyma}" href="javascript:chgTest(#{test.id}, 3);">#{test.synonym.name}</a> <!-- Synonym -->
-	 		<a href="javascript:delTest(#{test.id});"><i class="icon-trash-1"></i>Delete</a>
+	 		<span class="dropd_#{test.isExpertHierarchyItem}"><a  class="dropd_#{test.isExpertHierarchyItem}" href="javascript:chgTest(#{test.id}, 2);">#{test.expItemLabel}</a><br/></span> <!-- Hierarchy -->
+	 		<span class="dropd_#{test.isSynonyma}"><a class="dropd_#{test.isSynonyma}" href="javascript:chgTest(#{test.id}, 3);">#{test.synonym.name}</a><br/></span> <!-- Synonym -->
+	 		<a href="javascript:delTest(#{test.id});"><i class="fa fa-trash"></i> Delete</a>
 	 		</div>
  		</span>
 	<span class="peer_score_test" title="Percentage of peers who have selected this test as well" id="peerscore#{test.id}"> (#{test.peerPercentage})</span><br/>

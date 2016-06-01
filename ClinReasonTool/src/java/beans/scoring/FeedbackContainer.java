@@ -99,21 +99,21 @@ public class FeedbackContainer implements Serializable{
 	 * @param taskStr
 	 * @param currStage
 	 */
-	public void toogleExpBoxFeedback(String toggle, String taskStr, int currStage){
+	public void toogleExpBoxFeedback(String toggle, String taskStr){
 		if(toggle==null) return;
-		notifyExpToggleLog(Integer.parseInt(toggle), currStage, Integer.parseInt(taskStr));
+		notifyExpToggleLog(Integer.parseInt(toggle), Integer.parseInt(taskStr));
 	}
 	
 	public void tooglePeerBoxFeedback(String toggle, String taskStr, int currStage){
 		if(toggle==null) return;
-		notifyPeerToggleLog(Integer.parseInt(toggle), currStage, Integer.parseInt(taskStr));
+		notifyPeerToggleLog(Integer.parseInt(toggle), Integer.parseInt(taskStr));
 	}
 	
 	
 	public void toogleExpFeedback(String toggleStr, int currStage){
 		if(toggleStr==null) return;
 		int toggle = Integer.parseInt(toggleStr);
-		notifyExpToggleLog(toggle, currStage, -1);
+		notifyExpToggleLog(toggle, -1);
 		if(toggle ==0) return; //nothing to do
 		
 		FeedbackBean fb = getFeedbackBean(FeedbackBean.FEEDBACK_EXP, currStage);
@@ -168,10 +168,10 @@ public class FeedbackContainer implements Serializable{
 	 * create and save a log entry for the feedback on/off action
 	 * @param feedbackOn
 	 */
-	private void notifyExpToggleLog(int feedbackOn, int stage, int type){	
+	private void notifyExpToggleLog(int feedbackOn, int type){	
 		int action = LogEntry.FEEDBACK_ON_ACTION;
 		if(feedbackOn==0) action = LogEntry.FEEDBACK_OFF_ACTION;
-		LogEntry log = new LogEntry(action , patIllScriptId, type, stage);
+		LogEntry log = new LogEntry(action , patIllScriptId, type);
 		log.save();
 	}
 	
@@ -179,10 +179,10 @@ public class FeedbackContainer implements Serializable{
 	 * create and save a log entry for the feedback on/off action
 	 * @param feedbackOn
 	 */
-	private void notifyPeerToggleLog(int feedbackOn, int stage, int type){	
+	private void notifyPeerToggleLog(int feedbackOn, int type){	
 		int action = LogEntry.PEERFEEDBACK_ON_ACTION;
 		if(feedbackOn==0) action = LogEntry.PEERFEEDBACK_OFF_ACTION;
-		LogEntry log = new LogEntry(action , patIllScriptId, type, stage);
+		LogEntry log = new LogEntry(action , patIllScriptId, type);
 		log.save();
 	}
 	

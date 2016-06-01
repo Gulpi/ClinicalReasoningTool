@@ -22,6 +22,7 @@ var sumDefY = 420;
 function initGroups(){
 	var groups = new Array("fdg_group", "ddx_group","tst_group", "mng_group", "sum_group", "pat_group");
 	var boxes = new Array(fdg_box, ddx_box, tst_box,mng_box, sum_box, pat_box );
+	var classes = new Array("fdgs", "ddxs", "fdgs","fdgs", "fdgs", "fdgs" );
 
 	for(var i=0; i<boxes.length;i++){
 		instance.addGroup({
@@ -37,6 +38,16 @@ function initGroups(){
 		addToGroup(itemId, item);
 		instance.addEndpoint(itemId, { anchor:dynamicAnchors }, endpoint);
 		var ep = instance.getEndpoints(itemId);
+		//ep.addClass("ddxs");
+		//alert(ep);
+	}
+	for(var i=0; i<exp_arr.length;i++){
+		var itemId = exp_arr[i];
+		var item = $("#"+itemId)
+		addToGroup(itemId, item);
+		instance.addEndpoint(itemId, { anchor:dynamicAnchors }, endpoint);
+		var ep = instance.getEndpoints(itemId);
+		//ep.addClass("ddxs");
 		//alert(ep);
 	}
 	instance.addToGroup("sum_group", $("#summStText"));
@@ -162,6 +173,15 @@ function initOneContainerCollapsed(type, box){ //type="fdg"
 	if(!isCollapsed || isCollapsed=="false") return; //nothing to do...
 	$("#"+box).addClass("collapsed");
 	$("#fdg_box").addClass("jsplumb-group-collapsed");
+}
+
+function deleteEndpoints(id){
+	var ep = instance.getEndpoints(id);
+	if(ep!=undefined && ep.length>0){
+		for(var i=0; i<ep.length;i++){
+			instance.deleteEndpoint(ep[i]);
+		}
+	}
 }
 
 

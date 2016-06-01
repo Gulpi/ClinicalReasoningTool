@@ -58,7 +58,7 @@ var scriptId = "#{crtContext.patillscript.id}";
 var lang = "#{crtContext.patillscript.locale}";
 //var my_canvas = null;
 var currentStage = $.getUrlVar('stage');
-var currentStageScript = "#{crtContext.patillscript.currentStage}";
+var currentStageScript = "#{crtContext.patillscript.currentStageWithUpdate}";
 var expFeedback = false; //default is that expert feedback is off
 var peerFeedback = false; //default is that expert feedback is off
 var active;
@@ -217,7 +217,8 @@ item_arr = new Array();
 <div class="options">
 	<a href="javascript:toogleCnxDisplay();" id="cnxtoggle" title="Hide connections"><i id="cnxtogglei" class="fa fa-conn_on"></i></a>
 	<a href="javascript:toggleExpFeedback('expFeedback', 'icon-user-md');"  title="Show expert feedback at this point of time"><i id="expFeedback" class="fa fa-user-md_off"></i></a>
-	<a href="exp_stages.xhtml" target="new">exp dev</a>
+	<!--  <a href="exp_stages.xhtml" target="new">exp dev</a>-->
+	<!--  <a href="alert('not yet available, will show the development of the experts script during the case');">exp dev</a>-->
 </div>
 <div class="boxes_container">
 	<div id="canvas" class="canvas jtk-surface drag-drop jtk-surface-nopan" >

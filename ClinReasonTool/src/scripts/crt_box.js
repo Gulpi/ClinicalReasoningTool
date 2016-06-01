@@ -215,7 +215,7 @@ function doSubmitDDXDialogCallback(){
 function submitDDXConfirmed(){
 	var checks = $(".chb_ddx:checked");
 	if(checks.length<=0){
-		alert("nothing selected.");
+		alert("Please select your final diagnosis/-es.");
 		return;
 	}
 	var ids="";
@@ -252,10 +252,12 @@ function backToCase(){
 	$("#ddx_submit_btn").show();
 	$(".aftersubmit").hide();
 	$("#jdialog" ).dialog( "close" );
+	
 	sendAjax("", revertSubmissionCallback, "resetFinalDDX","");
 }
 
 function revertSubmissionCallback(){
+	$(".ddxs").remove();
 	$("[id='ddxform:hiddenDDXButton']").click();
 }
 

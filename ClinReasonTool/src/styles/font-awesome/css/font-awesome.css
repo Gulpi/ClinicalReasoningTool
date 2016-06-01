@@ -485,6 +485,11 @@
   content: "\f061";
   color:#ffffff;
 }
+
+.fa-arrow-rightb:before {
+  content: "\f061";
+}
+
 .fa-arrow-up:before {
   content: "\f062";
 }

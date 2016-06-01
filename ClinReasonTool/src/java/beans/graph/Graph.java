@@ -264,7 +264,7 @@ public class Graph extends DirectedWeightedMultigraph<MultiVertex, MultiEdge> {
 		Iterator<MultiVertex> it = verts.iterator();
 		while(it.hasNext()){
 			MultiVertex mv = it.next();
-			if(mv.getType()==type && mv.getExpertVertex()!=null && mv.getExpertVertex().getStage()== stage && !mv.isLearnerVertex()) 
+			if(mv.getType()==type && mv.getExpertVertex()!=null && mv.getExpertVertex().getStage()<= stage && !mv.isLearnerVertex()) 
 				list.add(mv);				
 		}
 		return list;

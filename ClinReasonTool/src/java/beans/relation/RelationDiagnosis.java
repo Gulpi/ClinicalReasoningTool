@@ -96,7 +96,8 @@ public class RelationDiagnosis extends Relation implements Serializable {
 	public void setTier(int tier) {this.tier = tier;}
 	public ListItem getDiagnosis() {return diagnosis;}
 	public void setDiagnosis(ListItem diagnosis) {this.diagnosis = diagnosis;}	
-	
+	public String getShortLabelOrSynShortLabel(){return StringUtils.abbreviate(getLabelOrSynLabel(), ListItem.MAXLENGTH_NAME-2);}
+
 	//public int getSubmittedStage() {return submittedStage;}
 	//public void setSubmittedStage(int submittedStage) {this.submittedStage = submittedStage;}
 	

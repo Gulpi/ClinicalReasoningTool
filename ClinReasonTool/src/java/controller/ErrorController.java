@@ -3,6 +3,7 @@ package controller;
 import java.util.*;
 
 import application.AppBean;
+import beans.LogEntry;
 import beans.PatientIllnessScript;
 import beans.error.*;
 import beans.error.MyError;
@@ -24,29 +25,40 @@ public class ErrorController {
 		PatientIllnessScript expIllScript = AppBean.getExpertPatIllScript(patIllScript.getParentId());
 		
 		if(leanerFinals==null || leanerFinals.isEmpty() || expFinals==null || expFinals.isEmpty()) return null;
-		patIllScript.addError(isPrematureClosure(expIllScript, patIllScript));
-		patIllScript.addError(isAvailabilityError());
+		checkPrematureClosure(expIllScript, patIllScript);
+		checkAvailabilityError();
 		//new DBClinReason().saveAndCommit(errors);
 		
 		return errors;
 	}
 	
 	
-	private MyError isPrematureClosure(PatientIllnessScript expIllScript, PatientIllnessScript patIllScript){		
-			if(patIllScript.getSubmittedStage()< expIllScript.getSubmittedStage()){
-				PrematureClosure pcl =  new PrematureClosure(patIllScript.getId(), patIllScript.getCurrentStage());
-				new DBClinReason().saveAndCommit(pcl);
-				
-				return pcl;
-			}
-			return null;
+	/**
+	 * ddx has been submitted too early
+	 * TODO: we could check in addition whether user has missed important findings (or these come at a later stage) that 
+	 * would lead to the correct diagnoses.
+	 * @param expIllScript
+	 * @param patIllScript
+	 */
+	private void checkPrematureClosure(PatientIllnessScript expIllScript, PatientIllnessScript patIllScript){		
+		if(patIllScript.getSubmittedStage()< expIllScript.getSubmittedStage()){
+			PrematureClosure pcl =  new PrematureClosure(patIllScript.getId(), patIllScript.getCurrentStage());
+			if(patIllScript.addError(pcl)) //we save only if this is a new error that has not previously occured at this stage
+				new DBClinReason().saveAndCommit(pcl);	
+			notifyLog(pcl, patIllScript.getId());
+		}
 	}
 	
-	private MyError isAvailabilityError(){
+	private MyError checkAvailabilityError(){
 		//we have to check here the last x scripts/VPs of the user and whether it involved the diagnosis he has come up with 
 		//here...
 		return null;
 	}
 	
 	//and so on....
+	
+	private void notifyLog(MyError err, long patIllScriptId){
+		LogEntry le = new LogEntry(LogEntry.ERROR_ACTION, patIllScriptId, err.getType());
+		le.save();		
+	}
 }

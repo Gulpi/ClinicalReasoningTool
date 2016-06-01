@@ -178,6 +178,18 @@ public class CRTFacesContext extends FacesContextWrapper /*implements Serializab
 	public PatientIllnessScript getPatillscript() { 
 		return patillscript;
 	}
+	
+	/*public int getCurrentStage(){
+		if(patillscript==null) return -1;
+		String stageStr =  new AjaxController().getRequestParamByKey("stage");
+		if(stageStr!=null){
+			int stage = Integer.parseInt(stageStr);			
+			if(stage<0 || stage<=patillscript.getCurrentStage()) return patillscript.getCurrentStage();
+			patillscript.getCurrentStageWithUpdate()
+			
+		}
+	}*/
+	
 	public void setPatillscript(PatientIllnessScript patillscript) { this.patillscript = patillscript;}	
 	//public List<PatientIllnessScript> getScriptsOfUser() {return this.scriptsOfUser;}
 	//private void setScriptsOfUser(List<PatientIllnessScript> scriptsOfUser){this.scriptsOfUser = scriptsOfUser;}	

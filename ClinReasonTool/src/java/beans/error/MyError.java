@@ -24,6 +24,10 @@ public  abstract class MyError implements Serializable{
 	 */
 	private int type; 
 	/**
+	 * we have a list of errors, idx reflects the order in that the errors have occured.
+	 */
+	private int idx;
+	/**
 	 * type of subclass as string (discriminator needs to be a string).
 	 */
 	private String discr;
@@ -46,7 +50,10 @@ public  abstract class MyError implements Serializable{
 	public int getStage() {return stage;}
 	public void setStage(int stage) {this.stage = stage;}
 	public String getDiscr() {return discr;}
-	public void setDiscr(String discr) {this.discr = discr;}
+	public void setDiscr(String discr) {this.discr = discr;}	
+	public int getIdx() {return idx;}
+	public void setIdx(int idx) {this.idx = idx;}
+	
 	/* (non-Javadoc)
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */

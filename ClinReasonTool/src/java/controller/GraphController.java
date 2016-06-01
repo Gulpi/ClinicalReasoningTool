@@ -134,11 +134,11 @@ public class GraphController implements Serializable{
 				if(patIllScript.getProblems().get(j)!=null && patIllScript.getDiagnoses().get(i)!=null)
 					graph.addImplicitEdge(patIllScript.getProblems().get(j).getListItemId(), patIllScript.getDiagnoses().get(i).getListItemId(), illScriptType);
 			}
-			for(int j=0; j < patIllScript.getEpis().size(); j++){
+			/*for(int j=0; j < patIllScript.getEpis().size(); j++){
 				//graph.addImplicitEdge(sourceId, targetId, type);
 				
 				graph.addImplicitEdge(patIllScript.getEpis().get(j).getListItemId(), patIllScript.getDiagnoses().get(i).getListItemId(), illScriptType);
-			}
+			}*/
 
 			//add ddx -> tests
 			for(int j=0; j < patIllScript.getTests().size(); j++){

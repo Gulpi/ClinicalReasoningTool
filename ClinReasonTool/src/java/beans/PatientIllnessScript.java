@@ -93,9 +93,12 @@ public class PatientIllnessScript extends Beans/*extends Node*/ implements Illne
 	private int maxSubmittedStage = -1;
 	
 	/**
-	 * key=stage, value=list of errors at this stage
+	 * key=error id, value=error
+	 * It is complicated to have lists in Maps in hibernate, therefore, we currently have a map with all errors and the unique 
+	 * id as key...
 	 */
-	private Map<Integer, List<MyError>> errors;
+	private List<MyError> errors;
+	//private Map<Integer, List<MyError>> errors;
 	//private FinalDiagnosisSubmission finalddxs;
 	
 	/**
@@ -165,30 +168,41 @@ public class PatientIllnessScript extends Beans/*extends Node*/ implements Illne
 		return currentStage;
 	}	
 	public void setCurrentStage(int currentStage) { this.currentStage = currentStage;}		
-	public List<MyError> getErrors() {
-		if(errors==null) return null;
-		return errors.get(new Integer(currentStage));
-	}
+	public List<MyError> getErrors() {return errors;}
 	
+	/**
+	 * @return all Errors that have been made at the current stage
+	 */
 	public List<MyError> getErrorsCurrStage() {
 		if(errors==null) return null;
-		return errors.get(new Integer(currentStage));
+		List<MyError> stageErr = new ArrayList<MyError>();
+		for(int i=0; i<errors.size(); i++){
+			if(errors.get(i).getStage()==this.currentStage) stageErr.add(errors.get(i));
+		}
+		if(stageErr==null || stageErr.isEmpty()) return null;
+		return stageErr;
 	}
 	
-	public void setErrors(Map<Integer, List<MyError>> errors) {this.errors = errors;}
+	public void setErrors(List<MyError> errors) {this.errors = errors;}
 	public void addErrors(List<MyError> list){
 		if(list==null || list.isEmpty()) return;
-		
-		if(errors==null) errors = new HashMap<Integer, List<MyError>>();
-		if (errors.get(new Integer(currentStage))==null)
-			errors.put(new Integer(currentStage), list);
-		else errors.get(new Integer(currentStage)).addAll(list);
+		for(int i=0; i<list.size(); i++){
+			addError(list.get(i));
+		}
 	}
-	public void addError(MyError err){
-		if(err==null) return;
-		List<MyError> myList = new ArrayList<MyError>();
-		myList.add(err);
-		addErrors(myList);
+	
+	/**
+	 * Add an error, if for the stage and type no error has been occured.
+	 * @param err
+	 */
+	public boolean addError(MyError err){
+		if(err==null) return false;
+		if(errors==null) errors = new ArrayList<MyError>();
+		if(!errors.contains(err)){
+			errors.add(err);
+			return true;
+		}
+		return false;
 	}	
 	public boolean getSubmitted() {
 		if(submittedStage>0) return true;
@@ -323,7 +337,7 @@ public class PatientIllnessScript extends Beans/*extends Node*/ implements Illne
 		}
 		return finals;
 	}
-	
+		
 	public Relation getRelationByIdAndType(long id, int type){
 		if(type==Relation.TYPE_PROBLEM) return getRelationById(this.problems, id);
 		if(type==Relation.TYPE_DDX) return getRelationById(this.diagnoses, id);

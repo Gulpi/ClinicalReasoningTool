@@ -26,40 +26,37 @@
 	    <property name="summStId" column="summst_id" type="long"/>
 	    <property name="peerSync" column="peer_sync" type="boolean"/>
 	     <property name="maxSubmittedStage" column="max_ddx_submitted" type="int"/>
-	    
- 		<!--  <many-to-one name="courseIcon" column="course_icon" not-null="false" update="false" insert="false"/>
-		<property name="icon_id" column="course_icon" type="long"/>-->
- 		
-		<list name="problems" table="crt.relation_problem" lazy="false"> <!-- table="crt.relation_problem"-->
+	
+		<list name="problems" table="crt.relation_problem" lazy="false"> 
     		<key column="dest_id"/> <!-- dest_id = patientIllnessScript id -->
     		<list-index column="idx" base="0"/>
     		<one-to-many class="beans.relation.RelationProblem"/>   		
 		</list>	
-		<list name="diagnoses" table="crt.relation_diagnosis" lazy="false"> <!-- table="crt.relation_problem"-->
+		<list name="diagnoses" table="crt.relation_diagnosis" lazy="false"> 
     		<key column="dest_id"/> <!-- dest_id = patientIllnessScript id -->
     		<list-index column="idx" base="0"/>
     		<one-to-many class="beans.relation.RelationDiagnosis"/>   		
 		</list>	
-		<list name="tests" table="crt.relation_test" lazy="false"> <!-- table="crt.relation_problem"-->
+		<list name="tests" table="crt.relation_test" lazy="false"> 
     		<key column="dest_id"/> <!-- dest_id = patientIllnessScript id -->
     		<list-index column="idx" base="0"/>
     		<one-to-many class="beans.relation.RelationTest"/>   		
 		</list>	
-		<list name="epis" table="crt.relation_epi" lazy="false"> <!-- table="crt.relation_problem"-->
-    		<key column="dest_id"/> <!-- dest_id = patientIllnessScript id -->
+		<!-- <list name="epis" table="crt.relation_epi" lazy="false"> 
+    		<key column="dest_id"/> 
     		<list-index column="idx" base="0"/>
     		<one-to-many class="beans.relation.RelationEpi"/>   		
-		</list>	
-		<list name="mngs" table="crt.relation_management" lazy="false"> <!-- table="crt.relation_problem"-->
+		</list>	-->
+		<list name="mngs" table="crt.relation_management" lazy="false"> 
     		<key column="dest_id"/> <!-- dest_id = patientIllnessScript id -->
     		<list-index column="idx" base="0"/>
     		<one-to-many class="beans.relation.RelationManagement"/>   		
 		</list>	
-		<map name="errors" table="crt.error" lazy="false"> <!-- table="crt.relation_problem"-->
+		<list name="errors" table="crt.error" lazy="false"> <!-- table="crt.relation_problem"-->
     		<key column="dest_id"/> <!-- dest_id = patientIllnessScript id -->
-    		<map-key column="stage" type="int"/>
+    		<list-index column="idx" base="0"/>
     		<one-to-many class="beans.error.MyError"/>   		
-		</map>			
+		</list>			
 		<map name="conns" table="crt.connection" lazy="false" order-by="id" >
 	   		<key column="illscript_id" />
 	   		<map-key column="id" type="long"/>	   		

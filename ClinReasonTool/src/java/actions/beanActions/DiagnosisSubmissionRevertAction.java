@@ -21,10 +21,12 @@ public class DiagnosisSubmissionRevertAction {
 	
 	/**
 	 * We remove the final diagnosis flag for all WRONG (<0.5) diagnoses, so that the learner can retry...
+	 * we also set the submittedStage in the patillscript to -1 (otherwise expert's final ddxs would be displayed)
 	 */
 	public void revertSubmission(){
+		patIllScript.setSubmittedStage(-1);
 		List<RelationDiagnosis> finalDDX = patIllScript.getFinalDiagnoses();
-		List<ScoreBean> scores = new NavigationController().getCRTFacesContext().getLearningAnalytics().getScoreContainer().getScoresByType(ScoreBean.TYPE_FINAL_DDX);
+		//List<ScoreBean> scores = new NavigationController().getCRTFacesContext().getLearningAnalytics().getScoreContainer().getScoresByType(ScoreBean.TYPE_FINAL_DDX);
 		if(finalDDX==null) return;
 		for(int i=0; i<finalDDX.size(); i++){
 			RelationDiagnosis ddx = finalDDX.get(i);
@@ -34,6 +36,7 @@ public class DiagnosisSubmissionRevertAction {
 			 notifyLog(ddx);
 		}
 		new DBClinReason().saveAndCommit(finalDDX);
+		patIllScript.save();
 	}
 	
 	private void notifyLog(Relation rel){

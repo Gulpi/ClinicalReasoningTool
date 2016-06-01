@@ -24,17 +24,19 @@
 	 </h:commandButton>
 </h:form>
 
-	<a id="ddx_submit_btn" href="javascript:submitDDXConfirmed();">Submit</a>
-	<span class="aftersubmit">
+	<a id="ddx_submit_btn" href="javascript:submitDDXConfirmed();"><i class="fa fa-arrow-rightb"></i> Submit</a>
+	<span class="aftersubmit">Potential errors:
 		<ul id="errors">
 			<ui:repeat value="#{crtContext.patillscript.errorsCurrStage}" var="err" varStatus="status">
 				<ui:include src="errorline.xhtml" />
 	 		</ui:repeat>				
 		</ul>
-		<a class="aftersubmit_cont_#{offerContinueCase}" href="javascript:backToCase();">Continue with case (not max stage OR correct)</a><br/>
-		<a class="aftersubmit_cont_#{offerTryAgain}" href="javascript:tryAgain();">Try again (max stage)</a><br/>
-		<a class="aftersubmit_cont_#{offerSolution}" href="javascript:showSolution();">Give me solution (max stage)</a>
-		<a class="aftersubmit_cont_#{offerSolution}" href="javascript:giveHint();">Give me a hint (max stage)</a>
+		What do you want to do next?<ul class="fa-ul">
+			<li class="aftersubmit_cont_#{crtContext.patillscript.offerContinueCase}"><i class="fa-li fa fa-arrow-rightb"></i> <a class="aftersubmit_cont_#{crtContext.patillscript.offerContinueCase}" href="javascript:backToCase();">Continue with case</a></li><!--  (not max stage OR correct) -->
+			<li class="aftersubmit_cont_#{crtContext.patillscript.offerTryAgain}"><i class="fa-li fa fa-arrow-rightb"></i> <a class="aftersubmit_cont_#{crtContext.patillscript.offerTryAgain}" href="javascript:tryAgain();">Try again </a></li><!-- (max stage) -->
+			<li class="aftersubmit_cont_#{crtContext.patillscript.offerSolution}"><i class="fa-li fa fa-arrow-rightb"></i> <a class="aftersubmit_cont_#{crtContext.patillscript.offerSolution}" href="javascript:showSolution();">Give me solution</a></li> <!--  (max stage only) -->
+			<li class="aftersubmit_cont_#{crtContext.patillscript.offerSolution}"><i class="fa-li fa fa-arrow-rightb"></i> <a class="aftersubmit_cont_#{crtContext.patillscript.offerSolution}" href="javascript:giveHint();">Give me a hint</a></li> <!--  (max stage only) -->
+		</ul>
 	</span>
 </div>
 <div id="confidence_slider" class="conf_slider" title="Please indicate how confident you are with your current differentials."></div>

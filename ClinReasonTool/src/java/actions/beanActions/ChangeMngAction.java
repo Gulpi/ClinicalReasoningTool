@@ -25,7 +25,7 @@ import model.ListItem;
  * @author ingahege
  *
  */
-public class ChangeMngAction implements ChgAction, Scoreable{
+public class ChangeMngAction extends ChgAction{
 
 	private PatientIllnessScript patIllScript;
 	
@@ -33,10 +33,16 @@ public class ChangeMngAction implements ChgAction, Scoreable{
 		this.patIllScript = patIllScript;
 	}
 	
-	public void changeMng(String oldProbIdStr, String newProbIdStr){
-		long oldProbId = Long.valueOf(oldProbIdStr.trim());
+	public void changeMng(String oldMngIdStr, String changeModeStr){
+		/*long oldProbId = Long.valueOf(oldProbIdStr.trim());
 		long newProbId = Long.valueOf(newProbIdStr.trim());
-		changeMng(oldProbId, newProbId);
+		changeMng(oldProbId, newProbId);*/
+		long oldMngId = Long.valueOf(oldMngIdStr.trim());
+		int changeMode = Integer.valueOf(changeModeStr.trim());
+		//if(changeMode==1) toggleProblem(oldMngId); //change prefix
+		if(changeMode==2 || changeMode==3) 
+			changeItem(oldMngId, patIllScript, Relation.TYPE_MNG); //changeProblem(oldProbId); //synonyma or hierarchy item
+
 	}
 	
 	/**
@@ -44,7 +50,7 @@ public class ChangeMngAction implements ChgAction, Scoreable{
 	 * scoreBean.
 	 * @param oldRelStr
 	 */
-	public void changeMng(String oldRelStr){
+	/*public void changeMng(String oldRelStr){
 		if(oldRelStr==null || oldRelStr.equals("")) return;
 		long oldRelId = Long.valueOf(oldRelStr).longValue();
 		RelationManagement relToChg = patIllScript.getMngById(oldRelId);
@@ -62,9 +68,10 @@ public class ChangeMngAction implements ChgAction, Scoreable{
 		changeRelation(expVertex, relToChg);	
 		//we re-score the item:
 		new ScoringAddAction(true).scoreAction(expVertex.getVertexId(), patIllScript, false);
-	}
+	}*/
 	
-	private void changeRelation(MultiVertex expVertex, RelationManagement relToChg){
+	public void changeRelation(MultiVertex expVertex, Relation rel){
+		RelationManagement relToChg = (RelationManagement) rel;
 		notifyLog(relToChg, expVertex.getExpertVertex().getListItem().getItem_id());
 		relToChg.setManagement(expVertex.getExpertVertex().getListItem());
 		relToChg.setListItemId(expVertex.getExpertVertex().getListItem().getItem_id());
@@ -72,7 +79,7 @@ public class ChangeMngAction implements ChgAction, Scoreable{
 		save(relToChg);		
 	}
 	
-	private void changeMng(long newMngId, long mngRel){
+	/*private void changeMng(long newMngId, long mngRel){
 		RelationManagement mngToChg = patIllScript.getMngById(mngRel);
 		ListItem oldMng = new DBList().selectListItemById(mngToChg.getListItemId());
 		ListItem newMng = new DBList().selectListItemById(newMngId);
@@ -83,7 +90,7 @@ public class ChangeMngAction implements ChgAction, Scoreable{
 			save(mngToChg);		
 		}
 		//else -> error...
-	}
+	}*/
 	
 	public void notifyLog(Beans mngToChg, long newMngId){
 		LogEntry le = new LogEntry(LogEntry.CHGMNG_ACTION, patIllScript.getId(), ((Relation)mngToChg).getListItemId(), newMngId);

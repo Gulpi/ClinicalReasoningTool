@@ -4,18 +4,20 @@ import java.beans.Beans;
 
 import beans.relation.Relation;
 
-public class ChgPropAction implements ChgAction{
+/**
+ * @author ingahege
+ *@deprecated
+ */
+public class ChgPropAction /*extends ChgAction*/{
 
-	@Override
-	public void notifyLog(Beans rel, long id) {
+	/*public void notifyLog(Beans rel, long id) {
 		// TODO Auto-generated method stub
 		
 	}
 
-	@Override
 	public void save(Beans rel) {
 		// TODO Auto-generated method stub
 		
-	}
+	}*/
 
 }

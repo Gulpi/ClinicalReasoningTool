@@ -27,7 +27,7 @@ import model.ListItem;
  * @author ingahege
  *
  */
-public class ChangeProblemAction implements ChgAction, Scoreable{
+public class ChangeProblemAction extends ChgAction{
 
 	private PatientIllnessScript patIllScript;
 	
@@ -40,12 +40,12 @@ public class ChangeProblemAction implements ChgAction, Scoreable{
 	 * @param oldProbIdStr
 	 * @param newProbIdStr
 	 */
-	public void changeProblem(String oldProbIdStr, String changeModeStr){
-		
+	public void changeProblem(String oldProbIdStr, String changeModeStr){		
 		long oldProbId = Long.valueOf(oldProbIdStr.trim());
 		int changeMode = Integer.valueOf(changeModeStr.trim());
 		if(changeMode==1) toggleProblem(oldProbId); //change prefix
-		if(changeMode==2 || changeMode==3) changeProblem(oldProbId); //synonyma or hierarchy item
+		if(changeMode==2 || changeMode==3) 
+			changeItem(oldProbId, patIllScript, Relation.TYPE_PROBLEM); //changeProblem(oldProbId); //synonyma or hierarchy item
 		//changeProblem(oldProbId, newProbId);
 	}
 	
@@ -68,35 +68,14 @@ public class ChangeProblemAction implements ChgAction, Scoreable{
 		new ScoringAddAction(true).scoreAction(probToChg.getListItemId(), patIllScript, false);
 	}
 	
-	/**
-	 * called from lists, where we only have the the current id, we change it to the new id, which is stored in the
-	 * scoreBean.
-	 * @param oldProbIdStr
-	 */
-	private void changeProblem(long oldProbId){
-		RelationProblem probToChg = patIllScript.getProblemById(oldProbId);
-		ScoreBean score = new ScoringController().getScoreBeanForItem(Relation.TYPE_PROBLEM, probToChg.getListItemId());
-		//change in RelationProblem & Vertex:
-		
-		Graph g = new NavigationController().getCRTFacesContext().getGraph();
-		MultiVertex expVertex = g.getVertexById(score.getExpItemId());
-		MultiVertex learnerVertexOld = g.getVertexById(probToChg.getListItemId());
-		if(!expVertex.equals(learnerVertexOld)){ //then it is NOT a synonyma, but a hierarchy node
-				new GraphController(g).transferEdges(learnerVertexOld, expVertex);		
-				g.removeVertex(learnerVertexOld);
-				if(expVertex.getLearnerVertex()==null) expVertex.setLearnerVertex(probToChg);
-		}
-		changeRelation(expVertex, probToChg);	
-		//we re-score the item:
-		new ScoringAddAction(true).scoreAction(expVertex.getVertexId(), patIllScript, false);
-	}
 	
-	private void changeRelation(MultiVertex expVertex, RelationProblem probToChg){
-		notifyLog(probToChg, expVertex.getExpertVertex().getListItem().getItem_id());
-		probToChg.setProblem(expVertex.getExpertVertex().getListItem());
-		probToChg.setListItemId(expVertex.getExpertVertex().getListItem().getItem_id());
-		probToChg.setSynId(-1);	
-		save(probToChg);		
+	public void changeRelation(MultiVertex expVertex, Relation probToChg){
+		RelationProblem prob = (RelationProblem) probToChg;
+		notifyLog(prob, expVertex.getExpertVertex().getListItem().getItem_id());
+		prob.setProblem(expVertex.getExpertVertex().getListItem());
+		prob.setListItemId(expVertex.getExpertVertex().getListItem().getItem_id());
+		prob.setSynId(-1);	
+		save(prob);		
 	}
 	
 	

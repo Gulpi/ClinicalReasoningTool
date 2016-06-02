@@ -158,6 +158,7 @@ function updateDDXCallback(){
 /** a diagnosis is changed to must not missed -red icon or toggled back*/
 function toggleMnM(id){
 	clearErrorMsgs();
+	hideDropDown("ddddx_"+id);
 	var id2 = "mnmicon_"+id;
 	if ($("#"+id2).hasClass("fa-exclamation-circle1")){
 		$("#"+id2).removeClass("fa-exclamation-circle1");
@@ -293,6 +294,7 @@ function changeTier2(id, tier){
 
 function ruleOut(id){
 	clearErrorMsgs();
+	hideDropDown("ddddx_"+id);
 	var item = $("#ddx_"+id);	
 	item.css("border-color", "#cccccc"); 
 	item.css("color", "#cccccc");
@@ -305,6 +307,7 @@ function ruleOut(id){
 
 function ruleIn(id){
 	clearErrorMsgs();
+	hideDropDown("ddddx_"+id);
 	var item = $("#ddx_"+id);	
 	item.css("border-color", "#000000"); 
 	item.css("color", "#000000");
@@ -413,6 +416,12 @@ function testCallBack(testId, selTest){
 	$(".tests").remove();
 	//we update the problems list and the json string
 	$("[id='testform:hiddenTestButton']").click();		
+}
+
+function chgTest(id, type){
+	clearErrorMsgs();
+	sendAjax(id, testCallBack, "changeTest", type);
+	
 }
 
 function addJokerTest(){
@@ -670,6 +679,8 @@ function toggleExpFeedback(iconId, itemClass){
 		$(".expbox").addClass("expboxstatus");
 		turnExpBoxFeedbackOff("expFeedbackFdg", "fdgs");
 		turnExpBoxFeedbackOff("expFeedbackDDX", "ddxs");
+		turnExpBoxFeedbackOff("expFeedbackTest", "tests");
+		turnExpBoxFeedbackOff("expFeedbackMng", "mngs");
 		$(".jsplumb-exp-connector").addClass("jsplumb-exp-connector-hide");
 		$(".jsplumb-exp-connector").removeClass("jsplumb-exp-connector-show");
 		sendAjaxContext(0, doNothing, "toogleExpFeedback", "");
@@ -684,6 +695,8 @@ function toggleExpFeedback(iconId, itemClass){
 		$(".expbox").removeClass("expboxinvis");
 		turnExpBoxFeedbackOn("expFeedbackFdg", "fdgs");
 		turnExpBoxFeedbackOn("expFeedbackDDX", "ddxs");
+		turnExpBoxFeedbackOn("expFeedbackTest", "tests");
+		turnExpBoxFeedbackOn("expFeedbackMng", "mngs");
 		$(".jsplumb-exp-connector").addClass("jsplumb-exp-connector-show");
 		$(".jsplumb-exp-connector").removeClass("jsplumb-exp-connector-hide");
 		sendAjaxContext(1, doNothing, "toogleExpFeedback", "");
@@ -705,12 +718,18 @@ function openErrorDialog(){
 function showExpStages(){
 	
 }
-
-
-function showDropDown(id){
+/*
+ * We get the position of the pos element (the itembox) and position the dropdown menu close to it
+ */
+function showDropDown(id, pos){	
 	$("#"+id).show();
+	var x =  $("#"+pos).position().left+10;
+	var y = $("#"+pos).position().top+5;
+	$("#"+id).css( { left: x + "px", top: y + "px" } ) 
 }
-
+/*
+ * Onmouseleave (! not onmouseout) we hide the dropdown again
+ */
 function hideDropDown(id){
 	$("#"+id).hide();
 }

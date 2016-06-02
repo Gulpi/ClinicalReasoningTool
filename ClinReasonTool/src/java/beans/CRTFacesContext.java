@@ -29,7 +29,7 @@ import util.CRTLogger;
 public class CRTFacesContext extends FacesContextWrapper /*implements Serializable*/{
 	//public static final String PATILLSCRIPT_KEY = "patillscript";
 	//public static final String PATILLSCRIPTS_KEY = "patillscripts";
-	public static final String CRT_FC_KEY = "crtfc";
+	public static final String CRT_FC_KEY = "crtContext";
 	
 	private static final long serialVersionUID = 1L;
 	//private long sessionId = -1; //not sure we need the session_id

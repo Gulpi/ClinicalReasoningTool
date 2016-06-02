@@ -8,7 +8,7 @@ import beans.SummaryStatement;
 import database.DBClinReason;
 
 
-public class SummaryStatementChgAction implements ChgAction{
+public class SummaryStatementChgAction /*extends ChgAction*/{
 
 	private PatientIllnessScript patIllScript;
 	private DBClinReason dcr = new DBClinReason();

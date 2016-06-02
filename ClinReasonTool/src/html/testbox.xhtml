@@ -4,18 +4,17 @@
     xmlns:ui="http://java.sun.com/jsf/facelets"
     xmlns:f="http://java.sun.com/jsf/core">
 
- <div id="tst_#{test.id}"  score="#{test.score}" class="itembox tests" title=">#{test.labelOrSynLabel}" style="left:#{test.x}px; top:#{test.boxY}px;"> 
- #{test.shortLabelOrSynShortLabel}
- <script language="Javascript">
- 	item_arr.push("tst_#{test.id}");
- </script>
-  		<span class="dropdown" ><i class="fa fa-chevron-circle-down"></i>
-	 		<div class="dropdown-content" id="ddtst_#{test.id}">Change to:<br/>
-	 		<span class="dropd_#{test.isExpertHierarchyItem}"><a  class="dropd_#{test.isExpertHierarchyItem}" href="javascript:chgTest(#{test.id}, 2);">#{test.expItemLabel}</a><br/></span> <!-- Hierarchy -->
-	 		<span class="dropd_#{test.isSynonyma}"><a class="dropd_#{test.isSynonyma}" href="javascript:chgTest(#{test.id}, 3);">#{test.synonym.name}</a><br/></span> <!-- Synonym -->
-	 		<a href="javascript:delTest(#{test.id});"><i class="fa fa-trash"></i> Delete</a>
-	 		</div>
- 		</span>
-	<span class="peer_score_test" title="Percentage of peers who have selected this test as well" id="peerscore#{test.id}"> (#{test.peerPercentage})</span><br/>
-</div>
+ 	<div id="tst_#{test.id}"  score="#{test.score}" class="itembox tests" title=">#{test.labelOrSynLabel}" style="left:#{test.x}px; top:#{test.boxY}px;"> 
+ 		#{test.shortLabelOrSynShortLabel}
+ 		<script language="Javascript">
+ 			item_arr.push("tst_#{test.id}");
+ 		</script>
+  		<span class="dropdown" onMouseOver="javascript:showDropDown('ddtst_#{test.id}','tst_#{test.id}');"><i class="fa fa-chevron-circle-down"></i></span>
+		<span class="peer_score_test" title="Percentage of peers who have selected this test as well" id="peerscore#{test.id}"> (#{test.peerPercentage})</span><br/>
+	</div>
+	<div class="dropdown-content" id="ddtst_#{test.id}" onmouseleave="javascript:hideDropDown('ddtst_#{test.id}');">Change to:<br/>
+		<span class="dropd_#{test.isExpertHierarchyItem}"><a  class="dropd_#{test.isExpertHierarchyItem}" href="javascript:chgTest(#{test.id}, 2);">#{test.expItemLabel}</a><br/></span> <!-- Hierarchy -->
+		<span class="dropd_#{test.isSynonyma}"><a class="dropd_#{test.isSynonyma}" href="javascript:chgTest(#{test.id}, 3);">#{test.synonym.name}</a><br/></span> <!-- Synonym -->
+		<a href="javascript:delTest(#{test.id});"><i class="fa fa-trash"></i> Delete</a>
+	</div>
 </ui:composition>

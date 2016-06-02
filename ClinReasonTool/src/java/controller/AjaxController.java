@@ -42,9 +42,13 @@ public class AjaxController {
 	    Map<String, String> reqParams = externalContext.getRequestParameterMap();
 	    if(reqParams!=null){
 	    	String patillscriptId = reqParams.get(REQPARAM_SCRIPT);
+	    	if(patillscript==null && patillscriptId!=null){ //could be a timeout 
+	    		long patIllScriptId = Long.parseLong(patillscriptId);
+	    		new NavigationController().getCRTFacesContext().initSession();
+	    	}
 	    	if(patillscript==null || patillscriptId==null|| Long.parseLong(patillscriptId)!=patillscript.getId()){
 	    		
-	    		CRTLogger.out("Error: patillscriptId is:"+ patillscriptId + ", patIllScript.sessionId="+patillscript.getSessionId(), CRTLogger.LEVEL_PROD);
+	    		CRTLogger.out("Error: patillscriptId is:"+ patillscriptId + " is null", CRTLogger.LEVEL_PROD);
 	    		return; //TODO we need some more error handling here, how can this happen? What shall we do? 
 	    	}
 	    	String methodName = reqParams.get("type");

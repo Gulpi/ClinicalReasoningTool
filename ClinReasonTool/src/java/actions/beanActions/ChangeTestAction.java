@@ -23,7 +23,7 @@ import model.ListItem;
  * @author ingahege
  *
  */
-public class ChangeTestAction implements ChgAction, Scoreable{
+public class ChangeTestAction extends ChgAction{
 
 	private PatientIllnessScript patIllScript;
 	
@@ -31,10 +31,14 @@ public class ChangeTestAction implements ChgAction, Scoreable{
 		this.patIllScript = patIllScript;
 	}
 	
-	public void changeTest(String oldTestIdStr, String newTestIdStr){
-		long oldTestId = Long.valueOf(oldTestIdStr.trim());
+	public void changeTest(String oldTestIdStr, String changeModeStr){
+		/*long oldTestId = Long.valueOf(oldTestIdStr.trim());
 		long newTestId = Long.valueOf(newTestIdStr.trim());
-		changeTest(oldTestId, newTestId);
+		changeTest(oldTestId, newTestId);*/
+		long oldTestId = Long.valueOf(oldTestIdStr.trim());
+		int changeMode = Integer.valueOf(changeModeStr.trim());
+		//if(changeMode==1) toggleTest(oldTestId); //change prefix
+		if(changeMode==2 || changeMode==3) changeItem(oldTestId, patIllScript, Relation.TYPE_TEST); //synonyma or hierarchy item
 	}
 	
 	/**
@@ -42,7 +46,7 @@ public class ChangeTestAction implements ChgAction, Scoreable{
 	 * scoreBean.
 	 * @param oldRelStr
 	 */
-	public void changeTest(String oldRelStr){
+	/*public void changeTest(String oldRelStr){
 		if(oldRelStr==null || oldRelStr.equals("")) return;
 		long oldRelId = Long.valueOf(oldRelStr).longValue();
 		RelationTest relToChg = patIllScript.getTestById(oldRelId);
@@ -60,9 +64,10 @@ public class ChangeTestAction implements ChgAction, Scoreable{
 		changeRelation(expVertex, relToChg);	
 		//we re-score the item:
 		new ScoringAddAction(true).scoreAction(expVertex.getVertexId(), patIllScript, false);
-	}
+	}*/
 	
-	private void changeRelation(MultiVertex expVertex, RelationTest relToChg){
+	public void changeRelation(MultiVertex expVertex, Relation rel){
+		RelationTest relToChg = (RelationTest) rel;
 		notifyLog(relToChg, expVertex.getExpertVertex().getListItem().getItem_id());
 		relToChg.setTest(expVertex.getExpertVertex().getListItem());
 		relToChg.setListItemId(expVertex.getExpertVertex().getListItem().getItem_id());
@@ -70,7 +75,7 @@ public class ChangeTestAction implements ChgAction, Scoreable{
 		save(relToChg);		
 	}
 	
-	private void changeTest(long newProbId, long probRel){
+	/*private void changeTest(long newProbId, long probRel){
 		RelationTest testToChg = patIllScript.getTestById(probRel);
 		ListItem oldTest = new DBList().selectListItemById(testToChg.getListItemId());
 		ListItem newTest = new DBList().selectListItemById(newProbId);
@@ -81,7 +86,7 @@ public class ChangeTestAction implements ChgAction, Scoreable{
 			save(testToChg);		
 		}
 		//else -> error...
-	}
+	}*/
 	
 	public void notifyLog(Beans testToChg, long newTestId){
 		LogEntry le = new LogEntry(LogEntry.CHGTEST_ACTION, patIllScript.getId(), ((Relation)testToChg).getListItemId(), newTestId);

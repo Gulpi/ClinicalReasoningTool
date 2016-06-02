@@ -14,9 +14,9 @@ import model.ListItem;
  * A ProblemRelation is changed and a different Problem object attached, id remains the same, so, no
  * other changes necessary.
  * @author ingahege
- *
+ * @deprecated
  */
-public class ChangeEpiAction implements ChgAction, Scoreable{
+public class ChangeEpiAction /*extends ChgAction*/{
 
 	private PatientIllnessScript patIllScript;
 	
@@ -52,7 +52,6 @@ public class ChangeEpiAction implements ChgAction, Scoreable{
 		new DBClinReason().saveAndCommit(rel);
 	}
 
-	@Override
 	public void triggerScoringAction(Beans beanToScore, boolean isJoker) {
 		// TODO Auto-generated method stub
 		

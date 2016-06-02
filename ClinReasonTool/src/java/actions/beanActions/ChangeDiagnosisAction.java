@@ -23,7 +23,7 @@ import model.ListItem;
  * @author ingahege
  *
  */
-public class ChangeDiagnosisAction implements ChgAction, Scoreable{
+public class ChangeDiagnosisAction extends ChgAction {
 
 	private PatientIllnessScript patIllScript;
 	
@@ -31,10 +31,15 @@ public class ChangeDiagnosisAction implements ChgAction, Scoreable{
 		this.patIllScript = patIllScript;
 	}
 	
-	public void changeDiagnosis(String oldDDXIdStr, String newDDXIdStr){
+	public void changeDiagnosis(String oldDDXIdStr, String changeModeStr){
 		long oldDDXId = Long.valueOf(oldDDXIdStr.trim());
+		int changeMode = Integer.valueOf(changeModeStr.trim());
+		//if(changeMode==1) toggleDiagnosis(oldDDXId); //change prefix
+		if(changeMode==2 || changeMode==3) 
+			changeItem(oldDDXId, patIllScript, Relation.TYPE_DDX);
+		/*long oldDDXId = Long.valueOf(oldDDXIdStr.trim());
 		long newDDXId = Long.valueOf(newDDXIdStr.trim());
-		changeDiagnosis(oldDDXId, newDDXId);
+		changeDiagnosis(oldDDXId, newDDXId);*/
 	}
 	
 	/**
@@ -42,7 +47,7 @@ public class ChangeDiagnosisAction implements ChgAction, Scoreable{
 	 * scoreBean.
 	 * @param oldProbIdStr
 	 */
-	public void changeDiagnosis(String oldDDXIdStr){
+	/*public void changeDiagnosis(String oldDDXIdStr){
 		if(oldDDXIdStr==null || oldDDXIdStr.equals("")) return;
 		long oldDDXId = Long.valueOf(oldDDXIdStr).longValue();
 		RelationDiagnosis ddxToChg = patIllScript.getDiagnosisById(oldDDXId);
@@ -60,9 +65,10 @@ public class ChangeDiagnosisAction implements ChgAction, Scoreable{
 		changeRelation(expVertex, ddxToChg);	
 		//we re-score the item:
 		new ScoringAddAction(true).scoreAction(expVertex.getVertexId(), patIllScript, false);
-	}
+	}*/
 	
-	private void changeRelation(MultiVertex expVertex, RelationDiagnosis relToChg){
+	public void changeRelation(MultiVertex expVertex, Relation rel){
+		RelationDiagnosis relToChg = (RelationDiagnosis) rel;
 		notifyLog(relToChg, expVertex.getExpertVertex().getListItem().getItem_id());
 		relToChg.setDiagnosis(expVertex.getExpertVertex().getListItem());
 		relToChg.setListItemId(expVertex.getExpertVertex().getListItem().getItem_id());
@@ -70,7 +76,7 @@ public class ChangeDiagnosisAction implements ChgAction, Scoreable{
 		save(relToChg);		
 	}
 	
-	private void changeDiagnosis(long newDDXId, long ddxRel){
+	/*private void changeDiagnosis(long newDDXId, long ddxRel){
 		RelationDiagnosis ddxToChg = patIllScript.getDiagnosisById(ddxRel);
 		ListItem oldDDX = new DBList().selectListItemById(ddxToChg.getListItemId());
 		ListItem newDDX = new DBList().selectListItemById(newDDXId);
@@ -81,7 +87,7 @@ public class ChangeDiagnosisAction implements ChgAction, Scoreable{
 			save(ddxToChg);		
 		}
 		//else -> error...
-	}
+	}*/
 	
 	public void notifyLog(Beans ddxToChg, long newDDXId){
 		LogEntry le = new LogEntry(LogEntry.CHGDDX_ACTION, patIllScript.getId(), ((Relation) ddxToChg).getListItemId(), newDDXId);

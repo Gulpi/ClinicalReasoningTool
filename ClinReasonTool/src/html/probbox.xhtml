@@ -4,22 +4,20 @@
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:f="http://java.sun.com/jsf/core">
 
- <div id="fdg_#{prob.id}"  score="#{prob.score}" class="itembox fdgs" title="#{prob.labelOrSynLabel}" style="left:#{prob.x}px; top:#{prob.boxY}px;">#{prob.prefixStr} #{prob.shortLabelOrSynShortLabel}
- <script language="Javascript">
- 	item_arr.push("fdg_#{prob.id}");
- </script>
- 	<!-- <a href="javascript:delProblem(#{prob.id});"><i class="icon-trash-1" title="Delete this item"></i></a> -->
- 	<!-- <i class="icon-ok2"></i>-->
+ <div id="fdg_#{prob.id}"  score="#{prob.score}" class="itembox fdgs" title="#{prob.labelOrSynLabel}" style="left:#{prob.x}px; top:#{prob.boxY}px;">
+ 	#{prob.prefixStr} #{prob.shortLabelOrSynShortLabel}
+	 <script language="Javascript">
+	 	item_arr.push("fdg_#{prob.id}");
+	 </script>
+	 <span class="dropdown" onMouseOver="javascript:showDropDown('ddfdg_#{prob.id}', 'fdg_#{prob.id}');"><i class="fa fa-chevron-circle-down"></i></span>
 
- 	<span class="dropdown" ><i class="fa fa-chevron-circle-down"></i>
- 	<div class="dropdown-content" id="ddfdg_#{prob.id}">Change to:<br/>
- 		<a href="javascript:chgProblem(#{prob.id}, 1);">#{prob.toggledPrefixStr} #{prob.labelOrSynLabel}</a><br/><!-- item toggled prefix, always enabled -->	 	
- 		<span class="dropd_#{prob.isExpertHierarchyItem}"><a class="dropd_#{prob.isExpertHierarchyItem}" href="javascript:chgProblem(#{prob.id}, 2);">#{prob.expItemLabel}</a><br/></span> <!-- Hierarchy -->
- 		<span class="dropd_#{prob.isSynonyma}"><a class="dropd_#{prob.isSynonyma}" href="javascript:chgProblem(#{prob.id}, 3);">#{prob.synonym.name}</a><br/></span> <!-- Synonym -->
- 		<a href="javascript:delProblem(#{prob.id});"><i class="fa fa-trash"></i> Delete</a>
- 	</div>
- 	</span>
- 	<!--<span class="list_score" id="score_fdg_#{prob.id}">#{prob.score} <a href="javascript:chgProblem(#{prob.id},#{prob.chgAllowed}, '#{prob.expItemLabel}');" title="#{prob.feedback}"><i class="#{prob.score}"></i></a></span>-->
  	<span class="peer_score_fdg" title="Percentage of peers who have added this problem as well" id="peerscore#{prob.id}"> (#{prob.peerPercentage})</span>
- </div>
+ </div> 
+	 <div class="dropdown-content" id="ddfdg_#{prob.id}" onmouseleave="javascript:hideDropDown('ddfdg_#{prob.id}');">Change to:<br/>
+		<a href="javascript:chgProblem(#{prob.id}, 1);">#{prob.toggledPrefixStr} #{prob.labelOrSynLabel}</a><br/><!-- item toggled prefix, always enabled -->	 	
+		<span class="dropd_#{prob.isExpertHierarchyItem}"><a class="dropd_#{prob.isExpertHierarchyItem}" href="javascript:chgProblem(#{prob.id}, 2);">#{prob.expItemLabel}</a><br/></span> <!-- Hierarchy -->
+		<span class="dropd_#{prob.isSynonyma}"><a class="dropd_#{prob.isSynonyma}" href="javascript:chgProblem(#{prob.id}, 3);">#{prob.synonym.name}</a><br/></span> <!-- Synonym -->
+		<a href="javascript:delProblem(#{prob.id});"><i class="fa fa-trash"></i> Delete</a>
+	</div>	
+
 </ui:composition>

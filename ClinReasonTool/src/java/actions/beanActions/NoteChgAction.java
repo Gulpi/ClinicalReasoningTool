@@ -8,7 +8,7 @@ import beans.Note;
 import database.DBClinReason;
 
 
-public class NoteChgAction implements ChgAction{
+public class NoteChgAction /*implements ChgAction*/{
 
 	private PatientIllnessScript patIllScript;
 	private DBClinReason dcr = new DBClinReason();

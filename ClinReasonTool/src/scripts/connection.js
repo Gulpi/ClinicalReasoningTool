@@ -85,11 +85,13 @@ function createExpConnection(cnxId, sourceId, targetId, expWeight, learnerWeight
 		deleteEndpointsOnDetach:false,
 		connectorStyle: { strokeStyle: color, lineWidth: 6 }
 	});
-	$(cnx).attr('id', "exp_"+cnxId);
-	cnx.setPaintStyle({strokeStyle:color}); //color depending on the weight!!!
-	cnx.addClass("jsplumb-exp-connector-hide");
-	cnx.addClass("jsplumb-exp-connector");
-	cnx.removeClass("jsplumb-connector");
+	if(cnx!=undefined){
+		$(cnx).attr('id', "exp_"+cnxId);
+		cnx.setPaintStyle({strokeStyle:color}); //color depending on the weight!!!
+		cnx.addClass("jsplumb-exp-connector-hide");
+		cnx.addClass("jsplumb-exp-connector");
+		cnx.removeClass("jsplumb-connector");
+	}
 	//cnx.hide();
 }
 

@@ -137,6 +137,8 @@ public class CRTFacesContext extends FacesContextWrapper /*implements Serializab
 
 		if(id>0){ //open an created script
 			this.patillscript = isc.loadPatIllScriptById(id, userId);
+			if(this.patillscript!=null && userId<=0) userId = this.patillscript.getUserId(); //can happen if we have to re-init after timeout, there we do not get the userId, just the illscriptId
+
 		}
 		else if(vpId>0 && this.userId>0){ //look whether script created, if not create it...
 			this.patillscript = isc.loadIllnessScriptsByParentId(this.userId, vpId);

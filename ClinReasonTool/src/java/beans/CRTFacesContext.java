@@ -210,7 +210,9 @@ public class CRTFacesContext extends FacesContextWrapper /*implements Serializab
 	//public List<PatientIllnessScript> getScriptsOfUser() {return this.scriptsOfUser;}
 	//private void setScriptsOfUser(List<PatientIllnessScript> scriptsOfUser){this.scriptsOfUser = scriptsOfUser;}	
 	public ScoreContainer getScoreContainer() {
-		return getLearningAnalytics().getScoreContainer();
+		LearningAnalyticsBean lab = getLearningAnalytics();
+		if(lab==null) return null;
+		return lab.getScoreContainer();
 	}
 	
 	public FeedbackContainer getFeedbackContainer() {

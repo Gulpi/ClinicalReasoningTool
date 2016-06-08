@@ -30,7 +30,7 @@ public class DBEditing extends DBClinReason{
     public PatientIllnessScript selectExpertPatIllScriptById(long id){
     	Session s = instance.getInternalSession(Thread.currentThread(), false);
     	Criteria criteria = s.createCriteria(PatientIllnessScript.class,"PatientIllnessScript");
-    	//criteria.add(Restrictions.eq("parentId", new Long(parentId)));
+    	criteria.add(Restrictions.eq("id", new Long(id)));
     	criteria.add(Restrictions.eq("type", new Integer(PatientIllnessScript.TYPE_EXPERT_CREATED)));
     	PatientIllnessScript patIllScript = (PatientIllnessScript) criteria.uniqueResult();
     	s.close();

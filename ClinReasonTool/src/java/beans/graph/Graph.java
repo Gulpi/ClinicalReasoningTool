@@ -8,10 +8,11 @@ import org.jgrapht.alg.DijkstraShortestPath;
 import org.jgrapht.graph.DirectedWeightedMultigraph;
 
 import beans.Connection;
-import beans.IllnessScriptInterface;
-import beans.PatientIllnessScript;
+import beans.scripts.*;
 import beans.relation.Relation;
+import beans.scripts.IllnessScriptInterface;
 import controller.GraphController;
+import controller.NavigationController;
 import database.DBList;
 import model.ListItem;
 import util.CRTLogger;
@@ -32,6 +33,7 @@ public class Graph extends DirectedWeightedMultigraph<MultiVertex, MultiEdge> {
 	private long parentId; //e.g. VPId,...
 	private long userId;
 	private long expertPatIllScriptId;
+	private boolean expEdit = new NavigationController().isExpEdit();
 	//private boolean peersConsidered = false; //we have to get this from a property file
 	/**
 	 * How many peers have completed this patientIllnessScript? If we have enough we can include the peers into 
@@ -191,8 +193,10 @@ public class Graph extends DirectedWeightedMultigraph<MultiVertex, MultiEdge> {
 		//the weight has to be minimum of the explicit weight or a specified higher weight:s
 		int weight = MultiEdge.WEIGHT_EXPLICIT;
 		if(cnx.getWeight()>MultiEdge.WEIGHT_EXPLICIT) weight = cnx.getWeight();
-		if(source!=null && target!=null) 
+		if(source!=null && target!=null){
 			addOrUpdateEdge(getVertexById(source.getListItemId()), getVertexById(target.getListItemId()), type, weight, cnx.getId(), patIllScript.getType());
+		
+		}
 	}
 	
 	public void addImplicitEdge(long sourceId, long targetId, int type){
@@ -206,9 +210,12 @@ public class Graph extends DirectedWeightedMultigraph<MultiVertex, MultiEdge> {
 	 * @param target (e.g a RelationDiagnosis vertex)
 	 * @param type (see definitions in IllnessScriptInterface)
 	 * @param weight (implicit or explicit - see defintions in MultiEdge)
+	 * @param expEdit (if true, then currently an expert script is edited, so, the expert connections are the learner conns!!!
 	 * @return
 	 */
 	private boolean addOrUpdateEdge(MultiVertex source, MultiVertex target, int type, int weight, long cnxId, int patIllScriptType){
+		
+
 		if(source==null || target==null)
 			return false;
 		
@@ -219,8 +226,9 @@ public class Graph extends DirectedWeightedMultigraph<MultiVertex, MultiEdge> {
 		}
 		else e.addParam(type, weight);
 		if(cnxId>0 && patIllScriptType==IllnessScriptInterface.TYPE_LEARNER_CREATED) e.setLearnerCnxId(cnxId);
-		if(cnxId>0 && patIllScriptType==IllnessScriptInterface.TYPE_EXPERT_CREATED) e.setExpCnxId(cnxId);
-
+		
+		if(cnxId>0 && patIllScriptType==IllnessScriptInterface.TYPE_EXPERT_CREATED && !expEdit) e.setExpCnxId(cnxId);
+		if(cnxId>0 && patIllScriptType==IllnessScriptInterface.TYPE_EXPERT_CREATED && expEdit) e.setLearnerCnxId(cnxId);
 		return true; //edge created or we have changed the params of it.
 		
 	}
@@ -303,7 +311,6 @@ public class Graph extends DirectedWeightedMultigraph<MultiVertex, MultiEdge> {
 	 * e = expert ( ")
 	 * p = peer nums
 	 * 
-	 * currently returns only the learners items.	
 	 * 
 	 * @return learners' patIllScript
 	 */
@@ -326,7 +333,6 @@ public class Graph extends DirectedWeightedMultigraph<MultiVertex, MultiEdge> {
 	}
 	
 	/**
-	 * Currently only returns the learners graph.
 	 * format: [{"id":"cmcnx_1", "sourceid":"cmprb_1234","targetid":"cmddx_47673", "l":"0", "e":"1", weight_l":"3","weight_e":"4"},....]
 	 * @return
 	 */
@@ -349,7 +355,9 @@ public class Graph extends DirectedWeightedMultigraph<MultiVertex, MultiEdge> {
 				if(edge.getExpCnxId()>0) e = "1";
 				MultiVertex sourceVertex = edge.getSource();
 				MultiVertex targetVertex = edge.getTarget();
-				//if(sourceVertex)
+				if((e.equals("1") && l.equals("0"))){ //only expert cnx, do not include connections for which the vertices have not yet been added
+					//TODO! currently we do that client side...
+				}
 				String startIdWithPrefix=null;
 				String targetIdWithPrefix=null;
 				if(sourceVertex.getLearnerVertex()!=null && targetVertex.getLearnerVertex()!=null){

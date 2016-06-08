@@ -4,7 +4,7 @@ import java.beans.Beans;
 
 import actions.scoringActions.Scoreable;
 import actions.scoringActions.ScoringAddAction;
-import beans.PatientIllnessScript;
+import beans.scripts.*;
 import beans.graph.Graph;
 import beans.graph.MultiVertex;
 import beans.relation.Relation;

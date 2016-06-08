@@ -9,9 +9,11 @@ import javax.faces.application.FacesMessage.Severity;
 import javax.faces.context.FacesContext;
 
 import beans.*;
+import beans.scripts.*;
 import beans.graph.Graph;
 import beans.graph.MultiEdge;
 import beans.relation.*;
+import beans.scripts.IllnessScriptInterface;
 import controller.NavigationController;
 import controller.RelationController;
 import database.DBClinReason;

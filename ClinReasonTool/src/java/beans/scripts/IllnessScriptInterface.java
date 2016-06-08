@@ -1,4 +1,4 @@
-package beans;
+package beans.scripts;
 public interface IllnessScriptInterface {
 
 	public static final int TYPE_LEARNER_CREATED = 1; //patientIllnessScript created by learner

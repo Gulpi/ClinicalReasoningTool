@@ -9,7 +9,7 @@ import javax.faces.bean.SessionScoped;
 
 import application.AppBean;
 import beans.LogEntry;
-import beans.PatientIllnessScript;
+import beans.scripts.*;
 
 /**
  * LearninAnalytics takes into account all users' actions, scores, and goals for one VP.

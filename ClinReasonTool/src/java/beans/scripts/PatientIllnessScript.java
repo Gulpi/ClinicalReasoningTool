@@ -1,4 +1,5 @@
-package beans;
+package beans.scripts;
+
 import java.beans.*;
 import java.io.Serializable;
 import java.sql.Timestamp;
@@ -9,18 +10,15 @@ import javax.faces.bean.*;
 import org.apache.commons.lang.StringUtils;
 
 import actions.beanActions.*;
-import actions.scoringActions.ScoringCourseOfTimeAction;
 import application.AppBean;
+import beans.*;
 import beans.error.MyError;
 import beans.relation.*;
 import beans.scoring.ScoreBean;
 import controller.AjaxController;
-import controller.ConceptMapController;
-import controller.GraphController;
 import controller.NavigationController;
 import controller.ScoringController;
 import database.DBClinReason;
-import util.CRTLogger;
 
 /**
  * This is the Illness script the learner creates during the VP session.
@@ -34,7 +32,6 @@ public class PatientIllnessScript extends Beans/*extends Node*/ implements Illne
 	
 	private static final long serialVersionUID = 1L;
 	private Timestamp creationDate;
-	private long sessionId = -1; //necessary or store PISId in C_Session? and/or vpId?
 	/**
 	 * the VP the patIllScript is related to. We need this in addition to the sessionId to be able to connect 
 	 * the learners' script to the authors'/experts' script.
@@ -55,6 +52,11 @@ public class PatientIllnessScript extends Beans/*extends Node*/ implements Illne
 	 */
 	private int currentStage;
 	
+	/**
+	 * This is the real current stage and in contrast to currentStage this is not written into database and is updated on 
+	 * each stage change. We need this for editing expert scripts...
+	 */
+	private int stage = 1;
 	/**
 	 * How confident is the learner with his ddxs. (1-100)
 	 */
@@ -117,11 +119,16 @@ public class PatientIllnessScript extends Beans/*extends Node*/ implements Illne
 	
 	public long getId() {return id;}
 	public void setId(long id) {this.id = id;}
-	public long getSessionId() {return sessionId;}
-	public void setSessionId(long sessionId) {this.sessionId = sessionId;}
+
+	public int getStage() {
+		updateStage(new AjaxController().getRequestParamByKey(AjaxController.REQPARAM_STAGE));
+		return stage;
+	}
+	public void setStage(int stage) {this.stage = stage;}
 	public int getCourseOfTime() {return courseOfTime;}
 	public void setCourseOfTime(int courseOfTime) {this.courseOfTime = courseOfTime;}
 	public List<RelationProblem> getProblems() {return problems;}
+	public List<RelationProblem> getProblemsStage() { return getRelationsByStage(problems);}
 	public void setProblems(List<RelationProblem> problems) {this.problems = problems;}
 	public Timestamp getCreationDate(){ return this.creationDate;} //setting is done in DB	
 	public void setCreationDate(Timestamp creationDate) {this.creationDate = creationDate;}
@@ -130,10 +137,13 @@ public class PatientIllnessScript extends Beans/*extends Node*/ implements Illne
 	public int getType() {return type;}
 	public void setType(int type) {this.type = type;}	
 	public List<RelationDiagnosis> getDiagnoses() {return diagnoses;}
+	public List<RelationDiagnosis> getDiagnosesStage() { return getRelationsByStage(diagnoses);}
 	public void setDiagnoses(List<RelationDiagnosis> diagnoses) {this.diagnoses = diagnoses;}
 	public List<RelationManagement> getMngs() {return mngs;}
+	public List<RelationManagement> getMngsStage() { return getRelationsByStage(mngs);}
 	public void setMngs(List<RelationManagement> mngs) {this.mngs = mngs;}	
 	public List<RelationTest> getTests() {return tests;}
+	public List<RelationTest> getTestsStage() { return getRelationsByStage(tests);}
 	public void setTests(List<RelationTest> tests) {this.tests = tests;}	
 	public List<RelationEpi> getEpis() {return epis;}
 	public void setEpis(List<RelationEpi> epis) {this.epis = epis;}
@@ -144,6 +154,11 @@ public class PatientIllnessScript extends Beans/*extends Node*/ implements Illne
 	public Locale getLocale() {return locale;}
 	public void setLocale(Locale locale) {this.locale = locale;}	
 	public SummaryStatement getSummSt() {return summSt;}
+	public SummaryStatement getSummStStage() {
+		if(summSt==null) return null;
+		if(summSt.getStage()<=stage) return summSt;
+		return null;
+	}
 	public void setSummSt(SummaryStatement summSt) {this.summSt = summSt;	}		
 	public boolean isPeerSync() {return peerSync;}
 	public boolean getPeerSync() {return peerSync;}
@@ -329,6 +344,16 @@ public class PatientIllnessScript extends Beans/*extends Node*/ implements Illne
 		return null; //nothing found
 	}
 	
+	private List getRelationsByStage(List items){
+		if(items==null || items.isEmpty()) return null;
+		List<Relation> stageList = new ArrayList<Relation>();
+		for(int i=0; i< items.size(); i++){
+			Relation rel = (Relation) items.get(i);
+			if(rel.getStage()<=stage) stageList.add(rel);
+		}
+		return stageList; //nothing found
+	}
+	
 	public List<RelationDiagnosis> getFinalDiagnoses(){
 		if(diagnoses==null || diagnoses.isEmpty()) return null; 
 		List<RelationDiagnosis> finals = new ArrayList<RelationDiagnosis>();
@@ -361,6 +386,7 @@ public class PatientIllnessScript extends Beans/*extends Node*/ implements Illne
 	public void updateStage(String stage){
 		if(StringUtils.isNumeric(stage)){
 			int stageNum = Integer.valueOf(stage);
+			this.stage = stageNum; //we always update the stage
 			if(stageNum > this.currentStage){
 				new ScoringController().scoringListsForStage(this, currentStage);
 				this.setCurrentStage(stageNum);	

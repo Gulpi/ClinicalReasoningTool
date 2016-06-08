@@ -6,7 +6,7 @@ import beans.error.MyError;
 import beans.relation.RelationDiagnosis;
 import beans.scoring.ScoreBean;
 import controller.NavigationController;
-
+import beans.scripts.*;
 /**
  * View for the final diagnoses submission process....
  * @author ingahege

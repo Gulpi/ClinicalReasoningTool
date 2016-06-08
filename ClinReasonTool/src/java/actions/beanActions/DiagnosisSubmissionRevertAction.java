@@ -3,7 +3,7 @@ package actions.beanActions;
 import java.util.*;
 
 import beans.LogEntry;
-import beans.PatientIllnessScript;
+import beans.scripts.*;
 import beans.relation.Relation;
 import beans.relation.RelationDiagnosis;
 import beans.scoring.ScoreBean;

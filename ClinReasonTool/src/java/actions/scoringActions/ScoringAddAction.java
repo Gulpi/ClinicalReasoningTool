@@ -2,7 +2,7 @@ package actions.scoringActions;
 
 import java.util.*;
 
-import beans.PatientIllnessScript;
+import beans.scripts.*;
 import beans.graph.Graph;
 import beans.graph.MultiVertex;
 import beans.relation.Relation;

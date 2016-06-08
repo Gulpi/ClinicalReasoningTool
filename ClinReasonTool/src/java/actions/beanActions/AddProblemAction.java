@@ -14,6 +14,7 @@ import beans.*;
 import beans.graph.Graph;
 import beans.relation.*;
 import beans.scoring.ScoreBean;
+import beans.scripts.*;
 import controller.NavigationController;
 import controller.RelationController;
 import database.DBClinReason;
@@ -74,6 +75,9 @@ public class AddProblemAction implements AddAction, Scoreable{
 		}
 		rel.setOrder(patIllScript.getProblems().size());
 		rel.setStage(patIllScript.getCurrentStage());
+		if(new NavigationController().isExpEdit()){
+			rel.setStage(patIllScript.getStage());
+		}
 		if(x<0 && y<0) rel.setXAndY(calculateNewItemPosInCanvas());		
 		else rel.setXAndY(new Point(x,y)); //problem has been created from the concept map, therefore we have a position
 		patIllScript.getProblems().add(rel);

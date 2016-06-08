@@ -2,14 +2,15 @@ package actions.beanActions;
 
 import actions.scoringActions.ScoringCnxChgAction;
 import beans.Connection;
-import beans.IllnessScriptInterface;
 import beans.LogEntry;
-import beans.PatientIllnessScript;
+import beans.scripts.*;
 import beans.graph.Graph;
 import beans.graph.MultiEdge;
+import beans.scripts.IllnessScriptInterface;
 import controller.NavigationController;
 import database.DBClinReason;
 import util.CRTLogger;
+import beans.Connection;
 
 /**
  * Learner changes the weight of a connection

@@ -10,7 +10,7 @@ import javax.faces.context.FacesContext;
 import javax.faces.context.FacesContextWrapper;
 
 import beans.*;
-
+import beans.scripts.*;
 /**
  * handles the navigation between pages (e.g. overview page and single illnessscript page)
  * when a new page is opened we have to make sure that the CRTFacesContext is up-to-date
@@ -39,9 +39,22 @@ public class NavigationController implements Serializable {
 	public String openPatIllScript(){
 		//long id = new AjaxController().getIdRequestParamByKey(AjaxController.REQPARAM_SCRIPT);
 		CRTFacesContext context = getCRTFacesContext(); 
-		if(context!=null) context.initSession();
+		if(context!=null) context.initExpEditSession();
 		//TODO error handling
 		return "prototype_fs";
+	}
+	
+	/**
+	 * User has clicked on a link to open and edit an expert's patientIllnessScript
+	 * called from AjaxController
+	 * @return
+	 */
+	public String openExpPatIllScript(){
+		//long id = new AjaxController().getIdRequestParamByKey(AjaxController.REQPARAM_SCRIPT);
+		CRTFacesContext context = getCRTFacesContext(); 
+		if(context!=null) context.initExpEditSession();
+		//TODO error handling
+		return "exp_boxes";
 	}
 	
 	public String openPatIllScript(String s){
@@ -74,6 +87,16 @@ public class NavigationController implements Serializable {
 		CRTFacesContext cnxt =  (CRTFacesContext) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get(CRTFacesContext.CRT_FC_KEY);
 		/*if(cnxt!=null)*/ return cnxt;
 	}
+	
+	/**
+	 * Calls isExpEdit in CRTFacesContext to determine whether currently an expert script is edited
+	 * @return
+	 */
+	public boolean isExpEdit(){
+		CRTFacesContext cnxt =  (CRTFacesContext) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get(CRTFacesContext.CRT_FC_KEY);
+		if(cnxt ==null) return false;
+		return cnxt.isExpEdit();
+ 	}
 	
 	public static Locale getLocale(){
 		CRTFacesContext cnxt =  (CRTFacesContext) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get(CRTFacesContext.CRT_FC_KEY);

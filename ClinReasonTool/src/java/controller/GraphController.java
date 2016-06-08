@@ -8,12 +8,10 @@ import javax.servlet.ServletContext;
 
 import application.AppBean;
 import beans.Connection;
-import beans.IllnessScript;
-import beans.IllnessScriptInterface;
-import beans.PatientIllnessScript;
+import beans.scripts.*;
 import beans.graph.*;
 import beans.relation.Relation;
-import model.Synonym;
+import beans.scripts.IllnessScriptInterface;
 
 /**
  * Controls the graph creation and manipulation based on PatientIllnessScript and IllnessScript objects 
@@ -21,6 +19,8 @@ import model.Synonym;
  *
  */
 public class GraphController implements Serializable{
+
+	private static final long serialVersionUID = 1L;
 
 	public static final String PREFIX_PROB = "cmprb_";
 	public static final String PREFIX_EPI = "cmepi_";

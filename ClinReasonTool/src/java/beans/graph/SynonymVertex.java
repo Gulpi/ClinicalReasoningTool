@@ -1,6 +1,6 @@
 package beans.graph;
 
-import beans.IllnessScriptInterface;
+import beans.scripts.IllnessScriptInterface;
 
 /**
  * A simpler vertex than MulitVertex that is used to add synonyma to the graph.

@@ -7,7 +7,7 @@ import actions.scoringActions.ScoringListAction;
 import actions.scoringActions.ScoringSummStAction;
 import application.AppBean;
 import beans.CRTFacesContext;
-import beans.PatientIllnessScript;
+import beans.scripts.*;
 import beans.graph.Graph;
 import beans.scoring.FeedbackBean;
 import beans.scoring.PeerBean;

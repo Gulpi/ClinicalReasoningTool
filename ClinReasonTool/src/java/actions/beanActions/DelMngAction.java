@@ -2,12 +2,12 @@ package actions.beanActions;
 
 import java.util.*;
 
-import beans.IllnessScriptInterface;
 import beans.LogEntry;
-import beans.PatientIllnessScript;
+import beans.scripts.*;
 import beans.graph.Graph;
 import beans.graph.MultiVertex;
 import beans.relation.*;
+import beans.scripts.IllnessScriptInterface;
 import controller.NavigationController;
 import database.DBClinReason;
 import util.CRTLogger;

@@ -5,7 +5,7 @@ import java.util.*;
 import javax.faces.application.FacesMessage;
 
 import application.ErrorMessageContainer;
-import beans.PatientIllnessScript;
+import beans.scripts.*;
 import beans.graph.Graph;
 import beans.graph.MultiVertex;
 import beans.relation.Relation;

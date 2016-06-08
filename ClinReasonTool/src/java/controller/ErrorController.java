@@ -4,7 +4,7 @@ import java.util.*;
 
 import application.AppBean;
 import beans.LogEntry;
-import beans.PatientIllnessScript;
+import beans.scripts.*;
 import beans.error.*;
 import beans.error.MyError;
 import beans.relation.Relation;

@@ -3,11 +3,9 @@ package database;
 import java.util.*;
 
 import org.hibernate.*;
-import org.hibernate.cfg.Configuration;
 import org.hibernate.criterion.*;
 
-import beans.IllnessScript;
-import beans.PatientIllnessScript;
+import beans.scripts.*;
 import beans.SummaryStatement;
 import beans.relation.RelationProblem;
 import controller.IllnessScriptController;
@@ -274,7 +272,7 @@ public class DBClinReason /*extends HibernateUtil*/{
     	return criteria.list();
     }*/
     
-	private SummaryStatement loadSummSt(long id){
+	protected SummaryStatement loadSummSt(long id){
 		if(id<=0) return null;
 		Session s = instance.getInternalSession(Thread.currentThread(), false);
 		Criteria criteria = s.createCriteria(SummaryStatement.class,"SummaryStatement");

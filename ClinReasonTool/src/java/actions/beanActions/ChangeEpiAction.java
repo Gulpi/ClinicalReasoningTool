@@ -4,7 +4,7 @@ import java.beans.Beans;
 
 import actions.scoringActions.Scoreable;
 import beans.LogEntry;
-import beans.PatientIllnessScript;
+import beans.scripts.*;
 import beans.relation.*;
 import database.DBClinReason;
 import database.DBList;

@@ -3,7 +3,7 @@ package controller;
 import java.util.*;
 
 import application.AppBean;
-import beans.PatientIllnessScript;
+import beans.scripts.*;
 import beans.relation.Relation;
 import beans.scoring.PeerBean;
 import beans.scoring.PeerContainer;

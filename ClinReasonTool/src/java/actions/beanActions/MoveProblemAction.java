@@ -6,6 +6,7 @@ import java.util.*;
 import beans.*;
 import beans.relation.*;
 import database.DBClinReason;
+import beans.scripts.*;
 
 public class MoveProblemAction implements MoveAction{
 

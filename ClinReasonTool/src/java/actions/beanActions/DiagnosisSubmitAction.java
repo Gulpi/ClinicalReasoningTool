@@ -13,7 +13,7 @@ import actions.scoringActions.ScoringFinalDDXAction;
 import actions.scoringActions.ScoringListAction;
 import application.ErrorMessageContainer;
 import beans.LogEntry;
-import beans.PatientIllnessScript;
+import beans.scripts.*;
 import beans.relation.Relation;
 import beans.relation.RelationDiagnosis;
 import beans.scoring.ScoreBean;

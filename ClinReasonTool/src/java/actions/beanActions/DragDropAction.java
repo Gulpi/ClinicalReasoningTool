@@ -4,7 +4,7 @@ package actions.beanActions;
 import java.awt.Point;
 
 import beans.LogEntry;
-import beans.PatientIllnessScript;
+import beans.scripts.*;
 import beans.relation.Rectangle;
 import beans.relation.Relation;
 import controller.GraphController;

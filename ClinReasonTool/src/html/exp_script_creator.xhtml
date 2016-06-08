@@ -1,0 +1,53 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html>
+<head>
+ <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+<meta http-equiv="EXPIRES" content="0" />
+<meta http-equiv="PRAGMA" content="NO-CACHE" />
+<meta http-equiv="CACHE-CONTROL" content="NO-CACHE" />
+
+<title>Expert script creator</title>
+<link rel="stylesheet" type="text/css" href="../scripts/jquery112/ui-lightness/jquery-ui.css" /> 
+<script type="text/javascript" src="../scripts/jquery112/jquery.js"></script>
+<script type="text/javascript" src="../scripts/jquery112/jquery-ui.min.js"></script>
+<script type="text/javascript" src="../scripts/jquery112/jquery-ui.js"></script>
+<link rel="stylesheet" href="../styles/clinreason.css" />
+<link rel="stylesheet" href="../styles/font-awesome/css/font-awesome.css" />
+<style>
+/*for prototype:  */
+.icon-left-open:before { content: '\e833'; color:#ffffff;}
+.icon-right-open:before { content: '\e82b'; color:#ffffff;}
+</style>
+<script>
+$(function() {
+	$( "#crtool" ).draggable({
+		cursor:"move"
+	});
+});
+
+var currStage = 1;
+function chgStage(chg){
+	currStage += chg;
+	ctrframe.location.href = "exp_boxes.xhtml?stage="+currStage;
+	$("#stageSpan").html(currStage);
+}
+</script>
+</head>
+
+<body style="font-family:arial;">
+<div>
+ScriptId:  #{crtContext.patillscript.id}<br/>
+VPId: <input type="text" value="#{crtContext.patillscript.parentId}"></input><br/>
+System <select name="system"><option value="">Casus (uni)</option><option value="">Casus (MedU)</option></select><br/>
+Stage: <span id="stageSpan">#{crtContext.patillscript.currentStage} </span>
+<a href="javascript:chgStage(-1);">previous stage</a><a href="javascript:chgStage(1);">next stage</a>
+
+</div>
+ <div id="crtool" style="position:absolute; padding:0px; top:55px; right:0px; height:100%; width:500px; background-color:#cccccc;"><br/>
+<iframe id="ctrframe" src="exp_boxes.xhtml?stage=1" height="100%" width="100%"  style="border:none; padding:0px;top:0px;"></iframe>
+</div>
+<div style="background-color: #8b1b3f;color:#ffffff;padding:5px; height:30px; width:95%; bottom:0px; position:absolute;"> 
+<span style="float:right;padding:0px;"> <i class="fa fa-arrow-left"></i> &nbsp;&nbsp;&nbsp;&nbsp;<a href="prototype_fs2.html"><i class="fa fa-arrow-right"></i></a></span></div>
+</body>
+</html>

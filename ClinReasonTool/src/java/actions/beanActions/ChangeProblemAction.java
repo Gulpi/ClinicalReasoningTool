@@ -8,7 +8,7 @@ import org.apache.commons.lang.StringUtils;
 import actions.scoringActions.Scoreable;
 import actions.scoringActions.ScoringAddAction;
 import beans.LogEntry;
-import beans.PatientIllnessScript;
+import beans.scripts.*;
 import beans.graph.Graph;
 import beans.graph.MultiEdge;
 import beans.graph.MultiVertex;

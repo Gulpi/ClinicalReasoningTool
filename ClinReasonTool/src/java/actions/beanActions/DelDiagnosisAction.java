@@ -3,7 +3,7 @@ package actions.beanActions;
 import java.util.*;
 
 import beans.LogEntry;
-import beans.PatientIllnessScript;
+import beans.scripts.*;
 import beans.graph.Graph;
 import beans.graph.MultiVertex;
 import beans.relation.*;

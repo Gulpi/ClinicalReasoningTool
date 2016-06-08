@@ -1,4 +1,4 @@
-package beans;
+package beans.scripts;
 
 import java.io.Serializable;
 import java.util.*;
@@ -12,6 +12,7 @@ import database.DBClinReason;
  */
 public class PatIllScriptContainer implements Serializable{
 
+	private static final long serialVersionUID = 1L;
 	private long userId;
 	private List<PatientIllnessScript> scriptsOfUser;
 	

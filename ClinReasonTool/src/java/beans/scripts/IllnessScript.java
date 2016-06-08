@@ -1,8 +1,9 @@
-package beans;
+package beans.scripts;
 
 import javax.faces.bean.SessionScoped;
 
 import beans.relation.*;
+import beans.scripts.IllnessScriptInterface;
 import beans.helper.*;
 import java.beans.Beans;
 import java.io.Serializable;

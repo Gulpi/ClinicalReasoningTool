@@ -4,10 +4,10 @@ import java.beans.Beans;
 import java.util.*;
 
 import beans.Connection;
-import beans.IllnessScriptInterface;
 import beans.LogEntry;
-import beans.PatientIllnessScript;
+import beans.scripts.*;
 import beans.graph.Graph;
+import beans.scripts.IllnessScriptInterface;
 import controller.GraphController;
 import controller.NavigationController;
 import database.DBClinReason;

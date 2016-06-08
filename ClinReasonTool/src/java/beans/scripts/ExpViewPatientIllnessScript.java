@@ -1,4 +1,4 @@
-package beans;
+package beans.scripts;
 
 import java.util.*;
 
@@ -14,12 +14,12 @@ import beans.relation.Relation;
  *
  */
 @SessionScoped
-public class ExpPatientIllnessScript {
+public class ExpViewPatientIllnessScript {
 
 	private Graph g;
 	private int currStage;
 	
-	public ExpPatientIllnessScript(Graph g, int stage){
+	public ExpViewPatientIllnessScript(Graph g, int stage){
 		this.g = g;
 		this.currStage = stage;		
 	}

@@ -13,6 +13,7 @@ import org.apache.commons.lang.StringUtils;
 
 import application.ErrorMessageContainer;
 import beans.*;
+import beans.scripts.*;
 import util.*;
 
 public class AjaxController {

@@ -4,6 +4,7 @@ import java.beans.Beans;
 import java.util.*;
 
 import beans.*;
+import beans.scripts.*;
 import beans.relation.RelationTest;
 import beans.relation.Relation;
 import database.DBClinReason;

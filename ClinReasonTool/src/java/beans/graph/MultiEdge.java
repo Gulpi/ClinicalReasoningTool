@@ -3,7 +3,8 @@ package beans.graph;
 import java.util.*;
 
 import org.jgrapht.graph.DefaultWeightedEdge;
-import beans.IllnessScriptInterface;
+
+import beans.scripts.IllnessScriptInterface;
 
 
 /**

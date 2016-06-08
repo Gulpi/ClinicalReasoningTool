@@ -6,8 +6,7 @@ import java.util.*;
 import javax.faces.context.FacesContext;
 
 import application.AppBean;
-import beans.PatientIllnessScript;
-import beans.SummaryStatement;
+import beans.scripts.*;
 import beans.relation.Relation;
 import beans.scoring.PeerBean;
 import beans.scoring.ScoreBean;
@@ -29,9 +28,6 @@ public class IllnessScriptController implements Serializable{
 	public PatientIllnessScript loadPatIllScriptById(long id, long userId){
 		if(id>0){
 			PatientIllnessScript patillscript = new DBClinReason().selectPatIllScriptById(id);
-			/*if(patillscript==null){
-				patillscript = createAndSaveNewPatientIllnessScript(userId); 
-			}*/
 			return patillscript;
 		}
 		else{
@@ -48,28 +44,11 @@ public class IllnessScriptController implements Serializable{
 	public PatientIllnessScript loadIllnessScriptsByParentId(long userId, long parentId){
 		if(parentId>0 && userId>0){
 			PatientIllnessScript patillscript =new DBClinReason().selectPatIllScriptsByUserIdAndParentId(userId, parentId);
-		
-			/*if(patillscript==null)
-				patillscript = createAndSaveNewPatientIllnessScript(userId, parentId); */
 			
 			return patillscript;
 		}
 		return null;
 	}
-	
-	/*public PatientIllnessScript loadPatIllScriptBySessionId(long sessionId, long userId){
-		if(sessionId>0){
-			PatientIllnessScript patillscript = new DBClinReason().selectPatIllScriptBySessionId(sessionId);
-			if(patillscript==null){
-				patillscript = createAndSaveNewPatientIllnessScript(userId); 
-			}
-			return patillscript;
-		}
-		else{
-			return null;
-			//TODO error message?
-		}
-	}*/
 	
 
 		

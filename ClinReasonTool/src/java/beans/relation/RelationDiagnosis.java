@@ -12,7 +12,7 @@ import javax.faces.context.FacesContextWrapper;
 
 import org.apache.commons.lang3.StringUtils;
 
-import beans.PatientIllnessScript;
+import beans.scripts.*;
 import beans.graph.Graph;
 import beans.graph.MultiVertex;
 import controller.ConceptMapController;

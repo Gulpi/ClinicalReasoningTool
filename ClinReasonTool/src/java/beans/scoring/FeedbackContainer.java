@@ -6,8 +6,8 @@ import java.util.*;
 
 import javax.faces.bean.SessionScoped;
 
-import beans.ExpPatientIllnessScript;
 import beans.LogEntry;
+import beans.scripts.ExpViewPatientIllnessScript;
 import controller.NavigationController;
 import database.DBClinReason;
 import database.DBScoring;

@@ -2,10 +2,10 @@ package beans.graph;
 
 import java.io.Serializable;
 
-import beans.IllnessScriptInterface;
 import beans.relation.Rectangle;
 import beans.relation.Relation;
 import beans.relation.RelationDiagnosis;
+import beans.scripts.IllnessScriptInterface;
 import controller.NavigationController;
 import model.ListItem;
 /**

@@ -1,7 +1,7 @@
 package actions.scoringActions;
 
 import application.AppBean;
-import beans.PatientIllnessScript;
+import beans.scripts.*;
 import beans.scoring.ScoreBean;
 import beans.scoring.ScoreContainer;
 import controller.NavigationController;

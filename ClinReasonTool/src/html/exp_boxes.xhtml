@@ -37,7 +37,9 @@
 <script src="../scripts/ajax.js"></script>
 <script src="../scripts/js.cookie.js"></script>
 <script src="../scripts/jsPlumb.min.js"></script>
-  <script src="../scripts/myjsplumb.js"></script>
+<script src="../scripts/myjsplumb.js"></script>
+<script src="../scripts/editexp.js"></script>
+ 
 <style>
 /** ELEMENT POSITIONS **/
 #pat_box { left:0px;top:5px; }
@@ -56,7 +58,7 @@ var scriptId = "#{crtContext.patillscript.id}";
 //var listUrl="jsonp_en.json";
 var lang = "#{crtContext.patillscript.locale}";
 //var my_canvas = null;
-var currentStage = $.getUrlVar('stage');
+var currentStage = #{crtContext.patillscript.stage};
 var currentStageScript = "#{crtContext.patillscript.currentStageWithUpdate}";
 var expFeedback = false; //default is that expert feedback is off
 var peerFeedback = false; //default is that expert feedback is off
@@ -71,7 +73,7 @@ var exp_arr = new Array();
 $(function() {
 	if(lang=="de") listUrl = "jsonp_de.json";
 	$(".listdialog").hide();
-	$("#jdialogError").hide();
+	//$("#jdialogError").hide();
 	$("#connContext").hide();
 	$("#summStText").on('change',function(){
 		//setDirtySummSt();
@@ -80,7 +82,6 @@ $(function() {
 	checkSubmitBtn();
 	//initContainerPos();
 
-	//toggleExpertFeedbackOnLoad();
    /* $( document ).tooltip({
     	//items: " rect, [title], text, tspan",
     	//items: "tspan",
@@ -103,14 +104,14 @@ $(function() {
       });
     
 	//initLists();
-    $( "#confidence_slider" ).slider({
+  /*  $( "#confidence_slider" ).slider({
        orientation: "vertical",
     	min: 0,
     	max: 100,
     	step: 1,
     	change: submitSliderChange
-    });
-    $( "#confidence_slider" ).slider( "value", #{crtContext.patillscript.confidence} );
+    });*/
+   // $( "#confidence_slider" ).slider( "value", #{crtContext.patillscript.confidence} );
 	$("#jdialog").dialog({
 		autoOpen: false,
 		modal: true,
@@ -125,12 +126,12 @@ $(function() {
 		height: "auto"
 	});
 	
-	$("#jdialogError").dialog({
+	/*$("#jdialogError").dialog({
 		autoOpen: false,
 		modal: true,
 		width: "auto",
 		height: "auto"
-	});
+	});*/
 
 });
 
@@ -210,12 +211,21 @@ jsPlumb.ready(function () {
 });
 
 item_arr = new Array();
+
 </script>
 </head>
 <body style="font-family:arial;" data-demo-id="draggableConnectors" data-library="dom"><!-- test: #{crtContext.test}-->
+<div>
+ScriptId:  #{crtContext.patillscript.id}<br/>
+VPId: <input type="text" value="#{crtContext.patillscript.parentId}"></input><br/>
+System <select name="system"><option value="">Casus (uni)</option><option value="">Casus (MedU)</option></select><br/>
+Stage: <span id="stageSpan">#{crtContext.patillscript.stage} </span>
+<a href="javascript:chgStage(-1);">previous stage</a> <a href="javascript:chgStage(1);">next stage</a>
+
+</div>
+
 <div class="options">
 	<a href="javascript:toogleCnxDisplay();" id="cnxtoggle" title="Hide connections"><i id="cnxtogglei" class="fa fa-conn_on"></i></a>
-	<a href="javascript:toggleExpFeedback('expFeedback', 'icon-user-md');"  title="Show expert feedback at this point of time"><i id="expFeedback" class="fa fa-user-md_off"></i></a>
 	<!--  <a href="exp_stages.xhtml" target="new">exp dev</a>-->
 	<!--  <a href="alert('not yet available, will show the development of the experts script during the case');">exp dev</a>-->
 </div>
@@ -238,9 +248,6 @@ item_arr = new Array();
 		  <!-- problems -->
 		  <div id="fdg_box"  class="container" group="fdg_group">
 		   		<div class="title">Findings 
-		   			<a href="javascript:addJokerFdg();" title="Joker: Add a random finding"><i class="fa fa-puzzle-piece"></i></a> 
-		   			<a href="javascript:togglePeersFdg();" title="Show peer numbers"><i class="fa fa-users_off" id="peerFeedbackFdg"></i></a> 
-		   			<a href="javascript:toggleFdgFeedback();" title="show expert feedback"><i class="fa fa-user-md_off" id="expFeedbackFdg"></i></a>
 		   		</div>
 		   		<div class="node-collapse"></div>
 		  			<div class="search boxchild"><span class="icon"><i class="icon-search"></i></span>
@@ -248,12 +255,9 @@ item_arr = new Array();
 		  			<input class="f_text" id="problems" placeholder="Search..." title="Please add any problems, findings, exposures, or risk factors you consider as relevant"></input></div>
 						<h:form id="probform">
 						<h:panelGroup>
-						   <ui:repeat id="repeatprob" value="#{crtContext.patillscript.problems}" var="prob" varStatus="status">
+						   <ui:repeat id="repeatprob" value="#{crtContext.patillscript.problemsStage}" var="prob" varStatus="status">
 						   		<ui:include src="probbox.xhtml" />
-	    					</ui:repeat>	    					
-						   <ui:repeat id="repeatexpprob" value="#{crtContext.expPatIllScript.problems}" var="expprob" varStatus="status">
-						   		<ui:include src="probexpbox.xhtml" />
-	    					</ui:repeat>	    					
+	    					</ui:repeat>	    						    					
 	    				</h:panelGroup>
     				     <h:commandButton id="hiddenProbButton" value="RenderSomething" style="visibility:hidden">
     						<f:ajax render="@form" onevent="updateItemCallback"></f:ajax>
@@ -265,66 +269,41 @@ item_arr = new Array();
 		  </div>
 		 <div id="sum_box" class="container" group="sum_group">	
 		 	<div class="title">Summary Statement
-		 		<a href="javascript:toggleSumFeedback('expFeedbackSum', 14);" title="show expert's summary statement"><i class="fa fa-user-md_off" id="expFeedbackSum"></i></a>
 		 	</div>
 		 	 <div class="node-collapse"></div>
 		 	 <textarea style="display:none;" id="summStTextHidden" cols="27" rows="7">#{crtContext.patillscript.summSt.text}</textarea>
-				<textarea class="f_textarea boxchild" name="summSt" id="summStText" cols="27" rows="7">#{crtContext.patillscript.summSt.text}</textarea><br/>
-		  		<!-- <a href="javascript:saveSummSt('#{crtContext.patillscript.summStId}');" title="Save your summary statement"><i class="icon-floppy"></i></a>-->
+				<textarea class="f_textarea boxchild" name="summSt" id="summStText" cols="27" rows="7">#{crtContext.patillscript.summStStage.text}</textarea><br/>
 			 	<span class="errormsg" id="msg_sumstform"></span>
-			 	<span id="list_score_sum" style="color:green; display:none;"> #{crtContext.patillscript.summStExp}</span> 		  
 		</div>
 		  <!--  diagnoses -->
 		  <div id="ddx_box" class="container" group="ddx_group">	
 		  		<div class="title">Differentials
-		  			<a href="javascript:addJokerDDX();" title="Joker: Add a random differential"><i class="fa fa-puzzle-piece"></i></a> 
-		   			<a href="javascript:togglePeersDDX();" title="Show peer numbers"><i class="fa fa-users_off" id="peerFeedbackDDX"></i></a> 
-		   			<a href="javascript:toggleDDXFeedback();" title="show expert feedback"><i class="fa fa-user-md_off" id="expFeedbackDDX"></i></a>
 		  		</div>	
 		  		<div class="node-collapse"></div>	  		
 		  			<div class="search boxchild"><input class="f_text" id="ddx" title="Please add your differentials"></input></div>
 			  			<h:form id="ddxform">
 						<h:panelGroup >
-							<ui:repeat value="#{crtContext.patillscript.diagnoses}" var="ddx" varStatus="status">
+							<ui:repeat value="#{crtContext.patillscript.diagnosesStage}" var="ddx" varStatus="status">
 								<ui:include src="ddxbox.xhtml" />
-	     					</ui:repeat>	
-	     					<ui:repeat value="#{crtContext.expPatIllScript.diagnoses}" var="expddx" varStatus="status">
-								<ui:include src="ddxexpbox.xhtml" />
-	     					</ui:repeat>				
+	     					</ui:repeat>					
 	    				</h:panelGroup>
 	    				     <h:commandButton id="hiddenDDXButton" value="RenderSomething" style="visibility:hidden">
 	    						<f:ajax render="@form" onevent="updateDDXCallback"></f:ajax>
 							</h:commandButton></h:form>
-					<span class="errormsg" id="msg_ddxform"></span>
-							
-					<!--  <div id="confidence_slider" class="conf_slider" title="Please indicate how confident you are with your current differentials."></div>-->
-		  		<div class="footer">
-		  			<span id="submitBtnSpan" class="submitBtn submitBtnOff">
-		  				<a href="javascript:doSubmitDDXDialog();" style="color:#ffffff" title="Submit your final diagnoses anytime">Submit</a>
-		  			</span>
-		  			<span class="errors_#{crtContext.patillscript.errorNum}"><h:panelGroup id="ddxubmitPG">
-						<a href="javascript:openErrorDialog();" title="Potential Errors (#{crtContext.patillscript.errorNum})"><i class="fa fa-exclamation-circle"></i></a>		
-    				</h:panelGroup></span>
-		  		</div>
+					<span class="errormsg" id="msg_ddxform"></span>							
 		  </div>
 		  <!-- tests -->
 		  <div id="tst_box" class="container" group="tst_group">
 		  		<div class="title">Tests
-		  			<a href="javascript:addJokerTest();" title="Joker: Add a random test"><i class="fa fa-puzzle-piece"></i></a> 
-		   			<a href="javascript:togglePeersTest();" title="Show peer numbers"><i class="fa fa-users_off" id="peerFeedbackTest"></i></a> 
-		   			<a href="javascript:toggleTestFeedback();" title="show expert feedback"><i class="fa fa-user-md_off" id="expFeedbackTest"></i></a>
 		  		</div>
 		 	 	<div class="node-collapse"></div>
 		  		<div class="search boxchild"><input class="f_text" id="tests" title="Please add any tests or examinations you want to order or perform."></input></div>
 		  			<h:form id="testform">
 		  			<h:panelGroup>
 					
-						<ui:repeat value="#{crtContext.patillscript.tests}" var="test" varStatus="status">
+						<ui:repeat value="#{crtContext.patillscript.testsStage}" var="test" varStatus="status">
 							<ui:include src="testbox.xhtml" />
-     					</ui:repeat>	
-     					<ui:repeat value="#{crtContext.expPatIllScript.tests}" var="exptest" varStatus="status">
-							<ui:include src="testexpbox.xhtml" />
-     					</ui:repeat>			
+     					</ui:repeat>				
 						<!-- <li id="selds_1">Chest X-ray <select class="f_select"><option value="-1">scanning</option><option>r/c Pneumonia</option></select></li>-->
 					<!--  <div id="jsonTestsMap" style="visibility:hidden">#{crtContext.patillscript.testsJson}</div>-->
     				</h:panelGroup>
@@ -337,21 +316,15 @@ item_arr = new Array();
 		  <!-- managements -->
 		  <div id="mng_box" class="container" group="mng_group">
 		  	<div class="title">Management
-		  			<a href="javascript:addJokerMng();" title="Joker: Add a random management option"><i class="fa fa-puzzle-piece"></i></a> 
-		   			<a href="javascript:togglePeersMng();" title="Show peer numbers"><i class="fa fa-users_off" id="peerFeedbackMng"></i></a> 
-		   			<a href="javascript:toggleMngFeedback();" title="show expert feedback"><i class="fa fa-user-md_off" id="expFeedbackMng"></i></a>
 		  	</div>
 		 	 <div class="node-collapse"></div>
 		  	<div class="search boxchild"><input class="f_text" id="mng" title="Please add any management decisions for your patient."></input></div>
 	  			<h:form id="mngform">
 	  			<h:panelGroup>
 	
-					<ui:repeat value="#{crtContext.patillscript.mngs}" var="mng" varStatus="status">
+					<ui:repeat value="#{crtContext.patillscript.mngsStage}" var="mng" varStatus="status">
 						<ui:include src="mngbox.xhtml" />
-	   				</ui:repeat>		
-	   				<ui:repeat value="#{crtContext.expPatIllScript.mngs}" var="expmng" varStatus="status">
-							<ui:include src="mngexpbox.xhtml" />
-     					</ui:repeat>		
+	   				</ui:repeat>				
 	  				</h:panelGroup>
 	  				     <h:commandButton id="hiddenMngButton" value="RenderSomething" style="visibility:hidden">
 	  						<f:ajax render="@form" onevent="updateItemCallback"></f:ajax>
@@ -364,15 +337,6 @@ item_arr = new Array();
 </div>
 <div id="jsonConns" style="display:none;">#{crtContext.graph.jsonConns}</div> 
 
-<div id="jdialog"><ui:include src="submitdialog.xhtml" /></div>
-
-<div id="jdialogError">				
-	<ul id="errors">
-		<ui:repeat value="#{crtContext.patillscript.errors}" var="err" varStatus="status">
-			<ui:include src="errorline.xhtml" />
- 		</ui:repeat>				
-	</ul><a href="javascript:alert('Not yet available');" title="More information about errors in clinical reasoning">More information</a>
-</div>
 <div id="connContext">
 <span style="display:none;" id="conn_id"></span>
 	<ul class="fa-ul">

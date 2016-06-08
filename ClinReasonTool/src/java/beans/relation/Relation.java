@@ -146,7 +146,9 @@ public abstract class Relation extends Beans implements Rectangle{
 	}
 	
 	public String getShortLabelOrSynShortLabel(){return StringUtils.abbreviate(getLabelOrSynLabel(), ListItem.MAXLENGTH_NAME);}
-	public int getScore(){ return new ScoringController().getScore(this.getRelationType(), this.getListItemId());}
+	public int getScore(){ 
+		return new ScoringController().getScore(this.getRelationType(), this.getListItemId());
+	}
 	public String getFeedback(){ return new FeedbackController().getItemFeedback(this.getRelationType(), this.getListItemId());}
 	public String getExpItemLabel(){ return new FeedbackController().getExpItemLabel(this.getRelationType(), this.getListItemId());}
 

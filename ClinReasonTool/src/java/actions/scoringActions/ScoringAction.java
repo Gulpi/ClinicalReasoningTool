@@ -1,6 +1,6 @@
 package actions.scoringActions;
 
-import beans.PatientIllnessScript;
+import beans.scripts.*;
 import beans.scoring.ScoreBean;
 
 /**

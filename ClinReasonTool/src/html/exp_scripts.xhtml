@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"   
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      >
+<head>
+<meta http-equiv="EXPIRES" content="0" />
+<meta http-equiv="PRAGMA" content="NO-CACHE" />
+<meta http-equiv="CACHE-CONTROL" content="NO-CACHE" />
+
+<!--  <headers header="Cache-Control" value="no-cache, no-store, must-revalidate"></headers>
+<headers header="Pragma" value="no-cache"></headers>
+<headers header="Expires" value="0"></headers>--> 
+<style>
+
+.chart rect {
+    fill: steelblue;
+  }
+
+  .axis path,
+  .axis line {
+    fill: none;
+    stroke: #000;
+    shape-rendering: crispEdges;
+  }
+
+  .axis text {
+    font-size: 7px;
+  }
+
+  .chart .current {
+    fill: green;
+    cursor: pointer;
+  }
+</style>
+<title>Illness Script Portfolio</title>
+ <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+ <script type="text/javascript" src="../scripts/jquery112/jquery.js"></script>
+<script type="text/javascript" src="../scripts/jquery112/jquery-ui.min.js"></script>
+<script type="text/javascript" src="../scripts/jquery112/jquery-ui.js"></script>
+<script src="../scripts/portfolio.js"></script>
+<script src="../scripts/d3.js"></script>
+<script src="../scripts/d3utils.js"></script>
+
+<link rel="stylesheet" type="text/css" href="../scripts/jquery112/ui-lightness/jquery-ui.css" /> 
+<link rel="stylesheet" type="text/css" href="../scripts/draw2d/css/contextmenu.css"  />
+<link rel="stylesheet" href="../styles/clinreason.css" />
+<link rel="stylesheet" href="../styles/portfolio.css" />
+<link rel="stylesheet" href="../styles/font-awesome/css/font-awesome.css" />
+
+
+<script language="JavaScript">
+$( document ).tooltip({
+	items: " rect, [title], text, tspan",
+	content: function() {
+		var element = $( this );
+        if ( element.is( "[title]" ) ) { //this is a "normal" tooltip returning the title of an element
+            return element.attr( "title" );
+          }
+	}
+});
+
+var test = "#{crtContext.userId}";
+</script>
+ </head>
+ <body>
+ 
+<div> 
+	<h:form><ul id="list" class="plainList">
+			<ui:repeat value="#{expport.expscripts}" var="scripts" varStatus="status">
+				<li><h:commandLink action="#{navController.openExpPatIllScript}" value="Scriptid:#{scripts.id}" title="Open the prototype">
+				<!--  <f:param name="script_id" value="#{scripts.id}" />-->
+					<f:param name="script_id" value="#{scripts.id}" />
+					<f:param name="user_id" value="#{scripts.userId}" />
+			</h:commandLink>
+			<!--  <h:outputLink value="exp_script_creator.xhtml">
+						script id:<h:outputText value="#{scripts.id}" />, vp id:<h:outputText value="#{scripts.parentId}" />
+						<f:param name="script_id" value="#{scripts.id}" />
+						<f:param name="user_id" value="#{scripts.userId}" />
+					</h:outputLink>-->
+				</li>
+ 		 </ui:repeat>				
+	</ul></h:form>
+ 	<div class="footer"><a href="javascript:createNewScript();" title="Create new illness script"><i class="fa fa-plus-circle"></i></a></div>
+ </div>
+
+  
+ </body></html>

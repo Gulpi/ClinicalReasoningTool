@@ -11,14 +11,14 @@ import actions.scoringActions.Scoreable;
 import actions.scoringActions.ScoringAddAction;
 import actions.scoringActions.ScoringListAction;
 import application.ErrorMessageContainer;
-import beans.IllnessScriptInterface;
 import beans.LogEntry;
-import beans.PatientIllnessScript;
+import beans.scripts.*;
 import beans.graph.Graph;
 import beans.relation.Relation;
 import beans.relation.RelationDiagnosis;
 import beans.relation.RelationManagement;
 import beans.scoring.ScoreBean;
+import beans.scripts.IllnessScriptInterface;
 import controller.NavigationController;
 import controller.RelationController;
 import database.DBClinReason;
@@ -97,8 +97,8 @@ public class AddMngAction implements AddAction, Scoreable{
 	 */
 	private Point calculateNewItemPosInCanvas(){
 		int y = 5;
-		if(patIllScript.getProblems()!=null || !patIllScript.getMngs().isEmpty()){
-			y = patIllScript.getProblems().size() * 25; //CAVE max y! 
+		if(patIllScript.getMngs()!=null || !patIllScript.getMngs().isEmpty()){
+			y = patIllScript.getMngs().size() * 25; //CAVE max y! 
 		}
 		return new Point(RelationManagement.DEFAULT_X,y);
 	}

@@ -14,7 +14,9 @@ import application.AppBean;
 import application.Monitor;
 import beans.graph.Graph;
 import beans.scoring.*;
+import beans.scripts.*;
 import controller.*;
+import database.DBEditing;
 import util.CRTLogger;
 
 /**
@@ -153,16 +155,28 @@ public class CRTFacesContext extends FacesContextWrapper /*implements Serializab
 		initGraph();		
 	}
 	
+	/**
+	 * load exp PatientIllnessScript based on id
+	 */
+	public void initExpEditSession(){ 
+		if(userId<=0)setUserId();
+		long id = new AjaxController().getIdRequestParamByKey(AjaxController.REQPARAM_SCRIPT);
+		if(this.patillscript!=null && (id<0 || this.patillscript.getId()==id)) return; //current script already loaded....
+		if(id<=0) return;
+
+		if(id>0){ //open an created script
+			this.patillscript = new DBEditing().selectExpertPatIllScriptById(id);
+			if(this.patillscript!=null && userId<=0) userId = this.patillscript.getUserId(); //can happen if we have to re-init after timeout, there we do not get the userId, just the illscriptId
+		}
+		//TODO error handling!!!!
+		initGraph();		
+	}
+	
+	
 	public boolean getInitSession(){
 		initSession();
 		return true;
 	}
-	
-	/*private void loadScoring(){
-		
-		//todo call loading from DB method
-		loadScoreAndFeedbackContainer();
-	}*/
 	
 	private void loadExpScripts(){
 		if(patillscript==null) return;
@@ -243,7 +257,12 @@ public class CRTFacesContext extends FacesContextWrapper /*implements Serializab
 		return FacesContext.getCurrentInstance();
 	}
 	
-	public ExpPatientIllnessScript getExpPatIllScript(){
-		return new ExpPatientIllnessScript(graph, patillscript.getCurrentStage());
+	public ExpViewPatientIllnessScript getExpPatIllScript(){
+		return new ExpViewPatientIllnessScript(graph, patillscript.getCurrentStage());
+	}
+	
+	public boolean isExpEdit(){
+		if(this.patillscript!=null && this.patillscript.getType()==IllnessScriptInterface.TYPE_EXPERT_CREATED) return true;
+		return false;
 	}
 }

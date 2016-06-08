@@ -2,7 +2,7 @@ package actions.beanActions;
 
 import actions.scoringActions.ScoringCourseOfTimeAction;
 import beans.LogEntry;
-import beans.PatientIllnessScript;
+import beans.scripts.*;
 
 /**
  * Changes to properties of the patientIllnessScript, currently courseOfTime and confidence.

@@ -1,11 +1,11 @@
 package actions.scoringActions;
 
-import beans.IllnessScriptInterface;
-import beans.PatientIllnessScript;
+import beans.scripts.*;
 import beans.graph.Graph;
 import beans.graph.MultiEdge;
 import beans.scoring.ScoreBean;
 import beans.scoring.ScoreContainer;
+import beans.scripts.IllnessScriptInterface;
 import controller.NavigationController;
 import controller.ScoringController;
 import database.DBScoring;

@@ -13,8 +13,7 @@ import javax.servlet.ServletContext;
 import javax.servlet.http.HttpSessionEvent;
 import javax.servlet.http.HttpSessionListener;
 
-import beans.IllnessScript;
-import beans.PatientIllnessScript;
+import beans.scripts.*;
 import beans.graph.Graph;
 import beans.relation.RelationDiagnosis;
 import beans.scoring.PeerContainer;

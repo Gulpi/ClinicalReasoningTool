@@ -39,7 +39,7 @@ public class NavigationController implements Serializable {
 	public String openPatIllScript(){
 		//long id = new AjaxController().getIdRequestParamByKey(AjaxController.REQPARAM_SCRIPT);
 		CRTFacesContext context = getCRTFacesContext(); 
-		if(context!=null) context.initExpEditSession();
+		if(context!=null) context.initSession();
 		//TODO error handling
 		return "prototype_fs";
 	}

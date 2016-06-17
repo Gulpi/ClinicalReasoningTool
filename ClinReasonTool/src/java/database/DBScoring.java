@@ -4,6 +4,7 @@ import java.util.*;
 
 import org.hibernate.Criteria;
 import org.hibernate.Session;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 
 import beans.scoring.FeedbackBean;
@@ -16,6 +17,16 @@ public class DBScoring extends DBClinReason {
     	Session s = instance.getInternalSession(Thread.currentThread(), false);
     	Criteria criteria = s.createCriteria(ScoreBean.class,"ScoreBean");
     	criteria.add(Restrictions.eq("patIllScriptId", new Long(patIllScriptId)));
+    	criteria.addOrder(Order.asc("stage"));
+
+    	List<ScoreBean> l = criteria.list();
+    	return l;
+    }
+    
+    public List<ScoreBean> selectScoreBeansByUserId(long userId){
+    	Session s = instance.getInternalSession(Thread.currentThread(), false);
+    	Criteria criteria = s.createCriteria(ScoreBean.class,"ScoreBean");
+    	criteria.add(Restrictions.eq("userId", new Long(userId)));
     	List<ScoreBean> l = criteria.list();
     	return l;
     }
@@ -55,6 +66,27 @@ public class DBScoring extends DBClinReason {
     	Criteria criteria = s.createCriteria(PeerBean.class,"PeerBean");
     	criteria.add(Restrictions.eq("parentId", new Long(parentId)));
     	return criteria.list();
+    }
+    
+    /**
+     * We get ALL PeerBean objects for all scripts and put them into a map with the parentId as key. 
+     * @return
+     */
+    public Map<Long, List<PeerBean>> selectAllPeerBeans(){
+    	Session s = instance.getInternalSession(Thread.currentThread(), false);
+    	Criteria criteria = s.createCriteria(PeerBean.class,"PeerBean");
+    	//criteria.add(Restrictions.eq("parentId", new Long(parentId)));
+    	List<PeerBean> list =  criteria.list();
+    	if(list==null || list.isEmpty()) return null;
+    	Map<Long, List<PeerBean>> m = new HashMap<Long, List<PeerBean>>();
+    	for(int i=0; i<list.size(); i++){
+    		PeerBean pb = list.get(i);
+    		List<PeerBean> beans = m.get(new Long(pb.getParentId())); 
+    		if(beans==null) beans = new ArrayList<PeerBean>();
+    		beans.add(pb);
+    		m.put(new Long(pb.getParentId()), beans);
+    	}
+    	return m;
     }
     
 }

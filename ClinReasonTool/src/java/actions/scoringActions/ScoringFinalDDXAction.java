@@ -74,7 +74,7 @@ public class ScoringFinalDDXAction /*implements ScoringAction*/{
 				long itemId = vert.getVertexId();
 				if(learnerRel!=null) itemId = learnerRel.getListItemId();
 				ScoreBean scoreBean = cont.getScoreBeanByTypeAndItemId(ScoreBean.TYPE_FINAL_DDX, vert.getVertexId());
-				if(scoreBean == null) scoreBean = new ScoreBean(patIllScript.getId(), itemId, ScoreBean.TYPE_FINAL_DDX, patIllScript.getCurrentStage());
+				if(scoreBean == null) scoreBean = new ScoreBean(patIllScript, itemId, ScoreBean.TYPE_FINAL_DDX);
 
 				scoreBean.setTiming(patIllScript.getSubmittedStage(), expIllScript.getSubmittedStage());
 				if(learnerRel!=null && learnerRel.getTier() == RelationDiagnosis.TIER_FINAL &&  expRel.getTier() == RelationDiagnosis.TIER_FINAL){

@@ -26,6 +26,8 @@
 		<property name="feedbackOn" column="feedback" type="int"/>
 		<property name="stage" column="stage" type="int"/>
 		<property name="expItemId" column="expitem_id" type="long"/>
+		<property name="userId" column="user_id" type="long"/>
+		<property name="parentId" column="parent_id" type="long"/>
 		
 		
 		

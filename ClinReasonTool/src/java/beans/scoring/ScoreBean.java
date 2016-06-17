@@ -8,6 +8,7 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 
 import beans.relation.Relation;
+import beans.scripts.PatientIllnessScript;
 
 /**
  * This is a single score for a specific action in an patientIllnessScript, such as an added problem or the summary 
@@ -38,6 +39,7 @@ public class ScoreBean extends Beans implements Serializable{
 	public static final int TYPE_SUMMST = 14;
 	public static final int TYPE_EPI_LIST = 15;
 	public static final int TYPE_SCRIPT_CREATION = 16; //we use this for PeerBean creation 
+	public static final int TYPE_OVERALL_SCORE = 17;
 	
 	public static final int TIME_OK = 0;
 	public static final int TIME_LATE = 1;
@@ -45,12 +47,16 @@ public class ScoreBean extends Beans implements Serializable{
 	
 	private long id; 
 	private long patIllScriptId; 
+	private long parentId;
+	private long userId;
+	
 	/**
 	 * current score for this action, is constantly updated, when the user makes changes.
 	 */
 	private float scoreBasedOnExp = -1;
 	/**
 	 * We store the oroginal score here, which is not changed no matter which changes the learner makes 
+	 * the score is 0 if added via a joker or user has seen the experts solution before adding it.
 	 */
 	private float orgScoreBasedOnExp = -1;
 	/**
@@ -94,15 +100,38 @@ public class ScoreBean extends Beans implements Serializable{
 	private long expItemId; 
 	
 	public ScoreBean(){}
-	public ScoreBean(long patIllId, long scoredItem, int type, int stage/*, long relId*/){
-		this.patIllScriptId = patIllId;
+	public ScoreBean(PatientIllnessScript patIllScript, long scoredItem, int type){
+		this.patIllScriptId = patIllScript.getId();
 		this.scoredItem = scoredItem;
-		//this.score = score;
+		this.type = type;
+		this.stage = patIllScript.getCurrentStage();
+		this.parentId = patIllScript.getParentId();
+		this.userId = patIllScript.getUserId();		
+	}
+	
+	public ScoreBean(PatientIllnessScript patIllScript, long scoredItem, int type, int stage){
+		this.patIllScriptId = patIllScript.getId();
+		this.scoredItem = scoredItem;
 		this.type = type;
 		this.stage = stage;
-		//this.scoredRelId = relId;
-		
+		this.parentId = patIllScript.getParentId();
+		this.userId = patIllScript.getUserId();		
 	}
+
+	public ScoreBean(LearningAnalyticsBean laBean, int type){
+		this.patIllScriptId = laBean.getPatIllScriptId();
+		this.type = type;
+		this.parentId = laBean.getParentId();
+		this.userId = laBean.getUserId();		
+	}
+	
+	public ScoreBean(long patIllScriptId, long parentId, long userId, int type){
+		this.patIllScriptId = patIllScriptId;
+		this.type = type;
+		this.parentId = parentId;
+		this.userId = userId;		
+	}
+	
 	public long getId() {return id;}
 	public void setId(long id) {this.id = id;}
 	public long getPatIllScriptId() {return patIllScriptId;}
@@ -132,6 +161,8 @@ public class ScoreBean extends Beans implements Serializable{
 	public int getStage() {return stage;}
 	public void setStage(int stage) {this.stage = stage;}
 	public int getScoreBasedOnExpPerc() {return (int)(scoreBasedOnExp*100);}
+	public int getOrgScoreBasedOnExpPerc() {return (int)(orgScoreBasedOnExp*100);}
+
 	public long getExpItemId() {return expItemId;}
 	public void setExpItemId(long expItemId) {this.expItemId = expItemId;}	
 	public long getScoredRelId() {return scoredRelId;}
@@ -143,6 +174,11 @@ public class ScoreBean extends Beans implements Serializable{
 		if(learnerStage==expStage) setTiming(TIME_OK);
 		if(learnerStage<expStage) setTiming(TIME_EARLY);
 	}
+	
+	public long getParentId() {return parentId;}
+	public void setParentId(long parentId) {this.parentId = parentId;}	
+	public long getUserId() {return userId;}
+	public void setUserId(long userId) {this.userId = userId;}
 	/* (non-Javadoc)
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */

@@ -22,6 +22,7 @@ import controller.PeerSyncController;
 import database.DBClinReason;
 import database.HibernateUtil;
 import util.CRTLogger;
+import util.StringUtilities;
 import properties.IntlConfiguration;
 
 /**
@@ -82,8 +83,14 @@ public class AppBean extends ApplicationWrapper implements HttpSessionListener{
 	   // new JsonCreator().initJsonExport(); 
 	   
 		//MeshImporter.main("en");
+	    peers.initPeerContainer();
 	    CRTLogger.out("Init done", CRTLogger.LEVEL_PROD);
-	    new PeerSyncController(peers).sync();
+	    try{
+	    	new PeerSyncController(peers).sync();
+	    }
+	    catch(Exception e){
+	    	CRTLogger.out("AppBean(): " + StringUtilities.stackTraceToString(e), CRTLogger.LEVEL_ERROR);
+	    }
 	}
 	
 

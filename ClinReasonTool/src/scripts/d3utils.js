@@ -1,27 +1,9 @@
 
-/* examplary charts for learner*/ 
-function testPrint2(width){
-	var overallproblemData = [];
-	var arr =["VP xy ", "VP ab", "VP cd", "VP xx", "VP yy"];
-	var arr2=[0.76, 0.77, 0.65, 0.87, 0.57];
-	for(i=0; i<5; i++){
-		overallproblemData.push({ label: arr[i], value:  arr2[i]});
-	}
-	printBarChar(150, width, overallproblemData, "overallProbchart","Overall Problems Scores");
-
-	var overallDDXData = [];
-	var arr =["VP xy ", "VP ab", "VP cd", "VP xx", "VP yy"];
-	var arr2=[0.57, 0.50, 0.65, 0.87, 0.89];
-	for(i=0; i<5; i++){
-		overallDDXData.push({ label: arr[i], value:  arr2[i]});
-	}
-	printBarChar(150, width, overallDDXData, "overallDDXchart","Overall DDX Scores");
-}
 
 function printGroupedBarChart(data, peerdata, height, width, chartName, title){
 	var data1 = [];
-	data1[0] = {key: "stud" , nonStackable: 1 ,values: peerdata};
-	data1[1] = {key: "peer" , nonStackable: 1, values: data};
+	data1[0] = {key: "stud" , nonStackable: 1 ,values: data};
+	data1[1] = {key: "peer" , nonStackable: 1, values: peerdata};
 	
    nv.addGraph({
         generate: function() {
@@ -66,6 +48,102 @@ function printGroupedBarChart(data, peerdata, height, width, chartName, title){
         }*/
     });
 
+}
+
+
+/**
+ * bars are the learner's scores, avg peer score as line
+ */
+function printBarLineComboChart(data, peerdata, height, width, chartName, title){
+	var data1 = [];
+	data1[0] = {"key": "stud" , "bar":true ,"values": data};
+	data1[1] = {"key": "peer" , "values": peerdata};
+
+	nv.addGraph(function() {
+	    var chart = nv.models.linePlusBarChart()
+	      .margin({top: 30, right: 60, bottom: 50, left: 70})
+	      .x(function(d,i) { return i })
+	      .y(function(d) { return d[1] })
+	      .color(d3.scale.category10().range())
+	      ;
+
+	     /* chart.xAxis.tickFormat(function(d) {
+	        var dx = data[0].values[d] && data[0].values[d][0] || 0;
+	        return d3.time.format('%x')(new Date(dx))
+	      });*/
+
+	      /*chart.y1Axis
+	          .tickFormat(d3.format(',f'));
+
+	      chart.y2Axis
+	          .tickFormat(function(d) { return '$' + d3.format(',f')(d) });*/
+          chart.y1Axis.tickFormat(d3.format(''));
+          chart.y1Axis.ticks(10, "%");	
+          chart.margin({"left":15,"right":5,"top":5,"bottom":15});
+          chart.tooltip.enabled(false)
+          chart.yDomain([0,100]);
+
+	      //chart.bars.forceY([0]);
+          chart.dispatch.on('renderEnd', function(){
+              console.log('Render Complete');
+          });
+
+          var svg = d3.select('#'+chartName)
+          .datum(data1)
+          .transition()
+	      .duration(0)
+	      .call(chart);
+          console.log('calling chart');
+          //svg.transition().duration(0).call(chart);
+
+          return chart;
+	    /*  d3.select('#chart svg')
+	        .datum(data)
+	        .transition()
+	        .duration(0)
+	        .call(chart);*/
+
+	     // nv.utils.windowResize(chart.update);
+
+	      //return chart;
+		 }
+	  );
+
+}
+
+function printLineChart(data, peerdata, height, width, chartName, title){
+	var data1 = [];
+	data1[0] = {key: "stud" ,values: data};
+	data1[1] = {key: "peer" , values: peerdata};
+	
+	nv.addGraph(function() {
+		  var chart = nv.models.lineChart()
+		                .margin({left: 100})  //Adjust chart margins to give the x-axis some breathing room.
+		                //.useInteractiveGuideline(true)  //We want nice looking tooltips and a guideline!
+		                .transitionDuration(0)  //how fast do you want the lines to transition?
+		                .showLegend(true)       //Show the legend, allowing users to turn on/off line series.
+		                .showYAxis(true)        //Show the y-axis
+		                .showXAxis(true)        //Show the x-axis
+		  ;
+
+		  chart.xAxis     //Chart x-axis settings
+		      .axisLabel('VPs')
+		      .tickFormat(d3.format(',r'));
+
+          chart.yAxis.tickFormat(d3.format(''));
+          chart.yAxis.ticks(10, "%");	
+
+		  /* Done setting the chart up? Time to render it!*/
+		 // var myData = sinAndCos();   //You need data...
+
+		  d3.select('#'+chartName)    //Select the <svg> element you want to render the chart in.   
+		      .datum(data1)         //Populate the <svg> element with chart data...
+		      .call(chart);          //Finally, render the chart!
+
+		  //Update the chart when window resizes.
+		  nv.utils.windowResize(function() { chart.update() });
+		  return chart;
+		});
 }
 
 
@@ -218,6 +296,25 @@ function testPrint(){
 		overalldata.push({ label: arr[i], value:  arr2[i]});
 	}
 	printBarChar(150, 250, overalldata, "overallchart","Overall Score");
-	
+}
+
+
+/* examplary charts for learner*/ 
+function testPrint2(width){
+	var overallproblemData = [];
+	var arr =["VP xy ", "VP ab", "VP cd", "VP xx", "VP yy"];
+	var arr2=[0.76, 0.77, 0.65, 0.87, 0.57];
+	for(i=0; i<5; i++){
+		overallproblemData.push({ label: arr[i], value:  arr2[i]});
+	}
+	printBarChar(150, width, overallproblemData, "overallProbchart","Overall Problems Scores");
+
+	var overallDDXData = [];
+	var arr =["VP xy ", "VP ab", "VP cd", "VP xx", "VP yy"];
+	var arr2=[0.57, 0.50, 0.65, 0.87, 0.89];
+	for(i=0; i<5; i++){
+		overallDDXData.push({ label: arr[i], value:  arr2[i]});
+	}
+	printBarChar(150, width, overallDDXData, "overallDDXchart","Overall DDX Scores");
 }
 

@@ -33,6 +33,10 @@ public class PatientIllnessScript extends Beans/*extends Node*/ implements Illne
 	private static final long serialVersionUID = 1L;
 	private Timestamp creationDate;
 	/**
+	 * We need this for example for determining availability biases...
+	 */
+	private Timestamp lastAccessDate;
+	/**
 	 * the VP the patIllScript is related to. We need this in addition to the sessionId to be able to connect 
 	 * the learners' script to the authors'/experts' script.
 	 */
@@ -131,7 +135,9 @@ public class PatientIllnessScript extends Beans/*extends Node*/ implements Illne
 	public List<RelationProblem> getProblemsStage() { return getRelationsByStage(problems);}
 	public void setProblems(List<RelationProblem> problems) {this.problems = problems;}
 	public Timestamp getCreationDate(){ return this.creationDate;} //setting is done in DB	
-	public void setCreationDate(Timestamp creationDate) {this.creationDate = creationDate;}
+	public void setCreationDate(Timestamp creationDate) {this.creationDate = creationDate;}	
+	public Timestamp getLastAccessDate() {return lastAccessDate;}
+	public void setLastAccessDate(Timestamp lastAccessDate) {this.lastAccessDate = lastAccessDate;}
 	public long getParentId() {return parentId;}
 	public void setParentId(long parentId) {this.parentId = parentId;}
 	public int getType() {return type;}

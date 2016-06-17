@@ -23,11 +23,12 @@ public class ScoringSummStAction {
 	 * @param patIllScript
 	 */
 	public void scoreAction(PatientIllnessScript patIllScript, int stage){
+		if(patIllScript.getType()==IllnessScriptInterface.TYPE_EXPERT_CREATED) return;
 		PatientIllnessScript expScript = AppBean.getExpertPatIllScript(patIllScript.getParentId());
 		ScoreContainer scoreContainer = new NavigationController().getCRTFacesContext().getScoreContainer();		
 		ScoreBean scoreBean = scoreContainer.getListScoreBeanByStage(ScoreBean.TYPE_SUMMST, stage);
 		if(scoreBean!=null) return;
-		scoreBean = new ScoreBean(patIllScript.getId(), -1, ScoreBean.TYPE_SUMMST, stage);
+		scoreBean = new ScoreBean(patIllScript, -1, ScoreBean.TYPE_SUMMST, stage);
 		if(expScript!=null && expScript.getSummSt()!=null) //otherwise we do not have an experts' patIllScript to compare with				
 			calculateAddActionScoreBasedOnExpert(scoreBean, expScript.getSummSt(), patIllScript.getSummSt());				
 					
@@ -55,5 +56,13 @@ public class ScoringSummStAction {
 	
 	private void calculateOverallScore(ScoreBean scoreBean){
 		scoreBean.setOverallScore(scoreBean.getScoreBasedOnExp());
+	}
+	
+	/**
+	 * Calculate seperately from any other comparison the appropriate use of semantic qualifiers in the 
+	 * summary statement.
+	 */
+	private void calculateSQUse(){
+		//Durning 2012: 1 point for correctly used term, -1 for a wrong term.
 	}
 }

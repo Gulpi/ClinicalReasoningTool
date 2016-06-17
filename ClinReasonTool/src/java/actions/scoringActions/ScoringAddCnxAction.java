@@ -16,12 +16,13 @@ import database.DBScoring;
 public class ScoringAddCnxAction implements ScoringAction{
 
 	public void scoreAction(long cnxId, PatientIllnessScript patIllScript, boolean isJoker){
+		if(patIllScript.getType()==IllnessScriptInterface.TYPE_EXPERT_CREATED) return;
 		Graph g = new NavigationController().getCRTFacesContext().getGraph();
 		MultiEdge edge = g.getEdgeByCnxId(IllnessScriptInterface.TYPE_LEARNER_CREATED, cnxId);
 		ScoreContainer scoreContainer = new NavigationController().getCRTFacesContext().getScoreContainer();		
 		ScoreBean scoreBean = scoreContainer.getScoreBeanByTypeAndItemId(ScoreBean.TYPE_ADD_CNX, cnxId);
 		if(scoreBean!=null) return; //then this item has already  been scored: 
-		scoreBean = new ScoreBean(patIllScript.getId(), cnxId, ScoreBean.TYPE_ADD_CNX, patIllScript.getCurrentStage());
+		scoreBean = new ScoreBean(patIllScript, cnxId, ScoreBean.TYPE_ADD_CNX);
 		if(g.getExpertPatIllScriptId()>0) //otherwise we do not have an experts' patIllScript to compare with				
 			calculateAddActionScoreBasedOnExpert(edge, scoreBean, patIllScript, isJoker);				
 					

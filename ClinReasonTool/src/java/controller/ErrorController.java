@@ -49,10 +49,14 @@ public class ErrorController {
 		}
 	}
 	
-	private MyError checkAvailabilityError(){
-		//we have to check here the last x scripts/VPs of the user and whether it involved the diagnosis he has come up with 
-		//here...
-		return null;
+	/**
+	 * we have to check here the last x scripts/VPs of the user and whether it involved the diagnosis he has come up with here...
+	 * @return
+	 */
+	private void checkAvailabilityError(){
+		PatIllScriptContainer cont = new NavigationController().getCRTFacesContext().getScriptContainer();
+		if(cont==null || cont.getScriptsOfUser()==null) return; //no previous scripts
+		List<PatientIllnessScript> lastScripts = cont.getLastCompletedScripts(AvailabilityBias.NUM_SCRIPTS, null);
 	}
 	
 	//and so on....

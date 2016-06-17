@@ -13,10 +13,11 @@ import beans.scripts.*;
 
 /**
  * LearninAnalytics takes into account all users' actions, scores, and goals for one VP.
+ * The LearningAnalytics Bean contains all scores for one script of a learner
  * @author ingahege
  *
  */
-@ManagedBean(name = "analytics", eager = true)
+@ManagedBean(name = "analyticsbean", eager = true)
 @SessionScoped
 public class LearningAnalyticsBean extends Beans implements Serializable{
 	//categories based on the MOT model
@@ -80,6 +81,37 @@ public class LearningAnalyticsBean extends Beans implements Serializable{
 		return scoreContainer.getScoresByType(ScoreBean.TYPE_PROBLEM_LIST);
 	}
 	
+	public ScoreBean getSummStScore(){
+		if(scoreContainer==null) return null; 
+		return scoreContainer.getScoreByType(ScoreBean.TYPE_SUMMST);
+	}
+	/**
+	 * we get the list score for problems at the last stage
+	 * @return
+	 */
+	public ScoreBean getFinalProblemScore(){
+		List<ScoreBean> listScores = getProblemScoreStages();
+		if(listScores==null || listScores.isEmpty()) return null;
+		return listScores.get(listScores.size()-1);
+	}
+	
+	public ScoreBean getFinalDDXScore(){
+		List<ScoreBean> listScores = getDDXScoreStages();
+		if(listScores==null || listScores.isEmpty()) return null;
+		return listScores.get(listScores.size()-1);
+	}
+
+	public ScoreBean getFinalTestScore(){
+		List<ScoreBean> listScores = getTestScoreStages();
+		if(listScores==null || listScores.isEmpty()) return null;
+		return listScores.get(listScores.size()-1);
+	}
+
+	public ScoreBean getFinalMngScore(){
+		List<ScoreBean> listScores = getMngScoreStages();
+		if(listScores==null || listScores.isEmpty()) return null;
+		return listScores.get(listScores.size()-1);
+	}
 	public List<PeerBean> getProblemPeerStages(){
 		if(AppBean.getPeers()==null) return null;
 		return AppBean.getPeers().getPeerBeansByActionAndParentId(parentId, ScoreBean.TYPE_PROBLEM_LIST);
@@ -124,4 +156,11 @@ public class LearningAnalyticsBean extends Beans implements Serializable{
 		return scoreContainer;
 	}
 	
+	public ScoreBean getOverallScore(){
+		if(scoreContainer==null) return null; 
+		return scoreContainer.getScoreByType(ScoreBean.TYPE_OVERALL_SCORE);
+	}
+	public long getUserId() {return userId;}
+	public long getPatIllScriptId() {return patIllScriptId;}
+	public long getParentId() {return parentId;}
 }

@@ -35,6 +35,7 @@ public class ScoringAddAction implements ScoringAction{
 	 * @param rel
 	 */
 	public void scoreAction(long vertexId, PatientIllnessScript patIllScript, boolean isJoker){
+		if(patIllScript.getType()==IllnessScriptInterface.TYPE_EXPERT_CREATED) return;
 		Graph g = new NavigationController().getCRTFacesContext().getGraph();
 		MultiVertex mvertex = g.getVertexById(vertexId);
 		ScoreContainer scoreContainer = new NavigationController().getCRTFacesContext().getScoreContainer();
@@ -42,7 +43,7 @@ public class ScoringAddAction implements ScoringAction{
 		ScoreBean scoreBean = scoreContainer.getScoreBeanByTypeAndItemId(mvertex.getType(), vertexId);
 		if(scoreBean!=null && !isChg) return; //then this item has already been scored and we do not want a rescore
 		
-		if(scoreBean==null) scoreBean = new ScoreBean(patIllScript.getId(), mvertex.getVertexId(), mvertex.getType(), patIllScript.getCurrentStage());
+		if(scoreBean==null) scoreBean = new ScoreBean(patIllScript, mvertex.getVertexId(), mvertex.getType());
 		if(g.getExpertPatIllScriptId()>0) //otherwise we do not have an experts' patIllScript to compare with				
 			calculateAddActionScoreBasedOnExpert(mvertex, scoreBean, patIllScript, g, isJoker);				
 					
@@ -75,7 +76,7 @@ public class ScoringAddAction implements ScoringAction{
 		scoreBean.setScoreBasedOnExp(ScoringController.SCORE_NOEXP_BUT_LEARNER, isChg);
 		if(learnerRel!=null && expRel!=null) scoreBean.setTiming(learnerRel.getStage(), expRel.getStage());
 		
-		new ScoringController().setFeedbackInfo(scoreBean, isChg, isJoker);
+		
 		if(expRel!=null){ //expert has chosen this item (not synonym)
 			if(learnerRel!=null && learnerRel.getSynId()<=0){
 				if(learnerRel.getPrefix()==expRel.getPrefix())
@@ -98,6 +99,8 @@ public class ScoringAddAction implements ScoringAction{
 			scoreHierarchyBasedOnExp(g, scoreBean, mvertex, learnerRel);						
 			//if(!scored) scoreBean.setScoreBasedOnExp(ScoringController.SCORE_NOEXP_BUT_LEARNER);
 		}
+		new ScoringController().setFeedbackInfo(scoreBean, isChg, isJoker);
+
 	}
 
 	/**

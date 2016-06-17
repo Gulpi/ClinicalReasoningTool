@@ -218,6 +218,7 @@ public class DBClinReason /*extends HibernateUtil*/{
 
     /**
      * Select the PatientIllnessScripts for the userId from the database. 
+     * Beware: summStatement not loaded!
      * @param sessionId
      * @return PatientIllnessScript or null
      */
@@ -225,7 +226,7 @@ public class DBClinReason /*extends HibernateUtil*/{
     	Session s = instance.getInternalSession(Thread.currentThread(), false);
     	Criteria criteria = s.createCriteria(PatientIllnessScript.class,"PatientIllnessScript");
     	criteria.add(Restrictions.eq("userId", new Long(userId)));
-    	//CAVE summStatement not loaded!
+    	criteria.addOrder(Order.desc("lastAccessDate"));
     	return  criteria.list();
     }
     

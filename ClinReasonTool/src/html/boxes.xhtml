@@ -100,9 +100,14 @@ $(function() {
     $( ".container" ).draggable({
         stop: function() {
         	storeContainerPos(this.id, this.offsetLeft, this.offsetTop);
-        }
-      });
+        },
+        containment:"parent"
     
+      });
+    $( ".itembox" ).draggable({
+        containment:"parent"
+    
+      });
 	//initLists();
     $( "#confidence_slider" ).slider({
        orientation: "vertical",

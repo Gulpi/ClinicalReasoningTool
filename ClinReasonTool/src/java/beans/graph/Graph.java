@@ -58,6 +58,8 @@ public class Graph extends DirectedWeightedMultigraph<MultiVertex, MultiEdge> {
 	public void setIllScriptId(List<Long> illScriptIds) {this.illScriptIds = illScriptIds;}	
 	public int getPeerNums() {return peerNums;}
 	public void setPeerNums(int peerNums) {this.peerNums = peerNums;}
+	public long getParentId() {return parentId;}
+
 
 	public void addIllScriptId(long id){
 		if(illScriptIds==null) illScriptIds = new ArrayList<Long>();

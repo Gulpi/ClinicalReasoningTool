@@ -1,0 +1,23 @@
+ <ui:composition 
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core">
+<!-- problem scores for all VPs of user -->
+
+<div>Investigations<br clear="all"/>
+	<svg id="testchart" class="chart"></svg></div>="ddxchart" class="chart"></svg>
+</div>
+
+<script language="JavaScript">
+	var testdata = [];
+	var testpeerdata = [];
+	<ui:repeat value="#{crtContext.learningAnalyticsContainer.testScores}" var="scoreItem3">
+		testdata.push({ x: "#{scoreItem3.parentId}", y: #{scoreItem3.orgScoreBasedOnExpPerc} });
+	</ui:repeat>
+	<ui:repeat value="#{crtContext.learningAnalyticsContainer.testPeerScores}" var="scoreItemP">
+		testpeerdata.push({ x: "#{scoreItemP.parentId}", y: #{scoreItemP.peerPercentagePerc} });
+	</ui:repeat>
+	printGroupedBarChart(testdata, testpeerdata, 150, 250, "testchart","Diagnostic steps");
+</script>
+</ui:composition>

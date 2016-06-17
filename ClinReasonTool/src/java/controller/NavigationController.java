@@ -37,32 +37,32 @@ public class NavigationController implements Serializable {
 	 * @return
 	 */
 	public String openPatIllScript(){
-		//long id = new AjaxController().getIdRequestParamByKey(AjaxController.REQPARAM_SCRIPT);
 		CRTFacesContext context = getCRTFacesContext(); 
-		if(context!=null) context.initSession();
+		if(context!=null){
+			removePatIllScript();
+			context.initSession();
+		}
 		//TODO error handling
 		return "prototype_fs";
 	}
 	
+	public String openPatIllScript(String s){ return openPatIllScript(); }
+		
 	/**
 	 * User has clicked on a link to open and edit an expert's patientIllnessScript
 	 * called from AjaxController
 	 * @return
 	 */
 	public String openExpPatIllScript(){
-		//long id = new AjaxController().getIdRequestParamByKey(AjaxController.REQPARAM_SCRIPT);
 		CRTFacesContext context = getCRTFacesContext(); 
-		if(context!=null) context.initExpEditSession();
+		if(context!=null){
+			removePatIllScript();
+			context.initExpEditSession();
+		}
 		//TODO error handling
 		return "exp_boxes";
 	}
 	
-	public String openPatIllScript(String s){
-		CRTFacesContext context = getCRTFacesContext(); 
-		if(context!=null) context.initSession();
-		//TODO error handling
-		return "prototype_fs";
-	}
 	
 	public String logout(){
 		//log the user out and remove all sessionScoped stuff.....
@@ -77,7 +77,6 @@ public class NavigationController implements Serializable {
 	public void removePatIllScript(){
 		CRTFacesContext crtFacesContext = getCRTFacesContext();
 		if(crtFacesContext!=null && crtFacesContext.getPatillscript()!=null){
-			//crtFacesContext.setSessionId(-1);
 			notifyLog(crtFacesContext.getPatillscript());
 			crtFacesContext.reset();
 		}

@@ -42,11 +42,12 @@ public class ScoringListAction {
 		ScoreBean scoreBean = scoreContainer.getListScoreBeanByStage(listType, patillscript.getCurrentStage());
 		if(scoreBean!=null) return; //already scored....
 		//if(scoreBean==null){
-			scoreBean = new ScoreBean(patillscript.getId(), -1, listType, patillscript.getCurrentStage());
+			scoreBean = new ScoreBean(patillscript, -1, listType);
 			scoreContainer.addScore(scoreBean);
 		//}
 		
 		calculateListScoreBasedOnExpert(mvertices, scoreBean);	
+		calculateStrictListScoreBasedOnExpert(mvertices, scoreBean, scoreContainer);	
 		calculateListScoreBasedOnPeers(mvertices, scoreBean);
 		calculateOverallScore(scoreBean);
 		new DBScoring().saveAndCommit(scoreBean);
@@ -76,6 +77,35 @@ public class ScoringListAction {
 		score = score - (addNum*ScoringController.ADD_LISTITEM_RED_SCORE);
 		if(score<0) score = 0;
 		scoreBean.setScoreBasedOnExp(score, false);
+	}
+	
+	/**
+	 * we calculate a strict score for the list, that does not consider any items that have been added as joker or 
+	 * after seen the expert solution. Also no changes are considered, but the original score is taken as a basis.
+	 * @param mvertices
+	 * @param scoreBean
+	 */
+	private void calculateStrictListScoreBasedOnExpert(List<MultiVertex> mvertices, ScoreBean scoreBean, ScoreContainer scoreContainer){
+		int missedNum = 0; 
+		int addNum = 0; 
+		int correctNum = 0;
+		float correctScore = 0;
+		for(int i=0; i< mvertices.size(); i++){
+			MultiVertex vertex = mvertices.get(i);
+			if(vertex.isExpertVertex() && vertex.isLearnerVertex()) correctNum++;
+			ScoreBean sb = scoreContainer.getScoreBeanByTypeAndItemId(vertex.getType(), vertex.getLearnerVertex().getListItemId());
+			correctScore +=sb.getOrgScoreBasedOnExp();
+			//learner has missed an item if the expert has added it and the learner is already at the stage 
+			//the expert has added it:
+			if(vertex.isExpertVertex() && !vertex.isLearnerVertex() && vertex.getExpertVertex().getStage()<=patillscript.getCurrentStage()) 
+				missedNum++;
+			
+			if(!vertex.isExpertVertex() && vertex.isLearnerVertex()) addNum++;		//learner has added additional items	
+		}
+		float score = (float)correctNum/(correctNum+missedNum);
+		score = score - (addNum*ScoringController.ADD_LISTITEM_RED_SCORE);
+		if(score<0) score = 0;
+		scoreBean.setOrgScoreBasedOnExp(score);
 	}
 	
 	private void calculateListScoreBasedOnPeers(List<MultiVertex> mvertices, ScoreBean scoreBean){

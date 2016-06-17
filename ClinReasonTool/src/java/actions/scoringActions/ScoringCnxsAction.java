@@ -31,7 +31,7 @@ public class ScoringCnxsAction {
 		ScoreContainer scoreContainer = new NavigationController().getCRTFacesContext().getScoreContainer();		
 		ScoreBean scoreBean = scoreContainer.getListScoreBeanByStage(ScoreBean.TYPE_CNXS, stage);
 		if(scoreBean!=null) isChg = true;//return; //already scored....
-		scoreBean = new ScoreBean(patillscript.getId(), -1, ScoreBean.TYPE_CNXS, stage);
+		scoreBean = new ScoreBean(patillscript, -1, ScoreBean.TYPE_CNXS, stage);
 		scoreContainer.addScore(scoreBean);
 		calculateCnxsScoreBasedOnExpert(g.edgeSet(), scoreBean);	
 		calculateCnxsScoreBasedOnPeers(g.edgeSet(), scoreBean);

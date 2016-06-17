@@ -92,6 +92,9 @@ public class ScoringController {
 		//if(expFBOn && peerFBOn) scoreBean.setFeedbackOn(FeedbackBean.FEEDBACK_EXP_PEER);
 		if(isChg) scoreBean.setFeedbackOn(FeedbackBean.FEEDBACK_CHG);
 		if(isJoker) scoreBean.setFeedbackOn(FeedbackBean.FEEDBACK_JOKER);
+		
+		if(isJoker || expFBOn) scoreBean.setOrgScoreBasedOnExp(ScoringController.NO_SCORE);
+
 	}
 	
 	/**
@@ -99,7 +102,7 @@ public class ScoringController {
 	 * @param patIllScript
 	 */
 	public void scoringListsForStage(PatientIllnessScript patIllScript, int stage){
-		if(stage<0) return;
+		if(stage<0 || patIllScript.getType()==IllnessScriptInterface.TYPE_EXPERT_CREATED) return;
 		ScoringListAction scla = new ScoringListAction(patIllScript);
 		scla.scoreList(ScoreBean.TYPE_DDX_LIST, ScoreBean.TYPE_ADD_DDX);
 		scla.scoreList(ScoreBean.TYPE_PROBLEM_LIST, ScoreBean.TYPE_ADD_PROBLEM);

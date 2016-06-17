@@ -108,7 +108,7 @@ public class AddMngAction implements AddAction, Scoreable{
 	 */
 	public void triggerScoringAction(Beans rel, boolean isJoker) {
 		new ScoringAddAction().scoreAction(((RelationManagement) rel).getListItemId(), this.patIllScript, isJoker);
-		new ScoringListAction(this.patIllScript).scoreList(ScoreBean.TYPE_MNG_LIST, Relation.TYPE_MNG);
+		//new ScoringListAction(this.patIllScript).scoreList(ScoreBean.TYPE_MNG_LIST, Relation.TYPE_MNG);
 	}
 	
 	public void createErrorMessage(String summary, String details, Severity sev) {

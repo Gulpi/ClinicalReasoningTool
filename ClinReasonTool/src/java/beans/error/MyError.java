@@ -15,6 +15,11 @@ public  abstract class MyError implements Serializable{
 	private static final long serialVersionUID = 1L;
 
 	public static final int TYPE_PREMATURE_CLOUSRE = 1;
+	public static final int TYPE_AVAILABILITY = 2;
+	public static final int TYPE_CONFIRMATION = 3;
+	public static final int TYPE_ANCHORING = 4;
+	public static final int TYPE_BASERATE = 5;
+	public static final int TYPE_REPRESENTATIVENESS = 6;
 	//....
 	
 	private long id; 

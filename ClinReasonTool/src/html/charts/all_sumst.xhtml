@@ -1,0 +1,24 @@
+ <ui:composition 
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core">
+<!-- problem scores for all VPs of user -->
+
+<div>Final representation and Semantic qualifier (summSt)<br clear="all"/>
+	<svg id="sumchart" class="chart"></svg>
+</div>
+<script language="JavaScript">
+	var sumdata = [];
+	var sumpeerdata = [];
+	<ui:repeat value="#{crtContext.learningAnalyticsContainer.sumScores}" var="scoreItem4">
+		sumdata.push({ x: "#{scoreItem4.parentId}", y: #{scoreItem4.orgScoreBasedOnExpPerc} });
+	</ui:repeat>
+	<ui:repeat value="#{crtContext.learningAnalyticsContainer.sumPeerScores}" var="scoreItemP">
+		sumpeerdata.push({ x: "#{scoreItemP.parentId}", y: #{scoreItemP.peerPercentagePerc} });
+	</ui:repeat>
+	
+	printGroupedBarChart(sumdata, sumpeerdata, 150, 250, "sumchart","Summary");
+
+</script>
+</ui:composition>

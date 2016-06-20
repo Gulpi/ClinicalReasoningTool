@@ -7,9 +7,9 @@ import javax.faces.context.FacesContext;
 import javax.servlet.ServletContext;
 
 import application.AppBean;
-import beans.Connection;
 import beans.scripts.*;
 import beans.graph.*;
+import beans.relation.Connection;
 import beans.relation.Relation;
 import beans.scripts.IllnessScriptInterface;
 

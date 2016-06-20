@@ -63,5 +63,10 @@
 	   		<map-key column="id" type="long"/>	   		
 	    	<one-to-many class="beans.Connection" />
 	    </map>		
+	    <sql-query name="script.selByRelDDX">select pis.id, pis.parent_id, pis.type, rd.source_id from patient_illnessscript pis where (pis.user_id=:userId or pis.type=2) and pis.id in(select rd.dest_id from relation_diagnosis rd where source_id in(:ids)) and pis.id = rd.dest_id</sql-query>
+	    <sql-query name="script.selByRelProb">select pis.id, pis.parent_id, pis.type, rd.source_id from patient_illnessscript pis where (pis.user_id=:userId or pis.type=2) and pis.id in(select rd.dest_id from relation_problem rd where source_id in(:ids)) and pis.id = rd.dest_id</sql-query>
+	    <sql-query name="script.selByRelTest">select pis.id, pis.parent_id, pis.type, rd.source_id from patient_illnessscript pis where (pis.user_id=:userId or pis.type=2) and pis.id in(select rd.dest_id from relation_test rd where source_id in(:ids)) and pis.id = rd.dest_id</sql-query>
+	    <sql-query name="script.selByRelMng">select pis.id, pis.parent_id, pis.type, rd.source_id from patient_illnessscript pis where (pis.user_id=:userId or pis.type=2) and pis.id in(select rd.dest_id from relation_management rd where source_id in(:ids)) and pis.id = rd.dest_id </sql-query>
+	    
 </class>
 </hibernate-mapping>

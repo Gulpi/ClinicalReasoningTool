@@ -10,6 +10,7 @@ import database.DBEditing;
 import beans.scripts.*;
 /**
  * all expert scripts, needed for the overview/portfolio page to display a list. 
+ * @deprecated (?)
  */
 @ManagedBean(name = "expport", eager = true)
 @SessionScoped

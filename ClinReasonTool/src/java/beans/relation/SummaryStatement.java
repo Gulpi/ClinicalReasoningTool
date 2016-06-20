@@ -1,4 +1,4 @@
-package beans;
+package beans.relation;
 import java.beans.Beans;
 import java.io.Serializable;
 import java.sql.Timestamp;

@@ -2,7 +2,7 @@ package actions.scoringActions;
 
 import application.AppBean;
 import beans.scripts.*;
-import beans.SummaryStatement;
+import beans.relation.SummaryStatement;
 import beans.scoring.ScoreBean;
 import beans.scoring.ScoreContainer;
 import controller.NavigationController;

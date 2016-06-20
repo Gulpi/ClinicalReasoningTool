@@ -124,5 +124,14 @@ public class DBList extends DBClinReason {
     	criteria.add(Restrictions.eq("language", lang));
     	return criteria.list();
     }
+    
+    public List<ListItem> selectListItemBySearchTerm(String searchTerm, Locale lang){
+    	Session s = instance.getInternalSession(Thread.currentThread(), false);
+    	Criteria criteria = s.createCriteria(ListItem.class,"ListItem");
+    	criteria.add(Restrictions.eq("language", lang));
+    	criteria.add(Restrictions.eq("ignored", false));
+    	criteria.add(Restrictions.ilike("name", searchTerm, MatchMode.ANYWHERE));
+    	return criteria.list();
+    }
      
 }

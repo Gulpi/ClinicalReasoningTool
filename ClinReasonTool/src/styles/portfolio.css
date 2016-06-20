@@ -34,3 +34,16 @@
 	overflow:hidden;
 	/*background-color:#cccccc;*/
 }
+
+.chart_container{
+	
+}
+
+.displaychart_0{
+	display:none;
+}
+
+.displaychart_1{
+	display:block;
+	width:200px;
+}

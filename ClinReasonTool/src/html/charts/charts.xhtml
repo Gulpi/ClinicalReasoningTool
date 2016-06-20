@@ -112,85 +112,30 @@ $( document ).tooltip({
 	}
 });
 
-var test = "#{crtContext.userId}";
+var chartTypeDisplay = "#{chartConf.typeOfChart}";
+var widgetSize = "#{chartConf.widgetSize}";
+$(function() {
+	if(widgetSize=="sm" || widgetSize=="SM"){
+		$(".chart_lg").hide();
+	}
+});
+//if(chartTypeDisplay=="") chartTypeDisplay = "0"; //display all charts
 </script>
  </head>
  <body>
  
-<div> Individual Charts over all scripts, categorization/scoring based and clustered on MOT model</div>
+<div class="chart_lg"> Individual Charts over all scripts, categorization/scoring based and clustered on MOT model</div>
 
-<div>only show peer performance display for selected problem <select ><option value="-1">todo </option></select><br/>
+<div class="chart_lg">only show peer performance display for selected problem <select ><option value="-1">todo </option></select><br/>
 Show peer <input type="checkbox" />
 </div>
-	<div id="chart-container"> <br/><br/>
-			<ui:include src="all_overall.xhtml" />
-			<ui:include src="all_prob.xhtml" />
-			<ui:include src="all_ddx.xhtml" />
-			<ui:include src="all_test.xhtml" />
-			<ui:include src="all_mng.xhtml" />
-			<ui:include src="all_sumst.xhtml" />
-			<!--  <div class="chart">Problem Identification/VP<br clear="all"/>
-				<svg id="probchart" class="chart"></svg></div>
-			<div>Differential diagnoses formulation/VP<br clear="all"/>
-				<svg id="ddxchart" class="chart"></svg></div>
-			<div>Investigations<br clear="all"/>
-				<svg id="testchart" class="chart"></svg></div>
-			<div>Management<br clear="all"/>
-				<svg id="mngchart" class="chart"></svg></div>
-			<div>Final representation and Semantic qualifier (summSt)<br clear="all"/>
-				<svg id="sumchart" class="chart"></svg></div>-->
+	<div id="chart-container" class="chart_container"> <br/><br/>
+			<span class="displaychart_#{chartConf.displayOverallChart}"><ui:include src="all_overall.xhtml" /></span>
+			<span class="displaychart_#{chartConf.displayProblemChart}"><ui:include src="all_prob.xhtml" /></span>
+			<span class="displaychart_#{chartConf.displayDDXChart}"><ui:include src="all_ddx.xhtml" /></span>
+			<span class="displaychart_#{chartConf.displayTestChart}"><ui:include src="all_test.xhtml" /></span>
+			<span class="displaychart_#{chartConf.displayMngChart}"><ui:include src="all_mng.xhtml" /></span>
+			<span class="displaychart_#{chartConf.displaySumStChart}"><ui:include src="all_sumst.xhtml" /></span>
  	 </div>
- 	 <script language="JavaScript">
-/*		var probdata = [];//[1212,0.1]; //{key:"stud", bar:true, values:[1212,1]};	
-		var probpeerdata = []; //[{1212,0.5}]; //{key:"peer", values: [1212,1]};
-		<ui:repeat value="#{crtContext.learningAnalyticsContainer.problemScores}" var="scoreItem">
-			probdata.push({x:"#{scoreItem.parentId}", y:#{scoreItem.orgScoreBasedOnExpPerc}});
-			</ui:repeat>
-		<ui:repeat value="#{crtContext.learningAnalyticsContainer.problemPeerScores}" var="scoreItemP">
-			probpeerdata.push({x:"#{scoreItemP.parentId}", y:#{scoreItemP.peerPercentagePerc}});
-		</ui:repeat>
-		//printBarChar(150, 250, probdata, "probchart", "Problems");
-		probdata.push({x:"1313", y:63});
-		probpeerdata.push({x:"1313", y:84});
-		probdata.push({x:"1314", y:63});
-		probpeerdata.push({x:"1314", y:94});
-		probdata.push({x:"1315", y:33});
-		probpeerdata.push({x:"1315", y:44});
 
-		printGroupedBarChart(probdata, probpeerdata, 150, 250, "probchart", "Problems");*/
-			
-		/*var overalldata = [];
-		var overallpeerdata = [];
-		<ui:repeat value="#{crtContext.learningAnalyticsContainer.overallScores}" var="scoreItem4">
-		overalldata.push({ x: "#{scoreItem4.parentId}", y: #{scoreItem4.orgScoreBasedOnExpPerc} });
-		</ui:repeat>
-		<ui:repeat value="#{crtContext.learningAnalyticsContainer.overallPeerScores}" var="scoreItemP">
-			overallpeerdata.push({ x: "#{scoreItemP.parentId}", y: #{scoreItemP.peerPercentagePerc} });
-		</ui:repeat>
-
-		printGroupedBarChart(overalldata, overallpeerdata, 150, 250, "overallchart","Overall");*/
-</script>
-
- <!--   	<div class="portfoliodiv" id="chart-container"><div class="header">Overall finding scores</div>
-			<svg id="overallProbchart" class="chart"></svg>
-	</div>
-	  	<div class="portfoliodiv" id="chart-container"><div class="header">Overall differential scores</div>
-			<svg id="overallDDXchart" class="chart"></svg><br/>
-			<a href="javascript:alert('e.g. summary scores, learning curve, charts based on problems...');">More charts....</a>
-	</div>
-	<script language="JavaScript">
-	testPrint2(180);</script>
-  	<div class="portfoliodiv" id="chart-container"><div class="header">Recommendations</div>
-			<ul>
-				<li><a href="">VP xy</a></li> 
-				<li><a href="">Video xy</a></li>
-			</ul>
-	</div>	
-    <div class="portfoliodiv"><div class="header">Achievements</div>
-  <ul class="plainList"> 
-  	<li>Individual strengths/weaknesses for each clinical reasoning step</li><br/>
-  	<li>Learning curves, performance compared to peers, badges</li><br/>
-  	<li>...</li>
-  	</ul>
-  </div>-->
  </body></html>

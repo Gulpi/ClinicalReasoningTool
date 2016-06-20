@@ -3,19 +3,15 @@ package application;
 import java.io.InputStream;
 import java.util.*;
 
-import javax.faces.FactoryFinder;
 import javax.faces.application.*;
 import javax.faces.bean.*;
-import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
-import javax.management.relation.Relation;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpSessionEvent;
 import javax.servlet.http.HttpSessionListener;
 
 import beans.scripts.*;
 import beans.graph.Graph;
-import beans.relation.RelationDiagnosis;
 import beans.scoring.PeerContainer;
 import controller.JsonCreator;
 import controller.PeerSyncController;

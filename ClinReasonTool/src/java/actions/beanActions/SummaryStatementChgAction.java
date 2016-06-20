@@ -3,8 +3,8 @@ package actions.beanActions;
 import java.beans.Beans;
 
 import beans.LogEntry;
+import beans.relation.SummaryStatement;
 import beans.scripts.*;
-import beans.SummaryStatement;
 import database.DBClinReason;
 
 

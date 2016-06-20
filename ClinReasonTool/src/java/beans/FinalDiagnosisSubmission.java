@@ -10,7 +10,7 @@ import beans.scripts.*;
 /**
  * View for the final diagnoses submission process....
  * @author ingahege
- *
+ * @deprecated (?)
  */
 public class FinalDiagnosisSubmission {
 

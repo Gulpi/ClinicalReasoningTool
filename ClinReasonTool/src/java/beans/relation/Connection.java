@@ -1,10 +1,9 @@
-package beans;
+package beans.relation;
 
 import java.beans.Beans;
 import java.io.Serializable;
 import java.sql.Timestamp;
 
-import beans.relation.Relation;
 import controller.ConceptMapController;
 
 /**

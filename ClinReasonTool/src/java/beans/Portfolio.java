@@ -18,7 +18,7 @@ import util.CRTLogger;
  * Handling the portfolio display (currently we need its request scoped to be able to register 
  * changes to the request params (e.g. user_id) 
  * @author ingahege
- *
+ * @deprecated (?)
  */
 @ManagedBean(name = "port", eager = true)
 @ViewScoped

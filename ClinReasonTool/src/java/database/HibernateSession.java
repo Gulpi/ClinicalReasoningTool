@@ -87,10 +87,10 @@ public class HibernateSession {
 			cfg.addClass(beans.relation.RelationEpi.class);	
 			cfg.addClass(beans.relation.RelationDiagnosis.class);	
 			cfg.addClass(beans.LogEntry.class);
-			cfg.addClass(beans.Connection.class);
+			cfg.addClass(beans.relation.Connection.class);
 			cfg.addClass(beans.relation.RelationManagement.class);			
 			cfg.addClass(beans.relation.RelationTest.class);	
-			cfg.addClass(beans.SummaryStatement.class);	
+			cfg.addClass(beans.relation.SummaryStatement.class);	
 			cfg.addClass(beans.helper.Range.class);
 			cfg.addClass(beans.scoring.ScoreBean.class);
 			cfg.addClass(beans.error.MyError.class);

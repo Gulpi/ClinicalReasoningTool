@@ -25,8 +25,8 @@ public class JsonCreator {
 	public static final String TYPE_MNG = "E";
 	public static final String TYPE_PERSONS = "M";
 	public static final String TYPE_MANUALLY_ADDED = "MA";
-	private static final String fileNameOneListEN = "jsonp_en.json"; //TODO we need the path to the HTML folder!!!
-	private static final String fileNameOneListDE = "jsonp_de.json";
+	public static final String fileNameOneListEN = "jsonp_en.json"; //TODO we need the path to the HTML folder!!!
+	public static final String fileNameOneListDE = "jsonp_de.json";
 	//A=Anatomy,B=Organisms, F=Psychiatry/Psychology, G=Phenomena and Processes, H=Disciplines/Occupations
 	
 	//configurations: TODO get from property file
@@ -48,9 +48,7 @@ public class JsonCreator {
 		List<ListItem> items = new DBList().selectListItemsByTypesAndLang(loc, new String[]{TYPE_PROBLEM, TYPE_TEST,TYPE_DRUGS, TYPE_EPI, TYPE_MANUALLY_ADDED, TYPE_PERSONS});
 		if(items==null || items.isEmpty()) return; //then something went really wrong!
 		try{
-			File f = null;
-			if (loc.getLanguage().equals(new Locale("en").getLanguage())) f = new File(fileNameOneListEN);
-			else if (loc.getLanguage().equals(new Locale("de").getLanguage())) f = new File(fileNameOneListDE);
+			File f = getMeshJsonFileByLoc(loc);
 			PrintWriter pw = new PrintWriter(new FileWriter(f));
 			int lines = 0;
 			StringBuffer sb = new StringBuffer("[");
@@ -163,6 +161,16 @@ public class JsonCreator {
 			}
 		}
 		return counter;
+	}
+	
+	public static File getMeshJsonFileByLoc(Locale loc){
+		if (loc.getLanguage().equals(new Locale("de").getLanguage())) return new File(fileNameOneListDE);
+		/*if (loc.getLanguage().equals(new Locale("en").getLanguage())) */ return new File(fileNameOneListEN);
+	}
+	
+	public static String getMeshJsonFileNameByLoc(Locale loc){
+		if (loc.getLanguage().equals(new Locale("de").getLanguage())) return fileNameOneListDE;
+		/*if (loc.getLanguage().equals(new Locale("en").getLanguage())) */ return fileNameOneListEN;
 	}
 
 }

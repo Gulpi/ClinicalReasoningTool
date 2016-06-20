@@ -7,8 +7,8 @@ import javax.faces.bean.SessionScoped;
 import org.jgrapht.alg.DijkstraShortestPath;
 import org.jgrapht.graph.DirectedWeightedMultigraph;
 
-import beans.Connection;
 import beans.scripts.*;
+import beans.relation.Connection;
 import beans.relation.Relation;
 import beans.scripts.IllnessScriptInterface;
 import controller.GraphController;

@@ -23,6 +23,8 @@ public class AjaxController {
 	public static final String REQPARAM_VP = "vp_id";
 	public static final String REQPARAM_LOC = "locale";
 	public static final String REQPARAM_STAGE = "stage";
+	public static final String REQPARAM_CHARTTYPE = "CHART_TYPE";	//see LearningAnalyticsContainer
+	public static final String REQPARAM_CHARTSIZE = "CHART_SIZE"; //sm or lg
 	
 	public AjaxController(/*CRTFacesContext fc*/){
 		//this.facesContext = fc;
@@ -162,9 +164,13 @@ public class AjaxController {
 	}
 	
 	public String getRequestParamByKey(String key){
+		if(key==null || key.equals("")) return null;
+		//key = key.toLowerCase();
 		Map<String,String[]> p = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterValuesMap();
 		String[] p1 = p.get(key);
+		
 		if (p1 != null && p1.length>0){
+			//for(int i=0;i<)
 			//System.out.println(p1[0]);
 			return p1[0];
 			//this.sessionId = (Long.valueOf(p1[0]).longValue());
@@ -172,10 +178,18 @@ public class AjaxController {
 		return null;
 	}
 	
-	public long getIdRequestParamByKey(String key){
-		String id = getRequestParamByKey(key);
-		if(id!=null && !id.trim().equals("")){
-			return Long.parseLong(id);
+	public long getLongRequestParamByKey(String key){
+		String val = getRequestParamByKey(key);
+		if(val!=null && !val.trim().equals("")){
+			return Long.parseLong(val);
+		}
+		return -1;
+	}
+	
+	public int getIntRequestParamByKey(String key){
+		String val = getRequestParamByKey(key);
+		if(val!=null && !val.trim().equals("")){
+			return Integer.parseInt(val);
 		}
 		return -1;
 	}

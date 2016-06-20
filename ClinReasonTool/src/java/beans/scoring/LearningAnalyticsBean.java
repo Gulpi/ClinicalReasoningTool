@@ -20,23 +20,6 @@ import beans.scripts.*;
 @ManagedBean(name = "analyticsbean", eager = true)
 @SessionScoped
 public class LearningAnalyticsBean extends Beans implements Serializable{
-	//categories based on the MOT model
-	public static final int CATEGORY_PROBLEM_IDENT = 1; 		//MOT: Determine objectives of encounter
-	public static final int SUBCATEGORY_EARLYCUE_IDENT = 2; 	//MOT: identify early cues
-	public static final int CATEGORY_DDX_IDENT = 3;				//MOT: Categorize for purpose of action
-	public static final int CATEGORY_SEMANTIC_TRANSF = 4; 		//MOT: semantic transformation
-	public static final int CATEGORY_METACOGNITION = 5; 		//MOT: Metacognition
-	public static final int CATEGORY_THERAP_INTERVENTION = 6; 	//MOT: Therapeutic Interventions
-	public static final int CATEGORY_INVESTIGATION = 7; 		//MOT: Investigations
-	public static final int CATEGORY_REPRESENTATION = 8; 		//MOT: Final representation of the problem (summary statement)
-	public static final int CATEGORY_SRL = 9;					//self-regulated learning
-	public static final int CATEGORY_PATTERN_RECOGNITION = 10;	//analytic reasoning or pattern recognition prevalent?
-	public static final int CATEGORY_PRIORIZATION = 11;			//important aspects identified and ranked high? e.g. MnM
-	public static final int CATEGORY_FINAL_DDX_IDENT = 12; 		//MOT: ?
-	public static final int CATEGORY_ERRORS = 13;
-	public static final int CATEGORY_ENGAGEMENT = 14; 			//e.g. number of actions, time on task,...at which stage have actions been performed?
-	public static final int CATEGORY_EMOTIONS = 15;				//fatigue, boredom, anxiety, frustration
-	
 	
 	private long userId; 
 	/**

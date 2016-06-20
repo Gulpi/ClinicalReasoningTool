@@ -3,10 +3,10 @@ package actions.beanActions;
 import java.beans.Beans;
 import java.util.*;
 
-import beans.Connection;
 import beans.LogEntry;
 import beans.scripts.*;
 import beans.graph.Graph;
+import beans.relation.Connection;
 import beans.scripts.IllnessScriptInterface;
 import controller.GraphController;
 import controller.NavigationController;

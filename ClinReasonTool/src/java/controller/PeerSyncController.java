@@ -42,8 +42,7 @@ public class PeerSyncController {
 		}
 		for(int i=0; i<scripts.size(); i++){
 			PatientIllnessScript script = scripts.get(i);
-			LearningAnalyticsBean lab = new LearningAnalyticsBean(script.getId(), script.getUserId(), script.getParentId());
-		
+			LearningAnalyticsBean lab = new LearningAnalyticsBean(script.getId(), script.getUserId(), script.getParentId());		
 			syncItems(script.getProblems()/*, peers*/, script.getParentId());
 			syncItems(script.getDiagnoses()/*, peers*/, script.getParentId());
 			syncItems(script.getMngs()/*, peers*/, script.getParentId());

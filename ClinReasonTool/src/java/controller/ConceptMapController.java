@@ -2,10 +2,10 @@ package controller;
 
 import java.util.*;
 
-import beans.Connection;
 import beans.graph.Graph;
 import beans.graph.MultiEdge;
 import beans.graph.MultiVertex;
+import beans.relation.Connection;
 import beans.relation.Rectangle;
 
 /**

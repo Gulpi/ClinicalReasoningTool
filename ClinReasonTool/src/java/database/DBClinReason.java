@@ -6,8 +6,8 @@ import org.hibernate.*;
 import org.hibernate.criterion.*;
 
 import beans.scripts.*;
-import beans.SummaryStatement;
 import beans.relation.RelationProblem;
+import beans.relation.SummaryStatement;
 import controller.IllnessScriptController;
 import util.StringUtilities;
 
@@ -247,14 +247,16 @@ public class DBClinReason /*extends HibernateUtil*/{
     }
     
     /**
-     * Select the PatientIllnessScripts for the userId and parentId from the database. 
-     * @param sessionId
+     * Selects all PatientIllnessScripts that can be included into the peer responses. 
+     * Only scripts that have not yet been added (peerSync=0), scripts that have submitted a diagnosis (submittedStage>0),
+     * and learner scripts (not expert ones) are considered and selected.
      * @return PatientIllnessScript or null
      */
     public List<PatientIllnessScript> selectLearnerPatIllScriptsByPeerSync(){
     	Session s = instance.getInternalSession(Thread.currentThread(), false);
     	Criteria criteria = s.createCriteria(PatientIllnessScript.class,"PatientIllnessScript");
     	criteria.add(Restrictions.eq("peerSync", new Boolean(false)));
+    	criteria.add(Restrictions.gt("submittedStage", 0));
     	criteria.add(Restrictions.eq("type", new Integer(PatientIllnessScript.TYPE_LEARNER_CREATED)));
     	return criteria.list();
     }

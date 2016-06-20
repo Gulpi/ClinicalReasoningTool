@@ -31,7 +31,6 @@ import util.CRTLogger;
 public class CRTFacesContext extends FacesContextWrapper /*implements Serializable*/{
 	public static final String CRT_FC_KEY = "crtContext";
 	
-	private static final long serialVersionUID = 1L;
 	private long userId = -1;
 	private IllnessScriptController isc = new IllnessScriptController();
 	private PatientIllnessScript patillscript;
@@ -148,8 +147,8 @@ public class CRTFacesContext extends FacesContextWrapper /*implements Serializab
 		if(userId<=0)setUserId();
 		initScriptContainer(); //this loads all scripts, needed for overview page and availability bias determination
 		initLearningAnalyticsContainer();
-		long id = new AjaxController().getIdRequestParamByKey(AjaxController.REQPARAM_SCRIPT);
-		long vpId = new AjaxController().getIdRequestParamByKey(AjaxController.REQPARAM_VP);
+		long id = new AjaxController().getLongRequestParamByKey(AjaxController.REQPARAM_SCRIPT);
+		long vpId = new AjaxController().getLongRequestParamByKey(AjaxController.REQPARAM_VP);
 		if(this.patillscript!=null && (id<0 || this.patillscript.getId()==id)) return; //current script already loaded....
 
 		if(id<=0 && vpId<=0) return; //then user has opened the overview page...y
@@ -177,7 +176,7 @@ public class CRTFacesContext extends FacesContextWrapper /*implements Serializab
 	 */
 	public void initExpEditSession(){ 
 		if(userId<=0)setUserId();
-		long id = new AjaxController().getIdRequestParamByKey(AjaxController.REQPARAM_SCRIPT);
+		long id = new AjaxController().getLongRequestParamByKey(AjaxController.REQPARAM_SCRIPT);
 		if(this.patillscript!=null && (id<0 || this.patillscript.getId()==id)) return; //current script already loaded....
 		if(id<=0) return;
 

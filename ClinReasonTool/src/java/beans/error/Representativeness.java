@@ -24,7 +24,7 @@ public class Representativeness extends MyError{
 	 */
 	public int getType() {return MyError.TYPE_REPRESENTATIVENESS; }
 	public String getDiscr() {return String.valueOf(MyError.TYPE_REPRESENTATIVENESS);}
-	public String getDescription(){ return "Tendency to be guided by prototypical features of disease and miss atypical variants";}
-	public String getName(){return "Representativeness";}
+	//public String getDescription(){ return "Tendency to be guided by prototypical features of disease and miss atypical variants";}
+	//spublic String getName(){return "Representativeness";}
 
 }

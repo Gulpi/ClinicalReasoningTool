@@ -14,8 +14,9 @@ import java.util.Locale;
  *
  */
 public class StringUtilities {
-	public static final int MIN_LEVEN_DISTANCE = 4; //if we have a level 1 similarity the item is not included
-	public static final int MAX_FUZZY_DISTANCE = 38; //if we have a level 1 similarity the item is not included
+	private static final int MIN_LEVEN_DISTANCE = 4; //if we have a level 1 similarity the item is not included
+	private static final int MAX_FUZZY_DISTANCE = 38; //if we have a level 1 similarity the item is not included
+	private static final char[] HEXDIGITS = "0123456789abcdef".toCharArray();
 
 	/**
 	 * Counts the number of a pattern within a string.
@@ -160,5 +161,38 @@ public class StringUtilities {
 		//if(leven==2 && firstLetterItem1.equalsIgnoreCase(firstLetterItem2)) return leven;
 		// if(leven==3 && firstLetterItem1.equalsIgnoreCase(firstLetterItem2)) return leven;
 		//return false;
+	}
+	
+	public static byte[] hexToBytes(String hex) {return hexToBytes(hex.toCharArray()); }
+	  
+	public static byte[] hexToBytes(char[] hex) {
+	    int length = hex.length / 2;
+	    byte[] raw = new byte[length];
+	    for (int i = 0; i < length; i++) {
+	      int high = Character.digit(hex[i * 2], 16);
+	      int low = Character.digit(hex[i * 2 + 1], 16);
+	      int value = (high << 4) | low;
+	      if (value > 127)
+	        value -= 256;
+	      raw[i] = (byte) value;
+	    }
+	    return raw;
+	}
+	
+	/**
+	 * converts byte array to hex string representation
+	 * @param in_bytes
+	 * @return
+	 */
+	public static String toHex(byte[] bytes) {
+		StringBuilder sb = new StringBuilder(bytes.length * 3);
+		for (int i=0; i<bytes.length;i++) {
+			int b = bytes[i];
+		    b &= 0xff;
+		    sb.append(HEXDIGITS[b >> 4]);
+		    sb.append(HEXDIGITS[b & 15]);
+		    //sb.append(' ');
+		}
+		return sb.toString();
 	}
 }

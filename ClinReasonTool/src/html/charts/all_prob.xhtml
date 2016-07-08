@@ -5,17 +5,18 @@
     xmlns:f="http://java.sun.com/jsf/core">
 <!-- problem scores for all VPs of user -->
 
-<div class="chart">Problem Identification/VP<br clear="all"/>
+<div class="chart_header">#{prop['chart.all.findings']}</div>
+<div>
 	<svg id="probchart" class="chart"></svg>
 </div>
 <script language="JavaScript">
 	var probdata = [];//[1212,0.1]; //{key:"stud", bar:true, values:[1212,1]};	
 	var probpeerdata = []; //[{1212,0.5}]; //{key:"peer", values: [1212,1]};
 	<ui:repeat value="#{crtContext.learningAnalyticsContainer.problemScores}" var="scoreItem">
-		probdata.push({x:"#{scoreItem.parentId}", y:#{scoreItem.orgScoreBasedOnExpPerc}});
+		probdata.push({x:"#{scoreItem.vpId}", y:#{scoreItem.orgScoreBasedOnExpPerc}});
 		</ui:repeat>
 	<ui:repeat value="#{crtContext.learningAnalyticsContainer.problemPeerScores}" var="scoreItemP">
-		probpeerdata.push({x:"#{scoreItemP.parentId}", y:#{scoreItemP.peerPercentagePerc}});
+		probpeerdata.push({x:"#{scoreItemP.vpId}", y:#{scoreItemP.peerPercentagePerc}});
 	</ui:repeat>
 	//printBarChar(150, 250, probdata, "probchart", "Problems");
 	probdata.push({x:"1313", y:63});

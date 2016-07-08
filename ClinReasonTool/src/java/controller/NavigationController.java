@@ -21,6 +21,9 @@ import beans.scripts.*;
 @RequestScoped
 public class NavigationController implements Serializable {
 	private static final long serialVersionUID = 1L;
+	
+	static private NavigationController instance = new NavigationController();
+	static public NavigationController getInstance() { return instance; }
 
 	/**
 	 * user has clicked to open the overview/portfolio page. We have to close the current patientIllnessScript
@@ -100,6 +103,7 @@ public class NavigationController implements Serializable {
 	public static Locale getLocale(){
 		CRTFacesContext cnxt =  (CRTFacesContext) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get(CRTFacesContext.CRT_FC_KEY);
 		if(cnxt==null) return new Locale("en");
+		Locale loc = cnxt.getViewRoot().getLocale();
 		return cnxt.getViewRoot().getLocale();
 	}
 	

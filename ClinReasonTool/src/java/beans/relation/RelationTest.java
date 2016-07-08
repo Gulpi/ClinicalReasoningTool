@@ -28,7 +28,7 @@ public class RelationTest extends Relation implements Serializable{
 	public static final int QUALIFIER_RARE = 0; 
 	public static final int QUALIFIER_MEDIUM = 1;
 	public static final int QUALIFIER_OFTEN = 2;
-	public static final int DEFAULT_X = 5; //165; //245; //default x position of problems in canvas
+	public static final int DEFAULT_X = 15; //165; //245; //default x position of problems in canvas
 	
 	
 	/**

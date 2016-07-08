@@ -32,7 +32,7 @@ public class RelationProblem extends Relation implements Serializable{
 	public static final int QUALIFIER_RARE = 0; 
 	public static final int QUALIFIER_MEDIUM = 1;
 	public static final int QUALIFIER_OFTEN = 2;
-	public static final int DEFAULT_X = 5; //80; //default x position of problems in canvas
+	public static final int DEFAULT_X = 15; //80; //default x position of problems in canvas
 	
 	/**
 	 * problems: key-finding, other,... (?)
@@ -77,8 +77,6 @@ public class RelationProblem extends Relation implements Serializable{
 	 * @see beans.relation.Relation#getLabelOrSynLabel()
 	 */
 	public String getLabelOrSynLabel(){	
-		FacesContext  fc = FacesContext.getCurrentInstance();
-		Iterator it = fc.getMessages();
 		if(getSynId()<=0) return problem.getName();
 		else return getSynonym().getName();
 	}

@@ -6,8 +6,8 @@
  
  
    	<div id="ddx_#{expddx.id}"  title="#{expddx.labelOrSynLabel}" class="expbox expboxinvis" style="border-color:#{expddx.color};color:#{expddx.color};left:#{expddx.x}px; top:#{expddx.boxY}px;">
-  	 	<span class="showfinal#{expddx.exptier}"><i id="exptiericon_#{expddx.id}" class="fa fa-check-circle#{expddx.tier}"></i></span>
-  	 	<i id="expmnmicon_#{expddx.id}" class="fa fa-exclamation-circle#{expddx.mnm}"></i>
+  	 	<span class="showfinal#{expddx.exptier}" title="#{prop['ddx.finalddx']}"><i id="exptiericon_#{expddx.id}" class="fa fa-check-circle#{expddx.tier}"></i></span>
+  	 	<i id="expmnmicon_#{expddx.id}" title="#{prop['ddx.mnm.hint2']}" class="fa fa-exclamation-circle#{expddx.mnm}"></i>
   	 	#{expddx.shortLabelOrSynShortLabel}
   	 	 <script language="Javascript">
  			exp_arr.push("ddxexp_#{expddx.id}");

@@ -15,8 +15,10 @@ import application.Monitor;
 import beans.graph.Graph;
 import beans.scoring.*;
 import beans.scripts.*;
+import beans.user.User;
 import controller.*;
 import database.DBEditing;
+import database.DBUser;
 import util.CRTLogger;
 
 /**
@@ -31,11 +33,13 @@ import util.CRTLogger;
 public class CRTFacesContext extends FacesContextWrapper /*implements Serializable*/{
 	public static final String CRT_FC_KEY = "crtContext";
 	
-	private long userId = -1;
+	//private long userId = -1;
+	private User user;
 	private IllnessScriptController isc = new IllnessScriptController();
 	private PatientIllnessScript patillscript;
 	private Graph graph;
 	private UserSetting userSetting;
+	Locale defaultLoc = new Locale("en");
 	/**
 	 * TODO: get from VP system or calculate from expert script
 	 */
@@ -63,35 +67,59 @@ public class CRTFacesContext extends FacesContextWrapper /*implements Serializab
 	private LearningAnalyticsContainer analyticsContainer;
 	
 	public CRTFacesContext(){
-		setUserId();
+		setUser();
 		
-		if(this.userId>0){
+		if(user!=null){
 		    FacesContextWrapper.getCurrentInstance().getExternalContext().getSessionMap().put(CRTFacesContext.CRT_FC_KEY, this);
 			initSession();
 			userSetting = new UserSetting(); //TODO get from Database...
 		} 
 	    CRTLogger.out(FacesContextWrapper.getCurrentInstance().getApplication().getStateManager().getViewState(FacesContext.getCurrentInstance()), CRTLogger.LEVEL_TEST);
 	    Monitor.addHttpSession((HttpSession)FacesContextWrapper.getCurrentInstance().getExternalContext().getSession(true));
-
 	}
 	
 	private void initGraph(){
-		if(graph!=null && patillscript!=null && graph.getParentId() == patillscript.getParentId()) return; //nothing todo, graph already loaded
-		graph = new Graph(patillscript.getParentId());
+		if(graph!=null && patillscript!=null && graph.getVpId().equals(patillscript.getVpId())) return; //nothing todo, graph already loaded
+		graph = new Graph(patillscript.getVpId());
 		CRTLogger.out(graph.toString(), CRTLogger.LEVEL_TEST);	
 	}
 
-	private void setUserId(){
-		String setUserIdStr = new AjaxController().getRequestParamByKey(AjaxController.REQPARAM_USER);
-		if(setUserIdStr!=null) this.userId = (Long.valueOf(setUserIdStr).longValue());
-		else{
+	/**
+	 * Setting the userId, either directly from query param or from query param as an external userid (then we 
+	 * have to get the User object and the userId from the database). If no user is found we create a new one. 
+	 */
+	private void setUser(){
+		String setUserIdStr = AjaxController.getInstance().getRequestParamByKey(AjaxController.REQPARAM_USER);
+		String extUserId = AjaxController.getInstance().getRequestParamByKey(AjaxController.REQPARAM_USER_EXT);
+		int systemId = AjaxController.getInstance().getIntRequestParamByKey(AjaxController.REQPARAM_SYSTEM, -1);
+		if(setUserIdStr==null && extUserId==null) return;
+		if(user!=null && user.getUserId()==Long.valueOf(setUserIdStr).longValue()) return; 
+		if(user!=null && user.getExtUserId()!=null && user.getExtUserId().equals(extUserId)) return; 
+		if(setUserIdStr!=null && !setUserIdStr.trim().equals(""))
+			user = new DBUser().selectUserById(Long.valueOf(setUserIdStr).longValue());
+		//if(setUserIdStr!=null) this.userId = (Long.valueOf(setUserIdStr).longValue());
+		if(user==null && extUserId!=null && !extUserId.trim().equals("")){
+			user =  new UserController().getUser(systemId, extUserId);
+			//if(u!=null) this.userId = u.getUserId();
+		}
+		if(user==null){
 			CRTLogger.out("Userid is null", CRTLogger.LEVEL_ERROR);
 			FacesContextWrapper.getCurrentInstance().addMessage("",new FacesMessage(FacesMessage.SEVERITY_ERROR, "userid is null",""));
 		}
 	}
+	
+	private void setUser(long userId){
+		if(user!=null && user.getUserId()==userId) return;
+		user =  new DBUser().selectUserById(userId);
+	}
 
-	public long getUserId() {return userId;}
-	public void setUserId(long userId) {this.userId = userId;}
+	public long getUserId() {
+		if(user!=null) return user.getUserId();
+		initSession();
+		if(user!=null) return user.getUserId();
+		return -1;
+	}
+	//public void setUserId(long userId) {this.userId = userId;}
 	public Graph getGraph() {return graph;}
 	//public int getMaxStage() {return maxStage;}
 
@@ -100,7 +128,7 @@ public class CRTFacesContext extends FacesContextWrapper /*implements Serializab
 	//public void setScriptsOfUser(List<PatientIllnessScript> scriptsOfUser) {this.scriptsOfUser = scriptsOfUser;}
 	public LearningAnalyticsBean getLearningAnalytics() {
 		if(analyticsContainer==null) return null;//analyticsContainer = new LearningAnalyticsContainer(userId);
-		return analyticsContainer.getLearningAnalyticsBeanByPatIllScriptId(patillscript.getId(), patillscript.getParentId());
+		return analyticsContainer.getLearningAnalyticsBeanByPatIllScriptId(patillscript.getId(), patillscript.getVpId());
 	}
 	
 	public LearningAnalyticsContainer getLearningAnalyticsContainer() {
@@ -109,7 +137,7 @@ public class CRTFacesContext extends FacesContextWrapper /*implements Serializab
 
 	public void initScriptContainer(){
 		if(scriptContainer==null){
-			scriptContainer = new PatIllScriptContainer(userId);
+			scriptContainer = new PatIllScriptContainer(user.getUserId());
 			scriptContainer.loadScriptsOfUser();
 		}		
 	}
@@ -124,18 +152,18 @@ public class CRTFacesContext extends FacesContextWrapper /*implements Serializab
 	 */
 	private void initFeedbackContainer(){		
 		if(patillscript!=null) {
-			analyticsContainer.addLearningAnalyticsBean(patillscript.getId(), patillscript.getParentId());
+			analyticsContainer.addLearningAnalyticsBean(patillscript.getId(), patillscript.getVpId());
 			if(feedbackContainer==null){
 				feedbackContainer = new FeedbackContainer(patillscript.getId());				
 				feedbackContainer.initFeedbackContainer();
 			}
-			AppBean.getPeers().loadPeersForPatIllScript(patillscript.getParentId());
+			AppBean.getPeers().loadPeersForPatIllScript(patillscript.getVpId());
 		}
 	}
 	
 	private void initLearningAnalyticsContainer(){
 		if(analyticsContainer == null){ //load learningAnalyticsContainer also if not script is edited -> needed for charts etc...
-			analyticsContainer = new LearningAnalyticsContainer(userId);
+			analyticsContainer = new LearningAnalyticsContainer(user.getUserId());
 		}
 		
 	}
@@ -144,48 +172,55 @@ public class CRTFacesContext extends FacesContextWrapper /*implements Serializab
 	 * load PatientIllnessScript based on id or sessionId
 	 */
 	public void initSession(){ 
-		if(userId<=0)setUserId();
+		if(user==null) setUser();
+		this.getAppBean().getViewHandler().calculateLocale(this);
+
 		initScriptContainer(); //this loads all scripts, needed for overview page and availability bias determination
 		initLearningAnalyticsContainer();
-		long id = new AjaxController().getLongRequestParamByKey(AjaxController.REQPARAM_SCRIPT);
-		long vpId = new AjaxController().getLongRequestParamByKey(AjaxController.REQPARAM_VP);
+		long id = AjaxController.getInstance().getLongRequestParamByKey(AjaxController.REQPARAM_SCRIPT);
+		String vpId = AjaxController.getInstance().getRequestParamByKey(AjaxController.REQPARAM_VP);
+		//long extUserId = new AjaxController().getLongRequestParamByKey(AjaxController.REQPARAM_USER_EXT);
+		int systemId = AjaxController.getInstance().getIntRequestParamByKey(AjaxController.REQPARAM_SYSTEM, -1);
+
+		//setUserIdFromExt(extUserId);
 		if(this.patillscript!=null && (id<0 || this.patillscript.getId()==id)) return; //current script already loaded....
 
-		if(id<=0 && vpId<=0) return; //then user has opened the overview page...y
+		if(id<=0 && vpId!=null) return; //then user has opened the overview page...y
 
 		if(id>0){ //open an created script
-			this.patillscript = isc.loadPatIllScriptById(id, userId);
-			if(this.patillscript!=null && userId<=0) userId = this.patillscript.getUserId(); //can happen if we have to re-init after timeout, there we do not get the userId, just the illscriptId
+			this.patillscript = isc.loadPatIllScriptById(id, user.getUserId());
+			if(this.patillscript!=null && user==null) 
+				setUser(this.patillscript.getUserId()); //can happen if we have to re-init after timeout, there we do not get the userId, just the illscriptId
 
 		}
-		else if(vpId>0 && this.userId>0){ //look whether script created, if not create it...
-			this.patillscript = isc.loadIllnessScriptsByParentId(this.userId, vpId);
+		else if(vpId!=null && !vpId.equals("") && systemId>0 && user!=null){ //look whether script created, if not create it...
+			this.patillscript = isc.loadIllnessScriptsByVpId(user.getUserId(), vpId);
 			if(this.patillscript==null){
-				this.patillscript = isc.createAndSaveNewPatientIllnessScript(userId, vpId);
+				this.patillscript = isc.createAndSaveNewPatientIllnessScript(user.getUserId(), vpId, systemId);
 			}
 		}
 		//TODO error handling!!!!
 		
 		loadExpScripts();
 		initFeedbackContainer();
-		initGraph();		
+		if(this.patillscript!=null) initGraph();		
 	}
 	
 	/**
 	 * load exp PatientIllnessScript based on id
 	 */
 	public void initExpEditSession(){ 
-		if(userId<=0)setUserId();
-		long id = new AjaxController().getLongRequestParamByKey(AjaxController.REQPARAM_SCRIPT);
+		if(user==null) setUser();
+		long id = AjaxController.getInstance().getLongRequestParamByKey(AjaxController.REQPARAM_SCRIPT);
 		if(this.patillscript!=null && (id<0 || this.patillscript.getId()==id)) return; //current script already loaded....
 		if(id<=0) return;
 
 		if(id>0){ //open an created script
 			this.patillscript = new DBEditing().selectExpertPatIllScriptById(id);
-			if(this.patillscript!=null && userId<=0) userId = this.patillscript.getUserId(); //can happen if we have to re-init after timeout, there we do not get the userId, just the illscriptId
+			if(this.patillscript!=null && user==null) setUser(this.patillscript.getUserId()); //can happen if we have to re-init after timeout, there we do not get the userId, just the illscriptId
 		}
 		//TODO error handling!!!!
-		initGraph();		
+		if(this.patillscript!=null)  initGraph();		
 	}
 	
 	
@@ -197,8 +232,8 @@ public class CRTFacesContext extends FacesContextWrapper /*implements Serializab
 	private void loadExpScripts(){
 		if(patillscript==null) return;
 		AppBean app = getAppBean();
-	    app.addExpertPatIllnessScriptForParentId(patillscript.getParentId());
-	    app.addIllnessScriptForDiagnoses(patillscript.getDiagnoses(), patillscript.getParentId());
+	    app.addExpertPatIllnessScriptForVpId(patillscript.getVpId());
+	    app.addIllnessScriptForDiagnoses(patillscript.getDiagnoses(), patillscript.getVpId());
 	}
 	
 	public AppBean getAppBean(){
@@ -239,12 +274,16 @@ public class CRTFacesContext extends FacesContextWrapper /*implements Serializab
 	 * we land here from an ajax request for any actions concerning the patientIllnessScript....
 	 **/
 	public void ajaxResponseHandler() throws IOException {
-		new AjaxController().receiveAjax(this.getPatillscript());
+		AjaxController.getInstance().receiveAjax(this.getPatillscript());
+	}
+	
+	public void ajaxChartResponseHandler() throws IOException {
+		AjaxController.getInstance().receiveChartAjax(this);
 	}
 	
 	/* we land here from an ajax request for any actions concerning the facesContext....*/	
 	public void ajaxResponseHandler2() throws IOException {
-		new AjaxController().receiveAjax(this);
+		AjaxController.getInstance().receiveAjax(this);
 	}
 	
 	/**

@@ -21,18 +21,18 @@ public class DBSearch extends DBClinReason{
 		List ddx = selectScriptsForItemIds(itemIds, "script.selByRelDDX", userId);
 		if(ddx!=null) l.addAll(ddx);
 		List probs = selectScriptsForItemIds(itemIds, "script.selByRelProb", userId);
-		if(ddx!=null) l.addAll(ddx);
+		if(probs!=null) l.addAll(probs);
 		List tests = selectScriptsForItemIds(itemIds, "script.selByRelTest", userId);
-		if(ddx!=null) l.addAll(ddx);
+		if(tests!=null) l.addAll(tests);
 		List mngs = selectScriptsForItemIds(itemIds, "script.selByRelMng", userId);
-		if(ddx!=null) l.addAll(ddx);
+		if(mngs!=null) l.addAll(mngs);
 		
 		if(l==null || l.isEmpty()) return null;
 		Map<Long, List<SearchBean>> sbs = new HashMap<Long, List<SearchBean>>();
 		for(int i=0; i<l.size(); i++){
 			Object[] row = (Object[]) l.get(i);
 
-			SearchBean sb = new SearchBean(searchTerm, -1, ((Long) row[1]).longValue(), ((Long) row[0]).longValue(), ((Integer) row[2]).intValue());
+			SearchBean sb = new SearchBean(searchTerm, -1, (String) row[1], ((Long) row[0]).longValue(), ((Integer) row[2]).intValue(), userId);
 			List<SearchBean> list = new ArrayList<SearchBean>();
 			if(sbs.get(new Long(sb.getParentId()))!=null){
 				list = sbs.get(new Long(sb.getParentId()));			

@@ -8,6 +8,9 @@ import beans.scoring.ScoreContainer;
 import controller.NavigationController;
 import controller.ScoringController;
 import database.DBScoring;
+import it.uniroma1.lcl.adw.*;
+import it.uniroma1.lcl.adw.comparison.*;
+import util.CRTLogger;
 
 /**
  * We have multiple summary statement scores (one for each stage)...
@@ -24,7 +27,7 @@ public class ScoringSummStAction {
 	 */
 	public void scoreAction(PatientIllnessScript patIllScript, int stage){
 		if(patIllScript.getType()==IllnessScriptInterface.TYPE_EXPERT_CREATED) return;
-		PatientIllnessScript expScript = AppBean.getExpertPatIllScript(patIllScript.getParentId());
+		PatientIllnessScript expScript = AppBean.getExpertPatIllScript(patIllScript.getVpId());
 		ScoreContainer scoreContainer = new NavigationController().getCRTFacesContext().getScoreContainer();		
 		ScoreBean scoreBean = scoreContainer.getListScoreBeanByStage(ScoreBean.TYPE_SUMMST, stage);
 		if(scoreBean!=null) return;
@@ -62,7 +65,25 @@ public class ScoringSummStAction {
 	 * Calculate seperately from any other comparison the appropriate use of semantic qualifiers in the 
 	 * summary statement.
 	 */
-	private void calculateSQUse(){
+	public double calculateSimilarityADW(String studtext, String exptext){
 		//Durning 2012: 1 point for correctly used term, -1 for a wrong term.
+		ADW adw = new ADW();
+		DisambiguationMethod disMethod = DisambiguationMethod.ALIGNMENT_BASED;
+		//ItemType it = ItemType.SURFACE;
+
+		double similarity = adw.getPairSimilarity("text1", "text2", disMethod,  new WeightedOverlap(), LexicalItemType.SURFACE, LexicalItemType.SURFACE); 
+		CRTLogger.out("similarity weightedoverlap: " + similarity, CRTLogger.LEVEL_TEST);
+
+		double similarity2 = adw.getPairSimilarity("text1", "text2", disMethod, new Cosine(), LexicalItemType.SURFACE, LexicalItemType.SURFACE); 
+		CRTLogger.out("similarity Cosine: " + similarity2, CRTLogger.LEVEL_TEST);
+		
+		double similarity3 = adw.getPairSimilarity("text1", "text2", disMethod, new Jaccard(), LexicalItemType.SURFACE, LexicalItemType.SURFACE); 
+		CRTLogger.out("similarity Jaccard: " + similarity3, CRTLogger.LEVEL_TEST);
+		
+		return similarity;
+	}
+	
+	private void calculateSQUse(){
+		
 	}
 }

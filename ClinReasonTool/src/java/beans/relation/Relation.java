@@ -12,6 +12,7 @@ import controller.RelationController;
 import controller.ScoringController;
 import model.ListItem;
 import model.Synonym;
+import properties.IntlConfiguration;
 
 //import org.jgrapht.graph.DefaultWeightedEdge;
 
@@ -99,11 +100,11 @@ public abstract class Relation extends Beans implements Rectangle{
 	public void setPrefix(int prefix) {this.prefix = prefix;}
 	public String getPrefixStr(){
 		if(prefix<=0) return "";
-		return "No"; //TODO internationalization
+		return IntlConfiguration.getValue("no");
 	}
 	public String getToggledPrefixStr(){
 		if(prefix>0) return "";
-		return "No"; //TODO internationalization
+		return IntlConfiguration.getValue("no");
 	}
 	
 	public void togglePrefix(){
@@ -176,4 +177,9 @@ public abstract class Relation extends Beans implements Rectangle{
 		}
 		return false;
 	}
+	
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	public String toString(){ return getLabelOrSynLabel()+ "("+getId()+")";}
 }

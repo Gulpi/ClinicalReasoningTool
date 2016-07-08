@@ -101,7 +101,7 @@ public class AddProblemAction implements AddAction, Scoreable{
 	 * @return
 	 */
 	private Point calculateNewItemPosInCanvas(){
-		int y = 5;
+		int y = AddAction.MIN_Y;
 		if(patIllScript.getProblems()!=null || !patIllScript.getProblems().isEmpty()){
 			y = patIllScript.getProblems().size() * 25; //CAVE max y! 
 		}

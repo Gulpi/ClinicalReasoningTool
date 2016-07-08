@@ -123,9 +123,9 @@ public class ScoringController {
 	 */
 	public String getPeerPercentageForAction(int actionType, long patIllScriptId, long itemId){
 		CRTFacesContext crtContext = new NavigationController().getCRTFacesContext();
-		long parentId = crtContext.getPatillscript().getParentId();
-		PeerBean peer = AppBean.getPeers().getPeerBeanByActionParentIdAndItemId(actionType, parentId, itemId);
-		PeerBean overallNum = AppBean.getPeers().getPeerBeanByIllScriptCreationActionAndParentId(parentId);
+		String vpId = crtContext.getPatillscript().getVpId();
+		PeerBean peer = AppBean.getPeers().getPeerBeanByActionVpIdAndItemId(actionType, vpId, itemId);
+		PeerBean overallNum = AppBean.getPeers().getPeerBeanByIllScriptCreationActionAndVpId(vpId);
 		if(peer==null || overallNum==null) return "0%";
 		float percentage =  peer.getPeerPercentage(overallNum.getPeerNum());
 		if(percentage<=0) return "";

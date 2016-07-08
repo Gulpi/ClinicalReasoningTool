@@ -35,13 +35,13 @@ public class LearningAnalyticsBean extends Beans implements Serializable{
 	//TODO any emotions? can we measure those somehow? ask? 
 	//TODO include when an action was performed? E.g. problems created at end or throughout session? 
 	private long patIllScriptId;
-	private long parentId;
+	private String vpId;
 	
 	public LearningAnalyticsBean(){}
-	public LearningAnalyticsBean(long patIllScripId, long userId, long parentId){
+	public LearningAnalyticsBean(long patIllScripId, long userId, String vpId){
 		this.patIllScriptId = patIllScripId;
 		this.userId = userId;
-		this.parentId = parentId;
+		this.vpId = vpId;
 		scoreContainer = new ScoreContainer(patIllScripId);
 		scoreContainer.initScoreContainer();
 	}
@@ -97,7 +97,7 @@ public class LearningAnalyticsBean extends Beans implements Serializable{
 	}
 	public List<PeerBean> getProblemPeerStages(){
 		if(AppBean.getPeers()==null) return null;
-		return AppBean.getPeers().getPeerBeansByActionAndParentId(parentId, ScoreBean.TYPE_PROBLEM_LIST);
+		return AppBean.getPeers().getPeerBeansByActionAndVpId(vpId, ScoreBean.TYPE_PROBLEM_LIST);
 	}
 	
 	public List<ScoreBean> getDDXScoreStages(){ 
@@ -107,7 +107,7 @@ public class LearningAnalyticsBean extends Beans implements Serializable{
 
 	public List<PeerBean> getDDXPeerStages(){
 		if(AppBean.getPeers()==null) return null;
-		return AppBean.getPeers().getPeerBeansByActionAndParentId(parentId, ScoreBean.TYPE_DDX_LIST);
+		return AppBean.getPeers().getPeerBeansByActionAndVpId(vpId, ScoreBean.TYPE_DDX_LIST);
 	}
 	
 	public List<ScoreBean> getTestScoreStages(){ 
@@ -117,7 +117,7 @@ public class LearningAnalyticsBean extends Beans implements Serializable{
 	
 	public List<PeerBean> getTestPeerStages(){
 		if(AppBean.getPeers()==null) return null;
-		return AppBean.getPeers().getPeerBeansByActionAndParentId(parentId, ScoreBean.TYPE_TEST_LIST);
+		return AppBean.getPeers().getPeerBeansByActionAndVpId(vpId, ScoreBean.TYPE_TEST_LIST);
 	}
 	
 	public List<ScoreBean> getMngScoreStages(){ 
@@ -127,7 +127,7 @@ public class LearningAnalyticsBean extends Beans implements Serializable{
 	
 	public List<PeerBean> getMngPeerStages(){
 		if(AppBean.getPeers()==null) return null;
-		return AppBean.getPeers().getPeerBeansByActionAndParentId(parentId, ScoreBean.TYPE_MNG_LIST);
+		return AppBean.getPeers().getPeerBeansByActionAndVpId(vpId, ScoreBean.TYPE_MNG_LIST);
 	}
 	public void levelOfEngagement(){
 		//passive vs active user, non-user, regular users, glancers (<2min), interrupter 
@@ -145,5 +145,5 @@ public class LearningAnalyticsBean extends Beans implements Serializable{
 	}
 	public long getUserId() {return userId;}
 	public long getPatIllScriptId() {return patIllScriptId;}
-	public long getParentId() {return parentId;}
+	public String getVpId() {return vpId;}
 }

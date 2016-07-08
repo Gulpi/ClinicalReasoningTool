@@ -182,10 +182,10 @@ public class DBClinReason /*extends HibernateUtil*/{
      * @param sessionId
      * @return PatientIllnessScript or null
      */
-    public PatientIllnessScript selectExpertPatIllScript(long parentId){
+    public PatientIllnessScript selectExpertPatIllScriptByVPId(String vpId){
     	Session s = instance.getInternalSession(Thread.currentThread(), false);
     	Criteria criteria = s.createCriteria(PatientIllnessScript.class,"PatientIllnessScript");
-    	criteria.add(Restrictions.eq("parentId", new Long(parentId)));
+    	criteria.add(Restrictions.eq("vpId", vpId));
     	criteria.add(Restrictions.eq("type", new Integer(PatientIllnessScript.TYPE_EXPERT_CREATED)));
     	PatientIllnessScript patIllScript =  (PatientIllnessScript) criteria.uniqueResult();
     	s.close();
@@ -235,11 +235,11 @@ public class DBClinReason /*extends HibernateUtil*/{
      * @param sessionId
      * @return PatientIllnessScript or null
      */
-    public PatientIllnessScript selectPatIllScriptsByUserIdAndParentId(long userId, long parentId){
+    public PatientIllnessScript selectPatIllScriptsByUserIdAndVpId(long userId, String vpId){
     	Session s = instance.getInternalSession(Thread.currentThread(), false);
     	Criteria criteria = s.createCriteria(PatientIllnessScript.class,"PatientIllnessScript");
     	criteria.add(Restrictions.eq("userId", new Long(userId)));
-    	criteria.add(Restrictions.eq("parentId", new Long(parentId)));
+    	criteria.add(Restrictions.eq("vpId", vpId));
     	PatientIllnessScript patIllScript =  (PatientIllnessScript) criteria.uniqueResult();
     	if(patIllScript!=null)
     		patIllScript.setSummSt(loadSummSt(patIllScript.getSummStId()));
@@ -281,5 +281,11 @@ public class DBClinReason /*extends HibernateUtil*/{
 		Criteria criteria = s.createCriteria(SummaryStatement.class,"SummaryStatement");
 		criteria.add(Restrictions.eq("id", new Long(id)));
 		return (SummaryStatement) criteria.uniqueResult();
+	}
+	
+	public static List<VPScriptRef> getVPScriptRefs(){
+		Session s = instance.getInternalSession(Thread.currentThread(), false);
+		Criteria criteria = s.createCriteria(VPScriptRef.class,"VPScriptRef");
+		return criteria.list();		
 	}
 }

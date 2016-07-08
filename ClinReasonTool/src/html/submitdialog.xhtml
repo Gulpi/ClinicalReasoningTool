@@ -3,7 +3,7 @@
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:f="http://java.sun.com/jsf/core">
-<div class="ddxsubmitconf">Please select your final diagnoses and indicate how confident you are with your decision.<br/>
+<div class="ddxsubmitconf">#{prop['submit.intro']}<br/>
 <h:form id="ddx_submit_form">
 	<h:panelGroup >
 		<ui:repeat value="#{crtContext.patillscript.diagnoses}" var="ddx" varStatus="status">
@@ -24,20 +24,20 @@
 	 </h:commandButton>
 </h:form>
 
-	<a id="ddx_submit_btn" href="javascript:submitDDXConfirmed();"><i class="fa fa-arrow-rightb"></i> Submit</a>
-	<span class="aftersubmit">Potential errors:
+	<a id="ddx_submit_btn" href="javascript:submitDDXConfirmed();"><i class="fa fa-arrow-rightb"></i> #{prop['submit']}</a>
+	<span class="aftersubmit">#{prop['ddx.errors.title']}:
 		<ul id="errors">
 			<ui:repeat value="#{crtContext.patillscript.errorsCurrStage}" var="err" varStatus="status">
 				<ui:include src="errorline.xhtml" />
 	 		</ui:repeat>				
 		</ul>
-		What do you want to do next?<ul class="fa-ul">
-			<li class="aftersubmit_cont_#{crtContext.patillscript.offerContinueCase}"><i class="fa-li fa fa-arrow-rightb"></i> <a class="aftersubmit_cont_#{crtContext.patillscript.offerContinueCase}" href="javascript:backToCase();">Continue with case</a></li><!--  (not max stage OR correct) -->
-			<li class="aftersubmit_cont_#{crtContext.patillscript.offerTryAgain}"><i class="fa-li fa fa-arrow-rightb"></i> <a class="aftersubmit_cont_#{crtContext.patillscript.offerTryAgain}" href="javascript:tryAgain();">Try again </a></li><!-- (max stage) -->
-			<li class="aftersubmit_cont_#{crtContext.patillscript.offerSolution}"><i class="fa-li fa fa-arrow-rightb"></i> <a class="aftersubmit_cont_#{crtContext.patillscript.offerSolution}" href="javascript:showSolution();">Give me solution</a></li> <!--  (max stage only) -->
-			<li class="aftersubmit_cont_#{crtContext.patillscript.offerSolution}"><i class="fa-li fa fa-arrow-rightb"></i> <a class="aftersubmit_cont_#{crtContext.patillscript.offerSolution}" href="javascript:giveHint();">Give me a hint</a></li> <!--  (max stage only) -->
+		#{prop['ddx.errors.donext']}<ul class="fa-ul">
+			<li class="aftersubmit_cont_#{crtContext.patillscript.offerContinueCase}"><i class="fa-li fa fa-arrow-rightb"></i> <a class="aftersubmit_cont_#{crtContext.patillscript.offerContinueCase}" href="javascript:backToCase();">#{prop['submit.cont']}</a></li><!--  (not max stage OR correct) -->
+			<li class="aftersubmit_cont_#{crtContext.patillscript.offerTryAgain}"><i class="fa-li fa fa-arrow-rightb"></i> <a class="aftersubmit_cont_#{crtContext.patillscript.offerTryAgain}" href="javascript:tryAgain();">#{prop['submit.try']}</a></li><!-- (max stage) -->
+			<li class="aftersubmit_cont_#{crtContext.patillscript.offerSolution}"><i class="fa-li fa fa-arrow-rightb"></i> <a class="aftersubmit_cont_#{crtContext.patillscript.offerSolution}" href="javascript:showSolution();">#{prop['submit.sol']}</a></li> <!--  (max stage only) -->
+			<li class="aftersubmit_cont_#{crtContext.patillscript.offerSolution}"><i class="fa-li fa fa-arrow-rightb"></i> <a class="aftersubmit_cont_#{crtContext.patillscript.offerSolution}" href="javascript:giveHint();">#{prop['submit.hint']}</a></li> <!--  (max stage only) -->
 		</ul>
 	</span>
 </div>
-<div id="confidence_slider" class="conf_slider" title="Please indicate how confident you are with your current differentials."></div>
+<div id="confidence_slider" class="conf_slider" title="#{prop['confidence.hint']}"></div>
 </ui:composition>

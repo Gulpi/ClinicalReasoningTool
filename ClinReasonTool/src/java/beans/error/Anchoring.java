@@ -20,8 +20,6 @@ public class Anchoring extends MyError{
 		setStage(stage);
 	}
 	
-	public String getDescription() {return "Fixation on first impression.";}
-	public String getName() { return "Anchoring"; }
 
 	/* (non-Javadoc)
 	 * @see beans.error.MyError#getType()

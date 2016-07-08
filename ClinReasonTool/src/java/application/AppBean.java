@@ -13,6 +13,7 @@ import javax.servlet.http.HttpSessionListener;
 import beans.scripts.*;
 import beans.graph.Graph;
 import beans.scoring.PeerContainer;
+import controller.IllnessScriptController;
 import controller.JsonCreator;
 import controller.PeerSyncController;
 import database.DBClinReason;
@@ -20,6 +21,7 @@ import database.HibernateUtil;
 import util.CRTLogger;
 import util.StringUtilities;
 import properties.IntlConfiguration;
+import test.TextSimilarityComparing;
 
 /**
  * We init here some application stuff, like hibernate,....
@@ -39,14 +41,14 @@ public class AppBean extends ApplicationWrapper implements HttpSessionListener{
 	/**
 	 * Any application-wide properties, file is in WEB-INF/classes/globalsettings.properties
 	 */
-	public static final Properties properties = new Properties();
+	private static final Properties properties = new Properties();
 	
 	/**
 	 * we dynamically load the experts' scripts into the map if a learner opens a VP that has not been
 	 * opened before by a learner.  
 	 * 
 	 */
-	public static Map<Long, PatientIllnessScript> expertPatIllScripts;
+	public static Map<String, PatientIllnessScript> expertPatIllScripts;
 
 	/**
 	 * we dynamically load the illness scripts into the map if a learner opens a VP that has not been
@@ -58,6 +60,8 @@ public class AppBean extends ApplicationWrapper implements HttpSessionListener{
 	public static Map<Long, Graph> graph;
 
 	private static PeerContainer peers = new PeerContainer();
+	
+	private static Map<String, VPScriptRef> vpScriptRefs;
 	/**
 	 * called when the application is started... We init Hibernate and a ViewHandler (for Locale handling)
 	 * We also put this AppBean into the ServletContext for later access to the applicationScoped scripts
@@ -71,7 +75,7 @@ public class AppBean extends ApplicationWrapper implements HttpSessionListener{
 	    context.setAttribute(APP_KEY, this);
 	    try{
 	    	//load properties for the application(file is in WEB-INF/classes:
-	    	InputStream input =  Thread.currentThread().getContextClassLoader().getResourceAsStream("globalsettings.properties");
+	    	InputStream input =  Thread.currentThread().getContextClassLoader().getResourceAsStream("properties/globalsettings.properties");
 	    	properties.load(input);
 	    }
 	    catch(Exception e){}
@@ -79,7 +83,9 @@ public class AppBean extends ApplicationWrapper implements HttpSessionListener{
 	   // new JsonCreator().initJsonExport(); 
 	   
 		//MeshImporter.main("en");
+	   // new TextSimilarityComparing().compareTestData();
 	    peers.initPeerContainer();
+	    vpScriptRefs =  IllnessScriptController.getInstance().initVpScriptRefs();
 	    CRTLogger.out("Init done", CRTLogger.LEVEL_PROD);
 	    try{
 	    	new PeerSyncController(peers).sync();
@@ -98,34 +104,28 @@ public class AppBean extends ApplicationWrapper implements HttpSessionListener{
 	 * learner working on the same VP, we load it and put it into the expertPatIllScripts Map.
 	 * @param parentId
 	 */
-	public synchronized void addExpertPatIllnessScriptForParentId(long parentId){
-		if(expertPatIllScripts==null) expertPatIllScripts = new HashMap<Long, PatientIllnessScript>();
-		if(parentId>0 && !expertPatIllScripts.containsKey(new Long(parentId))){
-			PatientIllnessScript expScript = new DBClinReason().selectExpertPatIllScript(parentId);
-			if(expScript!=null) expertPatIllScripts.put(new Long(parentId), expScript);
+	public synchronized void addExpertPatIllnessScriptForVpId(String vpId){
+		if(expertPatIllScripts==null) expertPatIllScripts = new HashMap<String, PatientIllnessScript>();
+		if(vpId!=null && !expertPatIllScripts.containsKey(vpId)){
+			PatientIllnessScript expScript = new DBClinReason().selectExpertPatIllScriptByVPId(vpId);
+			if(expScript!=null) expertPatIllScripts.put(vpId, expScript);
 			//if(graphs!=null && graphs.get(new Long(parentId)!=null)) return
 			//todo init graphs?
 		}
 	}
 	
 	
-	public synchronized void addIllnessScriptForDiagnoses(List diagnoses, long parentId){
-	/*	if(ilnessScripts==null) ilnessScripts = new HashMap<Long, List<IllnessScript>>();
-		if(parentId>0 && !ilnessScripts.containsKey(new Long(parentId))){
-			List<IllnessScript> scripts = new DBClinReason().selectIllScriptByDiagnoses(diagnoses);
-			if(scripts!=null) ilnessScripts.put(new Long(parentId), scripts);
-			//todo init graphs?
-		}*/
+	public synchronized void addIllnessScriptForDiagnoses(List diagnoses, String vpId){
 	}
 	
-	public static PatientIllnessScript getExpertPatIllScript(long parentId) {
+	public static PatientIllnessScript getExpertPatIllScript(String vpId) {
 		if(expertPatIllScripts!=null)
-			return expertPatIllScripts.get(new Long(parentId));
+			return expertPatIllScripts.get(vpId);
 		return null;
 	}
-	public static List<IllnessScript> getIlnessScripts(long parentId) {
+	public static List<IllnessScript> getIlnessScripts(String vpId) {
 		if(ilnessScripts==null) return null;
-		return ilnessScripts.get(new Long(parentId));
+		return ilnessScripts.get(vpId);
 	}
 	
 	
@@ -148,5 +148,18 @@ public class AppBean extends ApplicationWrapper implements HttpSessionListener{
 	public void sessionDestroyed(HttpSessionEvent arg0) {
 		// TODO Auto-generated method stub
 		
+	}
+	
+	/**
+	 * @return the sharedSecret of the application as defined in the globalsettings.properties file.
+	 */
+	public static String getSharedSecret(){
+		if(properties==null) return null; 
+		return properties.getProperty("SharedSecret");
+	}
+	
+	public static String getVPNameByParentId(String id){
+		if(vpScriptRefs==null || vpScriptRefs.get(id)==null) return "";
+		return vpScriptRefs.get(id).getVpName();
 	}
 }

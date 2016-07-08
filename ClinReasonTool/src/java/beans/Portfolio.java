@@ -36,7 +36,7 @@ public class Portfolio implements Serializable{
 			//loadAndSetScriptsOfUser();
 			//crtContext.loadAndSetScriptsOfUser(); //this loads all scripts, we do not necessarily have to do that here, only if overview page is opened!
 			if(crtContext!=null){
-				crtContext.setUserId(userId);
+				//crtContext.setUserId(userId);
 				crtContext.initScriptContainer();
 				new NavigationController().removePatIllScript();
 			}
@@ -52,7 +52,7 @@ public class Portfolio implements Serializable{
 	
 	private void setUserId(){
 		if(userId>0) return;
-		String setUserIdStr = new AjaxController().getRequestParamByKey(AjaxController.REQPARAM_USER);
+		String setUserIdStr = AjaxController.getInstance().getRequestParamByKey(AjaxController.REQPARAM_USER);
 		if(setUserIdStr!=null) this.userId = (Long.valueOf(setUserIdStr).longValue());
 		else{
 			CRTLogger.out("Userid is null", CRTLogger.LEVEL_ERROR);

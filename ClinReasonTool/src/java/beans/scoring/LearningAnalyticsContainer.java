@@ -63,7 +63,7 @@ public class LearningAnalyticsContainer implements Serializable{
 		Iterator<ScoreBean> it = scores.iterator();
 		while(it.hasNext()){
 			ScoreBean score = it.next();
-			LearningAnalyticsBean lab =  getLearningAnalyticsBeanByPatIllScriptId(score.getPatIllScriptId(), score.getParentId());
+			LearningAnalyticsBean lab =  getLearningAnalyticsBeanByPatIllScriptId(score.getPatIllScriptId(), score.getVpId());
 			if(lab!=null) lab.getScoreContainer().addScore(score);
 			else{
 				CRTLogger.out("", CRTLogger.LEVEL_ERROR);
@@ -72,8 +72,8 @@ public class LearningAnalyticsContainer implements Serializable{
 		
 	}
 	
-	public LearningAnalyticsBean getLearningAnalyticsBeanByPatIllScriptId(long patIllScriptId, long parentId){
-		if(analytics==null || analytics.isEmpty()) initLearningAnalyticsBean(patIllScriptId, parentId);
+	public LearningAnalyticsBean getLearningAnalyticsBeanByPatIllScriptId(long patIllScriptId, String vpId){
+		if(analytics==null || analytics.isEmpty()) initLearningAnalyticsBean(patIllScriptId, vpId);
 		return analytics.get(new Long(patIllScriptId));
 	}
 	
@@ -82,13 +82,13 @@ public class LearningAnalyticsContainer implements Serializable{
 	 * @param patIllScriptId
 	 * @param parentId
 	 */
-	private void initLearningAnalyticsBean(long patIllScriptId, long parentId){
-		analytics.put(new Long(patIllScriptId), new LearningAnalyticsBean(patIllScriptId, userId, parentId));
+	private void initLearningAnalyticsBean(long patIllScriptId, String vpId){
+		analytics.put(new Long(patIllScriptId), new LearningAnalyticsBean(patIllScriptId, userId, vpId));
 	}
 	
-	public void addLearningAnalyticsBean(long patIllScriptId, long parentId){
+	public void addLearningAnalyticsBean(long patIllScriptId, String vpId){
 		if(analytics.containsKey(new Long(patIllScriptId))) return;
-		initLearningAnalyticsBean(patIllScriptId, parentId);
+		initLearningAnalyticsBean(patIllScriptId, vpId);
 	}
 	
 	/**if we could determine this, would be great, maybe we can store the LA details on a regularly basis 
@@ -103,8 +103,6 @@ public class LearningAnalyticsContainer implements Serializable{
 	public void identifyAreaOfWeakness(){}
 	public void identifyAreaOfStrenght(){}
 	
-	
-
 	public List<ScoreBean> getProblemScores(){ return getListScores(ScoreBean.TYPE_PROBLEM_LIST); }
 	public List<ScoreBean> getDDXScores(){ 
 		//TODO: we have to combine it with the final diagnosis score!
@@ -186,5 +184,26 @@ public class LearningAnalyticsContainer implements Serializable{
 			}
 		}
 		return l;
+	}
+	
+	/**
+	 * We provide the VP names in a json string so that we can use the names as tooltips for the  charts.
+	 * (more helpful for learner than the Vp ids...)
+	 * @return
+	 */
+	public String getVPNamesToJson(){
+		StringBuffer sb = new StringBuffer("{");
+		PatIllScriptContainer sc = NavigationController.getInstance().getCRTFacesContext().getScriptContainer();
+		if(sc==null || sc.getScriptsOfUser()==null) return "";
+		for(int i=0; i<sc.getScriptsOfUser().size(); i++){
+			//sb.append("{\"id\":\""+sc.getScriptsOfUser().get(i).getVpId()+"\",");
+			//sb.append("\"name\":\""+AppBean.getVPNameByParentId(sc.getScriptsOfUser().get(i).getVpId())+"\"},");
+			sb.append("\""+sc.getScriptsOfUser().get(i).getVpId()+"\":\"");
+			sb.append(AppBean.getVPNameByParentId(sc.getScriptsOfUser().get(i).getVpId())+"\",");
+			
+		}
+		if(sb.length()>1) sb.replace(sb.length()-1, sb.length(), ""); //remove the last ","
+		sb.append("}");
+		return sb.toString();
 	}
 }

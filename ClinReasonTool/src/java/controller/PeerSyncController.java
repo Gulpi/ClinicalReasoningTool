@@ -42,16 +42,16 @@ public class PeerSyncController {
 		}
 		for(int i=0; i<scripts.size(); i++){
 			PatientIllnessScript script = scripts.get(i);
-			LearningAnalyticsBean lab = new LearningAnalyticsBean(script.getId(), script.getUserId(), script.getParentId());		
-			syncItems(script.getProblems()/*, peers*/, script.getParentId());
-			syncItems(script.getDiagnoses()/*, peers*/, script.getParentId());
-			syncItems(script.getMngs()/*, peers*/, script.getParentId());
-			syncItems(script.getTests()/*, peers*/, script.getParentId());
+			LearningAnalyticsBean lab = new LearningAnalyticsBean(script.getId(), script.getUserId(), script.getVpId());		
+			syncItems(script.getProblems()/*, peers*/, script.getVpId());
+			syncItems(script.getDiagnoses()/*, peers*/, script.getVpId());
+			syncItems(script.getMngs()/*, peers*/, script.getVpId());
+			syncItems(script.getTests()/*, peers*/, script.getVpId());
 			if(lab!=null && lab.getScoreContainer()!=null){
 				List<ScoreBean> scores = lab.getScoreContainer().getScores();
-				syncSummSt(scores,script.getParentId());
-				syncOverallScore(lab, script.getParentId());
-				syncListActionScores(scores/*, peers*/, script.getParentId());
+				syncSummSt(scores,script.getVpId());
+				syncOverallScore(lab, script.getVpId());
+				syncListActionScores(scores/*, peers*/, script.getVpId());
 			}
 			
 			script.setPeerSync(true);
@@ -68,15 +68,15 @@ public class PeerSyncController {
 	 * @param peers
 	 * @param parentId
 	 */
-	private void syncListActionScores(List<ScoreBean> scores, /*List<PeerBean> peers,*/ long parentId){
+	private void syncListActionScores(List<ScoreBean> scores, /*List<PeerBean> peers,*/ String vpId){
 		if(scores==null) return;
 		PeerContainer peerCont = AppBean.getPeers();
 		if(peerCont==null) return;
 		for(int i=0; i<scores.size(); i++){
 			ScoreBean score = scores.get(i);
 			if(score.isListScoreBean()){ //we only consider list scoring here!
-				PeerBean peerBean = peerCont.getPeerBeanByParentIdActionAndStage(score.getType(), score.getStage(), parentId);
-				if(peerBean==null) peerBean = createNewPeerBean(score.getType(), parentId, -1, score.getScoreBasedOnIllScript(), score.getStage());
+				PeerBean peerBean = peerCont.getPeerBeanByVpIdActionAndStage(score.getType(), score.getStage(), vpId);
+				if(peerBean==null) peerBean = createNewPeerBean(score.getType(), vpId, -1, score.getScoreBasedOnIllScript(), score.getStage());
 				else{
 					peerBean.incrPeerNum();
 					peerBean.incrScoreSum(score.getOrgScoreBasedOnExp());
@@ -92,7 +92,7 @@ public class PeerSyncController {
 	 * @param sumScore
 	 * @param parentId
 	 */
-	private void syncSummSt(List<ScoreBean> scores, long parentId){
+	private void syncSummSt(List<ScoreBean> scores, String vpId){
 		PeerContainer peerCont = AppBean.getPeers();
 		if(peerCont==null || scores==null) return;
 		ScoreBean sumScore = null;
@@ -102,17 +102,17 @@ public class PeerSyncController {
 			if(sumScore.getType()==ScoreBean.TYPE_SUMMST) break;
 		}
 		if(sumScore==null) return; //can happen?
-		List<PeerBean> pbs = peerCont.getPeerBeansByActionAndParentId(parentId, ScoreBean.TYPE_SUMMST);
+		List<PeerBean> pbs = peerCont.getPeerBeansByActionAndVpId(vpId, ScoreBean.TYPE_SUMMST);
 		PeerBean peerBean = null;
 		if(pbs==null || pbs.isEmpty()){
-			peerBean = new PeerBean(ScoreBean.TYPE_SUMMST, parentId, 0, -1);			
+			peerBean = new PeerBean(ScoreBean.TYPE_SUMMST, vpId, 0, -1);			
 		}
 		else peerBean = pbs.get(0);
 		peerBean.incrPeerNum();
 		peerBean.incrScoreSum(sumScore.getScoreBasedOnExp());
 	}
 	
-	private void syncOverallScore(LearningAnalyticsBean lab, long parentId){
+	private void syncOverallScore(LearningAnalyticsBean lab, String vpId){
 		PeerContainer peerCont = AppBean.getPeers();
 		if(peerCont==null || lab==null) return;
 		ScoreBean overallScore = lab.getOverallScore();
@@ -121,10 +121,10 @@ public class PeerSyncController {
 			overallScore = new ScoringOverallAction().scoreAction(lab);
 		}
 		if(overallScore==null) return;
-		List<PeerBean> pbs = peerCont.getPeerBeansByActionAndParentId(parentId, ScoreBean.TYPE_OVERALL_SCORE);
+		List<PeerBean> pbs = peerCont.getPeerBeansByActionAndVpId(vpId, ScoreBean.TYPE_OVERALL_SCORE);
 		PeerBean peerBean = null;
 		if(pbs==null || pbs.isEmpty()){
-			peerBean = new PeerBean(ScoreBean.TYPE_OVERALL_SCORE, parentId, 0, -1);			
+			peerBean = new PeerBean(ScoreBean.TYPE_OVERALL_SCORE, vpId, 0, -1);			
 		}
 		else peerBean = pbs.get(0);
 		peerBean.incrPeerNum();
@@ -137,15 +137,15 @@ public class PeerSyncController {
 	 * @param peers
 	 * @param listAction
 	 */
-	private void syncItems(List rels, /*List<PeerBean> peers,*/ long parentId){
+	private void syncItems(List rels, /*List<PeerBean> peers,*/ String vpId){
 		if(rels==null || rels.isEmpty()) return;
 		PeerContainer peerCont = AppBean.getPeers();
 		if(peerCont==null) return;
 		for(int i=0; i<rels.size(); i++){
 			Relation rel = (Relation) rels.get(i);
-			PeerBean peerBean = peerCont.getPeerBeanByActionParentIdAndItemId(rel.getRelationType(), parentId, rel.getListItemId());
+			PeerBean peerBean = peerCont.getPeerBeanByActionVpIdAndItemId(rel.getRelationType(), vpId, rel.getListItemId());
 			if(peerBean==null){
-				peerBean = createNewPeerBean(rel.getRelationType(), parentId,  rel.getListItemId(), 0);				
+				peerBean = createNewPeerBean(rel.getRelationType(), vpId,  rel.getListItemId(), 0);				
 			}
 			else{
 				peerBean.incrPeerNum();
@@ -161,17 +161,17 @@ public class PeerSyncController {
 	 * @param patIllScriptId
 	 * @return
 	 */
-	protected PeerBean createNewPeerBean(int action, long parentId, long itemId, float score, int stage){
-		PeerBean pb = new PeerBean(action, parentId, 1, itemId);
+	protected PeerBean createNewPeerBean(int action, String vpId, long itemId, float score, int stage){
+		PeerBean pb = new PeerBean(action, vpId, 1, itemId);
 		pb.setScoreSum(score);
 		pb.setStage(stage);
 		new DBScoring().saveAndCommit(pb);
-		cont.addPeerBean(pb, parentId);
+		cont.addPeerBean(pb, vpId);
 		return pb;
 	}
 	
 	
-	private PeerBean createNewPeerBean(int action, long parentId, long itemId, float score){
-		return createNewPeerBean(action, parentId, itemId, score, -1);
+	private PeerBean createNewPeerBean(int action, String vpId, long itemId, float score){
+		return createNewPeerBean(action, vpId, itemId, score, -1);
 	}
 }

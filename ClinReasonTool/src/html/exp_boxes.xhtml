@@ -55,7 +55,7 @@
 var test = "#{crtContext.initSession}";
 var msg2="Please connect the hypotheses with the findings";
 var scriptId = "#{crtContext.patillscript.id}";
-//var listUrl="jsonp_en.json";
+var listUrl="jsonp_#{crtContext.patillscript.locale}.json";
 var lang = "#{crtContext.patillscript.locale}";
 //var my_canvas = null;
 var currentStage = #{crtContext.patillscript.stage};
@@ -71,7 +71,7 @@ var item_arr = new Array();
 var exp_arr = new Array();
 
 $(function() {
-	if(lang=="de") listUrl = "jsonp_de.json";
+	//if(lang=="de") listUrl = "jsonp_de.json";
 	$(".listdialog").hide();
 	//$("#jdialogError").hide();
 	$("#connContext").hide();
@@ -217,7 +217,7 @@ item_arr = new Array();
 <body style="font-family:arial;" data-demo-id="draggableConnectors" data-library="dom"><!-- test: #{crtContext.test}-->
 <div>
 ScriptId:  #{crtContext.patillscript.id}<br/>
-VPId: <input type="text" value="#{crtContext.patillscript.parentId}"></input><br/>
+VPId: <input type="text" value="#{crtContext.patillscript.vpId}"></input><br/>
 System <select name="system"><option value="">Casus (uni)</option><option value="">Casus (MedU)</option></select><br/>
 Stage: <span id="stageSpan">#{crtContext.patillscript.stage} </span>
 <a href="javascript:chgStage(-1);">previous stage</a> <a href="javascript:chgStage(1);">next stage</a>
@@ -231,7 +231,7 @@ Stage: <span id="stageSpan">#{crtContext.patillscript.stage} </span>
 </div>
 <div class="boxes_container">
 	<div id="canvas" class="canvas jtk-surface drag-drop jtk-surface-nopan" >
-		  <div id="pat_box" class="container" group="pat_group">
+		 <!--   <div id="pat_box" class="container" group="pat_group">
 		  		<div class="title">Patient</div>
 		   		<div class="node-collapse"></div>
 				 <div id="patimg" class="boxchild" style="position:relative;right:5px; top:30px; float:right;"><img src="patient.png" width="100px" /><br/>Delai Johnston</div>
@@ -244,7 +244,7 @@ Stage: <span id="stageSpan">#{crtContext.patillscript.stage} </span>
 				</h:selectOneMenu>
 				<span class="list_score" style="float:left;position:absolute;vertical-align:middle;">&nbsp;<i class="#{crtContext.patillscript.courseOfTimeScore}"></i></span><br/><br/>
 			</div>
-		  </div>
+		  </div> --> 
 		  <!-- problems -->
 		  <div id="fdg_box"  class="container" group="fdg_group">
 		   		<div class="title">Findings 

@@ -47,7 +47,11 @@ public class ScoreBean extends Beans implements Serializable{
 	
 	private long id; 
 	private long patIllScriptId; 
+	/**
+	 * @deprecated
+	 **/
 	private long parentId;
+	private String vpId;
 	private long userId;
 	
 	/**
@@ -105,8 +109,9 @@ public class ScoreBean extends Beans implements Serializable{
 		this.scoredItem = scoredItem;
 		this.type = type;
 		this.stage = patIllScript.getCurrentStage();
-		this.parentId = patIllScript.getParentId();
-		this.userId = patIllScript.getUserId();		
+		//this.parentId = patIllScript.getParentId();
+		this.userId = patIllScript.getUserId();	
+		this.vpId = patIllScript.getVpId();
 	}
 	
 	public ScoreBean(PatientIllnessScript patIllScript, long scoredItem, int type, int stage){
@@ -114,24 +119,27 @@ public class ScoreBean extends Beans implements Serializable{
 		this.scoredItem = scoredItem;
 		this.type = type;
 		this.stage = stage;
-		this.parentId = patIllScript.getParentId();
+		//this.parentId = patIllScript.getParentId();
 		this.userId = patIllScript.getUserId();		
+		this.vpId = patIllScript.getVpId();
 	}
 
 	public ScoreBean(LearningAnalyticsBean laBean, int type){
 		this.patIllScriptId = laBean.getPatIllScriptId();
 		this.type = type;
-		this.parentId = laBean.getParentId();
+		this.vpId = laBean.getVpId();
 		this.userId = laBean.getUserId();		
 	}
 	
-	public ScoreBean(long patIllScriptId, long parentId, long userId, int type){
+	public ScoreBean(long patIllScriptId, String vpId, long userId, int type){
 		this.patIllScriptId = patIllScriptId;
 		this.type = type;
-		this.parentId = parentId;
+		this.vpId = vpId;
 		this.userId = userId;		
 	}
 	
+	public String getVpId() {return vpId;}
+	public void setVpId(String vpId) {this.vpId = vpId;}
 	public long getId() {return id;}
 	public void setId(long id) {this.id = id;}
 	public long getPatIllScriptId() {return patIllScriptId;}

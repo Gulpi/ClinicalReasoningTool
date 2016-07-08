@@ -35,8 +35,8 @@ public class PrematureClosure extends MyError{
 		return MyError.TYPE_PREMATURE_CLOUSRE;
 	}
 	public String getDiscr() {return String.valueOf(MyError.TYPE_PREMATURE_CLOUSRE);}
-	public String getDescription(){ return "Accepting a diagnosis too early .... etc...";}
-	public String getName(){return "Premature Closure";}
+	//public String getDescription(){ return "Accepting a diagnosis too early .... etc...";}
+	//public String getName(){return "Premature Closure";}
 
 	
 

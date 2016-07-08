@@ -4,13 +4,11 @@ import java.beans.Statement;
 import java.io.IOException;
 import java.util.*;
 
-import javax.faces.application.FacesMessage;
-import javax.faces.context.ExternalContext;
-import javax.faces.context.FacesContext;
-import javax.faces.context.FacesContextWrapper;
+import javax.faces.context.*;
 
 import org.apache.commons.lang.StringUtils;
 
+import application.AppBean;
 import application.ErrorMessageContainer;
 import beans.*;
 import beans.scripts.*;
@@ -18,18 +16,21 @@ import util.*;
 
 public class AjaxController {
 	public static final String REQPARAM_USER = "user_id";
-	//public static final String REQPARAM_SESSION = "session_id";
+	public static final String REQPARAM_USER_EXT = "userid_ext"; //an external userId (from another system)
 	public static final String REQPARAM_SCRIPT = "script_id";
 	public static final String REQPARAM_VP = "vp_id";
 	public static final String REQPARAM_LOC = "locale";
 	public static final String REQPARAM_STAGE = "stage";
-	public static final String REQPARAM_CHARTTYPE = "CHART_TYPE";	//see LearningAnalyticsContainer
-	public static final String REQPARAM_CHARTSIZE = "CHART_SIZE"; //sm or lg
-	
-	public AjaxController(/*CRTFacesContext fc*/){
-		//this.facesContext = fc;
-	}
+	public static final String REQPARAM_CHARTTYPE = "chart_type";	//see LearningAnalyticsContainer
+	public static final String REQPARAM_CHARTSIZE = "chart_size"; //sm or lg
+	public static final String REQPARAM_SEARCHTERM = "search";	//searchterm
+	public static final String REQPARAM_SECRET = "secret";	//a shared secret is included in the query
+	public static final String REQPARAM_ENCODED = "encoded"; //are the query params encoded (true | false)
+	public static final String REQPARAM_SYSTEM = "system_id"; //are the query params encoded (true | false)
+	public static final String REQPARAM_CHARTPEER = "chart_peer"; //are the query params encoded (true | false)
 
+	static private AjaxController instance = new AjaxController();
+	static public AjaxController getInstance() { return instance; }
 	
 	/**
 	 * Receive an ajax call and process it. 
@@ -39,9 +40,7 @@ public class AjaxController {
 	 */
 	public void receiveAjax(PatientIllnessScript patillscript) throws IOException {
 		ExternalContext externalContext = FacesContextWrapper.getCurrentInstance().getExternalContext();
-	    //ExternalContext externalContext = facesContext2.getExternalContext();
-	    //ExternalContext ec = fcw.getExternalContext();
-	   // Map<String, Object> sessionMap = externalContext.getSessionMap().get("patIll);
+
 	    Map<String, String> reqParams = externalContext.getRequestParameterMap();
 	    if(reqParams!=null){
 	    	String patillscriptId = reqParams.get(REQPARAM_SCRIPT);
@@ -61,7 +60,7 @@ public class AjaxController {
 	    	String y = reqParams.get("y");
 	    	patillscript.updateStage(reqParams.get(REQPARAM_STAGE));
 
-	    	String patIllScriptId = reqParams.get(REQPARAM_SCRIPT); //TODO check whether belongs to currently loaded script!
+	    	//String patIllScriptId = reqParams.get(REQPARAM_SCRIPT); //TODO check whether belongs to currently loaded script!
 	    	Statement stmt; 
 	    	if(x!=null && !x.trim().equals("")){
 	    		stmt = new Statement(patillscript, methodName, new Object[]{idStr, nameStr,x,y});
@@ -79,6 +78,27 @@ public class AjaxController {
 	    	patillscript.toString();
 	    	responseAjax(externalContext, reqParams.get("id"));
 	    }
+	}
+	
+	/**
+	 * Called for chart ajax calls...
+	 * @param context
+	 */
+	public void receiveChartAjax(CRTFacesContext context) throws IOException{
+		ExternalContext externalContext = FacesContextWrapper.getCurrentInstance().getExternalContext();
+		Map<String, String> reqParams = externalContext.getRequestParameterMap();
+		String methodName = reqParams.get("type");
+		String idStr = reqParams.get("id");
+    	Statement stmt = new Statement(context.getLearningAnalyticsContainer(), methodName, new Object[]{idStr});
+    	
+    	try {
+			stmt.execute();				
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			CRTLogger.out(StringUtilities.stackTraceToString(e), CRTLogger.LEVEL_PROD);
+		}
+    	responseAjax(externalContext, reqParams.get("id"));
+
 	}
 	
 	/**
@@ -165,15 +185,14 @@ public class AjaxController {
 	
 	public String getRequestParamByKey(String key){
 		if(key==null || key.equals("")) return null;
+		key = key.trim();
 		//key = key.toLowerCase();
 		Map<String,String[]> p = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterValuesMap();
 		String[] p1 = p.get(key);
 		
 		if (p1 != null && p1.length>0){
-			//for(int i=0;i<)
-			//System.out.println(p1[0]);
-			return p1[0];
-			//this.sessionId = (Long.valueOf(p1[0]).longValue());
+			String param = Encoder.getInstance().decodeQueryParam(p1[0]);
+			return param;
 		}
 		return null;
 	}
@@ -186,31 +205,35 @@ public class AjaxController {
 		return -1;
 	}
 	
-	public int getIntRequestParamByKey(String key){
+	public boolean getBooleanRequestParamByKey(String key, boolean defVal){
 		String val = getRequestParamByKey(key);
 		if(val!=null && !val.trim().equals("")){
-			return Integer.parseInt(val);
+			return Boolean.parseBoolean(val);
 		}
-		return -1;
+		return defVal;
+	}
+	
+	public int getIntRequestParamByKey(String key, int defVal){
+		String val = getRequestParamByKey(key);
+		try{
+			if(val!=null && !val.trim().equals("") && !val.equals("null"))
+				return Integer.parseInt(val);
+		}
+		catch(Exception e){
+			CRTLogger.out(StringUtilities.stackTraceToString(e), CRTLogger.LEVEL_ERROR);
+		}
+		return defVal;
 	}
 	
 	/**
-	 * get Locale based on request param or facesContext. We have to do this, because the patientIllnessScript 
-	 * might be in a different Locale than the current browser Locale. 
-	 * 
+	 * Is the given sharedSecret the same as the application's (comparison is case insensitive!)
+	 * @param secret
 	 * @return
 	 */
-/*	public Locale getLocale(){
-		Locale loc = FacesContext.getCurrentInstance().getViewRoot().getLocale();
-		if(loc==null) loc = new Locale(CRTInit.DEFAULT_LOCALE);
-		String locStr = getRequestParamByKey(REQPARAM_LOC);
-		if(locStr!=null && !locStr.trim().equals("")){ 
-			for(int i=0; i<CRTInit.ACCEPTED_LOCALES.length; i++){
-			if(locStr.equals(CRTInit.ACCEPTED_LOCALES[i]))
-					loc = new Locale(locStr);
-			}
-		}
-		
-		return loc;
-	}*/
+	public boolean isValidSharedSecret(String secret){
+		if(secret==null || secret.trim().equals("")) return false;
+		if(secret.equalsIgnoreCase(AppBean.getSharedSecret())) return true;
+		return false;
+	}
+	
 }

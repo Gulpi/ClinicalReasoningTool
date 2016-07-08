@@ -45,10 +45,10 @@ public class GraphController implements Serializable{
 	 * of the experts' PatientIllnessScript for this parentId
 	 * @param parentId
 	 */
-	public void addExpPatIllScript(long parentId){
+	public void addExpPatIllScript(String vpId){
 	    ServletContext context = (ServletContext) FacesContext.getCurrentInstance().getExternalContext().getContext();
-	    AppBean app = (AppBean) context.getAttribute(AppBean.APP_KEY);
-	    PatientIllnessScript expIllScript = app.getExpertPatIllScript(parentId);
+	   // AppBean app = (AppBean) context.getAttribute(AppBean.APP_KEY);
+	    PatientIllnessScript expIllScript = AppBean.getExpertPatIllScript(vpId);
 	    if(expIllScript!=null){
 	    	graph.setExpertPatIllScriptId(expIllScript.getId());
 	    	addVerticesOfPatientIllnessScript(expIllScript, IllnessScriptInterface.TYPE_EXPERT_CREATED);
@@ -63,7 +63,7 @@ public class GraphController implements Serializable{
 	 * of the learners' PatientIllnessScript for this parentId
 	 * @param parentId
 	 */
-	public void addLearnerPatIllScript(long parentId){
+	public void addLearnerPatIllScript(){
 		PatientIllnessScript patIllScript = new NavigationController().getCRTFacesContext().getPatillscript();
 	    addVerticesOfPatientIllnessScript(patIllScript, IllnessScriptInterface.TYPE_LEARNER_CREATED);
 	    addExplicitEdgesOfPatientIllnessScript(patIllScript, IllnessScriptInterface.TYPE_LEARNER_CREATED);
@@ -76,10 +76,10 @@ public class GraphController implements Serializable{
 	 * relates to this diagnosis.
 	 * @param parentId	 
 	 * */
-	public void addIllnessScripts(long parentId){
+	public void addIllnessScripts(String vpId){
 	    ServletContext context = (ServletContext) FacesContext.getCurrentInstance().getExternalContext().getContext();
 	    //AppBean app = (AppBean) context.getAttribute(AppBean.APP_KEY);
-	    List<IllnessScript> illScripts = AppBean.getIlnessScripts(parentId);
+	    List<IllnessScript> illScripts = AppBean.getIlnessScripts(vpId);
 	    
 	    if(illScripts!=null){
 	    	Iterator<IllnessScript> it = illScripts.iterator();

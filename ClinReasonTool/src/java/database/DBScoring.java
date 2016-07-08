@@ -60,11 +60,20 @@ public class DBScoring extends DBClinReason {
     	}
     	return feedbackBeans;
     }
-    
-    public List<PeerBean> selectPeerBeansByParentId(long parentId){
+    /**
+     * @deprecated
+     * */
+  /* public List<PeerBean> selectPeerBeansByParentId(long parentId){
     	Session s = instance.getInternalSession(Thread.currentThread(), false);
     	Criteria criteria = s.createCriteria(PeerBean.class,"PeerBean");
     	criteria.add(Restrictions.eq("parentId", new Long(parentId)));
+    	return criteria.list();
+    }*/
+    
+    public List<PeerBean> selectPeerBeansByVPId(String vpId){
+    	Session s = instance.getInternalSession(Thread.currentThread(), false);
+    	Criteria criteria = s.createCriteria(PeerBean.class,"PeerBean");
+    	criteria.add(Restrictions.eq("vpId", vpId));
     	return criteria.list();
     }
     
@@ -72,19 +81,19 @@ public class DBScoring extends DBClinReason {
      * We get ALL PeerBean objects for all scripts and put them into a map with the parentId as key. 
      * @return
      */
-    public Map<Long, List<PeerBean>> selectAllPeerBeans(){
+    public Map<String, List<PeerBean>> selectAllPeerBeans(){
     	Session s = instance.getInternalSession(Thread.currentThread(), false);
     	Criteria criteria = s.createCriteria(PeerBean.class,"PeerBean");
     	//criteria.add(Restrictions.eq("parentId", new Long(parentId)));
     	List<PeerBean> list =  criteria.list();
     	if(list==null || list.isEmpty()) return null;
-    	Map<Long, List<PeerBean>> m = new HashMap<Long, List<PeerBean>>();
+    	Map<String, List<PeerBean>> m = new HashMap<String, List<PeerBean>>();
     	for(int i=0; i<list.size(); i++){
     		PeerBean pb = list.get(i);
-    		List<PeerBean> beans = m.get(new Long(pb.getParentId())); 
+    		List<PeerBean> beans = m.get(pb.getVpId()); 
     		if(beans==null) beans = new ArrayList<PeerBean>();
     		beans.add(pb);
-    		m.put(new Long(pb.getParentId()), beans);
+    		m.put(pb.getVpId(), beans);
     	}
     	return m;
     }

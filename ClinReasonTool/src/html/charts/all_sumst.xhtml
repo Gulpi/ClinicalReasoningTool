@@ -5,17 +5,18 @@
     xmlns:f="http://java.sun.com/jsf/core">
 <!-- problem scores for all VPs of user -->
 
-<div>Final representation and Semantic qualifier (summSt)<br clear="all"/>
+<div class="chart_header">#{prop['chart.all.summSt']}</div>
+<div>
 	<svg id="sumchart" class="chart"></svg>
 </div>
 <script language="JavaScript">
 	var sumdata = [];
 	var sumpeerdata = [];
 	<ui:repeat value="#{crtContext.learningAnalyticsContainer.sumScores}" var="scoreItem4">
-		sumdata.push({ x: "#{scoreItem4.parentId}", y: #{scoreItem4.orgScoreBasedOnExpPerc} });
+		sumdata.push({ x: "#{scoreItem4.vpId}", y: #{scoreItem4.orgScoreBasedOnExpPerc} });
 	</ui:repeat>
 	<ui:repeat value="#{crtContext.learningAnalyticsContainer.sumPeerScores}" var="scoreItemP">
-		sumpeerdata.push({ x: "#{scoreItemP.parentId}", y: #{scoreItemP.peerPercentagePerc} });
+		sumpeerdata.push({ x: "#{scoreItemP.vpId}", y: #{scoreItemP.peerPercentagePerc} });
 	</ui:repeat>
 	
 	printGroupedBarChart(sumdata, sumpeerdata, 150, 250, "sumchart","Summary");

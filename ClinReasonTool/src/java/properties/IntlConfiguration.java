@@ -4,6 +4,7 @@ import java.util.*;
 import java.io.*;
 import java.util.Locale;
 
+import controller.NavigationController;
 import util.CRTLogger;
 
 
@@ -41,5 +42,9 @@ public class IntlConfiguration
 	public static String getValue(String key, Locale loc){		 
 		if(loc.getLanguage().equals("de")) return p_de.getProperty(key);
 		return p_en.getProperty(key);
+	}
+	
+	public static String getValue(String key){	
+		return getValue(key, NavigationController.getLocale());
 	}
 }

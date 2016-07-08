@@ -102,6 +102,11 @@
 
 
 <script language="JavaScript">
+
+var chartLabelMe = "#{prop['charts.me']}";
+var chartLabelPeer = "#{prop['charts.peer']}";
+var peerChk = "#{chartConf.displayPeers}";
+var tooltips;
 $( document ).tooltip({
 	items: " rect, [title], text, tspan",
 	content: function() {
@@ -115,27 +120,39 @@ $( document ).tooltip({
 var chartTypeDisplay = "#{chartConf.typeOfChart}";
 var widgetSize = "#{chartConf.widgetSize}";
 $(function() {
+	if(peerChk=="1") $("#peerToggleBox").prop("checked", true);
 	if(widgetSize=="sm" || widgetSize=="SM"){
 		$(".chart_lg").hide();
+		$("#linkallcharts").show();
 	}
+	tooltips = #{crtContext.learningAnalyticsContainer.VPNamesToJson}; //{"1313_1":"mycase","167745_1":"noname","1212_1":"testcase"}; //$("#tooltips").html();
+	//alert(tooltips);
+	//var tst = tooltips["1212_1"];
+	//alert(tst);
 });
+
 //if(chartTypeDisplay=="") chartTypeDisplay = "0"; //display all charts
 </script>
  </head>
  <body>
  
-<div class="chart_lg"> Individual Charts over all scripts, categorization/scoring based and clustered on MOT model</div>
+<div class="chart_lg"> #{prop['charts.lg.intro']} More information about these charts...</div>
 
-<div class="chart_lg">only show peer performance display for selected problem <select ><option value="-1">todo </option></select><br/>
-Show peer <input type="checkbox" />
+  <div class="chart_lg"><!-- only show peer performance display for selected problem <select ><option value="-1">todo </option></select><br/>-->
+#{prop['charts.peers']} <input id="peerToggleBox" type="checkbox"  onchange="javascript:togglePeers();" />
 </div>
-	<div id="chart-container" class="chart_container"> <br/><br/>
-			<span class="displaychart_#{chartConf.displayOverallChart}"><ui:include src="all_overall.xhtml" /></span>
-			<span class="displaychart_#{chartConf.displayProblemChart}"><ui:include src="all_prob.xhtml" /></span>
-			<span class="displaychart_#{chartConf.displayDDXChart}"><ui:include src="all_ddx.xhtml" /></span>
-			<span class="displaychart_#{chartConf.displayTestChart}"><ui:include src="all_test.xhtml" /></span>
-			<span class="displaychart_#{chartConf.displayMngChart}"><ui:include src="all_mng.xhtml" /></span>
-			<span class="displaychart_#{chartConf.displaySumStChart}"><ui:include src="all_sumst.xhtml" /></span>
- 	 </div>
+<div id="chart-container" class="chart_container">
+		<div class="displaychart_#{chartConf.displayOverallChart}"><ui:include src="all_overall.xhtml" /></div>
+		<div class="displaychart_#{chartConf.displayProblemChart}"><ui:include src="all_prob.xhtml" /></div>
+		<div class="displaychart_#{chartConf.displayDDXChart}"><ui:include src="all_ddx.xhtml" /></div>
+		<div class="displaychart_#{chartConf.displayTestChart}"><ui:include src="all_test.xhtml" /></div>
+		<div class="displaychart_#{chartConf.displayMngChart}"><ui:include src="all_mng.xhtml" /></div>
+		<div class="displaychart_#{chartConf.displaySumStChart}"><ui:include src="all_sumst.xhtml" /></div>
+</div>
+ <div id="linkallcharts" style="display:none;font-size:0.8em;">
+ 	<a href="charts.xhtml?chart_size=lg&amp;chart_type=0" target="new">#{prop['charts.more']}</a>
+ </div>
+<!--  <div id="tooltips">#{crtContext.learningAnalyticsContainer.VPNamesToJson}
+</div> -->
 
  </body></html>

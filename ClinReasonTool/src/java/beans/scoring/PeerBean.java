@@ -11,7 +11,11 @@ import java.sql.Timestamp;
 public class PeerBean extends Beans{
 
 	private long id; //internal id, to avoid composite id
+	/**
+	 * @deprecated 
+	 **/
 	private long parentId;
+	private String vpId;
 	private int action; //see scoreBean definitions.
 	private long itemId = -1;
 	private Timestamp modificationDate;
@@ -30,9 +34,17 @@ public class PeerBean extends Beans{
 	 * We could also calculate an median stage when an item was added....
 	 */
 	private int stage; 
-	
+	/**
+	 * @deprecated 
+	 **/	
 	public long getParentId() {return parentId;}
+	/**
+	 * @deprecated 
+	 **/
 	public void setParentId(long parentId) {this.parentId = parentId;}
+	
+	public String getVpId() {return vpId;}
+	public void setVpId(String vpId) {this.vpId = vpId;}
 	public int getAction() {return action;}
 	public void setAction(int action) {this.action = action;}
 	public long getItemId() {return itemId;}
@@ -49,18 +61,20 @@ public class PeerBean extends Beans{
 	public void setStage(int stage) {this.stage = stage;}
 	
 	public PeerBean(){}
-	public PeerBean(int action, long parentId, int peerNum, float scoreSum, int stage){
+	public PeerBean(int action, String vpId, int peerNum, float scoreSum, int stage){
 		this.action = action; 
-		this.parentId = parentId;
+		//this.parentId = parentId;
 		this.peerNum = peerNum;
 		this.scoreSum = scoreSum;
+		this.vpId = vpId;
 	}
 	
-	public PeerBean(int action, long parentId, int peerNum, long itemId){
+	public PeerBean(int action, String vpId, int peerNum, long itemId){
 		this.action = action; 
-		this.parentId = parentId;
+		//this.parentId = parentId;
 		this.peerNum = peerNum;
 		this.itemId = itemId;
+		this.vpId = vpId;
 	}
 	/* (non-Javadoc)
 	 * @see java.lang.Object#equals(java.lang.Object)
@@ -68,7 +82,7 @@ public class PeerBean extends Beans{
 	public boolean equals(Object o){
 		if(o!=null && o instanceof PeerBean){
 			PeerBean pb = (PeerBean)o;
-			if(pb.getAction()==action && pb.getItemId()==itemId && pb.getParentId()==parentId) return true;
+			if(pb.getAction()==action && pb.getItemId()==itemId && pb.getVpId().equals(vpId)) return true;
 		}
 		return false;
 	}

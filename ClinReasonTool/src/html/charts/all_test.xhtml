@@ -5,7 +5,8 @@
     xmlns:f="http://java.sun.com/jsf/core">
 <!-- problem scores for all VPs of user -->
 
-<div>Investigations<br/>
+<div class="chart_header">#{prop['chart.all.tests']}</div>
+<div>
 	<svg id="testchart" class="chart"></svg>
 </div>
 
@@ -13,10 +14,10 @@
 	var testdata = [];
 	var testpeerdata = [];
 	<ui:repeat value="#{crtContext.learningAnalyticsContainer.testScores}" var="scoreItem3">
-		testdata.push({ x: "#{scoreItem3.parentId}", y: #{scoreItem3.orgScoreBasedOnExpPerc} });
+		testdata.push({ x: "#{scoreItem3.vpId}", y: #{scoreItem3.orgScoreBasedOnExpPerc} });
 	</ui:repeat>
 	<ui:repeat value="#{crtContext.learningAnalyticsContainer.testPeerScores}" var="scoreItemP">
-		testpeerdata.push({ x: "#{scoreItemP.parentId}", y: #{scoreItemP.peerPercentagePerc} });
+		testpeerdata.push({ x: "#{scoreItemP.vpId}", y: #{scoreItemP.peerPercentagePerc} });
 	</ui:repeat>
 	printGroupedBarChart(testdata, testpeerdata, 150, 250, "testchart","Diagnostic steps");
 </script>

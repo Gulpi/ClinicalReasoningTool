@@ -94,7 +94,7 @@ public class AddTestAction implements AddAction, Scoreable/*, FeedbackCreator*/{
 	 * @return
 	 */
 	private Point calculateNewItemPosInCanvas(){
-		int y = 5;
+		int y = AddAction.MIN_Y;
 		if(patIllScript.getTests()!=null || !patIllScript.getTests().isEmpty()){
 			y = patIllScript.getTests().size() * 25; //CAVE max y! 
 		}

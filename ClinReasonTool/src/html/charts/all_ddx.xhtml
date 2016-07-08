@@ -5,17 +5,18 @@
     xmlns:f="http://java.sun.com/jsf/core">
 <!-- problem scores for all VPs of user -->
 
-<div>Differential diagnoses formulation/VP<br clear="all"/>
+<div class="chart_header">#{prop['chart.all.ddx']}</div>
+<div>
 	<svg id="ddxchart" class="chart"></svg>
 </div>
 <script language="JavaScript">
 var ddxdata = [];
 var ddxpeerdata = [];
 <ui:repeat value="#{crtContext.learningAnalyticsContainer.DDXScores}" var="scoreItem2">
-	ddxdata.push({x:"#{scoreItem2.parentId}", y:#{scoreItem2.orgScoreBasedOnExpPerc} });
+	ddxdata.push({x:"#{scoreItem2.vpId}", y:#{scoreItem2.orgScoreBasedOnExpPerc} });
 </ui:repeat>
 <ui:repeat value="#{crtContext.learningAnalyticsContainer.DDXPeerScores}" var="scoreItemP">
-	ddxpeerdata.push({x:"#{scoreItemP.parentId}", y:#{scoreItemP.peerPercentagePerc} });
+	ddxpeerdata.push({x:"#{scoreItemP.vpId}", y:#{scoreItemP.peerPercentagePerc} });
 </ui:repeat>
 ddxdata.push({x:"1313", y:63});
 ddxpeerdata.push({x:"1313", y:84});

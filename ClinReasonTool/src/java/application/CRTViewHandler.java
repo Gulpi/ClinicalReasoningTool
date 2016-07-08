@@ -27,7 +27,7 @@ public class CRTViewHandler extends ViewHandlerWrapper{
 		if(FacesContext.getCurrentInstance().getViewRoot()!=null) 
 			loc = FacesContext.getCurrentInstance().getViewRoot().getLocale();
 		if(loc==null) loc = new Locale(AppBean.DEFAULT_LOCALE);
-		String locStr = new AjaxController().getRequestParamByKey(AjaxController.REQPARAM_LOC);
+		String locStr = AjaxController.getInstance().getRequestParamByKey(AjaxController.REQPARAM_LOC);
 		if(locStr!=null && !locStr.trim().equals("")){ 
 			for(int i=0; i<AppBean.ACCEPTED_LOCALES.length; i++){
 			if(locStr.equals(AppBean.ACCEPTED_LOCALES[i]))

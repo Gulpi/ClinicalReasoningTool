@@ -19,11 +19,11 @@ public class BaseRateNeglect extends MyError{
 		setStage(stage);
 	}
 	
-	public String getDescription() {
+	/*public String getDescription() {
 		return "Tendency to ignore the true rate of a disease and pursue rare and more exotic diagnoses";
 	}
 
-	public String getName() { return "BaseRateNeglect";}
+	public String getName() { return "BaseRateNeglect";}*/
 	public int getType() {return TYPE_BASERATE;}
 	public String getDiscr() {return String.valueOf(MyError.TYPE_BASERATE);}
 

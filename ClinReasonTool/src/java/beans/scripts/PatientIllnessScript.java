@@ -19,6 +19,7 @@ import controller.AjaxController;
 import controller.NavigationController;
 import controller.ScoringController;
 import database.DBClinReason;
+import properties.IntlConfiguration;
 
 /**
  * This is the Illness script the learner creates during the VP session.
@@ -39,8 +40,13 @@ public class PatientIllnessScript extends Beans/*extends Node*/ implements Illne
 	/**
 	 * the VP the patIllScript is related to. We need this in addition to the sessionId to be able to connect 
 	 * the learners' script to the authors'/experts' script.
+	 * @deprecated
 	 */
-	private long parentId;
+	//private long parentId;
+	/**
+	 * unique across systems and vps. format: "vpId_systemId"
+	 */
+	private String vpId;
 	private long userId; //needed so that we can display all the users' scripts to him
 	/**
 	 * Id of the PatientIllnessScript
@@ -113,11 +119,12 @@ public class PatientIllnessScript extends Beans/*extends Node*/ implements Illne
 	private boolean peerSync = false;
 	
 	public PatientIllnessScript(){}
-	public PatientIllnessScript(long userId, long vpId, Locale loc){
+	public PatientIllnessScript(long userId, String vpId, Locale loc, int systemId){
 		//if(sessionId>0) this.sessionId = sessionId;
 		if(userId>0) this.userId = userId;
-		if(vpId>0) this.parentId = vpId;
+		//if(parentId>0) this.parentId = parentId;
 		this.locale = loc;
+		this.vpId = vpId +"_"+systemId;
 		//this.summSt = new SummaryStatement();
 	}
 	
@@ -125,7 +132,7 @@ public class PatientIllnessScript extends Beans/*extends Node*/ implements Illne
 	public void setId(long id) {this.id = id;}
 
 	public int getStage() {
-		updateStage(new AjaxController().getRequestParamByKey(AjaxController.REQPARAM_STAGE));
+		updateStage(AjaxController.getInstance().getRequestParamByKey(AjaxController.REQPARAM_STAGE));
 		return stage;
 	}
 	public void setStage(int stage) {this.stage = stage;}
@@ -138,8 +145,7 @@ public class PatientIllnessScript extends Beans/*extends Node*/ implements Illne
 	public void setCreationDate(Timestamp creationDate) {this.creationDate = creationDate;}	
 	public Timestamp getLastAccessDate() {return lastAccessDate;}
 	public void setLastAccessDate(Timestamp lastAccessDate) {this.lastAccessDate = lastAccessDate;}
-	public long getParentId() {return parentId;}
-	public void setParentId(long parentId) {this.parentId = parentId;}
+
 	public int getType() {return type;}
 	public void setType(int type) {this.type = type;}	
 	public List<RelationDiagnosis> getDiagnoses() {return diagnoses;}
@@ -177,6 +183,10 @@ public class PatientIllnessScript extends Beans/*extends Node*/ implements Illne
 	public void setNote(Note note) {this.note = note;}
 	public long getNoteId() {return noteId;}
 	public void setNoteId(long noteId) {this.noteId = noteId;}
+	
+	public String getVpId() {return vpId;}
+	public void setVpId(String vpId) {this.vpId = vpId;}
+	
 	public int getCurrentStage() {return currentStage;}	
 	public int getMaxSubmittedStage() {
 		if(maxSubmittedStage>0) return maxSubmittedStage;
@@ -185,7 +195,7 @@ public class PatientIllnessScript extends Beans/*extends Node*/ implements Illne
 	public void setMaxSubmittedStage(int maxSubmittedStage) {this.maxSubmittedStage = maxSubmittedStage;}
 	
 	public int getCurrentStageWithUpdate() {
-		updateStage(new AjaxController().getRequestParamByKey(AjaxController.REQPARAM_STAGE));
+		updateStage(AjaxController.getInstance().getRequestParamByKey(AjaxController.REQPARAM_STAGE));
 		return currentStage;
 	}	
 	public void setCurrentStage(int currentStage) { this.currentStage = currentStage;}		
@@ -415,8 +425,8 @@ public class PatientIllnessScript extends Beans/*extends Node*/ implements Illne
 	 */
 	public String getSummStExp(){
 		if(this.type==IllnessScriptInterface.TYPE_LEARNER_CREATED){
-			PatientIllnessScript expScript = AppBean.getExpertPatIllScript(this.parentId);
-			if(expScript==null || expScript.getSummSt()==null || expScript.getSummSt().getStage()>currentStage) return "No summary statement available at this stage.";
+			PatientIllnessScript expScript = AppBean.getExpertPatIllScript(this.vpId);
+			if(expScript==null || expScript.getSummSt()==null || expScript.getSummSt().getStage()>currentStage) return IntlConfiguration.getValue("summst.exp.no");
 			return expScript.getSummSt().getText();
 		}
 		return "";
@@ -441,15 +451,15 @@ public class PatientIllnessScript extends Beans/*extends Node*/ implements Illne
 	 */
 	public boolean getOfferContinueCase(){
 		//if(!getOfferTryAgain()) return false; //solution was correct anyway
-		if(AppBean.getExpertPatIllScript(this.getParentId())==null) return true; //we have no expert's script....
-		if(getOfferTryAgain() && this.currentStage < AppBean.getExpertPatIllScript(this.getParentId()).getMaxSubmittedStage()) return true;
+		if(AppBean.getExpertPatIllScript(this.getVpId())==null) return true; //we have no expert's script....
+		if(getOfferTryAgain() && this.currentStage < AppBean.getExpertPatIllScript(this.getVpId()).getMaxSubmittedStage()) return true;
 		return false; //end of case and/or 100% score
 	}
 	
 	public boolean getOfferSolution(){
 		if(!getOfferTryAgain()) return false; //solution was correct anyway
-		if(AppBean.getExpertPatIllScript(this.getParentId())==null) return true; //we have no expert's script....
-		if(this.currentStage == AppBean.getExpertPatIllScript(this.getParentId()).getMaxSubmittedStage() /*&& this.currentStage >= AppBean.getExpertPatIllScript(this.getParentId()).getSubmittedStage()*/) return true;
+		if(AppBean.getExpertPatIllScript(this.getVpId())==null) return true; //we have no expert's script....
+		if(this.currentStage == AppBean.getExpertPatIllScript(this.getVpId()).getMaxSubmittedStage() /*&& this.currentStage >= AppBean.getExpertPatIllScript(this.getParentId()).getSubmittedStage()*/) return true;
 		return false;
 	}
 

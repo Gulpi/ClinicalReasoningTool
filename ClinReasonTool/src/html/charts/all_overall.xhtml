@@ -5,7 +5,8 @@
     xmlns:f="http://java.sun.com/jsf/core">
 <!-- overall scores for all VPs of user -->
 
-<div class="chart">Overall Performance<br clear="all"/>
+<div class="chart_header">#{prop['chart.all.overall']}</div>
+<div>
 	<svg id="overallchart" class="chart"></svg>
 </div>
 
@@ -15,12 +16,17 @@
 var overalldata = [];
 var overallpeerdata = [];
 <ui:repeat value="#{crtContext.learningAnalyticsContainer.overallScores}" var="scoreItem4">
-overalldata.push({ x: "#{scoreItem4.parentId}", y: #{scoreItem4.orgScoreBasedOnExpPerc} });
+overalldata.push({ x: "#{scoreItem4.vpId}", y: #{scoreItem4.orgScoreBasedOnExpPerc} });
 </ui:repeat>
 <ui:repeat value="#{crtContext.learningAnalyticsContainer.overallPeerScores}" var="scoreItemP">
-	overallpeerdata.push({ x: "#{scoreItemP.parentId}", y: #{scoreItemP.peerPercentagePerc} });
+	overallpeerdata.push({ x: "#{scoreItemP.vpId}", y: #{scoreItemP.peerPercentagePerc} });
 </ui:repeat>
 
-printGroupedBarChart(overalldata, overallpeerdata, 150, 250, "overallchart","Overall");
+overalldata.push({x:"1313", y:63});
+
+if(peerChk=="1")
+	printGroupedBarChart(overalldata, overallpeerdata, 150, 250, "overallchart","Overall");
+else 
+	printBarChart(overalldata, 150, 250, "overallchart","Overall");
 </script>
 </ui:composition>

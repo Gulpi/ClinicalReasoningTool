@@ -12,7 +12,7 @@
 				<param name ="sequence">CRT.CR_SEQ</param>
 			</generator>
 		</id>
-		<property name="parentId" column="parent_id" type="long" />			
+		<property name="vpId" column="vp_id" type="string" />			
 		<property name="action" column="action" type="int" />
 		<property name="itemId" column="item_id" type="long" />
 		<property name="modificationDate" column="change_date" type="timestamp" />

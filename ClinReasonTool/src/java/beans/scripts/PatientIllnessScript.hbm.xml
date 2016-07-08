@@ -14,13 +14,14 @@
 		</id>
 		<property name="userId" column="user_id" type="long" />			
 		<property name="courseOfTime" column="courseoftime" type="int"/>	
-		<property name="parentId" column="parent_id" type="long"/>	
+		<!--  <property name="parentId" column="parent_id" type="long"/>-->	
 		<property name="submittedStage" column="ddx_submitted" type="int"/>
 		<property name="type" column="type" type="int"/>
 		<property name="locale" column="locale" update="false" type="locale"/>	
 		<property name="currentStage" column="stage" type="int"/>	
 		<property name="confidence" column="confidence" type="int"/>	
 		<property name="lastAccessDate" column="last_access_date" type="timestamp"/>
+		<property name="vpId" column="vp_id" type="string"/>	
 		
 		<!--  <property name="creationDate" column="creation_date" update="false" type="timestamp"/>-->
 	    <!-- <many-to-one name="summSt" column="summst_id" not-null="false" update="false" insert="false" lazy="false" />-->
@@ -61,12 +62,12 @@
 		<map name="conns" table="crt.connection" lazy="false" order-by="id" >
 	   		<key column="illscript_id" />
 	   		<map-key column="id" type="long"/>	   		
-	    	<one-to-many class="beans.Connection" />
+	    	<one-to-many class="beans.relation.Connection" />
 	    </map>		
-	    <sql-query name="script.selByRelDDX">select pis.id, pis.parent_id, pis.type, rd.source_id from patient_illnessscript pis where (pis.user_id=:userId or pis.type=2) and pis.id in(select rd.dest_id from relation_diagnosis rd where source_id in(:ids)) and pis.id = rd.dest_id</sql-query>
-	    <sql-query name="script.selByRelProb">select pis.id, pis.parent_id, pis.type, rd.source_id from patient_illnessscript pis where (pis.user_id=:userId or pis.type=2) and pis.id in(select rd.dest_id from relation_problem rd where source_id in(:ids)) and pis.id = rd.dest_id</sql-query>
-	    <sql-query name="script.selByRelTest">select pis.id, pis.parent_id, pis.type, rd.source_id from patient_illnessscript pis where (pis.user_id=:userId or pis.type=2) and pis.id in(select rd.dest_id from relation_test rd where source_id in(:ids)) and pis.id = rd.dest_id</sql-query>
-	    <sql-query name="script.selByRelMng">select pis.id, pis.parent_id, pis.type, rd.source_id from patient_illnessscript pis where (pis.user_id=:userId or pis.type=2) and pis.id in(select rd.dest_id from relation_management rd where source_id in(:ids)) and pis.id = rd.dest_id </sql-query>
+	    <sql-query name="script.selByRelDDX">select pis.id, pis.vp_id, pis.type, rd.source_id from patient_illnessscript pis where (pis.user_id=:userId or pis.type=2) and pis.id in(select rd.dest_id from relation_diagnosis rd where source_id in(:ids)) and pis.id = rd.dest_id</sql-query>
+	    <sql-query name="script.selByRelProb">select pis.id, pis.vp_id, pis.type, rd.source_id from patient_illnessscript pis where (pis.user_id=:userId or pis.type=2) and pis.id in(select rd.dest_id from relation_problem rd where source_id in(:ids)) and pis.id = rd.dest_id</sql-query>
+	    <sql-query name="script.selByRelTest">select pis.id, pis.vp_id, pis.type, rd.source_id from patient_illnessscript pis where (pis.user_id=:userId or pis.type=2) and pis.id in(select rd.dest_id from relation_test rd where source_id in(:ids)) and pis.id = rd.dest_id</sql-query>
+	    <sql-query name="script.selByRelMng">select pis.id, pis.vp_id, pis.type, rd.source_id from patient_illnessscript pis where (pis.user_id=:userId or pis.type=2) and pis.id in(select rd.dest_id from relation_management rd where source_id in(:ids)) and pis.id = rd.dest_id </sql-query>
 	    
 </class>
 </hibernate-mapping>

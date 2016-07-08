@@ -38,7 +38,7 @@ function chgStage(chg){
 <body style="font-family:arial;">
 <div>
 ScriptId:  #{crtContext.patillscript.id}<br/>
-VPId: <input type="text" value="#{crtContext.patillscript.parentId}"></input><br/>
+VPId: <input type="text" value="#{crtContext.patillscript.vpId}"></input><br/>
 System <select name="system"><option value="">Casus (uni)</option><option value="">Casus (MedU)</option></select><br/>
 Stage: <span id="stageSpan">#{crtContext.patillscript.currentStage} </span>
 <a href="javascript:chgStage(-1);">previous stage</a><a href="javascript:chgStage(1);">next stage</a>

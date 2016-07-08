@@ -61,7 +61,7 @@ public class ScoringFinalDDXAction /*implements ScoringAction*/{
 			int numFinalDDXExp = 0;
 			float score = 0;
 			
-			PatientIllnessScript expIllScript = AppBean.getExpertPatIllScript(patIllScript.getParentId());
+			PatientIllnessScript expIllScript = AppBean.getExpertPatIllScript(patIllScript.getVpId());
 			//if learner submits the diagnoses too late, we reduce the score:
 			
 				

@@ -5,17 +5,18 @@
     xmlns:f="http://java.sun.com/jsf/core">
 <!-- problem scores for all VPs of user -->
 
-<div>Management<br clear="all"/>
+<div class="chart_header">#{prop['chart.all.mng']}</div>
+<div>
 	<svg id="mngchart" class="chart"></svg>
 </div>
 <script language="JavaScript">
 	var mngdata = [];
 	var mngpeerdata = [];
 	<ui:repeat value="#{crtContext.learningAnalyticsContainer.mngScores}" var="scoreItem4">
-		mngdata.push({ x: "#{scoreItem4.parentId}", y: #{scoreItem4.orgScoreBasedOnExpPerc} });
+		mngdata.push({ x: "#{scoreItem4.vpId}", y: #{scoreItem4.orgScoreBasedOnExpPerc} });
 	</ui:repeat>
 	<ui:repeat value="#{crtContext.learningAnalyticsContainer.mngPeerScores}" var="scoreItemP">
-		mngpeerdata.push({ x: "#{scoreItemP.parentId}", y: #{scoreItemP.peerPercentagePerc} });
+		mngpeerdata.push({ x: "#{scoreItemP.vpId}", y: #{scoreItemP.peerPercentagePerc} });
 	</ui:repeat>
 	
 	printGroupedBarChart(mngdata, mngpeerdata, 150, 250, "mngchart","Management");

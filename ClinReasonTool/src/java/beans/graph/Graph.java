@@ -30,7 +30,7 @@ import util.CRTLogger;
 public class Graph extends DirectedWeightedMultigraph<MultiVertex, MultiEdge> {
 
 	private static final long serialVersionUID = 1L;
-	private long parentId; //e.g. VPId,...
+	private String vpId; //e.g. VPId,...
 	private long userId;
 	private long expertPatIllScriptId;
 	private boolean expEdit = new NavigationController().isExpEdit();
@@ -43,13 +43,13 @@ public class Graph extends DirectedWeightedMultigraph<MultiVertex, MultiEdge> {
 	private List<Long> illScriptIds;//TODO: more than one! 
 	private GraphController gctrl;
 	
-	public Graph(long parentId){
+	public Graph(String vpId){
 		super(MultiEdge.class);
-		this.parentId = parentId;
+		this.vpId = vpId;
 		gctrl = new GraphController(this);
-		gctrl.addExpPatIllScript(parentId);
-		gctrl.addLearnerPatIllScript(parentId);
-		gctrl.addIllnessScripts(parentId);
+		gctrl.addExpPatIllScript(vpId);
+		gctrl.addLearnerPatIllScript();
+		gctrl.addIllnessScripts(vpId);
 	}
 		
 	public long getExpertPatIllScriptId() {return expertPatIllScriptId;}
@@ -58,7 +58,7 @@ public class Graph extends DirectedWeightedMultigraph<MultiVertex, MultiEdge> {
 	public void setIllScriptId(List<Long> illScriptIds) {this.illScriptIds = illScriptIds;}	
 	public int getPeerNums() {return peerNums;}
 	public void setPeerNums(int peerNums) {this.peerNums = peerNums;}
-	public long getParentId() {return parentId;}
+	public String getVpId() {return vpId;}
 
 
 	public void addIllScriptId(long id){
@@ -286,7 +286,7 @@ public class Graph extends DirectedWeightedMultigraph<MultiVertex, MultiEdge> {
 	 */
 	public String toString(){
 		StringBuffer sb = new StringBuffer();
-		sb.append("Graph: parent_id = " + this.parentId + ", vertices[ ");
+		sb.append("Graph: parent_id = " + this.vpId + ", vertices[ ");
 		if(this.vertexSet()!=null){
 			Iterator<MultiVertex> it = this.vertexSet().iterator();
 			while(it.hasNext()){

@@ -96,7 +96,7 @@ public class AddMngAction implements AddAction, Scoreable{
 	 * @return
 	 */
 	private Point calculateNewItemPosInCanvas(){
-		int y = 5;
+		int y = AddAction.MIN_Y;
 		if(patIllScript.getMngs()!=null || !patIllScript.getMngs().isEmpty()){
 			y = patIllScript.getMngs().size() * 25; //CAVE max y! 
 		}

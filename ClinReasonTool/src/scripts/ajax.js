@@ -34,6 +34,10 @@ function sendAjax(id, callback, type, name){
 	sendAjaxUrl(id, callback, type, name, "tabs_ajax.xhtml");
 }
 
+function sendAjaxCharts(id, callback, type, name){
+	sendAjaxUrl(id, callback, type, name, "charts_ajax.xhtml");
+}
+
 
 /**
  * This is for calls not directly related to the patientIllnessScript, but for the context

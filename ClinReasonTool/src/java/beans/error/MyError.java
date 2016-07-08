@@ -5,6 +5,8 @@ import java.sql.Timestamp;
 
 import javax.faces.bean.SessionScoped;
 
+import properties.IntlConfiguration;
+
 /**
  * Abstract class for all types of errors. 
  * @author ingahege
@@ -45,8 +47,8 @@ public  abstract class MyError implements Serializable{
 	
 	public long getId() {return id;}
 	public void setId(long id) {this.id = id;}
-	public abstract String getDescription();
-	public abstract String getName();// {return description;} //needs to be in subclasses? 
+	//public abstract String getDescription();
+	//public abstract String getName();// {return description;} //needs to be in subclasses? 
 	public void setDescription(String description) {this.description = description;}
 	public abstract int getType();
 	public long getPatIllScriptId() {return patIllScriptId;}
@@ -69,5 +71,9 @@ public  abstract class MyError implements Serializable{
 		}
 		return false;
 	}
+	
+	public String getDescription() {return IntlConfiguration.getValue("ddx.errors."+getType()+".expl");}
+	public String getName() { return IntlConfiguration.getValue("ddx.errors."+getType()); }
+
 
 }

@@ -17,7 +17,7 @@ public class PeerContainer {
 	/**
 	 * key= parentId (e.g. VP id), value = list of PeerBeans for this VP
 	 */
-	private Map<Long, List<PeerBean>> peerBeans;
+	private Map<String, List<PeerBean>> peerBeans;
 	
 	
 	public PeerContainer(){
@@ -33,24 +33,24 @@ public class PeerContainer {
 			peerBeans = new DBScoring().selectAllPeerBeans();
 	}
 		
-	public Map<Long, List<PeerBean>> getPeerBeans() {return peerBeans;}
-	public void addPeerBeans( List<PeerBean> peers, long parentId){
-		if(peerBeans==null) peerBeans = new HashMap<Long, List<PeerBean>>();
-		peerBeans.put(new Long(parentId), peers);
+	public Map<String, List<PeerBean>> getPeerBeans() {return peerBeans;}
+	public void addPeerBeans( List<PeerBean> peers, String vpId){
+		if(peerBeans==null) peerBeans = new HashMap<String, List<PeerBean>>();
+		peerBeans.put(vpId, peers);
 	}
 	
-	public List<PeerBean> getPeerBeans(long parentId){
+	public List<PeerBean> getPeerBeans(String vpId){
 		if(peerBeans==null) return null;
-		return peerBeans.get(new Long(parentId));
+		return peerBeans.get(vpId);
 	}
 	
-	public void addPeerBean(PeerBean bean, long parentId){
-		List<PeerBean> peers = getPeerBeans(parentId);
+	public void addPeerBean(PeerBean bean, String vpId){
+		List<PeerBean> peers = getPeerBeans(vpId);
 		if(peers!=null) peers.add(bean); //List already there, so we add the peerBean
 		else{
 			List<PeerBean> l = new ArrayList<PeerBean>();
 			l.add(bean);
-			peerBeans.put(new Long(parentId), l);
+			peerBeans.put(vpId, l);
 		}
 	}
 	
@@ -61,9 +61,9 @@ public class PeerContainer {
 	 * @param itemId
 	 * @return
 	 */
-	public PeerBean getPeerBeanByActionParentIdAndItemId(int actionType, long parentId, long itemId){
-		if(peerBeans==null || peerBeans.get(new Long(parentId))==null) return null;
-		List<PeerBean> beans = peerBeans.get(new Long(parentId));
+	public PeerBean getPeerBeanByActionVpIdAndItemId(int actionType, String vpId, long itemId){
+		if(peerBeans==null || peerBeans.get(vpId)==null) return null;
+		List<PeerBean> beans = peerBeans.get(vpId);
 		for(int i=0; i<beans.size(); i++){
 			PeerBean pb = beans.get(i);
 			if(pb.getAction()==actionType && pb.getItemId()==itemId) return pb;
@@ -78,9 +78,9 @@ public class PeerContainer {
 	 * @param parentId
 	 * @return PeerBean or null
 	 */
-	public PeerBean getPeerBeanByParentIdActionAndStage(int action, int stage, long parentId){
-		if(peerBeans==null || peerBeans.get(new Long(parentId))==null) return null;
-		List<PeerBean> beans = peerBeans.get(new Long(parentId));
+	public PeerBean getPeerBeanByVpIdActionAndStage(int action, int stage, String vpId){
+		if(peerBeans==null || peerBeans.get(vpId)==null) return null;
+		List<PeerBean> beans = peerBeans.get(vpId);
 		for(int i=0; i<beans.size(); i++){
 			if(beans.get(i).getAction()==action && beans.get(i).getStage() == stage) return beans.get(i);
 		}
@@ -94,10 +94,29 @@ public class PeerContainer {
 	 *  
 	 * @param parentId
 	 * @return
+	 * @deprecated
 	 */
-	public PeerBean getPeerBeanByIllScriptCreationActionAndParentId(long parentId){
+	/*public PeerBean getPeerBeanByIllScriptCreationActionAndParentId(String parentId){
 		if(peerBeans==null || peerBeans.get(new Long(parentId))==null) return null;
 		List<PeerBean> beans = peerBeans.get(new Long(parentId));
+		for(int i=0; i<beans.size(); i++){
+			PeerBean pb = beans.get(i);
+			if(pb.getAction()==ScoreBean.TYPE_SCRIPT_CREATION) return pb;
+		}
+		return null;
+	}*/
+	
+	/**
+	 * returns the PeerBean for the action of creation of an patientIllnessScript for the given 
+	 * parentId or null if no script has been created so far. 
+	 * We use this to store the overall number of peers who have created a script.
+	 *  
+	 * @param parentId
+	 * @return
+	 */
+	public PeerBean getPeerBeanByIllScriptCreationActionAndVpId(String parentId){
+		if(peerBeans==null || peerBeans.get(parentId)==null) return null;
+		List<PeerBean> beans = peerBeans.get(parentId);
 		for(int i=0; i<beans.size(); i++){
 			PeerBean pb = beans.get(i);
 			if(pb.getAction()==ScoreBean.TYPE_SCRIPT_CREATION) return pb;
@@ -113,9 +132,9 @@ public class PeerContainer {
 	 * @param parentId
 	 * @return
 	 */
-	public List<PeerBean> getPeerBeansByActionAndParentId(long parentId, int action){
-		if(peerBeans==null || peerBeans.get(new Long(parentId))==null) return null;
-		List<PeerBean> beans = peerBeans.get(new Long(parentId));
+	public List<PeerBean> getPeerBeansByActionAndVpId(String vpId, int action){
+		if(peerBeans==null || peerBeans.get(vpId)==null) return null;
+		List<PeerBean> beans = peerBeans.get(vpId);
 		List<PeerBean> actionBeans = new ArrayList<PeerBean>();
 		for(int i=0; i<beans.size(); i++){
 			PeerBean pb = beans.get(i);
@@ -136,7 +155,7 @@ public class PeerContainer {
 		List<PeerBean> peerBeansForAction = new ArrayList<PeerBean>();
 		Iterator<PatientIllnessScript> it = sc.getScriptsOfUser().iterator();
 		while (it.hasNext()){			
-			List<PeerBean> beans = peerBeans.get(new Long(it.next().getParentId()));
+			List<PeerBean> beans = peerBeans.get(it.next().getVpId());
 			PeerBean bean = getListPeerBeanOfLastStage(action, beans);
 			if(bean!=null) peerBeansForAction.add(bean);
 			/*for(int i=0; i<beans.size(); i++){
@@ -212,9 +231,9 @@ public class PeerContainer {
 	 * should be obsolete, because we load all PeerBeans at the start of the application....
 	 * @param parentId
 	 */
-	public void loadPeersForPatIllScript(long parentId){
-		if(AppBean.getPeers()!=null && AppBean.getPeers().getPeerBeans(parentId)!=null) return;
-		List<PeerBean> beans = new DBScoring().selectPeerBeansByParentId(parentId);
-		AppBean.getPeers().addPeerBeans(beans, parentId);
+	public void loadPeersForPatIllScript(String vpId){
+		if(AppBean.getPeers()!=null && AppBean.getPeers().getPeerBeans(vpId)!=null) return;
+		List<PeerBean> beans = new DBScoring().selectPeerBeansByVPId(vpId);
+		AppBean.getPeers().addPeerBeans(beans, vpId);
 	}
 }

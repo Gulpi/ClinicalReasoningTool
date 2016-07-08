@@ -22,6 +22,8 @@ import util.CRTLogger;
 public class IllnessScriptController implements Serializable{
 
 	private static final long serialVersionUID = 1L;
+	static private IllnessScriptController instance = new IllnessScriptController();
+	static public IllnessScriptController getInstance() { return instance; }
 
 
 	//TODO: we could also get the current script from the already loaded list -> reduces DB calls!
@@ -41,9 +43,9 @@ public class IllnessScriptController implements Serializable{
 	 * @param parentId
 	 * @return
 	 */
-	public PatientIllnessScript loadIllnessScriptsByParentId(long userId, long parentId){
-		if(parentId>0 && userId>0){
-			PatientIllnessScript patillscript =new DBClinReason().selectPatIllScriptsByUserIdAndParentId(userId, parentId);
+	public PatientIllnessScript loadIllnessScriptsByVpId(long userId, String vpId){
+		if(vpId!=null && vpId.equals("") && userId>0){
+			PatientIllnessScript patillscript =new DBClinReason().selectPatIllScriptsByUserIdAndVpId(userId, vpId);
 			
 			return patillscript;
 		}
@@ -53,12 +55,13 @@ public class IllnessScriptController implements Serializable{
 
 		
 	/**We create a new PatientIllnessScript and save it. 
+	 * At this point the userId is already the internal userId of the tool! 
 	 * @param sessionId
 	 */
-	public PatientIllnessScript createAndSaveNewPatientIllnessScript(long userId, long vpId){
-		if(vpId<=0 || userId<=0) return null;
+	public PatientIllnessScript createAndSaveNewPatientIllnessScript(long userId, String vpId, int systemId){
+		if(vpId==null || userId<=0) return null;
 		Locale loc = FacesContext.getCurrentInstance().getApplication().getViewHandler().calculateLocale(FacesContext.getCurrentInstance());
-		PatientIllnessScript patillscript = new PatientIllnessScript( userId, vpId, loc);
+		PatientIllnessScript patillscript = new PatientIllnessScript( userId, vpId, loc, systemId);
 		patillscript.save();
 
 		CRTLogger.out("New PatIllScript created for vp_id: " + vpId, CRTLogger.LEVEL_PROD);
@@ -71,9 +74,9 @@ public class IllnessScriptController implements Serializable{
 	 * @param patillscript
 	 */
 	private void addScriptCreationToPeerBean(PatientIllnessScript patillscript){
-		PeerBean peer = AppBean.getPeers().getPeerBeanByIllScriptCreationActionAndParentId(patillscript.getParentId());
+		PeerBean peer = AppBean.getPeers().getPeerBeanByIllScriptCreationActionAndVpId(patillscript.getVpId());
 		if(peer==null){
-			peer = new PeerSyncController().createNewPeerBean(ScoreBean.TYPE_SCRIPT_CREATION, patillscript.getParentId(), -1, 0, 0);
+			peer = new PeerSyncController().createNewPeerBean(ScoreBean.TYPE_SCRIPT_CREATION, patillscript.getVpId(), -1, 0, 0);
 		}
 		else{
 			peer.incrPeerNum();
@@ -88,6 +91,20 @@ public class IllnessScriptController implements Serializable{
 			ids[i] = new Long(((Relation) rels.get(i)).getListItemId());
 		}
 		return ids;
+	}
+	
+	/**
+	 * init the loading of VPScriptRef objects
+	 * @return
+	 */
+	public Map<String, VPScriptRef> initVpScriptRefs(){
+		List<VPScriptRef> vprefs = DBClinReason.getVPScriptRefs();
+		Map<String, VPScriptRef> refs = new HashMap<String, VPScriptRef>();
+		if(vprefs==null) return null;
+		for(int i=0; i<vprefs.size(); i++){
+			refs.put(vprefs.get(i).getVpId()+"_"+vprefs.get(i).getSystemId(), vprefs.get(i));
+		}
+		return refs;
 	}
 	
 	

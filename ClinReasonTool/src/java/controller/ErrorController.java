@@ -22,7 +22,7 @@ public class ErrorController {
 	public List<MyError> checkError(List<Relation> leanerFinals,List<Relation >expFinals){
 		List<MyError> errors = new ArrayList<MyError>();
 		PatientIllnessScript patIllScript = new NavigationController().getCRTFacesContext().getPatillscript();
-		PatientIllnessScript expIllScript = AppBean.getExpertPatIllScript(patIllScript.getParentId());
+		PatientIllnessScript expIllScript = AppBean.getExpertPatIllScript(patIllScript.getVpId());
 		
 		if(leanerFinals==null || leanerFinals.isEmpty() || expFinals==null || expFinals.isEmpty()) return null;
 		checkPrematureClosure(expIllScript, patIllScript);

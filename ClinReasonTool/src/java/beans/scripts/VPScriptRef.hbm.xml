@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="beans.scripts">
+
+	<class name="VPScriptRef" table="crt.vpid_system">
+		<cache usage="nonstrict-read-write" />
+		<comment>VPScriptRef</comment>	
+	
+		<id name="internalId" type="long" column="id">
+			<generator class="sequence">
+				<param name ="sequence">CRT.CR_SEQ</param>
+			</generator>
+		</id>
+		
+		<property name="vpId" column="vp_id" type="long" />	
+		<property name="systemId" column="system_id" type="int" />		
+		<property name="vpName" column="vp_name" type="string"/>	
+		<property name="parentId" column="parent_id" type="string"/>	
+		
+</class>
+</hibernate-mapping>

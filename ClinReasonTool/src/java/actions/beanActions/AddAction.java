@@ -8,6 +8,7 @@ import beans.relation.Relation;
 public interface AddAction{
 	public static final int ADD_TYPE_MAINITEM = 1;
 	public static final int ADD_TYPE_SYNITEM = 2;
+	public static final int MIN_Y = 10;
 	
 	void save(Beans b);
 	/**

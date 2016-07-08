@@ -25,8 +25,8 @@ public class AvailabilityBias extends MyError{
 		setStage(stage);
 	}
 	
-	public String getDescription() {return "What has recently been seen, is more likely.";}
-	public String getName() { return "Availability Bias"; }
+	//public String getDescription() {return "What has recently been seen, is more likely.";}
+	//public String getName() { return "Availability Bias"; }
 
 	/* (non-Javadoc)
 	 * @see beans.error.MyError#getType()

@@ -90,7 +90,7 @@ public class AddDiagnosisAction implements AddAction, Scoreable{
 	 * @return
 	 */
 	private Point calculateNewItemPosInCanvas(){
-		int y = 5;
+		int y = AddAction.MIN_Y;
 		if(patIllScript.getDiagnoses()!=null || !patIllScript.getDiagnoses().isEmpty()){
 			y = patIllScript.getDiagnoses().size() * 25;//CAVE max y!
 		}

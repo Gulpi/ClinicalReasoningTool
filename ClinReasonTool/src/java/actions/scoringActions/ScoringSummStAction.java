@@ -8,8 +8,8 @@ import beans.scoring.ScoreContainer;
 import controller.NavigationController;
 import controller.ScoringController;
 import database.DBScoring;
-import it.uniroma1.lcl.adw.*;
-import it.uniroma1.lcl.adw.comparison.*;
+//import it.uniroma1.lcl.adw.*;
+//import it.uniroma1.lcl.adw.comparison.*;
 import util.CRTLogger;
 
 /**
@@ -67,7 +67,7 @@ public class ScoringSummStAction {
 	 */
 	public double calculateSimilarityADW(String studtext, String exptext){
 		//Durning 2012: 1 point for correctly used term, -1 for a wrong term.
-		ADW adw = new ADW();
+/*		ADW adw = new ADW();
 		DisambiguationMethod disMethod = DisambiguationMethod.ALIGNMENT_BASED;
 		//ItemType it = ItemType.SURFACE;
 
@@ -79,8 +79,8 @@ public class ScoringSummStAction {
 		
 		double similarity3 = adw.getPairSimilarity("text1", "text2", disMethod, new Jaccard(), LexicalItemType.SURFACE, LexicalItemType.SURFACE); 
 		CRTLogger.out("similarity Jaccard: " + similarity3, CRTLogger.LEVEL_TEST);
-		
-		return similarity;
+		*/
+		return 0; // similarity;
 	}
 	
 	private void calculateSQUse(){

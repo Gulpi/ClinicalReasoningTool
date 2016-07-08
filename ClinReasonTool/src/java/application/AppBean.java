@@ -21,7 +21,7 @@ import database.HibernateUtil;
 import util.CRTLogger;
 import util.StringUtilities;
 import properties.IntlConfiguration;
-import test.TextSimilarityComparing;
+//import test.TextSimilarityComparing;
 
 /**
  * We init here some application stuff, like hibernate,....

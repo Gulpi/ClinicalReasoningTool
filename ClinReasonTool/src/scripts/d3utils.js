@@ -1,9 +1,53 @@
 
 
+
+function printBarChart(data, height, width, chartName, title){
+	var data1 = [];
+	data1[0] = {key: chartLabelMe , nonStackable: 1 ,values: data};
+	//data1[1] = {key: chartLabelPeer , nonStackable: 1, values: peerdata};
+	//data: { x: "1212", y: 52 }
+   nv.addGraph({
+        generate: function() {
+            var chart = nv.models.discreteBarChart()
+            	.staggerLabels(true)
+            	.showValues(true)
+            	.duration(1)
+            ;
+
+            chart.yAxis.tickFormat(d3.format(''));
+            chart.yAxis.ticks(10, "%");	
+            chart.margin({"left":15,"right":5,"top":5,"bottom":15});
+            chart.tooltip.enabled(true);
+            chart.tooltip.contentGenerator(function(obj) {
+            	// tooltips["1212_1"]
+                return tooltips[obj.data.x];
+            });
+            chart.yDomain([0,100]);
+
+            
+            chart.dispatch.on('renderEnd', function(){
+                console.log('Render Complete');
+            });
+
+            var svg = d3.select('#'+chartName).datum(data1);
+            console.log('calling chart');
+            svg.transition().duration(0).call(chart);
+
+            return chart;
+        }
+    });
+
+}
+
+/*
+ * print learner performance and peer performance in one chart -> todo: if we have many cases this becomes complex 
+ * and space-consuming, so it would be better to use a combined chart with lines for the peer performance and bars for 
+ * the individual performance (or vv).
+ */
 function printGroupedBarChart(data, peerdata, height, width, chartName, title){
 	var data1 = [];
-	data1[0] = {key: "stud" , nonStackable: 1 ,values: data};
-	data1[1] = {key: "peer" , nonStackable: 1, values: peerdata};
+	data1[0] = {key: chartLabelMe , nonStackable: 1 ,values: data};
+	data1[1] = {key: chartLabelPeer , nonStackable: 1, values: peerdata};
 	
    nv.addGraph({
         generate: function() {
@@ -19,7 +63,10 @@ function printGroupedBarChart(data, peerdata, height, width, chartName, title){
             chart.yAxis.tickFormat(d3.format(''));
             chart.yAxis.ticks(10, "%");	
             chart.margin({"left":15,"right":5,"top":5,"bottom":15});
-            chart.tooltip.enabled(false)
+            chart.tooltip.enabled(true);
+            chart.tooltip.contentGenerator(function(obj) {
+                return tooltips[obj.data.x];
+            });
             chart.yDomain([0,100]);
             
             chart.dispatch.on('renderEnd', function(){
@@ -28,7 +75,7 @@ function printGroupedBarChart(data, peerdata, height, width, chartName, title){
 
             var svg = d3.select('#'+chartName).datum(data1);
             console.log('calling chart');
-            svg.transition().duration(0).call(chart);
+            svg.transition().duration(1).call(chart);
 
             return chart;
         }/*,
@@ -56,8 +103,8 @@ function printGroupedBarChart(data, peerdata, height, width, chartName, title){
  */
 function printBarLineComboChart(data, peerdata, height, width, chartName, title){
 	var data1 = [];
-	data1[0] = {"key": "stud" , "bar":true ,"values": data};
-	data1[1] = {"key": "peer" , "values": peerdata};
+	data1[0] = {"key": chartLabelMe , "bar":true ,"values": data};
+	data1[1] = {"key": chartLabelPeer , "values": peerdata};
 
 	nv.addGraph(function() {
 	    var chart = nv.models.linePlusBarChart()
@@ -113,8 +160,8 @@ function printBarLineComboChart(data, peerdata, height, width, chartName, title)
 
 function printLineChart(data, peerdata, height, width, chartName, title){
 	var data1 = [];
-	data1[0] = {key: "stud" ,values: data};
-	data1[1] = {key: "peer" , values: peerdata};
+	data1[0] = {key: chartLabelMe ,values: data};
+	data1[1] = {key: chartLabelPeer , values: peerdata};
 	
 	nv.addGraph(function() {
 		  var chart = nv.models.lineChart()
@@ -148,7 +195,7 @@ function printLineChart(data, peerdata, height, width, chartName, title){
 
 
 
-function printBarChar(svgHeight, svgWidth, data, chart, title){
+/*function printBarChart(svgHeight, svgWidth, data, chart, title){
 	
 	//var svgHeight = 400;
 	//var svgWidth = 400;
@@ -244,7 +291,7 @@ function printBarChar(svgHeight, svgWidth, data, chart, title){
 	.append('g') // Container for the each bar
 	.attr({
 	  transform: function (d, i) {
-	    return 'translate(' + convert.x(d.label) + ', 0)';
+	    return 'translate(' + convert.x(d.x) + ', 0)';
 	  },
 	  class: 'bar-group'
 	});
@@ -260,18 +307,18 @@ function printBarChar(svgHeight, svgWidth, data, chart, title){
 	//.duration(1500)
 	.attr({
 		y: function (d, i) {
-		    return convert.y(d.value);
+		    return convert.y(d.y);
 		},
 		height: function (d, i) {
-		    return maxHeight - convert.y(d.value);
+		    return maxHeight - convert.y(d.y);
 		}
 	});
 	
 	//printGroupedBarChart();
-}
+}*/
 
 /* exemplary charts for instructors*/
-function testPrint(){
+/*function testPrint(){
 	var ddxitemdata = [];
 	var arr =["Asthma", "COPD", "Pneumonia", "acute Bronchitis", "Lung cancer"];
 	var arr2=[0.85, 0.82, 0.76, 0.58, 0.49];
@@ -296,11 +343,11 @@ function testPrint(){
 		overalldata.push({ label: arr[i], value:  arr2[i]});
 	}
 	printBarChar(150, 250, overalldata, "overallchart","Overall Score");
-}
+}*/
 
 
 /* examplary charts for learner*/ 
-function testPrint2(width){
+/*function testPrint2(width){
 	var overallproblemData = [];
 	var arr =["VP xy ", "VP ab", "VP cd", "VP xx", "VP yy"];
 	var arr2=[0.76, 0.77, 0.65, 0.87, 0.57];
@@ -316,5 +363,5 @@ function testPrint2(width){
 		overallDDXData.push({ label: arr[i], value:  arr2[i]});
 	}
 	printBarChar(150, width, overallDDXData, "overallDDXchart","Overall DDX Scores");
-}
+}*/
 

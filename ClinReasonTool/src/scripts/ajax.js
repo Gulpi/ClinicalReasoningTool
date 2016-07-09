@@ -34,6 +34,7 @@ function sendAjax(id, callback, type, name){
 	sendAjaxUrl(id, callback, type, name, "tabs_ajax.xhtml");
 }
 
+
 function sendAjaxCharts(id, callback, type, name){
 	sendAjaxUrl(id, callback, type, name, "charts_ajax.xhtml");
 }
@@ -61,6 +62,24 @@ function sendAjaxUrl(id, callback, type, name, url){
 		  handleResponse(response, callback, name);		
 	  });	
 }
+/**
+ * use this function if you want to get back an html (template)
+ * @param id
+ * @param callback
+ * @param type
+ * @param name
+ * @param url
+ */
+function sendAjaxUrlHtml(id, callback, type, name, url){
+	$.ajax({
+		  method: "POST",
+		  url: url,
+		  data: { type: type, id: id, session_id: 1, name: name, script_id: scriptId, stage:currentStage }
+		})
+	  .done(function( response ) {
+		  handleResponseHtml(response, callback, name);		
+	  });
+}
 
 function sendAjaxCM(id, callback, type, name, x, y){
 	$.ajax({
@@ -81,6 +100,13 @@ function handleResponse(response, callback, name){
 	 //TODO we might need shortnam here (for tooltip in map)s
 	 if(isOk=="1") callback(id2, name);
 	
+}
+
+/* display msg and call callback function*/
+function handleResponseHtml(response, callback, name){
+	if(response.contentType=="text/xml")
+		handleResponse(response, callback, name)
+	else callback(response);	
 }
 
 function displayErrorMsg(response){

@@ -1,0 +1,24 @@
+ <ui:composition 
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core">
+    <f:event type="preRenderView" listener="#{crtContext.ajaxResponseHandler}" />
+
+ 	<div id="tst_#{test.id}"  score="#{test.score}" class="itembox tests" title=">#{test.labelOrSynLabel}" style="left:#{test.x}px; top:#{test.boxY}px;"> 
+ 		#{test.shortLabelOrSynShortLabel}
+  		<span class="dropdown" onClick="javascript:showDropDown('ddtst_#{test.id}','tst_#{test.id}');"><i class="fa fa-chevron-circle-down"></i></span>
+		<span class="peer_score_test" title="#{prop['test.peer.hint']}" id="peerscore#{test.id}"> (#{test.peerPercentage})</span>
+	</div>
+	<div class="dropdown-content" id="ddtst_#{test.id}" onmouseleave="javascript:hideDropDown('ddtst_#{test.id}');">
+	<span style="float:left;">#{prop['change']}:</span>
+	<span class="dropdownX"><a href="javascript:hideDropDown('ddtst_#{test.id}');"><i class="fa fa fa-times"></i></a></span>
+	
+	<br/>
+		<div class="links">	
+			<span class="dropd_#{test.isExpertHierarchyItem}"><a  class="dropd_#{test.isExpertHierarchyItem}" href="javascript:chgTest(#{test.id}, 2);"><i class="fa fa-long-arrow-right"></i> #{test.expItemLabel}</a><br/></span> <!-- Hierarchy -->
+			<span class="dropd_#{test.isSynonyma}"><a class="dropd_#{test.isSynonyma}" href="javascript:chgTest(#{test.id}, 3);"><i class="fa fa-long-arrow-right"></i> #{test.synonym.name}</a><br/></span> <!-- Synonym -->
+		</div>
+		<a class="del" href="javascript:delTest(#{test.id});"><i class="fa fa-trash"></i> #{prop['delete']}</a>
+	</div>
+</ui:composition>

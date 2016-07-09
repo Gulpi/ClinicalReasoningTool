@@ -14,9 +14,10 @@ var endpoint = {
     /*connectorStyle: { strokeStyle: color2, lineWidth: 6 },*/
     connector: ["Bezier", { curviness: 15 } ],
     maxConnections: 3,
+    Anchors: ["TopCenter", "TopCenter"],
     isTarget: true,
     dropOptions: myDropOptions,
-    deleteEndpointsOnDetach:false
+    deleteEndpointsOnDetach:true
 };
 
 var expendpoint = {
@@ -172,6 +173,8 @@ function initCnxDisplay(){
 
 function hideCnx(){
 	$(".jsplumb-connector").addClass("jsplumb-connector-hide");
+	//$(".jsplumb-exp-connector").removeClass("jsplumb-exp-connector-show"); //hide expert cnx as well
+	
 	//$(".jsplumb-connector").hide();
 	$("#cnxtoggle").attr("title", "Show connections");
 	$("#cnxtogglei").removeClass("fa-conn_on");
@@ -183,5 +186,6 @@ function showCnx(){
 	$("#cnxtogglei").removeClass("fa-conn_off");
 	$("#cnxtogglei").addClass("fa-conn_on");
 	$(".jsplumb-connector").removeClass("jsplumb-connector-hide");
+	//$(".jsplumb-exp-connector").addClass("jsplumb-exp-connector-show");
 	$(".jsplumb-connector").show();
 }

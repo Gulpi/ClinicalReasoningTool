@@ -6,6 +6,8 @@ import java.util.*;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.application.FacesMessage.Severity;
+import javax.faces.context.FacesContext;
+import javax.servlet.http.HttpServletRequest;
 
 import actions.scoringActions.Scoreable;
 import actions.scoringActions.ScoringAddAction;
@@ -23,6 +25,7 @@ import controller.NavigationController;
 import controller.RelationController;
 import database.DBClinReason;
 import database.DBList;
+import properties.IntlConfiguration;
 import util.CRTLogger;
 
 public class AddTestAction implements AddAction, Scoreable/*, FeedbackCreator*/{
@@ -72,7 +75,7 @@ public class AddTestAction implements AddAction, Scoreable/*, FeedbackCreator*/{
 		if(patIllScript.getTests()==null) patIllScript.setTests(new ArrayList<RelationTest>());
 		RelationTest rel = new RelationTest(id, patIllScript.getId(), synId);		
 		if(patIllScript.getTests().contains(rel)){
-			createErrorMessage("Test already assigned.","optional details", FacesMessage.SEVERITY_WARN);
+			createErrorMessage(IntlConfiguration.getValue("tests.duplicate"),"optional details", FacesMessage.SEVERITY_WARN);
 			return;
 		}
 		rel.setOrder(patIllScript.getTests().size());
@@ -85,7 +88,9 @@ public class AddTestAction implements AddAction, Scoreable/*, FeedbackCreator*/{
 		save(rel);
 		updateGraph(rel);
 		notifyLog(rel);
-		triggerScoringAction(rel, isJoker);				
+		triggerScoringAction(rel, isJoker);		
+		((HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest()).setAttribute("tst", rel);
+
 	}
 	
 	/**
@@ -96,7 +101,7 @@ public class AddTestAction implements AddAction, Scoreable/*, FeedbackCreator*/{
 	private Point calculateNewItemPosInCanvas(){
 		int y = AddAction.MIN_Y;
 		if(patIllScript.getTests()!=null || !patIllScript.getTests().isEmpty()){
-			y = patIllScript.getTests().size() * 25; //CAVE max y! 
+			y = patIllScript.getTests().size() * 26; //CAVE max y! 
 		}
 		return new Point(RelationTest.DEFAULT_X,y);
 	}
@@ -110,7 +115,7 @@ public class AddTestAction implements AddAction, Scoreable/*, FeedbackCreator*/{
 
 	}
 	public void createErrorMessage(String summary, String details, Severity sev) {
-		new ErrorMessageContainer().addErrorMessage(summary, details, sev);		
+		new ErrorMessageContainer().addErrorMessage("testform", summary, details, sev);		
 	}
 
 	

@@ -28,7 +28,9 @@ public class ExpViewPatientIllnessScript {
 	 * get all findings/problems of the expert that have NOT been selected by the learner
 	 * @return list of Relations or null
 	 */
-	public List<Relation> getProblems(){ return getList(Relation.TYPE_PROBLEM);	}
+	public List<Relation> getProblems(){ 
+		return getList(Relation.TYPE_PROBLEM);	
+	}
 
 	/**
 	 * get all diagnoses of the expert that have NOT been selected by the learner

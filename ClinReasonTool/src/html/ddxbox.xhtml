@@ -6,22 +6,28 @@
  
  
    	<div id="ddx_#{ddx.id}"  score="#{ddx.score}" title="#{ddx.labelOrSynLabel}" class="itembox ddxs" style="border-color:#{ddx.color};color:#{ddx.color};left:#{ddx.x}px; top:#{ddx.boxY}px;">
-  	 	<i id="tiericon_#{ddx.id}" class="fa fa-check-circle#{ddx.tier}"></i>
-  	 	<i id="mnmicon_#{ddx.id}" class="fa fa-exclamation-circle#{ddx.mnm}"></i>
+  	 	<i id="tiericon_#{ddx.id}" title="#{prop['ddx.finalddx']}" class="fa fa-check-circle#{ddx.tier}"></i>
+  	 	<i id="mnmicon_#{ddx.id}" title="#{prop['ddx.mnm.hint2']}" class="fa fa-exclamation-circle#{ddx.mnm}"></i>
   	 	#{ddx.shortLabelOrSynShortLabel}
   	 	 <script language="Javascript">
  			item_arr.push("ddx_#{ddx.id}");
  		</script>
-   		<span class="dropdown" onMouseOver="javascript:showDropDown('ddddx_#{ddx.id}','ddx_#{ddx.id}');"><i class="fa fa-chevron-circle-down"></i></span>
- 		<span class="peer_score_ddx" title="Percentage of peers who have added this differential as well" id="peerscore#{ddx.id}"> (#{ddx.peerPercentage})</span><br/>
+   		<span class="dropdown" onClick="javascript:showDropDown('ddddx_#{ddx.id}','ddx_#{ddx.id}');"><i class="fa fa-chevron-circle-down"></i></span>
+ 		<span class="peer_score_ddx" title="#{prop['ddx.peer.hint']}" id="peerscore#{ddx.id}"> (#{ddx.peerPercentage})</span>
  
   	</div>
-	<div id="ddddx_#{ddx.id}" class="dropdown-content" style="opacity:1;z-index:99;" onmouseleave="javascript:hideDropDown('ddddx_#{ddx.id}');">Change to:<br/>
-		<span class="dropd_#{ddx.isExpertHierarchyItem}"><a class="dropd_#{ddx.isExpertHierarchyItem}" href="javascript:chgDiagnosis(#{ddx.id}, 2);">#{ddx.expItemLabel}</a><br/></span>  <!-- Hierarchy -->
-		<span class="dropd_#{ddx.isSynonyma}"><a class="dropd_#{ddx.isSynonyma}" href="javascript:chgDiagnosis(#{ddx.id}, 3);">#{ddx.synonym.name}</a><br/></span><!-- Synonym -->
-		<a href="javascript:toggleMnM('#{ddx.id}');" title="Is this a Must-Not-Miss diagnosis? E.g. because it is lethal?">Must-not-miss</a><br/>
-		<a class="ro_#{ddx.ruledOut}" id="ro_a_#{ddx.id}" href="javascript:ruleOut('#{ddx.id}');" title="Diagnosis is ruled out">Ruled out</a>
-		<a class="ri_#{ddx.ruledOut}" id="ri_a_#{ddx.id}" href="javascript:ruleIn('#{ddx.id}');" title="Rule the daignosis back in">Rule in</a>
-		<br/><a href="javascript:delDiagnosis(#{ddx.id});"><i class="fa fa-trash"></i> Delete</a>
+	<div id="ddddx_#{ddx.id}" class="dropdown-content" style="opacity:1;z-index:99;" onmouseleave="javascript:hideDropDown('ddddx_#{ddx.id}');">
+	 <span style="float:left;">#{prop['change']}:</span>
+		<span class="dropdownX"><a href="javascript:hideDropDown('ddddx_#{ddx.id}');"><i class="fa fa fa-times"></i></a></span> 
+	
+	<br/>
+		<div class="links">
+			<span class="dropd_#{ddx.isExpertHierarchyItem}"><a class="dropd_#{ddx.isExpertHierarchyItem}" href="javascript:chgDiagnosis(#{ddx.id}, 2);"><i class="fa fa-long-arrow-right"></i> #{ddx.expItemLabel}</a><br/></span>  <!-- Hierarchy -->
+			<span class="dropd_#{ddx.isSynonyma}"><a class="dropd_#{ddx.isSynonyma}" href="javascript:chgDiagnosis(#{ddx.id}, 3);"><i class="fa fa-long-arrow-right"></i> #{ddx.synonym.name}</a><br/></span><!-- Synonym -->
+			<a href="javascript:toggleMnM('#{ddx.id}');" title="#{prop['ddx.mnm.hint']}"><i class="fa fa-long-arrow-right"></i> #{prop['ddx.mnm']}</a><br/>
+			<a class="ro_#{ddx.ruledOut}" id="ro_a_#{ddx.id}" href="javascript:ruleOut('#{ddx.id}');" title=">#{prop['ddx.ruledout.hint']}"><i class="fa fa-long-arrow-right"></i> #{prop['ddx.ruledout']}</a>
+			<a class="ri_#{ddx.ruledOut}" id="ri_a_#{ddx.id}" href="javascript:ruleIn('#{ddx.id}');" title="#{prop['ddx.rulein.hint']}"><i class="fa fa-long-arrow-right"></i> #{prop['ddx.rulein']}</a>
+		</div>
+		<a class="del" href="javascript:delDiagnosis(#{ddx.id});"><i class="fa fa-trash"></i> #{prop['delete']}</a>
 	 </div>
 </ui:composition>

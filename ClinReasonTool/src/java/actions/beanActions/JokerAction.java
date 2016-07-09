@@ -10,6 +10,7 @@ import beans.graph.Graph;
 import beans.graph.MultiVertex;
 import beans.relation.Relation;
 import controller.NavigationController;
+import properties.IntlConfiguration;
 
 /**
  * All kinds of jokers we offer the learner, such as adding a finding, test,....
@@ -40,7 +41,7 @@ public class JokerAction {
 		List<MultiVertex> expsVertices = g.getVerticesByTypeAndStageExpOnly(Relation.TYPE_PROBLEM, patIllScript.getCurrentStage());
 		MultiVertex jokerVertex = chooseItem(expsVertices);
 		if(jokerVertex==null){ //no more fdgs to be added at this stage
-			new ErrorMessageContainer().addErrorMessage("probform", "Expert added no additional findings a this stage", "", FacesMessage.SEVERITY_ERROR);
+			new ErrorMessageContainer().addErrorMessage("probform", IntlConfiguration.getValue("findings.nojoker"), "", FacesMessage.SEVERITY_ERROR);
 			return;
 		}
 		new AddProblemAction(patIllScript).addRelation(jokerVertex.getExpertVertex().getListItemId(), jokerVertex.getExpertVertex().getPrefixStr(), -1, -1, -1, true);
@@ -54,7 +55,7 @@ public class JokerAction {
 		List<MultiVertex> expsVertices = g.getVerticesByTypeAndStageExpOnly(Relation.TYPE_DDX, patIllScript.getCurrentStage());
 		MultiVertex jokerVertex = chooseItem(expsVertices);
 		if(jokerVertex==null){ //no more fdgs to be added at this stage
-			new ErrorMessageContainer().addErrorMessage("ddxform", "Expert added no additional differentials a this stage", "", FacesMessage.SEVERITY_ERROR);
+			new ErrorMessageContainer().addErrorMessage("ddxform", IntlConfiguration.getValue("ddx.nojoker"), "", FacesMessage.SEVERITY_ERROR);
 			return;
 		}
 		new AddDiagnosisAction(patIllScript).addRelation(jokerVertex.getExpertVertex().getListItemId(), jokerVertex.getExpertVertex().getPrefixStr(), -1, -1, -1, true);
@@ -68,7 +69,7 @@ public class JokerAction {
 		List<MultiVertex> expsVertices = g.getVerticesByTypeAndStageExpOnly(Relation.TYPE_TEST, patIllScript.getCurrentStage());
 		MultiVertex jokerVertex = chooseItem(expsVertices);
 		if(jokerVertex==null){ //no more fdgs to be added at this stage
-			new ErrorMessageContainer().addErrorMessage("testform", "Expert added no additional tests a this stage", "", FacesMessage.SEVERITY_ERROR);
+			new ErrorMessageContainer().addErrorMessage("testform", IntlConfiguration.getValue("tests.nojoker"), "", FacesMessage.SEVERITY_ERROR);
 			return;
 		}
 		new AddTestAction(patIllScript).addRelation(jokerVertex.getExpertVertex().getListItemId(), jokerVertex.getExpertVertex().getPrefixStr(), -1, -1, -1, true);
@@ -82,7 +83,7 @@ public class JokerAction {
 		List<MultiVertex> expsVertices = g.getVerticesByTypeAndStageExpOnly(Relation.TYPE_MNG, patIllScript.getCurrentStage());
 		MultiVertex jokerVertex = chooseItem(expsVertices);
 		if(jokerVertex==null){ //no more fdgs to be added at this stage
-			new ErrorMessageContainer().addErrorMessage("mngform", "Expert added no additional therapies a this stage", "", FacesMessage.SEVERITY_ERROR);
+			new ErrorMessageContainer().addErrorMessage("mngform", IntlConfiguration.getValue("mng.nojoker"), "", FacesMessage.SEVERITY_ERROR);
 			return;
 		}
 		new AddMngAction(patIllScript).addRelation(jokerVertex.getExpertVertex().getListItemId(), jokerVertex.getExpertVertex().getPrefixStr(), -1, -1, -1, true);

@@ -9,14 +9,20 @@
   	 	 <script language="Javascript">
  			item_arr.push("mng_#{mng.id}");
  		</script>
- 		<span class="dropdown" onMouseOver="javascript:showDropDown('ddmng_#{mng.id}','mng_#{mng.id}');"><i class="fa fa-chevron-circle-down"></i></span>
+ 		<span class="dropdown" onClick="javascript:showDropDown('ddmng_#{mng.id}','mng_#{mng.id}');"><i class="fa fa-chevron-circle-down"></i></span>
    		<!--  <a href="javascript:delManagement(#{mng.id});">
    		<i class="icon-trash-1" title="Delete this item"></i></a> -->
-		<span class="peer_score_mng" title="Percentage of peers who have selected this management option as well" id="peerscore#{mng.id}"> (#{mng.peerPercentage})</span><br/>
+		<span class="peer_score_mng" title="#{prop['mng.peer.hint']}" id="peerscore#{mng.id}"> (#{mng.peerPercentage})</span>
 	</div>
-	<div class="dropdown-content" id="ddmng_#{mng.id}" onmouseleave="javascript:hideDropDown('ddmng_#{mng.id}');">Change to:<br/>
- 		<span class="dropd_#{mng.isExpertHierarchyItem}"><a  class="dropd_#{mng.isExpertHierarchyItem}" href="javascript:chgManagement(#{mng.id}, 2);">#{mng.expItemLabel}</a><br/></span> <!-- Hierarchy -->
- 		<span class="dropd_#{mng.isSynonyma}"><a class="dropd_#{mng.isSynonyma}" href="javascript:chgManagement(#{mng.id}, 3);">#{mng.synonym.name}</a><br/></span> <!-- Synonym -->
- 		<a href="javascript:delManagement(#{mng.id});"><i class="fa fa-trash"></i> Delete</a>
+	<div class="dropdown-content" id="ddmng_#{mng.id}" onmouseleave="javascript:hideDropDown('ddmng_#{mng.id}');">
+	<span style="float:left;">#{prop['change']}:</span>
+	<span class="dropdownX"><a href="javascript:hideDropDown('ddmng_#{mng.id}');"><i class="fa fa fa-times"></i></a></span>
+	
+	<br/>
+ 		<div class="links">
+ 			<span class="dropd_#{mng.isExpertHierarchyItem}"><a  class="dropd_#{mng.isExpertHierarchyItem}" href="javascript:chgManagement(#{mng.id}, 2);"><i class="fa fa-long-arrow-right"></i> #{mng.expItemLabel}</a><br/></span> <!-- Hierarchy -->
+ 			<span class="dropd_#{mng.isSynonyma}"><a class="dropd_#{mng.isSynonyma}" href="javascript:chgManagement(#{mng.id}, 3);"><i class="fa fa-long-arrow-right"></i> #{mng.synonym.name}</a><br/></span> <!-- Synonym -->
+ 		</div>
+ 		<a class="del" href="javascript:delManagement(#{mng.id});"><i class="fa fa-trash"></i> #{prop['delete']}</a>
  	</div>
 </ui:composition>

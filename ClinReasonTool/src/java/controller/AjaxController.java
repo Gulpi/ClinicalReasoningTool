@@ -1,10 +1,22 @@
 package controller;
 
 import java.beans.Statement;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.*;
 
 import javax.faces.context.*;
+import javax.servlet.ServletException;
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletRequestWrapper;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpServletResponseWrapper;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -76,7 +88,16 @@ public class AjaxController {
 				CRTLogger.out(StringUtilities.stackTraceToString(e), CRTLogger.LEVEL_PROD);
 			}
 	    	patillscript.toString();
-	    	responseAjax(externalContext, reqParams.get("id"));
+    		
+	    	//use this if making a call that returns an object in a template:
+	    	/*Object o = 	((HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest()).getAttribute("prob");
+	    	if(o==null) o = ((HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest()).getAttribute("ddx");
+	    	//if o is null, we assume that an error occured and we have to give back the error messages!!!
+	    	if(methodName.startsWith("add") && o!=null){
+	    		responseAjaxTemplate(externalContext, reqParams.get("id"), patillscript);
+	    	}
+
+	    	else*/ responseAjax(externalContext, reqParams.get("id"));
 	    }
 	}
 	
@@ -155,22 +176,62 @@ public class AjaxController {
 		FacesContext facesContext = FacesContext.getCurrentInstance();
 	    externalContext.setResponseContentType("text/xml");
 	    externalContext.setResponseCharacterEncoding("UTF-8");    
-	    externalContext.getResponseOutputWriter().write(createResponseXML(responseId));
+	    externalContext.getResponseOutputWriter().write(createResponseXML("<id>"+responseId+"</id>"));
 	    facesContext.responseComplete();
 	}
 	
+	/**
+	 * handles the ajax response (xml) and returns an xml file with the filled subtemplate for the 
+	 * created object
+	 * @param externalContext
+	 * @throws IOException
+	 */
+	private void responseAjaxTemplate(ExternalContext externalContext, String responseId, PatientIllnessScript patillscript) throws IOException{
+		//FacesContext facesContext = FacesContext.getCurrentInstance();
+		//List msgs = null;
+		//externalContext.setResponseContentType("text/xml");
+	    //externalContext.setResponseCharacterEncoding("UTF-8");    
+	    
+	    try {
+			////String template = "/src/html/probbox2.xhtml";
+			
+			//HttpServletResponse response = (HttpServletResponse) facesContext.getExternalContext().getResponse();
+			//HttpServletRequest request = (HttpServletRequest) facesContext.getExternalContext().getRequest();
+			//TemplateResponseWriter customResponse  = new TemplateResponseWriter(response);
+			//facesContext.getExternalContext().dispatch(template);
+			//msgs = facesContext.getMessageList();
+			//request.getRequestDispatcher(template).forward(request, customResponse);
+
+			//System.out.println(String.format("The output of %s is %s", template, customResponse.getOutput()));
+			//String respXml = createResponseXML("", false);
+			//String respXml = createResponseXML(customResponse.getOutput(), false);
+			//FacesContext.getCurrentInstance().
+			//externalContext.getResponseOutputWriter().write(respXml);
+			//externalContext.getResponseOutputWriter().write("hallo");
+			//FacesContext.getCurrentInstance().getExternalContext().getFlash().clear();
+		} 
+	    catch (Exception e) {
+			CRTLogger.out(StringUtilities.stackTraceToString(e), CRTLogger.LEVEL_ERROR);
+		}	    	   
+	    //facesContext.responseComplete();
+	}
+	
+	
+	private String createResponseXML(String responseParam){
+		return createResponseXML(responseParam, true);
+	}
 	/**
 	 * assemble the xml response, include the id and if applicable a message.
 	 * @param responseParam
 	 * @return
 	 */
-	private String createResponseXML(String responseParam){
+	private String createResponseXML(String responseParam, boolean includeMsg){
 		
 		//TODO: we might want to add more info to the response....
-		StringBuffer xmlResponse = new StringBuffer("<?xml version=\"1.0\" encoding=\"UTF-8\"?><response><id>");
-		xmlResponse.append(responseParam+"</id>");
-		appendMessage(xmlResponse);
-		//facesContext.
+		StringBuffer xmlResponse = new StringBuffer("<?xml version=\"1.0\" encoding=\"UTF-8\"?><response>");
+		xmlResponse.append(responseParam);
+		System.out.println(xmlResponse.toString());
+		if(includeMsg) appendMessage(xmlResponse);
 		xmlResponse.append("</response>");
 		return xmlResponse.toString();
 	}
@@ -236,4 +297,545 @@ public class AjaxController {
 		return false;
 	}
 	
+	/**
+     * Wraps Response for BufferedResponseFilter
+     */
+    public class BufferResponserTest implements HttpServletResponse {
+    	ServletOutputStream out = null;
+    	
+        public BufferResponserTest() {
+            
+        }
+        
+        
+        public String getContentType() {
+			return "text/html";
+		}
+
+
+		public void setCharacterEncoding(String arg0) {
+		}
+
+
+		/* (non-Javadoc)
+         * @@see javax.servlet.http.HttpServletResponse#addCookie(javax.servlet.http.Cookie)
+         */
+        public void addCookie(Cookie arg0) {
+            
+        }
+
+        /* (non-Javadoc)
+         * @@see javax.servlet.http.HttpServletResponse#addDateHeader(java.lang.String, long)
+         */
+        public void addDateHeader(String arg0, long arg1) {
+            
+        }
+
+        /* (non-Javadoc)
+         * @@see javax.servlet.http.HttpServletResponse#addHeader(java.lang.String, java.lang.String)
+         */
+        public void addHeader(String arg0, String arg1) {
+            
+        }
+
+        /* (non-Javadoc)
+         * @@see javax.servlet.http.HttpServletResponse#addIntHeader(java.lang.String, int)
+         */
+        public void addIntHeader(String arg0, int arg1) {
+            
+        }
+
+        /* (non-Javadoc)
+         * @@see javax.servlet.http.HttpServletResponse#containsHeader(java.lang.String)
+         */
+        public boolean containsHeader(String arg0) {
+            return false;
+        }
+
+        /* (non-Javadoc)
+         * @@see javax.servlet.http.HttpServletResponse#encodeRedirectUrl(java.lang.String)
+         */
+        public String encodeRedirectUrl(String arg0) {
+            return null;
+        }
+
+        /* (non-Javadoc)
+         * @@see javax.servlet.http.HttpServletResponse#encodeRedirectURL(java.lang.String)
+         */
+        public String encodeRedirectURL(String arg0) {
+            return null;
+        }
+
+        /* (non-Javadoc)
+         * @@see javax.servlet.http.HttpServletResponse#encodeUrl(java.lang.String)
+         */
+        public String encodeUrl(String arg0) {
+            return null;
+        }
+
+        /* (non-Javadoc)
+         * @@see javax.servlet.http.HttpServletResponse#encodeURL(java.lang.String)
+         */
+        public String encodeURL(String arg0) {
+            return null;
+        }
+
+        /* (non-Javadoc)
+         * @@see javax.servlet.http.HttpServletResponse#sendError(int, java.lang.String)
+         */
+        public void sendError(int arg0, String arg1) throws IOException {
+            
+        }
+
+        /* (non-Javadoc)
+         * @@see javax.servlet.http.HttpServletResponse#sendError(int)
+         */
+        public void sendError(int arg0) throws IOException {
+            
+        }
+
+        /* (non-Javadoc)
+         * @@see javax.servlet.http.HttpServletResponse#sendRedirect(java.lang.String)
+         */
+        public void sendRedirect(String arg0) throws IOException {
+            
+        }
+
+        /* (non-Javadoc)
+         * @@see javax.servlet.http.HttpServletResponse#setDateHeader(java.lang.String, long)
+         */
+        public void setDateHeader(String arg0, long arg1) {
+            
+        }
+
+        /* (non-Javadoc)
+         * @@see javax.servlet.http.HttpServletResponse#setHeader(java.lang.String, java.lang.String)
+         */
+        public void setHeader(String arg0, String arg1) {
+            
+        }
+
+        /* (non-Javadoc)
+         * @@see javax.servlet.http.HttpServletResponse#setIntHeader(java.lang.String, int)
+         */
+        public void setIntHeader(String arg0, int arg1) {
+            
+        }
+
+        /* (non-Javadoc)
+         * @@see javax.servlet.http.HttpServletResponse#setStatus(int, java.lang.String)
+         */
+        public void setStatus(int arg0, String arg1) {
+            
+        }
+
+        /* (non-Javadoc)
+         * @@see javax.servlet.http.HttpServletResponse#setStatus(int)
+         */
+        public void setStatus(int arg0) {
+            
+        }
+
+        /* (non-Javadoc)
+         * @@see javax.servlet.ServletResponse#flushBuffer()
+         */
+        public void flushBuffer() throws IOException {
+            
+        }
+
+        /* (non-Javadoc)
+         * @@see javax.servlet.ServletResponse#getBufferSize()
+         */
+        public int getBufferSize() {
+            return 0;
+        }
+
+        /* (non-Javadoc)
+         * @@see javax.servlet.ServletResponse#getCharacterEncoding()
+         */
+        public String getCharacterEncoding() {
+            return null;
+        }
+
+        /* (non-Javadoc)
+         * @@see javax.servlet.ServletResponse#getLocale()
+         */
+        public Locale getLocale() {
+            return null;
+        }
+
+        /* (non-Javadoc)
+         * @@see javax.servlet.ServletResponse#getOutputStream()
+         */
+        public ServletOutputStream getOutputStream() throws IOException {
+        	if (out != null) return out;
+            return new BufferResponseStreamTest();
+        }
+        
+        /* (non-Javadoc)
+         * @@see javax.servlet.ServletResponse#getOutputStream()
+         */
+        @SuppressWarnings("unused")
+		public void setOutputStream(ServletOutputStream in_out) throws IOException {
+            out = in_out;
+        }
+        
+
+        /* (non-Javadoc)
+         * @@see javax.servlet.ServletResponse#getWriter()
+         */
+        public PrintWriter getWriter() throws IOException {
+            return null;
+        }
+
+        /* (non-Javadoc)
+         * @@see javax.servlet.ServletResponse#isCommitted()
+         */
+        public boolean isCommitted() {
+            return false;
+        }
+
+        /* (non-Javadoc)
+         * @@see javax.servlet.ServletResponse#reset()
+         */
+        public void reset() {
+            
+        }
+
+        /* (non-Javadoc)
+         * @@see javax.servlet.ServletResponse#resetBuffer()
+         */
+        public void resetBuffer() {
+            
+        }
+
+        /* (non-Javadoc)
+         * @@see javax.servlet.ServletResponse#setBufferSize(int)
+         */
+        public void setBufferSize(int arg0) {
+            
+        }
+
+        /* (non-Javadoc)
+         * @@see javax.servlet.ServletResponse#setContentLength(int)
+         */
+        public void setContentLength(int arg0) {
+            
+        }
+
+        /* (non-Javadoc)
+         * @@see javax.servlet.ServletResponse#setContentType(java.lang.String)
+         */
+        public void setContentType(String arg0) {
+            
+        }
+
+        /* (non-Javadoc)
+         * @@see javax.servlet.ServletResponse#setLocale(java.util.Locale)
+         */
+        public void setLocale(Locale arg0) {
+            
+        }
+
+
+		@Override
+		public String getHeader(String arg0) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+
+		@Override
+		public Collection<String> getHeaderNames() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+
+		@Override
+		public Collection<String> getHeaders(String arg0) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+
+		@Override
+		public int getStatus() {
+			// TODO Auto-generated method stub
+			return 0;
+		}
+
+    
+        
+    }
+    /**
+     * Wraps Response for BufferedResponseFilter
+     */
+    public class BufferResponseWrapper extends HttpServletResponseWrapper {
+        protected HttpServletResponse origResponse = null;
+        protected ServletOutputStream stream = null;
+        protected PrintWriter writer = null;
+        protected int error = 0;
+        
+        public BufferResponseWrapper(HttpServletResponse response) {
+            super(response);
+            origResponse = response;
+        }
+        
+        public ServletOutputStream createOutputStream() throws IOException {
+            return (new BufferResponseStream(origResponse));
+        }
+        
+        public void finishResponse() {
+            try {
+                if (writer != null) {
+                    writer.close();
+                    writer = null;
+                } else {
+                    if (stream != null) {
+                        stream.close();
+                        stream = null;
+                    }
+                }
+            } catch (IOException e) {
+            }
+        }
+        
+        public void flushBuffer() throws IOException {
+            if (stream != null) {
+                stream.flush();
+            }
+        }
+        
+        public ServletOutputStream getOutputStream() throws IOException {
+            if (writer != null) {
+                throw new IllegalStateException("getWriter() has already been called!");
+            }
+            
+            if (stream == null) {
+                stream = createOutputStream();
+            }
+            
+            return (stream);
+        }
+        
+        public PrintWriter getWriter() throws IOException {
+            // From cmurphy@@intechtual.com to fix:
+            // https://appfuse.dev.java.net/issues/show_bug.cgi?id=59
+            if (this.origResponse != null && this.origResponse.isCommitted()) {
+                return super.getWriter();
+            }
+            
+            if (writer != null) {
+                return (writer);
+            }
+            
+            if (stream != null) {
+                throw new IllegalStateException("getOutputStream() has already been called!");
+            }
+            
+            stream = createOutputStream();
+            writer = new PrintWriter(new OutputStreamWriter(stream, origResponse.getCharacterEncoding()));          
+            return (writer);
+        }
+        
+        public void setContentLength(int length) {
+        }
+        
+        /**
+         * @@see javax.servlet.http.HttpServletResponse#sendError(int, java.lang.String)
+         */
+        public void sendError(int error1, String message) throws IOException {
+            super.sendError(error1, message);
+            this.error = error1;
+        }
+    }
+    
+    /**
+     * Wraps Response Stream for BufferedResponseFilter
+     */
+    public class BufferResponseStreamTest extends ServletOutputStream {
+    	OutputStream out = null;
+
+        /* (non-Javadoc)
+         * @@see java.io.OutputStream#close()
+         */
+        public void close() throws IOException {
+            
+        }
+
+        /* (non-Javadoc)
+         * @@see java.io.OutputStream#flush()
+         */
+        public void flush() throws IOException {
+            
+        }
+
+        /* (non-Javadoc)
+         * @@see java.io.OutputStream#write(byte[], int, int)
+         */
+        public void write(byte[] b, int off, int len) throws IOException {
+            if (out != null) out.write(b, off, len);
+        } 
+        
+
+        /* (non-Javadoc)
+         * @@see java.io.OutputStream#write(byte[])
+         */
+        public void write(byte[] b) throws IOException {
+        	if (out != null) out.write(b);
+        }
+
+        /* (non-Javadoc)
+         * @@see java.io.OutputStream#write(int)
+         */
+        public void write(int b) throws IOException {
+        	if (out != null) out.write(b);
+        }
+
+		public OutputStream getOut() {
+			return out;
+		}
+
+		public void setOut(OutputStream out) {
+			this.out = out;
+		}
+        
+        
+        
+    }
+    
+    /**
+     * Wraps Response Stream for BufferedResponseFilter
+     */
+    public class BufferResponseStream extends ServletOutputStream {
+        // abstraction of the output stream used for compression
+        protected ByteArrayOutputStream bufferedOutput = null;
+        
+        // state keeping variable for if close() has been called
+        protected boolean closed = false;
+        
+        // reference to original response
+        protected HttpServletResponse response = null;
+        
+        // reference to the output stream to the client's browser
+        protected ServletOutputStream output = null;
+        
+        protected Exception closeX = null;
+        
+        
+        @SuppressWarnings("unused")
+		public BufferResponseStream(HttpServletResponse response)
+        throws IOException {
+            super();
+            closed = false;
+            this.response = response;
+            this.output = null;
+            bufferedOutput = new ByteArrayOutputStream(2048);
+        }
+        
+        public void close() throws IOException {	
+        	
+            // verify the stream is yet to be closed
+            if (closed) {
+                
+                throw new IOException("This output stream has already been closed");
+            }
+            
+            closeX = new Exception("BufferResponseStream.close()");         
+            try {
+            // set appropriate HTTP headers
+                response.setContentLength(bufferedOutput.toByteArray().length);
+                response.getOutputStream().write(bufferedOutput.toByteArray());
+                //this.response.getWriter().print(bufferedOutput.toString(this.response.getCharacterEncoding()));
+                //System.err.println("BufferResponseStream.close() write " + bufferedOutput.toString());
+                output.flush();
+                output.close();
+                closed = true;
+            }
+            catch(Exception x) {
+                
+            }
+            finally {
+                try {
+                    bufferedOutput.close();
+                }
+                catch (Throwable th) {
+                	
+                }
+                finally {
+                    
+                }
+
+                bufferedOutput = null;
+            }
+        }
+        
+        /** Returns the stack trace for the given Thowable as string.
+   	 *
+   	 * @param throwable exception to create the stacktrace for */
+   	public  String stackTraceToString(Throwable throwable)
+   	{
+   		StringWriter stack;	// tmp
+   			
+   		stack = new StringWriter();
+   		throwable.printStackTrace(new PrintWriter(stack));
+   		
+   		String s = stack.toString();
+   		stack = null;
+
+   		return s;
+   		
+   	}
+        
+        public void flush() throws IOException {
+            if (closed) {
+                throw new IOException("Cannot flush a closed output stream: closeX:" + closeX != null ? this.stackTraceToString(closeX) : "null");
+            }
+            
+            bufferedOutput.flush();
+        }
+        
+        public void write(int b) throws IOException {
+            if (closed) {
+                throw new IOException("Cannot write to a closed output stream");
+            }
+            
+            // make sure we aren't over the buffer's limit
+            checkBufferSize(1);
+            
+            // write the byte to the temporary output
+            bufferedOutput.write((byte) b);
+        }
+        
+        @SuppressWarnings("unused")
+		private void checkBufferSize(int length) throws IOException {
+            // check if we are buffering too large of a file
+        }
+        
+        public void write(byte[] b) throws IOException {
+            write(b, 0, b.length);
+        }
+        
+        public void write(byte[] b, int off, int len) throws IOException {
+            
+            if (closed) {
+                throw new IOException("Cannot write to a closed output stream");
+            }
+            
+            // make sure we aren't over the buffer's limit
+            checkBufferSize(len);
+            
+            // write the content to the buffer
+            bufferedOutput.write(b, off, len);
+        }
+        
+        public boolean closed() {
+            return (this.closed);
+        }
+        
+        public void reset() {
+            //noop
+        }
+    }
 }

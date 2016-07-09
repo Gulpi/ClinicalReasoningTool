@@ -252,14 +252,14 @@ public class PatientIllnessScript extends Beans/*extends Node*/ implements Illne
 	public void addTest(String idStr, String name, String x, String y){ new AddTestAction(this).add(idStr, name, x,y);}
 	public void addMng(String idStr, String name){ new AddMngAction(this).add(idStr, name);}
 	public void addMng(String idStr, String name, String x, String y){ new AddMngAction(this).add(idStr, name, x,y);}
-	public void addEpi(String idStr, String name){ new AddEpiAction(this).add(idStr, name);}
-	public void addEpi(String idStr, String name, String x, String y){ new AddEpiAction(this).add(idStr, name, x,y);}
+	//public void addEpi(String idStr, String name){ new AddEpiAction(this).add(idStr, name);}
+	//public void addEpi(String idStr, String name, String x, String y){ new AddEpiAction(this).add(idStr, name, x,y);}
 	
 	public void delProblem(String idStr){ new DelProblemAction(this).delete(idStr);}
 	public void delDiagnosis(String idStr){ new DelDiagnosisAction(this).delete(idStr);}
 	public void delTest(String idStr){ new DelTestAction(this).delete(idStr);}
 	public void delMng(String idStr){ new DelMngAction(this).delete(idStr);}
-	public void delEpi(String idStr){ new DelEpiAction(this).delete(idStr);}
+	//public void delEpi(String idStr){ new DelEpiAction(this).delete(idStr);}
 
 	public void reorderProblems(String idStr, String newOrderStr){ new MoveProblemAction(this).reorder(idStr, newOrderStr);}
 	public void reorderDiagnoses(String idStr, String newOrderStr){ new MoveDiagnosisAction(this).reorder(idStr, newOrderStr);}
@@ -278,7 +278,7 @@ public class PatientIllnessScript extends Beans/*extends Node*/ implements Illne
 	public void changeDiagnosis(String idStr,String changeMode){new ChangeDiagnosisAction(this).changeDiagnosis(idStr, changeMode);}
 	public void changeTest(String idStr,String changeMode){new ChangeTestAction(this).changeTest(idStr, changeMode);}
 	public void changeMng(String idStr,String changeMode){new ChangeMngAction(this).changeMng(idStr, changeMode);}
-	public void changeEpi(String idStr,String changeMode){new ChangeEpiAction(this).changeEpi(idStr, changeMode);}
+	//public void changeEpi(String idStr,String changeMode){new ChangeEpiAction(this).changeEpi(idStr, changeMode);}
 	public void changeMnM(String idStr/*, String newValue*/){new ChangeDiagnosisAction(this).toggleMnM(idStr/*, newValue*/);}
 	
 	public void addConnection(String sourceId, String targetId){new AddConnectionAction(this).add(sourceId,targetId);}
@@ -294,7 +294,7 @@ public class PatientIllnessScript extends Beans/*extends Node*/ implements Illne
 	//public void submitDDX(){new DiagnosisSubmitAction(this).submitDDX();}
 	public void changeTier(String idStr, String tierStr){new DiagnosisSubmitAction(this).changeTier(idStr, tierStr);}
 	public void changeConfidence(String idStr, String confVal){new ChgPatIllScriptAction(this).changeConfidence(idStr, confVal);}
-	public void chgCourseOfTime(String courseOfTimeStr) { new ChgPatIllScriptAction(this).chgCourseOfTime(courseOfTimeStr);}
+	//public void chgCourseOfTime(String courseOfTimeStr) { new ChgPatIllScriptAction(this).chgCourseOfTime(courseOfTimeStr);}
 
 	public void addJoker(String idStr, String type){ new JokerAction(this).addJoker(type);}
 	

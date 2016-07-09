@@ -44,5 +44,6 @@
 	<classpathentry kind="lib" path="WEB-INF/lib/jgrapht.jar"/>
 	<classpathentry kind="lib" path="WEB-INF/lib/jxapi-1.0.2.jar"/>
 	<classpathentry kind="lib" path="WEB-INF/lib/log4j.jar"/>
+	<classpathentry kind="lib" path="WEB-INF/lib/adw.v1.0.jar"/>
 	<classpathentry kind="output" path="WEB-INF/classes"/>
 </classpath>

@@ -6,6 +6,8 @@ import java.util.ArrayList;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.application.FacesMessage.Severity;
+import javax.faces.context.FacesContext;
+import javax.servlet.http.HttpServletRequest;
 
 import actions.scoringActions.Scoreable;
 import actions.scoringActions.ScoringAddAction;
@@ -23,6 +25,7 @@ import controller.NavigationController;
 import controller.RelationController;
 import database.DBClinReason;
 import database.DBList;
+import properties.IntlConfiguration;
 import util.CRTLogger;
 
 public class AddMngAction implements AddAction, Scoreable{
@@ -73,7 +76,7 @@ public class AddMngAction implements AddAction, Scoreable{
 		if(patIllScript.getMngs()==null) patIllScript.setMngs(new ArrayList<RelationManagement>());
 		RelationManagement rel = new RelationManagement(id, patIllScript.getId(), synId);		
 		if(patIllScript.getMngs().contains(rel)){
-			createErrorMessage("Problem already assigned.","optional details", FacesMessage.SEVERITY_WARN);
+			createErrorMessage(IntlConfiguration.getValue("mng.duplicate"),"optional details", FacesMessage.SEVERITY_WARN);
 			return;
 		}
 		rel.setOrder(patIllScript.getMngs().size());
@@ -86,7 +89,9 @@ public class AddMngAction implements AddAction, Scoreable{
 		save(rel);
 		updateGraph(rel);
 		notifyLog(rel);
-		triggerScoringAction(rel, isJoker);				
+		triggerScoringAction(rel, isJoker);	
+		((HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest()).setAttribute("mng", rel);
+
 	}
 	
 
@@ -98,7 +103,7 @@ public class AddMngAction implements AddAction, Scoreable{
 	private Point calculateNewItemPosInCanvas(){
 		int y = AddAction.MIN_Y;
 		if(patIllScript.getMngs()!=null || !patIllScript.getMngs().isEmpty()){
-			y = patIllScript.getMngs().size() * 25; //CAVE max y! 
+			y = patIllScript.getMngs().size() * 26; //CAVE max y! 
 		}
 		return new Point(RelationManagement.DEFAULT_X,y);
 	}
@@ -112,7 +117,7 @@ public class AddMngAction implements AddAction, Scoreable{
 	}
 	
 	public void createErrorMessage(String summary, String details, Severity sev) {
-		new ErrorMessageContainer().addErrorMessage(summary, details, sev);		
+		new ErrorMessageContainer().addErrorMessage("mngform", summary, details, sev);		
 	}
 	
 	/* (non-Javadoc)

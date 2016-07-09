@@ -1,39 +1,66 @@
-var listUrl="jsonp_en.json";
+//var listUrl="jsonp_en.json";
 
 /**
  * javascript for displaying the illness script tabs representation
  */
 
-/******************** patient tab*******************************/
+/******************** general add/del*******************************/
+
+/*function delCallback(prefix, id){
+	deleteEndpoints(prefix+"_"+id);
+	instance.remove($("#"+prefix+"_"+id));
+	hideDropDown("dd"+prefix+"_"+id);
+}*/
+/**
+ * adds a div elem (=response) to the given box (identified by boxid). 
+ * 1. get id of div from response
+ * 2. add div to box
+ * 3.init the draggable stuff
+ * 4. add div to group
+ * 5. add endpoints (anchortype as parameter)
+ * @param response
+ * @param boxid
+ * @param anchorpos
+ */
+/*function addCallback(response, boxid, anchorpos){
+	var $div = $(response);
+	id = $div.attr("id"); //1.
+	
+	$(boxid).append($div); //2.
+	var cnt = $( "#"+id).length;
+	//3.
+	 instance.draggable(jsPlumb.getSelector("#"+id));
+	 $( "#"+id).draggable({
+	        containment:"parent"
+	  });
+     $( "#"+id).draggable({
+   	  stop: function( event, ui ) {
+   		  handleRectDrop(ui);
+   	  }
+   });
+	addToGroup(id, $div); //4.
+	instance.addEndpoint(id, { anchor:anchorpos }, endpoint); //5.
+}*/
 /**
  * user changes the course of time, we trigger an ajax call to save change.
  */
-function changeCourseOfTime(){
+/*function changeCourseOfTime(){
 	var courseTime = $("#courseTime").val(); 
 	sendAjax(courseTime, doNothing, "chgCourseOfTime", "");
-}
+}*/
 
 /******************** epi tab*******************************/
 
 /**
  * a problem is added to the list of the already added problems:
  **/
-function addEpi(problemId, name){
+/*function addEpi(problemId, name){
 	//here we have to trigger an ajax call... 
 	//var problemId = $("#problems").val();
 	if(name!="") sendAjax(problemId, epiCallBack, "addEpi", name);
 }
 
 
-/* if the answer was correct, but there is a better choice we offer the learner to change it by clicking on the checkmark*/
-/*function chgEpi(orgId, toChgId){
-	var confirmMsg = confirm("The term you have chosen is correct, however, a better choice would have been Dyspnea. Do you want to change your choice?");
-	if(confirmMsg){
-		$("#selprob_"+orgId).html("Dyspnea<i class=\"icon-ok2\"></i>");
-		$("#selprob_"+orgId).attr("id","selprob_"+toChgId);
-		//also trigger an ajax call to store the change....
-	}
-}*/
 
 function delEpi(id){
 	sendAjax(id, epiCallBack, "delEpi", "");
@@ -57,7 +84,7 @@ function epiCallBackCM(epiId, selEpi){
 
 function reOrderEpi(newOrder, id){
 	sendAjax(id, epiCallBack, "reorderEpi", newOrder);
-}
+}*/
 
 /******************** problems tab*******************************/
 
@@ -67,7 +94,9 @@ function reOrderEpi(newOrder, id){
 function addProblem(problemId, name){
 	clearErrorMsgs();
 	var prefix = $("#fdg_prefix").val();
-	if(name!="") sendAjax(problemId, problemCallBack, "addProblem", prefix);
+	if(name!="") sendAjax(problemId, problemCallBack, "addProblem", prefix, name);
+		
+		//sendAjaxUrlHtml(problemId, problemAddCallBack, "addProblem", prefix, "probbox2.xhtml");
 }
 
 
@@ -77,30 +106,45 @@ function chgProblem(id, type){
 	
 }
 
-/*function toggleProblem(id){
-	sendAjax(id, problemCallBack, "toggleProblem", "");
-}*/
-
 function delProblem(id){
 	clearErrorMsgs();
-	sendAjax(id, delProblemCallBack, "delProblem", "");
+	sendAjax(id, delProbCallBack, "delProblem", "");
 }
 
-function delProblemCallBack(problemId, selProblem){
-	deleteEndpoints("fdg_"+problemId);
-	problemCallBack(problemId, selProblem);
+/*function delProblemCallBack(problemId, selProblem){	
+	delCallback("fdg", problemId)
+	//deleteEndpoints("fdg_"+problemId);
+	//instance.remove($("#fdg_"+problemId));
+}*/
+/*
+ * 
+ */
+/*function problemAddCallBack(response){
+	addCallback(response, "#fdg_box", "RightMiddle");
+
+}*/
+
+function delProbCallBack(probId, selProb){
+	deleteEndpoints("fdg_"+probId);
+	problemCallBack(probId, selProb);
 }
 
-function problemCallBack(problemId, selProblem){
-	$("#problems").val("");		
-	$(".fdgs").remove(); 
+function problemCallBack(testId, selTest){
+	$("#problems").val("");	
+	$(".fdgs").remove();
 	//we update the problems list and the json string
-	$("[id='probform:hiddenProbButton']").click();	
+	$("[id='probform:hiddenProbButton']").click();		
 }
+
+function updatProbCallback(data){
+	updateItemCallback(data, "fdgs");
+}
+
 
 function addJokerFdg(){
 	clearErrorMsgs();
-	sendAjax("", problemCallBack, "addJoker", 1);
+	sendAjax("", problemAddCallBack, "addJoker", 1);
+	//sendAjaxUrlHtml("", problemAddCallBack, "addJoker", 1, "probbox2.xhtml");
 }
 
 function toggleFdgFeedback(){
@@ -122,6 +166,7 @@ function togglePeersFdg(){
 function addDiagnosis(diagnId, name){
 	clearErrorMsgs();
 	if(name!="") sendAjax(diagnId, diagnosisCallBack, "addDiagnosis", name);
+		//sendAjaxUrlHtml(diagnId, diagnosisAddCallBack, "addDiagnosis", name, "ddxbox2.xhtml");
 }
 
 function delDiagnosis(id){
@@ -136,6 +181,7 @@ function delDiagnosisCallBack(ddxId, selDDX){
 	diagnosisCallBack(ddxId, selDDX);
 }
 
+
 function diagnosisCallBack(ddxId, selDDX){
 	$("#ddx").val("");		
 	$(".ddxs").remove();	
@@ -143,9 +189,9 @@ function diagnosisCallBack(ddxId, selDDX){
 	$("[id='ddxform:hiddenDDXButton']").click();			
 }
 
-function updateDDXCallback(){
+function updateDDXCallback(data){
 	checkSubmitBtn();
-	updateItemCallback();
+	updateItemCallback(data, "ddxs");
 }
 
 /*function hasAFinalDiagnosis(){
@@ -174,7 +220,9 @@ function toggleMnM(id){
 
 function addJokerDDX(){
 	clearErrorMsgs();
-	sendAjax("", diagnosisCallBack, "addJoker", 2);
+	//sendAjax("", diagnosisCallBack, "addJoker", 2);
+	sendAjaxUrlHtml("", diagnosisAddCallBack, "addJoker", 2, "ddxbox2.xhtml");
+
 }
 
 function toggleDDXFeedback(){
@@ -376,6 +424,10 @@ function managementCallBack(mngId, selMng){
 	$("[id='mngform:hiddenMngButton']").click();	
 }
 
+function updatMngCallback(data){
+	updateItemCallback(data, "mngs");
+}
+
 function addJokerMng(){
 	clearErrorMsgs();
 	sendAjax("", managementCallBack, "addJoker", 4);
@@ -416,6 +468,10 @@ function testCallBack(testId, selTest){
 	$(".tests").remove();
 	//we update the problems list and the json string
 	$("[id='testform:hiddenTestButton']").click();		
+}
+
+function updateTestCallback(data){
+	updateItemCallback(data, "tests");
 }
 
 function chgTest(id, type){
@@ -622,7 +678,7 @@ function turnExpBoxFeedbackOff(iconId, itemClass){
 	}
 }
 
-
+var addHeightPixSum = 0;
 /*
  * display or hide the expert's summary statement
  */
@@ -641,8 +697,14 @@ function toggleSumFeedback(iconId, type){
 		$("#"+iconId).addClass("fa-user-md_on");
 		$("#"+iconId).attr("title", "click to hide expert feedback");
 		$("#list_score_sum").show();
+		//$("#sum_box").height("300");
 		sendAjaxContext(1, doNothing, "toogleExpBoxFeedback", type);
 	}
+}
+
+/* when displaying the expert summSt we have to increase the height of the box.*/
+function calcAddPixForExpSum(){
+	
 }
 /*
  * we display the peer feedback for the given box/type
@@ -722,6 +784,7 @@ function showExpStages(){
  * We get the position of the pos element (the itembox) and position the dropdown menu close to it
  */
 function showDropDown(id, pos){	
+	hideAllDropDowns(); //we first hide all in case any are still open...
 	$("#"+id).show();
 	var x =  $("#"+pos).position().left+10;
 	var y = $("#"+pos).position().top+5;
@@ -732,6 +795,10 @@ function showDropDown(id, pos){
  */
 function hideDropDown(id){
 	$("#"+id).hide();
+}
+
+function hideAllDropDowns(){
+	$(".dropdown-content").hide();
 }
 
 function clearErrorMsgs(){

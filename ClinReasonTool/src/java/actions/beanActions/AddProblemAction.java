@@ -7,6 +7,7 @@ import java.util.*;
 import javax.faces.application.FacesMessage;
 import javax.faces.application.FacesMessage.Severity;
 import javax.faces.context.FacesContext;
+import javax.servlet.http.HttpServletRequest;
 
 import org.hibernate.tool.hbm2x.StringUtils;
 
@@ -19,6 +20,7 @@ import controller.NavigationController;
 import controller.RelationController;
 import database.DBClinReason;
 import database.DBList;
+import properties.IntlConfiguration;
 import util.CRTLogger;
 import actions.scoringActions.ScoringAddAction;
 import actions.scoringActions.ScoringListAction;
@@ -67,7 +69,7 @@ public class AddProblemAction implements AddAction, Scoreable{
 		if(patIllScript.getProblems()==null) patIllScript.setProblems(new ArrayList<RelationProblem>());
 		RelationProblem rel = new RelationProblem(id, patIllScript.getId(), synId);		
 		if(patIllScript.getProblems().contains(rel)){
-			createErrorMessage("Problem already assigned.","optional details", FacesMessage.SEVERITY_WARN);
+			createErrorMessage(IntlConfiguration.getValue("findings.duplicate"),"optional details", FacesMessage.SEVERITY_WARN);
 			return;
 		}
 		if(prefix!=null && !prefix.trim().equals("") && StringUtils.isAlphanumeric(prefix)){ //check whether a prefix has been chosen
@@ -85,14 +87,16 @@ public class AddProblemAction implements AddAction, Scoreable{
 		save(rel);
 		notifyLog(rel);
 		updateGraph(rel);
-		triggerScoringAction(rel, isJoker);		
+		triggerScoringAction(rel, isJoker);	
+		//((HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest()).setAttribute("prob", rel);
+
 	}
 	
 	/* (non-Javadoc)
 	 * @see beanActions.AddAction#createErrorMessage(java.lang.String, java.lang.String, javax.faces.application.FacesMessage.Severity)
 	 */
 	public void createErrorMessage(String summary, String details, Severity sev){
-		new ErrorMessageContainer().addErrorMessage(summary, details, sev);
+		new ErrorMessageContainer().addErrorMessage("probform", summary, details, sev);
 	}
 	
 	/**
@@ -103,7 +107,7 @@ public class AddProblemAction implements AddAction, Scoreable{
 	private Point calculateNewItemPosInCanvas(){
 		int y = AddAction.MIN_Y;
 		if(patIllScript.getProblems()!=null || !patIllScript.getProblems().isEmpty()){
-			y = patIllScript.getProblems().size() * 25; //CAVE max y! 
+			y = patIllScript.getProblems().size() * 26; //CAVE max y! 
 		}
 		return new Point(RelationProblem.DEFAULT_X,y);
 	}

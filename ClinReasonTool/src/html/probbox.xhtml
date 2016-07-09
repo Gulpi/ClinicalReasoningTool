@@ -9,15 +9,19 @@
 	 <script language="Javascript">
 	 	item_arr.push("fdg_#{prob.id}");
 	 </script>
-	 <span class="dropdown" onMouseOver="javascript:showDropDown('ddfdg_#{prob.id}', 'fdg_#{prob.id}');"><i class="fa fa-chevron-circle-down"></i></span>
+	 <span class="dropdown" onClick="javascript:showDropDown('ddfdg_#{prob.id}', 'fdg_#{prob.id}');"><i class="fa fa-chevron-circle-down"></i></span>
 
- 	<span class="peer_score_fdg" title="Percentage of peers who have added this problem as well" id="peerscore#{prob.id}"> (#{prob.peerPercentage})</span>
+ 	<span class="peer_score_fdg" title="#{prop['findings.peer.hint']}" id="peerscore#{prob.id}"> (#{prob.peerPercentage})</span>
  </div> 
-	 <div class="dropdown-content" id="ddfdg_#{prob.id}" onmouseleave="javascript:hideDropDown('ddfdg_#{prob.id}');">Change to:<br/>
-		<a href="javascript:chgProblem(#{prob.id}, 1);">#{prob.toggledPrefixStr} #{prob.labelOrSynLabel}</a><br/><!-- item toggled prefix, always enabled -->	 	
-		<span class="dropd_#{prob.isExpertHierarchyItem}"><a class="dropd_#{prob.isExpertHierarchyItem}" href="javascript:chgProblem(#{prob.id}, 2);">#{prob.expItemLabel}</a><br/></span> <!-- Hierarchy -->
-		<span class="dropd_#{prob.isSynonyma}"><a class="dropd_#{prob.isSynonyma}" href="javascript:chgProblem(#{prob.id}, 3);">#{prob.synonym.name}</a><br/></span> <!-- Synonym -->
-		<a href="javascript:delProblem(#{prob.id});"><i class="fa fa-trash"></i> Delete</a>
+	 <div class="dropdown-content" id="ddfdg_#{prob.id}" onmouseleave="javascript:hideDropDown('ddfdg_#{prob.id}');">
+	 <span style="float:left;">#{prop['change']}:</span>
+	<span class="dropdownX"><a href="javascript:hideDropDown('ddfdg_#{prob.id}');"><i class="fa fa fa-times"></i></a></span> <br/>
+		<div class="links">
+			<a href="javascript:chgProblem(#{prob.id}, 1);"><i class="fa fa-long-arrow-right"></i> #{prob.toggledPrefixStr} #{prob.labelOrSynLabel}</a><br/><!-- item toggled prefix, always enabled -->	 	
+			<span class="dropd_#{prob.isExpertHierarchyItem}"><a class="dropd_#{prob.isExpertHierarchyItem}" href="javascript:chgProblem(#{prob.id}, 2);"><i class="fa fa-long-arrow-right"></i> #{prob.expItemLabel}</a><br/></span> <!-- Hierarchy -->
+			<span class="dropd_#{prob.isSynonyma}"><a class="dropd_#{prob.isSynonyma}" href="javascript:chgProblem(#{prob.id}, 3);"><i class="fa fa-long-arrow-right"></i> #{prob.synonym.name}</a><br/></span> <!-- Synonym -->
+		</div>
+		<a class="del" href="javascript:delProblem(#{prob.id});"><i class="fa fa-trash"></i> #{prop['delete']}</a>
 	</div>	
 
 </ui:composition>

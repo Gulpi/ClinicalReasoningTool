@@ -22,7 +22,7 @@
 
 .plainList{
 	padding:5px;
-	list-style-type: none; /*icon could be liststyls? */
+	list-style-type: none; /*icon could be liststyles? */
 }
 
 .portfsearch{
@@ -35,8 +35,17 @@
 	/*background-color:#cccccc;*/
 }
 
+.chart{
+	width:280px;
+	position:relative;
+}
+.chart_header{
+	font-size:0.8em;
+	width:280px;
+}
 .chart_container{
-	
+	width:90%;
+	/*height:150px;*/
 }
 
 .displaychart_0{
@@ -45,5 +54,7 @@
 
 .displaychart_1{
 	display:block;
-	width:200px;
+	width:280px;
+	position:relative;
+	float:left;
 }

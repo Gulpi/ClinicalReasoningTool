@@ -7,6 +7,7 @@ import java.util.*;
 import javax.faces.application.FacesMessage;
 import javax.faces.application.FacesMessage.Severity;
 import javax.faces.context.FacesContext;
+import javax.servlet.http.HttpServletRequest;
 
 import actions.scoringActions.Scoreable;
 import actions.scoringActions.ScoringAddAction;
@@ -23,6 +24,7 @@ import controller.RelationController;
 import database.DBClinReason;
 import database.DBList;
 import model.Synonym;
+import properties.IntlConfiguration;
 import util.CRTLogger;
 
 public class AddDiagnosisAction implements AddAction, Scoreable{
@@ -61,7 +63,7 @@ public class AddDiagnosisAction implements AddAction, Scoreable{
 		if(patIllScript.getDiagnoses()==null) patIllScript.setDiagnoses(new ArrayList<RelationDiagnosis>());
 		RelationDiagnosis rel = new RelationDiagnosis(id, patIllScript.getId(), synId);		
 		if(patIllScript.getDiagnoses().contains(rel)){
-			createErrorMessage("Diagnosis already assigned.","optional details", FacesMessage.SEVERITY_WARN);
+			createErrorMessage(IntlConfiguration.getValue("ddx.duplicate"),"optional details", FacesMessage.SEVERITY_WARN);
 			return;
 		}
 		rel.setOrder(patIllScript.getDiagnoses().size());
@@ -74,14 +76,16 @@ public class AddDiagnosisAction implements AddAction, Scoreable{
 		save(rel);
 		notifyLog(rel);
 		updateGraph(rel);
-		triggerScoringAction(rel, isJoker);		
+		triggerScoringAction(rel, isJoker);	
+		((HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest()).setAttribute("ddx", rel);
+
 	}
 	
 	/* (non-Javadoc)
 	 * @see beanActions.AddAction#createErrorMessage(java.lang.String, java.lang.String, javax.faces.application.FacesMessage.Severity)
 	 */
 	public void createErrorMessage(String summary, String details, Severity sev){
-		new ErrorMessageContainer().addErrorMessage(summary, details, sev);
+		new ErrorMessageContainer().addErrorMessage("ddxform", summary, details, sev);
 	}
 	
 	/**
@@ -92,7 +96,7 @@ public class AddDiagnosisAction implements AddAction, Scoreable{
 	private Point calculateNewItemPosInCanvas(){
 		int y = AddAction.MIN_Y;
 		if(patIllScript.getDiagnoses()!=null || !patIllScript.getDiagnoses().isEmpty()){
-			y = patIllScript.getDiagnoses().size() * 25;//CAVE max y!
+			y = patIllScript.getDiagnoses().size() * 26;//CAVE max y!
 		}
 		return new Point(RelationDiagnosis.DEFAULT_X,y);
 	}

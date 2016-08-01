@@ -77,6 +77,7 @@ var test = "#{crtContext.userId}";
 					<f:param name="script_id" value="#{scripts.id}" />
 					<f:param name="user_id" value="#{scripts.userId}" />
 			</h:commandLink>
+			language: #{scripts.locale}, vpId: #{scripts.vpId}
 			<!--  <h:outputLink value="exp_script_creator.xhtml">
 						script id:<h:outputText value="#{scripts.id}" />, vp id:<h:outputText value="#{scripts.parentId}" />
 						<f:param name="script_id" value="#{scripts.id}" />

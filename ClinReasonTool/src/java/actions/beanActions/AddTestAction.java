@@ -80,6 +80,9 @@ public class AddTestAction implements AddAction, Scoreable/*, FeedbackCreator*/{
 		}
 		rel.setOrder(patIllScript.getTests().size());
 		rel.setStage(patIllScript.getCurrentStage());
+		if(new NavigationController().isExpEdit()){
+			rel.setStage(patIllScript.getStage());
+		}
 		if(x<0 && y<0) rel.setXAndY(calculateNewItemPosInCanvas());		
 		else rel.setXAndY(new Point(x,y)); //problem has been created from the concept map, therefore we have a position
 

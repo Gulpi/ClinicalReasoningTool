@@ -81,6 +81,9 @@ public class AddMngAction implements AddAction, Scoreable{
 		}
 		rel.setOrder(patIllScript.getMngs().size());
 		rel.setStage(patIllScript.getCurrentStage());
+		if(new NavigationController().isExpEdit()){
+			rel.setStage(patIllScript.getStage());
+		}
 		if(x<0 && y<0) rel.setXAndY(calculateNewItemPosInCanvas());		
 		else rel.setXAndY(new Point(x,y)); //problem has been created from the concept map, therefore we have a position
 

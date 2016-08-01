@@ -42,12 +42,11 @@
  
 <style>
 /** ELEMENT POSITIONS **/
-#pat_box { left:0px;top:5px; }
-#fdg_box { left:240px;top:5px; }
-#ddx_box { left:0px;top:210px; }
-#tst_box { left:240px;top:210px; }
-#sum_box { left:0px;top:420px; }
-#mng_box { left:240px;top:420px; }
+#fdg_box { left:15px;top:15px; }
+#ddx_box { left:245px;top:15px; }
+#tst_box { left:15px;top:290px; }
+#mng_box { left:245px;top:290px; }
+#sum_box { left:15px;top:565px; }
 
 </style>
 <script language="JavaScript">
@@ -251,8 +250,8 @@ Stage: <span id="stageSpan">#{crtContext.patillscript.stage} </span>
 		   		</div>
 		   		<div class="node-collapse"></div>
 		  			<div class="search boxchild"><span class="icon"><i class="icon-search"></i></span>
-		  			<select class="f_select" id="fdg_prefix"><option value="0">-</option><option value="1">No</option></select>
-		  			<input class="f_text" id="problems" placeholder="Search..." title="Please add any problems, findings, exposures, or risk factors you consider as relevant"></input></div>
+		  			<select class="f_select" style="width:40px;" id="fdg_prefix"><option value="0">-</option><option value="1">No</option></select>
+		  			<input class="f_text" style="width:155px;" id="problems" placeholder="Search..." title="Please add any problems, findings, exposures, or risk factors you consider as relevant"></input></div>
 						<h:form id="probform">
 						<h:panelGroup>
 						   <ui:repeat id="repeatprob" value="#{crtContext.patillscript.problemsStage}" var="prob" varStatus="status">
@@ -267,12 +266,12 @@ Stage: <span id="stageSpan">#{crtContext.patillscript.stage} </span>
 						</h:form>
 						<span class="errormsg" id="msg_probform"></span>
 		  </div>
-		 <div id="sum_box" class="container" group="sum_group">	
+		 <div id="sum_box" class="container sum_container" group="sum_group">	
 		 	<div class="title">Summary Statement
 		 	</div>
 		 	 <div class="node-collapse"></div>
-		 	 <textarea style="display:none;" id="summStTextHidden" cols="27" rows="7">#{crtContext.patillscript.summSt.text}</textarea>
-				<textarea class="f_textarea boxchild" name="summSt" id="summStText" cols="27" rows="7">#{crtContext.patillscript.summStStage.text}</textarea><br/>
+		 	 <textarea style="display:none;" id="summStTextHidden" cols="65" rows="3">#{crtContext.patillscript.summSt.text}</textarea>
+				<textarea class="f_textarea boxchild" name="summSt" id="summStText" cols="65" rows="3">#{crtContext.patillscript.summStStage.text}</textarea><br/>
 			 	<span class="errormsg" id="msg_sumstform"></span>
 		</div>
 		  <!--  diagnoses -->
@@ -308,7 +307,7 @@ Stage: <span id="stageSpan">#{crtContext.patillscript.stage} </span>
 					<!--  <div id="jsonTestsMap" style="visibility:hidden">#{crtContext.patillscript.testsJson}</div>-->
     				</h:panelGroup>
     				     <h:commandButton id="hiddenTestButton" value="RenderSomething" style="visibility:hidden">
-    						<f:ajax render="@form" onevent="updateItemCallback"></f:ajax>
+    						<f:ajax render="@form" onevent="updateTestCallback"></f:ajax>
 						</h:commandButton>
 					</h:form>
 					<span class="errormsg" id="msg_testform"></span>
@@ -327,7 +326,7 @@ Stage: <span id="stageSpan">#{crtContext.patillscript.stage} </span>
 	   				</ui:repeat>				
 	  				</h:panelGroup>
 	  				     <h:commandButton id="hiddenMngButton" value="RenderSomething" style="visibility:hidden">
-	  						<f:ajax render="@form" onevent="updateItemCallback"></f:ajax>
+	  						<f:ajax render="@form" onevent="updatMngCallback"></f:ajax>
 					</h:commandButton>
 				</h:form>
 				<span class="errormsg" id="msg_mngform"></span>

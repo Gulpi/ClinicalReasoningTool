@@ -57,6 +57,7 @@ var scriptId = "#{crtContext.patillscript.id}";
 //var listUrl="jsonp_#{crtContext.patillscript.locale}.json";
 var listUrl="jsonp_en.json";
 var lang = "#{crtContext.patillscript.locale}";
+if(lang=="de") listUrl = "jsonp_de.json";
 //var my_canvas = null;
 var currentStage = $.getUrlVar('stage');
 var currentStageScript = "#{crtContext.patillscript.currentStageWithUpdate}";
@@ -69,10 +70,10 @@ var submitted = "#{crtContext.patillscript.submitted}";
 var instance;
 var item_arr = new Array();
 var exp_arr = new Array();
-if(lang=="de") listUrl = "jsonp_de.json";
+
 
 $(function() {
-	//if(lang=="de") listUrl = "jsonp_de.json";
+	if(lang=="de") listUrl = "jsonp_de.json";
 	$(".listdialog").hide();
 	$("#jdialogError").hide();
 	$("#connContext").hide();

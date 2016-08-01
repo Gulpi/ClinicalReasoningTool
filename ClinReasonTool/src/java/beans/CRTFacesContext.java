@@ -185,7 +185,7 @@ public class CRTFacesContext extends FacesContextWrapper /*implements Serializab
 		//setUserIdFromExt(extUserId);
 		if(this.patillscript!=null && (id<0 || this.patillscript.getId()==id)) return; //current script already loaded....
 
-		if(id<=0 && vpId!=null) return; //then user has opened the overview page...y
+		if(id<=0 && vpId==null) return; //then user has opened the overview page...y
 
 		if(id>0){ //open an created script
 			this.patillscript = isc.loadPatIllScriptById(id, user.getUserId());

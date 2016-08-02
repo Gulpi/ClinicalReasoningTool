@@ -31,6 +31,8 @@ public class PeerContainer {
 	public void initPeerContainer(){
 		if(peerBeans==null)
 			peerBeans = new DBScoring().selectAllPeerBeans();
+		if(peerBeans==null) peerBeans = new HashMap<String, List<PeerBean>>();
+			
 	}
 		
 	public Map<String, List<PeerBean>> getPeerBeans() {return peerBeans;}

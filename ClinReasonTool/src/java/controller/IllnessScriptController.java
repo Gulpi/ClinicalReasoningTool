@@ -13,6 +13,7 @@ import beans.scoring.ScoreBean;
 import database.DBClinReason;
 import database.DBScoring;
 import util.CRTLogger;
+import util.StringUtilities;
 
 /**
  * Helper class for creating and loading Illness scripts based on sessionId, userId, or id....
@@ -44,7 +45,7 @@ public class IllnessScriptController implements Serializable{
 	 * @return
 	 */
 	public PatientIllnessScript loadIllnessScriptsByVpId(long userId, String vpId){
-		if(vpId!=null && vpId.equals("") && userId>0){
+		if(vpId!=null && !vpId.equals("") && userId>0){
 			PatientIllnessScript patillscript =new DBClinReason().selectPatIllScriptsByUserIdAndVpId(userId, vpId);
 			
 			return patillscript;
@@ -74,13 +75,18 @@ public class IllnessScriptController implements Serializable{
 	 * @param patillscript
 	 */
 	private void addScriptCreationToPeerBean(PatientIllnessScript patillscript){
-		PeerBean peer = AppBean.getPeers().getPeerBeanByIllScriptCreationActionAndVpId(patillscript.getVpId());
-		if(peer==null){
-			peer = new PeerSyncController().createNewPeerBean(ScoreBean.TYPE_SCRIPT_CREATION, patillscript.getVpId(), -1, 0, 0);
+		try{
+			PeerBean peer = AppBean.getPeers().getPeerBeanByIllScriptCreationActionAndVpId(patillscript.getVpId());
+			if(peer==null){
+				peer = new PeerSyncController(AppBean.getPeers()).createNewPeerBean(ScoreBean.TYPE_SCRIPT_CREATION, patillscript.getVpId(), -1, 0, 0);
+			}
+			else{
+				peer.incrPeerNum();
+				new DBScoring().saveAndCommit(peer);
+			}
 		}
-		else{
-			peer.incrPeerNum();
-			new DBScoring().saveAndCommit(peer);
+		catch(Exception e){
+			CRTLogger.out("IllnessScriptController.addScriptCreationToPeerBean:" + StringUtilities.stackTraceToString(e) , CRTLogger.LEVEL_ERROR);
 		}
 	}
 	

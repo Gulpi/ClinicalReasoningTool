@@ -194,7 +194,7 @@ public class CRTFacesContext extends FacesContextWrapper /*implements Serializab
 
 		}
 		else if(vpId!=null && !vpId.equals("") && systemId>0 && user!=null){ //look whether script created, if not create it...
-			this.patillscript = isc.loadIllnessScriptsByVpId(user.getUserId(), vpId);
+			this.patillscript = isc.loadIllnessScriptsByVpId(user.getUserId(), vpId+"_"+systemId);
 			if(this.patillscript==null){
 				this.patillscript = isc.createAndSaveNewPatientIllnessScript(user.getUserId(), vpId, systemId);
 			}

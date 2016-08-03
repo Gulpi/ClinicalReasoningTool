@@ -232,8 +232,14 @@ public class CRTFacesContext extends FacesContextWrapper /*implements Serializab
 	private void loadExpScripts(){
 		if(patillscript==null) return;
 		AppBean app = getAppBean();
-	    app.addExpertPatIllnessScriptForVpId(patillscript.getVpId());
-	    app.addIllnessScriptForDiagnoses(patillscript.getDiagnoses(), patillscript.getVpId());
+		PatientIllnessScript expScript = app.addExpertPatIllnessScriptForVpId(patillscript.getVpId());
+		//we have to overtake the max stage in which the final ddx has to be submitted from the expert's script: 
+		if(patillscript.getMaxSubmittedStage()<=0 && expScript!=null){
+			patillscript.setMaxSubmittedStage(expScript.getMaxSubmittedStage());
+			patillscript.save();
+		}
+	    
+		app.addIllnessScriptForDiagnoses(patillscript.getDiagnoses(), patillscript.getVpId());
 	}
 	
 	public AppBean getAppBean(){

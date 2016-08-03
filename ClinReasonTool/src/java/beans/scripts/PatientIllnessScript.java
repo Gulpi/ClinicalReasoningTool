@@ -289,6 +289,7 @@ public class PatientIllnessScript extends Beans/*extends Node*/ implements Illne
 	public void saveNote(String idStr, String text){new NoteChgAction(this).updateOrCreateNote( idStr, text);}
 	public void submitDDX(String idStr){new DiagnosisSubmitAction(this).submitDDX(idStr);}
 	public void submitDDXAndConf(String idStr, String confStr){new DiagnosisSubmitAction(this).submitDDXAndConf(idStr, confStr);}
+	public void expSetFinalDiagnosis(String idStr){new DiagnosisSubmitAction(this).submitExpFinalDiagnosis(idStr);}
 	public void resetFinalDDX(String idStr){new DiagnosisSubmissionRevertAction(this).revertSubmission();}
 	
 	//public void submitDDX(){new DiagnosisSubmitAction(this).submitDDX();}
@@ -441,7 +442,7 @@ public class PatientIllnessScript extends Beans/*extends Node*/ implements Illne
 		List<ScoreBean>scores = new NavigationController().getCRTFacesContext().getLearningAnalytics().getScoreContainer().getScoresByType(ScoreBean.TYPE_FINAL_DDX);
 		if(scores==null || scores.isEmpty()) return true;
 		for(int i=0; i<scores.size(); i++){
-			if(scores.get(i).getScoreBasedOnExpPerc()<=DiagnosisSubmitAction.scoreForAllowReSubmit) return true;
+			if(scores.get(i).getScoreBasedOnExpPerc()<DiagnosisSubmitAction.scoreForAllowReSubmit) return true;
 		}
 		return false;
 	}
@@ -462,5 +463,13 @@ public class PatientIllnessScript extends Beans/*extends Node*/ implements Illne
 		if(this.currentStage == AppBean.getExpertPatIllScript(this.getVpId()).getMaxSubmittedStage() /*&& this.currentStage >= AppBean.getExpertPatIllScript(this.getParentId()).getSubmittedStage()*/) return true;
 		return false;
 	}
+	
+	/**
+	 * needed to decide which feedback to display after final diagnoses have been submitted -> either error dialog or
+	 * a confirmation dialog for correct diagnosis...
+	 * @return
+	 */
+	public float getOverallFinalDDXScore(){ 
+		return ScoringController.getInstance().getOverallFinalDDXScore();}
 
 }

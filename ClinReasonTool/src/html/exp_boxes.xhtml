@@ -56,21 +56,22 @@ var msg2="Please connect the hypotheses with the findings";
 var scriptId = "#{crtContext.patillscript.id}";
 var listUrl="jsonp_#{crtContext.patillscript.locale}.json";
 var lang = "#{crtContext.patillscript.locale}";
-//var my_canvas = null;
+if(lang=="de") listUrl = "jsonp_de.json";
+
 var currentStage = #{crtContext.patillscript.stage};
 var currentStageScript = "#{crtContext.patillscript.currentStageWithUpdate}";
-var expFeedback = false; //default is that expert feedback is off
-var peerFeedback = false; //default is that expert feedback is off
+//var expFeedback = false; //default is that expert feedback is off
+//var peerFeedback = false; //default is that expert feedback is off
 var active;
 var minLengthTypeAhead = 3;
 //var errorNum = "#{crtContext.patillscript.errorNum}";
-var submitted = "#{crtContext.patillscript.submitted}";
+//var submitted = "#{crtContext.patillscript.submitted}";
 var instance;
 var item_arr = new Array();
 var exp_arr = new Array();
 
 $(function() {
-	//if(lang=="de") listUrl = "jsonp_de.json";
+	if(lang=="de") listUrl = "jsonp_de.json";
 	$(".listdialog").hide();
 	//$("#jdialogError").hide();
 	$("#connContext").hide();
@@ -78,7 +79,7 @@ $(function() {
 		//setDirtySummSt();
 		saveSummSt('#{crtContext.patillscript.summStId}');
 	 });
-	checkSubmitBtn();
+	//checkSubmitBtn();
 	//initContainerPos();
 
    /* $( document ).tooltip({
@@ -96,11 +97,11 @@ $(function() {
     //	}
    // });
     
-    $( ".container" ).draggable({
+    /*$( ".container" ).draggable({
         stop: function() {
         	storeContainerPos(this.id, this.offsetLeft, this.offsetTop);
         }
-      });
+      });*/
     
 	//initLists();
   /*  $( "#confidence_slider" ).slider({

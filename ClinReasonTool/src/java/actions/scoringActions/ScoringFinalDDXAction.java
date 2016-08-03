@@ -92,9 +92,7 @@ public class ScoringFinalDDXAction /*implements ScoringAction*/{
 					numFinalDDXExp++;
 				}
 				cont.addScore(scoreBean);
-				new DBClinReason().saveAndCommit(scoreBean);
-				
-			
+							
 				float expScore = 0;
 				if(correctNum==0 && partlyCorrectNum==0){
 					//TODO check here also whether the expert has listed the diagnosis in his list and give at least some credit?
@@ -108,6 +106,7 @@ public class ScoringFinalDDXAction /*implements ScoringAction*/{
 				}
 				scoreBean.setScoreBasedOnExp(expScore, false);
 				score += expScore;
+				new DBClinReason().saveAndCommit(scoreBean);
 			}
 			
 			if(score < ScoringController.FULL_SCORE) 

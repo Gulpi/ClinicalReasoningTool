@@ -104,14 +104,16 @@ public class AppBean extends ApplicationWrapper implements HttpSessionListener{
 	 * learner working on the same VP, we load it and put it into the expertPatIllScripts Map.
 	 * @param parentId
 	 */
-	public synchronized void addExpertPatIllnessScriptForVpId(String vpId){
+	public synchronized PatientIllnessScript addExpertPatIllnessScriptForVpId(String vpId){
 		if(expertPatIllScripts==null) expertPatIllScripts = new HashMap<String, PatientIllnessScript>();
 		if(vpId!=null && !expertPatIllScripts.containsKey(vpId)){
 			PatientIllnessScript expScript = new DBClinReason().selectExpertPatIllScriptByVPId(vpId);
 			if(expScript!=null) expertPatIllScripts.put(vpId, expScript);
+			return expScript;
 			//if(graphs!=null && graphs.get(new Long(parentId)!=null)) return
 			//todo init graphs?
 		}
+		return null;
 	}
 	
 	

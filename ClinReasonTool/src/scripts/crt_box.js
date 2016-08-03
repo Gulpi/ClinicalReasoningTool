@@ -49,42 +49,6 @@
 	sendAjax(courseTime, doNothing, "chgCourseOfTime", "");
 }*/
 
-/******************** epi tab*******************************/
-
-/**
- * a problem is added to the list of the already added problems:
- **/
-/*function addEpi(problemId, name){
-	//here we have to trigger an ajax call... 
-	//var problemId = $("#problems").val();
-	if(name!="") sendAjax(problemId, epiCallBack, "addEpi", name);
-}
-
-
-
-function delEpi(id){
-	sendAjax(id, epiCallBack, "delEpi", "");
-}
-function delEpiCM(id){
-	sendAjax(id, epiCallBackCM, "delEpi", "");
-}
-
-function epiCallBack(problemId, selProblem){
-	$("#epi").val("");	
-	//we update the problems list and the json string
-	$("[id='epiform:hiddenEpiButton']").click();	
-}
-
-function epiCallBackCM(epiId, selEpi){
-	//we update the problems list and the json string
-	$("[id='epiform:hiddenEpibButton']").click();	
-	$("[id='graphform:hiddenGraphButton']").click();
-}
-
-
-function reOrderEpi(newOrder, id){
-	sendAjax(id, epiCallBack, "reorderEpi", newOrder);
-}*/
 
 /******************** problems tab*******************************/
 
@@ -111,18 +75,6 @@ function delProblem(id){
 	sendAjax(id, delProbCallBack, "delProblem", "");
 }
 
-/*function delProblemCallBack(problemId, selProblem){	
-	delCallback("fdg", problemId)
-	//deleteEndpoints("fdg_"+problemId);
-	//instance.remove($("#fdg_"+problemId));
-}*/
-/*
- * 
- */
-/*function problemAddCallBack(response){
-	addCallback(response, "#fdg_box", "RightMiddle");
-
-}*/
 
 function delProbCallBack(probId, selProb){
 	deleteEndpoints("fdg_"+probId);
@@ -143,7 +95,7 @@ function updatProbCallback(data){
 
 function addJokerFdg(){
 	clearErrorMsgs();
-	sendAjax("", problemAddCallBack, "addJoker", 1);
+	sendAjax("", problemCallBack, "addJoker", 1);
 	//sendAjaxUrlHtml("", problemAddCallBack, "addJoker", 1, "probbox2.xhtml");
 }
 
@@ -178,11 +130,11 @@ function delDiagnosis(id){
 function delDiagnosisCallBack(ddxId, selDDX){
 	//we have to delete the endpoint separately, otherwise they persist....
 	deleteEndpoints("ddx_"+ddxId);
-	diagnosisCallBack(ddxId, selDDX);
+	diagnosisCallBack();
 }
 
 
-function diagnosisCallBack(ddxId, selDDX){
+function diagnosisCallBack(){
 	$("#ddx").val("");		
 	$(".ddxs").remove();	
 	//we update the ddx boxes (re-printing all boxes)
@@ -221,7 +173,7 @@ function toggleMnM(id){
 function addJokerDDX(){
 	clearErrorMsgs();
 	//sendAjax("", diagnosisCallBack, "addJoker", 2);
-	sendAjaxUrlHtml("", diagnosisAddCallBack, "addJoker", 2, "ddxbox2.xhtml");
+	sendAjaxUrlHtml("", diagnosisCallBack, "addJoker", 2, "ddxbox2.xhtml");
 
 }
 
@@ -253,10 +205,17 @@ function doSubmitDDXDialogCallback(){
 		$("#jdialog").dialog( "option", "height", ['350'] );
 		$("#jdialog").dialog( "option", "title", "Submit final diagnoses" );
 		$("#jdialog").dialog( "option", "buttons", [ ] );
+		var s = $("#score").val();		
+		if($("#score").val()>=100){
+			//$(".tier_4").prop( "checked", true );
+			$(".chb_ddx").attr("disabled","disabled");
+			$("#ddx_submit_btn").hide();
+			$(".aftersubmit_succ").show();
+		}
 		$("#jdialog" ).dialog( "open" );
 	}
 	else{
-		alert("In order to submit your final diagnoses you have at least to add one differential diagnosis.");
+		alert(submitDDXOne);
 	}
 }
 
@@ -287,11 +246,14 @@ function doScoreDDXDialogCallback(){
 	$(".tier_4").prop( "checked", true );
 	$(".chb_ddx").attr("disabled","disabled");
 	$("#ddx_submit_btn").hide();
-	$(".aftersubmit").show();	
+	
+	if($("#score").val>=100){
+		$(".aftersubmit_succ").show();
+	}
+	else $(".aftersubmit").show();	
 	$(".ddxsubmit_score").show();
 	//$("[id='ddxform:hiddenDDXButton']").click(); //update ddx in background	
 }
-
 
 
 /*
@@ -307,6 +269,10 @@ function backToCase(){
 
 function revertSubmissionCallback(){
 	$(".ddxs").remove();
+	//hiding feedback and activating the checkboxes again:
+	$(".tier_4").prop( "checked", false );
+	$(".chb_ddx").removeAttr("disabled");
+	$(".ddxsubmit_score").hide();
 	$("[id='ddxform:hiddenDDXButton']").click();
 }
 
@@ -653,7 +619,7 @@ function turnExpBoxFeedbackOn(iconId, itemClass){
 
 	$("#"+iconId).removeClass("fa-user-md_off");
 	$("#"+iconId).addClass("fa-user-md_on");
-	$("#"+iconId).attr("title", "click to hide expert feedback");
+	$("#"+iconId).attr("title", hideExpTitle);
 	var items = $("."+itemClass);
 	if(items!=null){
 		for (i=0; i<items.length; i++){
@@ -668,7 +634,7 @@ function turnExpBoxFeedbackOff(iconId, itemClass){
 	
 	$("#"+iconId).removeClass("fa-user-md_on");
 	$("#"+iconId).addClass("fa-user-md_off");
-	$("#"+iconId).attr("title", "click to show expert feedback");
+	$("#"+iconId).attr("title", showExpTitle);
 	var items = $("."+itemClass);
 	if(items!=null){
 		for (i=0; i<items.length; i++){
@@ -687,7 +653,7 @@ function toggleSumFeedback(iconId, type){
 	if($("#"+iconId).hasClass("fa-user-md_on")){ //turn feedback off
 		$("#"+iconId).removeClass("fa-user-md_on");
 		$("#"+iconId).addClass("fa-user-md_off");		
-		$("#"+iconId).attr("title", "click to show expert feedback");
+		$("#"+iconId).attr("title", showExpTitle);
 		$("#list_score_sum").hide();
 		sendAjaxContext(0, doNothing, "toogleExpBoxFeedback", type);
 
@@ -695,7 +661,7 @@ function toggleSumFeedback(iconId, type){
 	else{ //turn feedback on
 		$("#"+iconId).removeClass("fa-user-md_off");	
 		$("#"+iconId).addClass("fa-user-md_on");
-		$("#"+iconId).attr("title", "click to hide expert feedback");
+		$("#"+iconId).attr("title", hideExpTitle);
 		$("#list_score_sum").show();
 		//$("#sum_box").height("300");
 		sendAjaxContext(1, doNothing, "toogleExpBoxFeedback", type);
@@ -736,7 +702,7 @@ function toggleExpFeedback(iconId, itemClass){
 	if($("#"+iconId).hasClass("fa-user-md_on")){ //turn feedback off
 		$("#"+iconId).removeClass("fa-user-md_on");
 		$("#"+iconId).addClass("fa-user-md_off");	
-		$("#"+iconId).attr("title", "click to show expert feedback");
+		$("#"+iconId).attr("title", showExpTitle);
 		$(".expbox").removeClass("expboxstatus_show");
 		$(".expbox").addClass("expboxstatus");
 		turnExpBoxFeedbackOff("expFeedbackFdg", "fdgs");
@@ -751,7 +717,7 @@ function toggleExpFeedback(iconId, itemClass){
 	else{ //turn feedback on
 		$("#"+iconId).removeClass("fa-user-md_off");	
 		$("#"+iconId).addClass("fa-user-md_on");
-		$("#"+iconId).attr("title", "click to hide expert feedback");
+		$("#"+iconId).attr("title", hideExpTitle);
 		$(".expbox").addClass("expboxstatus_show");
 		$(".expbox").removeClass("expboxstatus");
 		$(".expbox").removeClass("expboxinvis");

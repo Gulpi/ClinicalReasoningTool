@@ -63,8 +63,13 @@ var currentStage = $.getUrlVar('stage');
 var currentStageScript = "#{crtContext.patillscript.currentStageWithUpdate}";
 var expFeedback = false; //default is that expert feedback is off
 var peerFeedback = false; //default is that expert feedback is off
+var hideCnxTitle = "#{prop['cnx.hide']}";
+var showCnxTitle = "#{prop['cnx.show']}";
+var showExpTitle = "#{prop['feedback.exp']}";
+var hideExpTitle = "#{prop['feedback.exp.hide']}";
 var active;
 var minLengthTypeAhead = 3;
+var submitDDXOne = "#{prop['submit.minone']}";
 //var errorNum = "#{crtContext.patillscript.errorNum}";
 var submitted = "#{crtContext.patillscript.submitted}";
 var instance;

@@ -4,20 +4,11 @@ import java.beans.Beans;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.application.FacesMessage.Severity;
-import javax.faces.context.FacesContext;
-
-import org.apache.commons.lang.StringUtils;
-
-import actions.scoringActions.Scoreable;
 import actions.scoringActions.ScoringFinalDDXAction;
-import actions.scoringActions.ScoringListAction;
 import application.ErrorMessageContainer;
 import beans.LogEntry;
 import beans.scripts.*;
-import beans.relation.Relation;
 import beans.relation.RelationDiagnosis;
-import beans.scoring.ScoreBean;
-import controller.NavigationController;
 import database.DBClinReason;
 import util.StringUtilities;
 
@@ -40,8 +31,17 @@ public class DiagnosisSubmitAction /*implements Scoreable*/{
 		submitDDX(idsStr);
 	}
 	
-	
-	
+	/**
+	 * Expert submits a final diagnosis
+	 * @param idStr
+	 */
+	public void submitExpFinalDiagnosis(String idStr){
+		long id = Long.valueOf(idStr).longValue();
+		setAndSaveFinal(id);
+		patIllScript.setSubmittedStage(patIllScript.getCurrentStage());
+		new DBClinReason().saveAndCommit(patIllScript);
+	}
+		
 	/**
 	 * Called when diagnosis are submitted one at a time (link for submission provided for each diagnosis). 
 	 * We then have to change the tier for the diagnosis to "final" before scoring.
@@ -52,9 +52,9 @@ public class DiagnosisSubmitAction /*implements Scoreable*/{
 		if(!hasDDX) return;
 		float score = triggerScoringAction(patIllScript);
 		//if learner submits the wrong diagnoses we allow him to re-submit 
-		if(score<scoreForAllowReSubmit){
+		if(score>=scoreForAllowReSubmit){
 			patIllScript.setSubmittedStage(patIllScript.getCurrentStage());
-			new DBClinReason().saveAndCommit(patIllScript);
+			patIllScript.save();
 		}
 		notifyLog();
 	}
@@ -79,10 +79,17 @@ public class DiagnosisSubmitAction /*implements Scoreable*/{
 	}
 
 
-	private void setFinal(long id){
+	private RelationDiagnosis setFinal(long id){
 		RelationDiagnosis rel = patIllScript.getDiagnosisById(id);
-		if(rel==null || rel.isFinalDiagnosis()) return;	
+		if(rel==null || rel.isFinalDiagnosis()) return null;	
 		rel.setFinalDiagnosis();
+		new DBClinReason().saveAndCommit(rel);
+		return rel;
+	}
+	
+	private void setAndSaveFinal(long id){
+		RelationDiagnosis rel = setFinal(id);
+		if(rel!=null) new DBClinReason().saveAndCommit(rel);
 	}
 	
 	private void changeTier(long id, int tier){

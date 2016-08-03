@@ -108,6 +108,9 @@ public class AddMngAction implements AddAction, Scoreable{
 		if(patIllScript.getMngs()!=null || !patIllScript.getMngs().isEmpty()){
 			y = patIllScript.getMngs().size() * 26; //CAVE max y! 
 		}
+		if(NavigationController.getInstance().isExpEdit()){
+			return new Point(RelationManagement.DEFAULT_X+100,y);
+		}
 		return new Point(RelationManagement.DEFAULT_X,y);
 	}
 

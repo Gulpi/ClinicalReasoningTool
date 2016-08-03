@@ -240,6 +240,7 @@ public class DBClinReason /*extends HibernateUtil*/{
     	Criteria criteria = s.createCriteria(PatientIllnessScript.class,"PatientIllnessScript");
     	criteria.add(Restrictions.eq("userId", new Long(userId)));
     	criteria.add(Restrictions.eq("vpId", vpId));
+    	criteria.add(Restrictions.eq("type", PatientIllnessScript.TYPE_LEARNER_CREATED));
     	PatientIllnessScript patIllScript =  (PatientIllnessScript) criteria.uniqueResult();
     	if(patIllScript!=null)
     		patIllScript.setSummSt(loadSummSt(patIllScript.getSummStId()));

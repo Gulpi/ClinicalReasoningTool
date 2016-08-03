@@ -38,6 +38,11 @@ public class ScoringController {
 	public static final String ICON_PREFIX = "icon-ok";
 	//define possible scoring algorithms:
 	public static final int SCORING_ALGORITHM_BASIC = 1;
+	
+	static private ScoringController instance = new ScoringController();
+	static public ScoringController getInstance() { return instance; }
+
+	
 	public ScoringController(){}
 	
 	public String getIconForScore(int type, long itemId){
@@ -70,6 +75,18 @@ public class ScoringController {
 		return "";
 	}
 	
+	public float getOverallFinalDDXScore(){
+		ScoreContainer scoreContainer = new NavigationController().getCRTFacesContext().getScoreContainer();
+		if (scoreContainer==null) return -1;
+		List<ScoreBean> beans = scoreContainer.getScoresByType(ScoreBean.TYPE_FINAL_DDX);
+		if(beans==null || beans.size()==0) return -1;
+		if(beans.size()==1) return beans.get(0).getScoreBasedOnExp();
+		int scoreSum = 0;
+		for(int i=0; i<beans.size(); i++){
+			scoreSum += beans.get(i).getScoreBasedOnExpPerc();
+		}
+		return (float) scoreSum/beans.size();
+	}
 	public ScoreBean getScoreBeanForItem(int type, long itemId){
 		ScoreContainer scoreContainer = new NavigationController().getCRTFacesContext().getScoreContainer();
 		if (scoreContainer==null) return null;

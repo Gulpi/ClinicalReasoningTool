@@ -101,6 +101,9 @@ public class AddDiagnosisAction implements AddAction, Scoreable{
 		if(patIllScript.getDiagnoses()!=null || !patIllScript.getDiagnoses().isEmpty()){
 			y = patIllScript.getDiagnoses().size() * 26;//CAVE max y!
 		}
+		if(NavigationController.getInstance().isExpEdit()){
+			return new Point(RelationDiagnosis.DEFAULT_X+100,y);
+		}
 		return new Point(RelationDiagnosis.DEFAULT_X,y);
 	}
 	

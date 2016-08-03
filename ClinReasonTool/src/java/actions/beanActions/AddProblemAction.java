@@ -77,7 +77,7 @@ public class AddProblemAction implements AddAction, Scoreable{
 		}
 		rel.setOrder(patIllScript.getProblems().size());
 		rel.setStage(patIllScript.getCurrentStage());
-		if(new NavigationController().isExpEdit()){
+		if(NavigationController.getInstance().isExpEdit()){
 			rel.setStage(patIllScript.getStage());
 		}
 		if(x<0 && y<0) rel.setXAndY(calculateNewItemPosInCanvas());		
@@ -108,6 +108,10 @@ public class AddProblemAction implements AddAction, Scoreable{
 		int y = AddAction.MIN_Y;
 		if(patIllScript.getProblems()!=null || !patIllScript.getProblems().isEmpty()){
 			y = patIllScript.getProblems().size() * 26; //CAVE max y! 
+		}
+		//if an expert script we have to position the item on the x axis to the left:
+		if(NavigationController.getInstance().isExpEdit()){
+			return new Point(RelationProblem.DEFAULT_X+100,y);
 		}
 		return new Point(RelationProblem.DEFAULT_X,y);
 	}

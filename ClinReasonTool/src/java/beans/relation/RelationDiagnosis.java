@@ -179,7 +179,7 @@ public class RelationDiagnosis extends Relation implements Serializable {
 		//only return something if learner has chosen it as a final ddx:
 		boolean isLearnerFinal = ((RelationDiagnosis)mvertex.getLearnerVertex()).getTier() == RelationDiagnosis.TIER_FINAL;
 		if(isLearnerFinal && mvertex.getExpertVertex()==null) 
-			return "Not in differentials of expert";
+			return IntlConfiguration.getValue("ddx.nodiff", NavigationController.getLocale());
 		try{
 			RelationDiagnosis expRel = (RelationDiagnosis) mvertex.getExpertVertex();
 			if(isLearnerFinal) return IntlConfiguration.getValue("ddx.tierdescr."+expRel.getTier(), NavigationController.getLocale()); //String.valueOf(expRel.getTier());
@@ -187,5 +187,11 @@ public class RelationDiagnosis extends Relation implements Serializable {
 		catch(Exception e){return "";} //can happen if expert has this item not as a diagnosis but as a something else....	
 		return "";
 	}
+	
+	/**
+	 * is currently an expert script edited? If so we display a link to mark a diagnosis as final.
+	 * @return
+	 */
+	public boolean getIsExpEdit(){return NavigationController.getInstance().isExpEdit();}
 
 }

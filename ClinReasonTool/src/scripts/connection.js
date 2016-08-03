@@ -176,13 +176,13 @@ function hideCnx(){
 	//$(".jsplumb-exp-connector").removeClass("jsplumb-exp-connector-show"); //hide expert cnx as well
 	
 	//$(".jsplumb-connector").hide();
-	$("#cnxtoggle").attr("title", "Show connections");
+	$("#cnxtoggle").attr("title", showCnxTitle);
 	$("#cnxtogglei").removeClass("fa-conn_on");
 	$("#cnxtogglei").addClass("fa-conn_off");
 }
 
 function showCnx(){
-	$("#cnxtoggle").attr("title", "Hide connections");
+	$("#cnxtoggle").attr("title", hideCnxTitle);
 	$("#cnxtogglei").removeClass("fa-conn_off");
 	$("#cnxtogglei").addClass("fa-conn_on");
 	$(".jsplumb-connector").removeClass("jsplumb-connector-hide");

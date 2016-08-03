@@ -106,6 +106,9 @@ public class AddTestAction implements AddAction, Scoreable/*, FeedbackCreator*/{
 		if(patIllScript.getTests()!=null || !patIllScript.getTests().isEmpty()){
 			y = patIllScript.getTests().size() * 26; //CAVE max y! 
 		}
+		if(NavigationController.getInstance().isExpEdit()){
+			return new Point(RelationTest.DEFAULT_X+100,y);
+		}
 		return new Point(RelationTest.DEFAULT_X,y);
 	}
 

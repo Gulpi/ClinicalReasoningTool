@@ -13,6 +13,7 @@
 			
 			<br/>
 		</ui:repeat>
+		<input type="text" id="score" value="#{crtContext.patillscript.overallFinalDDXScore}" />
 	</h:panelGroup>
 	<!-- click before opening dialog to reload ddxs (make sure we have all of them) -->
 	<h:commandButton id="hiddenDDXSubmitButton" value="RenderSomething" style="visibility:hidden">
@@ -23,7 +24,7 @@
 	    <f:ajax render="@form" onevent="doScoreDDXDialogCallback"></f:ajax>
 	 </h:commandButton>
 </h:form>
-
+	
 	<a id="ddx_submit_btn" href="javascript:submitDDXConfirmed();"><i class="fa fa-arrow-rightb"></i> #{prop['submit']}</a>
 	<span class="aftersubmit">#{prop['ddx.errors.title']}:
 		<ul id="errors">
@@ -37,6 +38,10 @@
 			<li class="aftersubmit_cont_#{crtContext.patillscript.offerSolution}"><i class="fa-li fa fa-arrow-rightb"></i> <a class="aftersubmit_cont_#{crtContext.patillscript.offerSolution}" href="javascript:showSolution();">#{prop['submit.sol']}</a></li> <!--  (max stage only) -->
 			<li class="aftersubmit_cont_#{crtContext.patillscript.offerSolution}"><i class="fa-li fa fa-arrow-rightb"></i> <a class="aftersubmit_cont_#{crtContext.patillscript.offerSolution}" href="javascript:giveHint();">#{prop['submit.hint']}</a></li> <!--  (max stage only) -->
 		</ul>
+	</span>
+	<span class="aftersubmit_succ">
+	<b>Correct final diagnosis/-es!</b> (todo: more elaboration, explanation...)<br/>
+	
 	</span>
 </div>
 <div id="confidence_slider" class="conf_slider" title="#{prop['confidence.hint']}"></div>

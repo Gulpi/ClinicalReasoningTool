@@ -134,7 +134,7 @@ public class AddProblemAction implements AddAction, Scoreable{
 	 * @see actions.scoringActions.Scoreable#triggerScoringAction(java.beans.Beans)
 	 */
 	public void triggerScoringAction(Beans relProb, boolean isJoker){		
-		new ScoringAddAction().scoreAction(((RelationProblem) relProb).getListItemId(), this.patIllScript, isJoker);
+		new ScoringAddAction().scoreAction(((RelationProblem) relProb).getListItemId(), this.patIllScript, isJoker, Relation.TYPE_PROBLEM);
 		//new ScoringListAction(this.patIllScript).scoreList(ScoreBean.TYPE_PROBLEM_LIST, Relation.TYPE_PROBLEM);
 
 	}

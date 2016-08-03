@@ -10,5 +10,5 @@ import beans.scoring.ScoreBean;
  */
 public interface ScoringAction {
 	
-	void scoreAction(long listItemId, PatientIllnessScript learnerPatIllScript, boolean isJoker);
+	void scoreAction(long listItemId, PatientIllnessScript learnerPatIllScript, boolean isJoker, int type);
 }

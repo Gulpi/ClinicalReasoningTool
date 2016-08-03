@@ -15,7 +15,17 @@ import database.DBScoring;
  */
 public class ScoringAddCnxAction implements ScoringAction{
 
+	/**
+	 * we do not need the type for the cnx scoring
+	 * @param cnxId
+	 * @param patIllScript
+	 * @param isJoker
+	 */
 	public void scoreAction(long cnxId, PatientIllnessScript patIllScript, boolean isJoker){
+		scoreAction(cnxId, patIllScript, isJoker, -1);
+	}
+	
+	public void scoreAction(long cnxId, PatientIllnessScript patIllScript, boolean isJoker, int nn){
 		if(patIllScript.getType()==IllnessScriptInterface.TYPE_EXPERT_CREATED) return;
 		Graph g = new NavigationController().getCRTFacesContext().getGraph();
 		MultiEdge edge = g.getEdgeByCnxId(IllnessScriptInterface.TYPE_LEARNER_CREATED, cnxId);

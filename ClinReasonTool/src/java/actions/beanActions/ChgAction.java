@@ -33,8 +33,8 @@ public abstract class ChgAction implements Scoreable{
 		//change in RelationProblem & Vertex:
 		
 		Graph g = new NavigationController().getCRTFacesContext().getGraph();
-		MultiVertex expVertex = g.getVertexById(score.getExpItemId());
-		MultiVertex learnerVertexOld = g.getVertexById(probToChg.getListItemId());
+		MultiVertex expVertex = g.getVertexByIdAndType(score.getExpItemId(), type);
+		MultiVertex learnerVertexOld = g.getVertexByIdAndType(probToChg.getListItemId(), type);
 		if(!expVertex.equals(learnerVertexOld)){ //then it is NOT a synonyma, but a hierarchy node
 				new GraphController(g).transferEdges(learnerVertexOld, expVertex);		
 				g.removeVertex(learnerVertexOld);
@@ -42,7 +42,7 @@ public abstract class ChgAction implements Scoreable{
 		}
 		changeRelation(expVertex, probToChg);	
 		//we re-score the item:
-		new ScoringAddAction(true).scoreAction(expVertex.getVertexId(), patIllScript, false);
+		new ScoringAddAction(true).scoreAction(expVertex.getVertexId(), patIllScript, false, type);
 	}
 	
 	/**

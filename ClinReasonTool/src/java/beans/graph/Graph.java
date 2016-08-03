@@ -72,7 +72,7 @@ public class Graph extends DirectedWeightedMultigraph<MultiVertex, MultiEdge> {
 	 * @param rel
 	 */
 	public void removeMultiVertex(Relation rel){
-		MultiVertex vertex = this.getVertexById(rel.getListItemId());
+		MultiVertex vertex = this.getVertexByIdAndType(rel.getListItemId(), rel.getRelationType());
 		if(vertex==null) return; //Should not happen
 		vertex.setLearnerVertex(null);
 		//Shall we remove the vertex from the graph if there is no relation attached? (we still might have some peer nums)
@@ -127,7 +127,7 @@ public class Graph extends DirectedWeightedMultigraph<MultiVertex, MultiEdge> {
 	public void addVertex(Relation rel, int illScriptType){
 		if(rel==null)
 			return;
-		MultiVertex multiVertex = getVertexById(rel.getListItemId());
+		MultiVertex multiVertex = getVertexByIdAndType(rel.getListItemId(), rel.getRelationType());
 		if(multiVertex==null){ //create a new one:
 			multiVertex = new MultiVertex(rel, illScriptType); 
 			super.addVertex(multiVertex);
@@ -174,7 +174,7 @@ public class Graph extends DirectedWeightedMultigraph<MultiVertex, MultiEdge> {
 	}
 	
 	private MultiVertex addVertex(ListItem li, int type){
-		MultiVertex multiVertex = getVertexById(li.getItem_id());
+		MultiVertex multiVertex = getVertexByIdAndType(li.getItem_id(), type);
 		if(multiVertex==null){ //create a new one:
 			multiVertex = new MultiVertex(li, IllnessScriptInterface.TYPE_EXPERT_CREATED, type); 
 			super.addVertex(multiVertex);
@@ -196,7 +196,7 @@ public class Graph extends DirectedWeightedMultigraph<MultiVertex, MultiEdge> {
 		int weight = MultiEdge.WEIGHT_EXPLICIT;
 		if(cnx.getWeight()>MultiEdge.WEIGHT_EXPLICIT) weight = cnx.getWeight();
 		if(source!=null && target!=null){
-			addOrUpdateEdge(getVertexById(source.getListItemId()), getVertexById(target.getListItemId()), type, weight, cnx.getId(), patIllScript.getType());
+			addOrUpdateEdge(getVertexByIdAndType(source.getListItemId(), source.getRelationType()), getVertexByIdAndType(target.getListItemId(), target.getRelationType()), type, weight, cnx.getId(), patIllScript.getType());
 		
 		}
 	}
@@ -235,11 +235,26 @@ public class Graph extends DirectedWeightedMultigraph<MultiVertex, MultiEdge> {
 		
 	}
 
+	/**
+	 * @param vertexId
+	 * @return
+	 * @deprecated -> we need id AND type, since a vertex can be added for more than one group (e.g. as fdg AND ddx)
+	 * use getVertexByIdAndType isntead!!!
+	 */
 	public MultiVertex getVertexById(long vertexId){
 		Iterator<MultiVertex> it = this.vertexSet().iterator();
 		while(it.hasNext()){
 			MultiVertex vi = it.next();
 			if(vi.getVertexId()==vertexId) return vi;
+		}
+		return null;
+	}
+	
+	public MultiVertex getVertexByIdAndType(long vertexId, int type){
+		Iterator<MultiVertex> it = this.vertexSet().iterator();
+		while(it.hasNext()){
+			MultiVertex vi = it.next();
+			if(vi.getVertexId()==vertexId && vi.getType()==type) return vi;
 		}
 		return null;
 	}

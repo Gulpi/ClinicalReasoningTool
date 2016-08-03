@@ -174,7 +174,7 @@ public class RelationDiagnosis extends Relation implements Serializable {
 	 */
 	public String getExp(){ 
 		Graph g = new NavigationController().getCRTFacesContext().getGraph();
-		MultiVertex mvertex = g.getVertexById(this.getListItemId());
+		MultiVertex mvertex = g.getVertexByIdAndType(this.getListItemId(), Relation.TYPE_DDX);
 		if(mvertex==null || mvertex.getLearnerVertex()==null) return ""; //should not happen
 		//only return something if learner has chosen it as a final ddx:
 		boolean isLearnerFinal = ((RelationDiagnosis)mvertex.getLearnerVertex()).getTier() == RelationDiagnosis.TIER_FINAL;

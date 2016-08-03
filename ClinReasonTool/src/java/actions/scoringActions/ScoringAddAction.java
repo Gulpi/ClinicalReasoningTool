@@ -34,10 +34,10 @@ public class ScoringAddAction implements ScoringAction{
 	 * @param patIllScript
 	 * @param rel
 	 */
-	public void scoreAction(long vertexId, PatientIllnessScript patIllScript, boolean isJoker){
+	public void scoreAction(long vertexId, PatientIllnessScript patIllScript, boolean isJoker, int type){
 		if(patIllScript.getType()==IllnessScriptInterface.TYPE_EXPERT_CREATED) return;
 		Graph g = new NavigationController().getCRTFacesContext().getGraph();
-		MultiVertex mvertex = g.getVertexById(vertexId);
+		MultiVertex mvertex = g.getVertexByIdAndType(vertexId, type);
 		ScoreContainer scoreContainer = new NavigationController().getCRTFacesContext().getScoreContainer();
 		
 		ScoreBean scoreBean = scoreContainer.getScoreBeanByTypeAndItemId(mvertex.getType(), vertexId);

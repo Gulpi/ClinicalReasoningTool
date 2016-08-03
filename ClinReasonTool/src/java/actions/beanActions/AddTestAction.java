@@ -116,7 +116,7 @@ public class AddTestAction implements AddAction, Scoreable/*, FeedbackCreator*/{
 	 * @see actions.scoringActions.Scoreable#triggerScoringAction(java.beans.Beans)
 	 */
 	public void triggerScoringAction(Beans rel, boolean isJoker) {
-		new ScoringAddAction().scoreAction(((RelationTest) rel).getListItemId(), this.patIllScript, isJoker);
+		new ScoringAddAction().scoreAction(((RelationTest) rel).getListItemId(), this.patIllScript, isJoker, Relation.TYPE_TEST);
 		//new ScoringListAction(this.patIllScript).scoreList(ScoreBean.TYPE_TEST_LIST, Relation.TYPE_TEST);
 
 	}

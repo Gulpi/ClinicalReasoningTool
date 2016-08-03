@@ -138,7 +138,8 @@ public class PatientIllnessScript extends Beans/*extends Node*/ implements Illne
 	public void setStage(int stage) {this.stage = stage;}
 	public int getCourseOfTime() {return courseOfTime;}
 	public void setCourseOfTime(int courseOfTime) {this.courseOfTime = courseOfTime;}
-	public List<RelationProblem> getProblems() {return problems;}
+	public List<RelationProblem> getProblems() {
+		return problems;}
 	public List<RelationProblem> getProblemsStage() { return getRelationsByStage(problems);}
 	public void setProblems(List<RelationProblem> problems) {this.problems = problems;}
 	public Timestamp getCreationDate(){ return this.creationDate;} //setting is done in DB	

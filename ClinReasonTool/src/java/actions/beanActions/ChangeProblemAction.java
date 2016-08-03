@@ -65,7 +65,7 @@ public class ChangeProblemAction extends ChgAction{
 		notifyLogTogglePrefix(probToChg);
 		//TODO re-score:
 		//ScoreBean score = new ScoringController().getScoreBeanForItem(Relation.TYPE_PROBLEM, probToChg.getListItemId());
-		new ScoringAddAction(true).scoreAction(probToChg.getListItemId(), patIllScript, false);
+		new ScoringAddAction(true).scoreAction(probToChg.getListItemId(), patIllScript, false, Relation.TYPE_PROBLEM);
 	}
 	
 	

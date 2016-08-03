@@ -58,7 +58,7 @@ public class DelTestAction implements DelAction{
 	 */
 	public void updateGraph(Relation rel){
 		Graph graph = new NavigationController().getCRTFacesContext().getGraph();
-		MultiVertex vertex = graph.getVertexById(rel.getListItemId());
+		MultiVertex vertex = graph.getVertexByIdAndType(rel.getListItemId(), Relation.TYPE_TEST);
 		if(vertex==null) return; //Should not happen
 		vertex.setLearnerVertex(null);
 		//remove complete edge param for all these edges:

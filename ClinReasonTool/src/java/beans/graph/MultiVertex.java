@@ -148,8 +148,16 @@ public class MultiVertex /*extends SynonymVertex*/ implements VertexInterface, S
 	public void setExpertVertex(Relation expertVertex) {this.expertVertex = expertVertex;}
 	public String getLabel() {return label;}
 	public void setLabel(String label) {this.label = label;}
+	/**
+	 * Problem, DDX,... see definitions in Relation
+	 */
 	public int getType() {return type;}
-	public void setType(int type) {this.type = type;}		
+	public void setType(int type) {this.type = type;}	
+	
+	/**
+	 * direct or hierarchy type, etc...
+	 * @return
+	 */
 	public int getVertexType() {return vertexType;}
 	public void setVertexType(int vertexType) {this.vertexType = vertexType;}
 

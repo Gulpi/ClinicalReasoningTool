@@ -26,10 +26,10 @@ public class FeedbackController {
 		ScoreBean scoreBean = scoreContainer.getScoreBeanByTypeAndItemId(type,itemId);
 		if(scoreBean==null) return "";
 		Graph g = new NavigationController().getCRTFacesContext().getGraph();
-		MultiVertex learnerVertex = g.getVertexById(itemId);
+		MultiVertex learnerVertex = g.getVertexByIdAndType(itemId, type);
 		//give feedback that learner has chosen a similar item (more general, more specific)
 		if(scoreBean.getScoreBasedOnExp()<ScoringController.SCORE_EXP_SAMEAS_LEARNER && scoreBean.getExpItemId()>0){			
-			MultiVertex expVertex = g.getVertexById(scoreBean.getExpItemId());
+			MultiVertex expVertex = g.getVertexByIdAndType(scoreBean.getExpItemId(), type);
 			if(expVertex!=null) return "Your answer is correct, however, expert has chosen " + expVertex.getLabel() +". If you want to change it to the expert's choice, please click.";
 		}
 		//give feedback for synonyma
@@ -54,7 +54,7 @@ public class FeedbackController {
 		ScoreBean scoreBean = scoreContainer.getScoreBeanByTypeAndItemId(type,itemId);
 		if(scoreBean==null || scoreBean.getExpItemId()<=0) return "";
 		Graph g = new NavigationController().getCRTFacesContext().getGraph();
-		MultiVertex expVertex = g.getVertexById(scoreBean.getExpItemId());
+		MultiVertex expVertex = g.getVertexByIdAndType(scoreBean.getExpItemId(), type);
 		if(expVertex!=null) return expVertex.getLabel();
 		return "";
 	}

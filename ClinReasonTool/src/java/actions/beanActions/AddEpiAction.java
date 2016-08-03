@@ -120,7 +120,7 @@ public class AddEpiAction implements AddAction, Scoreable{
 	 * @see actions.scoringActions.Scoreable#triggerScoringAction(java.beans.Beans)
 	 */
 	public void triggerScoringAction(Beans relEpi, boolean isJoker){		
-		new ScoringAddAction().scoreAction(((RelationEpi) relEpi).getListItemId(), this.patIllScript, isJoker);
+		new ScoringAddAction().scoreAction(((RelationEpi) relEpi).getListItemId(), this.patIllScript, isJoker, Relation.TYPE_EPI);
 	}
 
 	@Override

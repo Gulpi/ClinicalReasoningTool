@@ -1,3 +1,6 @@
+String.prototype.startsWith = function(str) {return (this.match("^"+str)==str)}
+String.prototype.trim = function() { return this.replace(/^\s+|\s+$/g,"");}
+
 /* copied from http://jquery-howto.blogspot.com/2009/09/get-url-parameters-values-with-jquery.html
  * to access the query params we get from the hosting system.
  * access: 

@@ -113,6 +113,7 @@ public class AppBean extends ApplicationWrapper implements HttpSessionListener{
 			//if(graphs!=null && graphs.get(new Long(parentId)!=null)) return
 			//todo init graphs?
 		}
+		if(vpId!=null && expertPatIllScripts.containsKey(vpId)) return expertPatIllScripts.get(vpId);
 		return null;
 	}
 	

@@ -34,10 +34,11 @@ public class FeedbackContainer implements Serializable{
 	private Map<Integer, List<FeedbackBean>> feedbackBeans;
 	//private Map<Integer, Integer> peerFeedbackOn;
 	private long patIllScriptId;
+	private long userId;
 	//private int currStage = 1;
 
 	
-	public FeedbackContainer(long patIllScriptId){
+	public FeedbackContainer(long patIllScriptId, long userId){
 		this.patIllScriptId = patIllScriptId;
 		//if()
 		//stage = new NavigationController().getCRTFacesContext().getPatillscript().getCurrentStage();
@@ -52,6 +53,9 @@ public class FeedbackContainer implements Serializable{
 		if(getFeedbackBean(FeedbackBean.FEEDBACK_EXP, currStage)==null) return false;
 		return true;
 	}
+	
+
+	public long getUserId() {return userId;}
 
 	/**
 	 * Has the learner seen the peer's solutions for this/these item(s) 

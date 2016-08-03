@@ -28,8 +28,9 @@ public class PatIllScriptContainer implements Serializable{
 		if(scriptsOfUser==null) scriptsOfUser = new DBClinReason().selectPatIllScriptsByUserId(userId);
 	}
 	
-	public List<PatientIllnessScript> getScriptsOfUser(){return scriptsOfUser;}
-	
+	public List<PatientIllnessScript> getScriptsOfUser(){return scriptsOfUser;}	
+	public long getUserId() {return userId;}
+
 	/**
 	 * Can be used to determine an availability error based on the last num scripts... 
 	 * @param num number of scripts to return

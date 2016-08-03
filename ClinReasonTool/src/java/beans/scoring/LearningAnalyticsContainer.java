@@ -54,6 +54,8 @@ public class LearningAnalyticsContainer implements Serializable{
 		initLearningAnalyticsContainer();
 	}
 	
+	public long getUserId() {return userId;}
+
 	/**
 	 * select all ScoreBeans of the user and add these to LearningAnalyticsBean objects (in the ScoreContainers)
 	 */

@@ -93,12 +93,14 @@ public class CRTFacesContext extends FacesContextWrapper /*implements Serializab
 		String extUserId = AjaxController.getInstance().getRequestParamByKey(AjaxController.REQPARAM_USER_EXT);
 		int systemId = AjaxController.getInstance().getIntRequestParamByKey(AjaxController.REQPARAM_SYSTEM, -1);
 		if(setUserIdStr==null && extUserId==null) return;
-		if(user!=null && user.getUserId()==Long.valueOf(setUserIdStr).longValue()) return; 
-		if(user!=null && user.getExtUserId()!=null && user.getExtUserId().equals(extUserId)) return; 
+		//userIdStr is same as userId of loaded user -> return
+		if(user!=null && setUserIdStr!=null && user.getUserId()==Long.valueOf(setUserIdStr).longValue()) return; 
+		//extUserId of loaded user is same as extUserId -> return
+		if(user!=null && extUserId!=null && user.getExtUserId()!=null && user.getExtUserId().equals(extUserId)) return; 
 		if(setUserIdStr!=null && !setUserIdStr.trim().equals(""))
 			user = new DBUser().selectUserById(Long.valueOf(setUserIdStr).longValue());
-		//if(setUserIdStr!=null) this.userId = (Long.valueOf(setUserIdStr).longValue());
-		if(user==null && extUserId!=null && !extUserId.trim().equals("")){
+
+		else if(extUserId!=null && !extUserId.trim().equals("")){
 			user =  new UserController().getUser(systemId, extUserId);
 			//if(u!=null) this.userId = u.getUserId();
 		}
@@ -136,7 +138,8 @@ public class CRTFacesContext extends FacesContextWrapper /*implements Serializab
 	}
 
 	public void initScriptContainer(){
-		if(scriptContainer==null){
+		//if not yet loaded or from a different user we set scriptContainer:
+		if(scriptContainer==null || scriptContainer.getUserId()!=user.getUserId()){
 			scriptContainer = new PatIllScriptContainer(user.getUserId());
 			scriptContainer.loadScriptsOfUser();
 		}		
@@ -147,14 +150,13 @@ public class CRTFacesContext extends FacesContextWrapper /*implements Serializab
 	}
 
 	/**
-	 * Init of the scoreContainer (in LearningAnalytics), learningAnalytics object, and FeedbackBean container 
+	 * Init of the feedbackContainer (in LearningAnalytics), learningAnalytics object, and FeedbackBean container 
 	 * @param parentId
 	 */
 	private void initFeedbackContainer(){		
 		if(patillscript!=null) {
-			analyticsContainer.addLearningAnalyticsBean(patillscript.getId(), patillscript.getVpId());
-			if(feedbackContainer==null){
-				feedbackContainer = new FeedbackContainer(patillscript.getId());				
+			if(feedbackContainer==null || feedbackContainer.getUserId()!=user.getUserId()){
+				feedbackContainer = new FeedbackContainer(patillscript.getId(), user.getUserId());				
 				feedbackContainer.initFeedbackContainer();
 			}
 			AppBean.getPeers().loadPeersForPatIllScript(patillscript.getVpId());
@@ -162,28 +164,30 @@ public class CRTFacesContext extends FacesContextWrapper /*implements Serializab
 	}
 	
 	private void initLearningAnalyticsContainer(){
-		if(analyticsContainer == null){ //load learningAnalyticsContainer also if not script is edited -> needed for charts etc...
+		if(analyticsContainer == null || analyticsContainer.getUserId() != user.getUserId()){ //load learningAnalyticsContainer also if not script is edited -> needed for charts etc...
 			analyticsContainer = new LearningAnalyticsContainer(user.getUserId());
-		}
-		
+		}	
+		if(patillscript!=null)
+			analyticsContainer.addLearningAnalyticsBean(patillscript.getId(), patillscript.getVpId());
+
 	}
 	
 	/**
 	 * load PatientIllnessScript based on id or sessionId
 	 */
 	public void initSession(){ 
-		if(user==null) setUser();
+		/*if(user==null)*/ setUser();
 		this.getAppBean().getViewHandler().calculateLocale(this);
 
 		initScriptContainer(); //this loads all scripts, needed for overview page and availability bias determination
-		initLearningAnalyticsContainer();
+
 		long id = AjaxController.getInstance().getLongRequestParamByKey(AjaxController.REQPARAM_SCRIPT);
 		String vpId = AjaxController.getInstance().getRequestParamByKey(AjaxController.REQPARAM_VP);
 		//long extUserId = new AjaxController().getLongRequestParamByKey(AjaxController.REQPARAM_USER_EXT);
 		int systemId = AjaxController.getInstance().getIntRequestParamByKey(AjaxController.REQPARAM_SYSTEM, -1);
 
 		//setUserIdFromExt(extUserId);
-		if(this.patillscript!=null && (id<0 || this.patillscript.getId()==id)) return; //current script already loaded....
+		if(this.patillscript!=null && (id<0 || this.patillscript.getId()==id) && this.patillscript.getUserId()==this.user.getUserId()) return; //current script already loaded....
 
 		if(id<=0 && vpId==null) return; //then user has opened the overview page...y
 
@@ -203,6 +207,7 @@ public class CRTFacesContext extends FacesContextWrapper /*implements Serializab
 		
 		loadExpScripts();
 		initFeedbackContainer();
+		initLearningAnalyticsContainer();
 		if(this.patillscript!=null) initGraph();		
 	}
 	
@@ -210,7 +215,7 @@ public class CRTFacesContext extends FacesContextWrapper /*implements Serializab
 	 * load exp PatientIllnessScript based on id
 	 */
 	public void initExpEditSession(){ 
-		if(user==null) setUser();
+		/*if(user==null)*/ setUser();
 		long id = AjaxController.getInstance().getLongRequestParamByKey(AjaxController.REQPARAM_SCRIPT);
 		if(this.patillscript!=null && (id<0 || this.patillscript.getId()==id)) return; //current script already loaded....
 		if(id<=0) return;
@@ -231,6 +236,7 @@ public class CRTFacesContext extends FacesContextWrapper /*implements Serializab
 	
 	private void loadExpScripts(){
 		if(patillscript==null) return;
+		System.out.println("");
 		AppBean app = getAppBean();
 		PatientIllnessScript expScript = app.addExpertPatIllnessScriptForVpId(patillscript.getVpId());
 		//we have to overtake the max stage in which the final ddx has to be submitted from the expert's script: 
@@ -261,7 +267,7 @@ public class CRTFacesContext extends FacesContextWrapper /*implements Serializab
 	}
 	
 	public FeedbackContainer getFeedbackContainer() {
-		if(feedbackContainer==null) feedbackContainer = new FeedbackContainer(this.getPatillscript().getId());
+		if(feedbackContainer==null) feedbackContainer = new FeedbackContainer(this.getPatillscript().getId(),user.getUserId());
 		return feedbackContainer;
 	}
 	public void toogleExpBoxFeedback(String toggleStr, String taskStr){

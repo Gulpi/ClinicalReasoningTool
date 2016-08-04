@@ -1,10 +1,13 @@
 package beans.user;
 
+import javax.faces.bean.SessionScoped;
+
 /**
  * A user object 
  * @author ingahege
  *
  */
+@SessionScoped
 public class User {
 
 	private long userId;

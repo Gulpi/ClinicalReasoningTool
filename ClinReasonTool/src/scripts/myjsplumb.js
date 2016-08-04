@@ -18,18 +18,19 @@ var sumDefY = 420;
 var groups = new Array("fdg_group", "ddx_group","tst_group", "mng_group", "sum_group");
 
 //var classes = new Array("fdgs", "ddxs", "fdgs","fdgs", "fdgs"/*, "fdgs"*/ );
-
+//var fdg_box;
 /*
  * TODO not very elegant, but the "" vs non "" is important and seems to be difficult to do when getting the items/ids from 
  * an array....
  * all groups are created and all items attached to a group
  */
 function initGroups(){
-	var boxes = new Array(fdg_box, ddx_box, tst_box, mng_box, sum_box/*, pat_box*/ );
+	//var boxes = new Array(fdg_box, ddx_box, tst_box, mng_box, sum_box /*, pat_box*/ );
+	var boxes = new Array("fdg_box", "ddx_box", "tst_box", "mng_box", "sum_box" /*, pat_box*/ );
 
 	for(var i=0; i<boxes.length;i++){
 		instance.addGroup({
-	        el:boxes[i],
+	        el:document.getElementById(boxes[i]),
 	        id:groups[i],
 	        constrain:true,
 	        droppable:false,
@@ -71,7 +72,7 @@ function initGroups(){
  */
 function updateItemCallback(data, items){ 
 	 var status = data.status; // Can be "begin", "complete" or "success".
-	 var boxes = new Array(fdg_box, ddx_box, tst_box, mng_box, sum_box/*, pat_box*/ );
+	 //var boxes = new Array(fdg_box, ddx_box, tst_box, mng_box, sum_box/*, pat_box*/ );
 
     switch (status) {
         case "begin": // Before the ajax request is sent.

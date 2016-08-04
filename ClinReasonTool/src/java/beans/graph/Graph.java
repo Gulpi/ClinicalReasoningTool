@@ -360,7 +360,7 @@ public class Graph extends DirectedWeightedMultigraph<MultiVertex, MultiEdge> {
 		StringBuffer sb = new StringBuffer("[");
 		while(it.hasNext()){
 			MultiEdge edge = it.next();
-			if(edge.getLearnerWeight()>=MultiEdge.WEIGHT_EXPLICIT || edge.getExpertWeight()>=MultiEdge.WEIGHT_EXPLICIT){ //then we add the edge to the concept map
+			if((edge.getLearnerWeight()>=MultiEdge.WEIGHT_EXPLICIT && edge.getLearnerWeight()<MultiEdge.WEIGHT_PARENT) || (edge.getExpertWeight()>=MultiEdge.WEIGHT_EXPLICIT && edge.getExpertWeight()<MultiEdge.WEIGHT_PARENT)){ //then we add the edge to the concept map
 				long cnxId = 0;
 				String l = "0";
 				String e = "0";
@@ -377,12 +377,19 @@ public class Graph extends DirectedWeightedMultigraph<MultiVertex, MultiEdge> {
 				}
 				String startIdWithPrefix=null;
 				String targetIdWithPrefix=null;
-				if(sourceVertex.getLearnerVertex()!=null && targetVertex.getLearnerVertex()!=null){
+				//if we have a vertex selected by learner (and expert) we always use the source/target-id of the learner vertex. 
+				//only if a vertex has been selected only by the expert we use the expert id...
+				if(sourceVertex.getLearnerVertex()!=null) {
 					startIdWithPrefix = GraphController.getPrefixByType(sourceVertex.getType())+sourceVertex.getLearnerVertex().getId(); 	
+				}
+				else if(sourceVertex.getExpertVertex()!=null){
+					startIdWithPrefix = GraphController.getPrefixByType(sourceVertex.getType())+sourceVertex.getExpertVertex().getId(); 	
+				}
+				if(targetVertex.getLearnerVertex()!=null){
 					targetIdWithPrefix = GraphController.getPrefixByType(targetVertex.getType())+targetVertex.getLearnerVertex().getId();
 				}
-				else if(sourceVertex.getExpertVertex()!=null && targetVertex.getExpertVertex()!=null){
-					startIdWithPrefix = GraphController.getPrefixByType(sourceVertex.getType())+sourceVertex.getExpertVertex().getId(); 	
+				else if(targetVertex.getExpertVertex()!=null){
+					//startIdWithPrefix = GraphController.getPrefixByType(sourceVertex.getType())+sourceVertex.getExpertVertex().getId(); 	
 					targetIdWithPrefix = GraphController.getPrefixByType(targetVertex.getType())+targetVertex.getExpertVertex().getId();
 				}
 				if(startIdWithPrefix!=null && targetIdWithPrefix!=null)

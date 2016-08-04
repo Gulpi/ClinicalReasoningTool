@@ -15,6 +15,7 @@ import beans.graph.Graph;
 import beans.scoring.PeerContainer;
 import controller.IllnessScriptController;
 import controller.JsonCreator;
+import controller.MeshImporter;
 import controller.PeerSyncController;
 import database.DBClinReason;
 import database.HibernateUtil;
@@ -80,7 +81,7 @@ public class AppBean extends ApplicationWrapper implements HttpSessionListener{
 	    }
 	    catch(Exception e){}
 	    //does not have to be done on every restart:
-	   // new JsonCreator().initJsonExport(); 
+	    new JsonCreator().initJsonExport(); 
 	   
 		//MeshImporter.main("en");
 	   // new TextSimilarityComparing().compareTestData();

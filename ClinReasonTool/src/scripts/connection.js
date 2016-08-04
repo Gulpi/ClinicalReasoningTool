@@ -13,7 +13,7 @@ var endpoint = {
     scope: "green",
     /*connectorStyle: { strokeStyle: color2, lineWidth: 6 },*/
     connector: ["Bezier", { curviness: 15 } ],
-    maxConnections: 3,
+    maxConnections: 10,
     Anchors: ["TopCenter", "TopCenter"],
     isTarget: true,
     dropOptions: myDropOptions,
@@ -26,7 +26,7 @@ var expendpoint = {
 	    isSource: true,
 	    cssClass: 'exp-endpoint',	    
 	    connector: ["Bezier", { curviness: 15 } ],
-	    maxConnections: 3,
+	    maxConnections: 10,
 	    isTarget: true,
 	    dropOptions: myDropOptions,
 	    deleteEndpointsOnDetach:false
@@ -70,14 +70,17 @@ function createExpConnection(cnxId, sourceId, targetId, expWeight, learnerWeight
 	
 	var ep = instance.getEndpoints(sourceId);
 	var ep2 = instance.getEndpoints(targetId);
-	if(ep==undefined){ //item has no endpoints yet, so we add them
+	//if(ep==undefined){ //item has no endpoints yet, so we add them
 		instance.addEndpoint(sourceId, { anchor:dynamicAnchors }, expendpoint);
-	}
-	if(ep2==undefined){ //item has no endpoints yet, so we add them
+	//}
+	//if(ep2==undefined){ //item has no endpoints yet, so we add them
 		instance.addEndpoint(targetId, { anchor:dynamicAnchors }, expendpoint);
-	}
-	var epSource = instance.getEndpoints(sourceId)[0];
-	var epTarget = instance.getEndpoints(targetId)[0];
+	//}
+	var epSourceArr = instance.getEndpoints(sourceId);
+	var epTargetArr = instance.getEndpoints(targetId);
+		
+	var epSource = epSourceArr[epSourceArr.length-1];
+	var epTarget = epTargetArr[epTargetArr.length-1];
 	var color = getWeightToColor(expWeight);
 	//alert(color);
 	var cnx = instance.connect({

@@ -30,7 +30,7 @@ function initGroups(){
 
 	for(var i=0; i<boxes.length;i++){
 		instance.addGroup({
-	        el:document.getElementById(boxes[i]),
+	        el: document.getElementById(boxes[i]),
 	        id:groups[i],
 	        constrain:true,
 	        droppable:false,

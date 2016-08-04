@@ -166,7 +166,10 @@ function toggleContainerCollapse(elem){
  * On load we draw the connections between the items.
  */
 function initConnections(){	
-	var conns = jQuery.parseJSON($("#jsonConns").html());
+	var conns = '';
+	if($("#jsonConns").html()!=null && $("#jsonConns").html()!='' && $("#jsonConns").html()!=undefined)
+		conns = jQuery.parseJSON($("#jsonConns").html());
+	
 	if(conns!=''){
 		for(j=0; j<conns.length;j++){
 			createConnection(conns[j].id, conns[j].sourceid, conns[j].targetid, conns[j].l, conns[j].e,  conns[j].weight_e,  conns[j].weight_l);

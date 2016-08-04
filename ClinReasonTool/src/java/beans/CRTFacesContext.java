@@ -138,6 +138,7 @@ public class CRTFacesContext extends FacesContextWrapper /*implements Serializab
 	}
 
 	public void initScriptContainer(){
+		if(user==null) return; //not sure why this happens sometimes....
 		//if not yet loaded or from a different user we set scriptContainer:
 		if(scriptContainer==null || scriptContainer.getUserId()!=user.getUserId()){
 			scriptContainer = new PatIllScriptContainer(user.getUserId());

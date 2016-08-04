@@ -192,8 +192,9 @@ public class ScoreBean extends Beans implements Serializable{
 	 */
 	public boolean equals(Object o){
 		if(o instanceof ScoreBean){
-			if(this.id == ((ScoreBean) o).getId()) return true;
-			if(this.type==((ScoreBean) o).getType() && this.scoredItem==((ScoreBean) o).getScoredItem() && this.stage == ((ScoreBean) o).getStage()) return true;
+			ScoreBean sb = (ScoreBean) o;
+			if(this.id == sb.getId()) return true;
+			if(this.type==sb.getType() && this.scoredItem==sb.getScoredItem() && this.stage == sb.getStage() && this.userId == sb.getUserId()) return true;
 		}
 		return false;
 	}

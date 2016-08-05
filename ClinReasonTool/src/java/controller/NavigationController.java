@@ -9,6 +9,7 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.context.FacesContext;
 import javax.faces.context.FacesContextWrapper;
 
+import application.AppBean;
 import beans.*;
 import beans.scripts.*;
 /**
@@ -110,5 +111,27 @@ public class NavigationController implements Serializable {
 	private void notifyLog(PatientIllnessScript patillscript){
 		LogEntry le = new LogEntry(LogEntry.CLOSEPATILLSCRIPT_ACTION, patillscript.getId(), patillscript.getId());
 		le.save();
+	}
+	
+	public boolean proceedWithVPStoppedFinalDDX(){
+		return proceedWithVPStopped(1);
+	}
+	/**
+	 * A VP system might want to prevent the learner from proceeding with the VP if the learner has not yet 
+	 * submitted a final diagnosis or summary statement etc. 
+	 * @param type (todo definitions)
+	 * @return true (=VP is stopped), false (default)
+	 */
+	private boolean proceedWithVPStopped(int type){
+		CRTFacesContext cnxt =  (CRTFacesContext) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get(CRTFacesContext.CRT_FC_KEY);
+		if(cnxt==null || cnxt.getPatillscript()==null) return false;
+		PatientIllnessScript expScript = AppBean.getExpertPatIllScript(cnxt.getPatillscript().getVpId());
+		if(expScript==null) return false;
+		//1= final diagnosis sumbitted:
+		if(type== 1){
+			if(cnxt.getPatillscript().getSubmitted()) return true; //final ddx submitted -> proceed allowed
+			if(cnxt.getPatillscript().getCurrentStage()<expScript.getMaxSubmittedStage()) return true; //final ddx not submitted, but maxStage not yet reached -> proceed allowed
+		}
+		return false;
 	}
 }

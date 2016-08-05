@@ -337,4 +337,23 @@ function toggleStoredContainerCollapsed(type){
 		else sessionStorage.patcollapsed = "true";
 	}
 }
+
+/*********communication with VP system (via HTML5 cross-domain messaging) ***************/
+
+/*
+ * indicated the parent VP system whether the learner has submitted a diagnosis (1) 
+ * 
+ * status=-1: unknwon
+ * status=0: diagnosis not submitted, but currentstage is >= maxStage until which learner should submit final diagnosis.
+ * statue=1: diagnosis submitted or diagnosis submission not yet enforced (currentStage<maxStage)
+ */
+function postEnforceFinalDDXSubmission(isSubmitted, currentStage, maxStageForSubmission){
+	var message = 1; //default 
+	alert("subm= " + isSubmitted+",curr= "+currentStage+",max= "+maxStageForSubmission);
+	if(isSubmitted!="true" && currentStage>=maxStageForSubmission) message  = 0; 
+	
+	top.postMessage(message, "*");
+}
+
+//we might need more functions here....
      

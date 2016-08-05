@@ -14,6 +14,8 @@ import application.AppBean;
 import beans.*;
 import beans.error.MyError;
 import beans.relation.*;
+import beans.scoring.LearningAnalyticsBean;
+import beans.scoring.LearningAnalyticsContainer;
 import beans.scoring.ScoreBean;
 import controller.AjaxController;
 import controller.NavigationController;
@@ -440,7 +442,9 @@ public class PatientIllnessScript extends Beans/*extends Node*/ implements Illne
 	 * @return
 	 */
 	public boolean getOfferTryAgain(){
-		List<ScoreBean>scores = new NavigationController().getCRTFacesContext().getLearningAnalytics().getScoreContainer().getScoresByType(ScoreBean.TYPE_FINAL_DDX);
+		LearningAnalyticsBean laBean = NavigationController.getInstance().getCRTFacesContext().getLearningAnalytics();
+		if(laBean==null || laBean.getScoreContainer()==null) return false;
+		List<ScoreBean>scores = laBean.getScoreContainer().getScoresByType(ScoreBean.TYPE_FINAL_DDX);
 		if(scores==null || scores.isEmpty()) return true;
 		for(int i=0; i<scores.size(); i++){
 			if(scores.get(i).getScoreBasedOnExpPerc()<DiagnosisSubmitAction.scoreForAllowReSubmit) return true;
@@ -449,6 +453,7 @@ public class PatientIllnessScript extends Beans/*extends Node*/ implements Illne
 	}
 	
 	/**
+	 * Learner can continue the case 
 	 * @return
 	 */
 	public boolean getOfferContinueCase(){

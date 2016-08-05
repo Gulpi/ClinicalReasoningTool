@@ -134,11 +134,14 @@ public class CRTFacesContext extends FacesContextWrapper /*implements Serializab
 	}
 	
 	public LearningAnalyticsContainer getLearningAnalyticsContainer() {
+		if(analyticsContainer==null) initLearningAnalyticsContainer();
+
 		return analyticsContainer;
 	}
 
 	public void initScriptContainer(){
-		if(user==null) return; //not sure why this happens sometimes....
+		if(user==null) setUser();
+		if(user==null) return;//not sure why this happens sometimes....
 		//if not yet loaded or from a different user we set scriptContainer:
 		if(scriptContainer==null || scriptContainer.getUserId()!=user.getUserId()){
 			scriptContainer = new PatIllScriptContainer(user.getUserId());
@@ -147,6 +150,7 @@ public class CRTFacesContext extends FacesContextWrapper /*implements Serializab
 	}
 	
 	public PatIllScriptContainer getScriptContainer(){ 
+		if(scriptContainer==null) initScriptContainer();
 		return scriptContainer;
 	}
 
@@ -165,6 +169,8 @@ public class CRTFacesContext extends FacesContextWrapper /*implements Serializab
 	}
 	
 	private void initLearningAnalyticsContainer(){
+		if(user==null) setUser();
+		if(user==null) return;
 		if(analyticsContainer == null || analyticsContainer.getUserId() != user.getUserId()){ //load learningAnalyticsContainer also if not script is edited -> needed for charts etc...
 			analyticsContainer = new LearningAnalyticsContainer(user.getUserId());
 		}	
@@ -181,7 +187,7 @@ public class CRTFacesContext extends FacesContextWrapper /*implements Serializab
 		this.getAppBean().getViewHandler().calculateLocale(this);
 
 		initScriptContainer(); //this loads all scripts, needed for overview page and availability bias determination
-
+		initLearningAnalyticsContainer();
 		long id = AjaxController.getInstance().getLongRequestParamByKey(AjaxController.REQPARAM_SCRIPT);
 		String vpId = AjaxController.getInstance().getRequestParamByKey(AjaxController.REQPARAM_VP);
 		//long extUserId = new AjaxController().getLongRequestParamByKey(AjaxController.REQPARAM_USER_EXT);
@@ -208,7 +214,7 @@ public class CRTFacesContext extends FacesContextWrapper /*implements Serializab
 		
 		loadExpScripts();
 		initFeedbackContainer();
-		initLearningAnalyticsContainer();
+		
 		if(this.patillscript!=null) initGraph();		
 	}
 	

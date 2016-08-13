@@ -21,7 +21,9 @@
 		<property name="stage" column="stage" type="int"/>
 		<property name="tier" column="tier" type="int"/>
 		<property name="prefix" column="prefix" type="int"/>
-		<property name="ruledOut" column="ruled_out" type="boolean"/>
+		<property name="ruledOut" column="ruled_out" type="int"/>
+		<property name="workingDDX" column="working_ddx" type="int"/>
+		
 		<!--  <property name="name" column="name" type="string"/>	-->
 		<many-to-one name="diagnosis" class="model.ListItem" column="source_id"  lazy="false" insert="false" update="false"/>
 </class>

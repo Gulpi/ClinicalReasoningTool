@@ -787,6 +787,23 @@ body .ui-tooltip {
 	display:none !important;
 }
 
+.wdon_true{
+	display:none !important;
+}
+
+.wdon_false{
+	display:block !important;
+}
+
+.wdoff_true{
+	display:block !important;
+	
+}
+
+.wdoff_false{
+	display:none !important;
+}
+
 .aftersubmit, .aftersubmit_cont_false{
 	display:none;
 }

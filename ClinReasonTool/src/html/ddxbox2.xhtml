@@ -25,6 +25,9 @@
 			<a href="javascript:toggleMnM('#{ddx.id}');" title="#{prop['ddx.mnm.hint']}"><i class="fa fa-long-arrow-right"></i> #{prop['ddx.mnm']}</a><br/>
 			<a class="ro_#{ddx.ruledOut}" id="ro_a_#{ddx.id}" href="javascript:ruleOut('#{ddx.id}');" title=">#{prop['ddx.ruledout.hint']}"><i class="fa fa-long-arrow-right"></i> #{prop['ddx.ruledout']}</a>
 			<a class="ri_#{ddx.ruledOut}" id="ri_a_#{ddx.id}" href="javascript:ruleIn('#{ddx.id}');" title="#{prop['ddx.rulein.hint']}"><i class="fa fa-long-arrow-right"></i> #{prop['ddx.rulein']}</a>
+			<a class="wdon_#{ddx.workingDDXBool}" id="wdon_a_#{ddx.id}" href="javascript:workingDDXOn('#{ddx.id}');" title=">#{prop['ddx.workingddx.on.hint']}"><i class="fa fa-long-arrow-right"></i> #{prop['ddx.workingddx.on']}</a>
+			<a class="wdoff_#{ddx.workingDDXBool}" id="wdoff_a_#{ddx.id}" href="javascript:workingDDXOff('#{ddx.id}');" title="#{prop['ddx.workingddx.off.hint']}"><i class="fa fa-long-arrow-right"></i> #{prop['ddx.workingddx.off']}</a>
+
 		</div>
 		<a class="del" href="javascript:delDiagnosis(#{ddx.id});"><i class="fa fa-trash"></i> #{prop['delete']}</a>
 	 </div>

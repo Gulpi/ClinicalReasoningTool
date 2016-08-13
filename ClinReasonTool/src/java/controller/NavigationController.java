@@ -91,6 +91,12 @@ public class NavigationController implements Serializable {
 		/*if(cnxt!=null)*/ return cnxt;
 	}
 	
+	public PatientIllnessScript getPatientIllnessScript(){
+		CRTFacesContext cnxt = getCRTFacesContext();
+		if(cnxt!=null) return cnxt.getPatillscript();
+		return null;
+	}
+	
 	/**
 	 * Calls isExpEdit in CRTFacesContext to determine whether currently an expert script is edited
 	 * @return

@@ -25,8 +25,11 @@
 			<span class="dropd_#{ddx.isExpertHierarchyItem}"><a class="dropd_#{ddx.isExpertHierarchyItem}" href="javascript:chgDiagnosis(#{ddx.id}, 2);"><i class="fa fa-long-arrow-right"></i> #{ddx.expItemLabel}</a><br/></span>  <!-- Hierarchy -->
 			<span class="dropd_#{ddx.isSynonyma}"><a class="dropd_#{ddx.isSynonyma}" href="javascript:chgDiagnosis(#{ddx.id}, 3);"><i class="fa fa-long-arrow-right"></i> #{ddx.synonym.name}</a><br/></span><!-- Synonym -->
 			<a href="javascript:toggleMnM('#{ddx.id}');" title="#{prop['ddx.mnm.hint']}"><i class="fa fa-long-arrow-right"></i> #{prop['ddx.mnm']}</a><br/>
-			<a class="ro_#{ddx.ruledOut}" id="ro_a_#{ddx.id}" href="javascript:ruleOut('#{ddx.id}');" title=">#{prop['ddx.ruledout.hint']}"><i class="fa fa-long-arrow-right"></i> #{prop['ddx.ruledout']}</a>
-			<a class="ri_#{ddx.ruledOut}" id="ri_a_#{ddx.id}" href="javascript:ruleIn('#{ddx.id}');" title="#{prop['ddx.rulein.hint']}"><i class="fa fa-long-arrow-right"></i> #{prop['ddx.rulein']}</a>
+			<a class="ro_#{ddx.ruledOutBool}" id="ro_a_#{ddx.id}" href="javascript:ruleOut('#{ddx.id}');" title=">#{prop['ddx.ruledout.hint']}"><i class="fa fa-long-arrow-right"></i> #{prop['ddx.ruledout']}</a>
+			<a class="ri_#{ddx.ruledOutBool}" id="ri_a_#{ddx.id}" href="javascript:ruleIn('#{ddx.id}');" title="#{prop['ddx.rulein.hint']}"><i class="fa fa-long-arrow-right"></i> #{prop['ddx.rulein']}</a>
+			<a class="wdon_#{ddx.workingDDXBool}" id="wdon_a_#{ddx.id}" href="javascript:workingDDXOn('#{ddx.id}');" title=">#{prop['ddx.workingddx.on.hint']}"><i class="fa fa-long-arrow-right"></i> #{prop['ddx.workingddx.on']}</a>
+			<a class="wdoff_#{ddx.workingDDXBool}" id="wdoff_a_#{ddx.id}" href="javascript:workingDDXOff('#{ddx.id}');" title="#{prop['ddx.workingddx.off.hint']}"><i class="fa fa-long-arrow-right"></i> #{prop['ddx.workingddx.off']}</a>
+
 			<span class="dropd_#{ddx.isExpEdit}"><a class="dropd_#{ddx.isExpEdit}" href="javascript:expFinalDiagnosis(#{ddx.id});"><i class="fa fa-long-arrow-right"></i> Final diagnosis</a><br/></span><!-- Synonym -->
 
 		</div>

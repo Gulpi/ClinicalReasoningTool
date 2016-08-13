@@ -43,9 +43,11 @@ public class RelationDiagnosis extends Relation implements Serializable {
 	public static final int TIER_MOSTLIKELY = 1; //Clinically high likelihood
 	public static final int TIER_FINAL = 4; //Final diagnosis
 	public static final int TIER_RULEDOUT = 5;
+	public static final int TIER_WORKINGDDX = 6;
 	private static final String COLOR_MNM = "#FF0000";
 	private static final String COLOR_RULEDOUT = "#cccccc";
 	private static final String COLOR_DEFAULT = "#000000";
+	private static final String COLOR_WORKINGDDX = "#c00815";
 
 	/**
 	 * has this diagnosis been submitted as final the learner? If yes for certain components no more changes 
@@ -70,7 +72,15 @@ public class RelationDiagnosis extends Relation implements Serializable {
 	 */
 	private int mnm = 0;
 	
-	private boolean ruledOut;
+	/**
+	 * stage at which a diagnosis has been ruled out, -1/0: not ruled out
+	 */
+	private int ruledOut;
+	
+	/**
+	 * Current working diagnosis (most likely one at current stage)
+	 */
+	private int workingDDX;
 
 	
 	public RelationDiagnosis(){}
@@ -101,8 +111,34 @@ public class RelationDiagnosis extends Relation implements Serializable {
 	//public int getSubmittedStage() {return submittedStage;}
 	//public void setSubmittedStage(int submittedStage) {this.submittedStage = submittedStage;}
 	
-	public boolean isRuledOut() {return ruledOut;}
-	public void setRuledOut(boolean ruledOut) {this.ruledOut = ruledOut;}
+	//public int getRuledOut() {return ruledOut;}
+	public boolean isRuledOutBool(){
+		if(ruledOut>0) return true;
+		return false;
+	}
+	
+	public int getRuledOut(){return ruledOut;}
+	public void setRuledOut(int ruledOut) {this.ruledOut = ruledOut;}
+	public void setRuledOutAtCurrStage() {
+		PatientIllnessScript patillscript = NavigationController.getInstance().getPatientIllnessScript();
+		if(patillscript!=null) this.ruledOut = patillscript.getCurrentStage();
+	}
+	
+	private void setWorkingDDXAtCurrStage(){
+		PatientIllnessScript patillscript = NavigationController.getInstance().getPatientIllnessScript();
+		if(patillscript!=null) this.workingDDX = patillscript.getCurrentStage();
+		
+	}
+	
+	public void toggleRuledOut(){
+		if(ruledOut>0) ruledOut = -1;
+		else setRuledOutAtCurrStage();
+	}
+	
+	public void toggleWorkingDDX(){
+		if(workingDDX>0) workingDDX = -1;
+		else setWorkingDDXAtCurrStage();
+	}
 	
 	public String getIdWithPrefix(){ return GraphController.PREFIX_DDX+this.getId();}
 	public int getMnm() {
@@ -121,16 +157,18 @@ public class RelationDiagnosis extends Relation implements Serializable {
 		if(tier==TIER_FINAL) return true;
 		return false;
 	}
-	
-	
-	public void toggleRuledOut(){
-		ruledOut = !ruledOut;
-		/*if(tier!=TIER_RULEDOUT) tier = TIER_RULEDOUT;
-		else tier = TIER_NONE;*/
+		
+	public boolean isWorkingDDXBool() {
+		if(workingDDX>0) return true;
+		return false;
 	}
-
+	
+	public int getWorkingDDX(){return workingDDX;}
+	
+	public void setWorkingDDX(int workingDDX) {this.workingDDX = workingDDX;}
 	public String getColor(){		
-		if(ruledOut) return COLOR_RULEDOUT;
+		if(isRuledOutBool()) return COLOR_RULEDOUT;
+		if(workingDDX>0) return COLOR_WORKINGDDX;
 		//if(this.isMnM()) return COLOR_MNM;
 		return COLOR_DEFAULT;
 	}

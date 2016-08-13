@@ -96,7 +96,12 @@ public class DiagnosisSubmitAction /*implements Scoreable*/{
 		RelationDiagnosis rel = patIllScript.getDiagnosisById(id);
 		if(rel==null) return;
 		//if(tier == RelationDiagnosis.TIER_FINAL) rel.toggleFinal();
-		else if(tier==RelationDiagnosis.TIER_RULEDOUT) rel.toggleRuledOut();
+		else if(tier==RelationDiagnosis.TIER_RULEDOUT){
+			rel.toggleRuledOut();
+		}
+		else if (tier==RelationDiagnosis.TIER_WORKINGDDX){
+			rel.toggleWorkingDDX();
+		}
 		
 		new DBClinReason().saveAndCommit(rel);
 		//re-score the ddx list.... or re-score the item?

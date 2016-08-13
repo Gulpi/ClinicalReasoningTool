@@ -332,6 +332,30 @@ function ruleIn(id){
 	sendAjax(id, doNothing, "changeTier",  5);
 }
 
+function workingDDXOn(id){
+	clearErrorMsgs();
+	hideDropDown("ddddx_"+id);
+	var item = $("#ddx_"+id);
+	item.css("color", "#c00815");
+	$("#wdon_a_"+id).removeClass();
+	$("#wdoff_a_"+id).removeClass();
+	$("#wdon_a_"+id).hide();
+	$("#wdoff_a_"+id).show();
+	sendAjax(id, doNothing, "changeTier",  6);
+}
+
+function workingDDXOff(id){
+	clearErrorMsgs();
+	hideDropDown("ddddx_"+id);
+	var item = $("#ddx_"+id);
+	item.css("color", "#000000");
+	$("#wdoff_a_"+id).removeClass();
+	$("#wdon_a_"+id).removeClass();
+	$("#wdoff_a_"+id).hide();
+	$("#wdon_a_"+id).show();
+	sendAjax(id, doNothing, "changeTier",  6);
+}
+
  function getRectColor(tier){
 	if(tier==5) return "#cccccc"; //ruled-out
 	if(tier==7) return "#f3546a"; //MnM

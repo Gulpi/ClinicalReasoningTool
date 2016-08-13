@@ -503,6 +503,8 @@ function saveSummStatementCallBack(){
 
 var map_autocomplete_instance = null;
 
+var item_data = null;
+
 /** init the lists for selecting problems, diagnoses etc.*/
   $(function() {
 	    function log( message ) {
@@ -514,22 +516,56 @@ var map_autocomplete_instance = null;
 	        url: listUrl,
 	        dataType: "json",
 	        success: function( data ) {
+	        	item_data = data;
 	          $( "#problems" ).autocomplete({
-	            source: data,
+	           /* source: data,*/
+	        	source: doMatch,
 	            minLength: minLengthTypeAhead,
 	            select: function( event, ui ) {
 	            	addProblem(ui.item.value, ui.item.label);
 	            },
-	  	      close: function(ui) {
-	  	        $("#problems").val("");
-	  	      }
+	  	      	close: function(ui) {
+	  	      		$("#problems").val("");
+	  	      	}
 	          });
+	          $( "#ddx" ).autocomplete({
+		            source: doMatch,
+		            minLength: minLengthTypeAhead,
+		            select: function( event, ui ) {
+		            	addDiagnosis(ui.item.value, ui.item.label);
+		            },
+		  	      close: function(ui) {
+		  	        $("#ddx").val("");
+		  	      }
+		      });
+	          $( "#tests" ).autocomplete({
+		            source: doMatch,
+		            minLength: minLengthTypeAhead,
+		            select: function( event, ui ) {
+		            	addTest(ui.item.value, ui.item.label);
+		            },
+		  	      close: function(ui) {
+		  	        $("#tests").val("");
+		  	      }
+		            
+		        });
+	          $( "#mng" ).autocomplete({
+		            source: doMatch,
+		            minLength: minLengthTypeAhead,
+		            select: function( event, ui ) {
+		            	addManagement(ui.item.value, ui.item.label);
+		            },
+		  	      close: function(ui) {
+		  	        $("#mng").val("");
+		  	      }
+		          });
 	        }
 	      });
-	    $.ajax({ //list for epi (list view)
+	   /* $.ajax({ //list for epi (list view)
 	        url: listUrl,
 	        dataType: "json",
 	        success: function( data ) {
+	        	item_data = data;
 	          $( "#epi" ).autocomplete({
 	            source: data,
 	            minLength: minLengthTypeAhead,
@@ -541,86 +577,112 @@ var map_autocomplete_instance = null;
 	  	      }
 	          });
 	        }
-	      });	    
-	    $.ajax({ //list for diagnoses (list view)
+	      });	  */  
+	   /* $.ajax({ //list for diagnoses (list view)
 	        url: listUrl,
 	        dataType: "json",
 	        success: function( data ) {
+	        	item_data = data;
 	          $( "#ddx" ).autocomplete({
-	            source: data,
+	            source: doMatch,
 	            minLength: minLengthTypeAhead,
 	            select: function( event, ui ) {
 	            	addDiagnosis(ui.item.value, ui.item.label);
 	            },
 	  	      close: function(ui) {
 	  	        $("#ddx").val("");
-	  	        
 	  	      }
 	          });
 	        }
-	      });    
+	      });    */
 	    
-	    $.ajax({ //list for diagnostic steps (list view)
+	   /* $.ajax({ //list for diagnostic steps (list view)
 	        url: listUrl,
 	        dataType: "json",
 	        success: function( data ) {
+	        	item_data = data;
 	          $( "#tests" ).autocomplete({
-	            source: data,
+	            source: doMatch,
 	            minLength: minLengthTypeAhead,
 	            select: function( event, ui ) {
 	            	addTest(ui.item.value, ui.item.label);
 	            },
 	  	      close: function(ui) {
 	  	        $("#tests").val("");
-	  	       
+	  	       // item_data = "";
 	  	        //$("#tests").autocomplete( "destroy" );
 	  	      }
 	            
 	          });
 	        }
-	      });
-	    $.ajax({ //list for management item (list view)
+	      });*/
+	   /* $.ajax({ //list for management item (list view)
 	        url: listUrl,
 	        dataType: "json",
 	        success: function( data ) {
+	        	item_data = data;
 	          $( "#mng" ).autocomplete({
-	            source: data,
+	            source: doMatch,
 	            minLength: minLengthTypeAhead,
 	            select: function( event, ui ) {
 	            	addManagement(ui.item.value, ui.item.label);
 	            },
 	  	      close: function(ui) {
 	  	        $("#mng").val("");
+	  	        //item_data = "";
 	  	      }
 	          });
 	        }
-	      });
+	      });*/
 	  });
   
-  
-
-
-/** when coming back from adding items, we empty the map and init it again from the updated json string*/
-/*function updateCallback(data){
-	switch (data.status) {
-    case "begin": // This is called right before ajax request is been sent.
-        //button.disabled = true;
-        break;
-
-    case "complete": // This is called right after ajax response is received.
-        // We don't want to enable it yet here, right?
-        break;
-
-    case "success": // This is called right after update of HTML DO, we do no longer update map here, this is only done when clicking on tab.
-    	//my_canvas.clear();   	
-    	//alert("updateCallback");
-    	//initConceptMap();
-    	//initLists();
-    	alert("end");
-        break;
+  /*
+   * matches the user input with the list labels. Also considers multiple terms
+   */
+function doMatch(request,response){
+	if (request.term == "") {
+		response( $.map( item_data, function( item ) {
+			return {
+				value: item.value,
+				/*text: item.label*/
+				label: item.label
+			}
+		}));
+		return;
+	}
+	else {
+		
+		var my_map = $.map( item_data, function( item ) {
+			if(item.label=="") return;
+			var matcher;
+			var user_input = request.term;
+			var user_input_arr = user_input.split(" ");
+			var arr_match = false;
+			if(user_input_arr.length>1){ //then we have more than one search term.
+				arr_match = true;
+				for(var i=0; i<user_input_arr.length; i++){
+					matcher = new RegExp( $.ui.autocomplete.escapeRegex(user_input_arr[i]), "i" );	
+					if(!matcher.test(item.label)){
+						arr_match = false;
+						break;
+					}
+				}
+			}
+			else{ //only one search term:
+				matcher = new RegExp( $.ui.autocomplete.escapeRegex(user_input), "i" );
+				arr_match = matcher.test(item.label)
+			}
+						
+			if (!user_input || arr_match ||  item.label == user_input) {
+				return {
+					value: item.value,
+					label: item.label
+				};
+			}
+		});
+		response( my_map );
 	}
 }
-*/
 /******************** Feedback *******************************/
 
   /*

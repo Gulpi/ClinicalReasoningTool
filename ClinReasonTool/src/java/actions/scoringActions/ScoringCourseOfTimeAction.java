@@ -30,7 +30,6 @@ public class ScoringCourseOfTimeAction {
 		//calculateAddActionScoreBasedOnPeers(edge, scoreBean, g.getPeerNums());
 		
 		scoreContainer.addScore(scoreBean);
-		calculateOverallScore(scoreBean); 
 		new DBScoring().saveAndCommit(scoreBean);	
 	}
 	
@@ -45,7 +44,4 @@ public class ScoringCourseOfTimeAction {
 		else scoreBean.setScoreBasedOnExp(ScoringController.NO_SCORE, isChg);
 	}
 	
-	private void calculateOverallScore(ScoreBean scoreBean){
-		scoreBean.setOverallScore(scoreBean.getScoreBasedOnExp());
-	}
 }

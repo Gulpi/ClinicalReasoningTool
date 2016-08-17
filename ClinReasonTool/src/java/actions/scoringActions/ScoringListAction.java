@@ -49,7 +49,6 @@ public class ScoringListAction {
 		calculateListScoreBasedOnExpert(mvertices, scoreBean, scoreContainer);	
 		//calculateStrictListScoreBasedOnExpert(mvertices, scoreBean, scoreContainer);	
 		calculateListScoreBasedOnPeers(mvertices, scoreBean);
-		calculateOverallScore(scoreBean);
 		new DBScoring().saveAndCommit(scoreBean);
 	}
 	
@@ -127,12 +126,5 @@ public class ScoringListAction {
 		//TODO
 	}
 	
-	/** TODO we could consider all components and calculate based on these an overall score.
-	 * For now we just take the expertsScore.
-	 * @param scoreBean
-	 */
-	private void calculateOverallScore(ScoreBean scoreBean){
-		scoreBean.setOverallScore(scoreBean.getScoreBasedOnExp());
-	}
 	
 }

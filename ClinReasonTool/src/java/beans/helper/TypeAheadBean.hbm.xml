@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="beans.helper">
+
+	<class name="TypeAheadBean" table="crt.typeahead">
+		<cache usage="nonstrict-read-write" />
+		<comment>TypeAheadBean</comment>	
+		<id name="id" type="long" column="id">
+			<generator class="sequence">
+				<param name ="sequence">CRT.CR_SEQ</param>
+			</generator>
+		</id>	
+		<property name="userId" column="user_id" type="long" />
+		<property name="typeaheadText" column="text" type="string"/>
+		<property name="vpId" column="vp_id" type="string"/>
+		<property name="scriptId" column="script_id" type="long"/>
+		<property name="finalItemId" column="final_item_id" type="long"/>
+		<property name="type" column="type" type="int"/>
+			
+</class>
+</hibernate-mapping>

@@ -29,6 +29,8 @@
 <script src="../scripts/connection.js"></script>
 
 <script src="../scripts/crt_box.js"></script>
+<script src="../scripts/list.js"></script>
+
 <script src="../scripts/ajax.js"></script>
 <script src="../scripts/js.cookie.js"></script>
 <script src="../scripts/jsPlumb-2.1.4.js"></script>
@@ -68,8 +70,10 @@ var hideCnxTitle = "#{prop['cnx.hide']}";
 var showCnxTitle = "#{prop['cnx.show']}";
 var showExpTitle = "#{prop['feedback.exp']}";
 var hideExpTitle = "#{prop['feedback.exp.hide']}";
+var submitDialogTitle = "#{prop['submit.dialog.title']}";
+var chgCnxDialogTitle = "#{prop['cnx.dialog.title']}";
+
 var active;
-var minLengthTypeAhead = 3;
 var submitDDXOne = "#{prop['submit.minone']}";
 //var errorNum = "#{crtContext.patillscript.errorNum}";
 var submitted = "#{crtContext.patillscript.submitted}";
@@ -88,6 +92,7 @@ $(function() {
 		saveSummSt('#{crtContext.patillscript.summStId}');
 	 });
 	checkSubmitBtn();
+	toggleBefAfterSubmitOnLoad();
 	//initContainerPos();
 
 	//toggleExpertFeedbackOnLoad();
@@ -119,7 +124,7 @@ $(function() {
       });
 	//initLists();
     $( "#confidence_slider" ).slider({
-       orientation: "vertical",
+       orientation: "horizontal",
     	min: 0,
     	max: 100,
     	step: 1,
@@ -236,7 +241,7 @@ item_arr = new Array();
 <div class="options">
 	 <a href="javascript:toogleCnxDisplay();" id="cnxtoggle" title="#{prop['cnx.hide']}"><i id="cnxtogglei" class="fa fa-conn_on"></i></a>
 	 <a href="javascript:toggleExpFeedback('expFeedback', 'icon-user-md');"  title="#{prop['feedback.exp']}"><i id="expFeedback" class="fa fa-user-md_off"></i></a>
-	 <a href="javascript:alert('Not yet implemented.')" title="#{prop['help']}"><i class="fa fa-question-circle "></i></a>
+	 <a href="javascript:alert('Not yet implemented.')" style="float:right;" title="#{prop['help']}"><i class="fa fa-question-circle "></i></a>
 	<!--  <a href="exp_stages.xhtml" target="new">exp dev</a>-->
 	<!--  <a href="alert('not yet available, will show the development of the experts script during the case');">exp dev</a>-->
 </div>
@@ -267,8 +272,9 @@ item_arr = new Array();
 		   		</div>
 		   		<div  class="node-collapse"></div>
 		  			<div class="search boxchild"><span class="icon"><i class="icon-search"></i></span>
-		  			<select class="f_select" style="width:40px;" id="fdg_prefix"><option value="0">-</option><option value="1">#{prop['no']}</option></select>
-		  			<input class="f_text" style="width:155px;" id="problems" placeholder="#{prop['search']} ..." title="#{prop['findings.search']}"></input></div>
+		  			<input type="text" id="fdg_prefix" style="display:none;" />
+		  			<!-- <select class="f_select" style="width:40px;" id="fdg_prefix"><option value="0">-</option><option value="1">#{prop['no']}</option></select>-->
+		  			<input class="f_text" onkeyup="javascript:storeHistory('problems');" id="problems" placeholder="#{prop['search']} ..." title="#{prop['findings.search']}"></input></div>
 						<h:form id="probform">
 						<h:panelGroup>
 						   <ui:repeat id="repeatprob" value="#{crtContext.patillscript.problems}" var="prob" varStatus="status">
@@ -309,7 +315,7 @@ item_arr = new Array();
 		  			</span>
 		  		</div>	
 		  		<div class="node-collapse"></div>	  		
-		  			<div class="search boxchild"><input class="f_text" placeholder="#{prop['search']} ..." id="ddx" title="#{prop['ddx.search']}"></input></div>
+		  			<div class="search boxchild"><input class="f_text" onkeyup="javascript:storeHistory('ddx');" placeholder="#{prop['search']} ..." id="ddx" title="#{prop['ddx.search']}"></input></div>
 			  			<h:form id="ddxform">
 						<h:panelGroup >
 							<ui:repeat value="#{crtContext.patillscript.diagnoses}" var="ddx" varStatus="status">
@@ -344,7 +350,7 @@ item_arr = new Array();
 		  			</span>
 		  		</div>
 		 	 	<div class="node-collapse"></div>
-		  		<div class="search boxchild"><input class="f_text" placeholder="#{prop['search']} ..." id="tests" title="#{prop['tests.search']}"></input></div>
+		  		<div class="search boxchild"><input class="f_text" onkeyup="javascript:storeHistory('tests');" placeholder="#{prop['search']} ..." id="tests" title="#{prop['tests.search']}"></input></div>
 		  			<h:form id="testform">
 		  			<h:panelGroup>
 					
@@ -371,7 +377,7 @@ item_arr = new Array();
 		  		</span>
 		  	</div>
 		 	 <div class="node-collapse"></div>
-		  	<div class="search boxchild"><input class="f_text" id="mng" placeholder="#{prop['search']} ..." title="#{prop['mng.search']}"></input></div>
+		  	<div class="search boxchild"><input class="f_text" id="mng" onkeyup="javascript:storeHistory('mng');" placeholder="#{prop['search']} ..." title="#{prop['mng.search']}"></input></div>
 	  			<h:form id="mngform">
 	  			<h:panelGroup>
 	
@@ -403,15 +409,7 @@ item_arr = new Array();
 	</ul><a href="javascript:alert('Not yet available');" title="#{prop['ddx.errors.info']}">#{prop['info']}</a>
 </div>
 <div id="connContext">
-<span style="display:none;" id="conn_id"></span>
-	<div class="linkscon">
-		<i class=" fa fa-circle" style="color:#009933;"></i> <a class="acon" href="javascript:chgConnectionWeight(5);">#{prop['cnx.relation.5']}</a><br/>
-		<i class=" fa fa-circle" style="color:#00e64d;"></i> <a class="acon" href="javascript:chgConnectionWeight(4);">#{prop['cnx.relation.4']}</a><br/>
-		<i class="fa fa-circle" style="color:#e6ffee;"></i> <a class="acon" href="javascript:chgConnectionWeight(3);">#{prop['cnx.relation.3']}</a><br/>
-		<i class=" fa fa-circle" style="color:#990000;"></i> <a class="acon" href="javascript:chgConnectionWeight(6);">#{prop['cnx.relation.6']}</a>
-	</div><br/>
-	
-	<a class="del" href="javascript:delConnection();"><i class="fa fa-trash"></i> #{prop['delete']}</a>
+	<ui:include src="cnxchange.xhtml" />
 </div>
 </body>
 </html>

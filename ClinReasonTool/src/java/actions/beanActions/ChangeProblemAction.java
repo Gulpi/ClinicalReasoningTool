@@ -43,7 +43,7 @@ public class ChangeProblemAction extends ChgAction{
 	public void changeProblem(String oldProbIdStr, String changeModeStr){		
 		long oldProbId = Long.valueOf(oldProbIdStr.trim());
 		int changeMode = Integer.valueOf(changeModeStr.trim());
-		if(changeMode==1) toggleProblem(oldProbId); //change prefix
+		//if(changeMode==1) toggleProblem(oldProbId); //change prefix
 		if(changeMode==2 || changeMode==3) 
 			changeItem(oldProbId, patIllScript, Relation.TYPE_PROBLEM); //changeProblem(oldProbId); //synonyma or hierarchy item
 		//changeProblem(oldProbId, newProbId);
@@ -58,7 +58,7 @@ public class ChangeProblemAction extends ChgAction{
 	 * We toggle the prefix (No ... vs ...)
 	 * @param relIdStr
 	 */
-	private void toggleProblem(long relId){		
+	/*private void toggleProblem(long relId){		
 		RelationProblem probToChg = patIllScript.getProblemById(relId);
 		probToChg.togglePrefix();
 		save(probToChg);
@@ -66,7 +66,7 @@ public class ChangeProblemAction extends ChgAction{
 		//TODO re-score:
 		//ScoreBean score = new ScoringController().getScoreBeanForItem(Relation.TYPE_PROBLEM, probToChg.getListItemId());
 		new ScoringAddAction(true).scoreAction(probToChg.getListItemId(), patIllScript, false, Relation.TYPE_PROBLEM);
-	}
+	}*/
 	
 	
 	public void changeRelation(MultiVertex expVertex, Relation probToChg){
@@ -97,10 +97,10 @@ public class ChangeProblemAction extends ChgAction{
 		le.save();
 	}
 	
-	private void notifyLogTogglePrefix(Relation probToChg){
+	/*private void notifyLogTogglePrefix(Relation probToChg){
 		LogEntry le = new LogEntry(LogEntry.TOGGLE_PREFIX_ACTION, patIllScript.getId(), probToChg.getListItemId(), probToChg.getPrefix());
 		le.save();
-	}
+	}*/
 	
 	public void save(Beans rel){
 		new DBClinReason().saveAndCommit(rel);

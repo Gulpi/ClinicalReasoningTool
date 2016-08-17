@@ -59,7 +59,7 @@ function sendAjaxUrl(id, callback, type, name, url){
 	$.ajax({
 		  method: "POST",
 		  url: url,
-		  data: { type: type, id: id, session_id: 1, name: name, script_id: scriptId, stage:currentStage }
+		  data: { type: type, id: id, name: name, script_id: scriptId, stage:currentStage, typehistory:inputhistory }
 		})
 	  .done(function( response ) {
 		  handleResponse(response, callback, name);		
@@ -77,7 +77,7 @@ function sendAjaxUrlHtml(id, callback, type, name, url){
 	$.ajax({
 		  method: "POST",
 		  url: url,
-		  data: { type: type, id: id, session_id: 1, name: name, script_id: scriptId, stage:currentStage }
+		  data: { type: type, id: id, name: name, script_id: scriptId, stage:currentStage }
 		})
 	  .done(function( response ) {
 		  handleResponseHtml(response, callback, name);		
@@ -88,7 +88,7 @@ function sendAjaxCM(id, callback, type, name, x, y){
 	$.ajax({
 		  method: "POST",
 		  url: "tabs_ajax.xhtml",
-		  data: { type: type, id: id, session_id: 1, name: name, x: x, y: y, script_id: scriptId, stage:currentStage }
+		  data: { type: type, id: id, name: name, x: x, y: y, script_id: scriptId, stage:currentStage }
 		})
 	  .done(function( response ) {	
 		  handleResponse(response, callback, name);

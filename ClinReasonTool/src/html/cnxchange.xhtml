@@ -1,0 +1,17 @@
+ <ui:composition 
+    xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core">
+	
+	<span style="display:none;" id="conn_id"></span>
+	<div class="linkscon">
+		<i class=" fa fa-circle" style="color:#999999;"></i> <a class="acon" href="javascript:chgConnectionWeight(5);">#{prop['cnx.relation.5']}</a><br/>
+		<!-- <i class=" fa fa-circle" style="color:#999999;"></i> <a class="acon" href="javascript:chgConnectionWeight(4);">#{prop['cnx.relation.4']}</a><br/>-->
+		<i class="fa fa-circle" style="color:#e6e6e6;"></i> <a class="acon" href="javascript:chgConnectionWeight(3);">#{prop['cnx.relation.3']}</a><br/>
+		<i class=" fa fa-circle" style="color:#990000;"></i> <a class="acon" href="javascript:chgConnectionWeight(6);">#{prop['cnx.relation.6']}</a>
+	</div><br/>
+		
+	<a class="del" href="javascript:delConnection();"><i class="fa fa-trash"></i> #{prop['delete']}</a>
+		
+</ui:composition>

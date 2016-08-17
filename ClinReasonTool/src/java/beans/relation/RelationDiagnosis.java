@@ -46,8 +46,9 @@ public class RelationDiagnosis extends Relation implements Serializable {
 	public static final int TIER_WORKINGDDX = 6;
 	private static final String COLOR_MNM = "#FF0000";
 	private static final String COLOR_RULEDOUT = "#cccccc";
-	private static final String COLOR_DEFAULT = "#000000";
-	private static final String COLOR_WORKINGDDX = "#c00815";
+	private static final String COLOR_DEFAULT = "#ffffff";
+	private static final String COLOR_WORKINGDDX = "#cce6ff";
+	private static final String COLOR_FINAL = "#80bfff";
 
 	/**
 	 * has this diagnosis been submitted as final the learner? If yes for certain components no more changes 
@@ -168,8 +169,15 @@ public class RelationDiagnosis extends Relation implements Serializable {
 	public void setWorkingDDX(int workingDDX) {this.workingDDX = workingDDX;}
 	public String getColor(){		
 		if(isRuledOutBool()) return COLOR_RULEDOUT;
-		if(workingDDX>0) return COLOR_WORKINGDDX;
+		//if(workingDDX>0) return COLOR_WORKINGDDX;
+		//if(isFinalDiagnosis()) return COLOR_WORKINGDDX;
 		//if(this.isMnM()) return COLOR_MNM;
+		return "#000000";//COLOR_DEFAULT;
+	}
+	public String getBackgroundColor(){		
+		//if(isRuledOutBool()) return COLOR_RULEDOUT;
+		if(workingDDX>0) return COLOR_WORKINGDDX;
+		if(isFinalDiagnosis()) return COLOR_FINAL;
 		return COLOR_DEFAULT;
 	}
 	/* (non-Javadoc)
@@ -217,10 +225,10 @@ public class RelationDiagnosis extends Relation implements Serializable {
 		//only return something if learner has chosen it as a final ddx:
 		boolean isLearnerFinal = ((RelationDiagnosis)mvertex.getLearnerVertex()).getTier() == RelationDiagnosis.TIER_FINAL;
 		if(isLearnerFinal && mvertex.getExpertVertex()==null) 
-			return IntlConfiguration.getValue("ddx.nodiff", NavigationController.getLocale());
+			return IntlConfiguration.getValue("ddx.nodiff");
 		try{
 			RelationDiagnosis expRel = (RelationDiagnosis) mvertex.getExpertVertex();
-			if(isLearnerFinal) return IntlConfiguration.getValue("ddx.tierdescr."+expRel.getTier(), NavigationController.getLocale()); //String.valueOf(expRel.getTier());
+			if(isLearnerFinal) return IntlConfiguration.getValue("ddx.tierdescr."+expRel.getTier()); //String.valueOf(expRel.getTier());
 		}
 		catch(Exception e){return "";} //can happen if expert has this item not as a diagnosis but as a something else....	
 		return "";

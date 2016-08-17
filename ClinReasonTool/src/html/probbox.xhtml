@@ -5,19 +5,21 @@
       xmlns:f="http://java.sun.com/jsf/core">
 
  <div id="fdg_#{prob.id}"  score="#{prob.score}" class="itembox fdgs" title="#{prob.labelOrSynLabel}" style="left:#{prob.x}px; top:#{prob.boxY}px;">
- 	#{prob.prefixStr} #{prob.shortLabelOrSynShortLabel}
+ 	#{prob.prefix} #{prob.shortLabelOrSynShortLabel}
 	 <script language="Javascript">
 	 	item_arr.push("fdg_#{prob.id}");
 	 </script>
 	 <span class="dropdown" onClick="javascript:showDropDown('ddfdg_#{prob.id}', 'fdg_#{prob.id}');"><i class="fa fa-chevron-circle-down"></i></span>
 
  	<span class="peer_score_fdg" title="#{prop['findings.peer.hint']}" id="peerscore#{prob.id}"> (#{prob.peerPercentage})</span>
+ 	<span class="icons_score fdgs_score boxscore_#{prob.score}"><i class="fa fa-check"></i></span>
+
  </div> 
 	 <div class="dropdown-content" id="ddfdg_#{prob.id}" onmouseleave="javascript:hideDropDown('ddfdg_#{prob.id}');">
 	 <span style="float:left;">#{prop['change']}:</span>
 	<span class="dropdownX"><a href="javascript:hideDropDown('ddfdg_#{prob.id}');"><i class="fa fa fa-times"></i></a></span> <br/>
 		<div class="links">
-			<a href="javascript:chgProblem(#{prob.id}, 1);"><i class="fa fa-long-arrow-right"></i> #{prob.toggledPrefixStr} #{prob.labelOrSynLabel}</a><br/><!-- item toggled prefix, always enabled -->	 	
+			<!--<a href="javascript:chgProblem(#{prob.id}, 1);"><i class="fa fa-long-arrow-right"></i> #{prob.toggledPrefixStr} #{prob.labelOrSynLabel}</a><br/> -->	 	
 			<span class="dropd_#{prob.isExpertHierarchyItem}"><a class="dropd_#{prob.isExpertHierarchyItem}" href="javascript:chgProblem(#{prob.id}, 2);"><i class="fa fa-long-arrow-right"></i> #{prob.expItemLabel}</a><br/></span> <!-- Hierarchy -->
 			<span class="dropd_#{prob.isSynonyma}"><a class="dropd_#{prob.isSynonyma}" href="javascript:chgProblem(#{prob.id}, 3);"><i class="fa fa-long-arrow-right"></i> #{prob.synonym.name}</a><br/></span> <!-- Synonym -->
 		</div>

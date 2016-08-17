@@ -73,6 +73,5 @@ public class FeedbackController {
 		if(scoreBean.getExpItemId()>0) return true;
 		return false;
 		//if(scoreBean.getScoreBasedOnExp()>0 && scoreBean.getScoreBasedOnExp()<1) return true;
-
 	}
 }

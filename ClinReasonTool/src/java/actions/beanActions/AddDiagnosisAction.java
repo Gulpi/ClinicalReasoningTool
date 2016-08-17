@@ -16,6 +16,7 @@ import application.ErrorMessageContainer;
 import beans.*;
 import beans.scripts.*;
 import beans.graph.Graph;
+import beans.helper.TypeAheadBean;
 import beans.relation.*;
 import beans.scoring.ScoreBean;
 import beans.scripts.IllnessScriptInterface;
@@ -118,9 +119,10 @@ public class AddDiagnosisAction implements AddAction, Scoreable{
 	/* (non-Javadoc)
 	 * @see beanActions.AddAction#notifyLog(beans.relation.Relation)
 	 */
-	public void notifyLog(Relation relProb){
-		LogEntry le = new LogEntry(LogEntry.ADDDIAGNOSIS_ACTION, patIllScript.getId(), relProb.getListItemId());
-		le.save();
+	public void notifyLog(Relation rel){
+		new LogEntry(LogEntry.ADDDIAGNOSIS_ACTION, patIllScript.getId(), rel.getListItemId()).save();
+		new TypeAheadBean(rel.getListItemId(), Relation.TYPE_DDX).save();
+
 	}
 	
 	/* (non-Javadoc)

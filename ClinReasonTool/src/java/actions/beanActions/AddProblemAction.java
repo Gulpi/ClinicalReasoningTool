@@ -13,6 +13,7 @@ import org.hibernate.tool.hbm2x.StringUtils;
 
 import beans.*;
 import beans.graph.Graph;
+import beans.helper.TypeAheadBean;
 import beans.relation.*;
 import beans.scoring.ScoreBean;
 import beans.scripts.*;
@@ -72,8 +73,9 @@ public class AddProblemAction implements AddAction, Scoreable{
 			createErrorMessage(IntlConfiguration.getValue("findings.duplicate"),"optional details", FacesMessage.SEVERITY_WARN);
 			return;
 		}
-		if(prefix!=null && !prefix.trim().equals("") && StringUtils.isAlphanumeric(prefix)){ //check whether a prefix has been chosen
-			rel.setPrefix(Integer.valueOf(prefix).intValue());
+		if(prefix!=null && !prefix.trim().equals("") /*&& StringUtils.isAlphanumeric(prefix)*/){ //check whether a prefix has been chosen
+			//rel.setPrefix(Integer.valueOf(prefix).intValue());
+			rel.setPrefix(prefix);
 		}
 		rel.setOrder(patIllScript.getProblems().size());
 		rel.setStage(patIllScript.getCurrentStage());
@@ -125,8 +127,8 @@ public class AddProblemAction implements AddAction, Scoreable{
 	 * @see beanActions.AddAction#notifyLog(beans.relation.Relation)
 	 */
 	public void notifyLog(Relation relProb){
-		LogEntry le = new LogEntry(LogEntry.ADDPROBLEM_ACTION, patIllScript.getId(), relProb.getListItemId());
-		le.save();
+		new LogEntry(LogEntry.ADDPROBLEM_ACTION, patIllScript.getId(), relProb.getListItemId()).save();
+		new TypeAheadBean(relProb.getListItemId(), Relation.TYPE_PROBLEM).save();
 	}
 	
 

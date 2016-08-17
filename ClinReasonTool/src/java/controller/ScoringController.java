@@ -54,14 +54,17 @@ public class ScoringController {
 		if(scoreBean.getOverallScore()<1) return ICON_PREFIX+2;
 		return "";
 	}
-	
-	public int getScore(int type, long itemId){
+
+	/**
+	 * @return 0 (incorrect), 1 (correct), or 2 (partly correct)
+	 */
+	public int getExpScore(int type, long itemId){
 		ScoreContainer scoreContainer = new NavigationController().getCRTFacesContext().getScoreContainer();
 		if (scoreContainer==null) return 0; //no icon
 		ScoreBean scoreBean = scoreContainer.getScoreBeanByTypeAndItemId(type,itemId);
-		if(scoreBean==null || scoreBean.getOverallScore()<=0) return 0;
-		if(scoreBean.getOverallScore()==1) return 1;
-		if(scoreBean.getOverallScore()<1) return 2;
+		if(scoreBean==null || scoreBean.getScoreBasedOnExp()<=0) return 0;
+		if(scoreBean.getScoreBasedOnExp()==1) return 1;
+		if(scoreBean.getScoreBasedOnExp()<1) return 2;
 		return 0;
 	}
 	
@@ -78,14 +81,15 @@ public class ScoringController {
 	public float getOverallFinalDDXScore(){
 		ScoreContainer scoreContainer = new NavigationController().getCRTFacesContext().getScoreContainer();
 		if (scoreContainer==null) return -1;
-		List<ScoreBean> beans = scoreContainer.getScoresByType(ScoreBean.TYPE_FINAL_DDX);
-		if(beans==null || beans.size()==0) return -1;
-		if(beans.size()==1) return beans.get(0).getScoreBasedOnExp();
+		ScoreBean bean = scoreContainer.getScoreByType(ScoreBean.TYPE_FINAL_DDX_LIST);
+		if(bean==null) return -1;
+		return bean.getScoreBasedOnExp();
+		/*if(beans.size()==1) return beans.get(0).getScoreBasedOnExp();
 		int scoreSum = 0;
 		for(int i=0; i<beans.size(); i++){
 			scoreSum += beans.get(i).getScoreBasedOnExpPerc();
 		}
-		return (float) scoreSum/beans.size();
+		return (float) scoreSum/beans.size();*/
 	}
 	public ScoreBean getScoreBeanForItem(int type, long itemId){
 		ScoreContainer scoreContainer = new NavigationController().getCRTFacesContext().getScoreContainer();

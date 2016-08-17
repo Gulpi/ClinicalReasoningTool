@@ -1,10 +1,8 @@
 package properties;
 
-import java.util.*;
 import java.io.*;
-import java.util.Locale;
-
-import controller.NavigationController;
+import java.util.*;
+import controller.LocaleController;
 import util.CRTLogger;
 
 
@@ -45,6 +43,6 @@ public class IntlConfiguration
 	}
 	
 	public static String getValue(String key){	
-		return getValue(key, NavigationController.getLocale());
+		return getValue(key, LocaleController.getInstance().getLocale());
 	}
 }

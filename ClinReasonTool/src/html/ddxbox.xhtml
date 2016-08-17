@@ -4,9 +4,10 @@
     xmlns:ui="http://java.sun.com/jsf/facelets"
     xmlns:f="http://java.sun.com/jsf/core">
  
- 
-   	<div id="ddx_#{ddx.id}"  score="#{ddx.score}" title="#{ddx.labelOrSynLabel}" class="itembox ddxs" style="border-color:#{ddx.color};color:#{ddx.color};left:#{ddx.x}px; top:#{ddx.boxY}px;">
-  	 	<i id="tiericon_#{ddx.id}" title="#{prop['ddx.finalddx']}" class="fa fa-check-circle#{ddx.tier}"></i>
+ <!-- border-color:#{ddx.color}; -->
+   	<div id="ddx_#{ddx.id}"  score="#{ddx.score}" title="#{ddx.labelOrSynLabel}" class="itembox ddxs" style="background-color:#{ddx.backgroundColor};color:#{ddx.color};left:#{ddx.x}px; top:#{ddx.boxY}px;">
+  	 	
+  	 	<!-- <i id="tiericon_#{ddx.id}" title="#{prop['ddx.finalddx']}" class="fa fa-check-circle#{ddx.tier}"></i>-->
   	 	<i id="mnmicon_#{ddx.id}" title="#{prop['ddx.mnm.hint2']}" class="fa fa-exclamation-circle#{ddx.mnm}"></i>
   	 	#{ddx.shortLabelOrSynShortLabel}
   	 	 <script language="Javascript">
@@ -14,7 +15,7 @@
  		</script>
    		<span class="dropdown" onClick="javascript:showDropDown('ddddx_#{ddx.id}','ddx_#{ddx.id}');"><i class="fa fa-chevron-circle-down"></i></span>
  		<span class="peer_score_ddx" title="#{prop['ddx.peer.hint']}" id="peerscore#{ddx.id}"> (#{ddx.peerPercentage})</span>
- 
+ 		<span class="icons_score ddxs_score boxscore_#{ddx.score}"><i class="fa fa-check"></i></span>
   	</div>
 	<div id="ddddx_#{ddx.id}" class="dropdown-content" style="opacity:1;z-index:99;" onmouseleave="javascript:hideDropDown('ddddx_#{ddx.id}');">
 	 <span style="float:left;">#{prop['change']}:</span>

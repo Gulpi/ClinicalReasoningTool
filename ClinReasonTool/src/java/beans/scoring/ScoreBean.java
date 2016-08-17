@@ -40,6 +40,7 @@ public class ScoreBean extends Beans implements Serializable{
 	public static final int TYPE_EPI_LIST = 15;
 	public static final int TYPE_SCRIPT_CREATION = 16; //we use this for PeerBean creation 
 	public static final int TYPE_OVERALL_SCORE = 17;
+	public static final int TYPE_FINAL_DDX_LIST = 18;
 	
 	public static final int TIME_OK = 0;
 	public static final int TIME_LATE = 1;
@@ -151,7 +152,10 @@ public class ScoreBean extends Beans implements Serializable{
 		if(!isChg) this.orgScoreBasedOnExp = scoreBasedOnExp;
 	}
 	public float getScoreBasedOnPeer() {return scoreBasedOnPeer;}
-	public void setScoreBasedOnPeer(float scoreBasedOnPeer) {this.scoreBasedOnPeer = scoreBasedOnPeer;}
+	public void setScoreBasedOnPeer(float scoreBasedOnPeer) {
+		this.scoreBasedOnPeer = scoreBasedOnPeer;
+		calculateOverallScore();
+	}
 	public float getScoreBasedOnIllScript() {return scoreBasedOnIllScript;}
 	public void setScoreBasedOnIllScript(float scoreBasedOnIllScript) {this.scoreBasedOnIllScript = scoreBasedOnIllScript;}
 	public long getScoredItem() {return scoredItem;}
@@ -176,7 +180,10 @@ public class ScoreBean extends Beans implements Serializable{
 	public long getScoredRelId() {return scoredRelId;}
 	public void setScoredRelId(long scoredRelId) {this.scoredRelId = scoredRelId;}	
 	public float getOrgScoreBasedOnExp() {return orgScoreBasedOnExp;}
-	public void setOrgScoreBasedOnExp(float orgScoreBasedOnExp) {this.orgScoreBasedOnExp = orgScoreBasedOnExp;}
+	public void setOrgScoreBasedOnExp(float orgScoreBasedOnExp) {
+		this.orgScoreBasedOnExp = orgScoreBasedOnExp;
+		calculateOverallScore();
+	}
 	public void setTiming(int learnerStage, int expStage){
 		if(learnerStage>expStage) setTiming(TIME_LATE);
 		if(learnerStage==expStage) setTiming(TIME_OK);
@@ -202,6 +209,14 @@ public class ScoreBean extends Beans implements Serializable{
 	public boolean isListScoreBean(){
 		if(type==TYPE_PROBLEM_LIST  || type == TYPE_DDX_LIST || type==TYPE_MNG_LIST || type==TYPE_TEST_LIST || type==TYPE_EPI_LIST) return true;
 		return false;
+	}
+
+	/** TODO we could consider all components and calculate based on these an overall score.
+	 * For now we just take the expertsScore.
+	 * @param scoreBean
+	 */
+	private void calculateOverallScore(){
+		setOverallScore(getScoreBasedOnExp());
 	}
 	
 }

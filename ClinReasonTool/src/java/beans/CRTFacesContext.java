@@ -39,7 +39,7 @@ public class CRTFacesContext extends FacesContextWrapper /*implements Serializab
 	private PatientIllnessScript patillscript;
 	private Graph graph;
 	private UserSetting userSetting;
-	Locale defaultLoc = new Locale("en");
+	//Locale defaultLoc = new Locale("en");
 	/**
 	 * TODO: get from VP system or calculate from expert script
 	 */
@@ -68,7 +68,6 @@ public class CRTFacesContext extends FacesContextWrapper /*implements Serializab
 	
 	public CRTFacesContext(){
 		setUser();
-		
 		if(user!=null){
 		    FacesContextWrapper.getCurrentInstance().getExternalContext().getSessionMap().put(CRTFacesContext.CRT_FC_KEY, this);
 			initSession();
@@ -187,7 +186,7 @@ public class CRTFacesContext extends FacesContextWrapper /*implements Serializab
 		this.getAppBean().getViewHandler().calculateLocale(this);
 
 		initScriptContainer(); //this loads all scripts, needed for overview page and availability bias determination
-		initLearningAnalyticsContainer();
+		
 		long id = AjaxController.getInstance().getLongRequestParamByKey(AjaxController.REQPARAM_SCRIPT);
 		String vpId = AjaxController.getInstance().getRequestParamByKey(AjaxController.REQPARAM_VP);
 		//long extUserId = new AjaxController().getLongRequestParamByKey(AjaxController.REQPARAM_USER_EXT);
@@ -211,11 +210,14 @@ public class CRTFacesContext extends FacesContextWrapper /*implements Serializab
 			}
 		}
 		//TODO error handling!!!!
-		
+		initLearningAnalyticsContainer();
 		loadExpScripts();
 		initFeedbackContainer();
 		
-		if(this.patillscript!=null) initGraph();		
+		if(this.patillscript!=null){
+			initGraph();
+			LocaleController.getInstance().setScriptLocale(patillscript.getLocale());
+		}
 	}
 	
 	/**

@@ -13,6 +13,7 @@ import actions.beanActions.*;
 import application.AppBean;
 import beans.*;
 import beans.error.MyError;
+import beans.helper.TypeAheadBean;
 import beans.relation.*;
 import beans.scoring.LearningAnalyticsBean;
 import beans.scoring.LearningAnalyticsContainer;
@@ -179,6 +180,12 @@ public class PatientIllnessScript extends Beans/*extends Node*/ implements Illne
 	public boolean getPeerSync() {return peerSync;}
 	public void setPeerSync(boolean peerSync) {this.peerSync = peerSync;}
 	public int getConfidence() {return confidence;}
+	public String getConfidenceRange() {
+		if(confidence<25) return IntlConfiguration.getValue("confidence.verylow");
+		if(confidence<50) return IntlConfiguration.getValue("confidence.low");
+		if(confidence<75) return IntlConfiguration.getValue("confidence.high");
+		else return IntlConfiguration.getValue("confidence.veryhigh");
+	}
 	public void setConfidence(int confidence) {this.confidence = confidence;}
 	public long getSummStId() {return summStId;}
 	public void setSummStId(long summStId) {this.summStId = summStId;}	
@@ -301,7 +308,8 @@ public class PatientIllnessScript extends Beans/*extends Node*/ implements Illne
 	//public void chgCourseOfTime(String courseOfTimeStr) { new ChgPatIllScriptAction(this).chgCourseOfTime(courseOfTimeStr);}
 
 	public void addJoker(String idStr, String type){ new JokerAction(this).addJoker(type);}
-	
+	public void addTypeAheadBean(String type){
+		new TypeAheadBean(type).save();}
 	public void save(){
 		boolean isNew = false;
 		if(getId()<=0) isNew = true;
@@ -444,11 +452,11 @@ public class PatientIllnessScript extends Beans/*extends Node*/ implements Illne
 	public boolean getOfferTryAgain(){
 		LearningAnalyticsBean laBean = NavigationController.getInstance().getCRTFacesContext().getLearningAnalytics();
 		if(laBean==null || laBean.getScoreContainer()==null) return false;
-		List<ScoreBean>scores = laBean.getScoreContainer().getScoresByType(ScoreBean.TYPE_FINAL_DDX);
-		if(scores==null || scores.isEmpty()) return true;
-		for(int i=0; i<scores.size(); i++){
+		ScoreBean finalDDXScore = laBean.getScoreContainer().getScoreByType(ScoreBean.TYPE_FINAL_DDX_LIST);
+		if(finalDDXScore==null || finalDDXScore.getScoreBasedOnExp()<DiagnosisSubmitAction.scoreForAllowReSubmit) return true;
+		/*for(int i=0; i<scores.size(); i++){
 			if(scores.get(i).getScoreBasedOnExpPerc()<DiagnosisSubmitAction.scoreForAllowReSubmit) return true;
-		}
+		}*/
 		return false;
 	}
 	

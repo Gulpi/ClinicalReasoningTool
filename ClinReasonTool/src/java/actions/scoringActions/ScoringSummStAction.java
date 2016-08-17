@@ -39,7 +39,6 @@ public class ScoringSummStAction {
 		//calculateAddActionScoreBasedOnPeers(edge, scoreBean, g.getPeerNums());
 		
 		scoreContainer.addScore(scoreBean);
-		calculateOverallScore(scoreBean); 
 		new DBScoring().saveAndCommit(scoreBean);	
 	}
 	
@@ -56,10 +55,7 @@ public class ScoringSummStAction {
 			//TODO....
 		}
 	}
-	
-	private void calculateOverallScore(ScoreBean scoreBean){
-		scoreBean.setOverallScore(scoreBean.getScoreBasedOnExp());
-	}
+
 	
 	/**
 	 * Calculate seperately from any other comparison the appropriate use of semantic qualifiers in the 

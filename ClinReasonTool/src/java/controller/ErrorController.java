@@ -8,6 +8,7 @@ import beans.scripts.*;
 import beans.error.*;
 import beans.error.MyError;
 import beans.relation.Relation;
+import beans.relation.RelationDiagnosis;
 import beans.scoring.ScoreBean;
 import database.DBClinReason;
 
@@ -19,12 +20,12 @@ import database.DBClinReason;
  */
 public class ErrorController {
 
-	public List<MyError> checkError(List<Relation> leanerFinals,List<Relation >expFinals){
+	public List<MyError> checkError(List<RelationDiagnosis> learnerFinals,List<RelationDiagnosis> expFinals){
 		List<MyError> errors = new ArrayList<MyError>();
 		PatientIllnessScript patIllScript = new NavigationController().getCRTFacesContext().getPatillscript();
 		PatientIllnessScript expIllScript = AppBean.getExpertPatIllScript(patIllScript.getVpId());
 		
-		if(leanerFinals==null || leanerFinals.isEmpty() || expFinals==null || expFinals.isEmpty()) return null;
+		if(learnerFinals==null || learnerFinals.isEmpty() || expFinals==null || expFinals.isEmpty()) return null;
 		checkPrematureClosure(expIllScript, patIllScript);
 		checkAvailabilityError();
 		//new DBClinReason().saveAndCommit(errors);

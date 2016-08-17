@@ -35,7 +35,6 @@ public class ScoringCnxsAction {
 		scoreContainer.addScore(scoreBean);
 		calculateCnxsScoreBasedOnExpert(g.edgeSet(), scoreBean);	
 		calculateCnxsScoreBasedOnPeers(g.edgeSet(), scoreBean);
-		calculateOverallScore(scoreBean);
 		new DBScoring().saveAndCommit(scoreBean);
 	}
 	
@@ -66,11 +65,4 @@ public class ScoringCnxsAction {
 		
 	}
 	
-	/** TODO we could consider all components and calculate based on these an overall score.
-	 * For now we just take the expertsScore.
-	 * @param scoreBean
-	 */
-	private void calculateOverallScore(ScoreBean scoreBean){
-		scoreBean.setOverallScore(scoreBean.getScoreBasedOnExp());
-	}
 }

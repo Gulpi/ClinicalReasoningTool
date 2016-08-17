@@ -4,6 +4,7 @@ import java.beans.Beans;
 import java.io.Serializable;
 import java.sql.Timestamp;
 
+import beans.graph.MultiEdge;
 import controller.ConceptMapController;
 
 /**
@@ -13,6 +14,12 @@ import controller.ConceptMapController;
  *
  */
 public class Connection extends Beans implements Serializable{
+	
+	public static final int WEIGHT_NONE = MultiEdge.WEIGHT_NONE;	
+	public static final int WEIGHT_SLIGHTLY_RELATED = MultiEdge.WEIGHT_SLIGHTLY_RELATED;
+	public static final int WEIGHT_SOMEWHAT_RELATED = MultiEdge.WEIGHT_SOMEWHAT_RELATED;
+	public static final int WEIGHT_HIGHLY_RELATED = MultiEdge.WEIGHT_HIGHLY_RELATED;
+	public static final int WEIGHT_SPEAKS_AGAINST = MultiEdge.WEIGHT_SPEAKS_AGAINST;
 
 
 	private static final long serialVersionUID = 1L;

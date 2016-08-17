@@ -38,7 +38,7 @@ public class Encoder {
 	 */
 	public String decodeQueryParam(String param){
 		try{
-			if(param==null || param.trim().equals("") || param.length()<=7) //then param seems not to be encrypted!
+			if(param==null || param.trim().equals("") || param.length()<=7 || param.contains("#")) //then param seems not to be encrypted!
 				return param;
 			
 			byte[] b = true ? StringUtilities.hexToBytes(param) : param.getBytes((String) null);

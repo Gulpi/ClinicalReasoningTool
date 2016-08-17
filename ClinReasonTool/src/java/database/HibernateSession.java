@@ -98,6 +98,7 @@ public class HibernateSession {
 			cfg.addClass(beans.scoring.PeerBean.class);
 			cfg.addClass(beans.user.User.class);
 			cfg.addClass(beans.scripts.VPScriptRef.class);
+			cfg.addClass(beans.helper.TypeAheadBean.class);
 			
 			if (factory==null) {
 				//init_setHibernateDialect();

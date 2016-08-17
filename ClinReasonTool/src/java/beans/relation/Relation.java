@@ -60,7 +60,7 @@ public abstract class Relation extends Beans implements Rectangle{
 	/**
 	 * To allow negative findings (e.g. No fever), we need a prefix indicator.
 	 */
-	private int prefix;
+	private String prefix;
 	
 	/**
 	 * In case the learner has selected the not the main item, but a synonyma, we save the id here.
@@ -96,9 +96,9 @@ public abstract class Relation extends Beans implements Rectangle{
 	public abstract int getRelationType();
 	public int getOrder() {return order;}
 	public void setOrder(int order) {this.order = order;}		
-	public int getPrefix() {return prefix;}
-	public void setPrefix(int prefix) {this.prefix = prefix;}
-	public String getPrefixStr(){
+	public String getPrefix() {return prefix;}
+	public void setPrefix(String prefix) {this.prefix = prefix;}
+	/*public String getPrefixStr(){
 		if(prefix<=0) return "";
 		return IntlConfiguration.getValue("no");
 	}
@@ -110,6 +110,16 @@ public abstract class Relation extends Beans implements Rectangle{
 	public void togglePrefix(){
 		if(prefix<=0) prefix = 1;
 		else prefix = 0;
+	}*/
+	
+	/**
+	 * Currently all prefixes are a negation, if expanding this to e.g. include qualifiers such as "acute/chronic" etc.
+	 * we would have to expand the prefix with a qualifier.
+	 * @return
+	 */
+	public boolean hasPrefix(){
+		if(prefix!=null && !prefix.trim().equals("")) return true;
+		return false;
 	}
 	/**
 	 * When during a session was the item added (e.g. on which card number, if provided by 
@@ -147,9 +157,13 @@ public abstract class Relation extends Beans implements Rectangle{
 	}
 	
 	public String getShortLabelOrSynShortLabel(){return StringUtils.abbreviate(getLabelOrSynLabel(), ListItem.MAXLENGTH_NAME);}
+	/**
+	 * @return 0 (incorrect), 1 (correct), or 2 (partly correct)
+	 */
 	public int getScore(){ 
-		return new ScoringController().getScore(this.getRelationType(), this.getListItemId());
+		return new ScoringController().getExpScore(this.getRelationType(), this.getListItemId());
 	}
+
 	public String getFeedback(){ return new FeedbackController().getItemFeedback(this.getRelationType(), this.getListItemId());}
 	public String getExpItemLabel(){ return new FeedbackController().getExpItemLabel(this.getRelationType(), this.getListItemId());}
 

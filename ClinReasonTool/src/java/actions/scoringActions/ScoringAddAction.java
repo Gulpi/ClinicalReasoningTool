@@ -51,7 +51,7 @@ public class ScoringAddAction implements ScoringAction{
 			calculateAddActionScoreBasedOnPeers(mvertex, scoreBean, g.getPeerNums());
 		
 		scoreContainer.addScore(scoreBean);
-		calculateOverallScore(scoreBean); 
+		//calculateOverallScore(scoreBean); 
 		new DBScoring().saveAndCommit(scoreBean);			
 	}
 	
@@ -59,9 +59,9 @@ public class ScoringAddAction implements ScoringAction{
 	 * For now we just take the expertsScore.
 	 * @param scoreBean
 	 */
-	private void calculateOverallScore(ScoreBean scoreBean){
+/*	private void calculateOverallScore(ScoreBean scoreBean){
 		scoreBean.setOverallScore(scoreBean.getScoreBasedOnExp());
-	}
+	}*/
 	
 	/**
 	 * User has added an item to the list, we score it based on the experts list
@@ -79,7 +79,7 @@ public class ScoringAddAction implements ScoringAction{
 		
 		if(expRel!=null){ //expert has chosen this item (not synonym)
 			if(learnerRel!=null && learnerRel.getSynId()<=0){
-				if(learnerRel.getPrefix()==expRel.getPrefix())
+				if(learnerRel.hasPrefix()==expRel.hasPrefix())
 					scoreBean.setScoreBasedOnExp(ScoringController.SCORE_EXP_SAMEAS_LEARNER, isChg);
 				else scoreBean.setScoreBasedOnExp(ScoringController.NO_SCORE, isChg);
 				return;

@@ -107,13 +107,6 @@ public class NavigationController implements Serializable {
 		return cnxt.isExpEdit();
  	}
 	
-	public static Locale getLocale(){
-		CRTFacesContext cnxt =  (CRTFacesContext) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get(CRTFacesContext.CRT_FC_KEY);
-		if(cnxt==null) return new Locale("en");
-		Locale loc = cnxt.getViewRoot().getLocale();
-		return cnxt.getViewRoot().getLocale();
-	}
-	
 	private void notifyLog(PatientIllnessScript patillscript){
 		LogEntry le = new LogEntry(LogEntry.CLOSEPATILLSCRIPT_ACTION, patillscript.getId(), patillscript.getId());
 		le.save();

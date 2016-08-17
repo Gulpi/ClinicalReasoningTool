@@ -83,6 +83,7 @@ function delProbCallBack(probId, selProb){
 
 function problemCallBack(testId, selTest){
 	$("#problems").val("");	
+	$("#fdg_prefix").val("");
 	$(".fdgs").remove();
 	//we update the problems list and the json string
 	$("[id='probform:hiddenProbButton']").click();		
@@ -191,7 +192,6 @@ function togglePeersDDX(){
 function doSubmitDDXDialog(){
 	clearErrorMsgs();
 	$("[id='ddx_submit_form:hiddenDDXSubmitButton']").click();	//update the ddxs to submit!
-	//doSubmitDDXDialogCallback();
 }
 
 /* 2. we show the submit ddx dialog and ask for confidence */
@@ -203,14 +203,14 @@ function doSubmitDDXDialogCallback(){
 		$(".tier_4").prop( "checked", true );
 		$("#jdialog").dialog( "option", "width", ['300'] );
 		$("#jdialog").dialog( "option", "height", ['350'] );
-		$("#jdialog").dialog( "option", "title", "Submit final diagnoses" );
+		$("#jdialog").dialog( "option", "title", submitDialogTitle );
 		$("#jdialog").dialog( "option", "buttons", [ ] );
-		var s = $("#score").val();		
-		if($("#score").val()>=100){
+		//var s = $("#score").val();		
+		if($("#score").val()>=1){
 			//$(".tier_4").prop( "checked", true );
 			$(".chb_ddx").attr("disabled","disabled");
-			$("#ddx_submit_btn").hide();
-			$(".aftersubmit_succ").show();
+			//$("#ddx_submit_btn").hide();
+			//$(".aftersubmit_succ").show();
 		}
 		$("#jdialog" ).dialog( "open" );
 	}
@@ -245,14 +245,60 @@ function submitDDXConfirmedCallBack(){
 function doScoreDDXDialogCallback(){
 	$(".tier_4").prop( "checked", true );
 	$(".chb_ddx").attr("disabled","disabled");
-	$("#ddx_submit_btn").hide();
 	
-	if($("#score").val>=100){
+	var val = $("#score").val();
+	
+	toggleBefAfterSubmit(true);
+	/*$(".aftersubmit").show();
+	$(".befsubmit").show();
+	
+	if($("#score").val()>=1){
 		$(".aftersubmit_succ").show();
+		$(".aftersubmit_fail").hide();
+		$(".errors").hide();
+		//$(".offertryagain").hide();
 	}
-	else $(".aftersubmit").show();	
-	$(".ddxsubmit_score").show();
+	else{
+		$(".aftersubmit_fail").show();	
+		$(".aftersubmit_succ").hide();
+		if($("#errors").html().trim()=="") 
+			$(".errors").hide();
+	}
+	$(".ddxsubmit_score").show();*/
 	//$("[id='ddxform:hiddenDDXButton']").click(); //update ddx in background	
+}
+
+function toggleBefAfterSubmitOnLoad(){
+	toggleBefAfterSubmit(submitted);
+}
+function toggleBefAfterSubmit(isSubmitted){
+	if(isSubmitted==true || isSubmitted=="true"){
+		$(".aftersubmit").show();
+		$(".ddx_submit_btn2").hide();
+		$(".befsubmit").hide();
+		$(".chb_ddx").attr("disabled","disabled");
+		$(".ddxsubmit_score").show(); //show exp feedback
+		var val = $("#score").val();
+		if($("#score").val()>=1){
+			$(".aftersubmit_succ").show();
+			$(".aftersubmit_fail").hide();
+			$(".errors").hide();
+		}
+		else{
+			$(".aftersubmit_fail").show();	
+			$(".aftersubmit_succ").hide();
+			if($("#errors").html().trim()=="") 
+				$(".errors").hide();
+		}
+		$(".ddxsubmit_score").show();
+	}
+	else{ //not (yet) submitted:
+		$(".chb_ddx").removeAttr("disabled"); //make checkboxes editable again
+		$(".aftersubmit").hide();
+		$(".befsubmit").show();
+		$(".ddxsubmit_score").hide(); //hide expert's feedback again
+		$(".submitBtn2").show();
+	}
 }
 
 
@@ -260,10 +306,9 @@ function doScoreDDXDialogCallback(){
  * close the dialog and user continues with case....
  */
 function backToCase(){
-	$("#ddx_submit_btn").show();
-	$(".aftersubmit").hide();
-	$("#jdialog" ).dialog( "close" );
-	
+	//$("#ddx_submit_btn").show();
+	toggleBefAfterSubmit(false);
+	$("#jdialog" ).dialog( "close" );	
 	sendAjax("", revertSubmissionCallback, "resetFinalDDX","");
 }
 
@@ -271,8 +316,9 @@ function revertSubmissionCallback(){
 	$(".ddxs").remove();
 	//hiding feedback and activating the checkboxes again:
 	$(".tier_4").prop( "checked", false );
-	$(".chb_ddx").removeAttr("disabled");
-	$(".ddxsubmit_score").hide();
+	//$(".chb_ddx").removeAttr("disabled");
+	toggleBefAfterSubmit(false);
+	checkSubmitBtn();
 	$("[id='ddxform:hiddenDDXButton']").click();
 }
 
@@ -280,14 +326,12 @@ function revertSubmissionCallback(){
  * dialog remains open and user can choose again from list? -> what if correct diagnosis is not included 
  */
 function tryAgain(){
-	$("#ddx_submit_btn").show();
-	$(".aftersubmit").hide();
+	toggleBefAfterSubmit(false);
 	sendAjax("", revertSubmissionCallback, "resetFinalDDX","");
 }
 
 function showSolution(){
-	$("#ddx_submit_btn").show();
-	$(".aftersubmit").hide();
+	//$(".aftersubmit_succ").show();
 	$("#jdialog" ).dialog( "close" );
 	//todo turn feedback for ddx on and show complete expert solution....
 }
@@ -336,7 +380,8 @@ function workingDDXOn(id){
 	clearErrorMsgs();
 	hideDropDown("ddddx_"+id);
 	var item = $("#ddx_"+id);
-	item.css("color", "#c00815");
+	item.css("background-color", getRectColor(6))
+	//item.css("color", "#c00815");
 	$("#wdon_a_"+id).removeClass();
 	$("#wdoff_a_"+id).removeClass();
 	$("#wdon_a_"+id).hide();
@@ -348,7 +393,8 @@ function workingDDXOff(id){
 	clearErrorMsgs();
 	hideDropDown("ddddx_"+id);
 	var item = $("#ddx_"+id);
-	item.css("color", "#000000");
+	item.css("background-color", getRectColor(-1))
+	//item.css("color", "#000000");
 	$("#wdoff_a_"+id).removeClass();
 	$("#wdon_a_"+id).removeClass();
 	$("#wdoff_a_"+id).hide();
@@ -358,8 +404,10 @@ function workingDDXOff(id){
 
  function getRectColor(tier){
 	if(tier==5) return "#cccccc"; //ruled-out
-	if(tier==7) return "#f3546a"; //MnM
-	return "#000000";
+	if(tier==6) return "#cce6ff"; //working diagnosis
+	if(tier==4) return "#80bfff"; //final diagnosis
+	//if(tier==7) return "#f3546a"; //MnM
+	return "#ffffff";
  }
 
 function checkSubmitBtn(){
@@ -368,9 +416,9 @@ function checkSubmitBtn(){
 		$("#submitBtnSpan").removeClass("submitBtnOff");
 	}
 	else if(ddxNum<=0 && !$("#submitBtnSpan").hasClass("submitBtnOff"))
-		$("#submitBtnSpan").addClass("submitBtnOff");
-		
+		$("#submitBtnSpan").addClass("submitBtnOff");		
 }
+
 /*
  * user has changed the confidence slider, so, we send the new value via ajax.
  * -> now we submit it together with the ddx submission.
@@ -499,190 +547,8 @@ function saveSummStatementCallBack(){
 }
 
 
-/******************** list init *******************************/
 
-var map_autocomplete_instance = null;
-
-var item_data = null;
-
-/** init the lists for selecting problems, diagnoses etc.*/
-  $(function() {
-	    function log( message ) {
-	      $( "<div>" ).text( message ).prependTo( "#log" );
-	      $( "#log" ).scrollTop( 0 );
-	    }
-	 
-	    $.ajax({ //list for problems (list view)
-	        url: listUrl,
-	        dataType: "json",
-	        success: function( data ) {
-	        	item_data = data;
-	          $( "#problems" ).autocomplete({
-	           /* source: data,*/
-	        	source: doMatch,
-	            minLength: minLengthTypeAhead,
-	            select: function( event, ui ) {
-	            	addProblem(ui.item.value, ui.item.label);
-	            },
-	  	      	close: function(ui) {
-	  	      		$("#problems").val("");
-	  	      	}
-	          });
-	          $( "#ddx" ).autocomplete({
-		            source: doMatch,
-		            minLength: minLengthTypeAhead,
-		            select: function( event, ui ) {
-		            	addDiagnosis(ui.item.value, ui.item.label);
-		            },
-		  	      close: function(ui) {
-		  	        $("#ddx").val("");
-		  	      }
-		      });
-	          $( "#tests" ).autocomplete({
-		            source: doMatch,
-		            minLength: minLengthTypeAhead,
-		            select: function( event, ui ) {
-		            	addTest(ui.item.value, ui.item.label);
-		            },
-		  	      close: function(ui) {
-		  	        $("#tests").val("");
-		  	      }
-		            
-		        });
-	          $( "#mng" ).autocomplete({
-		            source: doMatch,
-		            minLength: minLengthTypeAhead,
-		            select: function( event, ui ) {
-		            	addManagement(ui.item.value, ui.item.label);
-		            },
-		  	      close: function(ui) {
-		  	        $("#mng").val("");
-		  	      }
-		          });
-	        }
-	      });
-	   /* $.ajax({ //list for epi (list view)
-	        url: listUrl,
-	        dataType: "json",
-	        success: function( data ) {
-	        	item_data = data;
-	          $( "#epi" ).autocomplete({
-	            source: data,
-	            minLength: minLengthTypeAhead,
-	            select: function( event, ui ) {
-	            	addEpi(ui.item.value, ui.item.label);
-	            },
-	  	      close: function(ui) {
-	  	        $("#epi").val("");
-	  	      }
-	          });
-	        }
-	      });	  */  
-	   /* $.ajax({ //list for diagnoses (list view)
-	        url: listUrl,
-	        dataType: "json",
-	        success: function( data ) {
-	        	item_data = data;
-	          $( "#ddx" ).autocomplete({
-	            source: doMatch,
-	            minLength: minLengthTypeAhead,
-	            select: function( event, ui ) {
-	            	addDiagnosis(ui.item.value, ui.item.label);
-	            },
-	  	      close: function(ui) {
-	  	        $("#ddx").val("");
-	  	      }
-	          });
-	        }
-	      });    */
-	    
-	   /* $.ajax({ //list for diagnostic steps (list view)
-	        url: listUrl,
-	        dataType: "json",
-	        success: function( data ) {
-	        	item_data = data;
-	          $( "#tests" ).autocomplete({
-	            source: doMatch,
-	            minLength: minLengthTypeAhead,
-	            select: function( event, ui ) {
-	            	addTest(ui.item.value, ui.item.label);
-	            },
-	  	      close: function(ui) {
-	  	        $("#tests").val("");
-	  	       // item_data = "";
-	  	        //$("#tests").autocomplete( "destroy" );
-	  	      }
-	            
-	          });
-	        }
-	      });*/
-	   /* $.ajax({ //list for management item (list view)
-	        url: listUrl,
-	        dataType: "json",
-	        success: function( data ) {
-	        	item_data = data;
-	          $( "#mng" ).autocomplete({
-	            source: doMatch,
-	            minLength: minLengthTypeAhead,
-	            select: function( event, ui ) {
-	            	addManagement(ui.item.value, ui.item.label);
-	            },
-	  	      close: function(ui) {
-	  	        $("#mng").val("");
-	  	        //item_data = "";
-	  	      }
-	          });
-	        }
-	      });*/
-	  });
-  
-  /*
-   * matches the user input with the list labels. Also considers multiple terms
-   */
-function doMatch(request,response){
-	if (request.term == "") {
-		response( $.map( item_data, function( item ) {
-			return {
-				value: item.value,
-				/*text: item.label*/
-				label: item.label
-			}
-		}));
-		return;
-	}
-	else {
-		
-		var my_map = $.map( item_data, function( item ) {
-			if(item.label=="") return;
-			var matcher;
-			var user_input = request.term;
-			var user_input_arr = user_input.split(" ");
-			var arr_match = false;
-			if(user_input_arr.length>1){ //then we have more than one search term.
-				arr_match = true;
-				for(var i=0; i<user_input_arr.length; i++){
-					matcher = new RegExp( $.ui.autocomplete.escapeRegex(user_input_arr[i]), "i" );	
-					if(!matcher.test(item.label)){
-						arr_match = false;
-						break;
-					}
-				}
-			}
-			else{ //only one search term:
-				matcher = new RegExp( $.ui.autocomplete.escapeRegex(user_input), "i" );
-				arr_match = matcher.test(item.label)
-			}
-						
-			if (!user_input || arr_match ||  item.label == user_input) {
-				return {
-					value: item.value,
-					label: item.label
-				};
-			}
-		});
-		response( my_map );
-	}
-}
+ 
 /******************** Feedback *******************************/
 
   /*
@@ -706,13 +572,14 @@ function turnExpBoxFeedbackOn(iconId, itemClass){
 	$("#"+iconId).removeClass("fa-user-md_off");
 	$("#"+iconId).addClass("fa-user-md_on");
 	$("#"+iconId).attr("title", hideExpTitle);
-	var items = $("."+itemClass);
+	$("."+itemClass+"_score").show();
+	/*var items = $("."+itemClass);
 	if(items!=null){
 		for (i=0; i<items.length; i++){
 			var score = $("#"+items[i].id).attr("score");
 			$("#"+items[i].id).addClass("box_"+score);
 		}
-	}
+	}*/
 }
 
 function turnExpBoxFeedbackOff(iconId, itemClass){
@@ -721,13 +588,14 @@ function turnExpBoxFeedbackOff(iconId, itemClass){
 	$("#"+iconId).removeClass("fa-user-md_on");
 	$("#"+iconId).addClass("fa-user-md_off");
 	$("#"+iconId).attr("title", showExpTitle);
-	var items = $("."+itemClass);
+	$("."+itemClass+"_score").hide();
+	/*var items = $("."+itemClass);
 	if(items!=null){
 		for (i=0; i<items.length; i++){
 			var score = $("#"+items[i].id).attr("score");
 			$("#"+items[i].id).removeClass("box_"+score);
 		}
-	}
+	}*/
 }
 
 var addHeightPixSum = 0;

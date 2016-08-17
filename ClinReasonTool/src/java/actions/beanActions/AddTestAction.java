@@ -16,6 +16,7 @@ import application.ErrorMessageContainer;
 import beans.LogEntry;
 import beans.scripts.*;
 import beans.graph.Graph;
+import beans.helper.TypeAheadBean;
 import beans.relation.Relation;
 import beans.relation.RelationManagement;
 import beans.relation.RelationTest;
@@ -46,8 +47,9 @@ public class AddTestAction implements AddAction, Scoreable/*, FeedbackCreator*/{
 	 * @see actions.beanActions.AddAction#notifyLog(beans.relation.Relation)
 	 */
 	public void notifyLog(Relation rel) {
-		LogEntry le = new LogEntry(LogEntry.ADDTEST_ACTION, patIllScript.getId(), rel.getListItemId());
-		le.save();
+		new LogEntry(LogEntry.ADDTEST_ACTION, patIllScript.getId(), rel.getListItemId()).save();
+		new TypeAheadBean(rel.getListItemId(), Relation.TYPE_TEST).save();
+
 	}
 
 	/* (non-Javadoc)

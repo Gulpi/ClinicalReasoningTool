@@ -44,7 +44,7 @@ public class JokerAction {
 			new ErrorMessageContainer().addErrorMessage("probform", IntlConfiguration.getValue("findings.nojoker"), "", FacesMessage.SEVERITY_ERROR);
 			return;
 		}
-		new AddProblemAction(patIllScript).addRelation(jokerVertex.getExpertVertex().getListItemId(), jokerVertex.getExpertVertex().getPrefixStr(), -1, -1, -1, true);
+		new AddProblemAction(patIllScript).addRelation(jokerVertex.getExpertVertex().getListItemId(), jokerVertex.getExpertVertex().getPrefix(), -1, -1, -1, true);
 	}
 	
 	/**
@@ -58,7 +58,7 @@ public class JokerAction {
 			new ErrorMessageContainer().addErrorMessage("ddxform", IntlConfiguration.getValue("ddx.nojoker"), "", FacesMessage.SEVERITY_ERROR);
 			return;
 		}
-		new AddDiagnosisAction(patIllScript).addRelation(jokerVertex.getExpertVertex().getListItemId(), jokerVertex.getExpertVertex().getPrefixStr(), -1, -1, -1, true);
+		new AddDiagnosisAction(patIllScript).addRelation(jokerVertex.getExpertVertex().getListItemId(), jokerVertex.getExpertVertex().getPrefix(), -1, -1, -1, true);
 	}
 	
 	/**
@@ -72,7 +72,7 @@ public class JokerAction {
 			new ErrorMessageContainer().addErrorMessage("testform", IntlConfiguration.getValue("tests.nojoker"), "", FacesMessage.SEVERITY_ERROR);
 			return;
 		}
-		new AddTestAction(patIllScript).addRelation(jokerVertex.getExpertVertex().getListItemId(), jokerVertex.getExpertVertex().getPrefixStr(), -1, -1, -1, true);
+		new AddTestAction(patIllScript).addRelation(jokerVertex.getExpertVertex().getListItemId(), jokerVertex.getExpertVertex().getPrefix(), -1, -1, -1, true);
 	}
 	
 	/**
@@ -86,7 +86,7 @@ public class JokerAction {
 			new ErrorMessageContainer().addErrorMessage("mngform", IntlConfiguration.getValue("mng.nojoker"), "", FacesMessage.SEVERITY_ERROR);
 			return;
 		}
-		new AddMngAction(patIllScript).addRelation(jokerVertex.getExpertVertex().getListItemId(), jokerVertex.getExpertVertex().getPrefixStr(), -1, -1, -1, true);
+		new AddMngAction(patIllScript).addRelation(jokerVertex.getExpertVertex().getListItemId(), jokerVertex.getExpertVertex().getPrefix(), -1, -1, -1, true);
 	}
 	
 	

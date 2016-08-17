@@ -81,7 +81,7 @@ function createExpConnection(cnxId, sourceId, targetId, expWeight, learnerWeight
 		
 	var epSource = epSourceArr[epSourceArr.length-1];
 	var epTarget = epTargetArr[epTargetArr.length-1];
-	var color = getWeightToColor(expWeight);
+	var color = getWeightToColorExp(expWeight);
 	//alert(color);
 	var cnx = instance.connect({
 		source:epSource, 
@@ -119,7 +119,7 @@ function addConnection(conn){
 function openConnContext(cnxId){
 	$("#connContext").dialog( "option", "width", ['200'] );
 	$("#connContext").dialog( "option", "height", ['200'] );
-	$("#connContext").dialog( "option", "title", "change connection" );
+	$("#connContext").dialog( "option", "title", chgCnxDialogTitle);
 	$("#connContext").dialog( "option", "buttons", [ ] );
 	$("#connContext" ).dialog( "open" );
 	$("#conn_id").html(cnxId);
@@ -147,19 +147,33 @@ function getConnectionById(cnxId){
 	
 }
 
+/* get color of connection based on the weight */
 function getWeightToColor(weight){
 	switch(weight){
-	case 6: return "#990000";
-	case 5: return "#009933";
-	case 4: return "#00e64d";
-	case 3: return "#e6ffee";
+	case 6: return "#990000"; //speaks against (red)
+	case 5: return "#999999"; /*"#009933"*/; //highly related (black)
+	case 4: return "#999999"; /*"#00e64d"*/; //somewhat related (dark grey)
+	case 3: return "#e6e6e6"; /*"#e6ffee"*/; //slightly related (light grey)
 	case "6": return "#990000";
-	case "5": return "#009933";
-	case "4": return "#00e64d";
-	case "3": return "#e6ffee";
+	case "5": return "#999999";
+	case "4": return "#999999";
+	case "3": return "#e6e6e6";
 	default: 
-		return "#c2c2c2";
+		return "#999999";
 	}
+}
+
+function getWeightToColorExp(weight){
+	switch(weight){
+	case 6: return "#990000"; //speaks against (red)
+	case 5: return "#009933"; /*"#009933"*/; //highly related (black)
+	case 4: return "#00e64d"; /*"#00e64d"*/; //somewhat related (dark grey)
+	case 3: return "#e6ffee"; /*"#e6ffee"*/; //slightly related (light grey)
+
+	default: 
+		return "#00e64d";
+	}
+	
 }
 
 function toogleCnxDisplay(){

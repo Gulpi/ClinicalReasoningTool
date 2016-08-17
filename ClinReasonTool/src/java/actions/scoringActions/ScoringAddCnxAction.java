@@ -40,7 +40,6 @@ public class ScoringAddCnxAction implements ScoringAction{
 			calculateAddActionScoreBasedOnPeers(edge, scoreBean, g.getPeerNums());
 		
 		scoreContainer.addScore(scoreBean);
-		calculateOverallScore(scoreBean); 
 		new DBScoring().saveAndCommit(scoreBean);			
 		
 	}
@@ -65,13 +64,6 @@ public class ScoringAddCnxAction implements ScoringAction{
 		//TODO
 	}
 
-	/** TODO we could consider all components and calculate based on these an overall score.
-	 * For now we just take the expertsScore.
-	 * @param scoreBean
-	 */
-	private void calculateOverallScore(ScoreBean scoreBean){
-		scoreBean.setOverallScore(scoreBean.getScoreBasedOnExp());
-	}
 
 
 }

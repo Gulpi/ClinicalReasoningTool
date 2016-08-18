@@ -6,6 +6,7 @@
 
 /******************** general add/del*******************************/
 
+   
 /*function delCallback(prefix, id){
 	deleteEndpoints(prefix+"_"+id);
 	instance.remove($("#"+prefix+"_"+id));
@@ -206,12 +207,12 @@ function doSubmitDDXDialogCallback(){
 		$("#jdialog").dialog( "option", "title", submitDialogTitle );
 		$("#jdialog").dialog( "option", "buttons", [ ] );
 		//var s = $("#score").val();		
-		if($("#score").val()>=1){
+		/*if($("#score").val()>=1){
 			//$(".tier_4").prop( "checked", true );
 			$(".chb_ddx").attr("disabled","disabled");
 			//$("#ddx_submit_btn").hide();
 			//$(".aftersubmit_succ").show();
-		}
+		}*/
 		$("#jdialog" ).dialog( "open" );
 	}
 	else{
@@ -269,11 +270,12 @@ function doScoreDDXDialogCallback(){
 }
 
 function toggleBefAfterSubmitOnLoad(){
-	toggleBefAfterSubmit(submitted);
+	toggleBefAfterSubmit(presubmitted);
 }
 function toggleBefAfterSubmit(isSubmitted){
 	if(isSubmitted==true || isSubmitted=="true"){
 		$(".aftersubmit").show();
+		presubmitted = "true";
 		$(".ddx_submit_btn2").hide();
 		$(".befsubmit").hide();
 		$(".chb_ddx").attr("disabled","disabled");
@@ -283,6 +285,8 @@ function toggleBefAfterSubmit(isSubmitted){
 			$(".aftersubmit_succ").show();
 			$(".aftersubmit_fail").hide();
 			$(".errors").hide();
+			submitted = "true";
+			postEnforceFinalDDXSubmission(submitted, myStage, maxSubmittedStage);
 		}
 		else{
 			$(".aftersubmit_fail").show();	
@@ -294,6 +298,7 @@ function toggleBefAfterSubmit(isSubmitted){
 	}
 	else{ //not (yet) submitted:
 		$(".chb_ddx").removeAttr("disabled"); //make checkboxes editable again
+		presubmitted = "false";
 		$(".aftersubmit").hide();
 		$(".befsubmit").show();
 		$(".ddxsubmit_score").hide(); //hide expert's feedback again
@@ -620,6 +625,14 @@ function toggleSumFeedback(iconId, type){
 		//$("#sum_box").height("300");
 		sendAjaxContext(1, doNothing, "toogleExpBoxFeedback", type);
 	}
+}
+
+function isOverallExpertOn(){
+	//if($("#"+iconId).hasClass("fa-user-md_on"))
+	//alert($("#expFeedback").prop("checked"));
+	if($("#expFeedback").prop("checked"))
+		return true;
+	return false;
 }
 
 /* when displaying the expert summSt we have to increase the height of the box.*/

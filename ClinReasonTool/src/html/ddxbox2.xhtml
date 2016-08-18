@@ -12,7 +12,7 @@
   	 	#{ddx.shortLabelOrSynShortLabel}
    		<span class="dropdown" onClick="javascript:showDropDown('ddddx_#{ddx.id}','ddx_#{ddx.id}');"><i class="fa fa-chevron-circle-down"></i></span>
  		<span class="peer_score_ddx" title="#{prop['ddx.peer.hint']}" id="peerscore#{ddx.id}"> (#{ddx.peerPercentage})</span>
- 		<span class="icons_score ddxs_score boxscore_#{ddx.score}"><i class="fa fa-check"></i></span>
+ 		<div class="icons_score ddxs_score boxscore_#{ddx.score}"><i class="fa fa-check"></i></div>
   	</div>
 	<div id="ddddx_#{ddx.id}" class="dropdown-content" style="opacity:1;z-index:99;" onmouseleave="javascript:hideDropDown('ddddx_#{ddx.id}');">
 	 <span style="float:left;">#{prop['change']}:</span>

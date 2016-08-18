@@ -1634,6 +1634,10 @@
    color:#088A29;
 }
 
+.fa-conn:before {
+  content: "\f1e1";
+}
+
 .fa-conn_off:before {
   content: "\f1e1";
   color:#000000;

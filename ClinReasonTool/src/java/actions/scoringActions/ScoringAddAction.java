@@ -41,9 +41,9 @@ public class ScoringAddAction implements ScoringAction{
 		ScoreContainer scoreContainer = new NavigationController().getCRTFacesContext().getScoreContainer();
 		
 		ScoreBean scoreBean = scoreContainer.getScoreBeanByTypeAndItemId(mvertex.getType(), vertexId);
-		if(scoreBean!=null && !isChg) return; //then this item has already been scored and we do not want a rescore
-		
-		if(scoreBean==null) scoreBean = new ScoreBean(patIllScript, mvertex.getVertexId(), mvertex.getType());
+		//if(scoreBean!=null && !isChg) return; //then this item has already been scored and we do not want a rescore
+		if(scoreBean!=null) isChg = true;
+		else scoreBean = new ScoreBean(patIllScript, mvertex.getVertexId(), mvertex.getType());
 		if(g.getExpertPatIllScriptId()>0) //otherwise we do not have an experts' patIllScript to compare with				
 			calculateAddActionScoreBasedOnExpert(mvertex, scoreBean, patIllScript, g, isJoker);				
 					
@@ -86,7 +86,7 @@ public class ScoringAddAction implements ScoringAction{
 			}
 			if(learnerRel!=null && learnerRel.getSynId()>0){//learner has chosen a synonym:
 				Synonym learnerSyn = learnerRel.getSynonym();
-				if(learnerRel.getPrefix()==expRel.getPrefix()){
+				if(learnerRel.hasPrefix()==expRel.hasPrefix()){
 					scoreBean.setScoreBasedOnExp(learnerSyn.getRatingWeight(), isChg);
 				}
 				else scoreBean.setScoreBasedOnExp(ScoringController.NO_SCORE, isChg);

@@ -64,6 +64,8 @@ if(lang=="de") listUrl = "jsonp_de.json";
 var currentStage = $.getUrlVar('stage');
 var currentStageScript = "#{crtContext.patillscript.currentStageWithUpdate}";
 var currentStageScriptNoUPdate = "#{crtContext.patillscript.currentStage}"; //actual stage
+var maxSubmittedStage = "#{crtContext.patillscript.maxSubmittedStage}";
+var myStage = "#{crtContext.patillscript.stage}";
 var expFeedback = false; //default is that expert feedback is off
 var peerFeedback = false; //default is that expert feedback is off
 var hideCnxTitle = "#{prop['cnx.hide']}";
@@ -77,12 +79,15 @@ var active;
 var submitDDXOne = "#{prop['submit.minone']}";
 //var errorNum = "#{crtContext.patillscript.errorNum}";
 var submitted = "#{crtContext.patillscript.submitted}";
+var presubmitted = "#{crtContext.patillscript.submitted}";
 var instance;
 var item_arr = new Array();
 var exp_arr = new Array();
 
 
 $(function() {
+    postEnforceFinalDDXSubmission(submitted, myStage, maxSubmittedStage);
+
 	if(lang=="de") listUrl = "jsonp_de.json";
 	$(".listdialog").hide();
 	$("#jdialogError").hide();
@@ -93,24 +98,25 @@ $(function() {
 	 });
 	checkSubmitBtn();
 	toggleBefAfterSubmitOnLoad();
-	//initContainerPos();
 
-	//toggleExpertFeedbackOnLoad();
-   /* $( document ).tooltip({
-    	//items: " rect, [title], text, tspan",
-    	//items: "tspan",
-    	content: function() {
-    		var element = $( this );
-    		if(element.hasClass("jsplumb-connector")){ 
-				//var tooltip = getToolTipForRect(element);
-				return "hallo";
-    		}*/
-           /* if ( element.is( "[title]" ) ) { //this is a "normal" tooltip returning the title of an element
-                return element.attr( "title" );
-              }*/
-    //	}
-   // });
-    //uncomment if endpoint issues with dragging boxes is solved:
+		   $( document ).tooltip({
+			      items: "i",
+			      content: function() {
+			        var element = $( this );
+		    		//var element = $( this );
+		    		/*if(element.hasClass("jsplumb-connector")){ 
+						//var tooltip = getToolTipForRect(element);
+						return "hallo";
+		    		}*/
+		    		//var tt = element.prop( "mytooltip" );
+		    			return $( this ).attr( "mytooltip" );
+		    		//}
+		           /* if ( element.is( "[mytooltip]" ) ) { //this is a "normal" tooltip returning the title of an element
+		                return element.attr( "mytooltip" );
+		              })*/    	}
+		    });
+
+//uncomment if endpoint issues with dragging boxes is solved:
   /*  $( ".container" ).draggable({
         stop: function() {
         	storeContainerPos(this.id, this.offsetLeft, this.offsetTop);
@@ -228,7 +234,6 @@ jsPlumb.ready(function () {
     
    // initBoxHeight("fdg_box", "fdgs");
     initContainerCollapsed();
-    postEnforceFinalDDXSubmission(submitted, "#{crtContext.patillscript.stage}", "#{crtContext.patillscript.maxSubmittedStage}")
    
 });
 
@@ -239,9 +244,21 @@ item_arr = new Array();
 </head>
 <body style="font-family:arial;" data-demo-id="draggableConnectors" data-library="dom"><!-- test: #{crtContext.test}-->
 <div class="options">
-	 <a href="javascript:toogleCnxDisplay();" id="cnxtoggle" title="#{prop['cnx.hide']}"><i id="cnxtogglei" class="fa fa-conn_on"></i></a>
+<div style="position:absolute;left:15px;top:5px;"><i mytooltip="#{prop['cnx.show']}" id="cnxtogglei" class="fa fa-conn"></i>  </div>
+<div class="switch" style="left:30px;">
+        <input id="cnxtoggle" class="cmn-toggle cmn-toggle-round" checked="checked" onchange="javascript:toogleCnxDisplay();" type="checkbox" />
+        <label for="cnxtoggle"></label>
+</div>
+<div style="position:absolute;left:85px;top:5px;" mytooltip="#{prop['feedback.exp']}"><i class="fa fa-user-md" mytooltip="#{prop['feedback.exp']}"></i></div>
+<div class="switch" style="left:100px;" >
+        <input id="expFeedback" class="cmn-toggle cmn-toggle-round" onchange="toggleExpFeedback('expFeedback', 'icon-user-md');" type="checkbox" />
+        <label for="expFeedback"></label>
+</div>
+<!--  
+	 <span class="cnx_on" id="cnxToggleSpan"><a href="javascript:toogleCnxDisplay();" id="cnxtoggle" title="#{prop['cnx.hide']}"><i id="cnxtogglei" class="fa fa-conn"></i> Connections</a></span>
+	 
 	 <a href="javascript:toggleExpFeedback('expFeedback', 'icon-user-md');"  title="#{prop['feedback.exp']}"><i id="expFeedback" class="fa fa-user-md_off"></i></a>
-	 <a href="javascript:alert('Not yet implemented.')" style="float:right;" title="#{prop['help']}"><i class="fa fa-question-circle "></i></a>
+	--> <a href="javascript:alert('Not yet implemented.')" style="float:right;top:5px;" title="#{prop['help']}"><i class="fa fa-question-circle "></i></a>
 	<!--  <a href="exp_stages.xhtml" target="new">exp dev</a>-->
 	<!--  <a href="alert('not yet available, will show the development of the experts script during the case');">exp dev</a>-->
 </div>
@@ -265,9 +282,9 @@ item_arr = new Array();
 		  <div id="fdg_box"  class="container" group="fdg_group">
 		   		<div class="title">#{prop['findings']} 
 		   			<span class="icons">
-		   				<a href="javascript:addJokerFdg();" title="#{prop['findings.joker']}"><i class="fa fa-puzzle-piece"></i></a> 
-		   				<a href="javascript:togglePeersFdg();" title="#{prop['findings.peers']}"><i class="fa fa-users_off" id="peerFeedbackFdg"></i></a> 
-		   				<a href="javascript:toggleFdgFeedback();" title="#{prop['findings.exp']}"><i class="fa fa-user-md_off" id="expFeedbackFdg"></i></a>
+		   				<a href="javascript:addJokerFdg();" title="#{prop['findings.joker']}"><i mytooltip="#{prop['findings.joker']}" class="fa fa-puzzle-piece"></i></a> 
+		   				<a href="javascript:togglePeersFdg();" title="#{prop['findings.peers']}"><i mytooltip="#{prop['findings.peers']}" class="fa fa-users_off" id="peerFeedbackFdg"></i></a> 
+		   				<a href="javascript:toggleFdgFeedback();" title="#{prop['findings.exp']}"><i mytooltip="#{prop['findings.exp']}" class="fa fa-user-md_off" id="expFeedbackFdg"></i></a>
 		   			</span>
 		   		</div>
 		   		<div  class="node-collapse"></div>
@@ -295,7 +312,7 @@ item_arr = new Array();
 		 <div id="sum_box" class="container sum_container" group="sum_group">	
 		 	<div class="title">#{prop['summst']}
 		 		<span class="icons sumicons">
-		 			<a href="javascript:toggleSumFeedback('expFeedbackSum', 14);" title="#{prop['summst.exp']}"><i class="fa fa-user-md_off" id="expFeedbackSum"></i></a>
+		 			<a href="javascript:toggleSumFeedback('expFeedbackSum', 14);" title="#{prop['summst.exp']}"><i mytooltip="#{prop['summst.exp']}" class="fa fa-user-md_off" id="expFeedbackSum"></i></a>
 		 		</span>
 		 	</div>
 		 	 <div class="node-collapse"></div>
@@ -309,9 +326,9 @@ item_arr = new Array();
 		  <div id="ddx_box" class="container" group="ddx_group">	
 		  		<div class="title">#{prop['ddx']}
 		  			<span class="icons">
-		  				<a href="javascript:addJokerDDX();" title="#{prop['ddx.joker']}"><i class="fa fa-puzzle-piece"></i></a> 
-		   				<a href="javascript:togglePeersDDX();" title="#{prop['ddx.peers']}"><i class="fa fa-users_off" id="peerFeedbackDDX"></i></a> 
-		   				<a href="javascript:toggleDDXFeedback();" title="#{prop['ddx.exp']}"><i class="fa fa-user-md_off" id="expFeedbackDDX"></i></a>
+		  				<a href="javascript:addJokerDDX();" title="#{prop['ddx.joker']}"><i mytooltip="#{prop['ddx.joker']}" class="fa fa-puzzle-piece"></i></a> 
+		   				<a href="javascript:togglePeersDDX();" title="#{prop['ddx.peers']}"><i mytooltip="#{prop['ddx.peers']}" class="fa fa-users_off" id="peerFeedbackDDX"></i></a> 
+		   				<a href="javascript:toggleDDXFeedback();" title="#{prop['ddx.exp']}"><i mytooltip="#{prop['ddx.exp']}" class="fa fa-user-md_off" id="expFeedbackDDX"></i></a>
 		  			</span>
 		  		</div>	
 		  		<div class="node-collapse"></div>	  		
@@ -336,7 +353,7 @@ item_arr = new Array();
 		  				<a href="javascript:doSubmitDDXDialog();" style="color:#ffffff" title="#{prop['ddx.submit']}">#{prop['submit']}</a>
 		  			</span>
 		  			<span class="errors_#{crtContext.patillscript.errorNum}"><h:panelGroup id="ddxubmitPG">
-						<a href="javascript:openErrorDialog();" title="#{prop['ddx.errors']} (#{crtContext.patillscript.errorNum})"><i class="fa fa-exclamation-circle"></i></a>		
+						<a href="javascript:openErrorDialog();" title="#{prop['ddx.errors']} (#{crtContext.patillscript.errorNum})"><i mytooltip="#{prop['ddx.errors']} (#{crtContext.patillscript.errorNum})" class="fa fa-exclamation-circle"></i></a>		
     				</h:panelGroup></span>
 		  		</div>
 		  </div>
@@ -344,9 +361,9 @@ item_arr = new Array();
 		  <div id="tst_box" class="container" group="tst_group">
 		  		<div class="title">#{prop['tests']}
 		  			<span class="icons">
-		  				<a href="javascript:addJokerTest();" title="#{prop['tests.joker']}"><i class="fa fa-puzzle-piece"></i></a> 
-		   				<a href="javascript:togglePeersTest();" title="#{prop['tests.peers']}"><i class="fa fa-users_off" id="peerFeedbackTest"></i></a> 
-		   				<a href="javascript:toggleTestFeedback();" title="#{prop['tests.exp']}"><i class="fa fa-user-md_off" id="expFeedbackTest"></i></a>
+		  				<a href="javascript:addJokerTest();" title="#{prop['tests.joker']}"><i mytooltip="#{prop['tests.joker']}" class="fa fa-puzzle-piece"></i></a> 
+		   				<a href="javascript:togglePeersTest();" title="#{prop['tests.peers']}"><i mytooltip="#{prop['tests.peers']}" class="fa fa-users_off" id="peerFeedbackTest"></i></a> 
+		   				<a href="javascript:toggleTestFeedback();" title="#{prop['tests.exp']}"><i mytooltip="#{prop['tests.exp']}" class="fa fa-user-md_off" id="expFeedbackTest"></i></a>
 		  			</span>
 		  		</div>
 		 	 	<div class="node-collapse"></div>
@@ -371,9 +388,9 @@ item_arr = new Array();
 		  <div id="mng_box" class="container" group="mng_group">
 		  	<div class="title">#{prop['mng']}
 		  		<span class="icons">
-		  			<a href="javascript:addJokerMng();" title="#{prop['mng.joker']}"><i class="fa fa-puzzle-piece"></i></a> 
-		   			<a href="javascript:togglePeersMng();" title="#{prop['mng.peers']}"><i class="fa fa-users_off" id="peerFeedbackMng"></i></a> 
-		   			<a href="javascript:toggleMngFeedback();" title="#{prop['mng.exp']}"><i class="fa fa-user-md_off" id="expFeedbackMng"></i></a>
+		  			<a href="javascript:addJokerMng();" title="#{prop['mng.joker']}"><i mytooltip="#{prop['mng.joker']}" class="fa fa-puzzle-piece"></i></a> 
+		   			<a href="javascript:togglePeersMng();" title="#{prop['mng.peers']}"><i mytooltip="#{prop['mng.peers']}" class="fa fa-users_off" id="peerFeedbackMng"></i></a> 
+		   			<a href="javascript:toggleMngFeedback();" title="#{prop['mng.exp']}"><i  mytooltip="#{prop['mng.exp']}" class="fa fa-user-md_off" id="expFeedbackMng"></i></a>
 		  		</span>
 		  	</div>
 		 	 <div class="node-collapse"></div>

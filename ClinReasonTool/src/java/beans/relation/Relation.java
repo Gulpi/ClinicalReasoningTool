@@ -118,7 +118,7 @@ public abstract class Relation extends Beans implements Rectangle{
 	 * @return
 	 */
 	public boolean hasPrefix(){
-		if(prefix!=null && !prefix.trim().equals("")) return true;
+		if(prefix!=null && !prefix.trim().equals("") && !prefix.trim().equals("0")) return true;
 		return false;
 	}
 	/**

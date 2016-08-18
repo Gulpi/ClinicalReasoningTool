@@ -190,19 +190,24 @@ function initCnxDisplay(){
 
 function hideCnx(){
 	$(".jsplumb-connector").addClass("jsplumb-connector-hide");
-	//$(".jsplumb-exp-connector").removeClass("jsplumb-exp-connector-show"); //hide expert cnx as well
-	
-	//$(".jsplumb-connector").hide();
+	$(".jsplumb-exp-connector").removeClass("jsplumb-exp-connector-show"); //hide expert cnx as well
+	$(".jsplumb-exp-connector").addClass("jsplumb-exp-connector-hide");
 	$("#cnxtoggle").attr("title", showCnxTitle);
-	$("#cnxtogglei").removeClass("fa-conn_on");
-	$("#cnxtogglei").addClass("fa-conn_off");
+	$("#cnxtoggle").removeAttr("checked");
+	//$("#cnxtogglei").removeClass("fa-conn_on");
+	//$("#cnxtogglei").addClass("fa-conn_off");
 }
 
 function showCnx(){
 	$("#cnxtoggle").attr("title", hideCnxTitle);
-	$("#cnxtogglei").removeClass("fa-conn_off");
-	$("#cnxtogglei").addClass("fa-conn_on");
+	$("#cnxtoggle").attr("checked", "checked");
+	//$("#cnxtogglei").removeClass("fa-conn_off");
+	//$("#cnxtogglei").addClass("fa-conn_on");
 	$(".jsplumb-connector").removeClass("jsplumb-connector-hide");
-	//$(".jsplumb-exp-connector").addClass("jsplumb-exp-connector-show");
+	//if expert on -> display expert cnx: TODO
+	if(isOverallExpertOn()){
+		$(".jsplumb-exp-connector").addClass("jsplumb-exp-connector-show");
+		$(".jsplumb-exp-connector").removeClass("jsplumb-exp-connector-hide");
+	}
 	$(".jsplumb-connector").show();
 }

@@ -255,6 +255,7 @@ public class PatientIllnessScript extends Beans/*extends Node*/ implements Illne
 	public void setSubmittedStage(int submittedStage) {this.submittedStage = submittedStage;}
 	//public void setSubmitted(boolean submitted) {this.submitted = submitted;}
 	public void addProblem(String idStr, String prefix){new AddProblemAction(this).add(idStr, prefix);}
+	public void addProblem(String idStr){new AddProblemAction(this).add(idStr,"");}
 	public void addProblem(String idStr, String name, String x, String y){ new AddProblemAction(this).add(idStr, name, x,y);}
 	public void addDiagnosis(String idStr, String name){ new AddDiagnosisAction(this).add(idStr, name);}
 	public void addDiagnosis(String idStr, String name, String x, String y){ new AddDiagnosisAction(this).add(idStr, name, x,y);}

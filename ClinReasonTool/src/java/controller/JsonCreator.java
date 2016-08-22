@@ -86,7 +86,7 @@ public class JsonCreator {
 		if(item.getFirstCode().startsWith("D20.3") || item.getFirstCode().startsWith("D20.4")) return false;
 		if(item.getFirstCode().startsWith("D20.7") || item.getFirstCode().startsWith("D20.8")) return false;
 		if(item.getFirstCode().startsWith("D20.9")) return false;
-		if(item.getFirstCode().startsWith("D27.")) return false;
+		//if(item.getFirstCode().startsWith("D27.")) return false;
 		if(item.getFirstCode().startsWith("D26.2")) return false;
 		//F
 		if(item.getFirstCode().startsWith("F") && !item.getFirstCode().startsWith("F01.145")) return false;

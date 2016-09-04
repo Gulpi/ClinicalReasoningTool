@@ -1,3 +1,4 @@
+/* deprecated /*
 /**
  * javascript for displaying the illness script tabs representation
  */

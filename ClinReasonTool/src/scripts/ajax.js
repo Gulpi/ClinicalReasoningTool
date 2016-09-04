@@ -124,7 +124,7 @@ function doNothing(){}
 /*
  * We store the currently open tab in a cookie, to be able to reopen the same tab after a reload. 
  */
-function switchTab(tabidx){	
+/*function switchTab(tabidx){	
 	Cookies.set('tab', tabidx);
 	$("#msg").html("");
 	if(tabidx==6) updateGraph();
@@ -134,15 +134,15 @@ function switchTab(tabidx){
 		//TODO peerfeedback...
 	}
 	
-}
+}*/
 
-function getCurrentTab(){	
+/*function getCurrentTab(){	
 	var currTab = Cookies.get('tab');
 	if(currTab=="" || currTab=="undefined" || currTab==undefined){
 		currTab = 0;
 	}
 	return currTab;
-}
+}*/
 
 function storeContainerPos(type, x, y){
 	if(type=="fdg_box"){

@@ -2,3 +2,5 @@ $ cat .gitignore
  # exclude some folders:
     /crt/src/doku/
     /crt/src/doku/*
+    /crt/src/nogit/
+     /crt/src/nogit/*

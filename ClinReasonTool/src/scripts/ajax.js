@@ -34,12 +34,12 @@ $.extend({
  * name = name of problem, diagnosis,...
  */
 function sendAjax(id, callback, type, name){
-	sendAjaxUrl(id, callback, type, name, "tabs_ajax.xhtml");
+	sendAjaxUrl(id, callback, type, name, "/crt/src/html/tabs_ajax.xhtml");
 }
 
 
 function sendAjaxCharts(id, callback, type, name){
-	sendAjaxUrl(id, callback, type, name, "charts_ajax.xhtml");
+	sendAjaxUrl(id, callback, type, name, "/crt/src/html/charts_ajax.xhtml");
 }
 
 
@@ -52,7 +52,7 @@ function sendAjaxCharts(id, callback, type, name){
  * name = name of problem, diagnosis,...
  */
 function sendAjaxContext(id, callback, type, name){
-	sendAjaxUrl(id, callback, type, name, "tabs_ajax2.xhtml");
+	sendAjaxUrl(id, callback, type, name, "/crt/src/html/tabs_ajax2.xhtml");
 }
 
 function sendAjaxUrl(id, callback, type, name, url){

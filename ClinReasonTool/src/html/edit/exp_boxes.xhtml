@@ -20,26 +20,26 @@
 <!--          <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet"/>
         <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet"/>
         <link href="//fonts.googleapis.com/css?family=Lato:400,700" rel="stylesheet"/>-->
-<link rel="stylesheet" type="text/css" href="../scripts/jquery112/ui-lightness/jquery-ui.css" /> 
-<link rel="stylesheet" type="text/css" href="../scripts/draw2d/css/contextmenu.css"  />
-<link rel="stylesheet" type="text/css" href="../styles/jsPlumbToolkit-defaults.css" />
+<link rel="stylesheet" type="text/css" href="../../scripts/jquery112/ui-lightness/jquery-ui.css" /> 
+<!--  <link rel="stylesheet" type="text/css" href="../scripts/draw2d/css/contextmenu.css"  />-->
+<link rel="stylesheet" type="text/css" href="../../styles/jsPlumbToolkit-defaults.css" />
 <!--  <link rel="stylesheet" type="text/css" href="<PMW fcache>files/html/scripts/draw2d/css/contextmenu.css"  />-->
-<link rel="stylesheet" href="../styles/clinreason_boxes.css" />
-<link rel="stylesheet" href="../styles/font-awesome/css/font-awesome.css" />
+<link rel="stylesheet" href="../../styles/clinreason_boxes.css" />
+<link rel="stylesheet" href="../../styles/font-awesome/css/font-awesome.css" />
 
-<script type="text/javascript" src="../scripts/jquery112/jquery.js"></script>
-<script type="text/javascript" src="../scripts/jquery112/jquery-ui.min.js"></script>
-<script type="text/javascript" src="../scripts/jquery112/jquery-ui.js"></script>
+<script type="text/javascript" src="../../scripts/jquery112/jquery.js"></script>
+<script type="text/javascript" src="../../scripts/jquery112/jquery-ui.min.js"></script>
+<script type="text/javascript" src="../../scripts/jquery112/jquery-ui.js"></script>
 
-<script src="../scripts/connection.js"></script>
-<script src="../scripts/list.js"></script>
+<script src="../../scripts/connection.js"></script>
+<script src="../../scripts/list.js"></script>
 
-<script src="../scripts/crt_box.js"></script>
-<script src="../scripts/ajax.js"></script>
-<script src="../scripts/js.cookie.js"></script>
-<script src="../scripts/jsplumb/jsPlumb.min.js"></script>
-<script src="../scripts/myjsplumb.js"></script>
-<script src="../scripts/editexp.js"></script>
+<script src="../../scripts/crt_box.js"></script>
+<script src="../../scripts/ajax.js"></script>
+<!-- <script src="../../scripts/js.cookie.js"></script>-->
+<script src="../../scripts/jsplumb/jsPlumb.min.js"></script>
+<script src="../../scripts/myjsplumb.js"></script>
+<script src="../../scripts/editexp.js"></script>
  
 <style>
 /** ELEMENT POSITIONS **/
@@ -58,66 +58,31 @@ var showCnxTitle = "#{prop['cnx.show']}";
 var submitDialogTitle = "#{prop['submit.dialog.title']}";
 var chgCnxDialogTitle = "#{prop['cnx.dialog.title']}";
 
-
 var msg2="Please connect the hypotheses with the findings";
 var scriptId = "#{crtContext.patillscript.id}";
 var listUrl="jsonp_#{crtContext.patillscript.locale}.json";
 var lang = "#{crtContext.patillscript.locale}";
-if(lang=="de") listUrl = "jsonp_de.json";
+if(lang=="de") listUrl = "../jsonp_de.json";
 
 var currentStage = #{crtContext.patillscript.stage};
 var currentStageScript = "#{crtContext.patillscript.currentStageWithUpdate}";
-//var expFeedback = false; //default is that expert feedback is off
-//var peerFeedback = false; //default is that expert feedback is off
 var active;
-//var errorNum = "#{crtContext.patillscript.errorNum}";
-//var submitted = "#{crtContext.patillscript.submitted}";
 var instance;
 var item_arr = new Array();
 var exp_arr = new Array();
 
 $(function() {
-	if(lang=="de") listUrl = "jsonp_de.json";
+	if(lang=="de") listUrl = "../jsonp_de.json";
 	$(".listdialog").hide();
 	//$("#jdialogError").hide();
 	$("#connContext").hide();
 	$("#summStText").on('change',function(){
-		//setDirtySummSt();
 		saveSummSt('#{crtContext.patillscript.summStId}');
 	 });
-	//checkSubmitBtn();
-	//initContainerPos();
+	$(".chgstage").on('change',function(){
+		chgStage(this);
+	 });
 
-   /* $( document ).tooltip({
-    	//items: " rect, [title], text, tspan",
-    	//items: "tspan",
-    	content: function() {
-    		var element = $( this );
-    		if(element.hasClass("jsplumb-connector")){ 
-				//var tooltip = getToolTipForRect(element);
-				return "hallo";
-    		}*/
-           /* if ( element.is( "[title]" ) ) { //this is a "normal" tooltip returning the title of an element
-                return element.attr( "title" );
-              }*/
-    //	}
-   // });
-    
-    /*$( ".container" ).draggable({
-        stop: function() {
-        	storeContainerPos(this.id, this.offsetLeft, this.offsetTop);
-        }
-      });*/
-    
-	//initLists();
-  /*  $( "#confidence_slider" ).slider({
-       orientation: "vertical",
-    	min: 0,
-    	max: 100,
-    	step: 1,
-    	change: submitSliderChange
-    });*/
-   // $( "#confidence_slider" ).slider( "value", #{crtContext.patillscript.confidence} );
 	$("#jdialog").dialog({
 		autoOpen: false,
 		modal: true,
@@ -131,14 +96,6 @@ $(function() {
 		width: "auto",
 		height: "auto"
 	});
-	
-	/*$("#jdialogError").dialog({
-		autoOpen: false,
-		modal: true,
-		width: "auto",
-		height: "auto"
-	});*/
-
 });
 
 
@@ -235,7 +192,7 @@ Stage: <span id="stageSpan">#{crtContext.patillscript.stage} </span>
 	<!--  <a href="exp_stages.xhtml" target="new">exp dev</a>-->
 	<!--  <a href="alert('not yet available, will show the development of the experts script during the case');">exp dev</a>-->
 </div>
-<div class="boxes_container">
+<div class="boxes_container" style="float:left;width:60%;">
 	<div id="canvas" class="canvas jtk-surface drag-drop jtk-surface-nopan" >
 		 <!--   <div id="pat_box" class="container" group="pat_group">
 		  		<div class="title">Patient</div>
@@ -264,7 +221,7 @@ Stage: <span id="stageSpan">#{crtContext.patillscript.stage} </span>
 						<h:form id="probform">
 						<h:panelGroup>
 						   <ui:repeat id="repeatprob" value="#{crtContext.patillscript.problemsStage}" var="prob" varStatus="status">
-						   		<ui:include src="probbox.xhtml" />
+						   		<ui:include src="../probbox.xhtml" />
 	    					</ui:repeat>	    						    					
 	    				</h:panelGroup>
     				     <h:commandButton id="hiddenProbButton" value="RenderSomething" style="visibility:hidden">
@@ -292,7 +249,7 @@ Stage: <span id="stageSpan">#{crtContext.patillscript.stage} </span>
 			  			<h:form id="ddxform">
 						<h:panelGroup >
 							<ui:repeat value="#{crtContext.patillscript.diagnosesStage}" var="ddx" varStatus="status">
-								<ui:include src="ddxbox.xhtml" />
+								<ui:include src="../ddxbox.xhtml" />
 	     					</ui:repeat>					
 	    				</h:panelGroup>
 	    				     <h:commandButton id="hiddenDDXButton" value="RenderSomething" style="visibility:hidden">
@@ -310,7 +267,7 @@ Stage: <span id="stageSpan">#{crtContext.patillscript.stage} </span>
 		  			<h:panelGroup>
 					
 						<ui:repeat value="#{crtContext.patillscript.testsStage}" var="test" varStatus="status">
-							<ui:include src="testbox.xhtml" />
+							<ui:include src="../testbox.xhtml" />
      					</ui:repeat>				
 						<!-- <li id="selds_1">Chest X-ray <select class="f_select"><option value="-1">scanning</option><option>r/c Pneumonia</option></select></li>-->
 					<!--  <div id="jsonTestsMap" style="visibility:hidden">#{crtContext.patillscript.testsJson}</div>-->
@@ -331,7 +288,7 @@ Stage: <span id="stageSpan">#{crtContext.patillscript.stage} </span>
 	  			<h:panelGroup>
 	
 					<ui:repeat value="#{crtContext.patillscript.mngsStage}" var="mng" varStatus="status">
-						<ui:include src="mngbox.xhtml" />
+						<ui:include src="../mngbox.xhtml" />
 	   				</ui:repeat>				
 	  				</h:panelGroup>
 	  				     <h:commandButton id="hiddenMngButton" value="RenderSomething" style="visibility:hidden">
@@ -346,7 +303,15 @@ Stage: <span id="stageSpan">#{crtContext.patillscript.stage} </span>
 <div id="jsonConns" style="display:none;">#{crtContext.graph.jsonConns}</div> 
 
 <div id="connContext">
-	<ui:include src="cnxchange.xhtml" />
+	<ui:include src="../cnxchange.xhtml" />
+</div>
+
+<div id="allitems" style="float:right;width:30%;">
+	<ui:repeat value="#{crtContext.graph.allVertices}" var="nodes" varStatus="status">
+		<ui:include src="items_exp.xhtml" />
+	</ui:repeat>				
+
+
 </div>
 </body>
 </html>

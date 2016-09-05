@@ -11,11 +11,9 @@ import beans.scripts.*;
 import beans.relation.Connection;
 import beans.relation.Relation;
 import beans.scripts.IllnessScriptInterface;
-import controller.GraphController;
-import controller.NavigationController;
+import controller.*;
 import database.DBList;
 import model.ListItem;
-import util.CRTLogger;
 
 /**
  * A Graph that models the components of (Patient-)IllnessScripts in a MultiGraph. 
@@ -31,7 +29,7 @@ public class Graph extends DirectedWeightedMultigraph<MultiVertex, MultiEdge> {
 
 	private static final long serialVersionUID = 1L;
 	private String vpId; //e.g. VPId,...
-	private long userId;
+	//private long userId;
 	private long expertPatIllScriptId;
 	private boolean expEdit = new NavigationController().isExpEdit();
 	//private boolean peersConsidered = false; //we have to get this from a property file
@@ -294,7 +292,22 @@ public class Graph extends DirectedWeightedMultigraph<MultiVertex, MultiEdge> {
 		}
 		return list;
 	}
-	
+
+	/**
+	 * Returns all vertices added by the expert. 
+	 * @return
+	 */
+	public List<MultiVertex> getAllVertices(){
+		Set<MultiVertex> verts = this.vertexSet();
+		if(verts==null) return null;
+		List<MultiVertex> list = new ArrayList<MultiVertex>();
+		Iterator<MultiVertex> it = verts.iterator();
+		while(it.hasNext()){
+			MultiVertex mv = it.next();
+			if( mv.getLearnerVertex()!=null)  list.add(mv);				
+		}
+		return list;
+	}
 	
 	/* (non-Javadoc)
 	 * @see org.jgrapht.graph.AbstractGraph#toString()
@@ -403,7 +416,7 @@ public class Graph extends DirectedWeightedMultigraph<MultiVertex, MultiEdge> {
 	}
 	
 	public List<MultiVertex> getParentVertices(MultiVertex vertex){
-		List<MultiVertex> list = new ArrayList();
+		List<MultiVertex> list = new ArrayList<MultiVertex>();
 		getParentVertices(list, vertex);
 		if(list.isEmpty()) return null;
 		return list;
@@ -415,7 +428,7 @@ public class Graph extends DirectedWeightedMultigraph<MultiVertex, MultiEdge> {
 	 * @return
 	 */
 	public MultiVertex getExpParentVertex(MultiVertex lvertex){
-		List<MultiVertex> list = new ArrayList();
+		List<MultiVertex> list = new ArrayList<MultiVertex>();
 		getParentVertices(list, lvertex);
 		if(list.isEmpty()) return null;
 		for(int i=0; i<list.size(); i++){
@@ -425,22 +438,6 @@ public class Graph extends DirectedWeightedMultigraph<MultiVertex, MultiEdge> {
 		return null;
 	}
 	
-	/**
-	 * look whether the expert has chosen a more general term than the learner, if so return the distance between the expert and the 
-	 * learner vertex
-	 * @param lvertex
-	 * @return
-	 */
-	/*public int getExpParentDistance(MultiVertex lvertex){
-		List<MultiVertex> list = new ArrayList();
-		getParentVertices(list, lvertex);
-		if(list.isEmpty()) return -1;
-		for(int i=0; i<list.size(); i++){
-			MultiVertex v = list.get(i);
-			if(v.isExpertVertex()) return i+1;
-		}
-		return -1;
-	}*/
 	
 	/**
 	 * returns the distance between two vertices
@@ -470,25 +467,9 @@ public class Graph extends DirectedWeightedMultigraph<MultiVertex, MultiEdge> {
 		return childs;
 	}
 	
-	/**
-	 * look whether the expert has chosen a more specific term than the learner, if so return the distance between the 
-	 * learner and the expert.
-	 * @param lvertex
-	 * @return
-	 */
-	/*public int getExpChildDistance(MultiVertex lvertex){
-		List<MultiVertex> list = new ArrayList();
-		getChildVertices(list, lvertex);
-		if(list.isEmpty()) return -1;
-		for(int i=0; i<list.size(); i++){
-			MultiVertex v = list.get(i);
-			if(v.isExpertVertex()) return i+1;
-		}
-		return -1;
-	}*/
 	
 	public List<MultiVertex> getChildVertices(MultiVertex vertex){
-		List<MultiVertex> list = new ArrayList();
+		List<MultiVertex> list = new ArrayList<MultiVertex>();
 		getChildVertices(list, vertex);
 		if(list.isEmpty()) return null;
 		return list;

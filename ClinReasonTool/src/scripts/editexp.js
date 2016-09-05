@@ -20,3 +20,13 @@ function expFinalDiagnosis(id){
 function expFinalDiagnosisCallback(){
 	diagnosisCallBack();
 }
+
+/* expert changes the stage for a problem or ddx or ...*/
+function chgStage(obj){
+	var id = obj.id;
+	var realId = id.substring(9);
+	var newStage = $("#"+id).val();
+	sendAjax(realId, chgStageCallback, "chgStateOfItem", newStage);
+}
+
+function chgStageCallback(){}

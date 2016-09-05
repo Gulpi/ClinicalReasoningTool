@@ -249,4 +249,9 @@ public class MultiVertex /*extends SynonymVertex*/ implements VertexInterface, S
 		return sb.toString();
 	}
 	
+	public int getStage(){
+		if(learnerVertex!=null) return learnerVertex.getStage();
+		return -1;
+	}
+	
 }

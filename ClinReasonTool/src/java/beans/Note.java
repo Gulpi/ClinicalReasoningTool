@@ -9,7 +9,7 @@ import javax.faces.bean.SessionScoped;
  * Summary Statement of the author or learner for a VP. There might be multiple Summary Statements for a case (changed
  * at distinct steps), all changes, variants are saved in the PIS_Log object.
  * @author ingahege
- *
+ * (currently not in use)
  */
 @SessionScoped
 public class Note extends Beans implements Serializable{

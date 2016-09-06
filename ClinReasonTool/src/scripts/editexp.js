@@ -22,7 +22,7 @@ function expFinalDiagnosisCallback(){
 }
 
 /* expert changes the stage for a problem or ddx or ...*/
-function chgStage(obj){
+function chgStageItem(obj){
 	var id = obj.id;
 	var realId = id.substring(9);
 	var newStage = $("#"+id).val();

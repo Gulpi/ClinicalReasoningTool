@@ -324,7 +324,9 @@ public class CRTFacesContext extends FacesContextWrapper /*implements Serializab
 	}
 	
 	public ExpViewPatientIllnessScript getExpPatIllScript(){
-		return new ExpViewPatientIllnessScript(graph, patillscript.getCurrentStage());
+		int stage = 1;
+		if(patillscript!=null) stage = patillscript.getCurrentStage();
+		return new ExpViewPatientIllnessScript(graph, stage);
 	}
 	
 	public boolean isExpEdit(){

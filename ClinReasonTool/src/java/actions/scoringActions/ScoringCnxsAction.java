@@ -55,7 +55,8 @@ public class ScoringCnxsAction {
 			if(edge.getExpCnxId()>0 && edge.getLearnerCnxId()<=0) missedNum++; //we do not consider the stage here!
 			if(edge.getExpCnxId()<=0 && edge.getLearnerCnxId()>0) addNum++;			
 		}
-		float score = correctNum/(correctNum+missedNum);
+		float score = 0; 
+		if(correctNum+missedNum>0) score = correctNum/(correctNum+missedNum);
 		score = score - (addNum*ScoringController.ADD_CNX_RED_SCORE);
 		if(score<0) score = 0;
 		scoreBean.setScoreBasedOnExp(score, isChg);

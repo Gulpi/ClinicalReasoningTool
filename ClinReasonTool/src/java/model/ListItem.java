@@ -91,4 +91,46 @@ public class ListItem implements Serializable{
 		return false;
 	}
 	
+	/**
+	 * We look whether an Item is in a higher or lower hierarchy level. We compare both, firstCode and 
+	 * otherCodes with each other and return the closest disctance. If no hierarchy relation is there, we return -1.s
+	 * @param li
+	 * @return
+	 */
+	public int getHierarchyDiff(ListItem li){
+		int codeDiff = getHierarchyDiff(li.getFirstCode());
+		if(li.getOtherCodes()==null || li.getOtherCodes().isEmpty()) return codeDiff;
+		Iterator it = li.getOtherCodes().iterator();
+		while(it.hasNext()){
+			int diff2 = getHierarchyDiff((String)it.next());
+			if(diff2<codeDiff || codeDiff==-1) codeDiff = diff2;
+		}
+		return codeDiff;
+	}
+		
+	/**
+	 * calculates a difference between a given code with the firstCode and otherCodes of this ListItem.
+	 * @param code
+	 * @return
+	 */
+	private int getHierarchyDiff(String code){
+		if(code==null || firstCode==null) return -1;
+		int diff = -1;
+		if(!code.equals(firstCode) && (code.startsWith(firstCode) || firstCode.startsWith(code))){
+			//we look into the distance of the codes: 
+			diff = Math.abs(firstCode.length() - code.length());
+		}
+		if(this.getOtherCodes()==null || this.getOtherCodes().isEmpty()) return diff;
+		
+		Iterator it = this.getOtherCodes().iterator();
+		while(it.hasNext()){
+			String otherCode = (String) it.next();
+			if(!code.equals(otherCode) && (code.startsWith(otherCode) || otherCode.startsWith(code))){
+				int diff2 = Math.abs(otherCode.length() - code.length());
+				if(diff2<diff || diff==-1) diff = diff2;
+			}			
+		}
+		return diff;
+	}
+	
 }

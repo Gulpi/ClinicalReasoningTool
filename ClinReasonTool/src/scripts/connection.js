@@ -154,10 +154,12 @@ function getWeightToColor(weight){
 	case 5: return "#999999"; /*"#009933"*/; //highly related (black)
 	case 4: return "#999999"; /*"#00e64d"*/; //somewhat related (dark grey)
 	case 3: return "#e6e6e6"; /*"#e6ffee"*/; //slightly related (light grey)
+	case 8: return "#006699"; //hierarchy
 	case "6": return "#990000";
 	case "5": return "#999999";
 	case "4": return "#999999";
 	case "3": return "#e6e6e6";
+	case "8": return "#006699";
 	default: 
 		return "#999999";
 	}
@@ -169,7 +171,7 @@ function getWeightToColorExp(weight){
 	case 5: return "#009933"; /*"#009933"*/; //highly related (black)
 	case 4: return "#00e64d"; /*"#00e64d"*/; //somewhat related (dark grey)
 	case 3: return "#e6ffee"; /*"#e6ffee"*/; //slightly related (light grey)
-
+	case 8: return "#006699"; 
 	default: 
 		return "#00e64d";
 	}

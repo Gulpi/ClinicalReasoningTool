@@ -32,9 +32,9 @@
     		<!-- <element column="name" type="string"/>-->
 		</set>	
 		<!--  currently not used, but might be used in future for selecting items depending on code -->
-		<!--  <set name="otherCodes" table="crt.CLINREASON_LIST_CODES" lazy="false" fetch="join" batch-size="100">
+		  <set name="otherCodes" table="crt.CLINREASON_LIST_CODES" lazy="false" fetch="join" batch-size="100">
     		<key column="item_id"/>
     		<element column="code" type="string"/>
-		</set>	-->
+		</set>
 </class>
 </hibernate-mapping>

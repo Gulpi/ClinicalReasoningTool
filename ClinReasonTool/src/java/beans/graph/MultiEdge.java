@@ -13,6 +13,7 @@ import beans.scripts.IllnessScriptInterface;
  */
 public class MultiEdge extends DefaultWeightedEdge{
 
+	private static final int[] EDGES_AS_CNX = new int[]{2,3,4,5,6,8};
 	public static final int WEIGHT_NONE = 0;	
 	public static final int WEIGHT_IMPLICIT = 1; //a connection has made in the concept map, tests have been associated to DDX  
 	public static final int WEIGHT_EXPLICIT = 2; //implicit connection - being in the same illnessScript	
@@ -21,7 +22,7 @@ public class MultiEdge extends DefaultWeightedEdge{
 	public static final int WEIGHT_HIGHLY_RELATED = 5;
 	public static final int WEIGHT_SPEAKS_AGAINST = 6;
 	public static final int WEIGHT_PARENT = 7;  //an item higher up in the hierarchy
-
+	public static final int WEIGHT_EXPLICIT_HIERARCHY = 8;
 	/**
 	 * key = type (see definition in IllnessScriptInterface)
 	 * value = weight (for peers the number of conx)
@@ -85,19 +86,14 @@ public class MultiEdge extends DefaultWeightedEdge{
 		types.remove(new Integer(illScriptType));		
 	}
 	
-	public boolean isExplicitLearnerEdge(){
-		return isExplicitEdge(IllnessScriptInterface.TYPE_LEARNER_CREATED);
-	}
-	public boolean isExplicitExpertEdge(){
-		return isExplicitEdge(IllnessScriptInterface.TYPE_EXPERT_CREATED);
-	}
+
 	
-	private boolean isExplicitEdge(int type){
+	/*private boolean isExplicitEdge(int type){
 		if(types==null || types.get(new Integer(type))==null) return false;
 		int weight = types.get(new Integer(type)).intValue();
 		if(weight>=2 && weight<=6) return true;
 		return false;		
-	}
+	}*/
 	
 	/**
 	 * When learner has added/removed a connection, we have to update this in the graph as well. 
@@ -174,4 +170,18 @@ public class MultiEdge extends DefaultWeightedEdge{
 			}
 		}
 	}
+	
+	public boolean isExplicitExpertEdge(){
+		for(int i=0; i<EDGES_AS_CNX.length; i++){
+			if(EDGES_AS_CNX[i]==this.getExpertWeight()) return true;
+		}
+		return false;		
+	}
+	public boolean isExplicitLearnerEdge(){
+		for(int i=0; i<EDGES_AS_CNX.length; i++){
+			if(EDGES_AS_CNX[i]==this.getLearnerWeight()) return true;
+		}
+		return false;		
+	}
+	
 }

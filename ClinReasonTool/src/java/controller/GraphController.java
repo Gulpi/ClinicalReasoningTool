@@ -192,6 +192,34 @@ public class GraphController implements Serializable{
 		
 	}
 	
+	/**
+	 * We look whether this vertex has any lower or higher hierarchy vertices within the 
+	 * same type vertices. 
+	 * @param mv
+	 * @return
+	 */
+	public MultiVertex findNextHierarchyVertex(MultiVertex mv, int type){
+		List<MultiVertex> vertices = graph.getVerticesByType(type);
+		if(mv.getLearnerVertex()==null || mv.getLearnerVertex().getListItem()==null) return null;
+		String thisCode = mv.getLearnerVertex().getListItem().getFirstCode();
+		if(vertices==null || vertices.isEmpty()) return null;
+		MultiVertex nextHierarchy = null;
+		int codeDiff = -1;
+		
+		for(int i=0; i<vertices.size(); i++){
+			MultiVertex mv2 = vertices.get(i);
+			if(mv2.getLearnerVertex()!=null && mv2.getLearnerVertex().getListItem()!=null){
+				int codeDiffTmp = mv.getLearnerVertex().getListItem().getHierarchyDiff(mv2.getLearnerVertex().getListItem());
+				if(codeDiffTmp>-1 && (codeDiff==-1 || codeDiffTmp<codeDiff)){
+					nextHierarchy = mv2;
+					codeDiff = codeDiffTmp;
+				}
+			}
+		}
+		return nextHierarchy;
+	}
+	
+	
 	public static int getTypeByPrefix(String prefix){
 		if(prefix==null) return 0;
 		if(prefix.equals(PREFIX_PROB) || prefix.equals(PREFIX_PROB2)) return Relation.TYPE_PROBLEM;

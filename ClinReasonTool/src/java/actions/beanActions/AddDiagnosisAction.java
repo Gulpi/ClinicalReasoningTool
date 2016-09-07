@@ -16,10 +16,13 @@ import application.ErrorMessageContainer;
 import beans.*;
 import beans.scripts.*;
 import beans.graph.Graph;
+import beans.graph.MultiEdge;
+import beans.graph.MultiVertex;
 import beans.helper.TypeAheadBean;
 import beans.relation.*;
 import beans.scoring.ScoreBean;
 import beans.scripts.IllnessScriptInterface;
+import controller.GraphController;
 import controller.NavigationController;
 import controller.RelationController;
 import database.DBClinReason;
@@ -81,9 +84,11 @@ public class AddDiagnosisAction implements AddAction, Scoreable{
 		notifyLog(rel);
 		updateGraph(rel);
 		triggerScoringAction(rel, isJoker);	
-		((HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest()).setAttribute("ddx", rel);
+		//((HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest()).setAttribute("ddx", rel);
 
 	}
+	
+
 	
 	/* (non-Javadoc)
 	 * @see beanActions.AddAction#createErrorMessage(java.lang.String, java.lang.String, javax.faces.application.FacesMessage.Severity)
@@ -157,6 +162,24 @@ public class AddDiagnosisAction implements AddAction, Scoreable{
 				graph.addImplicitEdge(patIllScript.getProblems().get(i).getListItemId(), rel.getListItemId(), IllnessScriptInterface.TYPE_LEARNER_CREATED);
 			}
 		}
+		addHierarchyRelation(rel, graph);
 		CRTLogger.out(graph.toString(), CRTLogger.LEVEL_TEST);
+	}
+	
+	/**
+	 * If a new differential is a more specific one than a previously added differential, we connect those two 
+	 * with a specific hierarchy connection. 
+	 * Currently we only do that for expert scripts!
+	 * @param rel
+	 * @param g
+	 */
+	private void addHierarchyRelation(Relation rel, Graph g){
+		if(patIllScript.getType()==PatientIllnessScript.TYPE_EXPERT_CREATED){
+			MultiVertex mv = g.getVertexByIdAndType(rel.getListItemId(), Relation.TYPE_DDX);
+			MultiVertex mv2 = new GraphController(g).findNextHierarchyVertex(mv, Relation.TYPE_DDX);
+			if(mv2!=null)
+				new AddConnectionAction(patIllScript).addConnection(rel.getId(), mv2.getLearnerVertex().getId(), Relation.TYPE_DDX, Relation.TYPE_DDX, MultiEdge.WEIGHT_EXPLICIT_HIERARCHY);
+
+		}
 	}
 }

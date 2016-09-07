@@ -187,17 +187,23 @@ public class Graph extends DirectedWeightedMultigraph<MultiVertex, MultiEdge> {
 	 * @param patIllScript
 	 * @param type (see definition in IllnessScriptInterface)
 	 */
-	public void addExplicitEdge(Connection cnx, PatientIllnessScript patIllScript, int type){
+	public void addExplicitEdge(Connection cnx, PatientIllnessScript patIllScript, int type, int weight){
 		Relation source = patIllScript.getRelationByIdAndType(cnx.getStartId(), cnx.getStartType());
 		Relation target = patIllScript.getRelationByIdAndType(cnx.getTargetId(), cnx.getTargetType());
 		//the weight has to be minimum of the explicit weight or a specified higher weight:s
-		int weight = MultiEdge.WEIGHT_EXPLICIT;
+		//int weight = MultiEdge.WEIGHT_EXPLICIT;
 		if(cnx.getWeight()>MultiEdge.WEIGHT_EXPLICIT) weight = cnx.getWeight();
 		if(source!=null && target!=null){
 			addOrUpdateEdge(getVertexByIdAndType(source.getListItemId(), source.getRelationType()), getVertexByIdAndType(target.getListItemId(), target.getRelationType()), type, weight, cnx.getId(), patIllScript.getType());
 		
 		}
 	}
+	
+	public void addExplicitEdge(Connection cnx, PatientIllnessScript patIllScript, int type){
+		addExplicitEdge(cnx, patIllScript, type, MultiEdge.WEIGHT_EXPLICIT);
+	}
+	
+	
 	
 	public void addImplicitEdge(long sourceId, long targetId, int type){
 		addOrUpdateEdge(this.getVertexById(sourceId), this.getVertexById(targetId), type, MultiEdge.WEIGHT_IMPLICIT, -1, -1);
@@ -373,7 +379,8 @@ public class Graph extends DirectedWeightedMultigraph<MultiVertex, MultiEdge> {
 		StringBuffer sb = new StringBuffer("[");
 		while(it.hasNext()){
 			MultiEdge edge = it.next();
-			if((edge.getLearnerWeight()>=MultiEdge.WEIGHT_EXPLICIT && edge.getLearnerWeight()<MultiEdge.WEIGHT_PARENT) || (edge.getExpertWeight()>=MultiEdge.WEIGHT_EXPLICIT && edge.getExpertWeight()<MultiEdge.WEIGHT_PARENT)){ //then we add the edge to the concept map
+			//if((edge.getLearnerWeight()>=MultiEdge.WEIGHT_EXPLICIT && edge.getLearnerWeight()<MultiEdge.WEIGHT_PARENT) || (edge.getExpertWeight()>=MultiEdge.WEIGHT_EXPLICIT && edge.getExpertWeight()<MultiEdge.WEIGHT_PARENT)){ //then we add the edge to the concept map
+			if(edge.isExplicitExpertEdge() || edge.isExplicitLearnerEdge()){
 				long cnxId = 0;
 				String l = "0";
 				String e = "0";

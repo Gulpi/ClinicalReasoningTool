@@ -11,6 +11,7 @@ import actions.scoringActions.ScoringAddCnxAction;
 import application.ErrorMessageContainer;
 import beans.scripts.*;
 import beans.graph.Graph;
+import beans.graph.MultiEdge;
 import beans.relation.Connection;
 import beans.relation.Relation;
 import beans.scripts.IllnessScriptInterface;
@@ -54,12 +55,13 @@ public class AddConnectionAction implements Scoreable{
 		long sourceId = Long.valueOf(sourceIdStr);
 		long targetId = Long.valueOf(targetIdStr);
 		
-		addConnection(sourceId, targetId, GraphController.getTypeByPrefix(startType), GraphController.getTypeByPrefix(targetType));
+		addConnection(sourceId, targetId, GraphController.getTypeByPrefix(startType), GraphController.getTypeByPrefix(targetType), MultiEdge.WEIGHT_EXPLICIT);
 	}
 	
-	private void addConnection(long sourceId, long targetId, int startType, int targetType){
+	protected void addConnection(long sourceId, long targetId, int startType, int targetType, int weight){
 		if(patIllScript.getConns()==null) patIllScript.setConns(new TreeMap());
 		Connection cnx = new Connection(sourceId, targetId, this.patIllScript.getId(), startType, targetType);
+		cnx.setWeight(weight);
 		if(patIllScript.getConns().containsValue(cnx)) return; //cnx already made... 
 		
 		save(cnx); //first save to get an id...
@@ -87,7 +89,7 @@ public class AddConnectionAction implements Scoreable{
 	 */
 	public void updateGraph(Connection cnx) {
 		Graph graph = new NavigationController().getCRTFacesContext().getGraph();
-		graph.addExplicitEdge(cnx, patIllScript, IllnessScriptInterface.TYPE_LEARNER_CREATED);
+		graph.addExplicitEdge(cnx, patIllScript, IllnessScriptInterface.TYPE_LEARNER_CREATED, cnx.getWeight());
 		CRTLogger.out(graph.toString(), CRTLogger.LEVEL_TEST);
 	}
 }

@@ -172,7 +172,7 @@ public class RelationDiagnosis extends Relation implements Serializable {
 		boolean expEdit = NavigationController.getInstance().isExpEdit();
 		if(expEdit){ 
 			PatientIllnessScript learnerscript = new NavigationController().getCRTFacesContext().getPatillscript();
-			if(ruledOut<=learnerscript.getStage()) return COLOR_RULEDOUT;
+			if(isRuledOutBool() && ruledOut<=learnerscript.getStage()) return COLOR_RULEDOUT;
 			return "#000000";
 		}
 		else{
@@ -181,6 +181,23 @@ public class RelationDiagnosis extends Relation implements Serializable {
 		}
 	}
 	
+	/**
+	 * color of the expert boxes for the learner feedback. 
+	 * if a ddx has been ruled out by an expert it is displayed as ruled out from the stage on where it has been ruled out.  
+	 * @return
+	 */
+	public String getExpColor(){	
+		PatientIllnessScript learnerscript = new NavigationController().getCRTFacesContext().getPatillscript();
+		if(isRuledOutBool() && ruledOut<=learnerscript.getCurrentStage()) return COLOR_RULEDOUT;
+		return "#000000";
+	}
+	
+	/**
+	 * Background color of boxes for learner boxes and expert edit boxes. 
+	 * For expert edit we consider the actual stage (not may stage!), to make it easier to display the changes of 
+	 * the script during the scenario.
+	 * @return
+	 */
 	public String getBackgroundColor(){		
 		boolean expEdit = NavigationController.getInstance().isExpEdit();
 		//if the current script is created as an expert script we display the colors only from the stage on in which they have been assigned.
@@ -198,13 +215,22 @@ public class RelationDiagnosis extends Relation implements Serializable {
 			return COLOR_DEFAULT;
 		}
 	}
-	
+
+	/**
+	 * background color of the expert boxes for the learner feedback. 
+	 * if a ddx has been defined as working ddx it is displayed as such from the (max) stage on where it has been made. 
+	 *  final diagnoses are only displayed after user has passed the maxDDXSubmission stage (after that he must have
+	 *  made a final diagnosis). 
+	 * @return
+	 */
 	public String getExpBackgroundColor(){		
 		//if the current script is created as an expert script we display the colors only from the stage on in which they have been assigned.
 		PatientIllnessScript learnerscript = new NavigationController().getCRTFacesContext().getPatillscript();
 		//if(isFinalDiagnosis() && learnerscript.getSubmittedStage()<=learnerscript.getStage()) return COLOR_FINAL;
+		
+		if(isFinalDiagnosis() && learnerscript.getCurrentStage()>learnerscript.getMaxSubmittedStage()) return COLOR_FINAL;
 		if(workingDDX<=0) return COLOR_DEFAULT;
-		if(workingDDX<=learnerscript.getStage()) return COLOR_WORKINGDDX;
+		if(workingDDX<=learnerscript.getCurrentStage()) return COLOR_WORKINGDDX;
 		return COLOR_DEFAULT;
 			
 	}

@@ -183,7 +183,7 @@ ScriptId:  #{crtContext.patillscript.id}<br/>
 VPId: <input type="text" value="#{crtContext.patillscript.vpId}"></input><br/>
 System <select name="system"><option value="">Casus (uni)</option><option value="">Casus (MedU)</option></select><br/>
 Stage: <span id="stageSpan">#{crtContext.patillscript.stage} </span>
-<a href="javascript:chgStage(-1,'exp_boxes.xhtml');">previous stage</a> <a href="javascript:chgStage(1,'exp_boxes.xhtml');">next stage</a>
+<a href="javascript:chgStage(-1, 'exp_boxes_view.xhtml');">previous stage</a> <a href="javascript:chgStage(1, 'exp_boxes_view.xhtml');">next stage</a>
 
 </div>
 
@@ -196,18 +196,12 @@ Stage: <span id="stageSpan">#{crtContext.patillscript.stage} </span>
 	<div id="canvas" class="canvas jtk-surface drag-drop jtk-surface-nopan" >
 		  <!-- problems -->
 		  <div id="fdg_box"  class="container" group="fdg_group">
-		   		<div class="title">#{prop['findings']}  
-		   		</div>
+		   		<div class="title">#{prop['findings']} </div>
 		   		<div class="node-collapse"></div>
-		  			<div class="search boxchild"><span class="icon"><i class="icon-search"></i></span>
-		  			<input type="text" id="fdg_prefix" style="display:none;" />
-		  			
-		  			<!-- <select class="f_select" style="width:40px;" id="fdg_prefix"><option value="0">-</option><option value="1">No</option></select>-->
-		  			<input class="f_text" style="width:155px;" id="problems" placeholder="Search..." title="Please add any problems, findings, exposures, or risk factors you consider as relevant"></input></div>
 						<h:form id="probform">
 						<h:panelGroup>
 						   <ui:repeat id="repeatprob" value="#{crtContext.patillscript.problemsStage}" var="prob" varStatus="status">
-						   		<ui:include src="../probbox.xhtml" />
+						   		<ui:include src="probbox.xhtml" />
 	    					</ui:repeat>	    						    					
 	    				</h:panelGroup>
     				     <h:commandButton id="hiddenProbButton" value="RenderSomething" style="visibility:hidden">
@@ -219,23 +213,18 @@ Stage: <span id="stageSpan">#{crtContext.patillscript.stage} </span>
 						<span class="errormsg" id="msg_probform"></span>
 		  </div>
 		 <div id="sum_box" class="container sum_container" group="sum_group">	
-		 	<div class="title">#{prop['summst']}
-		 	</div>
+		 	<div class="title">#{prop['summst']}</div>
 		 	 <div class="node-collapse"></div>
-		 	 <textarea style="display:none;" id="summStTextHidden" cols="65" rows="3">#{crtContext.patillscript.summSt.text}</textarea>
-				<textarea class="f_textarea boxchild" name="summSt" id="summStText" cols="65" rows="3">#{crtContext.patillscript.summStStage.text}</textarea><br/>
-			 	<span class="errormsg" id="msg_sumstform"></span>
+		 	 #{crtContext.patillscript.summStStage.text}
 		</div>
 		  <!--  diagnoses -->
 		  <div id="ddx_box" class="container" group="ddx_group">	
-		  		<div class="title">#{prop['ddx']}
-		  		</div>	
+		  		<div class="title">#{prop['ddx']}</div>	
 		  		<div class="node-collapse"></div>	  		
-		  			<div class="search boxchild"><input class="f_text" id="ddx" title="Please add your differentials"></input></div>
 			  			<h:form id="ddxform">
 						<h:panelGroup >
 							<ui:repeat value="#{crtContext.patillscript.diagnosesStage}" var="ddx" varStatus="status">
-								<ui:include src="../ddxbox.xhtml" />
+								<ui:include src="ddxbox.xhtml" />
 	     					</ui:repeat>					
 	    				</h:panelGroup>
 	    				     <h:commandButton id="hiddenDDXButton" value="RenderSomething" style="visibility:hidden">
@@ -245,15 +234,13 @@ Stage: <span id="stageSpan">#{crtContext.patillscript.stage} </span>
 		  </div>
 		  <!-- tests -->
 		  <div id="tst_box" class="container" group="tst_group">
-		  		<div class="title">#{prop['tests']}
-		  		</div>
+		  		<div class="title">#{prop['tests']}</div>
 		 	 	<div class="node-collapse"></div>
-		  		<div class="search boxchild"><input class="f_text" id="tests" title="Please add any tests or examinations you want to order or perform."></input></div>
 		  			<h:form id="testform">
 		  			<h:panelGroup>
 					
 						<ui:repeat value="#{crtContext.patillscript.testsStage}" var="test" varStatus="status">
-							<ui:include src="../testbox.xhtml" />
+							<ui:include src="testbox.xhtml" />
      					</ui:repeat>				
 						<!-- <li id="selds_1">Chest X-ray <select class="f_select"><option value="-1">scanning</option><option>r/c Pneumonia</option></select></li>-->
 					<!--  <div id="jsonTestsMap" style="visibility:hidden">#{crtContext.patillscript.testsJson}</div>-->
@@ -266,15 +253,13 @@ Stage: <span id="stageSpan">#{crtContext.patillscript.stage} </span>
 		</div>
 		  <!-- managements -->
 		  <div id="mng_box" class="container" group="mng_group">
-		  	<div class="title">#{prop['mng']}
-		  	</div>
+		  	<div class="title">#{prop['mng']}</div>
 		 	 <div class="node-collapse"></div>
-		  	<div class="search boxchild"><input class="f_text" id="mng" title="Please add any management decisions for your patient."></input></div>
 	  			<h:form id="mngform">
 	  			<h:panelGroup>
 	
 					<ui:repeat value="#{crtContext.patillscript.mngsStage}" var="mng" varStatus="status">
-						<ui:include src="../mngbox.xhtml" />
+						<ui:include src="mngbox.xhtml" />
 	   				</ui:repeat>				
 	  				</h:panelGroup>
 	  				     <h:commandButton id="hiddenMngButton" value="RenderSomething" style="visibility:hidden">
@@ -292,12 +277,5 @@ Stage: <span id="stageSpan">#{crtContext.patillscript.stage} </span>
 	<ui:include src="../cnxchange.xhtml" />
 </div>
 
-<div id="allitems" style="float:right;width:30%;">
-	<ui:repeat value="#{crtContext.graph.allVertices}" var="nodes" varStatus="status">
-		<ui:include src="items_exp.xhtml" />
-	</ui:repeat>				
-
-
-</div>
 </body>
 </html>

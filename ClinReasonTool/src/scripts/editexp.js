@@ -3,10 +3,10 @@
  * 
  ******/
 
-function chgStage(chg){
+function chgStage(chg, loc){
 	if(chg==-1 && currentStage==1) return;
 	currentStage += chg;
-	window.location.href = "exp_boxes.xhtml?stage="+currentStage;
+	window.location.href = loc+"?stage="+currentStage;
 	//$("#stageSpan").html(currStage);
 }
 

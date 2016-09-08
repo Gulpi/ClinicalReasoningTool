@@ -573,6 +573,11 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#bbbbbb', end
 	box-shadow: 2px 2px 5px 0px rgba(0,0,0,0.28);
 }
 
+/* we have broader boxes for a view-only/print interfaces (e.g. for reviewers)*/
+.viewbox{
+	width:120px;
+}
+
 .expbox{
 	position:absolute;
     width:80px;

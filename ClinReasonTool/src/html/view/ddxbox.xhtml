@@ -1,0 +1,17 @@
+ <ui:composition 
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core">
+ 
+ <!-- border-color:#{ddx.color}; -->
+   	<div id="ddx_#{ddx.id}"  score="#{ddx.score}" title="#{ddx.labelOrSynLabel}" class="itembox ddxs viewbox" style="background-color:#{ddx.backgroundColor};color:#{ddx.color};left:#{ddx.x}px; top:#{ddx.boxY}px;">
+  	 	
+  	 	<!-- <i id="tiericon_#{ddx.id}" title="#{prop['ddx.finalddx']}" class="fa fa-check-circle#{ddx.tier}"></i>-->
+  	 	<i id="mnmicon_#{ddx.id}" title="#{prop['ddx.mnm.hint2']}" class="fa fa-exclamation-circle#{ddx.mnm}"></i>
+  	 	#{ddx.labelOrSynLabel}
+  	 	 <script language="Javascript">
+ 			item_arr.push("ddx_#{ddx.id}");
+ 		</script>
+  	</div>
+</ui:composition>

@@ -87,7 +87,7 @@ function sendAjaxUrlHtml(id, callback, type, name, url){
 function sendAjaxCM(id, callback, type, name, x, y){
 	$.ajax({
 		  method: "POST",
-		  url: "tabs_ajax.xhtml",
+		  url: "/crt/src/html/tabs_ajax.xhtml",
 		  data: { type: type, id: id, name: name, x: x, y: y, script_id: scriptId, stage:currentStage }
 		})
 	  .done(function( response ) {	

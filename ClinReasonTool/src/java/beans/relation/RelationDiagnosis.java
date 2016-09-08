@@ -167,19 +167,48 @@ public class RelationDiagnosis extends Relation implements Serializable {
 	public int getWorkingDDX(){return workingDDX;}
 	
 	public void setWorkingDDX(int workingDDX) {this.workingDDX = workingDDX;}
+	
 	public String getColor(){		
-		if(isRuledOutBool()) return COLOR_RULEDOUT;
-		//if(workingDDX>0) return COLOR_WORKINGDDX;
-		//if(isFinalDiagnosis()) return COLOR_WORKINGDDX;
-		//if(this.isMnM()) return COLOR_MNM;
-		return "#000000";//COLOR_DEFAULT;
+		boolean expEdit = NavigationController.getInstance().isExpEdit();
+		if(expEdit){ 
+			PatientIllnessScript learnerscript = new NavigationController().getCRTFacesContext().getPatillscript();
+			if(ruledOut<=learnerscript.getStage()) return COLOR_RULEDOUT;
+			return "#000000";
+		}
+		else{
+			if(isRuledOutBool()) return COLOR_RULEDOUT;
+			return "#000000";//COLOR_DEFAULT;
+		}
 	}
+	
 	public String getBackgroundColor(){		
-		//if(isRuledOutBool()) return COLOR_RULEDOUT;
-		if(workingDDX>0) return COLOR_WORKINGDDX;
-		if(isFinalDiagnosis()) return COLOR_FINAL;
-		return COLOR_DEFAULT;
+		boolean expEdit = NavigationController.getInstance().isExpEdit();
+		//if the current script is created as an expert script we display the colors only from the stage on in which they have been assigned.
+		if(expEdit){ 
+			PatientIllnessScript learnerscript = new NavigationController().getCRTFacesContext().getPatillscript();
+			if(isFinalDiagnosis() && learnerscript.getSubmittedStage()<=learnerscript.getStage()) return COLOR_FINAL;
+			if(workingDDX<=0) return COLOR_DEFAULT;
+
+			if(workingDDX<=learnerscript.getStage()) return COLOR_WORKINGDDX;
+			return COLOR_DEFAULT;
+		}
+		else{
+			if(isFinalDiagnosis()) return COLOR_FINAL;
+			if(workingDDX>0) return COLOR_WORKINGDDX;			
+			return COLOR_DEFAULT;
+		}
 	}
+	
+	public String getExpBackgroundColor(){		
+		//if the current script is created as an expert script we display the colors only from the stage on in which they have been assigned.
+		PatientIllnessScript learnerscript = new NavigationController().getCRTFacesContext().getPatillscript();
+		//if(isFinalDiagnosis() && learnerscript.getSubmittedStage()<=learnerscript.getStage()) return COLOR_FINAL;
+		if(workingDDX<=0) return COLOR_DEFAULT;
+		if(workingDDX<=learnerscript.getStage()) return COLOR_WORKINGDDX;
+		return COLOR_DEFAULT;
+			
+	}
+	
 	/* (non-Javadoc)
 	 * @see beans.relation.Relation#getRelationType()
 	 */

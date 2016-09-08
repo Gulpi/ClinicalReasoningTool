@@ -31,7 +31,7 @@ public class Graph extends DirectedWeightedMultigraph<MultiVertex, MultiEdge> {
 	private String vpId; //e.g. VPId,...
 	//private long userId;
 	private long expertPatIllScriptId;
-	private boolean expEdit = new NavigationController().isExpEdit();
+	private boolean expEdit = NavigationController.getInstance().isExpEdit();
 	//private boolean peersConsidered = false; //we have to get this from a property file
 	/**
 	 * How many peers have completed this patientIllnessScript? If we have enough we can include the peers into 

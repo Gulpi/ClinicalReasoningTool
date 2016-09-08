@@ -6,6 +6,7 @@ import javax.faces.bean.SessionScoped;
 
 import beans.graph.*;
 import beans.relation.Relation;
+import controller.NavigationController;
 
 /**
  * A view object (no database storage) for displaying the expert's script. 

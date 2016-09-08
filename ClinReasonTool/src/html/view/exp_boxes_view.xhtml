@@ -45,9 +45,9 @@
 /** ELEMENT POSITIONS **/
 #fdg_box { left:15px;top:15px; }
 #ddx_box { left:245px;top:15px; }
-#tst_box { left:15px;top:290px; }
-#mng_box { left:245px;top:290px; }
-#sum_box { left:15px;top:565px; }
+#tst_box { left:15px;top:320px; }
+#mng_box { left:245px;top:320px; }
+#sum_box { left:15px;top:625px; }
 
 </style>
 <script language="JavaScript">
@@ -193,9 +193,9 @@ Stage: <span id="stageSpan">#{crtContext.patillscript.stage} </span>
 	<!--  <a href="alert('not yet available, will show the development of the experts script during the case');">exp dev</a>-->
 </div>
 <div class="boxes_container" style="float:left;width:60%;">
-	<div id="canvas" class="canvas jtk-surface drag-drop jtk-surface-nopan" >
+	<div id="canvas" class="canvas jtk-surface drag-drop jtk-surface-nopan" style="height:750px; max-height:750px;">
 		  <!-- problems -->
-		  <div id="fdg_box"  class="container" group="fdg_group">
+		  <div id="fdg_box"  class="container viewcontainer" group="fdg_group">
 		   		<div class="title">#{prop['findings']} </div>
 		   		<div class="node-collapse"></div>
 						<h:form id="probform">
@@ -218,7 +218,7 @@ Stage: <span id="stageSpan">#{crtContext.patillscript.stage} </span>
 		 	 #{crtContext.patillscript.summStStage.text}
 		</div>
 		  <!--  diagnoses -->
-		  <div id="ddx_box" class="container" group="ddx_group">	
+		  <div id="ddx_box" class="container viewcontainer" group="ddx_group">	
 		  		<div class="title">#{prop['ddx']}</div>	
 		  		<div class="node-collapse"></div>	  		
 			  			<h:form id="ddxform">
@@ -233,7 +233,7 @@ Stage: <span id="stageSpan">#{crtContext.patillscript.stage} </span>
 					<span class="errormsg" id="msg_ddxform"></span>							
 		  </div>
 		  <!-- tests -->
-		  <div id="tst_box" class="container" group="tst_group">
+		  <div id="tst_box" class="container viewcontainer" group="tst_group">
 		  		<div class="title">#{prop['tests']}</div>
 		 	 	<div class="node-collapse"></div>
 		  			<h:form id="testform">
@@ -252,7 +252,7 @@ Stage: <span id="stageSpan">#{crtContext.patillscript.stage} </span>
 					<span class="errormsg" id="msg_testform"></span>
 		</div>
 		  <!-- managements -->
-		  <div id="mng_box" class="container" group="mng_group">
+		  <div id="mng_box" class="container viewcontainer" group="mng_group">
 		  	<div class="title">#{prop['mng']}</div>
 		 	 <div class="node-collapse"></div>
 	  			<h:form id="mngform">

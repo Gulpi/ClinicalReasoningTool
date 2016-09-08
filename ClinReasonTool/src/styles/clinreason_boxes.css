@@ -318,6 +318,16 @@ a#ddx_submit_btn{
 	box-shadow: 3px 3px 5px 0px rgba(0,0,0,0.28);
 }
 
+.expcontainer{
+
+    /*position:relative !important;
+    height:300px;*/
+}
+
+.viewcontainer{
+	 height:300px;
+}
+
 .container .footer {display:block;}
 
 .sum_container{

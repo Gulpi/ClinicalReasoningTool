@@ -72,7 +72,7 @@ var test = "#{crtContext.userId}";
 <div> 
 	<h:form><ul id="list" class="plainList">
 			<ui:repeat value="#{expport.expscripts}" var="scripts" varStatus="status">
-				<li><h:commandLink action="#{navController.openExpPatIllScript}" value="Scriptid:#{scripts.id}" title="Open the prototype">
+				<li><h:commandLink action="#{navController.openExpPatIllScript}" value="Edit Scriptid:#{scripts.id}" title="Open the prototype">
 				<!--  <f:param name="script_id" value="#{scripts.id}" />-->
 					<f:param name="script_id" value="#{scripts.id}" />
 					<f:param name="user_id" value="#{scripts.userId}" />
@@ -83,6 +83,11 @@ var test = "#{crtContext.userId}";
 						<f:param name="script_id" value="#{scripts.id}" />
 						<f:param name="user_id" value="#{scripts.userId}" />
 					</h:outputLink>-->
+					
+			<h:commandLink action="#{navController.openViewExpPatIllScript}" value="View Scriptid:#{scripts.id}" title="Open the prototype">
+				<f:param name="script_id" value="#{scripts.id}" />
+				<f:param name="user_id" value="#{scripts.userId}" />
+			</h:commandLink>
 				</li>
  		 </ui:repeat>				
 	</ul></h:form>

@@ -326,12 +326,19 @@ a#ddx_submit_btn{
 
 .viewcontainer{
 	 height:300px;
+	 width:250px;
 }
 
 .container .footer {display:block;}
 
 .sum_container{
 	width: 440px !important;
+	min-height:110px;
+
+}
+
+.sum_container_view{
+	width: 515px !important;
 	min-height:110px;
 
 }

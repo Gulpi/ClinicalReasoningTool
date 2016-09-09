@@ -67,6 +67,16 @@ public class NavigationController implements Serializable {
 		return "exp_boxes";
 	}
 	
+	public String openViewExpPatIllScript(){
+		CRTFacesContext context = getCRTFacesContext(); 
+		if(context!=null){
+			removePatIllScript();
+			context.initExpEditSession();
+		}
+		//TODO error handling
+		return "/src/html/view/exp_boxes_view";
+	}
+	
 	
 	public String logout(){
 		//log the user out and remove all sessionScoped stuff.....

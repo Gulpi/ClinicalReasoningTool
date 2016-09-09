@@ -44,9 +44,9 @@
 <style>
 /** ELEMENT POSITIONS **/
 #fdg_box { left:15px;top:15px; }
-#ddx_box { left:245px;top:15px; }
+#ddx_box { left:275px;top:15px; }
 #tst_box { left:15px;top:320px; }
-#mng_box { left:245px;top:320px; }
+#mng_box { left:275px;top:320px; }
 #sum_box { left:15px;top:625px; }
 
 </style>
@@ -183,7 +183,7 @@ ScriptId:  #{crtContext.patillscript.id}<br/>
 VPId: <input type="text" value="#{crtContext.patillscript.vpId}"></input><br/>
 System <select name="system"><option value="">Casus (uni)</option><option value="">Casus (MedU)</option></select><br/>
 Stage: <span id="stageSpan">#{crtContext.patillscript.stage} </span>
-<a href="javascript:chgStage(-1, 'exp_boxes_view.xhtml');">previous stage</a> <a href="javascript:chgStage(1, 'exp_boxes_view.xhtml');">next stage</a>
+<a href="javascript:chgStage(-1, '../view/exp_boxes_view.xhtml');">previous stage</a> <a href="javascript:chgStage(1, '../view/exp_boxes_view.xhtml');">next stage</a>
 
 </div>
 
@@ -212,7 +212,7 @@ Stage: <span id="stageSpan">#{crtContext.patillscript.stage} </span>
 						</h:form>
 						<span class="errormsg" id="msg_probform"></span>
 		  </div>
-		 <div id="sum_box" class="container sum_container" group="sum_group">	
+		 <div id="sum_box" class="container sum_container_view" group="sum_group">	
 		 	<div class="title">#{prop['summst']}</div>
 		 	 <div class="node-collapse"></div>
 		 	 #{crtContext.patillscript.summStStage.text}

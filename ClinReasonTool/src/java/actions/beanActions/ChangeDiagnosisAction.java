@@ -18,7 +18,7 @@ import database.DBList;
 import model.ListItem;
 
 /**
- * A ProblemRelation is changed and a different Problem object attached, id remains the same, so, no
+ * A DiagnosisRelation is changed and a different Diagnosis object attached, id remains the same, so, no
  * other changes necessary.
  * @author ingahege
  *

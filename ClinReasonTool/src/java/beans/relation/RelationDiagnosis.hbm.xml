@@ -23,6 +23,8 @@
 		<property name="prefix" column="prefix" type="string"/>
 		<property name="ruledOut" column="ruled_out" type="int"/>
 		<property name="workingDDX" column="working_ddx" type="int"/>
+		<property name="finalDiagnosis" column="final_ddx" type="int"/>
+
 		
 		<!--  <property name="name" column="name" type="string"/>	-->
 		<many-to-one name="diagnosis" class="model.ListItem" column="source_id"  lazy="false" insert="false" update="false"/>

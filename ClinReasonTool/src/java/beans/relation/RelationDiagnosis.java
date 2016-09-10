@@ -66,6 +66,7 @@ public class RelationDiagnosis extends Relation implements Serializable {
 	 * see tier definitions above
 	 */
 	private int tier = -1; 
+	private int finalDiagnosis = -1;
 
 	private ListItem diagnosis;
 	/**
@@ -129,6 +130,20 @@ public class RelationDiagnosis extends Relation implements Serializable {
 		}
 	}
 	
+	
+	
+	public int getFinalDiagnosis() {return finalDiagnosis;}
+	public void setFinalDiagnosis(int stage) {
+		this.finalDiagnosis = stage;
+		if(stage>0) tier = TIER_FINAL; //backward compatibility....
+	}
+	/*public void setFinalDiagnosis(){
+		tier = TIER_FINAL;
+	}*/
+	public boolean isFinalDDX(){
+		if(tier==TIER_FINAL || finalDiagnosis>0) return true;
+		return false;
+	}	
 	private void setWorkingDDXAtCurrStage(){
 		PatientIllnessScript patillscript = NavigationController.getInstance().getPatientIllnessScript();
 		if(patillscript!=null){
@@ -158,14 +173,7 @@ public class RelationDiagnosis extends Relation implements Serializable {
 		return false;
 	}
 
-	public void setFinalDiagnosis(){
-		/*if(tier!=TIER_FINAL) */ tier = TIER_FINAL;
-		//else tier = TIER_NONE;
-	}
-	public boolean isFinalDiagnosis(){
-		if(tier==TIER_FINAL) return true;
-		return false;
-	}
+
 		
 	public boolean isWorkingDDXBool() {
 		if(workingDDX>0) return true;
@@ -211,14 +219,14 @@ public class RelationDiagnosis extends Relation implements Serializable {
 		//if the current script is created as an expert script we display the colors only from the stage on in which they have been assigned.
 		if(expEdit){ 
 			PatientIllnessScript learnerscript = new NavigationController().getCRTFacesContext().getPatillscript();
-			if(isFinalDiagnosis() && learnerscript.getSubmittedStage()<=learnerscript.getStage()) return COLOR_FINAL;
+			if(isFinalDDX() && learnerscript.getSubmittedStage()<=learnerscript.getStage()) return COLOR_FINAL;
 			if(workingDDX<=0) return COLOR_DEFAULT;
 
 			if(workingDDX<=learnerscript.getStage()) return COLOR_WORKINGDDX;
 			return COLOR_DEFAULT;
 		}
 		else{
-			if(isFinalDiagnosis()) return COLOR_FINAL;
+			if(isFinalDDX()) return COLOR_FINAL;
 			if(workingDDX>0) return COLOR_WORKINGDDX;			
 			return COLOR_DEFAULT;
 		}
@@ -236,7 +244,7 @@ public class RelationDiagnosis extends Relation implements Serializable {
 		PatientIllnessScript learnerscript = new NavigationController().getCRTFacesContext().getPatillscript();
 		//if(isFinalDiagnosis() && learnerscript.getSubmittedStage()<=learnerscript.getStage()) return COLOR_FINAL;
 		
-		if(isFinalDiagnosis() && learnerscript.getCurrentStage()>learnerscript.getMaxSubmittedStage()) return COLOR_FINAL;
+		if(isFinalDDX() && learnerscript.getCurrentStage()>learnerscript.getMaxSubmittedStage()) return COLOR_FINAL;
 		if(workingDDX<=0) return COLOR_DEFAULT;
 		if(workingDDX<=learnerscript.getCurrentStage()) return COLOR_WORKINGDDX;
 		return COLOR_DEFAULT;

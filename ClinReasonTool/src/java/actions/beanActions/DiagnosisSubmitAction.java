@@ -38,8 +38,12 @@ public class DiagnosisSubmitAction /*implements Scoreable*/{
 	public void submitExpFinalDiagnosis(String idStr){
 		long id = Long.valueOf(idStr).longValue();
 		setAndSaveFinal(id);
-		patIllScript.setSubmittedStage(patIllScript.getCurrentStage());
-		new DBClinReason().saveAndCommit(patIllScript);
+		//only change submittedStage if it has not yet been set or if the new submittedStage is lower than the current one.
+		//@deprecated because we have the submitted stage in the relation now.
+		if(patIllScript.getSubmittedStage()<=0 || patIllScript.getSubmittedStage()>patIllScript.getStage()){
+			patIllScript.setSubmittedStage(patIllScript.getStage());
+			new DBClinReason().saveAndCommit(patIllScript);
+		}
 	}
 		
 	/**
@@ -81,8 +85,10 @@ public class DiagnosisSubmitAction /*implements Scoreable*/{
 
 	private RelationDiagnosis setFinal(long id){
 		RelationDiagnosis rel = patIllScript.getDiagnosisById(id);
-		if(rel==null || rel.isFinalDiagnosis()) return null;	
-		rel.setFinalDiagnosis();
+		if(rel==null || rel.isFinalDDX()) return null;
+		int stage = patIllScript.getCurrentStage();
+		if(patIllScript.getType()==PatientIllnessScript.TYPE_EXPERT_CREATED) stage = patIllScript.getStage();
+		rel.setFinalDiagnosis(stage);
 		new DBClinReason().saveAndCommit(rel);
 		return rel;
 	}

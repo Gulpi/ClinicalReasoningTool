@@ -387,7 +387,7 @@ public class PatientIllnessScript extends Beans/*extends Node*/ implements Illne
 		if(diagnoses==null || diagnoses.isEmpty()) return null; 
 		List<RelationDiagnosis> finals = new ArrayList<RelationDiagnosis>();
 		for(int i=0; i<diagnoses.size(); i++){
-			if(diagnoses.get(i).isFinalDiagnosis()) finals.add(diagnoses.get(i));
+			if(diagnoses.get(i).isFinalDDX()) finals.add(diagnoses.get(i));
 		}
 		return finals;
 	}

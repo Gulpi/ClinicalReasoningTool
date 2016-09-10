@@ -113,7 +113,7 @@ public class ScoringFinalDDXAction /*implements ScoringAction*/{
 		float itemScore = 0;
 		boolean isChg = true;
 		//score the single learner final ddx
-		if(learnerRel!=null && learnerRel.isFinalDiagnosis()){
+		if(learnerRel!=null && learnerRel.isFinalDDX()){
 			long itemId = learnerRel.getListItemId();
 			ScoreBean scoreBean = cont.getScoreBeanByTypeAndItemId(ScoreBean.TYPE_FINAL_DDX, vert.getVertexId());
 			if(scoreBean == null){
@@ -124,7 +124,7 @@ public class ScoringFinalDDXAction /*implements ScoringAction*/{
 
 			scoreBean.setTiming(patIllScript.getSubmittedStage(), expIllScript.getSubmittedStage());
 			//learner & expert have selected this ddx as final
-			if(expRel!=null && expRel.isFinalDiagnosis())  itemScore = ScoringController.FULL_SCORE;
+			if(expRel!=null && expRel.isFinalDDX())  itemScore = ScoringController.FULL_SCORE;
 			
 			//learner has wrong final diagnosis:
 			else itemScore = ScoringController.NO_SCORE;

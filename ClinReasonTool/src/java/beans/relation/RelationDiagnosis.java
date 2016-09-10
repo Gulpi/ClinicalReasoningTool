@@ -122,12 +122,20 @@ public class RelationDiagnosis extends Relation implements Serializable {
 	public void setRuledOut(int ruledOut) {this.ruledOut = ruledOut;}
 	public void setRuledOutAtCurrStage() {
 		PatientIllnessScript patillscript = NavigationController.getInstance().getPatientIllnessScript();
-		if(patillscript!=null) this.ruledOut = patillscript.getCurrentStage();
+		if(patillscript!=null){
+			if(patillscript.getType()==PatientIllnessScript.TYPE_EXPERT_CREATED)
+				this.ruledOut = patillscript.getStage();
+			else this.ruledOut = patillscript.getCurrentStage();
+		}
 	}
 	
 	private void setWorkingDDXAtCurrStage(){
 		PatientIllnessScript patillscript = NavigationController.getInstance().getPatientIllnessScript();
-		if(patillscript!=null) this.workingDDX = patillscript.getCurrentStage();
+		if(patillscript!=null){
+			if(patillscript.getType()==PatientIllnessScript.TYPE_EXPERT_CREATED)
+				this.workingDDX = patillscript.getStage();
+			else this.workingDDX = patillscript.getCurrentStage();
+		}
 		
 	}
 	

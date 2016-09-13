@@ -718,6 +718,7 @@ function showExpStages(){
  */
 function showDropDown(id, pos){	
 	hideAllDropDowns(); //we first hide all in case any are still open...
+	clearErrorMsgs();
 	$("#"+id).show();
 	var x =  $("#"+pos).position().left+10;
 	var y = $("#"+pos).position().top+5;

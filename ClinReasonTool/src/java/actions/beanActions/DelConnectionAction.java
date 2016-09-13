@@ -24,7 +24,7 @@ public class DelConnectionAction /*implements DelAction*/{
 	/* (non-Javadoc)
 	 * @see beanActions.DelAction#save(java.lang.Object)
 	 */
-	public void save(Object o) {
+	public void delete(Object o) {
 		new DBClinReason().deleteAndCommit((Connection)o);		
 	}
 
@@ -37,19 +37,28 @@ public class DelConnectionAction /*implements DelAction*/{
 		le.save();			
 	}
 
+	/**
+	 * Delete a connection by its id (format cnx_1234). If the id does not start with "cnx_" do nothing. 
+	 * This can happen if the connection is not correctly initialized (then e.g. it is con_123, but the id is not 
+	 * the cnx id stored in the database).
+	 * @param idStr
+	 */
 	public void delete(String idStr) {
-		if(idStr==null || idStr.trim().equals("") || patIllScript==null || patIllScript.getConns()==null || patIllScript.getConns().isEmpty()){
+		if(idStr==null || idStr.trim().equals("") || !idStr.startsWith(GraphController.PREFIX_CNX)|| patIllScript==null || patIllScript.getConns()==null || patIllScript.getConns().isEmpty()){
 			//todo error msg
 			return;		
 		}
+		
 		idStr = idStr.substring(GraphController.PREFIX_CNX.length());
 		long id = Long.parseLong(idStr);
 		Connection conn = (Connection) patIllScript.getConns().get(new Long(id));
 		patIllScript.getConns().remove(new Long(id));
 		//new ActionHelper().reOrderItems(patIllScript.getProblems());
-		notifyLog(conn);
-		updateGraph(conn);
-		save(conn);		
+		if(conn!=null){
+			notifyLog(conn);
+			updateGraph(conn);
+			delete(conn);	
+		}
 	}
 	
 	/**

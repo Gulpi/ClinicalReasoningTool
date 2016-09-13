@@ -33,6 +33,11 @@ var expendpoint = {
 	};
 
 
+/*var con=info.connection;
+var arr=jsPlumb.select({source:con.sourceId,target:con.targetId});
+if(arr.length>1){
+   jsPlumb.detach(con);*/
+   
 function createConnection(cnxId, sourceId, targetId, learner, exp, expWeight, learnerWeight){
 	if(/*!expFeedback &&*/ learner=="0" && exp=="1"){
 		createExpConnection(cnxId, sourceId, targetId, expWeight, learnerWeight)
@@ -113,10 +118,32 @@ function delConnection(){
 function addConnection(conn){
 	var sourceId = conn.sourceId; 
 	var targetId = conn.targetId;
- 	sendAjax(sourceId, doNothing, "addConnection", targetId);
+	//getConnectionBySourceAndTargetId(sourceId, targetId)
+ 	sendAjax(sourceId, addConnectionCallback, "addConnection", targetId);
 }
 
+/**
+ * 
+ * @param id = sourceId
+ * @param name = targetId
+ */
+function addConnectionCallback(sourceId, cnxId, targetId){
+	if(sourceId==null || sourceId<0 || targetId==null || targetId<0) return;
+	var cnx = getConnectionBySourceAndTargetId(sourceId, targetId);
+	$(cnx).attr('id', cnxId);
+	//$("[id='cnxsform:hiddenCnxButton']").click();
+}
+
+/*function reInitCnxsCallback(id, cnxId){
+	//we have to draw the connections again....
+	//alert($("#jsonConns").html());
+	alert(cnxId);
+	instance.detachEveryConnection();
+	//initConnections();
+}*/
+
 function openConnContext(cnxId){
+	clearErrorMsgs();
 	$("#connContext").dialog( "option", "width", ['200'] );
 	$("#connContext").dialog( "option", "height", ['200'] );
 	$("#connContext").dialog( "option", "title", chgCnxDialogTitle);
@@ -143,8 +170,38 @@ function getConnectionById(cnxId){
 	for(var i =0; i<cns.length; i++){
 		cnx = cns[i];
 		if(cnx.id==cnxId) return cnx;
+	}	
+}
+/**
+ * get the connection with the given source- and targetId. 
+ * @param sourceId
+ * @param targetId
+ * @returns {___anonymous_cnx}
+ */
+function getConnectionBySourceAndTargetId(sourceId, targetId){
+	var cns = instance.getConnections('*');
+	for(var i =0; i<cns.length; i++){
+		cnx = cns[i];
+		if(cnx.sourceId==sourceId && cnx.targetId==targetId) return cnx;
+	}	
+	//TODO:
+	//return jsPlumb.select({source:sourceId,target:targetId});
+}
+
+function getAllConnectionBySourceAndTargetId(sourceId, targetId){
+	var cns = instance.getConnections('*');
+	var cnxArr = new Array();
+	var counter = 0;
+	for(var i =0; i<cns.length; i++){
+		cnx = cns[i];
+		if(cnx.sourceId==sourceId && cnx.targetId==targetId){
+			cnxArr[counter] = cnx;
+			counter ++;
+		}
 	}
-	
+	return cnxArr;
+	//TODO:
+	//return jsPlumb.select({source:sourceId,target:targetId});
 }
 
 /* get color of connection based on the weight */
@@ -212,4 +269,37 @@ function showCnx(){
 		$(".jsplumb-exp-connector").removeClass("jsplumb-exp-connector-hide");
 	}
 	$(".jsplumb-connector").show();
+}
+
+function isDuplicateCnx(info, errormsg){
+	//first we check whether there has already been made a connection between the source and target. 
+	//If so display an error msg
+	var con=info.connection;
+	//var arr = jsPlumb.getConnections({sourceId:con.sourceId,targetId:con.targetId});
+	var arr = getAllConnectionBySourceAndTargetId(con.sourceId, con.targetId);
+	if(arr.length>1){
+	    jsPlumb.detach(con);
+	    var msgSpanId = getErrorMsgSpanByTargetId(con.targetId);
+	    $("#"+msgSpanId).html(errormsg);
+	    return true;
+	 }
+	return false;
+}
+/**
+ * we display the error message for connections in the box of the target item
+ * @param targetId
+ */
+function getErrorMsgSpanByTargetId(targetId){
+	var targetStart = targetId.substring(0,3);
+	switch(targetStart){
+	case "fdg":
+		return "msg_probform";	
+	case "ddx":
+		return "msg_ddxform";
+	case "mng":
+		return "msg_mngform";
+	case "tst":
+		return "msg_testform";
+		default: return "";
+	}
 }

@@ -34,11 +34,13 @@ $.extend({
  * name = name of problem, diagnosis,...
  */
 function sendAjax(id, callback, type, name){
+	clearErrorMsgs();
 	sendAjaxUrl(id, callback, type, name, "/crt/src/html/tabs_ajax.xhtml");
 }
 
 
 function sendAjaxCharts(id, callback, type, name){
+	clearErrorMsgs();
 	sendAjaxUrl(id, callback, type, name, "/crt/src/html/charts_ajax.xhtml");
 }
 
@@ -52,6 +54,7 @@ function sendAjaxCharts(id, callback, type, name){
  * name = name of problem, diagnosis,...
  */
 function sendAjaxContext(id, callback, type, name){
+	clearErrorMsgs();
 	sendAjaxUrl(id, callback, type, name, "/crt/src/html/tabs_ajax2.xhtml");
 }
 
@@ -95,13 +98,21 @@ function sendAjaxCM(id, callback, type, name, x, y){
 	  });	
 }
 
-/* display msg and call callback function*/
+/**
+ *  display msg and call callback function
+ *  we have an id and id2...
+ **/
 function handleResponse(response, callback, name){
 	 displayErrorMsg(response);
-	 var id2 =  $(response).find('id').text();
+	 var id =  $(response).find('id').text();
+	 var id2 =  $(response).find('id2').text();
 	 var isOk =  $(response).find('ok').text();
 	 //TODO we might need shortnam here (for tooltip in map)s
-	 if(isOk=="1") callback(id2, name);
+	 if(isOk=="1"){
+		 if(id2!="" && id2!=null)
+			 callback(id, id2, name); //addConnectionCallback(sourceId, cnxId, targetId){
+		 else callback(id, name);
+	 }
 	
 }
 
@@ -112,6 +123,11 @@ function handleResponseHtml(response, callback, name){
 	else callback(response);	
 }
 
+/**
+ * Error message are displayed in the error message span in the correpsonding form. 
+ * E.g. id of form is "probform" and span id is "msg_probform"
+ * @param response
+ */
 function displayErrorMsg(response){
 	 var msg =  $(response).find('msg').text();
 	 var formId =  $(response).find('formId').text();

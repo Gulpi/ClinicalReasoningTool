@@ -226,7 +226,8 @@ jsPlumb.ready(function () {
     //registers a connection that is made: this code needs to be AFTER the init has happened, otherwise each init 
     //event triggers this. 
     instance.bind("connection", function (info, originalEvent){
-    	addConnection(info);
+    	if (!isDuplicateCnx(info, "#{prop['cnx.duplicate']}"))
+    		addConnection(info);
     });
     $(".expbox").addClass("expboxstatus");
     jsPlumb.fire("jsPlumbDemoLoaded", instance);
@@ -261,6 +262,7 @@ item_arr = new Array();
 	<!--  <a href="exp_stages.xhtml" target="new">exp dev</a>-->
 	<!--  <a href="alert('not yet available, will show the development of the experts script during the case');">exp dev</a>-->
 </div>
+<!-- <div> <h:form id="cnxform"><span class="errormsg" id="msg_cnxform"></span></h:form></div>-->
 <div class="boxes_container">
 	<div id="canvas" class="canvas jtk-surface drag-drop jtk-surface-nopan" >
 		 <!--   <div id="pat_box" class="container" group="pat_group">
@@ -413,7 +415,14 @@ item_arr = new Array();
 	  		</div>
 	</div>
 </div>
-<div id="jsonConns" style="display:none;">#{crtContext.graph.jsonConns}</div> 
+
+	<!--  <h:form id="cnxsform">
+		 <h:panelGroup>-->
+		 	<div id="jsonConns" style="display:none;">#{crtContext.graph.jsonConns}</div><!-- </h:panelGroup>
+		   <h:commandButton id="hiddenCnxButton" value="RenderSomething" style="visibility:hidden">
+	  		<f:ajax render="@form" onevent="reInitCnxsCallback"></f:ajax>
+		</h:commandButton>		 
+	</h:form>-->
 
 <div id="jdialog"><ui:include src="submitdialog.xhtml" /></div>
 

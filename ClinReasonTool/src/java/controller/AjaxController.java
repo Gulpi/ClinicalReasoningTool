@@ -175,8 +175,15 @@ public class AjaxController {
 	private void responseAjax(ExternalContext externalContext, String responseId) throws IOException{
 		FacesContext facesContext = FacesContext.getCurrentInstance();
 	    externalContext.setResponseContentType("text/xml");
-	    externalContext.setResponseCharacterEncoding("UTF-8");    
-	    externalContext.getResponseOutputWriter().write(createResponseXML("<id>"+responseId+"</id>"));
+	    externalContext.setResponseCharacterEncoding("UTF-8"); 
+	    //for additional id info (e.g. when adding a new connection)
+		String id2 = (String) ((HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest()).getAttribute("id2");
+		StringBuffer sb = new StringBuffer("<id>"+responseId+"</id>");
+		if(id2!=null && !id2.trim().isEmpty())
+				sb.append("<id2>"+id2+"</id2>");
+	    externalContext.getResponseOutputWriter().write(createResponseXML(sb.toString()));
+		
+
 	    facesContext.responseComplete();
 	}
 	

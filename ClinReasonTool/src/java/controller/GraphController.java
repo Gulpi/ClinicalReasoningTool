@@ -32,7 +32,6 @@ public class GraphController implements Serializable{
 	public static final String PREFIX_EPI2 = "epi_";
 	public static final String PREFIX_DDX2 = "ddx_";
 	public static final String PREFIX_MNG2 = "mng_";
-	public static final String PREFIX_CNX2 = "cnx_";
 	public static final String PREFIX_TEST2 = "tst_";
 	private Graph graph;
 	

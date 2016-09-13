@@ -5,6 +5,8 @@ import java.util.*;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.application.FacesMessage.Severity;
+import javax.faces.context.FacesContext;
+import javax.servlet.http.HttpServletRequest;
 
 import actions.scoringActions.Scoreable;
 import actions.scoringActions.ScoringAddCnxAction;
@@ -20,6 +22,7 @@ import controller.GraphController;
 import controller.NavigationController;
 import beans.LogEntry;
 import database.DBClinReason;
+import properties.IntlConfiguration;
 import util.CRTLogger;
 
 public class AddConnectionAction implements Scoreable{
@@ -59,15 +62,20 @@ public class AddConnectionAction implements Scoreable{
 	}
 	
 	protected void addConnection(long sourceId, long targetId, int startType, int targetType, int weight){
-		if(patIllScript.getConns()==null) patIllScript.setConns(new TreeMap());
+		if(patIllScript.getConns()==null) patIllScript.setConns(new TreeMap<Long, Connection>());
 		Connection cnx = new Connection(sourceId, targetId, this.patIllScript.getId(), startType, targetType);
 		cnx.setWeight(weight);
-		if(patIllScript.getConns().containsValue(cnx)) return; //cnx already made... 
+		if(patIllScript.getConns().containsValue(cnx)){
+			createErrorMessage(IntlConfiguration.getValue("cnx.duplicate"), "", FacesMessage.SEVERITY_ERROR);
+			return; //cnx already made... 
+		}
 		
 		save(cnx); //first save to get an id...
 		patIllScript.getConns().put(new Long(cnx.getId()), cnx);
 		updateGraph(cnx);
 		notifyLog(cnx);
+		((HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest()).setAttribute("id2", GraphController.PREFIX_CNX + cnx.getId());
+
 		//initScoreCalc(relProb);		
 	}
 
@@ -80,7 +88,7 @@ public class AddConnectionAction implements Scoreable{
 	}
 
 	public void createErrorMessage(String summary, String details, Severity sev) {
-		new ErrorMessageContainer().addErrorMessage(summary, details, sev);
+		new ErrorMessageContainer().addErrorMessage("cnxform", summary, details, sev);
 		
 	}
 	

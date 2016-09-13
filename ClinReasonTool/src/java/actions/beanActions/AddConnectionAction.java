@@ -65,8 +65,9 @@ public class AddConnectionAction implements Scoreable{
 		if(patIllScript.getConns()==null) patIllScript.setConns(new TreeMap<Long, Connection>());
 		Connection cnx = new Connection(sourceId, targetId, this.patIllScript.getId(), startType, targetType);
 		cnx.setWeight(weight);
+		//this should not happen, since we already handle it on the client side:
 		if(patIllScript.getConns().containsValue(cnx)){
-			createErrorMessage(IntlConfiguration.getValue("cnx.duplicate"), "", FacesMessage.SEVERITY_ERROR);
+			createErrorMessage(IntlConfiguration.getValue("cnx.duplicate"), "", FacesMessage.SEVERITY_ERROR, cnx.getTargetType());
 			return; //cnx already made... 
 		}
 		
@@ -87,8 +88,12 @@ public class AddConnectionAction implements Scoreable{
 		
 	}
 
-	public void createErrorMessage(String summary, String details, Severity sev) {
-		new ErrorMessageContainer().addErrorMessage("cnxform", summary, details, sev);
+	public void createErrorMessage(String summary, String details, Severity sev, int targetType) {
+		String formId = "probform";
+		if(targetType==Relation.TYPE_DDX) formId = "cnxform";
+		else if(targetType==Relation.TYPE_TEST) formId = "testform";
+		else if(targetType == Relation.TYPE_MNG) formId = "mngform";
+		new ErrorMessageContainer().addErrorMessage(formId, summary, details, sev);
 		
 	}
 	

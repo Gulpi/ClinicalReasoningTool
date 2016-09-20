@@ -43,11 +43,11 @@
  
 <style>
 /** ELEMENT POSITIONS **/
-#fdg_box { left:15px;top:15px; }
+/*#fdg_box { left:15px;top:15px; }
 #ddx_box { left:275px;top:15px; }
 #tst_box { left:15px;top:320px; }
 #mng_box { left:275px;top:320px; }
-#sum_box { left:15px;top:625px; }
+#sum_box { left:15px;top:625px; }*/
 
 </style>
 <script language="JavaScript">
@@ -169,6 +169,7 @@ jsPlumb.ready(function () {
     $(".expbox").addClass("expboxstatus");
     jsPlumb.fire("jsPlumbDemoLoaded", instance);
     
+    initBoxHeights();
     initContainerCollapsed();
 	
 });
@@ -180,8 +181,7 @@ item_arr = new Array();
 <body style="font-family:arial;" data-demo-id="draggableConnectors" data-library="dom"><!-- test: #{crtContext.test}-->
 <div>
 ScriptId:  #{crtContext.patillscript.id}<br/>
-VPId: <input type="text" value="#{crtContext.patillscript.vpId}"></input><br/>
-System <select name="system"><option value="">Casus (uni)</option><option value="">Casus (MedU)</option></select><br/>
+VPId: #{crtContext.patillscript.vpId}
 Stage: <span id="stageSpan">#{crtContext.patillscript.stage} </span>
 <a href="javascript:chgStage(-1, '../view/exp_boxes_view.xhtml');">previous stage</a> <a href="javascript:chgStage(1, '../view/exp_boxes_view.xhtml');">next stage</a>
 

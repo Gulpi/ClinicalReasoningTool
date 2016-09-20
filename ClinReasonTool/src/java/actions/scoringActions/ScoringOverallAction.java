@@ -26,7 +26,7 @@ public class ScoringOverallAction {
 	private static final int WEIGHT_MNG = 3; //not covered by Durning
 	
 	public void scoreAction(PatientIllnessScript patIllScript, int stage){
-		if(patIllScript.getType()==IllnessScriptInterface.TYPE_EXPERT_CREATED) return;
+		if(patIllScript.isExpScript()) return;
 		LearningAnalyticsBean la_bean = new NavigationController().getCRTFacesContext().getLearningAnalytics();		
 		/*if(la_bean==null) return;
 		ScoreBean scoreBean = la_bean.getOverallScore();

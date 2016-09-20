@@ -38,8 +38,11 @@ public class CRTFacesContext extends FacesContextWrapper /*implements Serializab
 	private IllnessScriptController isc = new IllnessScriptController();
 	private PatientIllnessScript patillscript;
 	private Graph graph;
-	private UserSetting userSetting;
-	//Locale defaultLoc = new Locale("en");
+	private UserSetting userSetting;	
+	/**
+	 * This is the locale of the navigation etc. script locale (for lists) is in PatientIllnessScript
+	 */
+	private Locale locale;
 	/**
 	 * TODO: get from VP system or calculate from expert script
 	 */
@@ -67,6 +70,7 @@ public class CRTFacesContext extends FacesContextWrapper /*implements Serializab
 	private LearningAnalyticsContainer analyticsContainer;
 	
 	public CRTFacesContext(){
+		locale = LocaleController.setLocale();
 		setUser();
 		if(user!=null){
 		    FacesContextWrapper.getCurrentInstance().getExternalContext().getSessionMap().put(CRTFacesContext.CRT_FC_KEY, this);
@@ -183,7 +187,7 @@ public class CRTFacesContext extends FacesContextWrapper /*implements Serializab
 	 */
 	public void initSession(){ 
 		/*if(user==null)*/ setUser();
-		this.getAppBean().getViewHandler().calculateLocale(this);
+		//this.getAppBean().getViewHandler().calculateLocale(this);
 
 		initScriptContainer(); //this loads all scripts, needed for overview page and availability bias determination
 		
@@ -216,7 +220,7 @@ public class CRTFacesContext extends FacesContextWrapper /*implements Serializab
 		
 		if(this.patillscript!=null){
 			initGraph();
-			LocaleController.getInstance().setScriptLocale(patillscript.getLocale());
+			//LocaleController.getInstance().setScriptLocale(patillscript.getLocale());
 		}
 	}
 	
@@ -332,5 +336,16 @@ public class CRTFacesContext extends FacesContextWrapper /*implements Serializab
 	public boolean isExpEdit(){
 		if(this.patillscript!=null && this.patillscript.getType()==IllnessScriptInterface.TYPE_EXPERT_CREATED) return true;
 		return false;
+	}
+	
+	public Locale getLocale(){
+		return locale;//LocaleController.getLocale(this).getLanguage();
+	}
+	public void setLocale(Locale loc){
+		this.locale = loc;
+	}
+	
+	public String getLanguage(){
+		return locale.getLanguage();
 	}
 }

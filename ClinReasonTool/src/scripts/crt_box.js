@@ -1,4 +1,3 @@
-//var listUrl="jsonp_en.json";
 
 /**
  * javascript for displaying the illness script tabs representation
@@ -6,42 +5,6 @@
 
 /******************** general add/del*******************************/
 
-   
-/*function delCallback(prefix, id){
-	deleteEndpoints(prefix+"_"+id);
-	instance.remove($("#"+prefix+"_"+id));
-	hideDropDown("dd"+prefix+"_"+id);
-}*/
-/**
- * adds a div elem (=response) to the given box (identified by boxid). 
- * 1. get id of div from response
- * 2. add div to box
- * 3.init the draggable stuff
- * 4. add div to group
- * 5. add endpoints (anchortype as parameter)
- * @param response
- * @param boxid
- * @param anchorpos
- */
-/*function addCallback(response, boxid, anchorpos){
-	var $div = $(response);
-	id = $div.attr("id"); //1.
-	
-	$(boxid).append($div); //2.
-	var cnt = $( "#"+id).length;
-	//3.
-	 instance.draggable(jsPlumb.getSelector("#"+id));
-	 $( "#"+id).draggable({
-	        containment:"parent"
-	  });
-     $( "#"+id).draggable({
-   	  stop: function( event, ui ) {
-   		  handleRectDrop(ui);
-   	  }
-   });
-	addToGroup(id, $div); //4.
-	instance.addEndpoint(id, { anchor:anchorpos }, endpoint); //5.
-}*/
 /**
  * user changes the course of time, we trigger an ajax call to save change.
  */
@@ -60,8 +23,6 @@ function addProblem(problemId, name){
 	clearErrorMsgs();
 	var prefix = $("#fdg_prefix").val();
 	if(name!="") sendAjax(problemId, problemCallBack, "addProblem", prefix, name);
-		
-		//sendAjaxUrlHtml(problemId, problemAddCallBack, "addProblem", prefix, "probbox2.xhtml");
 }
 
 
@@ -90,8 +51,8 @@ function problemCallBack(testId, selTest){
 	$("[id='probform:hiddenProbButton']").click();		
 }
 
-function updatProbCallback(data){
-	updateItemCallback(data, "fdgs");
+function updateProbCallback(data){
+	updateItemCallback(data, "fdgs", "fdg_box");
 }
 
 
@@ -145,7 +106,7 @@ function diagnosisCallBack(){
 
 function updateDDXCallback(data){
 	checkSubmitBtn();
-	updateItemCallback(data, "ddxs");
+	updateItemCallback(data, "ddxs", "ddx_box");
 }
 
 /*function hasAFinalDiagnosis(){
@@ -190,34 +151,44 @@ function togglePeersDDX(){
 }
 
 /* 1. we update the DDX before opening the dialog*/
-function doSubmitDDXDialog(){
+/*function doSubmitDDXDialog(){
 	clearErrorMsgs();
 	$("[id='ddx_submit_form:hiddenDDXSubmitButton']").click();	//update the ddxs to submit!
-}
+}*/
+
 
 /* 2. we show the submit ddx dialog and ask for confidence */
 function doSubmitDDXDialogCallback(){
 	//we check whether there are diagnoses, if so we open a dialog, else we display a hint
 	var ddxNum = $( ".ddxs" ).length;
 	
-	if(ddxNum>0){
-		$(".tier_4").prop( "checked", true );
+	if(ddxNum>0){ //then open jdialog:
+		
 		$("#jdialog").dialog( "option", "width", ['300'] );
 		$("#jdialog").dialog( "option", "height", ['350'] );
 		$("#jdialog").dialog( "option", "title", submitDialogTitle );
 		$("#jdialog").dialog( "option", "buttons", [ ] );
-		//var s = $("#score").val();		
-		/*if($("#score").val()>=1){
-			//$(".tier_4").prop( "checked", true );
-			$(".chb_ddx").attr("disabled","disabled");
-			//$("#ddx_submit_btn").hide();
-			//$(".aftersubmit_succ").show();
-		}*/
+		//loadFile();
+		if(submitted=="true" || presubmitted=="true") $("#jdialog").load("submitteddialog.xhtml"); // $("#jdialog").load("submitteddialog.xhtml");
+		else loadFileSubmit(); //$("#jdialog").load("submitdialog.xhtml");	
+		
 		$("#jdialog" ).dialog( "open" );
+		$("#jdialog").show();
 	}
 	else{
 		alert(submitDDXOne);
 	}
+}
+
+/**
+ * successful submission -> continue case = just close dialog...
+ */
+function continueCase(){
+	$("#jdialog" ).dialog( "close" );
+}
+
+function loadFileSubmit(){
+	$("#jdialog").load("submitdialog.xhtml");
 }
 
 /* 3. user has selected ddxs and submits final ddxs */
@@ -238,42 +209,27 @@ function submitDDXConfirmed(){
 
 /* 4. we come back after the submission and have to reload ddxs once again show feedback for submitted diagnoses */
 function submitDDXConfirmedCallBack(){
-	$("[id='ddx_submit_form:hiddenDDXSubmitScoreButton']").click();	
+	$("#jdialog").load("submitteddialog.xhtml");
+	//$("[id='ddx_submit_form:hiddenDDXSubmitScoreButton']").click();	
 
 }
 
 /* 5. show feedback for submitted diagnoses */
 function doScoreDDXDialogCallback(){
+
 	$(".tier_4").prop( "checked", true );
 	$(".chb_ddx").attr("disabled","disabled");
 	
 	var val = $("#score").val();
 	
 	toggleBefAfterSubmit(true);
-	/*$(".aftersubmit").show();
-	$(".befsubmit").show();
-	
-	if($("#score").val()>=1){
-		$(".aftersubmit_succ").show();
-		$(".aftersubmit_fail").hide();
-		$(".errors").hide();
-		//$(".offertryagain").hide();
-	}
-	else{
-		$(".aftersubmit_fail").show();	
-		$(".aftersubmit_succ").hide();
-		if($("#errors").html().trim()=="") 
-			$(".errors").hide();
-	}
-	$(".ddxsubmit_score").show();*/
-	//$("[id='ddxform:hiddenDDXButton']").click(); //update ddx in background	
 }
 
 function toggleBefAfterSubmitOnLoad(){
 	toggleBefAfterSubmit(presubmitted);
 }
 function toggleBefAfterSubmit(isSubmitted){
-	if(isSubmitted==true || isSubmitted=="true"){
+/*	if(isSubmitted==true || isSubmitted=="true"){
 		$(".aftersubmit").show();
 		presubmitted = "true";
 		$(".ddx_submit_btn2").hide();
@@ -303,7 +259,7 @@ function toggleBefAfterSubmit(isSubmitted){
 		$(".befsubmit").show();
 		$(".ddxsubmit_score").hide(); //hide expert's feedback again
 		$(".submitBtn2").show();
-	}
+	}*/
 }
 
 
@@ -312,17 +268,18 @@ function toggleBefAfterSubmit(isSubmitted){
  */
 function backToCase(){
 	//$("#ddx_submit_btn").show();
-	toggleBefAfterSubmit(false);
+	//toggleBefAfterSubmit(false);
+	
 	$("#jdialog" ).dialog( "close" );	
 	sendAjax("", revertSubmissionCallback, "resetFinalDDX","");
 }
 
 function revertSubmissionCallback(){
 	$(".ddxs").remove();
+	presubmitted = "false";
 	//hiding feedback and activating the checkboxes again:
-	$(".tier_4").prop( "checked", false );
-	//$(".chb_ddx").removeAttr("disabled");
-	toggleBefAfterSubmit(false);
+	//$(".tier_4").prop( "checked", false );
+	//toggleBefAfterSubmit(false);
 	checkSubmitBtn();
 	$("[id='ddxform:hiddenDDXButton']").click();
 }
@@ -331,14 +288,34 @@ function revertSubmissionCallback(){
  * dialog remains open and user can choose again from list? -> what if correct diagnosis is not included 
  */
 function tryAgain(){
-	toggleBefAfterSubmit(false);
-	sendAjax("", revertSubmissionCallback, "resetFinalDDX","");
+	//toggleBefAfterSubmit(false);
+	sendAjax("", tryAgainCallback, "resetFinalDDX","");
+}
+
+function tryAgainCallback(){
+	$(".ddxs").remove();
+	presubmitted = "false";
+	//hiding feedback and activating the checkboxes again:
+	//$(".tier_4").prop( "checked", false );
+	//toggleBefAfterSubmit(false);
+	//checkSubmitBtn();
+	$("#jdialog").load("submitdialog.xhtml");
+	$("[id='ddxform:hiddenDDXButton']").click();
 }
 
 function showSolution(){
 	//$(".aftersubmit_succ").show();
-	$("#jdialog" ).dialog( "close" );
+	sendAjax("", showSolutionCallBack, "showSolution",  "");
+	
 	//todo turn feedback for ddx on and show complete expert solution....
+}
+
+function showSolutionCallBack(){
+	$("#jdialog" ).dialog( "close" );
+	if(!isOverallExpertOn())
+			turnOverallExpFeedbackOn('expFeedback', 'icon-user-md'); //show expert feedback with then the final diagnoses/-is
+	
+	$("[id='ddxform:hiddenDDXButton']").click();
 }
 
 
@@ -468,7 +445,7 @@ function managementCallBack(mngId, selMng){
 }
 
 function updatMngCallback(data){
-	updateItemCallback(data, "mngs");
+	updateItemCallback(data, "mngs", "mng_box");
 }
 
 function addJokerMng(){
@@ -514,7 +491,7 @@ function testCallBack(testId, selTest){
 }
 
 function updateTestCallback(data){
-	updateItemCallback(data, "tests");
+	updateItemCallback(data, "tests","tst_box");
 }
 
 function chgTest(id, type){
@@ -578,13 +555,18 @@ function turnExpBoxFeedbackOn(iconId, itemClass){
 	$("#"+iconId).addClass("fa-user-md_on");
 	$("#"+iconId).attr("title", hideExpTitle);
 	$("."+itemClass+"_score").show();
-	/*var items = $("."+itemClass);
+	if(itemClass!="ddxs") return;
+	var items = $("."+itemClass);
 	if(items!=null){
 		for (i=0; i<items.length; i++){
-			var score = $("#"+items[i].id).attr("score");
-			$("#"+items[i].id).addClass("box_"+score);
+			var suffix = $("#"+items[i].id).attr("suffix");
+			var expSuffix = $("#expstyle_"+items[i].id).attr("suffix");
+			if(suffix!=expSuffix && expSuffix>=0){
+				$("#"+items[i].id).removeClass("ddxclass_"+suffix);
+				$("#"+items[i].id).addClass("ddxclass_"+expSuffix);
+			}
 		}
-	}*/
+	}
 }
 
 function turnExpBoxFeedbackOff(iconId, itemClass){
@@ -594,13 +576,21 @@ function turnExpBoxFeedbackOff(iconId, itemClass){
 	$("#"+iconId).addClass("fa-user-md_off");
 	$("#"+iconId).attr("title", showExpTitle);
 	$("."+itemClass+"_score").hide();
-	/*var items = $("."+itemClass);
+	if(itemClass!="ddxs") return;
+	var items = $("."+itemClass);
 	if(items!=null){
 		for (i=0; i<items.length; i++){
-			var score = $("#"+items[i].id).attr("score");
-			$("#"+items[i].id).removeClass("box_"+score);
+			var suffix = $("#"+items[i].id).attr("suffix");
+			var expSuffix = $("#expstyle_"+items[i].id).attr("suffix");
+			if(suffix!=expSuffix && expSuffix>=0){
+				$("#"+items[i].id).removeClass("ddxclass_"+expSuffix);
+				$("#"+items[i].id).addClass("ddxclass_"+suffix);				
+			}
+			//var cssclass = $("#"+items[i].id).attr("class");
+			//alert(cssclass);
+			//addClass("box_"+score);
 		}
-	}*/
+	}
 }
 
 var addHeightPixSum = 0;
@@ -667,41 +657,48 @@ function togglePeerBoxFeedback(iconId, itemClass, type){
  */
 function toggleExpFeedback(iconId, itemClass){
 	if($("#"+iconId).hasClass("fa-user-md_on")){ //turn feedback off
-		$("#"+iconId).removeClass("fa-user-md_on");
-		$("#"+iconId).addClass("fa-user-md_off");	
-		$("#"+iconId).attr("title", showExpTitle);
-		$(".expbox").removeClass("expboxstatus_show");
-		$(".expbox").addClass("expboxstatus");
-		turnExpBoxFeedbackOff("expFeedbackFdg", "fdgs");
-		turnExpBoxFeedbackOff("expFeedbackDDX", "ddxs");
-		turnExpBoxFeedbackOff("expFeedbackTest", "tests");
-		turnExpBoxFeedbackOff("expFeedbackMng", "mngs");
-		$(".jsplumb-exp-connector").addClass("jsplumb-exp-connector-hide");
-		$(".jsplumb-exp-connector").removeClass("jsplumb-exp-connector-show");
+		turnOverallExpFeedbackOff(iconId, itemClass);
 		sendAjaxContext(0, doNothing, "toogleExpFeedback", "");
-
 	}
-	else{ //turn feedback on
-		$("#"+iconId).removeClass("fa-user-md_off");	
-		$("#"+iconId).addClass("fa-user-md_on");
-		$("#"+iconId).attr("title", hideExpTitle);
-		$(".expbox").addClass("expboxstatus_show");
-		$(".expbox").removeClass("expboxstatus");
-		$(".expbox").removeClass("expboxinvis");
-		turnExpBoxFeedbackOn("expFeedbackFdg", "fdgs");
-		turnExpBoxFeedbackOn("expFeedbackDDX", "ddxs");
-		turnExpBoxFeedbackOn("expFeedbackTest", "tests");
-		turnExpBoxFeedbackOn("expFeedbackMng", "mngs");
-		$(".jsplumb-exp-connector").addClass("jsplumb-exp-connector-show");
-		$(".jsplumb-exp-connector").removeClass("jsplumb-exp-connector-hide");
+	else{ 
+		turnOverallExpFeedbackOn(iconId, itemClass);
 		sendAjaxContext(1, doNothing, "toogleExpFeedback", "");
 	}
+}
+
+function turnOverallExpFeedbackOn(iconId, itemClass){
+	$("#"+iconId).removeClass("fa-user-md_off");	
+	$("#"+iconId).addClass("fa-user-md_on");
+	$("#"+iconId).attr("title", hideExpTitle);
+	$(".expbox").addClass("expboxstatus_show");
+	$(".expbox").removeClass("expboxstatus");
+	$(".expbox").removeClass("expboxinvis");
+	turnExpBoxFeedbackOn("expFeedbackFdg", "fdgs");
+	turnExpBoxFeedbackOn("expFeedbackDDX", "ddxs");
+	turnExpBoxFeedbackOn("expFeedbackTest", "tests");
+	turnExpBoxFeedbackOn("expFeedbackMng", "mngs");
+	$(".jsplumb-exp-connector").addClass("jsplumb-exp-connector-show");
+	$(".jsplumb-exp-connector").removeClass("jsplumb-exp-connector-hide");
+}
+
+function turnOverallExpFeedbackOff(iconId, itemClass){
+	$("#"+iconId).removeClass("fa-user-md_on");
+	$("#"+iconId).addClass("fa-user-md_off");	
+	$("#"+iconId).attr("title", showExpTitle);
+	$(".expbox").removeClass("expboxstatus_show");
+	$(".expbox").addClass("expboxstatus");
+	turnExpBoxFeedbackOff("expFeedbackFdg", "fdgs");
+	turnExpBoxFeedbackOff("expFeedbackDDX", "ddxs");
+	turnExpBoxFeedbackOff("expFeedbackTest", "tests");
+	turnExpBoxFeedbackOff("expFeedbackMng", "mngs");
+	$(".jsplumb-exp-connector").addClass("jsplumb-exp-connector-hide");
+	$(".jsplumb-exp-connector").removeClass("jsplumb-exp-connector-show");
 }
 
 function openErrorDialog(){
 	$("#jdialogError").dialog( "option", "width", ['200'] );
 	$("#jdialogError").dialog( "option", "height", ['200'] );
-	$("#jdialogError").dialog( "option", "title", "Potential errors" );
+	$("#jdialogError").dialog( "option", "title", errorDialogTitle);
 	$("#jdialogError").dialog( "option", "buttons", [ ] );
 	$("#jdialogError" ).dialog( "open" );
 	$("#jdialogError").show();
@@ -737,4 +734,19 @@ function hideAllDropDowns(){
 
 function clearErrorMsgs(){
 	$(".errormsg").html("");
+}
+/**
+ * opens the help dialog
+ */
+function openHelp(){
+	clearErrorMsgs();
+	$("#jdialogHelp").dialog( "option", "width", ['350'] );
+	$("#jdialogHelp").dialog( "option", "position",  {my: "center top", at: "center top", of: window}  );
+	$("#jdialogHelp").dialog( "option", "height", ['400'] );
+	$("#jdialogHelp").dialog( "option", "title", "Help");
+	$("#jdialogHelp").dialog( "option", "buttons", [ ] );
+	$("#jdialogHelp").load("help/index_"+lang+".template");
+	//$("#help" ).dialog.html(template);
+	$("#jdialogHelp" ).dialog( "open" );
+	$("#jdialogHelp").show();
 }

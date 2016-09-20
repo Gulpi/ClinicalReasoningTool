@@ -26,7 +26,7 @@ public class ScoringAddCnxAction implements ScoringAction{
 	}
 	
 	public void scoreAction(long cnxId, PatientIllnessScript patIllScript, boolean isJoker, int nn){
-		if(patIllScript.getType()==IllnessScriptInterface.TYPE_EXPERT_CREATED) return;
+		if(patIllScript.isExpScript()) return;
 		Graph g = new NavigationController().getCRTFacesContext().getGraph();
 		MultiEdge edge = g.getEdgeByCnxId(IllnessScriptInterface.TYPE_LEARNER_CREATED, cnxId);
 		ScoreContainer scoreContainer = new NavigationController().getCRTFacesContext().getScoreContainer();		

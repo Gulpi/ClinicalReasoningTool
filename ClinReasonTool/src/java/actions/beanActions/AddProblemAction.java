@@ -153,8 +153,10 @@ public class AddProblemAction implements AddAction, Scoreable{
 	public void updateGraph(Relation rel) {
 		Graph graph = new NavigationController().getCRTFacesContext().getGraph();
 		graph.addVertex(rel, IllnessScriptInterface.TYPE_LEARNER_CREATED);
-		for(int i=0; i<patIllScript.getDiagnoses().size(); i++){
-			graph.addImplicitEdge(rel.getListItemId(), patIllScript.getDiagnoses().get(i).getListItemId(), IllnessScriptInterface.TYPE_LEARNER_CREATED);
+		if( patIllScript.getDiagnoses()!=null && patIllScript.getDiagnoses().size()>0){
+			for(int i=0; i<patIllScript.getDiagnoses().size(); i++){
+				graph.addImplicitEdge(rel.getListItemId(), patIllScript.getDiagnoses().get(i).getListItemId(), IllnessScriptInterface.TYPE_LEARNER_CREATED);
+			}
 		}
 		CRTLogger.out(graph.toString(), CRTLogger.LEVEL_TEST);
 	}

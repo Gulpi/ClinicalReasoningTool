@@ -64,7 +64,7 @@ public class LogEntry extends Beans{
 	public static final int PEERFEEDBACK_ON_ACTION = 41;
 	public static final int PEERFEEDBACK_OFF_ACTION = 42;
 	public static final int ERROR_ACTION = 43; //an error (e.g. Premature Closure) has happened.
-	
+	public static final int SHOWSOL_ACTION = 44;
 	/**
 	 * action triggered by user, e.g. add a problem,... (see static definitions above)
 	 */

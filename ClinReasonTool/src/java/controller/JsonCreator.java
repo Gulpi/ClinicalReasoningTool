@@ -26,6 +26,7 @@ public class JsonCreator {
 	public static final String TYPE_PERSONS = "M";
 	public static final String TYPE_MANUALLY_ADDED = "MA";
 	public static final String TYPE_HEALTHCARE = "N";
+	public static final String TYPE_CONTEXT = "I";
 	public static final String fileNameOneListEN = "jsonp_en.json"; //TODO we need the path to the HTML folder!!!
 	public static final String fileNameOneListDE = "jsonp_de.json";
 	//A=Anatomy,B=Organisms, F=Psychiatry/Psychology, G=Phenomena and Processes, H=Disciplines/Occupations
@@ -46,7 +47,7 @@ public class JsonCreator {
 	//TODO also load item which have a corresponding (secondary code)
 	private void exportOneList(Locale loc){
 		//setIdsForSyn();
-		List<ListItem> items = new DBList().selectListItemsByTypesAndLang(loc, new String[]{TYPE_PROBLEM, TYPE_TEST,TYPE_DRUGS, TYPE_EPI, TYPE_MANUALLY_ADDED, TYPE_PERSONS, TYPE_HEALTHCARE});
+		List<ListItem> items = new DBList().selectListItemsByTypesAndLang(loc, new String[]{TYPE_PROBLEM, TYPE_TEST,TYPE_DRUGS, TYPE_EPI, TYPE_MANUALLY_ADDED, TYPE_PERSONS, TYPE_HEALTHCARE, TYPE_CONTEXT});
 		if(items==null || items.isEmpty()) return; //then something went really wrong!
 		try{
 			File f = getMeshJsonFileByLoc(loc);
@@ -90,7 +91,7 @@ public class JsonCreator {
 		//if(item.getFirstCode().startsWith("D27.")) return false;
 		if(item.getFirstCode().startsWith("D26.2")) return false;
 		//F
-		if(item.getFirstCode().startsWith("F") && !item.getFirstCode().startsWith("F01.145")) return false;
+		//if(item.getFirstCode().startsWith("F") && !item.getFirstCode().startsWith("F01.145")) return false;
 		//C
 		if(item.getFirstCode().startsWith("C22")) return false; //Animal diseases
 		if(item.getFirstCode().startsWith("C02.782.147.")) return false; 
@@ -136,6 +137,9 @@ public class JsonCreator {
 		List<Synonym> addedSyn = new ArrayList<Synonym>();
 		Iterator<Synonym> it = item.getSynonyma().iterator();
 		int counter = 0;
+		/*if(item.getName().startsWith("Sputum")){
+			System.out.println("");
+		}*/
 		while(it.hasNext()){	
 			Synonym syn = it.next();
 			if(!syn.isIgnored()){

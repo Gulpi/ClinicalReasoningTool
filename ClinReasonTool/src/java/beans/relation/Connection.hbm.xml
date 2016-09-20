@@ -17,6 +17,9 @@
 		<property name="startType" column="start_type" type="int"/>
 		<property name="targetType" column="target_type" type="int"/>
 		<property name="weight" column="weight" type="int"/>
+		<property name="stage" column="stage" type="int"/>
+		<property name="startEpIdx" column="start_ep_idx" type="int"/>
+		<property name="targetEpIdx" column="target_ep_idx" type="int"/>
 		
 		<!--  <property name="creationDate" column="creation_date" update="false" type="date"/>-->
 		

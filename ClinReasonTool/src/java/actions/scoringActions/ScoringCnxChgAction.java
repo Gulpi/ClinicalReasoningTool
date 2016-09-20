@@ -16,7 +16,7 @@ import util.CRTLogger;
  */
 public class ScoringCnxChgAction {
 	public void scoreAction(long cnxId, PatientIllnessScript patIllScript){
-		if(patIllScript.getType()==IllnessScriptInterface.TYPE_EXPERT_CREATED) return;
+		if(patIllScript.isExpScript()) return;
 		Graph g = new NavigationController().getCRTFacesContext().getGraph();
 		MultiEdge edge = g.getEdgeByCnxId(IllnessScriptInterface.TYPE_LEARNER_CREATED, cnxId);
 		//MultiVertex

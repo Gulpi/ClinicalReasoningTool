@@ -16,7 +16,7 @@ public class ScoringCourseOfTimeAction {
 		this.isChg = isChg;
 	}*/
 	public void scoreAction(PatientIllnessScript patIllScript){
-		if(patIllScript.getType()==IllnessScriptInterface.TYPE_EXPERT_CREATED) return;
+		if(patIllScript.isExpScript()) return;
 		PatientIllnessScript expScript = AppBean.getExpertPatIllScript(patIllScript.getVpId());
 		ScoreContainer scoreContainer = new NavigationController().getCRTFacesContext().getScoreContainer();		
 		ScoreBean scoreBean = scoreContainer.getScoreBeanByTypeAndItemId(ScoreBean.TYPE_COURSETIME, -1);

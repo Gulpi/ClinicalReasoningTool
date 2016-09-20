@@ -5,7 +5,7 @@
     xmlns:f="http://java.sun.com/jsf/core">
     <f:event type="preRenderView" listener="#{crtContext.ajaxResponseHandler}" />
 
- 	<div id="tst_#{test.id}"  score="#{test.score}" class="itembox tests" title=">#{test.labelOrSynLabel}" style="left:#{test.x}px; top:#{test.boxY}px;"> 
+ 	<div id="tst_#{test.id}"  score="#{test.score}" class="itembox tests" mytooltip=">#{test.labelOrSynLabel}" style="left:#{test.x}px; top:#{test.boxY}px;"> 
  		#{test.shortLabelOrSynShortLabel}
   		<span class="dropdown" onClick="javascript:showDropDown('ddtst_#{test.id}','tst_#{test.id}');"><i class="fa fa-chevron-circle-down"></i></span>
 		<span class="peer_score_test" title="#{prop['test.peer.hint']}" id="peerscore#{test.id}"> (#{test.peerPercentage})</span>

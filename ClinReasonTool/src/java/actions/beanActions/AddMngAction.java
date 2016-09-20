@@ -136,7 +136,7 @@ public class AddMngAction implements AddAction, Scoreable{
 		graph.addVertex(rel, IllnessScriptInterface.TYPE_LEARNER_CREATED);
 	
 		// add implicit edges:
-		if( patIllScript.getDiagnoses()!=null){
+		if( patIllScript.getDiagnoses()!=null && patIllScript.getDiagnoses().size()>0){
 			for(int i=0; i < patIllScript.getDiagnoses().size(); i++){
 				graph.addImplicitEdge(patIllScript.getDiagnoses().get(i).getListItemId(), rel.getListItemId(), IllnessScriptInterface.TYPE_LEARNER_CREATED);
 			}

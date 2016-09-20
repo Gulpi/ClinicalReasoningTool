@@ -47,8 +47,11 @@ public class SummaryStatementChgAction /*extends ChgAction*/{
 	 * @param text
 	 */
 	private void createSummaryStatement(String text){
-		SummaryStatement sumSt = new SummaryStatement(text);
+		SummaryStatement sumSt = new SummaryStatement(text, patIllScript.getId());
+		if(patIllScript.isExpScript()) sumSt.setStage(patIllScript.getStage());
+		else sumSt.setStage(patIllScript.getCurrentStage());
 		save(sumSt);
+		
 		patIllScript.setSummSt(sumSt);
 		patIllScript.setSummStId(sumSt.getId());
 		patIllScript.save();

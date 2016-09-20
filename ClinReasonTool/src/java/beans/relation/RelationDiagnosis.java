@@ -45,10 +45,11 @@ public class RelationDiagnosis extends Relation implements Serializable {
 	public static final int TIER_RULEDOUT = 5;
 	public static final int TIER_WORKINGDDX = 6;
 	private static final String COLOR_MNM = "#FF0000";
-	private static final String COLOR_RULEDOUT = "#cccccc";
-	private static final String COLOR_DEFAULT = "#ffffff";
-	private static final String COLOR_WORKINGDDX = "#cce6ff";
-	private static final String COLOR_FINAL = "#80bfff";
+	private static final String COLOR_RULEDOUT =  "1";//"#cccccc";
+	private static final String COLOR_DEFAULT = "2";//"#ffffff";
+	private static final String COLOR_WORKINGDDX = "3";//"#cce6ff";
+	private static final String COLOR_FINAL = "4";//"#80bfff";
+	private static final String COLOR_BGDEFAULT = "5";
 
 	/**
 	 * has this diagnosis been submitted as final the learner? If yes for certain components no more changes 
@@ -124,9 +125,10 @@ public class RelationDiagnosis extends Relation implements Serializable {
 	public void setRuledOutAtCurrStage() {
 		PatientIllnessScript patillscript = NavigationController.getInstance().getPatientIllnessScript();
 		if(patillscript!=null){
-			if(patillscript.getType()==PatientIllnessScript.TYPE_EXPERT_CREATED)
+			this.ruledOut = patillscript.getStageForAction();
+			/*if(patillscript.isExpScript())
 				this.ruledOut = patillscript.getStage();
-			else this.ruledOut = patillscript.getCurrentStage();
+			else this.ruledOut = patillscript.getCurrentStage();*/
 		}
 	}
 	
@@ -147,9 +149,9 @@ public class RelationDiagnosis extends Relation implements Serializable {
 	private void setWorkingDDXAtCurrStage(){
 		PatientIllnessScript patillscript = NavigationController.getInstance().getPatientIllnessScript();
 		if(patillscript!=null){
-			if(patillscript.getType()==PatientIllnessScript.TYPE_EXPERT_CREATED)
-				this.workingDDX = patillscript.getStage();
-			else this.workingDDX = patillscript.getCurrentStage();
+			//if(patillscript.isExpScript())
+				this.workingDDX = patillscript.getStageForAction();
+			//else this.workingDDX = patillscript.getCurrentStage();
 		}
 		
 	}
@@ -189,24 +191,25 @@ public class RelationDiagnosis extends Relation implements Serializable {
 		if(expEdit){ 
 			PatientIllnessScript learnerscript = new NavigationController().getCRTFacesContext().getPatillscript();
 			if(isRuledOutBool() && ruledOut<=learnerscript.getStage()) return COLOR_RULEDOUT;
-			return "#000000";
+			return COLOR_DEFAULT;//"#000000";
 		}
 		else{
 			if(isRuledOutBool()) return COLOR_RULEDOUT;
-			return "#000000";//COLOR_DEFAULT;
+			return COLOR_DEFAULT;//"#000000";//COLOR_DEFAULT;
 		}
 	}
+	
 	
 	/**
 	 * color of the expert boxes for the learner feedback. 
 	 * if a ddx has been ruled out by an expert it is displayed as ruled out from the stage on where it has been ruled out.  
 	 * @return
 	 */
-	public String getExpColor(){	
+	/*public String getExpColor(){	
 		PatientIllnessScript learnerscript = new NavigationController().getCRTFacesContext().getPatillscript();
 		if(isRuledOutBool() && ruledOut<=learnerscript.getCurrentStage()) return COLOR_RULEDOUT;
-		return "#000000";
-	}
+		return COLOR_DEFAULT; //"#000000";
+	}*/
 	
 	/**
 	 * Background color of boxes for learner boxes and expert edit boxes. 
@@ -214,23 +217,23 @@ public class RelationDiagnosis extends Relation implements Serializable {
 	 * the script during the scenario.
 	 * @return
 	 */
-	public String getBackgroundColor(){		
+	/*public String getBackgroundColor(){		
 		boolean expEdit = NavigationController.getInstance().isExpEdit();
 		//if the current script is created as an expert script we display the colors only from the stage on in which they have been assigned.
 		if(expEdit){ 
 			PatientIllnessScript learnerscript = new NavigationController().getCRTFacesContext().getPatillscript();
 			if(isFinalDDX() && learnerscript.getSubmittedStage()<=learnerscript.getStage()) return COLOR_FINAL;
-			if(workingDDX<=0) return COLOR_DEFAULT;
+			if(workingDDX<=0) return COLOR_BGDEFAULT;
 
 			if(workingDDX<=learnerscript.getStage()) return COLOR_WORKINGDDX;
-			return COLOR_DEFAULT;
+			return COLOR_BGDEFAULT;
 		}
 		else{
 			if(isFinalDDX()) return COLOR_FINAL;
 			if(workingDDX>0) return COLOR_WORKINGDDX;			
-			return COLOR_DEFAULT;
+			return COLOR_BGDEFAULT;
 		}
-	}
+	}*/
 
 	/**
 	 * background color of the expert boxes for the learner feedback. 
@@ -239,7 +242,7 @@ public class RelationDiagnosis extends Relation implements Serializable {
 	 *  made a final diagnosis). 
 	 * @return
 	 */
-	public String getExpBackgroundColor(){		
+	/*public String getExpBackgroundColor(){		
 		//if the current script is created as an expert script we display the colors only from the stage on in which they have been assigned.
 		PatientIllnessScript learnerscript = new NavigationController().getCRTFacesContext().getPatillscript();
 		//if(isFinalDiagnosis() && learnerscript.getSubmittedStage()<=learnerscript.getStage()) return COLOR_FINAL;
@@ -247,8 +250,36 @@ public class RelationDiagnosis extends Relation implements Serializable {
 		if(isFinalDDX() && learnerscript.getCurrentStage()>learnerscript.getMaxSubmittedStage()) return COLOR_FINAL;
 		if(workingDDX<=0) return COLOR_DEFAULT;
 		if(workingDDX<=learnerscript.getCurrentStage()) return COLOR_WORKINGDDX;
-		return COLOR_DEFAULT;
+		return COLOR_DEFAULT;			
+	}*/
+	
+	public int getExpCssClass(){		
+		//if the current script is created as an expert script we display the colors only from the stage on in which they have been assigned.
+		PatientIllnessScript learnerscript = NavigationController.getInstance().getCRTFacesContext().getPatillscript();
+		Graph g = NavigationController.getInstance().getCRTFacesContext().getGraph();
+		MultiVertex mv = g.getVertexByIdAndType(this.getListItemId(), Relation.TYPE_DDX);
+		if(mv.getExpertVertex()==null) return -1;
+		RelationDiagnosis expRel = (RelationDiagnosis) mv.getExpertVertex();
+		//if(isFinalDiagnosis() && learnerscript.getSubmittedStage()<=learnerscript.getStage()) return COLOR_FINAL;
+		
+		if(expRel.isFinalDDX() && (learnerscript.getCurrentStage()>learnerscript.getMaxSubmittedStage() || learnerscript.getSubmitted())) return TIER_FINAL;
+		if(isRuledOutBool() && ruledOut<=learnerscript.getCurrentStage()) return TIER_RULEDOUT;
+		if(workingDDX<=learnerscript.getCurrentStage()) return TIER_WORKINGDDX;
+		return -1;
+		
+	}
+	
+	public int getCssClass(){
+		boolean expEdit = NavigationController.getInstance().isExpEdit();
+		if(expEdit){
 			
+		}
+		else{
+			if(isFinalDDX()) return TIER_FINAL;
+			if(isRuledOutBool()) return TIER_RULEDOUT;
+			if(isWorkingDDXBool()) return TIER_WORKINGDDX;
+		}
+		return TIER_NONE;
 	}
 	
 	/* (non-Javadoc)
@@ -299,6 +330,7 @@ public class RelationDiagnosis extends Relation implements Serializable {
 			return IntlConfiguration.getValue("ddx.nodiff");
 		try{
 			RelationDiagnosis expRel = (RelationDiagnosis) mvertex.getExpertVertex();
+			//if(expRel==null) return IntlConfiguration.getValue("ddx.tierdescr.noexp"); //expert does not have item
 			if(isLearnerFinal) return IntlConfiguration.getValue("ddx.tierdescr."+expRel.getTier()); //String.valueOf(expRel.getTier());
 		}
 		catch(Exception e){return "";} //can happen if expert has this item not as a diagnosis but as a something else....	

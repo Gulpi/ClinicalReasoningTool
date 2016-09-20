@@ -87,7 +87,7 @@ public class DiagnosisSubmitAction /*implements Scoreable*/{
 		RelationDiagnosis rel = patIllScript.getDiagnosisById(id);
 		if(rel==null || rel.isFinalDDX()) return null;
 		int stage = patIllScript.getCurrentStage();
-		if(patIllScript.getType()==PatientIllnessScript.TYPE_EXPERT_CREATED) stage = patIllScript.getStage();
+		if(patIllScript.isExpScript()) stage = patIllScript.getStage();
 		rel.setFinalDiagnosis(stage);
 		new DBClinReason().saveAndCommit(rel);
 		return rel;
@@ -139,6 +139,20 @@ public class DiagnosisSubmitAction /*implements Scoreable*/{
 	private void notifyLogChgTier(long relId, int tier){
 		LogEntry log = new LogEntry(LogEntry.CHGDDXTIER_ACTION, patIllScript.getId(), relId, tier);
 		log.save();
+	}
+	
+	private void notifyLogShowSolution(){
+		 new LogEntry(LogEntry.SHOWSOL_ACTION, patIllScript.getId(), -1).save();
+	}
+	
+	/**
+	 * We save now the submitted stage even if the learner's answer was not correct. This will allow him to 
+	 * see the author's solution.
+	 */
+	public void showSolution(){
+		patIllScript.setSubmittedStage(patIllScript.getCurrentStage());
+		patIllScript.save();
+		notifyLogShowSolution();
 	}
 
 }

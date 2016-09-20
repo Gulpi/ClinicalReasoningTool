@@ -5,7 +5,7 @@
     xmlns:f="http://java.sun.com/jsf/core">
 
    	<li id="err_#{err.id}"> 	
-  	 	#{err.name} <i class="fa fa-info-circle" title="#{err.description}"></i>   
+  	 	<span mytooltip="#{err.description}">#{err.name} <i class="fa fa-info-circle" ></i>   </span>
   	</li>
 	
 </ui:composition>

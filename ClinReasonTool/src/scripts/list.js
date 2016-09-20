@@ -178,7 +178,7 @@ var start_de_arr=["kei", "kein", "keine"];
 var start_en_arr=["no"];
 function checkStartUserInput(user_input){
 	var my_arr = start_en_arr;
-	if(lang=="de") my_arr = start_de_arr;
+	if(scriptlang=="de") my_arr = start_de_arr;
 	
 	for(var i=0; i<my_arr.length; i++){
 	if(user_input.toLowerCase().startsWith(my_arr[i]))

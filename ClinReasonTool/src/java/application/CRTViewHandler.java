@@ -22,7 +22,7 @@ public class CRTViewHandler extends ViewHandlerWrapper{
 	/* (non-Javadoc)
 	 * @see javax.faces.application.ViewHandler#calculateLocale(javax.faces.context.FacesContext)
 	 */
-	public Locale calculateLocale(FacesContext fc){
+	/*public Locale calculateLocale(FacesContext fc){
 		Locale loc = null; 
 		if(FacesContext.getCurrentInstance().getViewRoot()!=null) 
 			loc = FacesContext.getCurrentInstance().getViewRoot().getLocale();
@@ -36,5 +36,5 @@ public class CRTViewHandler extends ViewHandlerWrapper{
 		}
 		
 		return loc;
-	}
+	}*/
 }

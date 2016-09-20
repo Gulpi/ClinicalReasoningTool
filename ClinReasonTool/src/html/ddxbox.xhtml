@@ -4,9 +4,9 @@
     xmlns:ui="http://java.sun.com/jsf/facelets"
     xmlns:f="http://java.sun.com/jsf/core">
  
- <!-- border-color:#{ddx.color}; -->
-   	<div id="ddx_#{ddx.id}"  score="#{ddx.score}" title="#{ddx.labelOrSynLabel}" class="itembox ddxs" style="background-color:#{ddx.backgroundColor};color:#{ddx.color};left:#{ddx.x}px; top:#{ddx.boxY}px;">
-  	 	
+ <!-- border-color:#{ddx.color}; --> <!-- background-color:#{ddx.backgroundColor};color:#{ddx.color}; -->
+   	<div id="ddx_#{ddx.id}"  score="#{ddx.score}" suffix="#{ddx.cssClass}" mytooltip="#{ddx.labelOrSynLabel}" class="itembox ddxs ddxclass_#{ddx.cssClass}" style="left:#{ddx.x}px; top:#{ddx.boxY}px;">
+  	 	<span id="expstyle_ddx_#{ddx.id}" style="display:none;" suffix="#{ddx.expCssClass}" ></span>
   	 	<!-- <i id="tiericon_#{ddx.id}" title="#{prop['ddx.finalddx']}" class="fa fa-check-circle#{ddx.tier}"></i>-->
   	 	<i id="mnmicon_#{ddx.id}" title="#{prop['ddx.mnm.hint2']}" class="fa fa-exclamation-circle#{ddx.mnm}"></i>
   	 	#{ddx.shortLabelOrSynShortLabel}

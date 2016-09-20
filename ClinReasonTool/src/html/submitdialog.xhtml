@@ -3,25 +3,41 @@
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:f="http://java.sun.com/jsf/core">
+      <script language="JavaScript">
+     
+      $(function() {   
+    	  presubmitted = "false";
+    	  //init confidecne slider:
+	      $( "#confidence_slider" ).slider({
+	          	orientation: "horizontal",
+	       		min: 0,
+	       		max: 100,
+	       		step: 1,
+	       		change: submitSliderChange
+	       });
+	       $( "#confidence_slider" ).slider( "value", #{crtContext.patillscript.confidence} );
+      });
+      </script>
 <div class="ddxsubmitconf">
 	<span class="befsubmit">#{prop['submit.intro']}</span>
-	<span class="aftersubmit">#{prop['submit.intro.after']}:</span><br/>
+	<!--  <span class="aftersubmit">#{prop['submit.intro.after']}:</span><br/>-->
 	<h:form id="ddx_submit_form">
 		<h:panelGroup >
 			<ui:repeat value="#{crtContext.patillscript.diagnoses}" var="ddx" varStatus="status">
 				<input type="checkbox" class="chb_ddx tier_#{ddx.tier}" value="#{ddx.id}" /> #{ddx.labelOrSynLabel}
-				<span class="ddxsubmit_score" id="score_#{ddx.id}"><i class="#{ddx.finalDDXScore}"></i>#{ddx.exp}</span>
+				<span class="ddxsubmit_score" id="score_#{ddx.id}"><!-- <i class="#{ddx.finalDDXScore}"></i>-->
+					<i class="fa fa-user-md " mytooltip="#{ddx.exp}"></i></span>
 	 			<!-- <span class="peer_score" title="Percentage of peers who have added this problem as well" style="white-space: nowrap" id="peerscore#{prob.id}"> (#{prob.peerPercentage})</span>-->
 				
 				<br/>
 			</ui:repeat>
 		</h:panelGroup>
 		<!-- click before opening dialog to reload ddxs (make sure we have all of them) -->
-		<h:commandButton id="hiddenDDXSubmitButton" value="RenderSomething" style="visibility:hidden">
+		<h:commandButton id="hiddenDDXSubmitButton" value="RenderSomething" style="display:none;">
 		    <f:ajax render="@form" onevent="doSubmitDDXDialogCallback"></f:ajax>
 		 </h:commandButton>
 		 <!-- click after scoring the ddxs to load expert's feedback -->
-		 <h:commandButton id="hiddenDDXSubmitScoreButton" value="RenderSomething" style="visibility:hidden">
+		 <h:commandButton id="hiddenDDXSubmitScoreButton" value="RenderSomething" style="display:none;">
 		    <f:ajax render="@form" onevent="doScoreDDXDialogCallback"></f:ajax>
 		 </h:commandButton>
 		 <!-- this needs to be here in order to be updated: -->
@@ -34,7 +50,7 @@
 			<a href="javascript:submitDDXConfirmed();" style="color:#ffffff" title="#{prop['ddx.submit']}">#{prop['ddx.submitFinal']}</a>
 		</span>
 	</span>
-	<span class="aftersubmit"><!--readonly slider -->
+	<!--  <span class="aftersubmit">
 		#{prop['submit.slider.after']} #{crtContext.patillscript.confidenceRange}.<br/>
 	</span>
 	
@@ -48,17 +64,17 @@
 				</ul>
 			</span>
 			#{prop['ddx.errors.donext']}<ul class="fa-ul">
-				<li class="aftersubmit_cont_#{crtContext.patillscript.offerContinueCase}"><i class="fa-li fa fa-arrow-rightb"></i> <a class="aftersubmit_cont_#{crtContext.patillscript.offerContinueCase}" href="javascript:backToCase();">#{prop['submit.cont']}</a></li><!--  (not max stage OR correct) -->
-				<li class="aftersubmit_cont_#{crtContext.patillscript.offerTryAgain}"><i class="fa-li fa fa-arrow-rightb"></i> <a class="aftersubmit_cont_#{crtContext.patillscript.offerTryAgain}" href="javascript:tryAgain();">#{prop['submit.try']}</a></li><!-- (max stage) -->
-				<li class="aftersubmit_cont_#{crtContext.patillscript.offerSolution}"><i class="fa-li fa fa-arrow-rightb"></i> <a class="aftersubmit_cont_#{crtContext.patillscript.offerSolution}" href="javascript:showSolution();">#{prop['submit.sol']}</a></li> <!--  (max stage only) -->
-				<li class="aftersubmit_cont_#{crtContext.patillscript.offerSolution}"><i class="fa-li fa fa-arrow-rightb"></i> <a class="aftersubmit_cont_#{crtContext.patillscript.offerSolution}" href="javascript:giveHint();">#{prop['submit.hint']}</a></li> <!--  (max stage only) -->
+				<li class="aftersubmit_cont_#{crtContext.patillscript.offerContinueCase}"><i class="fa-li fa fa-arrow-rightb"></i> <a class="aftersubmit_cont_#{crtContext.patillscript.offerContinueCase}" href="javascript:backToCase();">#{prop['submit.cont']}</a></li>
+				<li class="aftersubmit_cont_#{crtContext.patillscript.offerTryAgain}"><i class="fa-li fa fa-arrow-rightb"></i> <a class="aftersubmit_cont_#{crtContext.patillscript.offerTryAgain}" href="javascript:tryAgain();">#{prop['submit.try']}</a></li>
+				<li class="aftersubmit_cont_#{crtContext.patillscript.offerSolution}"><i class="fa-li fa fa-arrow-rightb"></i> <a class="aftersubmit_cont_#{crtContext.patillscript.offerSolution}" href="javascript:showSolution();">#{prop['submit.sol']}</a></li> 
+				<li class="aftersubmit_cont_#{crtContext.patillscript.offerSolution}"><i class="fa-li fa fa-arrow-rightb"></i> <a class="aftersubmit_cont_#{crtContext.patillscript.offerSolution}" href="javascript:giveHint();">#{prop['submit.hint']}</a></li>
 			</ul>
 			</span>
 			
 			<span class="aftersubmit_succ">
 				<b>#{prop['submit.corr']}</b><br/>
 			</span>
-	</span>
+	</span>-->
 	
 </div>
 

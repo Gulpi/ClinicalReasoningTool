@@ -1,0 +1,79 @@
+ <ui:composition 
+    xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core">
+      
+      <script language="JavaScript">
+  	
+    $(function() {    
+    	presubmitted = "true";
+    	$(".tier_4").prop( "checked", true );
+		if($("#score").val()>=1){
+			$(".aftersubmit_succ").show();
+			$(".aftersubmit_fail").hide();
+			$(".errors").hide();
+			//submitted = "true";
+			//postEnforceFinalDDXSubmission(submitted, myStage, maxSubmittedStage);
+		}
+		else{
+			$(".aftersubmit_fail").show();	
+			$(".aftersubmit_succ").hide();
+			if($("#errors").html().trim()=="") 
+				$(".errors").hide();
+		}
+		if($("#score").val()>=1){
+			submitted = "true";
+		}
+    });
+      </script>
+<div class="ddxsubmitconf">
+	#{prop['submit.intro.after']}:<br/>
+	<h:form id="ddx_submit_form">
+		<h:panelGroup >
+			<ui:repeat value="#{crtContext.patillscript.diagnoses}" var="ddx" varStatus="status">
+				<input type="checkbox" readonly="readonly" disabled="disabled" class="chb_ddx tier_#{ddx.tier}" value="#{ddx.id}" /> #{ddx.labelOrSynLabel}				
+					<i class="fa fa-user-md " mytooltip="#{ddx.exp}"></i>
+	 			<!-- <span class="peer_score" title="Percentage of peers who have added this problem as well" style="white-space: nowrap" id="peerscore#{prob.id}"> (#{prob.peerPercentage})</span>-->
+				
+				<br/>
+			</ui:repeat>
+		</h:panelGroup>
+		<!-- click before opening dialog to reload ddxs (make sure we have all of them) -->
+		<h:commandButton id="hiddenDDXSubmitButton" value="RenderSomething" style="display:none;">
+		    <f:ajax render="@form" onevent="doSubmitDDXDialogCallback"></f:ajax>
+		 </h:commandButton>
+		 <!-- click after scoring the ddxs to load expert's feedback -->
+		 <h:commandButton id="hiddenDDXSubmitScoreButton" value="RenderSomething" style="display:none;">
+		    <f:ajax render="@form" onevent="doScoreDDXDialogCallback"></f:ajax>
+		 </h:commandButton>
+		 <!-- this needs to be here in order to be updated: -->
+		<input type="text" id="score" style="visibility:hidden" value="#{crtContext.patillscript.overallFinalDDXScore}" />
+	</h:form>
+	
+		#{prop['submit.slider.after']} #{crtContext.patillscript.confidenceRange}.<br/>
+	
+		<span class="aftersubmit_fail">
+			<span class="errors">#{prop['ddx.errors.title']}:
+				<ul id="errors">
+					<ui:repeat value="#{crtContext.patillscript.errorsCurrStage}" var="err" varStatus="status">
+						<ui:include src="errorline.xhtml" />
+			 		</ui:repeat>				
+				</ul>
+			</span>
+			#{prop['ddx.errors.donext']}<ul class="fa-ul">
+				<li class="aftersubmit_cont_#{crtContext.patillscript.offerContinueCase}"><i class="fa-li fa fa-arrow-rightb"></i> <a class="aftersubmit_cont_#{crtContext.patillscript.offerContinueCase}" href="javascript:backToCase();">#{prop['submit.cont']}</a></li><!--  (not max stage OR correct) -->
+				<li class="aftersubmit_cont_#{crtContext.patillscript.offerTryAgain}"><i class="fa-li fa fa-arrow-rightb"></i> <a class="aftersubmit_cont_#{crtContext.patillscript.offerTryAgain}" href="javascript:tryAgain();">#{prop['submit.try']}</a></li><!-- (max stage) -->
+				<li class="aftersubmit_cont_#{crtContext.patillscript.offerSolution}"><i class="fa-li fa fa-arrow-rightb"></i> <a class="aftersubmit_cont_#{crtContext.patillscript.offerSolution}" href="javascript:showSolution();">#{prop['submit.sol']}</a></li> <!--  (max stage only) -->
+				<li class="aftersubmit_cont_#{crtContext.patillscript.offerSolution}"><i class="fa-li fa fa-arrow-rightb"></i> <a class="aftersubmit_cont_#{crtContext.patillscript.offerSolution}" href="javascript:giveHint();">#{prop['submit.hint']}</a></li> <!--  (max stage only) -->
+			</ul>
+			</span>
+			
+			<span class="aftersubmit_succ">
+				<b>#{prop['submit.corr']}</b><br/>
+				<a href="javascript:continueCase();"><i class="fa-li fa fa-arrow-rightb"></i> #{prop['submit.cont']}</a>
+			</span>
+	
+</div>
+
+</ui:composition>

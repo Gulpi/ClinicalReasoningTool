@@ -35,7 +35,7 @@ public class ScoringAddAction implements ScoringAction{
 	 * @param rel
 	 */
 	public void scoreAction(long vertexId, PatientIllnessScript patIllScript, boolean isJoker, int type){
-		if(patIllScript.getType()==IllnessScriptInterface.TYPE_EXPERT_CREATED) return;
+		if(patIllScript.isExpScript()) return;
 		Graph g = new NavigationController().getCRTFacesContext().getGraph();
 		MultiVertex mvertex = g.getVertexByIdAndType(vertexId, type);
 		ScoreContainer scoreContainer = new NavigationController().getCRTFacesContext().getScoreContainer();

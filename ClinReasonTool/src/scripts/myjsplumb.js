@@ -13,6 +13,10 @@ var mngDefY = 210;//420;
 var sumDefX = 0;
 var sumDefY = 420;
 
+var ep_right_prefix = "1_"; //e.g. 1_fdg_12345
+var ep_left_prefix = "2_";	
+var ep_top_prefix = "3_";
+var ep_bottom_prefix = "4_";
 
 //var groups = new Array("fdg_group", "ddx_group","tst_group", "mng_group", "sum_group", "pat_group");
 var groups = new Array("fdg_group", "ddx_group","tst_group", "mng_group", "sum_group");
@@ -41,22 +45,26 @@ function initGroups(){
 		var itemId = item_arr[i];
 		var item = $("#"+itemId)
 		addToGroup(itemId, item);
-		if(itemId.startsWith("fdg") || itemId.startsWith("tst")){
+		createEndpointsForItems(itemId, endpoint);
+		/*if(itemId.startsWith("fdg") || itemId.startsWith("tst")){
 			instance.addEndpoint(itemId, { anchor:"RightMiddle" }, endpoint);
 		}
-		else instance.addEndpoint(itemId, { anchor:"LeftMiddle" }, endpoint);
-		//var ep = instance.getEndpoints(itemId);
-		//ep.addClass("ddxs");
-		//alert(ep);
+		else if(itemId.startsWith("ddx")){
+			instance.addEndpoint(itemId, { anchor:"LeftMiddle" }, endpoint);
+			instance.addEndpoint(itemId, { anchor:"RightMiddle" }, endpoint);
+		}
+		else instance.addEndpoint(itemId, { anchor:"LeftMiddle" }, endpoint);*/
+
 	}
 	for(var i=0; i<exp_arr.length;i++){
 		var itemId = exp_arr[i];
 		var item = $("#"+itemId)
 		addToGroup(itemId, item);
-		if(itemId.startsWith("fdg") || itemId.startsWith("tst")){
+		//createEndpointsForItems(itemId);
+		/*if(itemId.startsWith("fdg") || itemId.startsWith("tst")){
 			instance.addEndpoint(itemId, { anchor:"RightMiddle" }, endpoint);
 		}
-		else instance.addEndpoint(itemId, { anchor:"LeftMiddle" }, endpoint);
+		else instance.addEndpoint(itemId, { anchor:"LeftMiddle" }, endpoint);*/
 		//instance.addEndpoint(itemId, { anchor:dynamicAnchors }, endpoint);
 		//var ep = instance.getEndpoints(itemId);
 		//ep.addClass("ddxs");
@@ -67,10 +75,28 @@ function initGroups(){
 	//var ep2 = jsPlumb.getEndpoints();
 }
 
+function createEndpointsForItems(itemId, endpointtmp){
+	if(itemId.startsWith("fdg") || itemId.startsWith("tst")){
+		//endpoint.id="hallo_"+itemId;
+		var ep = instance.addEndpoint(itemId, { anchor:"RightMiddle" }, endpointtmp);
+		ep.id = ep_right_prefix + itemId;
+	}
+	else if(itemId.startsWith("ddx")){
+		var ep = instance.addEndpoint(itemId, { anchor:"LeftMiddle" }, endpointtmp);
+		ep.id = ep_left_prefix + itemId;
+		var ep2 = instance.addEndpoint(itemId, { anchor:"RightMiddle" }, endpointtmp);
+		ep2.id = ep_right_prefix + itemId;
+	}
+	else{
+		var ep = instance.addEndpoint(itemId, { anchor:"LeftMiddle" }, endpointtmp);
+		ep.id = ep_left_prefix + itemId;
+	}
+}
+
 /*
  * called after an item has been added (and after clicking the hidden button)
  */
-function updateItemCallback(data, items){ 
+function updateItemCallback(data, items, boxId){ 
 	 var status = data.status; // Can be "begin", "complete" or "success".
 	 //var boxes = new Array(fdg_box, ddx_box, tst_box, mng_box, sum_box/*, pat_box*/ );
 
@@ -105,11 +131,13 @@ function updateItemCallback(data, items){
     				addToGroup(id, item); //4.
     				var pos = $(item).position();
     				var ep = instance.getEndpoints(id);
+    				createEndpointsForItems(id, endpoint);
+    				initBoxHeight(boxId, items);
     				///instance.addEndpoint(id, { anchor:"RightMiddle" }, endpoint); //5.
-					if(id.startsWith("fdg") || id.startsWith("tst")){ //5.
+					/*if(id.startsWith("fdg") || id.startsWith("tst")){ //5.
 						instance.addEndpoint(id, { anchor:"RightMiddle" }, endpoint);
 					}
-					else instance.addEndpoint(id, { anchor:"LeftMiddle" }, endpoint);
+					else instance.addEndpoint(id, { anchor:"LeftMiddle" }, endpoint);*/
         		 }	        			 
         	}
             break;
@@ -165,6 +193,7 @@ function toggleContainerCollapse(elem){
 
 /*
  * On load we draw the connections between the items.
+ * TODO create a javascript object 
  */
 function initConnections(){	
 	var conns = '';
@@ -173,7 +202,7 @@ function initConnections(){
 	
 	if(conns!=''){
 		for(j=0; j<conns.length;j++){
-			createConnection(conns[j].id, conns[j].sourceid, conns[j].targetid, conns[j].l, conns[j].e,  conns[j].weight_e,  conns[j].weight_l);
+			createConnection(conns[j].id, conns[j].sourceid, conns[j].targetid, conns[j].l, conns[j].e,  conns[j].weight_e,  conns[j].weight_l, conns[j].start_ep, conns[j].target_ep);
 		}
 	}
 }
@@ -210,8 +239,12 @@ function initContainerCollapsed(){
 	initOneContainerCollapsed("mng", "mng_box");
 	initOneContainerCollapsed("sum", "sum_box");
 }
-
-function initOneContainerCollapsed(type, box){ //type="fdg"
+/**
+ * 
+ * @param type e.g. "fdg"
+ * @param box e.g. "fdg_box"
+ */
+function initOneContainerCollapsed(type, box){ 
 	var isCollapsed = getContainerCollapsed(type); 
 	if(!isCollapsed || isCollapsed=="false") return; //nothing to do...
 	$("#"+box).addClass("collapsed");
@@ -227,8 +260,20 @@ function deleteEndpoints(id){
 	}
 }
 
+//init box heights on loading
+function initBoxHeights(){
+	initBoxHeight("fdg_box", "fdgs");
+	initBoxHeight("ddx_box", "ddxs");
+	initBoxHeight("tst_box", "tests");
+	initBoxHeight("mng_box", "mngs");
+}
+
+/**
+ * automatically enlarge a box, depending on the number of items in it.
+ * @param boxId
+ * @param itemCls
+ */
 function initBoxHeight(boxId, itemCls){
-	alert($("#"+boxId).height());
 	var itemArr = $("."+itemCls);
 	if(itemArr.length==0) return;
 	var maxY = 0;
@@ -239,8 +284,6 @@ function initBoxHeight(boxId, itemCls){
 	if(maxY>400) maxY=400;
 	if(maxY>=200)
 		$("#"+boxId).height(maxY);
-	
-	alert(maxY);
 }
 
 

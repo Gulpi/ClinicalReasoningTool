@@ -21,7 +21,7 @@ public class Connection extends Beans implements Serializable{
 	public static final int WEIGHT_HIGHLY_RELATED = MultiEdge.WEIGHT_HIGHLY_RELATED;
 	public static final int WEIGHT_SPEAKS_AGAINST = MultiEdge.WEIGHT_SPEAKS_AGAINST;
 	public static final int WEIGHT_HIERARCHY = MultiEdge.WEIGHT_EXPLICIT_HIERARCHY;
-
+	
 
 	private static final long serialVersionUID = 1L;
 	/**
@@ -43,13 +43,29 @@ public class Connection extends Beans implements Serializable{
 	private int startType; //see definitions in ConceptMapController
 	private int targetType; //see definitions in ConceptMapController
 	private int weight; 
+	/**
+	 * currently only used for learning analytics purposes for learner scripts, but might be used later on for 
+	 * other purposes (e.g. display connection not automatically if source and target are visible, but only after the 
+	 * given stage)...
+	 */
+	private int stage = -1;
+	/**
+	 * if we have multiple endpoints for item boxes we have to store the idx of the start point used for this connection
+	 */
+	private int startEpIdx = 0;
+	/**
+	 * if we have multiple endpoints for item boxes we have to store the idx of the target point used for this connection
+	 */
+	private int targetEpIdx = 0;
+	
 	public Connection(){}
-	public Connection(long startId, long targetId, long illScriptId, int startType, int targetType){
+	public Connection(long startId, long targetId, long illScriptId, int startType, int targetType, int stage){
 		this.startId = startId;
 		this.targetId = targetId;
 		this.illScriptId = illScriptId;
 		this.startType = startType;
 		this.targetType = targetType;
+		this.stage = stage;
 	}
 	
 	public long getStartId() {return startId;}
@@ -67,8 +83,17 @@ public class Connection extends Beans implements Serializable{
 	public int getTargetType() {return targetType;}
 	public void setTargetType(int targetType) {this.targetType = targetType;}	
 	public int getWeight() {return weight;}
-	public void setWeight(int weight) {this.weight = weight;}
+	public void setWeight(int weight) {this.weight = weight;}	
+	public int getStage() {return stage;}
+	public void setStage(int stage) {this.stage = stage;}	
+	public int getStartEpIdx() {return startEpIdx;}
+	public void setStartEpIdx(int startEpIdx) {this.startEpIdx = startEpIdx;}
+	public int getTargetEpIdx() {return targetEpIdx;}
+	public void setTargetEpIdx(int targetEpIdx) {this.targetEpIdx = targetEpIdx;}
 	
+	/* (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
 	public boolean equals(Object o){
 		if(o!=null){
 			if(o instanceof Connection && ((Connection)o).getId()==this.id) return true;

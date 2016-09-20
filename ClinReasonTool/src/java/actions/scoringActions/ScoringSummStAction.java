@@ -26,7 +26,7 @@ public class ScoringSummStAction {
 	 * @param patIllScript
 	 */
 	public void scoreAction(PatientIllnessScript patIllScript, int stage){
-		if(patIllScript.getType()==IllnessScriptInterface.TYPE_EXPERT_CREATED) return;
+		if(patIllScript.isExpScript()) return;
 		PatientIllnessScript expScript = AppBean.getExpertPatIllScript(patIllScript.getVpId());
 		ScoreContainer scoreContainer = new NavigationController().getCRTFacesContext().getScoreContainer();		
 		ScoreBean scoreBean = scoreContainer.getListScoreBeanByStage(ScoreBean.TYPE_SUMMST, stage);

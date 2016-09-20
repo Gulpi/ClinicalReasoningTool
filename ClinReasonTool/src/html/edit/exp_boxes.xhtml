@@ -43,11 +43,11 @@
  
 <style>
 /** ELEMENT POSITIONS **/
-#fdg_box { left:15px;top:15px; }
+/*#fdg_box { left:15px;top:15px; }
 #ddx_box { left:245px;top:15px; }
 #tst_box { left:15px;top:290px; }
 #mng_box { left:245px;top:290px; }
-#sum_box { left:15px;top:565px; }
+#sum_box { left:15px;top:565px; }*/
 
 </style>
 <script language="JavaScript">
@@ -61,9 +61,9 @@ var chgCnxDialogTitle = "#{prop['cnx.dialog.title']}";
 var msg2="Please connect the hypotheses with the findings";
 var scriptId = "#{crtContext.patillscript.id}";
 var listUrl="../jsonp_#{crtContext.patillscript.locale}.json";
-var lang = "#{crtContext.patillscript.locale}";
-if(lang=="de") listUrl = "../jsonp_de.json";
-
+var scriptlang = "#{crtContext.patillscript.locale}";
+if(scriptlang=="de") listUrl = "../jsonp_de.json";
+var lang="#{crtContext.locale}";
 var currentStage = #{crtContext.patillscript.stage};
 var currentStageScript = "#{crtContext.patillscript.currentStageWithUpdate}";
 var active;
@@ -72,7 +72,7 @@ var item_arr = new Array();
 var exp_arr = new Array();
 
 $(function() {
-	if(lang=="de") listUrl = "../jsonp_de.json";
+	if(scriptlang=="de") listUrl = "../jsonp_de.json";
 	$(".listdialog").hide();
 	//$("#jdialogError").hide();
 	$("#connContext").hide();
@@ -164,11 +164,13 @@ jsPlumb.ready(function () {
     //registers a connection that is made: this code needs to be AFTER the init has happened, otherwise each init 
     //event triggers this. 
     instance.bind("connection", function (info, originalEvent){
-    	addConnection(info);
+    	if (!isDuplicateCnx(info, "#{prop['cnx.duplicate']}"))
+    		addConnection(info);
     });
     $(".expbox").addClass("expboxstatus");
     jsPlumb.fire("jsPlumbDemoLoaded", instance);
     
+    initBoxHeights();
     initContainerCollapsed();
 	
 });
@@ -218,14 +220,6 @@ Stage: <span id="stageSpan">#{crtContext.patillscript.stage} </span>
 						</h:form>
 						<span class="errormsg" id="msg_probform"></span>
 		  </div>
-		 <div id="sum_box" class="container sum_container" group="sum_group">	
-		 	<div class="title">#{prop['summst']}
-		 	</div>
-		 	 <div class="node-collapse"></div>
-		 	 <textarea style="display:none;" id="summStTextHidden" cols="65" rows="3">#{crtContext.patillscript.summSt.text}</textarea>
-				<textarea class="f_textarea boxchild" name="summSt" id="summStText" cols="65" rows="3">#{crtContext.patillscript.summStStage.text}</textarea><br/>
-			 	<span class="errormsg" id="msg_sumstform"></span>
-		</div>
 		  <!--  diagnoses -->
 		  <div id="ddx_box" class="container expcontainer" group="ddx_group">	
 		  		<div class="title">#{prop['ddx']}
@@ -242,7 +236,7 @@ Stage: <span id="stageSpan">#{crtContext.patillscript.stage} </span>
 	    						<f:ajax render="@form" onevent="updateDDXCallback"></f:ajax>
 							</h:commandButton></h:form>
 					<span class="errormsg" id="msg_ddxform"></span>							
-		  </div>
+		  </div><br/>
 		  <!-- tests -->
 		  <div id="tst_box" class="container expcontainer" group="tst_group">
 		  		<div class="title">#{prop['tests']}
@@ -284,6 +278,14 @@ Stage: <span id="stageSpan">#{crtContext.patillscript.stage} </span>
 				<span class="errormsg" id="msg_mngform"></span>
 				
 	  		</div>
+	  		<div id="sum_box" class="container sum_container" group="sum_group">	
+		 	<div class="title">#{prop['summst']}
+		 	</div>
+		 	 <div class="node-collapse"></div>
+		 	 <textarea style="display:none;" id="summStTextHidden" cols="65" rows="3">#{crtContext.patillscript.summSt.text}</textarea>
+				<textarea class="f_textarea boxchild" name="summSt" id="summStText" cols="65" rows="3">#{crtContext.patillscript.summStStage.text}</textarea><br/>
+			 	<span class="errormsg" id="msg_sumstform"></span>
+		</div>
 	</div>
 </div>
 <div id="jsonConns" style="display:none;">#{crtContext.graph.jsonConns}</div> 

@@ -46,10 +46,13 @@ public class AddConnectionAction implements Scoreable{
 		le.save();	
 	}
 
+	public void add(String sourceIdStr, String targetIdStr) {
+		add(sourceIdStr, targetIdStr, null, null);
+	}
 	/* (non-Javadoc)
 	 * @see beanActions.AddAction#add(java.lang.String, java.lang.String)
 	 */
-	public void add(String sourceIdStr, String targetIdStr) {
+	public void add(String sourceIdStr, String targetIdStr, String startEpIdxStr, String targetEpIdxStr) {
 		String startType = sourceIdStr.substring(0, sourceIdStr.indexOf("_")+1);
 		String targetType = targetIdStr.substring(0, targetIdStr.indexOf("_")+1);
 		//ConceptMapController cmc = new ConceptMapController();
@@ -57,20 +60,29 @@ public class AddConnectionAction implements Scoreable{
 		targetIdStr = targetIdStr.substring(targetIdStr.indexOf("_")+1);
 		long sourceId = Long.valueOf(sourceIdStr);
 		long targetId = Long.valueOf(targetIdStr);
+		int startEpIdx = 0; //Integer.parseInt(startEpIdxStr);
+		int targetEpIdx = 0; //Integer.parseInt(targetEpIdxStr);
+		try{
+			startEpIdx = Integer.parseInt(startEpIdxStr);
+			targetEpIdx = Integer.parseInt(targetEpIdxStr);
+		}
+		catch(Exception e){}
 		
-		addConnection(sourceId, targetId, GraphController.getTypeByPrefix(startType), GraphController.getTypeByPrefix(targetType), MultiEdge.WEIGHT_EXPLICIT);
+		addConnection(sourceId, targetId, GraphController.getTypeByPrefix(startType), GraphController.getTypeByPrefix(targetType), MultiEdge.WEIGHT_EXPLICIT, startEpIdx, targetEpIdx);
 	}
 	
-	protected void addConnection(long sourceId, long targetId, int startType, int targetType, int weight){
+	protected void addConnection(long sourceId, long targetId, int startType, int targetType, int weight, int startEpIdx, int targetEpIdx){
 		if(patIllScript.getConns()==null) patIllScript.setConns(new TreeMap<Long, Connection>());
-		Connection cnx = new Connection(sourceId, targetId, this.patIllScript.getId(), startType, targetType);
+		
+		Connection cnx = new Connection(sourceId, targetId, this.patIllScript.getId(), startType, targetType, patIllScript.getStageForAction());
 		cnx.setWeight(weight);
 		//this should not happen, since we already handle it on the client side:
 		if(patIllScript.getConns().containsValue(cnx)){
 			createErrorMessage(IntlConfiguration.getValue("cnx.duplicate"), "", FacesMessage.SEVERITY_ERROR, cnx.getTargetType());
 			return; //cnx already made... 
 		}
-		
+		cnx.setStartEpIdx(startEpIdx);
+		cnx.setTargetEpIdx(targetEpIdx);
 		save(cnx); //first save to get an id...
 		patIllScript.getConns().put(new Long(cnx.getId()), cnx);
 		updateGraph(cnx);

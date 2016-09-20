@@ -16,18 +16,28 @@ public class SummaryStatement extends Beans implements Serializable{
 
 	private static final long serialVersionUID = 1L;
 	private String text; 
-	private long id = -1; //shall we link to the current SummaryStatementAnswerView?
+	private long id = -1; 
 	private Timestamp creationDate;
 	private int stage = -1;
+	/**
+	 * not yet needed, but we stpre it already for changing later on to multiple statements/script...
+	 */
+	private long patillscriptId = -1;
+	
 	public SummaryStatement(){}
 	public SummaryStatement(String text){
 		this.text = text;
 	}
+	public SummaryStatement(String text, long patIllscriptId){
+		this.text = text;
+		this.patillscriptId = patIllscriptId;
+	}
 	public String getText() {return text;}
 	public void setText(String text) {this.text = text;}
 	public long getId() {return id;}
-	public void setId(long id) {this.id = id;}	
-	
+	public void setId(long id) {this.id = id;}		
+	public long getPatillscriptId() {return patillscriptId;}
+	public void setPatillscriptId(long patillscriptId) {this.patillscriptId = patillscriptId;}
 	public int getStage() {return stage;}
 	public void setStage(int stage) {this.stage = stage;}
 	

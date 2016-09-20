@@ -99,7 +99,7 @@ public class ListItem implements Serializable{
 	 */
 	public int getHierarchyDiff(ListItem li){
 		int codeDiff = getHierarchyDiff(li.getFirstCode());
-		if(li.getOtherCodes()==null || li.getOtherCodes().isEmpty()) return codeDiff;
+		if(codeDiff > -1 || (li.getOtherCodes()==null || li.getOtherCodes().isEmpty())) return codeDiff;
 		Iterator it = li.getOtherCodes().iterator();
 		while(it.hasNext()){
 			int diff2 = getHierarchyDiff((String)it.next());
@@ -116,11 +116,17 @@ public class ListItem implements Serializable{
 	private int getHierarchyDiff(String code){
 		if(code==null || firstCode==null) return -1;
 		int diff = -1;
+		/*String longerCode = code;
+		String shorterCode = code;
+		
+		if(code.length()>firstCode.length()) shorterCode = firstCode;
+		else longerCode = firstCode;*/
+		
 		if(!code.equals(firstCode) && (code.startsWith(firstCode) || firstCode.startsWith(code))){
 			//we look into the distance of the codes: 
 			diff = Math.abs(firstCode.length() - code.length());
 		}
-		if(this.getOtherCodes()==null || this.getOtherCodes().isEmpty()) return diff;
+		if(diff>-1 || this.getOtherCodes()==null || this.getOtherCodes().isEmpty()) return diff;
 		
 		Iterator it = this.getOtherCodes().iterator();
 		while(it.hasNext()){

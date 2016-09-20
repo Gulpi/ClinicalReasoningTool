@@ -99,6 +99,26 @@ function sendAjaxCM(id, callback, type, name, x, y){
 }
 
 /**
+ * when a connection is made we include the ids of the start- and target endpoints to be stored for the connection.
+ * @param id
+ * @param callback
+ * @param type
+ * @param name
+ * @param startEpId
+ * @param targetEpId
+ */
+function sendAjaxCnx(id, callback, type, name, startEpId, targetEpId){
+	$.ajax({
+		  method: "POST",
+		  url: "/crt/src/html/tabs_ajax.xhtml",
+		  data: { type: type, id: id, name: name, x: startEpId, y: targetEpId, script_id: scriptId, stage:currentStage }
+		})
+	  .done(function( response ) {	
+		  handleResponse(response, callback, name);
+	  });	
+}
+
+/**
  *  display msg and call callback function
  *  we have an id and id2...
  **/

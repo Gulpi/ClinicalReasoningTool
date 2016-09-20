@@ -38,7 +38,7 @@ public class IntlConfiguration
 	}
 	
 	public static String getValue(String key, Locale loc){		 
-		if(loc.getLanguage().equals("de")) return p_de.getProperty(key);
+		if(loc.getLanguage().equalsIgnoreCase("de")) return p_de.getProperty(key);
 		return p_en.getProperty(key);
 	}
 	

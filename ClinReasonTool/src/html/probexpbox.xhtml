@@ -4,7 +4,7 @@
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:f="http://java.sun.com/jsf/core">
 
- <div id="fdg_#{expprob.id}"  class="expbox expboxinvis" title="#{expprob.labelOrSynLabel}" style="left:#{expprob.x}px; top:#{expprob.boxY}px;">
+ <div id="fdg_#{expprob.id}"  class="expbox expboxinvis" mytooltip="#{expprob.labelOrSynLabel}" style="left:#{expprob.x}px; top:#{expprob.boxY}px;">
  	#{expprob.prefix} #{expprob.shortLabelOrSynShortLabel}
  <script language="Javascript">
  	exp_arr.push("fdgexp_#{expprob.id}");

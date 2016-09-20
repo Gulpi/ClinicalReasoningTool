@@ -194,8 +194,8 @@ public class Graph extends DirectedWeightedMultigraph<MultiVertex, MultiEdge> {
 		//int weight = MultiEdge.WEIGHT_EXPLICIT;
 		if(cnx.getWeight()>MultiEdge.WEIGHT_EXPLICIT) weight = cnx.getWeight();
 		if(source!=null && target!=null){
-			addOrUpdateEdge(getVertexByIdAndType(source.getListItemId(), source.getRelationType()), getVertexByIdAndType(target.getListItemId(), target.getRelationType()), type, weight, cnx.getId(), patIllScript.getType());
-		
+			MultiEdge edge = addOrUpdateEdge(getVertexByIdAndType(source.getListItemId(), source.getRelationType()), getVertexByIdAndType(target.getListItemId(), target.getRelationType()), type, weight, cnx, patIllScript.getType());
+			
 		}
 	}
 	
@@ -206,7 +206,7 @@ public class Graph extends DirectedWeightedMultigraph<MultiVertex, MultiEdge> {
 	
 	
 	public void addImplicitEdge(long sourceId, long targetId, int type){
-		addOrUpdateEdge(this.getVertexById(sourceId), this.getVertexById(targetId), type, MultiEdge.WEIGHT_IMPLICIT, -1, -1);
+		addOrUpdateEdge(this.getVertexById(sourceId), this.getVertexById(targetId), type, MultiEdge.WEIGHT_IMPLICIT, null, -1);
 	}
 	
 	/**
@@ -219,11 +219,9 @@ public class Graph extends DirectedWeightedMultigraph<MultiVertex, MultiEdge> {
 	 * @param expEdit (if true, then currently an expert script is edited, so, the expert connections are the learner conns!!!
 	 * @return
 	 */
-	private boolean addOrUpdateEdge(MultiVertex source, MultiVertex target, int type, int weight, long cnxId, int patIllScriptType){
-		
-
+	private MultiEdge addOrUpdateEdge(MultiVertex source, MultiVertex target, int type, int weight, Connection conn, int patIllScriptType){
 		if(source==null || target==null)
-			return false;
+			return null;
 		
 		MultiEdge e = getEdge(source, target); 
 		if(e==null){
@@ -231,11 +229,11 @@ public class Graph extends DirectedWeightedMultigraph<MultiVertex, MultiEdge> {
 			addEdge(source, target, e);
 		}
 		else e.addParam(type, weight);
-		if(cnxId>0 && patIllScriptType==IllnessScriptInterface.TYPE_LEARNER_CREATED) e.setLearnerCnxId(cnxId);
+		if(conn!=null && patIllScriptType==IllnessScriptInterface.TYPE_LEARNER_CREATED) e.setLearnerCnx(conn);//e.setLearnerCnxId(cnxId);
 		
-		if(cnxId>0 && patIllScriptType==IllnessScriptInterface.TYPE_EXPERT_CREATED && !expEdit) e.setExpCnxId(cnxId);
-		if(cnxId>0 && patIllScriptType==IllnessScriptInterface.TYPE_EXPERT_CREATED && expEdit) e.setLearnerCnxId(cnxId);
-		return true; //edge created or we have changed the params of it.
+		if(conn!=null && patIllScriptType==IllnessScriptInterface.TYPE_EXPERT_CREATED && !expEdit) e.setExpertCnx(conn);
+		if(conn!=null && patIllScriptType==IllnessScriptInterface.TYPE_EXPERT_CREATED && expEdit) e.setLearnerCnx(conn);
+		return e; //edge created or we have changed the params of it.
 		
 	}
 
@@ -384,6 +382,7 @@ public class Graph extends DirectedWeightedMultigraph<MultiVertex, MultiEdge> {
 				long cnxId = 0;
 				String l = "0";
 				String e = "0";
+
 				if(edge.getLearnerCnxId()>0){
 					cnxId = edge.getLearnerCnxId();
 					l = "1";
@@ -413,7 +412,12 @@ public class Graph extends DirectedWeightedMultigraph<MultiVertex, MultiEdge> {
 					targetIdWithPrefix = GraphController.getPrefixByType(targetVertex.getType())+targetVertex.getExpertVertex().getId();
 				}
 				if(startIdWithPrefix!=null && targetIdWithPrefix!=null)
-					sb.append("{\"id\":\""+GraphController.PREFIX_CNX + cnxId+"\",\"l\":\""+l+"\", \"e\":\""+e+"\", \"sourceid\": \""+startIdWithPrefix+"\",\"targetid\": \""+targetIdWithPrefix+"\",\"weight_l\": \""+edge.getLearnerWeight()+"\", \"weight_e\": \""+edge.getExpertWeight()+"\"},");		
+					sb.append("{\"id\":\""+GraphController.PREFIX_CNX + cnxId+"\",");
+					sb.append("\"l\":\""+l+"\", \"e\":\""+e+"\",");
+					sb.append("\"sourceid\": \""+startIdWithPrefix+"\",\"targetid\": \""+targetIdWithPrefix+"\",");
+					sb.append("\"weight_l\": \""+edge.getLearnerWeight()+"\", \"weight_e\": \""+edge.getExpertWeight()+"\",");
+					sb.append("\"start_ep\": \""+edge.getStartEpIdx()+"\",");
+					sb.append("\"target_ep\": \""+edge.getTargetEpIdx()+"\"},");		
 			}	
 		}
 		if(sb.length()>1) sb.replace(sb.length()-1, sb.length(), ""); //remove the last ","

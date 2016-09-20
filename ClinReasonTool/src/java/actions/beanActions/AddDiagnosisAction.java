@@ -174,12 +174,13 @@ public class AddDiagnosisAction implements AddAction, Scoreable{
 	 * @param g
 	 */
 	private void addHierarchyRelation(Relation rel, Graph g){
-		if(patIllScript.getType()==PatientIllnessScript.TYPE_EXPERT_CREATED){
+		if(patIllScript.isExpScript()){
 			MultiVertex mv = g.getVertexByIdAndType(rel.getListItemId(), Relation.TYPE_DDX);
-			MultiVertex mv2 = new GraphController(g).findNextHierarchyVertex(mv, Relation.TYPE_DDX);
-			if(mv2!=null)
-				new AddConnectionAction(patIllScript).addConnection(rel.getId(), mv2.getLearnerVertex().getId(), Relation.TYPE_DDX, Relation.TYPE_DDX, MultiEdge.WEIGHT_EXPLICIT_HIERARCHY);
-
+			List<MultiVertex> mv2 = new GraphController(g).findNextHierarchyVertices(mv, Relation.TYPE_DDX);
+			if(mv2==null)return;
+			for(int i=0;i<mv2.size(); i++){
+				new AddConnectionAction(patIllScript).addConnection(rel.getId(), mv2.get(i).getLearnerVertex().getId(), Relation.TYPE_DDX, Relation.TYPE_DDX, MultiEdge.WEIGHT_EXPLICIT_HIERARCHY, MultiEdge.ENDPOINT_RIGHT, MultiEdge.ENDPOINT_RIGHT);
+			}
 		}
 	}
 }

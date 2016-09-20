@@ -152,6 +152,10 @@ public class PatientIllnessScript extends Beans/*extends Node*/ implements Illne
 
 	public int getType() {return type;}
 	public void setType(int type) {this.type = type;}	
+	public boolean isExpScript(){
+		if(type==TYPE_EXPERT_CREATED) return true;
+		return false;
+	}
 	public List<RelationDiagnosis> getDiagnoses() {return diagnoses;}
 	public List<RelationDiagnosis> getDiagnosesStage() { return getRelationsByStage(diagnoses);}
 	public void setDiagnoses(List<RelationDiagnosis> diagnoses) {this.diagnoses = diagnoses;}
@@ -293,6 +297,7 @@ public class PatientIllnessScript extends Beans/*extends Node*/ implements Illne
 	public void changeMnM(String idStr/*, String newValue*/){new ChangeDiagnosisAction(this).toggleMnM(idStr/*, newValue*/);}
 	
 	public void addConnection(String sourceId, String targetId){new AddConnectionAction(this).add(sourceId,targetId);}
+	public void addConnection(String sourceId, String targetId, String startEpId, String targetEpId){new AddConnectionAction(this).add(sourceId,targetId,startEpId,targetEpId);}
 	public void delConnection(String idStr){new DelConnectionAction(this).delete(idStr);}
 	public void chgConnection(String idStr, String weightStr){new ChgConnectionAction(this).chgConnection(idStr, weightStr);}
 
@@ -306,6 +311,7 @@ public class PatientIllnessScript extends Beans/*extends Node*/ implements Illne
 	//public void submitDDX(){new DiagnosisSubmitAction(this).submitDDX();}
 	public void changeTier(String idStr, String tierStr){new DiagnosisSubmitAction(this).changeTier(idStr, tierStr);}
 	public void changeConfidence(String idStr, String confVal){new ChgPatIllScriptAction(this).changeConfidence(idStr, confVal);}
+	public void showSolution(String s){new DiagnosisSubmitAction(this).showSolution();}
 	//public void chgCourseOfTime(String courseOfTimeStr) { new ChgPatIllScriptAction(this).chgCourseOfTime(courseOfTimeStr);}
 
 	public void addJoker(String idStr, String type){ new JokerAction(this).addJoker(type);}
@@ -439,7 +445,10 @@ public class PatientIllnessScript extends Beans/*extends Node*/ implements Illne
 	public String getSummStExp(){
 		if(this.type==IllnessScriptInterface.TYPE_LEARNER_CREATED){
 			PatientIllnessScript expScript = AppBean.getExpertPatIllScript(this.vpId);
-			if(expScript==null || expScript.getSummSt()==null || expScript.getSummSt().getStage()>currentStage) return IntlConfiguration.getValue("summst.exp.no");
+			if(expScript==null || expScript.getSummSt()==null) //no expert summary statement at all
+					return IntlConfiguration.getValue("summst.exp.none");
+			else if(expScript.getSummSt().getStage()>currentStage) //summary statement available at later stage
+				return IntlConfiguration.getValue("summst.exp.no");
 			return expScript.getSummSt().getText();
 		}
 		return "";
@@ -485,6 +494,17 @@ public class PatientIllnessScript extends Beans/*extends Node*/ implements Illne
 	 * @return
 	 */
 	public float getOverallFinalDDXScore(){ 
-		return ScoringController.getInstance().getOverallFinalDDXScore();}
+		return ScoringController.getInstance().getOverallFinalDDXScore();
+	}
+	
+	/**
+	 * if we have a expert script we always use the actual stage on which the expert is to store for the action. For 
+	 * learner scripts we use the currentStage (=maxStage), since he might just have jumped back...
+	 * @return
+	 */
+	public int getStageForAction(){
+		if(isExpScript()) return stage;
+		return currentStage;
+	}
 
 }

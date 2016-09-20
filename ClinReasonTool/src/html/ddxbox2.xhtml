@@ -6,7 +6,7 @@
     <f:event type="preRenderView" listener="#{crtContext.ajaxResponseHandler}" />
  
  
-   	<div id="ddx_#{ddx.id}"  score="#{ddx.score}" title="#{ddx.labelOrSynLabel}" class="itembox ddxs" style="background-color:#{ddx.backgroundColor};color:#{ddx.color};left:#{ddx.x}px; top:#{ddx.boxY}px;">
+   	<div id="ddx_#{ddx.id}"  score="#{ddx.score}" mytooltip="#{ddx.labelOrSynLabel}" class="itembox ddxs" style="background-color:#{ddx.backgroundColor};color:#{ddx.color};left:#{ddx.x}px; top:#{ddx.boxY}px;">
   	 	<!--  <i id="tiericon_#{ddx.id}" title="#{prop['ddx.finalddx']}" class="fa fa-check-circle#{ddx.tier}"></i>-->
   	 	<i id="mnmicon_#{ddx.id}" title="#{prop['ddx.mnm.hint2']}" class="fa fa-exclamation-circle#{ddx.mnm}"></i>
   	 	#{ddx.shortLabelOrSynShortLabel}

@@ -4,6 +4,7 @@ import java.util.*;
 
 import org.jgrapht.graph.DefaultWeightedEdge;
 
+import beans.relation.Connection;
 import beans.scripts.IllnessScriptInterface;
 
 
@@ -23,6 +24,13 @@ public class MultiEdge extends DefaultWeightedEdge{
 	public static final int WEIGHT_SPEAKS_AGAINST = 6;
 	public static final int WEIGHT_PARENT = 7;  //an item higher up in the hierarchy
 	public static final int WEIGHT_EXPLICIT_HIERARCHY = 8;
+	
+	public static final int ENDPOINT_RIGHT = 1;
+	public static final int ENDPOINT_LEFT = 2;
+	public static final int ENDPOINT_TOP = 3;
+	public static final int ENDPOINT_BOTTOM = 4;
+	public static final int ENDPOINT_DEFAULT = 0;
+	
 	/**
 	 * key = type (see definition in IllnessScriptInterface)
 	 * value = weight (for peers the number of conx)
@@ -35,8 +43,10 @@ public class MultiEdge extends DefaultWeightedEdge{
 	private int edgeInIllScript = WEIGHT_NONE; //can be none or explicit (no implicit!)*/
 	//private long sourceId;
 	//private long targetId; 
-	private long learnerCnxId;
-	private long expCnxId;
+	//private long learnerCnxId;
+	//private long expCnxId;
+	private Connection learnerCnx;
+	private Connection expertCnx;
 	public MultiEdge(){}
 	public MultiEdge(int type, int weight){
 		addParam(type, weight);
@@ -64,10 +74,17 @@ public class MultiEdge extends DefaultWeightedEdge{
 		}
 	}	
 	
-	public long getLearnerCnxId() {return learnerCnxId;}
-	public void setLearnerCnxId(long learnerCnxId) {this.learnerCnxId = learnerCnxId;}
-	public long getExpCnxId() {return expCnxId;}
-	public void setExpCnxId(long expCnxId) {this.expCnxId = expCnxId;}
+	public long getLearnerCnxId() {
+		if(learnerCnx!=null) return learnerCnx.getId();
+		return -1;
+	}
+	/*public void setLearnerCnxId(long learnerCnxId) {this.learnerCnxId = learnerCnxId;}*/
+	public long getExpCnxId() {
+		if(expertCnx!=null) return expertCnx.getId();
+		return -1;
+	}
+	/*public void setExpCnxId(long expCnxId) {this.expCnxId = expCnxId;}*/
+	
 	/**
 	 * Changes can only be made for learners' scripts
 	 */
@@ -75,6 +92,11 @@ public class MultiEdge extends DefaultWeightedEdge{
 		if(types==null || types.get(new Integer(IllnessScriptInterface.TYPE_LEARNER_CREATED))==null) return;
 		types.put(new Integer(IllnessScriptInterface.TYPE_LEARNER_CREATED),new Integer(WEIGHT_IMPLICIT));		
 	}
+	
+	public Connection getLearnerCnx() {return learnerCnx;}
+	public void setLearnerCnx(Connection learnerCnx) {this.learnerCnx = learnerCnx;}
+	public Connection getExpertCnx() {return expertCnx;}
+	public void setExpertCnx(Connection expertCnx) {this.expertCnx = expertCnx;}
 	
 	public void changeExplicitWeight(int newWeight){
 		if(types==null || types.get(new Integer(IllnessScriptInterface.TYPE_LEARNER_CREATED))==null) return;
@@ -182,6 +204,18 @@ public class MultiEdge extends DefaultWeightedEdge{
 			if(EDGES_AS_CNX[i]==this.getLearnerWeight()) return true;
 		}
 		return false;		
+	}
+	
+	public int getStartEpIdx(){
+		if(learnerCnx!=null) return learnerCnx.getStartEpIdx();
+		if(expertCnx!=null) return expertCnx.getStartEpIdx();
+		return -1;
+	}
+	
+	public int getTargetEpIdx(){
+		if(learnerCnx!=null) return learnerCnx.getTargetEpIdx();
+		if(expertCnx!=null) return expertCnx.getTargetEpIdx();
+		return -1;
 	}
 	
 }

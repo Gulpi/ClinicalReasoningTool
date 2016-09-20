@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml"   
+<html lang="de" xmlns="http://www.w3.org/1999/xhtml"   
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:f="http://java.sun.com/jsf/core"
@@ -43,12 +43,12 @@
 #tst_box { left:240px;top:210px; }
 #sum_box { left:0px;top:420px; }
 #mng_box { left:240px;top:420px; }*/
-
+/*
 #fdg_box { left:15px;top:15px; }
 #ddx_box { left:245px;top:15px; }
 #tst_box { left:15px;top:290px; }
 #mng_box { left:245px;top:290px; }
-#sum_box { left:15px;top:565px; }
+#sum_box { left:15px;top:565px; }*/
 </style>
 <script language="JavaScript">
 
@@ -58,8 +58,9 @@ var sessId = "1";
 var scriptId = "#{crtContext.patillscript.id}";
 //var listUrl="jsonp_#{crtContext.patillscript.locale}.json";
 var listUrl="jsonp_en.json";
-var lang = "#{crtContext.patillscript.locale}";
-if(lang=="de") listUrl = "jsonp_de.json";
+var scriptlang = "#{crtContext.patillscript.locale}";
+if(scriptlang=="de") listUrl = "jsonp_de.json";
+var lang="#{crtContext.locale}";
 //var my_canvas = null;
 var currentStage = $.getUrlVar('stage');
 var currentStageScript = "#{crtContext.patillscript.currentStageWithUpdate}";
@@ -74,10 +75,10 @@ var showExpTitle = "#{prop['feedback.exp']}";
 var hideExpTitle = "#{prop['feedback.exp.hide']}";
 var submitDialogTitle = "#{prop['submit.dialog.title']}";
 var chgCnxDialogTitle = "#{prop['cnx.dialog.title']}";
+var errorDialogTitle = "#{prop['ddx.errors.title']}";
 
 var active;
 var submitDDXOne = "#{prop['submit.minone']}";
-//var errorNum = "#{crtContext.patillscript.errorNum}";
 var submitted = "#{crtContext.patillscript.submitted}";
 var presubmitted = "#{crtContext.patillscript.submitted}";
 var instance;
@@ -87,10 +88,11 @@ var exp_arr = new Array();
 $(function() {
     postEnforceFinalDDXSubmission(submitted, myStage, maxSubmittedStage);
 
-	if(lang=="de") listUrl = "jsonp_de.json";
+	if(scriptlang=="de") listUrl = "jsonp_de.json";
 	$(".listdialog").hide();
 	$("#jdialogError").hide();
 	$("#connContext").hide();
+	$("#help").hide();
 	$("#summStText").on('change',function(){
 		//setDirtySummSt();
 		saveSummSt('#{crtContext.patillscript.summStId}');
@@ -98,22 +100,30 @@ $(function() {
 	checkSubmitBtn();
 	toggleBefAfterSubmitOnLoad();
 
-		   $( document ).tooltip({
-			      items: "i",
-			      content: function() {
-			        var element = $( this );
-		    		//var element = $( this );
-		    		/*if(element.hasClass("jsplumb-connector")){ 
-						//var tooltip = getToolTipForRect(element);
-						return "hallo";
-		    		}*/
-		    		//var tt = element.prop( "mytooltip" );
-		    			return $( this ).attr( "mytooltip" );
-		    		//}
-		           /* if ( element.is( "[mytooltip]" ) ) { //this is a "normal" tooltip returning the title of an element
-		                return element.attr( "mytooltip" );
-		              })*/    	}
-		    });
+   $( document ).tooltip({
+      	items: "i, div, a, span",
+      	position: { my: "left+5 center", at: "right center" },
+      	content: function() {
+        var element = $( this );
+		return $( this ).attr( "mytooltip" );
+		}
+    });
+   
+  /* $( document ).tooltip({
+	      position: {
+	        my: "center bottom-20",
+	        at: "center top",
+	        items: "i, div, a",
+	        using: function( position, feedback ) {
+	          $( this ).css( position );
+	          $( "div" )
+	            .addClass( "arrow" )
+	            .addClass( feedback.vertical )
+	            .addClass( feedback.horizontal )
+	            .appendTo( this );
+	        }
+	      }
+	});*/
 
 //uncomment if endpoint issues with dragging boxes is solved:
   /*  $( ".container" ).draggable({
@@ -124,18 +134,24 @@ $(function() {
     
       });*/
     $( ".itembox" ).draggable({
+    	 start: function(event, ui) {             
+            // $(ui.helper).find('.tooltip').hide(); 
+             $('.ui-tooltip').remove();
+         }, 
+         
         containment:"parent"
+       
     
       });
 	//initLists();
-    $( "#confidence_slider" ).slider({
+   /* $( "#confidence_slider" ).slider({
        orientation: "horizontal",
     	min: 0,
     	max: 100,
     	step: 1,
     	change: submitSliderChange
     });
-    $( "#confidence_slider" ).slider( "value", #{crtContext.patillscript.confidence} );
+    $( "#confidence_slider" ).slider( "value", #{crtContext.patillscript.confidence} );*/
 	$("#jdialog").dialog({
 		autoOpen: false,
 		modal: true,
@@ -151,6 +167,13 @@ $(function() {
 	});
 	
 	$("#jdialogError").dialog({
+		autoOpen: false,
+		modal: true,
+		width: "auto",
+		height: "auto"
+	});
+	
+	$("#jdialogHelp").dialog({
 		autoOpen: false,
 		modal: true,
 		width: "auto",
@@ -215,7 +238,6 @@ jsPlumb.ready(function () {
     	toggleContainerCollapse(this.parentNode);
     });
     $(".itembox").contextmenu(function(event) {
-    	  //alert( "Handler for .contextmenu() called." );
     	  showDropDown("dd"+this.id);
     	  event.preventDefault();
    	 });
@@ -232,8 +254,8 @@ jsPlumb.ready(function () {
     $(".expbox").addClass("expboxstatus");
     jsPlumb.fire("jsPlumbDemoLoaded", instance);
     
-   // initBoxHeight("fdg_box", "fdgs");
-    initContainerCollapsed();
+    initBoxHeights();
+    //initContainerCollapsed(); //put back in if collapsing works again
    
 });
 
@@ -243,6 +265,7 @@ item_arr = new Array();
 </script>
 </head>
 <body style="font-family:arial;" data-demo-id="draggableConnectors" data-library="dom"><!-- test: #{crtContext.test}-->
+<f:view locale="#{crtContext.locale}">
 <div class="options">
 <div style="position:absolute;left:15px;top:5px;"><i mytooltip="#{prop['cnx.show']}" id="cnxtogglei" class="fa fa-conn"></i>  </div>
 <div class="switch" style="left:30px;">
@@ -258,7 +281,8 @@ item_arr = new Array();
 	 <span class="cnx_on" id="cnxToggleSpan"><a href="javascript:toogleCnxDisplay();" id="cnxtoggle" title="#{prop['cnx.hide']}"><i id="cnxtogglei" class="fa fa-conn"></i> Connections</a></span>
 	 
 	 <a href="javascript:toggleExpFeedback('expFeedback', 'icon-user-md');"  title="#{prop['feedback.exp']}"><i id="expFeedback" class="fa fa-user-md_off"></i></a>
-	--> <a href="javascript:alert('Not yet implemented.')" style="float:right;top:5px;" title="#{prop['help']}"><i class="fa fa-question-circle "></i></a>
+	--> 
+	<span class="help"><a href="javascript:openHelp();" style="float:right;top:5px;" ><i class="fa fa-question-circle " mytooltip="#{prop['help']}"></i></a></span>
 	<!--  <a href="exp_stages.xhtml" target="new">exp dev</a>-->
 	<!--  <a href="alert('not yet available, will show the development of the experts script during the case');">exp dev</a>-->
 </div>
@@ -280,7 +304,7 @@ item_arr = new Array();
 			</div>
 		  </div>-->
 		  <!-- problems -->
-		  <div id="fdg_box"  class="container" group="fdg_group">
+		  <div id="fdg_box"  class="container fdg_cont" group="fdg_group">
 		   		<div class="title">#{prop['findings']} 
 		   			<span class="icons">
 		   				<a href="javascript:addJokerFdg();" title="#{prop['findings.joker']}"><i mytooltip="#{prop['findings.joker']}" class="fa fa-puzzle-piece"></i></a> 
@@ -288,7 +312,7 @@ item_arr = new Array();
 		   				<a href="javascript:toggleFdgFeedback();" title="#{prop['findings.exp']}"><i mytooltip="#{prop['findings.exp']}" class="fa fa-user-md_off" id="expFeedbackFdg"></i></a>
 		   			</span>
 		   		</div>
-		   		<div  class="node-collapse"></div>
+		   		<!-- <div  class="node-collapse"></div> put back in when collapsing is working-->
 		  			<div class="search boxchild"><span class="icon"><i class="icon-search"></i></span>
 		  			<input type="text" id="fdg_prefix" style="display:none;" />
 		  			<!-- <select class="f_select" style="width:40px;" id="fdg_prefix"><option value="0">-</option><option value="1">#{prop['no']}</option></select>-->
@@ -303,28 +327,15 @@ item_arr = new Array();
 	    					</ui:repeat>	    					
 	    				</h:panelGroup>
     				     <h:commandButton id="hiddenProbButton" value="RenderSomething" style="visibility:hidden">
-    						<f:ajax render="@form" onevent="updatProbCallback"></f:ajax>
+    						<f:ajax render="@form" onevent="updateProbCallback"></f:ajax>
 						</h:commandButton>
 												
 						<!-- <h:messages errorClass="errorMessage" infoClass="infoMessage" showDetail="true" showSummary="true"/>-->						
 						</h:form>
 						<span class="errormsg" id="msg_probform"></span>
 		  </div>
-		 <div id="sum_box" class="container sum_container" group="sum_group">	
-		 	<div class="title">#{prop['summst']}
-		 		<span class="icons sumicons">
-		 			<a href="javascript:toggleSumFeedback('expFeedbackSum', 14);" title="#{prop['summst.exp']}"><i mytooltip="#{prop['summst.exp']}" class="fa fa-user-md_off" id="expFeedbackSum"></i></a>
-		 		</span>
-		 	</div>
-		 	 <div class="node-collapse"></div>
-		 	 <textarea style="display:none;" id="summStTextHidden" cols="65" rows="4">#{crtContext.patillscript.summSt.text}</textarea>
-				<textarea class="f_textarea boxchild sum_textarea" name="summSt" id="summStText" cols="65" rows="3">#{crtContext.patillscript.summSt.text}</textarea>
-		  		<!-- <a href="javascript:saveSummSt('#{crtContext.patillscript.summStId}');" title="Save your summary statement"><i class="icon-floppy"></i></a>-->
-			 	<span class="errormsg" id="msg_sumstform"></span>
-			 	<span id="list_score_sum" class="list_score_sum" style="color:green; display:none;"> #{crtContext.patillscript.summStExp}</span> 		  
-		</div>
 		  <!--  diagnoses -->
-		  <div id="ddx_box" class="container" group="ddx_group">	
+		  <div id="ddx_box" class="container ddx_cont" group="ddx_group">	
 		  		<div class="title">#{prop['ddx']}
 		  			<span class="icons">
 		  				<a href="javascript:addJokerDDX();" title="#{prop['ddx.joker']}"><i mytooltip="#{prop['ddx.joker']}" class="fa fa-puzzle-piece"></i></a> 
@@ -332,7 +343,7 @@ item_arr = new Array();
 		   				<a href="javascript:toggleDDXFeedback();" title="#{prop['ddx.exp']}"><i mytooltip="#{prop['ddx.exp']}" class="fa fa-user-md_off" id="expFeedbackDDX"></i></a>
 		  			</span>
 		  		</div>	
-		  		<div class="node-collapse"></div>	  		
+		  		<!-- <div class="node-collapse"></div>	  -->		
 		  			<div class="search boxchild"><input class="f_text" onkeyup="javascript:storeHistory('ddx');" placeholder="#{prop['search']} ..." id="ddx" title="#{prop['ddx.search']}"></input></div>
 			  			<h:form id="ddxform">
 						<h:panelGroup >
@@ -351,15 +362,15 @@ item_arr = new Array();
 					<!--  <div id="confidence_slider" class="conf_slider" title="Please indicate how confident you are with your current differentials."></div>-->
 		  		<div class="footer">
 		  			<span id="submitBtnSpan" class="submitBtn submitBtnOff">
-		  				<a href="javascript:doSubmitDDXDialog();" style="color:#ffffff" title="#{prop['ddx.submit']}">#{prop['ddx.submitFinal']}</a>
+		  				<a href="javascript:doSubmitDDXDialogCallback();" style="color:#ffffff" mytooltip="#{prop['ddx.submit']}">#{prop['ddx.submitFinal']}</a>
 		  			</span>
-		  			<span class="errors_#{crtContext.patillscript.errorNum}"><h:panelGroup id="ddxubmitPG">
-						<a href="javascript:openErrorDialog();" title="#{prop['ddx.errors']} (#{crtContext.patillscript.errorNum})"><i mytooltip="#{prop['ddx.errors']} (#{crtContext.patillscript.errorNum})" class="fa fa-exclamation-circle"></i></a>		
+		  			<span class="errorsymbol errors_#{crtContext.patillscript.errorNum}"><h:panelGroup id="ddxubmitPG">
+						<a href="javascript:openErrorDialog();" style="color:#ffffff;"><i style="color:#ffffff;" mytooltip="#{prop['ddx.errors']} (#{crtContext.patillscript.errorNum})" class="fa fa-exclamation-circle"></i></a>		
     				</h:panelGroup></span>
 		  		</div>
 		  </div>
 		  <!-- tests -->
-		  <div id="tst_box" class="container" group="tst_group">
+		  <div id="tst_box" class="container tst_cont" group="tst_group">
 		  		<div class="title">#{prop['tests']}
 		  			<span class="icons">
 		  				<a href="javascript:addJokerTest();" title="#{prop['tests.joker']}"><i mytooltip="#{prop['tests.joker']}" class="fa fa-puzzle-piece"></i></a> 
@@ -367,7 +378,7 @@ item_arr = new Array();
 		   				<a href="javascript:toggleTestFeedback();" title="#{prop['tests.exp']}"><i mytooltip="#{prop['tests.exp']}" class="fa fa-user-md_off" id="expFeedbackTest"></i></a>
 		  			</span>
 		  		</div>
-		 	 	<div class="node-collapse"></div>
+		 	 	<!-- <div class="node-collapse"></div>-->
 		  		<div class="search boxchild"><input class="f_text" onkeyup="javascript:storeHistory('tests');" placeholder="#{prop['search']} ..." id="tests" title="#{prop['tests.search']}"></input></div>
 		  			<h:form id="testform">
 		  			<h:panelGroup>
@@ -386,7 +397,7 @@ item_arr = new Array();
 					<span class="errormsg" id="msg_testform"></span>
 		</div>
 		  <!-- managements -->
-		  <div id="mng_box" class="container" group="mng_group">
+		  <div id="mng_box" class="container mng_cont" group="mng_group">
 		  	<div class="title">#{prop['mng']}
 		  		<span class="icons">
 		  			<a href="javascript:addJokerMng();" title="#{prop['mng.joker']}"><i mytooltip="#{prop['mng.joker']}" class="fa fa-puzzle-piece"></i></a> 
@@ -394,7 +405,7 @@ item_arr = new Array();
 		   			<a href="javascript:toggleMngFeedback();" title="#{prop['mng.exp']}"><i  mytooltip="#{prop['mng.exp']}" class="fa fa-user-md_off" id="expFeedbackMng"></i></a>
 		  		</span>
 		  	</div>
-		 	 <div class="node-collapse"></div>
+		 	<!--   <div class="node-collapse"></div>-->
 		  	<div class="search boxchild"><input class="f_text" id="mng" onkeyup="javascript:storeHistory('mng');" placeholder="#{prop['search']} ..." title="#{prop['mng.search']}"></input></div>
 	  			<h:form id="mngform">
 	  			<h:panelGroup>
@@ -413,6 +424,19 @@ item_arr = new Array();
 				<span class="errormsg" id="msg_mngform"></span>
 				
 	  		</div>
+		 <div id="sum_box" class="container sum_container" group="sum_group">	
+		 	<div class="title">#{prop['summst']}
+		 		<span class="icons sumicons">
+		 			<a href="javascript:toggleSumFeedback('expFeedbackSum', 14);" title="#{prop['summst.exp']}"><i mytooltip="#{prop['summst.exp']}" class="fa fa-user-md_off" id="expFeedbackSum"></i></a>
+		 		</span>
+		 	</div>
+		 	 <div class="node-collapse"></div>
+		 	 <textarea style="display:none;" id="summStTextHidden" cols="65" rows="4">#{crtContext.patillscript.summSt.text}</textarea>
+				<textarea class="f_textarea boxchild sum_textarea" name="summSt" id="summStText" cols="65" rows="3">#{crtContext.patillscript.summSt.text}</textarea>
+		  		<!-- <a href="javascript:saveSummSt('#{crtContext.patillscript.summStId}');" title="Save your summary statement"><i class="icon-floppy"></i></a>-->
+			 	<span class="errormsg" id="msg_sumstform"></span>
+			 	<span id="list_score_sum" class="list_score_sum" style="color:green; display:none;"> #{crtContext.patillscript.summStExp}</span> 		  
+		</div>
 	</div>
 </div>
 
@@ -424,7 +448,7 @@ item_arr = new Array();
 		</h:commandButton>		 
 	</h:form>-->
 
-<div id="jdialog"><ui:include src="submitdialog.xhtml" /></div>
+<div id="jdialog"><!--  <ui:include src="submitdialog.xhtml" />--></div>
 
 <div id="jdialogError">				
 	<ul id="errors">
@@ -436,5 +460,9 @@ item_arr = new Array();
 <div id="connContext">
 	<ui:include src="cnxchange.xhtml" />
 </div>
+<div id="jdialogHelp">
+	 <!--   <ui:include src="help/index_de.template" />-->
+</div>
+</f:view>
 </body>
 </html>

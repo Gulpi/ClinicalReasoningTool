@@ -1,0 +1,36 @@
+<div id="help_idx">
+This tool helps you to document findings, differentials, tests, management, and a summary statement in a concept
+map. This approach supports the development of clinical reasoning skills. 
+<br/><br/>
+
+<b>Findings:</b> <br/>
+Please enter relevant findings, symptoms, or risk factors of your patient <br/><br/>
+ 
+<b>Differentials:</b> <br/>
+Please enter as soon as possible probable differentials. With the arrow symbol <i class="fa fa-chevron-circle-down"></i> you can mark your differential 
+as working diagnosis, a must-not-miss (potentially lethal) diagnosis, or as ruled out.<br/>
+Click on <b>Make diagnosis</b> to submit your final diagnosis. 
+Take your chance, even if you are not 100% confident, in contrast to a real patient no harm can be done!
+At a certain stage of the scenario you will have to make a decision about your final diagnosis in order to be able to proceed 
+with your patient. <br/><br/>
+
+<b>Examinations/Tests:</b><br/>
+Please document examinations and tests you would like to perform or order to clarify your differntials.
+<br/><br/>
+<b>Therapy/Management:</b><br/>
+Please enter any therapeutic steps for your patient. These can be related to your final diagnoses or general 
+actions (e.g. Oxygen supplementation).
+<br/><br/>
+
+<b><i class="cmn-toggle cmn-toggle-round"></i> Connections:</b><br/>
+You can connect your items e.g. to visualize a causal relation. By clicking on the connection you can edit
+it and change the weight. <br/><br/>
+
+You can edit or delete all components of you map anytime. <br/><br/>
+
+<b><i class="fa fa-user-md"></i> Feedback:</b> <br/>
+You can view the author's map at all stages (activate ...). However, please keep in mind that there are no
+wrong answers in the clinical reasoning process. Pathways to the final diagnosis are very individual and the 
+author's solution represents one possible solution which can be a rough guide. 
+
+</div>

@@ -32,6 +32,7 @@ public class AjaxController {
 	public static final String REQPARAM_SCRIPT = "script_id";
 	public static final String REQPARAM_VP = "vp_id";
 	public static final String REQPARAM_LOC = "locale";
+	public static final String REQPARAM_SCRIPTLOC = "script_locale";
 	public static final String REQPARAM_STAGE = "stage";
 	public static final String REQPARAM_CHARTTYPE = "chart_type";	//see LearningAnalyticsContainer
 	public static final String REQPARAM_CHARTSIZE = "chart_size"; //sm or lg
@@ -68,8 +69,8 @@ public class AjaxController {
 	    	String methodName = reqParams.get("type");
 	    	String idStr = reqParams.get("id");
 	    	String nameStr = reqParams.get("name");
-	    	String x = reqParams.get("x");
-	    	String y = reqParams.get("y");
+	    	String x = reqParams.get("x"); //either x-position of an item or startEpId
+	    	String y = reqParams.get("y"); //either y-position of an item or targetEpId
 	    	patillscript.updateStage(reqParams.get(REQPARAM_STAGE));
 
 	    	//String patIllScriptId = reqParams.get(REQPARAM_SCRIPT); //TODO check whether belongs to currently loaded script!

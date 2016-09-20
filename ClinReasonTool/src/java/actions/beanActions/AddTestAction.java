@@ -135,8 +135,10 @@ public class AddTestAction implements AddAction, Scoreable/*, FeedbackCreator*/{
 		graph.addVertex(rel, IllnessScriptInterface.TYPE_LEARNER_CREATED);
 	
 		// add implicit edges:
-		for(int i=0; i < patIllScript.getDiagnoses().size(); i++){
-			graph.addImplicitEdge(patIllScript.getDiagnoses().get(i).getListItemId(), rel.getListItemId(), IllnessScriptInterface.TYPE_LEARNER_CREATED);
+		if(patIllScript.getDiagnoses()!=null && patIllScript.getDiagnoses().size()>0){
+			for(int i=0; i < patIllScript.getDiagnoses().size(); i++){
+				graph.addImplicitEdge(patIllScript.getDiagnoses().get(i).getListItemId(), rel.getListItemId(), IllnessScriptInterface.TYPE_LEARNER_CREATED);
+			}
 		}
 		CRTLogger.out(graph.toString(), CRTLogger.LEVEL_TEST);
 	}

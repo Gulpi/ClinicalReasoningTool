@@ -802,9 +802,10 @@ ul#errors{
 }
   .ui-autocomplete {
     max-height: 200px;
-    overflow-y: auto;
+    /*overflow-y: auto;*/
     /* prevent horizontal scrollbar */
     overflow-x: hidden;
+    overflow-y:scroll; /* important, otherwise problem with selecting last item in list!*/
   }
   
   .msg{

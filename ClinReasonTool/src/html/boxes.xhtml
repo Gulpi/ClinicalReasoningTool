@@ -184,7 +184,7 @@ $(function() {
 
 
 jsPlumb.ready(function () {
-
+		initBoxHeights();
      	instance = jsPlumb.getInstance({
         DragOptions: { cursor: 'pointer', zIndex: 2000 },
         PaintStyle: { strokeStyle: '#666' },
@@ -254,7 +254,7 @@ jsPlumb.ready(function () {
     $(".expbox").addClass("expboxstatus");
     jsPlumb.fire("jsPlumbDemoLoaded", instance);
     
-    initBoxHeights();
+   // initBoxHeights();
     //initContainerCollapsed(); //put back in if collapsing works again
    
 });

@@ -209,6 +209,33 @@ function toggleCnxStatus(){
 	return sessionStorage.cnxtoggle;
 }
 
+/* storing the max height for boxes fdg/ddx and test/mng for use on next card. */ 
+function getBoxFdgDDXHeight(){
+	if(sessionStorage.fdgddxHeight) return sessionStorage.fdgddxHeight;
+	return -1;
+}
+
+function getBoxTstMngHeight(){
+	if(sessionStorage.testmngHeight) return sessionStorage.testmngHeight;
+	return -1;
+}
+
+function setBoxHeight(boxId, height){
+	if(boxId=="fdg_box" || boxId=="ddx_box") setBoxFdgDDXHeight(height);
+	if(boxId=="tst_box" || boxId=="mng_box") setBoxTstMngHeight(height);
+		
+}
+
+function setBoxFdgDDXHeight(height){
+	sessionStorage.fdgddxHeight = height; 
+}
+
+function setBoxTstMngHeight(height){
+	sessionStorage.testmngHeight = height; 
+}
+
+/*storing x and y position of boxes - currently not in use*/
+
 function getContainerX(type){
 	if(type=="fdg"){
 		if(sessionStorage.fdgx) return sessionStorage.fdgx;

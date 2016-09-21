@@ -18,15 +18,16 @@ import util.StringUtilities;
 public class JsonCreator {
 
 	public static final String TYPE_PROBLEM = "C";
-	public static final String TYPE_DDX = "C";
+	//public static final String TYPE_DDX = "C";
 	public static final String TYPE_TEST = "E";
 	public static final String TYPE_EPI = "F";
 	public static final String TYPE_DRUGS = "D";
-	public static final String TYPE_MNG = "E";
+	//public static final String TYPE_MNG = "E";
 	public static final String TYPE_PERSONS = "M";
 	public static final String TYPE_MANUALLY_ADDED = "MA";
 	public static final String TYPE_HEALTHCARE = "N";
 	public static final String TYPE_CONTEXT = "I";
+	public static final String TYPE_B = "B";
 	public static final String fileNameOneListEN = "jsonp_en.json"; //TODO we need the path to the HTML folder!!!
 	public static final String fileNameOneListDE = "jsonp_de.json";
 	//A=Anatomy,B=Organisms, F=Psychiatry/Psychology, G=Phenomena and Processes, H=Disciplines/Occupations
@@ -47,7 +48,7 @@ public class JsonCreator {
 	//TODO also load item which have a corresponding (secondary code)
 	private void exportOneList(Locale loc){
 		//setIdsForSyn();
-		List<ListItem> items = new DBList().selectListItemsByTypesAndLang(loc, new String[]{TYPE_PROBLEM, TYPE_TEST,TYPE_DRUGS, TYPE_EPI, TYPE_MANUALLY_ADDED, TYPE_PERSONS, TYPE_HEALTHCARE, TYPE_CONTEXT});
+		List<ListItem> items = new DBList().selectListItemsByTypesAndLang(loc, new String[]{TYPE_PROBLEM, TYPE_TEST,TYPE_DRUGS, TYPE_EPI, TYPE_MANUALLY_ADDED, TYPE_PERSONS, TYPE_HEALTHCARE, TYPE_CONTEXT, TYPE_B});
 		if(items==null || items.isEmpty()) return; //then something went really wrong!
 		try{
 			File f = getMeshJsonFileByLoc(loc);
@@ -94,15 +95,12 @@ public class JsonCreator {
 		//if(item.getFirstCode().startsWith("F") && !item.getFirstCode().startsWith("F01.145")) return false;
 		//C
 		if(item.getFirstCode().startsWith("C22")) return false; //Animal diseases
-		if(item.getFirstCode().startsWith("C02.782.147.")) return false; 
-		if(item.getFirstCode().startsWith("C02.782.791")) return false;
-		if(item.getFirstCode().startsWith("C02.782.310.") ||item.getFirstCode().startsWith("C02.782.600.")) return false; 
-		if(item.getFirstCode().startsWith("C02.782.815")) return false;
-		if(item.getFirstCode().startsWith("C02.782.930")) return false;
-		//B
-		if(item.getFirstCode().startsWith("B04.280.")) return false; //subgroup of DNA viruses (-> fever)
-		if(item.getFirstCode().startsWith("B04.100.")) return false; 
-		if(item.getFirstCode().startsWith("B04.820.")) return false; 
+		//if(item.getFirstCode().startsWith("C02.782.147.")) return false; 
+		//if(item.getFirstCode().startsWith("C02.782.791")) return false;
+		//if(item.getFirstCode().startsWith("C02.782.310.") ||item.getFirstCode().startsWith("C02.782.600.")) return false; 
+		//if(item.getFirstCode().startsWith("C02.782.815")) return false;
+		//if(item.getFirstCode().startsWith("C02.782.930")) return false;
+
 
 
 		

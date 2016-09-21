@@ -53,6 +53,9 @@ function problemCallBack(testId, selTest){
 
 function updateProbCallback(data){
 	updateItemCallback(data, "fdgs", "fdg_box");
+	if(isOverallExpertOn()) //re-display expert items:
+		turnOverallExpFeedbackOn('expFeedback', 'icon-user-md');
+	//initBoxHeights();
 }
 
 
@@ -107,6 +110,8 @@ function diagnosisCallBack(){
 function updateDDXCallback(data){
 	checkSubmitBtn();
 	updateItemCallback(data, "ddxs", "ddx_box");
+	if(isOverallExpertOn()) //re-display expert items:
+		turnOverallExpFeedbackOn('expFeedback', 'icon-user-md');
 }
 
 /*function hasAFinalDiagnosis(){
@@ -446,6 +451,8 @@ function managementCallBack(mngId, selMng){
 
 function updatMngCallback(data){
 	updateItemCallback(data, "mngs", "mng_box");
+	if(isOverallExpertOn()) //re-display expert items:
+		turnOverallExpFeedbackOn('expFeedback', 'icon-user-md');
 }
 
 function addJokerMng(){
@@ -492,6 +499,8 @@ function testCallBack(testId, selTest){
 
 function updateTestCallback(data){
 	updateItemCallback(data, "tests","tst_box");
+	if(isOverallExpertOn()) //re-display expert items:
+		turnOverallExpFeedbackOn('expFeedback', 'icon-user-md');
 }
 
 function chgTest(id, type){
@@ -549,7 +558,7 @@ function toggleExpBoxFeedback(iconId, itemClass, type){
 }
 
 function turnExpBoxFeedbackOn(iconId, itemClass){
-	if($("#"+iconId).hasClass("fa-user-md_on")) return; //already on
+	//if($("#"+iconId).hasClass("fa-user-md_on")) return; //already on
 
 	$("#"+iconId).removeClass("fa-user-md_off");
 	$("#"+iconId).addClass("fa-user-md_on");
@@ -679,6 +688,7 @@ function turnOverallExpFeedbackOn(iconId, itemClass){
 	turnExpBoxFeedbackOn("expFeedbackMng", "mngs");
 	$(".jsplumb-exp-connector").addClass("jsplumb-exp-connector-show");
 	$(".jsplumb-exp-connector").removeClass("jsplumb-exp-connector-hide");
+	initExpBoxHeights();
 }
 
 function turnOverallExpFeedbackOff(iconId, itemClass){

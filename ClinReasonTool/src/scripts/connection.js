@@ -10,28 +10,30 @@ var endpoint = {
     endpoint: ["Dot", { radius: 5 }],
     paintStyle: { fillStyle: color2 },
     isSource: true,
-    scope: "green",
+    //scope: "green",
     //connectorStyle: { strokeStyle: color2, lineWidth: 6 },
-    //cssClass: 'exp-endpoint',
     connector: ["Bezier", { curviness: 15 } ],
     maxConnections: 10,
-    Anchors: ["TopCenter", "TopCenter"],
+    //Anchors: ["TopCenter", "TopCenter"],
     isTarget: true,
     //dropOptions: myDropOptions,
     deleteEndpointsOnDetach:true
 };
-
 var expendpoint = {
-	    endpoint: ["Dot", { radius: 1 }],
-	   // paintStyle: { fillStyle: color2 },
+	    endpoint: ["Dot", { radius: 0.1 }],
+	    paintStyle: { fillStyle: color2 },
 	    isSource: true,
-	    cssClass: 'exp-endpoint',	    
+	    //scope: "green",
+	    //connectorStyle: { strokeStyle: color2, lineWidth: 6 },
+	    cssClass: 'exp-endpoint',
 	    connector: ["Bezier", { curviness: 15 } ],
 	    maxConnections: 10,
+	    //Anchors: ["TopCenter", "TopCenter"],
 	    isTarget: true,
 	    //dropOptions: myDropOptions,
-	    deleteEndpointsOnDetach:false
-};
+	    deleteEndpointsOnDetach:false	
+		
+}
 
 
 /*var con=info.connection;
@@ -93,7 +95,7 @@ function createExpConnection(cnxId, sourceId, targetId, expWeight, learnerWeight
 	var cnx = instance.connect({
 		source:epSource, 
 		target:epTarget,
-		deleteEndpointsOnDetach:false,
+		/*deleteEndpointsOnDetach:false,*/
 		connectorStyle: { strokeStyle: color, lineWidth: lw }
 	});
 	if(cnx!=undefined){

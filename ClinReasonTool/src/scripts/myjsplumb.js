@@ -1,6 +1,5 @@
 var dynamicAnchors = [ "Left",  "Right" ];
-//var patDefX = 0;
-//var patDefY = 0; //{ left:0px;top:0px; }
+/*
 var fdgDefX = 0; //240;
 var fdgDefY = 0;
 
@@ -11,7 +10,7 @@ var tstDefY = 210;
 var mngDefX = 240;
 var mngDefY = 210;//420;
 var sumDefX = 0;
-var sumDefY = 420;
+var sumDefY = 420;*/
 
 var ep_right_prefix = "1_"; //e.g. 1_fdg_12345
 var ep_left_prefix = "2_";	
@@ -76,6 +75,9 @@ function initGroups(){
 }
 
 function createEndpointsForItems(itemId, endpointtmp){
+	var eps = instance.getEndpoints(itemId);
+	if(eps!=undefined) return; ///do not create endpoints again if they are already there, e.g. for boxes added by learner & expert
+	
 	if(itemId.startsWith("fdg") || itemId.startsWith("tst")){
 		//endpoint.id="hallo_"+itemId;
 		var ep = instance.addEndpoint(itemId, { anchor:"RightMiddle" }, endpointtmp);
@@ -129,10 +131,11 @@ function updateItemCallback(data, items, boxId){
     			   	  }
     			   });
     				addToGroup(id, item); //4.
+    				//initBoxHeight(boxId, items);
     				var pos = $(item).position();
     				var ep = instance.getEndpoints(id);
     				createEndpointsForItems(id, endpoint);
-    				initBoxHeight(boxId, items);
+    				
     				///instance.addEndpoint(id, { anchor:"RightMiddle" }, endpoint); //5.
 					/*if(id.startsWith("fdg") || id.startsWith("tst")){ //5.
 						instance.addEndpoint(id, { anchor:"RightMiddle" }, endpoint);
@@ -260,12 +263,33 @@ function deleteEndpoints(id){
 	}
 }
 
-//init box heights on loading
+/**init box heights on loading
+ * 
+ */
 function initBoxHeights(){
 	initBoxHeight("fdg_box", "fdgs");
 	initBoxHeight("ddx_box", "ddxs");
 	initBoxHeight("tst_box", "tests");
 	initBoxHeight("mng_box", "mngs");
+	sameHeightForNeigborBoxes();
+	//instance.repaintEverything();
+
+}
+function initExpBoxHeights(){
+	initBoxHeight("fdg_box", "expfdgs");
+	initBoxHeight("ddx_box", "expddxs");
+	initBoxHeight("tst_box", "exptests");
+	initBoxHeight("mng_box", "expmngs");
+	sameHeightForNeigborBoxes();
+	//instance.repaintEverything();
+}
+
+function sameHeightForNeigborBoxes(){
+	//make neighbor boxes the same height:
+	if($("#fdg_box").height()>$("#ddx_box").height()) $("#ddx_box").height($("#fdg_box").height());
+	if($("#ddx_box").height()>$("#fdg_box").height()) $("#fdg_box").height($("#ddx_box").height());
+	if($("#tst_box").height()>$("#mng_box").height()) $("#mng_box").height($("#mng_box").height());
+	if($("#mng_box").height()>$("#tst_box").height()) $("#tst_box").height($("#mng_box").height());
 }
 
 /**
@@ -274,6 +298,10 @@ function initBoxHeights(){
  * @param itemCls
  */
 function initBoxHeight(boxId, itemCls){
+	var storedHeight = -1;
+	if(boxId=="fdg_box" || boxId=="ddx_box") storedHeight = getBoxFdgDDXHeight();
+	if(boxId=="tst_box" || boxId=="mng_box") storedHeight = getBoxTstMngHeight();
+	
 	var itemArr = $("."+itemCls);
 	if(itemArr.length==0) return;
 	var maxY = 0;
@@ -282,8 +310,14 @@ function initBoxHeight(boxId, itemCls){
 		if(myY > maxY) maxY = myY;
 	}
 	if(maxY>400) maxY=400;
-	if(maxY>=200)
+	
+	if(maxY>=200 && $("#"+boxId).height()< maxY && maxY > storedHeight){
 		$("#"+boxId).height(maxY);
+		setBoxHeight(boxId, maxY);
+		return;
+	}
+	
+	if(storedHeight > $("#"+boxId).height()) $("#"+boxId).height(storedHeight);
 }
 
 

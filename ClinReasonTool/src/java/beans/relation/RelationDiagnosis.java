@@ -258,7 +258,7 @@ public class RelationDiagnosis extends Relation implements Serializable {
 		PatientIllnessScript learnerscript = NavigationController.getInstance().getCRTFacesContext().getPatillscript();
 		Graph g = NavigationController.getInstance().getCRTFacesContext().getGraph();
 		MultiVertex mv = g.getVertexByIdAndType(this.getListItemId(), Relation.TYPE_DDX);
-		if(mv.getExpertVertex()==null) return -1;
+		if(mv==null || mv.getExpertVertex()==null) return -1;
 		RelationDiagnosis expRel = (RelationDiagnosis) mv.getExpertVertex();
 		//if(isFinalDiagnosis() && learnerscript.getSubmittedStage()<=learnerscript.getStage()) return COLOR_FINAL;
 		

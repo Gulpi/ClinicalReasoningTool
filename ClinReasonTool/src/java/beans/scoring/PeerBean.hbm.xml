@@ -18,7 +18,9 @@
 		<property name="modificationDate" column="change_date" type="timestamp" />
 		<property name="peerNum" column="peer_num" type="int" />
 		<property name="stage" column="stage" type="int" />
-		<property name="scoreSum" column="score_sum" type="float" />
+		<property name="overallScoreSum" column="score_sum" type="float" />
+		<property name="orgScoreBasedOnExp" column="org_score_exp" type="float" />
+		<property name="scoreBasedOnExp" column="score_exp" type="float" />
 		
 		
 </class>

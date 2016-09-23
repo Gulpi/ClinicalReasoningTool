@@ -98,20 +98,27 @@ public class CRTFacesContext extends FacesContextWrapper /*implements Serializab
 		String setUserIdStr = AjaxController.getInstance().getRequestParamByKey(AjaxController.REQPARAM_USER);
 		String extUserId = AjaxController.getInstance().getRequestParamByKey(AjaxController.REQPARAM_USER_EXT);
 		int systemId = AjaxController.getInstance().getIntRequestParamByKey(AjaxController.REQPARAM_SYSTEM, -1);
-		if(setUserIdStr==null && extUserId==null) return;
+		if(setUserIdStr==null && extUserId==null){
+			//userHasChanged(); //just to be sure...
+			return;
+		}
 		//userIdStr is same as userId of loaded user -> return
 		if(user!=null && setUserIdStr!=null && user.getUserId()==Long.valueOf(setUserIdStr).longValue()) return; 
 		//extUserId of loaded user is same as extUserId -> return
 		if(user!=null && extUserId!=null && user.getExtUserId()!=null && user.getExtUserId().equals(extUserId)) return; 
-		if(setUserIdStr!=null && !setUserIdStr.trim().equals(""))
+		if(setUserIdStr!=null && !setUserIdStr.trim().equals("")){
 			user = new DBUser().selectUserById(Long.valueOf(setUserIdStr).longValue());
+			userHasChanged(); //user is different
+		}
 
 		else if(extUserId!=null && !extUserId.trim().equals("")){
 			user =  new UserController().getUser(systemId, extUserId);
+			userHasChanged(); //user is different
 			//if(u!=null) this.userId = u.getUserId();
 		}
 		if(user==null){
 			CRTLogger.out("Userid is null", CRTLogger.LEVEL_ERROR);
+			userHasChanged(); //just to be sure...
 			FacesContextWrapper.getCurrentInstance().addMessage("",new FacesMessage(FacesMessage.SEVERITY_ERROR, "userid is null",""));
 		}
 	}
@@ -140,6 +147,7 @@ public class CRTFacesContext extends FacesContextWrapper /*implements Serializab
 	}
 	
 	public LearningAnalyticsContainer getLearningAnalyticsContainer() {
+		setUser();
 		if(analyticsContainer==null) initLearningAnalyticsContainer();
 
 		return analyticsContainer;
@@ -323,6 +331,12 @@ public class CRTFacesContext extends FacesContextWrapper /*implements Serializab
 		setPatillscript(null);
 		this.graph = null;
 		this.feedbackContainer = null;
+	}
+	
+	private void userHasChanged(){
+		reset();
+		this.analyticsContainer = null;
+		this.scriptContainer = null;
 	}
 
 	@Override

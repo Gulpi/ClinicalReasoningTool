@@ -13,12 +13,14 @@
 	var mngdata = [];
 	var mngpeerdata = [];
 	<ui:repeat value="#{crtContext.learningAnalyticsContainer.mngScores}" var="scoreItem4">
-		mngdata.push({ x: "#{scoreItem4.vpId}", y: #{scoreItem4.orgScoreBasedOnExpPerc} });
+		mngdata.push({ x: "#{scoreItem4.vpId}", y: #{scoreItem4.scoreBasedOnExpPerc}, title: "#{scoreItem4.vpName}" });
 	</ui:repeat>
 	<ui:repeat value="#{crtContext.learningAnalyticsContainer.mngPeerScores}" var="scoreItemP">
-		mngpeerdata.push({ x: "#{scoreItemP.vpId}", y: #{scoreItemP.peerPercentagePerc} });
+		mngpeerdata.push({ x: "#{scoreItemP.vpId}", y: #{scoreItemP.expPeerPercentagePerc} , title: "#{scoreItemP.vpName}"});
 	</ui:repeat>
-	
-	printGroupedBarChart(mngdata, mngpeerdata, 150, 250, "mngchart","Management");
+	if(peerChk=="1")
+		printGroupedBarChart(mngdata, mngpeerdata, 150, 250, "mngchart","Management");
+	else 
+		printBarChart(mngdata, 150, 250, "mngchart","Management");	
 </script>
 </ui:composition>

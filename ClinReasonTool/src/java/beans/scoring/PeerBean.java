@@ -3,6 +3,8 @@ package beans.scoring;
 import java.beans.Beans;
 import java.sql.Timestamp;
 
+import application.AppBean;
+
 /**
  * A PeerBean models the peers responses for a single action or scoring.
  * @author ingahege
@@ -27,8 +29,17 @@ public class PeerBean extends Beans{
 	 * for all list scoring we store the sum of all scores of all peers here...
 	 * (for average score divide by the peerNum!)
 	 */
-	private float scoreSum;
+	private float overallScoreSum;
 	
+	/**
+	 * average of org scores (without seeing feedback)
+	 */
+	private float orgScoreBasedOnExp;
+	
+	/**
+	 * average of scores (no matter whether exp has been seen)
+	 */
+	private float scoreBasedOnExp; 
 	/**
 	 * Primarily needed for the list scoring actions which are based on each stage.
 	 * We could also calculate an median stage when an item was added....
@@ -55,18 +66,25 @@ public class PeerBean extends Beans{
 	public void setPeerNum(int peerNum) {this.peerNum = peerNum;}		
 	public long getId() {return id;}
 	public void setId(long id) {this.id = id;}	
-	public float getScoreSum() {return scoreSum;}
-	public void setScoreSum(float scoreSum) {this.scoreSum = scoreSum;}
+	public float getOverallScoreSum() {return overallScoreSum;}
+	public void setOverallScoreSum(float overallScoreSum) {this.overallScoreSum = overallScoreSum;}	
+	public float getOrgScoreBasedOnExp() {return orgScoreBasedOnExp;}
+	public void setOrgScoreBasedOnExp(float orgScoreBasedOnExp) {this.orgScoreBasedOnExp = orgScoreBasedOnExp;}
+	public float getScoreBasedOnExp() {return scoreBasedOnExp;}
+	public void setScoreBasedOnExp(float scoreBasedOnExp) {this.scoreBasedOnExp = scoreBasedOnExp;}	
 	public int getStage() {return stage;}
 	public void setStage(int stage) {this.stage = stage;}
 	
 	public PeerBean(){}
-	public PeerBean(int action, String vpId, int peerNum, float scoreSum, int stage){
+	public PeerBean(int action, String vpId, int peerNum, float overallScoreSum, int stage, float expScore, float orgExpScore){
 		this.action = action; 
 		//this.parentId = parentId;
 		this.peerNum = peerNum;
-		this.scoreSum = scoreSum;
+		this.overallScoreSum = overallScoreSum;
 		this.vpId = vpId;
+		this.orgScoreBasedOnExp = orgExpScore;
+		this.scoreBasedOnExp = expScore;
+		this.stage = stage;
 	}
 	
 	public PeerBean(int action, String vpId, int peerNum, long itemId){
@@ -92,9 +110,25 @@ public class PeerBean extends Beans{
 		modificationDate = new Timestamp(System.currentTimeMillis());
 	}
 	
-	public void incrScoreSum(float score){
-		if(score>=0) this.scoreSum += score;
-		if(this.scoreSum<0) this.scoreSum = 0;
+	public void incrScoreSums(float overallscore, float expScore, float orgExpScore){
+		incrScoreSum(overallscore);
+		incrExpScoreSum(expScore);
+		incrOrgExpScoreSum(orgExpScore);
+	}
+	
+	private void incrScoreSum(float score){
+		if(score>=0) this.overallScoreSum += score;
+		if(this.overallScoreSum<0) this.overallScoreSum = 0;
+	}
+	
+	private void incrExpScoreSum(float score){
+		if(score>=0) this.scoreBasedOnExp += score;
+		if(this.scoreBasedOnExp<0) this.scoreBasedOnExp = 0;
+	}
+	
+	private void incrOrgExpScoreSum(float score){
+		if(score>=0) this.orgScoreBasedOnExp += score;
+		if(this.orgScoreBasedOnExp<0) this.orgScoreBasedOnExp = 0;
 	}
 	
 	/**
@@ -103,7 +137,7 @@ public class PeerBean extends Beans{
 	 */
 	public float getPeerPercentage(){
 		if(peerNum<=0) return 0;
-		return (float) scoreSum/peerNum;
+		return (float) overallScoreSum/peerNum;
 	}
 
 	/**
@@ -112,7 +146,18 @@ public class PeerBean extends Beans{
 	 */
 	public int getPeerPercentagePerc(){
 		if(peerNum<=0) return 0;
-		return (int) (scoreSum/peerNum * 100);
+		return (int) (overallScoreSum/peerNum * 100);
+	}
+	
+	public int getExpPeerPercentagePerc(){
+		if(peerNum<=0) return 0;
+		int sum = (int) (this.scoreBasedOnExp/peerNum * 100);
+		return (int) (this.scoreBasedOnExp/peerNum * 100);
+	}
+	
+	public int getOrgExpPeerPercentagePerc(){
+		if(peerNum<=0) return 0;
+		return (int) (this.orgScoreBasedOnExp/peerNum * 100);
 	}
 	/**
 	 * How many peers have added this item in comparison to the overall number of peers who have created 
@@ -123,5 +168,9 @@ public class PeerBean extends Beans{
 	public float getPeerPercentage(int overallNum){
 		if(peerNum<=0 || overallNum<=0) return 0;
 		return (float) peerNum/overallNum;
+	}
+	
+	public String getVpName(){
+		return AppBean.getVPNameByParentId(vpId);
 	}
 }

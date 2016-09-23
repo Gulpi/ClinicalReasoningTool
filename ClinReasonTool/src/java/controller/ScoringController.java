@@ -122,7 +122,7 @@ public class ScoringController {
 	 * Before learner goes to the next stage (card) we score the lists he has created so far...
 	 * @param patIllScript
 	 */
-	public void scoringListsForStage(PatientIllnessScript patIllScript, int stage){
+	/*public void scoringListsForStage(PatientIllnessScript patIllScript, int stage){
 		if(stage<=0 || patIllScript.isExpScript()) return;
 		ScoringListAction scla = new ScoringListAction(patIllScript);
 		scla.scoreList(ScoreBean.TYPE_DDX_LIST, ScoreBean.TYPE_ADD_DDX);
@@ -133,7 +133,7 @@ public class ScoringController {
 		new ScoringCnxsAction(patIllScript).scoreConnections(stage);
 		//score summaryStatement at this stage: 
 		new ScoringSummStAction().scoreAction(patIllScript, stage);
-	}
+	}*/
 	
 	/**
 	 * Percentage of peers who have added the given item

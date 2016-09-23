@@ -78,12 +78,13 @@ public class IllnessScriptController implements Serializable{
 		try{
 			PeerBean peer = AppBean.getPeers().getPeerBeanByIllScriptCreationActionAndVpId(patillscript.getVpId());
 			if(peer==null){
-				peer = new PeerSyncController(AppBean.getPeers()).createNewPeerBean(ScoreBean.TYPE_SCRIPT_CREATION, patillscript.getVpId(), -1, 0, 0);
+				peer = new PeerSyncController(AppBean.getPeers()).createNewPeerBean(ScoreBean.TYPE_SCRIPT_CREATION, patillscript.getVpId(), -1, 0, 0, 0, 0);
 			}
 			else{
 				peer.incrPeerNum();
-				new DBScoring().saveAndCommit(peer);
+				//new DBScoring().saveAndCommit(peer);
 			}
+			new DBScoring().saveAndCommit(peer);
 		}
 		catch(Exception e){
 			CRTLogger.out("IllnessScriptController.addScriptCreationToPeerBean:" + StringUtilities.stackTraceToString(e) , CRTLogger.LEVEL_ERROR);

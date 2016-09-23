@@ -54,4 +54,14 @@ public class PatIllScriptContainer implements Serializable{
 		}
 		return lastSubmittedScripts;		
 	}
+	
+	public PatientIllnessScript getScriptById(String vpId){
+		if(scriptsOfUser==null || scriptsOfUser.isEmpty()) return null;
+		Iterator<PatientIllnessScript> it = scriptsOfUser.iterator();
+		while(it.hasNext()){			
+			PatientIllnessScript pi = it.next();
+			if(pi.getVpId().equals(vpId)) return pi;
+		}
+		return null;
+	}
 }

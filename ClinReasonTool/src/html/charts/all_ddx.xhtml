@@ -13,14 +13,15 @@
 var ddxdata = [];
 var ddxpeerdata = [];
 <ui:repeat value="#{crtContext.learningAnalyticsContainer.DDXScores}" var="scoreItem2">
-	ddxdata.push({x:"#{scoreItem2.vpId}", y:#{scoreItem2.orgScoreBasedOnExpPerc} });
+	ddxdata.push({x:"#{scoreItem2.vpId}", y:#{scoreItem2.scoreBasedOnExpPerc}, title: "#{scoreItem4.vpName}" });
 </ui:repeat>
 <ui:repeat value="#{crtContext.learningAnalyticsContainer.DDXPeerScores}" var="scoreItemP">
-	ddxpeerdata.push({x:"#{scoreItemP.vpId}", y:#{scoreItemP.peerPercentagePerc} });
+	ddxpeerdata.push({x:"#{scoreItemP.vpId}", y:#{scoreItemP.expPeerPercentagePerc} , title: "#{scoreItemP.vpName}"});
 </ui:repeat>
-ddxdata.push({x:"1313", y:63});
-ddxpeerdata.push({x:"1313", y:84});
 
-printGroupedBarChart(ddxdata, ddxpeerdata, 150, 250,  "ddxchart","Differentials");
+if(peerChk=="1")
+	printGroupedBarChart(ddxdata, ddxpeerdata, 150, 250,  "ddxchart","Differentials");
+else 
+	printBarChart(ddxdata, 150, 250, "ddxchart","Differentials");
 </script>
 </ui:composition>

@@ -3,6 +3,7 @@ package actions.beanActions;
 import java.beans.Beans;
 import java.util.*;
 
+import actions.scoringActions.ScoringCnxsAction;
 import beans.LogEntry;
 import beans.scripts.*;
 import beans.graph.Graph;
@@ -61,11 +62,16 @@ public class DelConnectionAction /*implements DelAction*/{
 		}
 	}
 	
+	protected void deleteConns(long id){
+		deleteConnsByStartId(id);
+		deleteConnsByTargetId(id);
+		new ScoringCnxsAction(patIllScript).scoreConnections(patIllScript.getCurrentStage());
+	}
 	/**
 	 * Called when we delete a problem -> we check for existing connections and delete them as well.
 	 * @param sourceId
 	 */
-	protected void deleteConnsByStartId(long startId){
+	private void deleteConnsByStartId(long startId){
 		List<Connection> connsToDelete =  getConnsToDelByStartId(startId);
 		List<LogEntry> logs = new ArrayList<LogEntry>();
 		if(connsToDelete==null) return;
@@ -83,7 +89,7 @@ public class DelConnectionAction /*implements DelAction*/{
 	 * Called when we delete a problem -> we check for existing connections and delete them as well.
 	 * @param sourceId
 	 */
-	protected void deleteConnsByTargetId(long targetId){
+	private void deleteConnsByTargetId(long targetId){
 		List<Connection> connsToDelete =  getConnsToDelByTargetId(targetId);
 		List<LogEntry> logs = new ArrayList<LogEntry>();
 		if(connsToDelete==null) return;

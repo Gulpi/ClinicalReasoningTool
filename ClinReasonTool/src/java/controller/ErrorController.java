@@ -42,7 +42,7 @@ public class ErrorController {
 	 * @param patIllScript
 	 */
 	private void checkPrematureClosure(PatientIllnessScript expIllScript, PatientIllnessScript patIllScript){		
-		if(patIllScript.getSubmittedStage()< expIllScript.getSubmittedStage()){
+		if(patIllScript.getSubmittedStage() < expIllScript.getSubmittedStage()){
 			PrematureClosure pcl =  new PrematureClosure(patIllScript.getId(), patIllScript.getCurrentStage());
 			if(patIllScript.addError(pcl)) //we save only if this is a new error that has not previously occured at this stage
 				new DBClinReason().saveAndCommit(pcl);	

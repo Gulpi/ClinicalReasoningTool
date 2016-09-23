@@ -35,16 +35,17 @@ public class ScoringListAction {
 	 * This is probably not for feedback, just for LA- relevant scoring
 	 */
 	public void scoreList(int listType, int relType){
+		if(patillscript.isExpScript()) return;
 		Graph g = new NavigationController().getCRTFacesContext().getGraph();
 		List<MultiVertex> mvertices = g.getVerticesByType(relType);
 		if(mvertices==null) return; //neither learner nor expert has added items
 		ScoreContainer scoreContainer = new NavigationController().getCRTFacesContext().getScoreContainer();		
 		ScoreBean scoreBean = scoreContainer.getListScoreBeanByStage(listType, patillscript.getCurrentStage());
 		if(scoreBean!=null) return; //already scored....
-		//if(scoreBean==null){
+		if(scoreBean==null){
 			scoreBean = new ScoreBean(patillscript, -1, listType);
 			scoreContainer.addScore(scoreBean);
-		//}
+		}
 		
 		calculateListScoreBasedOnExpert(mvertices, scoreBean, scoreContainer);	
 		//calculateStrictListScoreBasedOnExpert(mvertices, scoreBean, scoreContainer);	

@@ -66,6 +66,7 @@ public class LearningAnalyticsContainer implements Serializable{
 		while(it.hasNext()){
 			ScoreBean score = it.next();
 			LearningAnalyticsBean lab =  getLearningAnalyticsBeanByPatIllScriptId(score.getPatIllScriptId(), score.getVpId());
+			if(lab==null) lab = initLearningAnalyticsBean(score.getPatIllScriptId(), score.getVpId());
 			if(lab!=null) lab.getScoreContainer().addScore(score);
 			else{
 				CRTLogger.out("", CRTLogger.LEVEL_ERROR);
@@ -75,7 +76,7 @@ public class LearningAnalyticsContainer implements Serializable{
 	}
 	
 	public LearningAnalyticsBean getLearningAnalyticsBeanByPatIllScriptId(long patIllScriptId, String vpId){
-		if(analytics==null || analytics.isEmpty()) initLearningAnalyticsBean(patIllScriptId, vpId);
+		if(analytics==null || analytics.isEmpty()) return null;
 		return analytics.get(new Long(patIllScriptId));
 	}
 	
@@ -84,8 +85,11 @@ public class LearningAnalyticsContainer implements Serializable{
 	 * @param patIllScriptId
 	 * @param parentId
 	 */
-	private void initLearningAnalyticsBean(long patIllScriptId, String vpId){
-		analytics.put(new Long(patIllScriptId), new LearningAnalyticsBean(patIllScriptId, userId, vpId));
+	private LearningAnalyticsBean initLearningAnalyticsBean(long patIllScriptId, String vpId){
+		LearningAnalyticsBean lab = new LearningAnalyticsBean(patIllScriptId, userId, vpId);
+		if(analytics==null) initLearningAnalyticsContainer();
+		analytics.put(new Long(patIllScriptId), lab);
+		return lab;
 	}
 	
 	public void addLearningAnalyticsBean(long patIllScriptId, String vpId){
@@ -105,7 +109,9 @@ public class LearningAnalyticsContainer implements Serializable{
 	public void identifyAreaOfWeakness(){}
 	public void identifyAreaOfStrenght(){}
 	
-	public List<ScoreBean> getProblemScores(){ return getListScores(ScoreBean.TYPE_PROBLEM_LIST); }
+	public List<ScoreBean> getProblemScores(){ 
+		return getListScores(ScoreBean.TYPE_PROBLEM_LIST); 
+	}
 	public List<ScoreBean> getDDXScores(){ 
 		//TODO: we have to combine it with the final diagnosis score!
 		return getListScores(ScoreBean.TYPE_DDX_LIST);
@@ -135,17 +141,23 @@ public class LearningAnalyticsContainer implements Serializable{
 	 * returns all PeerBean problem list objects for the learner's scripts
 	 * @return
 	 */
-	public List<PeerBean> getProblemPeerScores(){ return getPeerScores(ScoreBean.TYPE_PROBLEM_LIST);}
-	public List<PeerBean> getDDXPeerScores(){ return getPeerScores(ScoreBean.TYPE_DDX_LIST);}
-	public List<PeerBean> getTestPeerScores(){ return getPeerScores(ScoreBean.TYPE_TEST_LIST);}
-	public List<PeerBean> getMngPeerScores(){ return getPeerScores(ScoreBean.TYPE_MNG_LIST);}
-	public List<PeerBean> getSumPeerScores(){ return getPeerScores(ScoreBean.TYPE_SUMMST);}
-	public List<PeerBean> getOverallPeerScores(){ return getPeerScores(ScoreBean.TYPE_OVERALL_SCORE);}
-	
-	private List<PeerBean> getPeerScores(int type){
+	public List<PeerBean> getProblemPeerScores(){ 
+		return getPeerScoresLastStage(ScoreBean.TYPE_PROBLEM_LIST);}
+	public List<PeerBean> getDDXPeerScores(){ return getPeerScoresLastStage(ScoreBean.TYPE_DDX_LIST);}
+	public List<PeerBean> getTestPeerScores(){ return getPeerScoresLastStage(ScoreBean.TYPE_TEST_LIST);}
+	public List<PeerBean> getMngPeerScores(){ return getPeerScoresLastStage(ScoreBean.TYPE_MNG_LIST);}
+	public List<PeerBean> getSumPeerScores(){ return getPeerScoresLastStage(ScoreBean.TYPE_SUMMST);}
+	public List<PeerBean> getOverallPeerScores(){ 
 		if(AppBean.getPeers()==null) return null;
 		PatIllScriptContainer cont = new NavigationController().getCRTFacesContext().getScriptContainer();
-		return AppBean.getPeers().getPeerBeansByAction(type, cont);
+		return AppBean.getPeers().getPeerBeansByAction(ScoreBean.TYPE_OVERALL_SCORE, cont);
+		//return getPeerScores(ScoreBean.TYPE_OVERALL_SCORE);
+	}
+	
+	private List<PeerBean> getPeerScoresLastStage(int type){
+		if(AppBean.getPeers()==null) return null;
+		PatIllScriptContainer cont = new NavigationController().getCRTFacesContext().getScriptContainer();
+		return AppBean.getPeers().getPeerBeansByActionLastStage(type, cont);
 	}
 	/**
 	 * We take the list score of the last stage for every scripts of the learner
@@ -191,6 +203,7 @@ public class LearningAnalyticsContainer implements Serializable{
 	/**
 	 * We provide the VP names in a json string so that we can use the names as tooltips for the  charts.
 	 * (more helpful for learner than the Vp ids...)
+	 * @deprecated
 	 * @return
 	 */
 	public String getVPNamesToJson(){

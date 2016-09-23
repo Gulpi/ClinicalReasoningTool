@@ -25,6 +25,7 @@ public class ScoringFinalDDXAction /*implements ScoringAction*/{
 	 * @param patIllScriptId
 	 */
 	public float scoreAction(long listItem, PatientIllnessScript patIllScript){
+		if(patIllScript.isExpScript()) return -1;
 		NavigationController nav = new NavigationController();
 		Graph g = nav.getCRTFacesContext().getGraph();
 		

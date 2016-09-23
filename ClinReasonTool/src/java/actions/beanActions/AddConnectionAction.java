@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import actions.scoringActions.Scoreable;
 import actions.scoringActions.ScoringAddCnxAction;
+import actions.scoringActions.ScoringCnxsAction;
 import application.ErrorMessageContainer;
 import beans.scripts.*;
 import beans.graph.Graph;
@@ -97,6 +98,8 @@ public class AddConnectionAction implements Scoreable{
 	 */
 	public void triggerScoringAction(Beans cnx, boolean isJoker) {
 		new ScoringAddCnxAction().scoreAction(((Connection)cnx).getId(), this.patIllScript, isJoker);
+		new ScoringCnxsAction(patIllScript).scoreConnections(patIllScript.getCurrentStage());
+
 		
 	}
 

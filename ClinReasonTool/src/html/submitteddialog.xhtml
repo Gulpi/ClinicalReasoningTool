@@ -14,7 +14,7 @@
 			$(".aftersubmit_fail").hide();
 			$(".errors").hide();
 			//submitted = "true";
-			//postEnforceFinalDDXSubmission(submitted, myStage, maxSubmittedStage);
+			postEnforceFinalDDXSubmission(submitted/*, myStage, maxSubmittedStage*/);
 		}
 		else{
 			$(".aftersubmit_fail").show();	
@@ -65,7 +65,7 @@
 				<li class="aftersubmit_cont_#{crtContext.patillscript.offerContinueCase}"><i class="fa-li fa fa-arrow-rightb"></i> <a class="aftersubmit_cont_#{crtContext.patillscript.offerContinueCase}" href="javascript:backToCase();">#{prop['submit.cont']}</a></li><!--  (not max stage OR correct) -->
 				<li class="aftersubmit_cont_#{crtContext.patillscript.offerTryAgain}"><i class="fa-li fa fa-arrow-rightb"></i> <a class="aftersubmit_cont_#{crtContext.patillscript.offerTryAgain}" href="javascript:tryAgain();">#{prop['submit.try']}</a></li><!-- (max stage) -->
 				<li class="aftersubmit_cont_#{crtContext.patillscript.offerSolution}"><i class="fa-li fa fa-arrow-rightb"></i> <a class="aftersubmit_cont_#{crtContext.patillscript.offerSolution}" href="javascript:showSolution();">#{prop['submit.sol']}</a></li> <!--  (max stage only) -->
-				<li class="aftersubmit_cont_#{crtContext.patillscript.offerSolution}"><i class="fa-li fa fa-arrow-rightb"></i> <a class="aftersubmit_cont_#{crtContext.patillscript.offerSolution}" href="javascript:giveHint();">#{prop['submit.hint']}</a></li> <!--  (max stage only) -->
+				<!-- <li class="aftersubmit_cont_#{crtContext.patillscript.offerSolution}"><i class="fa-li fa fa-arrow-rightb"></i> <a class="aftersubmit_cont_#{crtContext.patillscript.offerSolution}" href="javascript:giveHint();">#{prop['submit.hint']}</a></li> -->
 			</ul>
 			</span>
 			

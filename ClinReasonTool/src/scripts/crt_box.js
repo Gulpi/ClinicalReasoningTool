@@ -286,6 +286,7 @@ function revertSubmissionCallback(){
 	//$(".tier_4").prop( "checked", false );
 	//toggleBefAfterSubmit(false);
 	checkSubmitBtn();
+	postEnforceFinalDDXSubmission("false");
 	$("[id='ddxform:hiddenDDXButton']").click();
 }
 
@@ -294,6 +295,7 @@ function revertSubmissionCallback(){
  */
 function tryAgain(){
 	//toggleBefAfterSubmit(false);
+	
 	sendAjax("", tryAgainCallback, "resetFinalDDX","");
 }
 
@@ -304,6 +306,7 @@ function tryAgainCallback(){
 	//$(".tier_4").prop( "checked", false );
 	//toggleBefAfterSubmit(false);
 	//checkSubmitBtn();
+	postEnforceFinalDDXSubmission("false");
 	$("#jdialog").load("submitdialog.xhtml");
 	$("[id='ddxform:hiddenDDXButton']").click();
 }
@@ -318,8 +321,8 @@ function showSolution(){
 function showSolutionCallBack(){
 	$("#jdialog" ).dialog( "close" );
 	if(!isOverallExpertOn())
-			turnOverallExpFeedbackOn('expFeedback', 'icon-user-md'); //show expert feedback with then the final diagnoses/-is
-	
+		turnOverallExpFeedbackOn('expFeedback', 'icon-user-md'); //show expert feedback with then the final diagnoses/-is
+	postEnforceFinalDDXSubmission("true");
 	$("[id='ddxform:hiddenDDXButton']").click();
 }
 

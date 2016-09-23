@@ -152,45 +152,31 @@ public class PeerContainer {
 	 * @param sc
 	 * @return
 	 */
-	public List<PeerBean> getPeerBeansByAction(int action, PatIllScriptContainer sc){
+	public List<PeerBean> getPeerBeansByActionLastStage(int action, PatIllScriptContainer sc){
 		if(peerBeans==null || sc==null || sc.getScriptsOfUser()==null) return null;
 		List<PeerBean> peerBeansForAction = new ArrayList<PeerBean>();
 		Iterator<PatientIllnessScript> it = sc.getScriptsOfUser().iterator();
 		while (it.hasNext()){			
 			List<PeerBean> beans = peerBeans.get(it.next().getVpId());
-			PeerBean bean = getListPeerBeanOfLastStage(action, beans);
+			PeerBean bean = getPeerBeanOfLastStage(action, beans);
 			if(bean!=null) peerBeansForAction.add(bean);
-			/*for(int i=0; i<beans.size(); i++){
-				PeerBean pb = beans.get(i);
-				if(pb.getAction()==action){
-					peerBeansForAction.add(pb);
-					break;
-				}				
-			}*/
 		}
 		return peerBeansForAction;
 	}
 	
 	/**
-	 * returns all peerBeans for all scripts - maybe for later use, this is also something that can be cached!
+	 * returns peerBeans fro actions that are independent from stage (e.g. overall performance)
 	 * @param action
 	 * @return
 	 */
-	public List<PeerBean> getPeerBeansByAction(int action){
-		if(peerBeans==null) return null;
+	public List<PeerBean> getPeerBeansByAction(int action, PatIllScriptContainer sc){
+		if(peerBeans==null || sc==null || sc.getScriptsOfUser()==null) return null;
 		List<PeerBean> peerBeansForAction = new ArrayList<PeerBean>();		
-		Iterator<List<PeerBean>> it = peerBeans.values().iterator();
-		while (it.hasNext()){
-			List<PeerBean> beans = it.next();
-			PeerBean bean = getListPeerBeanOfLastStage(action, beans);
+		Iterator<PatientIllnessScript> it = sc.getScriptsOfUser().iterator();
+		while (it.hasNext()){			
+			List<PeerBean> beans = peerBeans.get(it.next().getVpId());
+			PeerBean bean = getPeerBean(action, beans);
 			if(bean!=null) peerBeansForAction.add(bean);
-			/*for(int i=0; i<beans.size(); i++){
-				PeerBean pb = beans.get(i);
-				if(pb.getAction()==action){
-					peerBeansForAction.add(pb);
-					break;
-				}				
-			}*/
 		}
 		return peerBeansForAction;
 	}
@@ -200,13 +186,30 @@ public class PeerContainer {
 	 * @param type
 	 * @return
 	 */
-	private PeerBean getListPeerBeanOfLastStage(int type, List<PeerBean> beans){
+	private PeerBean getPeerBeanOfLastStage(int type, List<PeerBean> beans){
 		if(beans==null || beans.isEmpty()) return null;
 		Iterator<PeerBean> it = beans.iterator();
 		PeerBean lastBean = null;
 		while(it.hasNext()){
 			PeerBean pb = it.next(); 
 			if(pb.getAction()==type && (lastBean==null || pb.getStage()>lastBean.getStage()))
+				lastBean= pb;
+		}
+		return lastBean;
+	}
+	
+	/**
+	 * Returns the list score of the given type at the final stage of a case. (either end of case or the stage the learner was last on)
+	 * @param type
+	 * @return
+	 */
+	private PeerBean getPeerBean(int type, List<PeerBean> beans){
+		if(beans==null || beans.isEmpty()) return null;
+		Iterator<PeerBean> it = beans.iterator();
+		PeerBean lastBean = null;
+		while(it.hasNext()){
+			PeerBean pb = it.next(); 
+			if(pb.getAction()==type /*&& (lastBean==null || pb.getStage()>lastBean.getStage())*/)
 				lastBean= pb;
 		}
 		return lastBean;

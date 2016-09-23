@@ -423,7 +423,8 @@ public class PatientIllnessScript extends Beans/*extends Node*/ implements Illne
 			int stageNum = Integer.valueOf(stage);
 			this.stage = stageNum; //we always update the stage
 			if(stageNum > this.currentStage){
-				new ScoringController().scoringListsForStage(this, currentStage);
+				//now done for each action, because otherwise we have no accurate score if user just quits...
+				//new ScoringController().scoringListsForStage(this, currentStage);
 				this.setCurrentStage(stageNum);	
 				save();
 			}

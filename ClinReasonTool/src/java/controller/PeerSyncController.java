@@ -76,12 +76,19 @@ public class PeerSyncController {
 			ScoreBean score = scores.get(i);
 			if(score.isListScoreBean()){ //we only consider list scoring here!
 				PeerBean peerBean = peerCont.getPeerBeanByVpIdActionAndStage(score.getType(), score.getStage(), vpId);
-				if(peerBean==null) peerBean = createNewPeerBean(score.getType(), vpId, -1, score.getScoreBasedOnIllScript(), score.getStage());
+				if(peerBean==null){
+					//	protected PeerBean createNewPeerBean(int action, String vpId, long itemId, float score, int stage, float expScore, float orgExpScore){
+
+					peerBean = createNewPeerBean(score.getType(), vpId, -1, score.getOverallScore(), score.getStage(), score.getScoreBasedOnExp(), score.getOrgScoreBasedOnExp());
+					//peerCont.addPeerBean(peerBean, vpId);
+				}
 				else{
 					peerBean.incrPeerNum();
-					peerBean.incrScoreSum(score.getOrgScoreBasedOnExp());
-					new DBScoring().saveAndCommit(peerBean);
+					peerBean.incrScoreSums(score.getOverallScore(), score.getScoreBasedOnExp(), score.getOrgScoreBasedOnExp());
+					//peerBean.incrExpScoreSum(score.getScoreBasedOnExp());
+					//new DBScoring().saveAndCommit(peerBean);
 				}
+				new DBScoring().saveAndCommit(peerBean);
 			}
 		}
 	}
@@ -107,9 +114,13 @@ public class PeerSyncController {
 		if(pbs==null || pbs.isEmpty()){
 			peerBean = new PeerBean(ScoreBean.TYPE_SUMMST, vpId, 0, -1);			
 		}
-		else peerBean = pbs.get(0);
-		peerBean.incrPeerNum();
-		peerBean.incrScoreSum(sumScore.getScoreBasedOnExp());
+		else{
+			peerBean = pbs.get(0);
+		
+			peerBean.incrPeerNum();
+			peerBean.incrScoreSums(sumScore.getOverallScore(), sumScore.getScoreBasedOnExp(), sumScore.getOrgScoreBasedOnExp());
+		}
+		new DBScoring().saveAndCommit(peerBean);
 	}
 	
 	private void syncOverallScore(LearningAnalyticsBean lab, String vpId){
@@ -124,11 +135,16 @@ public class PeerSyncController {
 		List<PeerBean> pbs = peerCont.getPeerBeansByActionAndVpId(vpId, ScoreBean.TYPE_OVERALL_SCORE);
 		PeerBean peerBean = null;
 		if(pbs==null || pbs.isEmpty()){
-			peerBean = new PeerBean(ScoreBean.TYPE_OVERALL_SCORE, vpId, 0, -1);			
+			peerBean = new PeerBean(ScoreBean.TYPE_OVERALL_SCORE, vpId, 0, -1);	
+			peerCont.addPeerBean(peerBean, vpId);
 		}
-		else peerBean = pbs.get(0);
-		peerBean.incrPeerNum();
-		peerBean.incrScoreSum(overallScore.getScoreBasedOnExp());	
+		else{
+			peerBean = pbs.get(0);
+			peerBean.incrPeerNum();
+			peerBean.incrScoreSums(overallScore.getOverallScore(), overallScore.getScoreBasedOnExp(), overallScore.getOrgScoreBasedOnExp());
+		}
+		new DBScoring().saveAndCommit(peerBean);
+		//peerBean.incrScoreSum(overallScore.getScoreBasedOnExp());	
 	}
 		
 	/**
@@ -145,12 +161,15 @@ public class PeerSyncController {
 			Relation rel = (Relation) rels.get(i);
 			PeerBean peerBean = peerCont.getPeerBeanByActionVpIdAndItemId(rel.getRelationType(), vpId, rel.getListItemId());
 			if(peerBean==null){
-				peerBean = createNewPeerBean(rel.getRelationType(), vpId,  rel.getListItemId(), 0);				
+				//createNewPeerBean(int action, String vpId, long itemId, float score, int stage, float expScore, float orgExpScore){
+
+				peerBean = createNewPeerBean(rel.getRelationType(), vpId,  rel.getListItemId(), 0, -1, 0, 0);				
 			}
 			else{
 				peerBean.incrPeerNum();
-				new DBScoring().saveAndCommit(peerBean);
+				//new DBScoring().saveAndCommit(peerBean);
 			}
+			new DBScoring().saveAndCommit(peerBean);
 		}
 	}
 	
@@ -161,17 +180,17 @@ public class PeerSyncController {
 	 * @param patIllScriptId
 	 * @return
 	 */
-	protected PeerBean createNewPeerBean(int action, String vpId, long itemId, float score, int stage){
-		PeerBean pb = new PeerBean(action, vpId, 1, itemId);
-		pb.setScoreSum(score);
-		pb.setStage(stage);
-		new DBScoring().saveAndCommit(pb);
+	protected PeerBean createNewPeerBean(int action, String vpId, long itemId, float score, int stage, float expScore, float orgExpScore){
+
+		PeerBean pb = new PeerBean(action, vpId, 1, score, stage, expScore, orgExpScore);
+		pb.setItemId(itemId);		
+		//new DBScoring().saveAndCommit(pb);
 		cont.addPeerBean(pb, vpId);
 		return pb;
 	}
 	
 	
-	private PeerBean createNewPeerBean(int action, String vpId, long itemId, float score){
-		return createNewPeerBean(action, vpId, itemId, score, -1);
-	}
+	/*private PeerBean createNewPeerBean(int action, String vpId, long itemId, float score, float expScore, float orgExpScore){
+		return createNewPeerBean(action, vpId, itemId, score, -1, expScore, orgExpScore);
+	}*/
 }

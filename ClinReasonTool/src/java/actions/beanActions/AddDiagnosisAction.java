@@ -135,8 +135,7 @@ public class AddDiagnosisAction implements AddAction, Scoreable{
 	 */
 	public void triggerScoringAction(Beans relDDX, boolean isJoker){
 		new ScoringAddAction().scoreAction(((RelationDiagnosis) relDDX).getListItemId(), this.patIllScript, isJoker, Relation.TYPE_DDX);
-		//new ScoringListAction(this.patIllScript).scoreList(ScoreBean.TYPE_DDX_LIST, Relation.TYPE_DDX);
-
+		new ScoringListAction(patIllScript).scoreList(ScoreBean.TYPE_DDX_LIST, ScoreBean.TYPE_ADD_DDX);
 	}
 	
 	/* (non-Javadoc)

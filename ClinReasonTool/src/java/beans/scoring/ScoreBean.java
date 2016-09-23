@@ -7,8 +7,11 @@ import java.sql.Timestamp;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 
+import application.AppBean;
 import beans.relation.Relation;
+import beans.scripts.PatIllScriptContainer;
 import beans.scripts.PatientIllnessScript;
+import controller.NavigationController;
 
 /**
  * This is a single score for a specific action in an patientIllnessScript, such as an added problem or the summary 
@@ -68,7 +71,7 @@ public class ScoreBean extends Beans implements Serializable{
 	 * percentage of other users who have chosen this item, or average score of peers....
 	 */
 	private float scoreBasedOnPeer = -1;
-	private float scoreBasedOnIllScript = -1;
+	//private float scoreBasedOnIllScript = -1;
 	/**
 	 * We can calculate an overall score based on the components expert, peer, illScript,...
 	 */
@@ -156,8 +159,8 @@ public class ScoreBean extends Beans implements Serializable{
 		this.scoreBasedOnPeer = scoreBasedOnPeer;
 		calculateOverallScore();
 	}
-	public float getScoreBasedOnIllScript() {return scoreBasedOnIllScript;}
-	public void setScoreBasedOnIllScript(float scoreBasedOnIllScript) {this.scoreBasedOnIllScript = scoreBasedOnIllScript;}
+	//public float getScoreBasedOnIllScript() {return scoreBasedOnIllScript;}
+	//public void setScoreBasedOnIllScript(float scoreBasedOnIllScript) {this.scoreBasedOnIllScript = scoreBasedOnIllScript;}
 	public long getScoredItem() {return scoredItem;}
 	public void setScoredItem(long scoredItem) {this.scoredItem = scoredItem;}
 	public int getType() {return type;}
@@ -217,6 +220,10 @@ public class ScoreBean extends Beans implements Serializable{
 	 */
 	private void calculateOverallScore(){
 		setOverallScore(getScoreBasedOnExp());
+	}
+	
+	public String getVpName(){
+		return AppBean.getVPNameByParentId(vpId);
 	}
 	
 }

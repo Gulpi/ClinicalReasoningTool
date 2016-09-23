@@ -48,7 +48,7 @@ public class DelEpiAction implements DelAction{
 		new ActionHelper().reOrderItems(patIllScript.getEpis());		
 		notifyLog(rel);
 		updateGraph(rel);
-		new DelConnectionAction(patIllScript).deleteConnsByStartId(rel.getId());
+		new DelConnectionAction(patIllScript).deleteConns(rel.getId());
 		save(rel);
 		
 	}

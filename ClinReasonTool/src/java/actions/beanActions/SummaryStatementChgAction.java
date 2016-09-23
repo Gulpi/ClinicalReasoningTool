@@ -2,6 +2,7 @@ package actions.beanActions;
 
 import java.beans.Beans;
 
+import actions.scoringActions.ScoringSummStAction;
 import beans.LogEntry;
 import beans.relation.SummaryStatement;
 import beans.scripts.*;
@@ -69,6 +70,7 @@ public class SummaryStatementChgAction /*extends ChgAction*/{
 		patIllScript.getSummSt().setText(text);
 		save(patIllScript.getSummSt());
 		notifyLogUpdate(patIllScript.getSummSt(), patIllScript.getSummSt().getId());
+		new ScoringSummStAction().scoreAction(patIllScript, patIllScript.getCurrentStage());
 	}
 	
 	/* (non-Javadoc)

@@ -14,11 +14,14 @@
 	var testdata = [];
 	var testpeerdata = [];
 	<ui:repeat value="#{crtContext.learningAnalyticsContainer.testScores}" var="scoreItem3">
-		testdata.push({ x: "#{scoreItem3.vpId}", y: #{scoreItem3.orgScoreBasedOnExpPerc} });
+		testdata.push({ x: "#{scoreItem3.vpId}", y: #{scoreItem3.scoreBasedOnExpPerc}, title: "#{scoreItem3.vpName}" });
 	</ui:repeat>
 	<ui:repeat value="#{crtContext.learningAnalyticsContainer.testPeerScores}" var="scoreItemP">
-		testpeerdata.push({ x: "#{scoreItemP.vpId}", y: #{scoreItemP.peerPercentagePerc} });
+		testpeerdata.push({ x: "#{scoreItemP.vpId}", y: #{scoreItemP.expPeerPercentagePerc}, title: "#{scoreItemP.vpName}" });
 	</ui:repeat>
-	printGroupedBarChart(testdata, testpeerdata, 150, 250, "testchart","Diagnostic steps");
+	if(peerChk=="1")
+		printGroupedBarChart(testdata, testpeerdata, 150, 250, "testchart","Diagnostic steps");
+	else 
+		printBarChart(testdata, 150, 250, "testchart","Diagnostic steps");
 </script>
 </ui:composition>

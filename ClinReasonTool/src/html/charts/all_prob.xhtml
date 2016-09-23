@@ -13,19 +13,15 @@
 	var probdata = [];//[1212,0.1]; //{key:"stud", bar:true, values:[1212,1]};	
 	var probpeerdata = []; //[{1212,0.5}]; //{key:"peer", values: [1212,1]};
 	<ui:repeat value="#{crtContext.learningAnalyticsContainer.problemScores}" var="scoreItem">
-		probdata.push({x:"#{scoreItem.vpId}", y:#{scoreItem.orgScoreBasedOnExpPerc}});
+		probdata.push({x:"#{scoreItem.vpId}", y:#{scoreItem.scoreBasedOnExpPerc}, title: "#{scoreItem4.vpName}"});
 		</ui:repeat>
 	<ui:repeat value="#{crtContext.learningAnalyticsContainer.problemPeerScores}" var="scoreItemP">
-		probpeerdata.push({x:"#{scoreItemP.vpId}", y:#{scoreItemP.peerPercentagePerc}});
+		probpeerdata.push({x:"#{scoreItemP.vpId}", y:#{scoreItemP.expPeerPercentagePerc}, title: "#{scoreItemP.vpName}"});
 	</ui:repeat>
-	//printBarChar(150, 250, probdata, "probchart", "Problems");
-	probdata.push({x:"1313", y:63});
-	probpeerdata.push({x:"1313", y:84});
-	probdata.push({x:"1314", y:63});
-	probpeerdata.push({x:"1314", y:94});
-	probdata.push({x:"1315", y:33});
-	probpeerdata.push({x:"1315", y:44});
-
-	printGroupedBarChart(probdata, probpeerdata, 150, 250, "probchart", "Problems");
+	if(peerChk=="1"){
+		printGroupedBarChart(probdata, probpeerdata, 150, 250, "probchart", "Problems");
+	}
+	else 
+		printBarChart(probdata, 150, 250, "probchart","Problems");
 </script>
 </ui:composition>

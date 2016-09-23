@@ -2,11 +2,13 @@ package actions.beanActions;
 
 import java.util.*;
 
+import actions.scoringActions.ScoringListAction;
 import beans.LogEntry;
 import beans.scripts.*;
 import beans.graph.Graph;
 import beans.graph.MultiVertex;
 import beans.relation.*;
+import beans.scoring.ScoreBean;
 import beans.scripts.IllnessScriptInterface;
 import controller.NavigationController;
 import database.DBClinReason;
@@ -48,8 +50,10 @@ public class DelMngAction implements DelAction{
 		updateGraph(rel);
 		new ActionHelper().reOrderItems(patIllScript.getMngs());		
 		notifyLog(rel);
-		new DelConnectionAction(patIllScript).deleteConnsByTargetId(rel.getId());
+		new DelConnectionAction(patIllScript).deleteConns(rel.getId());
 		save(rel);
+		new ScoringListAction(this.patIllScript).scoreList(ScoreBean.TYPE_MNG_LIST, Relation.TYPE_MNG);
+
 	}
 	
 	/* (non-Javadoc)

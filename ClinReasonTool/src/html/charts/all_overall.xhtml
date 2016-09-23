@@ -16,13 +16,13 @@
 var overalldata = [];
 var overallpeerdata = [];
 <ui:repeat value="#{crtContext.learningAnalyticsContainer.overallScores}" var="scoreItem4">
-overalldata.push({ x: "#{scoreItem4.vpId}", y: #{scoreItem4.orgScoreBasedOnExpPerc} });
+overalldata.push({ x: "#{scoreItem4.vpId}", y: #{scoreItem4.scoreBasedOnExpPerc}, title: "#{scoreItem4.vpName}"});
 </ui:repeat>
 <ui:repeat value="#{crtContext.learningAnalyticsContainer.overallPeerScores}" var="scoreItemP">
-	overallpeerdata.push({ x: "#{scoreItemP.vpId}", y: #{scoreItemP.peerPercentagePerc} });
+	overallpeerdata.push({ x: "#{scoreItemP.vpId}", y: #{scoreItemP.expPeerPercentagePerc}, title: "#{scoreItemP.vpName}" });
 </ui:repeat>
 
-overalldata.push({x:"1313", y:63});
+//overalldata.push({x:"1313", y:63});
 
 if(peerChk=="1")
 	printGroupedBarChart(overalldata, overallpeerdata, 150, 250, "overallchart","Overall");

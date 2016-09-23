@@ -26,6 +26,7 @@ public class ScoringCnxsAction {
 	}
 	
 	public void scoreConnections(int stage){
+		if(patillscript.isExpScript()) return;
 		Graph g = new NavigationController().getCRTFacesContext().getGraph();
 		if(g.edgeSet()==null) return; //no one has made connections.
 		ScoreContainer scoreContainer = new NavigationController().getCRTFacesContext().getScoreContainer();		

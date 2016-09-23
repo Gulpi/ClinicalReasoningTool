@@ -410,10 +410,10 @@ function toggleStoredContainerCollapsed(type){
  * status=0: diagnosis not submitted, but currentstage is >= maxStage until which learner should submit final diagnosis.
  * statue=1: diagnosis submitted or diagnosis submission not yet enforced (currentStage<maxStage)
  */
-function postEnforceFinalDDXSubmission(isSubmitted, currentStage, maxStageForSubmission){
+function postEnforceFinalDDXSubmission(isSubmitted/*, currentStage, maxStageForSubmission*/){
 	var message = 1; //default 
 	//alert("subm= " + isSubmitted+",curr= "+currentStage+",max= "+maxStageForSubmission);
-	if(isSubmitted!="true" && currentStage>=maxStageForSubmission) message  = 0; 
+	if(isSubmitted!="true" && currentStage>=maxSubmittedStage) message  = 0; 
 	
 	top.postMessage(message, "*");
 }

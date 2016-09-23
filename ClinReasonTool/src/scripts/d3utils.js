@@ -56,17 +56,22 @@ function printGroupedBarChart(data, peerdata, height, width, chartName, title){
                 .height(height)
                 .showLegend(true)
                 .showControls(false)
-                .reduceXTicks(false)
+                .reduceXTicks(true)
+               /* .append("title").text(function(d) { 
+                	
+                }*/
                 //.stacked(true)
                 ;
 
             chart.yAxis.tickFormat(d3.format(''));
+            chart.xAxis.tickFormat('');
             chart.yAxis.ticks(10, "%");	
             chart.margin({"left":15,"right":5,"top":5,"bottom":15});
             chart.tooltip.enabled(true);
             chart.tooltip.contentGenerator(function(obj) {
-                return tooltips[obj.data.x];
+               return "<div class=\"ui-tooltip\">"+obj.data.title+"</div>";
             });
+            
             chart.yDomain([0,100]);
             
             chart.dispatch.on('renderEnd', function(){

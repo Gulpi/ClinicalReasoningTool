@@ -5,7 +5,7 @@
     xmlns:f="http://java.sun.com/jsf/core">
 <!-- problem scores for all VPs of user -->
 
-<div class="chart_header">#{prop['chart.all.summSt']}</div>
+<div class="chart_header">#{prop['chart.all.summst']}</div>
 <div>
 	<svg id="sumchart" class="chart"></svg>
 </div>
@@ -13,10 +13,10 @@
 	var sumdata = [];
 	var sumpeerdata = [];
 	<ui:repeat value="#{crtContext.learningAnalyticsContainer.sumScores}" var="scoreItem4">
-		sumdata.push({ x: "#{scoreItem4.vpId}", y: #{scoreItem4.orgScoreBasedOnExpPerc} });
+		sumdata.push({ x: "#{scoreItem4.vpId}", y: #{scoreItem4.scoreBasedOnExpPerc}, title: "#{scoreItem4.vpName}" });
 	</ui:repeat>
 	<ui:repeat value="#{crtContext.learningAnalyticsContainer.sumPeerScores}" var="scoreItemP">
-		sumpeerdata.push({ x: "#{scoreItemP.vpId}", y: #{scoreItemP.peerPercentagePerc} });
+		sumpeerdata.push({ x: "#{scoreItemP.vpId}", y: #{scoreItemP.expPeerPercentagePerc} });
 	</ui:repeat>
 	
 	printGroupedBarChart(sumdata, sumpeerdata, 150, 250, "sumchart","Summary");

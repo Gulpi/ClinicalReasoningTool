@@ -81,7 +81,7 @@ public class AppBean extends ApplicationWrapper implements HttpSessionListener{
 	    }
 	    catch(Exception e){}
 	    //does not have to be done on every restart:
-	    //new JsonCreator().initJsonExport(); 
+	   // new JsonCreator().initJsonExport(); 
 	   
 		//MeshImporter.main("en");
 	   // new TextSimilarityComparing().compareTestData();
@@ -108,7 +108,7 @@ public class AppBean extends ApplicationWrapper implements HttpSessionListener{
 	public synchronized PatientIllnessScript addExpertPatIllnessScriptForVpId(String vpId){
 		if(expertPatIllScripts==null) expertPatIllScripts = new HashMap<String, PatientIllnessScript>();
 		if(vpId!=null && !expertPatIllScripts.containsKey(vpId)){
-			PatientIllnessScript expScript = new DBClinReason().selectExpertPatIllScriptByVPId(vpId);
+			PatientIllnessScript expScript = (PatientIllnessScript) new DBClinReason().selectExpertPatIllScriptByVPId(vpId);
 			if(expScript!=null) expertPatIllScripts.put(vpId, expScript);
 			return expScript;
 			//if(graphs!=null && graphs.get(new Long(parentId)!=null)) return

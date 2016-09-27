@@ -5,7 +5,8 @@
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:f="http://java.sun.com/jsf/core"
-      >
+	 xmlns:v="urn:schemas-microsoft-com:vml"     
+	  >
 
 <head>
 
@@ -91,6 +92,7 @@ $(function() {
 	if(scriptlang=="de") listUrl = "jsonp_de.json";
 	$(".listdialog").hide();
 	$("#jdialogError").hide();
+	$("#jdialog").hide();
 	$("#connContext").hide();
 	$("#help").hide();
 	$("#summStText").on('change',function(){
@@ -100,30 +102,7 @@ $(function() {
 	checkSubmitBtn();
 	toggleBefAfterSubmitOnLoad();
 
-   $( document ).tooltip({
-      	items: "i, div, a, span",
-      	position: { my: "left+5 center", at: "right center" },
-      	content: function() {
-        var element = $( this );
-		return $( this ).attr( "mytooltip" );
-		}
-    });
-   
-  /* $( document ).tooltip({
-	      position: {
-	        my: "center bottom-20",
-	        at: "center top",
-	        items: "i, div, a",
-	        using: function( position, feedback ) {
-	          $( this ).css( position );
-	          $( "div" )
-	            .addClass( "arrow" )
-	            .addClass( feedback.vertical )
-	            .addClass( feedback.horizontal )
-	            .appendTo( this );
-	        }
-	      }
-	});*/
+ 
 
 //uncomment if endpoint issues with dragging boxes is solved:
   /*  $( ".container" ).draggable({
@@ -180,6 +159,14 @@ $(function() {
 		height: "auto"
 	});
 
+	$( this ).tooltip({
+      	items: "[mytooltip]",
+      	position: { my: "left+5 center", at: "right center" },
+      	content: function() {
+        var element = $( this );
+		return $( this ).attr( "mytooltip" );
+		}
+    });
 });
 
 
@@ -201,7 +188,7 @@ jsPlumb.ready(function () {
     instance.batch(function () {
 
         // bind to connection/connectionDetached events, and update the list of connections on screen.
-        instance.bind("connection", function (info, originalEvent) {
+       /* instance.bind("connection", function (info, originalEvent) {
             updateConnections(info.connection);
         });
         instance.bind("connectionDetached", function (info, originalEvent) {
@@ -213,7 +200,7 @@ jsPlumb.ready(function () {
             // in a future release of jsplumb this extra connection event will not
             // be fired.
             updateConnections(info.connection, true);
-        });
+        });*/
 
         instance.bind("click", function (component, originalEvent) {
         	//todo: ignore expert cnxs....
@@ -264,7 +251,7 @@ item_arr = new Array();
 
 </script>
 </head>
-<body style="font-family:arial;" data-demo-id="draggableConnectors" data-library="dom"><!-- test: #{crtContext.test}-->
+<body class="crtbody" data-demo-id="draggableConnectors" data-library="dom"><!-- test: #{crtContext.test}-->
 <f:view locale="#{crtContext.locale}">
 <div class="options">
 <div style="position:absolute;left:15px;top:5px;"><i mytooltip="#{prop['cnx.show']}" id="cnxtogglei" class="fa fa-conn"></i>  </div>
@@ -306,11 +293,11 @@ item_arr = new Array();
 		  <!-- problems -->
 		  <div id="fdg_box"  class="container fdg_cont" group="fdg_group">
 		   		<div class="title">#{prop['findings']} 
-		   			<span class="icons">
+		   			<!--  <span class="icons">
 		   				<a href="javascript:addJokerFdg();" title="#{prop['findings.joker']}"><i mytooltip="#{prop['findings.joker']}" class="fa fa-puzzle-piece"></i></a> 
 		   				<a href="javascript:togglePeersFdg();" title="#{prop['findings.peers']}"><i mytooltip="#{prop['findings.peers']}" class="fa fa-users_off" id="peerFeedbackFdg"></i></a> 
 		   				<a href="javascript:toggleFdgFeedback();" title="#{prop['findings.exp']}"><i mytooltip="#{prop['findings.exp']}" class="fa fa-user-md_off" id="expFeedbackFdg"></i></a>
-		   			</span>
+		   			</span>-->
 		   		</div>
 		   		<!-- <div  class="node-collapse"></div> put back in when collapsing is working-->
 		  			<div class="search boxchild"><span class="icon"><i class="icon-search"></i></span>
@@ -337,11 +324,11 @@ item_arr = new Array();
 		  <!--  diagnoses -->
 		  <div id="ddx_box" class="container ddx_cont" group="ddx_group">	
 		  		<div class="title">#{prop['ddx']}
-		  			<span class="icons">
+		  			<!--  <span class="icons">
 		  				<a href="javascript:addJokerDDX();" title="#{prop['ddx.joker']}"><i mytooltip="#{prop['ddx.joker']}" class="fa fa-puzzle-piece"></i></a> 
 		   				<a href="javascript:togglePeersDDX();" title="#{prop['ddx.peers']}"><i mytooltip="#{prop['ddx.peers']}" class="fa fa-users_off" id="peerFeedbackDDX"></i></a> 
 		   				<a href="javascript:toggleDDXFeedback();" title="#{prop['ddx.exp']}"><i mytooltip="#{prop['ddx.exp']}" class="fa fa-user-md_off" id="expFeedbackDDX"></i></a>
-		  			</span>
+		  			</span>-->
 		  		</div>	
 		  		<!-- <div class="node-collapse"></div>	  -->		
 		  			<div class="search boxchild"><input class="f_text" onkeyup="javascript:storeHistory('ddx');" placeholder="#{prop['search']} ..." id="ddx" title="#{prop['ddx.search']}"></input></div>
@@ -372,11 +359,11 @@ item_arr = new Array();
 		  <!-- tests -->
 		  <div id="tst_box" class="container tst_cont" group="tst_group">
 		  		<div class="title">#{prop['tests']}
-		  			<span class="icons">
+		  			<!--  <span class="icons">
 		  				<a href="javascript:addJokerTest();" title="#{prop['tests.joker']}"><i mytooltip="#{prop['tests.joker']}" class="fa fa-puzzle-piece"></i></a> 
 		   				<a href="javascript:togglePeersTest();" title="#{prop['tests.peers']}"><i mytooltip="#{prop['tests.peers']}" class="fa fa-users_off" id="peerFeedbackTest"></i></a> 
 		   				<a href="javascript:toggleTestFeedback();" title="#{prop['tests.exp']}"><i mytooltip="#{prop['tests.exp']}" class="fa fa-user-md_off" id="expFeedbackTest"></i></a>
-		  			</span>
+		  			</span>-->
 		  		</div>
 		 	 	<!-- <div class="node-collapse"></div>-->
 		  		<div class="search boxchild"><input class="f_text" onkeyup="javascript:storeHistory('tests');" placeholder="#{prop['search']} ..." id="tests" title="#{prop['tests.search']}"></input></div>
@@ -399,11 +386,11 @@ item_arr = new Array();
 		  <!-- managements -->
 		  <div id="mng_box" class="container mng_cont" group="mng_group">
 		  	<div class="title">#{prop['mng']}
-		  		<span class="icons">
+		  		<!-- <span class="icons">
 		  			<a href="javascript:addJokerMng();" title="#{prop['mng.joker']}"><i mytooltip="#{prop['mng.joker']}" class="fa fa-puzzle-piece"></i></a> 
 		   			<a href="javascript:togglePeersMng();" title="#{prop['mng.peers']}"><i mytooltip="#{prop['mng.peers']}" class="fa fa-users_off" id="peerFeedbackMng"></i></a> 
 		   			<a href="javascript:toggleMngFeedback();" title="#{prop['mng.exp']}"><i  mytooltip="#{prop['mng.exp']}" class="fa fa-user-md_off" id="expFeedbackMng"></i></a>
-		  		</span>
+		  		</span>-->
 		  	</div>
 		 	<!--   <div class="node-collapse"></div>-->
 		  	<div class="search boxchild"><input class="f_text" id="mng" onkeyup="javascript:storeHistory('mng');" placeholder="#{prop['search']} ..." title="#{prop['mng.search']}"></input></div>
@@ -447,16 +434,9 @@ item_arr = new Array();
 	  		<f:ajax render="@form" onevent="reInitCnxsCallback"></f:ajax>
 		</h:commandButton>		 
 	</h:form>-->
-
 <div id="jdialog"><!--  <ui:include src="submitdialog.xhtml" />--></div>
 
-<div id="jdialogError">				
-	<ul id="errors">
-		<ui:repeat value="#{crtContext.patillscript.errors}" var="err" varStatus="status">
-			<ui:include src="errorline.xhtml" />
- 		</ui:repeat>				
-	</ul><a href="javascript:alert('Not yet available');" title="#{prop['ddx.errors.info']}">#{prop['info']}</a>
-</div>
+<div id="jdialogError">	<ui:include src="errors.xhtml" /></div>
 <div id="connContext">
 	<ui:include src="cnxchange.xhtml" />
 </div>

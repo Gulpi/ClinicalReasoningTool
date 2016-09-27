@@ -7,6 +7,8 @@ import beans.LogEntry;
 import beans.scripts.*;
 import beans.error.*;
 import beans.error.MyError;
+import beans.graph.Graph;
+import beans.graph.MultiVertex;
 import beans.relation.Relation;
 import beans.relation.RelationDiagnosis;
 import beans.scoring.ScoreBean;
@@ -41,12 +43,17 @@ public class ErrorController {
 	 * @param expIllScript
 	 * @param patIllScript
 	 */
-	private void checkPrematureClosure(PatientIllnessScript expIllScript, PatientIllnessScript patIllScript){		
-		if(patIllScript.getSubmittedStage() < expIllScript.getSubmittedStage()){
-			PrematureClosure pcl =  new PrematureClosure(patIllScript.getId(), patIllScript.getCurrentStage());
-			if(patIllScript.addError(pcl)) //we save only if this is a new error that has not previously occured at this stage
-				new DBClinReason().saveAndCommit(pcl);	
-			notifyLog(pcl, patIllScript.getId());
+	private void checkPrematureClosure(PatientIllnessScript expIllScript, PatientIllnessScript patIllScript){	
+		Graph g = NavigationController.getInstance().getCRTFacesContext().getGraph();
+		if(patIllScript.getCurrentStage() < expIllScript.getSubmittedStage()){
+			//we get any additional problems the expert might have collected AFTER the current stage:
+			List<MultiVertex> expAddRels = g.getVerticesByTypeAndStageRangeExpOnly(Relation.TYPE_PROBLEM, patIllScript.getCurrentStage() + 1, expIllScript.getSubmittedStage());
+			if(expAddRels!=null && !expAddRels.isEmpty()){
+				PrematureClosure pcl =  new PrematureClosure(patIllScript.getId(), patIllScript.getCurrentStage());
+				if(patIllScript.addError(pcl)) //we save only if this is a new error that has not previously occured at this stage
+					new DBClinReason().saveAndCommit(pcl);	
+				notifyLog(pcl, patIllScript.getId());
+			}
 		}
 	}
 	

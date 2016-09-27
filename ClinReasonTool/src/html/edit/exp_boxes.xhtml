@@ -96,6 +96,15 @@ $(function() {
 		width: "auto",
 		height: "auto"
 	});
+	
+	$( this ).tooltip({
+      	items: "[mytooltip]",
+      	position: { my: "left+5 center", at: "right center" },
+      	content: function() {
+        var element = $( this );
+		return $( this ).attr( "mytooltip" );
+		}
+    });
 });
 
 
@@ -116,7 +125,7 @@ jsPlumb.ready(function () {
     instance.batch(function () {
 
         // bind to connection/connectionDetached events, and update the list of connections on screen.
-        instance.bind("connection", function (info, originalEvent) {
+       /* instance.bind("connection", function (info, originalEvent) {
             updateConnections(info.connection);
         });
         instance.bind("connectionDetached", function (info, originalEvent) {
@@ -128,7 +137,7 @@ jsPlumb.ready(function () {
             // in a future release of jsplumb this extra connection event will not
             // be fired.
             updateConnections(info.connection, true);
-        });
+        });*/
 
         instance.bind("click", function (component, originalEvent) {
         	//todo: ignore expert cnxs....

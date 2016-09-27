@@ -132,6 +132,7 @@ function updateItemCallback(data, items, boxId){
     			   });
     				addToGroup(id, item); //4.
     				//initBoxHeight(boxId, items);
+    				initBoxHeights();
     				var pos = $(item).position();
     				var ep = instance.getEndpoints(id);
     				createEndpointsForItems(id, endpoint);
@@ -266,7 +267,7 @@ function deleteEndpoints(id){
 /**init box heights on loading
  * 
  */
-function initBoxHeights(){
+/*function initBoxHeights(){
 	initBoxHeight("fdg_box", "fdgs");
 	initBoxHeight("ddx_box", "ddxs");
 	initBoxHeight("tst_box", "tests");
@@ -290,34 +291,91 @@ function sameHeightForNeigborBoxes(){
 	if($("#ddx_box").height()>$("#fdg_box").height()) $("#fdg_box").height($("#ddx_box").height());
 	if($("#tst_box").height()>$("#mng_box").height()) $("#mng_box").height($("#mng_box").height());
 	if($("#mng_box").height()>$("#tst_box").height()) $("#tst_box").height($("#mng_box").height());
-}
+}*/
 
 /**
  * automatically enlarge a box, depending on the number of items in it.
  * @param boxId
  * @param itemCls
  */
-function initBoxHeight(boxId, itemCls){
+/*function initBoxHeight(boxId, itemCls){
 	var storedHeight = -1;
 	if(boxId=="fdg_box" || boxId=="ddx_box") storedHeight = getBoxFdgDDXHeight();
 	if(boxId=="tst_box" || boxId=="mng_box") storedHeight = getBoxTstMngHeight();
 	
 	var itemArr = $("."+itemCls);
 	if(itemArr.length==0) return;
-	var maxY = 0;
+	var maxY = 0; //item that is the farthest below and determines the height of the box
 	for(i=0; i<itemArr.length; i++){
 		var myY = $(itemArr[i]).position().top + 30;
 		if(myY > maxY) maxY = myY;
 	}
 	if(maxY>400) maxY=400;
-	
+
 	if(maxY>=200 && $("#"+boxId).height()< maxY && maxY > storedHeight){
 		$("#"+boxId).height(maxY);
 		setBoxHeight(boxId, maxY);
-		return;
-	}
+		//return;
+	}	
+	else if(storedHeight > $("#"+boxId).height()) 
+		$("#"+boxId).height(storedHeight);
 	
-	if(storedHeight > $("#"+boxId).height()) $("#"+boxId).height(storedHeight);
+	sendNewHeightToHostSystem();
+
+}*/
+
+function initBoxHeights(){
+	var storedHeightRow1 = getBoxFdgDDXHeight();
+	var storedHeightRow2 = getBoxTstMngHeight();
+	//if(boxId=="fdg_box" || boxId=="ddx_box") storedHeight = getBoxFdgDDXHeight();
+	//if(boxId=="tst_box" || boxId=="mng_box") storedHeight = getBoxTstMngHeight();
+	var maxYRow1 = 210; //height of fdg & ddx containers
+	var maxYRow2 = 210; //height of tst & mng containers
+	
+	var itemArr = $(".row1");
+	if(itemArr.length==0) return;
+	for(i=0; i<itemArr.length; i++){
+		var myY = $(itemArr[i]).position().top + 30;
+		if(myY > maxYRow1) maxYRow1 = myY;
+	}
+	var itemArr2 = $(".row2");
+	if(itemArr2.length==0) return;
+	for(i=0; i<itemArr2.length; i++){
+		var myY = $(itemArr2[i]).position().top + 30;
+		if(myY > maxYRow2) maxYRow2 = myY;
+	}	
+	
+	//if(maxY>400) maxY=400;
+	$("#fdg_box").height(maxYRow1);
+	$("#ddx_box").height(maxYRow1);
+	$("#tst_box").height(maxYRow2);
+	$("#mng_box").height(maxYRow2);
+	setBoxHeight("fdg_box", maxYRow1);
+	setBoxHeight("mng_box", maxYRow2);
+	
+	/*if(maxY>=200 && $("#"+boxId).height()< maxY && maxY > storedHeight){
+		$("#"+boxId).height(maxY);
+		setBoxHeight(boxId, maxY);
+		//return;
+	}	
+	else if(storedHeight > $("#"+boxId).height()) 
+		$("#"+boxId).height(storedHeight);*/
+	
+	sendNewHeightToHostSystem();
+
+}
+
+function sendNewHeightToHostSystem(){
+	var rowsHeight = $("#fdg_box").height() + $("#mng_box").height();
+	var minHeight = 520;
+	//if(rowsHeight>520){
+		var newFrameHeight = 730;
+		if((rowsHeight-520)>0) newFrameHeight += rowsHeight-520;
+		//alert(newFrameHeight);
+		postFrameHeight(newFrameHeight);
+	//}
+		
+	
 }
 
 

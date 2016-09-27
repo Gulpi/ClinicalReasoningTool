@@ -407,7 +407,7 @@ public class PatientIllnessScript extends Beans/*extends Node*/ implements Illne
 		
 		return null;
 	}
-	
+
 	private void notifyLog(){
 		LogEntry le = new LogEntry( LogEntry.CRTPATILLSCRIPT_ACTION, this.getId(), -1, this.getId());
 		new DBClinReason().saveAndCommit(le);

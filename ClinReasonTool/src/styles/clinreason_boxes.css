@@ -1,7 +1,12 @@
-body{
+.crtbody{
 	font-family:Arial;
+	margin-left:0px;
+	margin-right:0px;
+	margin-botton:0px;
+	margin-top:5px;
 }
 * {box-sizing: border-box;}
+
 a{
 	text-decoration:none;
 	color:#006699 !important;
@@ -285,19 +290,19 @@ a#ddx_submit_btn, errorsymbol.a{
     font-family: Arial,sans-serif;
     margin-left: 0px;
     margin-right: 0px;
-    width: 100%;
-    max-width:1500px;
+    width: 470px;
+    /*max-width:1500px;*/
     position: relative;
     margin-top:5px;
-    overflow: auto !important;
+    /*overflow: auto !important;*/
 }
 
 .canvas {
-	margin-top: 10px; 
+	margin-top: 20px; 
     margin-left: 0px; /*-6px;*/
     padding-left: 15px; /*0px;*/
     height: 100%; /*700px;*/
-    width:100%;
+    width:470px;
    /* max-height:700px;*/
     /*position:absolute;*/
    /* top:0px;
@@ -305,7 +310,7 @@ a#ddx_submit_btn, errorsymbol.a{
    
     /*border:1px solid #CCC;*/
     background-color:#ffffff;
-    overflow: auto !important;
+    /*overflow: auto !important;*/
 }
 
 .container {
@@ -1025,8 +1030,10 @@ input.cmn-toggle-round:checked + label:after {
 	border-width: 5px;
 	border-color:#006699;
 	font-family:arial;
-	font-size:0.7em;	
+	font-size:0.7em;
+	max-width: 250px;
 }
+
 /*ruled out*/
 .ddxclass_5{
 	color:#cccccc;
@@ -1046,7 +1053,7 @@ input.cmn-toggle-round:checked + label:after {
 }
 
 /*working ddx */
-.ddxclass_3{
+.ddxclass_6{
 	background-color:#cce6ff;
 	color:#000000;
 }

@@ -272,7 +272,12 @@ public class RelationDiagnosis extends Relation implements Serializable {
 	public int getCssClass(){
 		boolean expEdit = NavigationController.getInstance().isExpEdit();
 		if(expEdit){
-			
+			PatientIllnessScript learnerscript = new NavigationController().getCRTFacesContext().getPatillscript();
+			if(isFinalDDX() && finalDiagnosis<=learnerscript.getStage()) return TIER_FINAL;
+			if(isWorkingDDXBool() && workingDDX<=learnerscript.getStage()) return TIER_WORKINGDDX;
+			if(isRuledOutBool() && ruledOut<=learnerscript.getStage()) return TIER_RULEDOUT;
+			return TIER_NONE;
+
 		}
 		else{
 			if(isFinalDDX()) return TIER_FINAL;

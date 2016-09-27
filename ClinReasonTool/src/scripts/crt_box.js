@@ -691,7 +691,7 @@ function turnOverallExpFeedbackOn(iconId, itemClass){
 	turnExpBoxFeedbackOn("expFeedbackMng", "mngs");
 	$(".jsplumb-exp-connector").addClass("jsplumb-exp-connector-show");
 	$(".jsplumb-exp-connector").removeClass("jsplumb-exp-connector-hide");
-	initExpBoxHeights();
+	//initExpBoxHeights();
 }
 
 function turnOverallExpFeedbackOff(iconId, itemClass){
@@ -709,10 +709,11 @@ function turnOverallExpFeedbackOff(iconId, itemClass){
 }
 
 function openErrorDialog(){
-	$("#jdialogError").dialog( "option", "width", ['200'] );
-	$("#jdialogError").dialog( "option", "height", ['200'] );
+	$("#jdialogError").dialog( "option", "width", ['300'] );
+	$("#jdialogError").dialog( "option", "height", ['300'] );
 	$("#jdialogError").dialog( "option", "title", errorDialogTitle);
 	$("#jdialogError").dialog( "option", "buttons", [ ] );
+	//$("#jdialogError").load("errors.xhtml");
 	$("#jdialogError" ).dialog( "open" );
 	$("#jdialogError").show();
 }

@@ -1,7 +1,8 @@
 package beans.scripts;
 
-import java.util.List;
+import java.util.*;
 
+import beans.relation.Relation;
 import beans.relation.RelationProblem;
 
 /**
@@ -11,5 +12,14 @@ import beans.relation.RelationProblem;
  */
 public class ExpPatientIllnessScript extends PatientIllnessScript{
 
-	
+	/**
+	 * 
+	 * @param startStage
+	 * @param endStage
+	 * @param type
+	 * @return
+	 */
+	/*public List<Relation> getProblemsByStageRangeAndType(int startStage, int endStage){
+		return getVerticesByTypeAndStageRangeExpOnly(Relation.TYPE_PROBLEM, startStage, endStage);
+	}*/
 }

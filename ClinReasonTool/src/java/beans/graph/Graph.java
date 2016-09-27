@@ -296,6 +296,30 @@ public class Graph extends DirectedWeightedMultigraph<MultiVertex, MultiEdge> {
 		}
 		return list;
 	}
+	
+	/**
+	 * Returns a list of vertices that have been added by the expert (and not the learner) in the given stage interval 
+	 * (including start- and endstage). We use that for determination of premature closure errors.
+	 * @param type
+	 * @param startStage
+	 * @param endStage
+	 * @return
+	 */
+	public List<MultiVertex> getVerticesByTypeAndStageRangeExpOnly(int type, int startStage, int endStage){
+		Set<MultiVertex> verts = this.vertexSet();
+		if(verts==null) return null;
+		List<MultiVertex> list = new ArrayList<MultiVertex>();
+		Iterator<MultiVertex> it = verts.iterator();
+		while(it.hasNext()){
+			MultiVertex mv = it.next();
+			if(mv.getType()==type && mv.getExpertVertex()!=null && !mv.isLearnerVertex()){
+				if(mv.getExpertVertex().getStage() >= startStage && mv.getExpertVertex().getStage()<=endStage)
+					list.add(mv);
+			}
+								
+		}
+		return list;
+	}
 
 	/**
 	 * Returns all vertices added by the expert. 
@@ -411,13 +435,14 @@ public class Graph extends DirectedWeightedMultigraph<MultiVertex, MultiEdge> {
 					//startIdWithPrefix = GraphController.getPrefixByType(sourceVertex.getType())+sourceVertex.getExpertVertex().getId(); 	
 					targetIdWithPrefix = GraphController.getPrefixByType(targetVertex.getType())+targetVertex.getExpertVertex().getId();
 				}
-				if(startIdWithPrefix!=null && targetIdWithPrefix!=null)
+				if(cnxId>0 && startIdWithPrefix!=null && targetIdWithPrefix!=null){
 					sb.append("{\"id\":\""+GraphController.PREFIX_CNX + cnxId+"\",");
 					sb.append("\"l\":\""+l+"\", \"e\":\""+e+"\",");
 					sb.append("\"sourceid\": \""+startIdWithPrefix+"\",\"targetid\": \""+targetIdWithPrefix+"\",");
 					sb.append("\"weight_l\": \""+edge.getLearnerWeight()+"\", \"weight_e\": \""+edge.getExpertWeight()+"\",");
 					sb.append("\"start_ep\": \""+edge.getStartEpIdx()+"\",");
-					sb.append("\"target_ep\": \""+edge.getTargetEpIdx()+"\"},");		
+					sb.append("\"target_ep\": \""+edge.getTargetEpIdx()+"\"},");	
+				}
 			}	
 		}
 		if(sb.length()>1) sb.replace(sb.length()-1, sb.length(), ""); //remove the last ","

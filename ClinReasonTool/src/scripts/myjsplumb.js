@@ -332,26 +332,41 @@ function initBoxHeights(){
 	var maxYRow1 = 210; //height of fdg & ddx containers
 	var maxYRow2 = 210; //height of tst & mng containers
 	
-	var itemArr = $(".row1");
-	if(itemArr.length==0) return;
-	for(i=0; i<itemArr.length; i++){
-		var myY = $(itemArr[i]).position().top + 30;
-		if(myY > maxYRow1) maxYRow1 = myY;
-	}
-	var itemArr2 = $(".row2");
+	var itemArr2 = $(".row1");
 	if(itemArr2.length==0) return;
 	for(i=0; i<itemArr2.length; i++){
 		var myY = $(itemArr2[i]).position().top + 30;
+		if(myY > maxYRow1) maxYRow1 = myY;
+	}
+	var itemArr3 = $(".row2");
+	if(itemArr3.length==0) return;
+	for(i=0; i<itemArr3.length; i++){
+		var myY = $(itemArr3[i]).position().top + 30;
 		if(myY > maxYRow2) maxYRow2 = myY;
 	}	
+	if(maxYRow1>storedHeightRow1){
+		storedHeightRow1 = maxYRow1;
+		setBoxHeight("fdg_box", maxYRow1);
+	}
 	
+	if(maxYRow2>storedHeightRow2){
+		storedHeightRow2 = maxYRow2;
+		setBoxHeight("mng_box", maxYRow2);
+	}
 	//if(maxY>400) maxY=400;
-	$("#fdg_box").height(maxYRow1);
-	$("#ddx_box").height(maxYRow1);
-	$("#tst_box").height(maxYRow2);
-	$("#mng_box").height(maxYRow2);
-	setBoxHeight("fdg_box", maxYRow1);
-	setBoxHeight("mng_box", maxYRow2);
+	//if(maxYRow1>storedHeightRow1){
+		$("#fdg_box").height(storedHeightRow1);
+		$("#ddx_box").height(storedHeightRow1);
+		//setBoxHeight("fdg_box", maxYRow1);
+	//}
+	
+	//if(maxYRow2>storedHeightRow2){
+		$("#tst_box").height(maxYRow2);
+		$("#mng_box").height(maxYRow2);
+		//setBoxHeight("mng_box", maxYRow2);
+	//}
+	
+	
 	
 	/*if(maxY>=200 && $("#"+boxId).height()< maxY && maxY > storedHeight){
 		$("#"+boxId).height(maxY);

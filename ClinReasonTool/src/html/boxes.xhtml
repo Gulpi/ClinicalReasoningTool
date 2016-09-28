@@ -77,7 +77,7 @@ var hideExpTitle = "#{prop['feedback.exp.hide']}";
 var submitDialogTitle = "#{prop['submit.dialog.title']}";
 var chgCnxDialogTitle = "#{prop['cnx.dialog.title']}";
 var errorDialogTitle = "#{prop['ddx.errors.title']}";
-
+var helpDialogTitle = "#{prop['help']}";
 var active;
 var submitDDXOne = "#{prop['submit.minone']}";
 var submitted = "#{crtContext.patillscript.submitted}";
@@ -303,7 +303,7 @@ item_arr = new Array();
 		  			<div class="search boxchild"><span class="icon"><i class="icon-search"></i></span>
 		  			<input type="text" id="fdg_prefix" style="display:none;" />
 		  			<!-- <select class="f_select" style="width:40px;" id="fdg_prefix"><option value="0">-</option><option value="1">#{prop['no']}</option></select>-->
-		  			<input class="f_text" onkeyup="javascript:storeHistory('problems');" id="problems" placeholder="#{prop['search']} ..." title="#{prop['findings.search']}"></input></div>
+		  			<input class="f_text" onkeyup="javascript:storeHistory('problems');" id="problems" placeholder="#{prop['search']} ..." mytooltip="#{prop['findings.search']}"></input></div>
 						<h:form id="probform">
 						<h:panelGroup>
 						   <ui:repeat id="repeatprob" value="#{crtContext.patillscript.problems}" var="prob" varStatus="status">

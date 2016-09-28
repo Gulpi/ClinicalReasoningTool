@@ -176,7 +176,7 @@ function doSubmitDDXDialogCallback(){
 		//loadFile();
 		if(submitted=="true" || presubmitted=="true") $("#jdialog").load("submitteddialog.xhtml"); // $("#jdialog").load("submitteddialog.xhtml");
 		else loadFileSubmit(); //$("#jdialog").load("submitdialog.xhtml");	
-		
+		$('.ui-tooltip').remove();
 		$("#jdialog" ).dialog( "open" );
 		$("#jdialog").show();
 	}
@@ -714,6 +714,7 @@ function openErrorDialog(){
 	$("#jdialogError").dialog( "option", "title", errorDialogTitle);
 	$("#jdialogError").dialog( "option", "buttons", [ ] );
 	//$("#jdialogError").load("errors.xhtml");
+	$('.ui-tooltip').remove();
 	$("#jdialogError" ).dialog( "open" );
 	$("#jdialogError").show();
 }
@@ -754,13 +755,15 @@ function clearErrorMsgs(){
  */
 function openHelp(){
 	clearErrorMsgs();
+	
 	$("#jdialogHelp").dialog( "option", "width", ['350'] );
 	$("#jdialogHelp").dialog( "option", "position",  {my: "center top", at: "center top", of: window}  );
 	$("#jdialogHelp").dialog( "option", "height", ['400'] );
-	$("#jdialogHelp").dialog( "option", "title", "Help");
+	$("#jdialogHelp").dialog( "option", "title", helpDialogTitle);
 	$("#jdialogHelp").dialog( "option", "buttons", [ ] );
 	$("#jdialogHelp").load("help/index_"+lang+".template");
 	//$("#help" ).dialog.html(template);
+	$('.ui-tooltip').remove();
 	$("#jdialogHelp" ).dialog( "open" );
 	$("#jdialogHelp").show();
 }

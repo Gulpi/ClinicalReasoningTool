@@ -43,6 +43,6 @@ public class IntlConfiguration
 	}
 	
 	public static String getValue(String key){	
-		return getValue(key, LocaleController.getInstance().getLocale());
+		return getValue(key, LocaleController.getLocale());
 	}
 }

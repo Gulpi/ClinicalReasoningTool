@@ -171,7 +171,7 @@ select.f_select{
 
 .ddxsubmitconf{
 	float:left;
-	width: 230px; /*250px;*/
+	width: 100%; /*250px;*/
 }
 
 a#ddx_submit_btn, errorsymbol.a{
@@ -535,6 +535,17 @@ span.icons{
     font-size:2.0em;
 }
 
+.icons_exp i{
+	/*background: #ffffff;*/
+    border-radius: 50%;
+    /*padding: 5px;*/
+    margin-top: -22px;
+	margin-left:72px;
+    width:10px;
+    /*color:#088A29;*/
+    font-size:1.3em;
+}
+
 .boxscore_0{
 	display:none !important;
 }
@@ -691,12 +702,6 @@ endpoint creation, so we can use this only at the very end of the page loading..
 
 
 .errormsg{
-	/*bottom:0px;
-	position: absolute; 
-	color:red; 
-	padding-left:2px;
-	padding-right:2px;
-	width:100%;*/
 	bottom:5px;
 	position: absolute; 
 	color:red; 
@@ -711,10 +716,15 @@ endpoint creation, so we can use this only at the very end of the page loading..
     opacity: 0.9;
 }
 
-ul.fa-ul li,
-ul.fa-ul li a,
+.errormsgdialog{
+    background-color: #F3BDBE;
+	color:red; 
+	
+}
+
+
 #jdialogError a{
-    color: #c00815 !important;
+    color: #c00815;
 }
 ul.fa-ul li:hover,
 ul.fa-ul li:hover a,

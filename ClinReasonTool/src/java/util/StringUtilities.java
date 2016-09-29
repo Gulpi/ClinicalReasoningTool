@@ -97,52 +97,24 @@ public class StringUtilities {
 	 * @return
 	 */
 	public static boolean similarStrings(String item1, String item2, Locale loc){
-		int leven = StringUtils.getLevenshteinDistance(item1, item2);
-		int fuzzy = StringUtils.getFuzzyDistance(item1, item2, loc);
-		//String firstLetterItem1 = item1.substring(0,1);
-		//String firstLetterItem2 = item2.substring(0,1);
-		if(item1.equals("Abdomen, Acute") || item2.equals("Abdomen, Acute"))
-			System.out.println("Leven: " + leven + ", fuzzy: " + fuzzy + " Item1: " + item1 + " Item2: " + item2);
+		if(item1.equalsIgnoreCase("Sichelzellanämie") || item2.equalsIgnoreCase("Sichelzellanämie"))
+			System.out.println("huhu");
 
-		//if(leven==4 && firstLetterItem1.equalsIgnoreCase(firstLetterItem2)) System.out.println("Levensthein: ("+leven+") "+ item1 + " - " + item2);
-		if(leven < MIN_LEVEN_DISTANCE /*&& firstLetterItem1.equalsIgnoreCase(firstLetterItem2)*/){
-			//System.out.println("not added: " + item1 + " - " + item2);
-			return true; //these items are not added
-		}
-		if(fuzzy>=MAX_FUZZY_DISTANCE){
-			//System.out.println("Leven: " + leven + ", fuzzy: " + fuzzy + " Item1: " + item1 + " Item2: " + item2);
-			return true;			
-		}
-		/*if(fuzzy==11 && leven==11){
-			System.out.println("Leven: " + leven + ", fuzzy: " + fuzzy + " Item1: " + item1 + " Item2: " + item2);
-		}*/
+		item1 = item1.replace("-", "");
+		item2 = item2.replace("-", "");
+		item1 = item1.replace(",", "");
+		item2 = item2.replace(",", "");
+		if(isMatchBasedOnLevelAndFuzzy(item1, item2, loc)) return true;
 		
 		//if we have multiple words we split them and compare them separately
-		//if(item1.trim().length()>1 && item2.trim().length()>1){
 		String[] item1Arr = item1.trim().split(" ");
 		String[] item2Arr = item2.trim().split(" ");
-		StringBuffer sb1 = new StringBuffer();
-		StringBuffer sb2 = new StringBuffer();
-		
-		if(item1Arr.length!=item2Arr.length || (item1Arr.length==1 || item2Arr.length==1)) return false; //TODO: we might still compare them?
+		//if(/*item1Arr.length!=item2Arr.length ||*/ (item1Arr.length==1 || item2Arr.length==1)) return false; //TODO: we might still compare them?
 			//we go thru each item and compare it with the items2
-			boolean[] isMatch = new boolean[item1Arr.length];
-			//boolean isMatch = true;
-			for(int i=0; i<item1Arr.length; i++){
-				String item1_1 = item1Arr[i];
-				sb1.append(item1_1+"#");
-				innerLoop:
-				for(int k=0; k<item2Arr.length; k++){
-					String item2_2 = item2Arr[k];
-					sb2.append(item2_2+"#");
-					int leven2 = StringUtils.getLevenshteinDistance(item1_1, item2_2);
-					int fuzzy2 = StringUtils.getFuzzyDistance(item1_1, item2_2, loc);
-					if(leven2<MIN_LEVEN_DISTANCE || fuzzy2>=MAX_FUZZY_DISTANCE){ //then the are similar
-						isMatch[i] = true;
-						break innerLoop;
-					}
-				}
-			}
+			boolean[] isMatch;
+			if(item1Arr.length>=item2Arr.length)
+				isMatch = runThrugStringArr(item1Arr, item2Arr, loc);			
+			else  isMatch = runThrugStringArr(item2Arr, item1Arr, loc);
 			boolean isFinallyMatch = true;
 			for(int i=0; i<isMatch.length; i++){
 				if(!isMatch[i]){
@@ -150,19 +122,68 @@ public class StringUtilities {
 					break;
 				}
 			}
-			//System.out.println("boolean: "+  isFinallyMatch +" ,Item1Arr: "+ sb1.toString() + " , Item2Arr: " + sb2.toString());
-			return isFinallyMatch;
-		//}
+			if(isFinallyMatch) return isFinallyMatch;
+			//check for something like: "Streptokokkenpneumonie" / "Penumonie, Streptokokken"
+			if((item1Arr.length==1 && item2Arr.length==2)){
+				String item2_1Str = item2Arr[0].trim() +  item2Arr[1].trim();
+				if(isMatchBasedOnLevelAndFuzzy(item1, item2_1Str, loc)) return true;
+				String item2_2Str = item2Arr[1].trim() +  item2Arr[0].trim();
+				if(isMatchBasedOnLevelAndFuzzy(item1, item2_2Str, loc)) return true;				
+			}
+			if((item2Arr.length==1 && item1Arr.length==2)){
+				String item1_1Str = item1Arr[0].trim() +  item1Arr[1].trim();
+				if(isMatchBasedOnLevelAndFuzzy(item2, item1_1Str, loc)) return true;
+				String item1_2Str = item1Arr[1].trim() +  item1Arr[0].trim();
+				if(isMatchBasedOnLevelAndFuzzy(item2, item1_2Str, loc)) return true;				
+			}
+			return false;
+			
+	}
+	
+	/**
+	 * @param item1Arr
+	 * @param item2Arr
+	 * @param loc
+	 * @return
+	 */
+	private static boolean[] runThrugStringArr(String[] item1Arr, String[] item2Arr, Locale loc){
+		StringBuffer sb1 = new StringBuffer();
+		StringBuffer sb2 = new StringBuffer();
+		boolean[] isMatch = new boolean[item1Arr.length];
+		for(int i=0; i<item1Arr.length; i++){
+			String item1_1 = item1Arr[i];
+			sb1.append(item1_1+"#");
+			innerLoop:
+			for(int k=0; k<item2Arr.length; k++){
+				String item2_2 = item2Arr[k];
+				sb2.append(item2_2+"#");
+				int leven2 = StringUtils.getLevenshteinDistance(item1_1, item2_2);
+				int fuzzy2 = StringUtils.getFuzzyDistance(item1_1, item2_2, loc);
+				if(leven2<MIN_LEVEN_DISTANCE || fuzzy2>=MAX_FUZZY_DISTANCE){ //then the are similar
+					isMatch[i] = true;
+					break innerLoop;
+				}
+			}
+		}
+		return isMatch;
+	}
+	
+	private static boolean isMatchBasedOnLevelAndFuzzy(String s1, String s2, Locale loc){
+		int leven = StringUtils.getLevenshteinDistance(s1, s2);
+		int fuzzy = StringUtils.getFuzzyDistance(s1, s2, loc);
 		
-		/*else{
-			String item1NoBlanks = StringUtils.remove(item1, " ");
-			String item2NoBlanks = StringUtils.remove(item2, " ");
-			int leven2 = StringUtils.getLevenshteinDistance(item1, item2);
-			if(leven2<=3) System.out.println("leven: ("+leven2+")" + item1NoBlanks + " - " + item2NoBlanks);
-		}*/
-		//if(leven==2 && firstLetterItem1.equalsIgnoreCase(firstLetterItem2)) return leven;
-		// if(leven==3 && firstLetterItem1.equalsIgnoreCase(firstLetterItem2)) return leven;
-		//return false;
+		//compare Strings as they are:
+		//if(s1.equals("Abdomen, Acute") || item2.equals("Abdomen, Acute"))
+		//	System.out.println("Leven: " + leven + ", fuzzy: " + fuzzy + " Item1: " + item1 + " Item2: " + item2);
+
+		if(leven < MIN_LEVEN_DISTANCE /*&& firstLetterItem1.equalsIgnoreCase(firstLetterItem2)*/){
+			return true; //these items are not added
+		}
+		if(fuzzy>=MAX_FUZZY_DISTANCE){
+			return true;			
+		}
+		return false;
+		
 	}
 	
 	public static byte[] hexToBytes(String hex) {return hexToBytes(hex.toCharArray()); }

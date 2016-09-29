@@ -47,34 +47,9 @@
 		#{prop['submit.slider.edit']}<br/>
 		<div id="confidence_slider" class="conf_slider" title="#{prop['confidence.hint']}"></div><br/>
 		<span id="ddx_submit_btn" class="submitBtn2">
-			<a href="javascript:submitDDXConfirmed();" style="color:#ffffff" title="#{prop['ddx.submit']}">#{prop['ddx.submitFinal']}</a>
+			<a href="javascript:submitDDXConfirmed();" mytooltip="#{prop['ddx.submit']}"><i class="fa fa-arrow-rightb"></i> #{prop['ddx.submitFinal']}</a>
 		</span>
 	</span>
-	<!--  <span class="aftersubmit">
-		#{prop['submit.slider.after']} #{crtContext.patillscript.confidenceRange}.<br/>
-	</span>
-	
-	<span class="aftersubmit">
-		<span class="aftersubmit_fail">
-			<span class="errors">#{prop['ddx.errors.title']}:
-				<ul id="errors">
-					<ui:repeat value="#{crtContext.patillscript.errorsCurrStage}" var="err" varStatus="status">
-						<ui:include src="errorline.xhtml" />
-			 		</ui:repeat>				
-				</ul>
-			</span>
-			#{prop['ddx.errors.donext']}<ul class="fa-ul">
-				<li class="aftersubmit_cont_#{crtContext.patillscript.offerContinueCase}"><i class="fa-li fa fa-arrow-rightb"></i> <a class="aftersubmit_cont_#{crtContext.patillscript.offerContinueCase}" href="javascript:backToCase();">#{prop['submit.cont']}</a></li>
-				<li class="aftersubmit_cont_#{crtContext.patillscript.offerTryAgain}"><i class="fa-li fa fa-arrow-rightb"></i> <a class="aftersubmit_cont_#{crtContext.patillscript.offerTryAgain}" href="javascript:tryAgain();">#{prop['submit.try']}</a></li>
-				<li class="aftersubmit_cont_#{crtContext.patillscript.offerSolution}"><i class="fa-li fa fa-arrow-rightb"></i> <a class="aftersubmit_cont_#{crtContext.patillscript.offerSolution}" href="javascript:showSolution();">#{prop['submit.sol']}</a></li> 
-				<li class="aftersubmit_cont_#{crtContext.patillscript.offerSolution}"><i class="fa-li fa fa-arrow-rightb"></i> <a class="aftersubmit_cont_#{crtContext.patillscript.offerSolution}" href="javascript:giveHint();">#{prop['submit.hint']}</a></li>
-			</ul>
-			</span>
-			
-			<span class="aftersubmit_succ">
-				<b>#{prop['submit.corr']}</b><br/>
-			</span>
-	</span>-->
 	
 </div>
 

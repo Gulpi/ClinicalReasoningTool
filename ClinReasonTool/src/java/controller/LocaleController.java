@@ -52,9 +52,10 @@ public class LocaleController {
 		
 		String locStr = AjaxController.getInstance().getRequestParamByKey(AjaxController.REQPARAM_LOC);
 		if(isAcceptedLocale(locStr)) loc = new Locale(locStr);
-		
+		FacesContext.getCurrentInstance().getViewRoot().setLocale(loc);
 		//CRTFacesContext cnxt =  (CRTFacesContext) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get(CRTFacesContext.CRT_FC_KEY);
 		//if(cnxt!=null && cnxt.getViewRoot()!=null) cnxt.getViewRoot().setLocale(loc);
+
 		return loc;
     }
     

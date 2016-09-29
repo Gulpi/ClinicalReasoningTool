@@ -151,6 +151,7 @@ public class DiagnosisSubmitAction /*implements Scoreable*/{
 	 */
 	public void showSolution(){
 		patIllScript.setSubmittedStage(patIllScript.getCurrentStage());
+		patIllScript.setShowSolution(patIllScript.getCurrentStage());
 		patIllScript.save();
 		notifyLogShowSolution();
 	}

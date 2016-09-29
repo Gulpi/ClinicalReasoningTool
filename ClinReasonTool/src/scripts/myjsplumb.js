@@ -1,27 +1,12 @@
 var dynamicAnchors = [ "Left",  "Right" ];
-/*
-var fdgDefX = 0; //240;
-var fdgDefY = 0;
-
-var ddxDefX = 240; //0;
-var ddxDefY = 0; //210;
-var tstDefX = 0; // 240;
-var tstDefY = 210;
-var mngDefX = 240;
-var mngDefY = 210;//420;
-var sumDefX = 0;
-var sumDefY = 420;*/
 
 var ep_right_prefix = "1_"; //e.g. 1_fdg_12345
 var ep_left_prefix = "2_";	
 var ep_top_prefix = "3_";
 var ep_bottom_prefix = "4_";
 
-//var groups = new Array("fdg_group", "ddx_group","tst_group", "mng_group", "sum_group", "pat_group");
 var groups = new Array("fdg_group", "ddx_group","tst_group", "mng_group", "sum_group");
 
-//var classes = new Array("fdgs", "ddxs", "fdgs","fdgs", "fdgs"/*, "fdgs"*/ );
-//var fdg_box;
 /*
  * TODO not very elegant, but the "" vs non "" is important and seems to be difficult to do when getting the items/ids from 
  * an array....
@@ -45,33 +30,14 @@ function initGroups(){
 		var item = $("#"+itemId)
 		addToGroup(itemId, item);
 		createEndpointsForItems(itemId, endpoint);
-		/*if(itemId.startsWith("fdg") || itemId.startsWith("tst")){
-			instance.addEndpoint(itemId, { anchor:"RightMiddle" }, endpoint);
-		}
-		else if(itemId.startsWith("ddx")){
-			instance.addEndpoint(itemId, { anchor:"LeftMiddle" }, endpoint);
-			instance.addEndpoint(itemId, { anchor:"RightMiddle" }, endpoint);
-		}
-		else instance.addEndpoint(itemId, { anchor:"LeftMiddle" }, endpoint);*/
 
 	}
 	for(var i=0; i<exp_arr.length;i++){
 		var itemId = exp_arr[i];
 		var item = $("#"+itemId)
 		addToGroup(itemId, item);
-		//createEndpointsForItems(itemId);
-		/*if(itemId.startsWith("fdg") || itemId.startsWith("tst")){
-			instance.addEndpoint(itemId, { anchor:"RightMiddle" }, endpoint);
-		}
-		else instance.addEndpoint(itemId, { anchor:"LeftMiddle" }, endpoint);*/
-		//instance.addEndpoint(itemId, { anchor:dynamicAnchors }, endpoint);
-		//var ep = instance.getEndpoints(itemId);
-		//ep.addClass("ddxs");
-		//alert(ep);
 	}
 	instance.addToGroup("sum_group", $("#summStText"));
-	//var ep = instance.getEndpoints();
-	//var ep2 = jsPlumb.getEndpoints();
 }
 
 function createEndpointsForItems(itemId, endpointtmp){
@@ -101,51 +67,31 @@ function createEndpointsForItems(itemId, endpointtmp){
 function updateItemCallback(data, items, boxId){ 
 	 var status = data.status; // Can be "begin", "complete" or "success".
 	 //var boxes = new Array(fdg_box, ddx_box, tst_box, mng_box, sum_box/*, pat_box*/ );
-
-    switch (status) {
-        case "begin": // Before the ajax request is sent.
-        	
-            break;
-
-        case "complete": // After the ajax response is arrived.
-        	//instance.removeGroup("fdg_group", true);
-            break;
-
-        case "success": // After update of HTML DOM based on ajax response..
-        	//initGroups(instance);
-        	//instance.deleteEveryEndpoint();
-        	 var arr = $("."+items);
-        	 if(arr!=null){
-        		 for(var i=0; i<arr.length;i++){
-        			// var o = arr[i];
-        			var id = arr[i].id;
-    				var item = $("#"+id);
-    				 
-    				instance.draggable(jsPlumb.getSelector("#"+id));
-    				 $( "#"+id).draggable({
-    				        containment:"parent"
-    				  });
-    			     $( "#"+id).draggable({
-    			   	  stop: function( event, ui ) {
-    			   		  handleRectDrop(ui);
-    			   	  }
-    			   });
-    				addToGroup(id, item); //4.
-    				//initBoxHeight(boxId, items);
-    				initBoxHeights();
-    				var pos = $(item).position();
-    				var ep = instance.getEndpoints(id);
-    				createEndpointsForItems(id, endpoint);
-    				
-    				///instance.addEndpoint(id, { anchor:"RightMiddle" }, endpoint); //5.
-					/*if(id.startsWith("fdg") || id.startsWith("tst")){ //5.
-						instance.addEndpoint(id, { anchor:"RightMiddle" }, endpoint);
-					}
-					else instance.addEndpoint(id, { anchor:"LeftMiddle" }, endpoint);*/
-        		 }	        			 
-        	}
-            break;
-	    }   
+	if(isCallbackStatusSuccess(data)){
+    	 var arr = $("."+items);
+    	 if(arr!=null){
+    		 for(var i=0; i<arr.length;i++){
+    			// var o = arr[i];
+    			var id = arr[i].id;
+				var item = $("#"+id);
+				 
+				instance.draggable(jsPlumb.getSelector("#"+id));
+				 $( "#"+id).draggable({
+				        containment:"parent"
+				  });
+			     $( "#"+id).draggable({
+			   	  stop: function( event, ui ) {
+			   		  handleRectDrop(ui);
+			   	  }
+			   });
+				addToGroup(id, item); //4.
+				initBoxHeights();
+				var pos = $(item).position();
+				var ep = instance.getEndpoints(id);
+				createEndpointsForItems(id, endpoint);
+    		 }
+    	 }
+	}   
 }
 
 
@@ -211,7 +157,19 @@ function initConnections(){
 	}
 }
 
+function reInitExpConnections(){
+	var conns = '';
+	if($("#jsonConns").html()!=null && $("#jsonConns").html()!='' && $("#jsonConns").html()!=undefined)
+		conns = jQuery.parseJSON($("#jsonConns").html());
+	if(conns!=''){
+		for(j=0; j<conns.length;j++){
+			if(conns[j].e=="1")
+				createExpConnection(conns[j].id, conns[j].sourceid, conns[j].targetid, conns[j].l, conns[j].e,  conns[j].weight_e,  conns[j].weight_l, conns[j].start_ep, conns[j].target_ep);
+		}
+	}
 
+
+}
 
 
 /*

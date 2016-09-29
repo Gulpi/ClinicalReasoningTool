@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html lang="de" xmlns="http://www.w3.org/1999/xhtml"   
+<html lang="#{crtContext.language}" xmlns="http://www.w3.org/1999/xhtml"   
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:f="http://java.sun.com/jsf/core"
 	 xmlns:v="urn:schemas-microsoft-com:vml"     
 	  >
-
+<f:view locale="#{crtContext.locale}">
 <head>
 <f:event type="preRenderView" listener="#{facesContext.externalContext.response.setHeader('Cache-Control', 'no-cache, no-store')}" />
 <title>Patient Illness Script</title>
@@ -33,21 +33,7 @@
 <script src="../scripts/js.cookie.js"></script>
 <script src="../scripts/jsplumb/jsPlumb.min.js"></script>
   <script src="../scripts/myjsplumb.js"></script>
-<style>
-/** ELEMENT POSITIONS **/
-/*#pat_box { left:0px;top:5px; }
-#fdg_box { left:240px;top:5px; }
-#ddx_box { left:0px;top:210px; }
-#tst_box { left:240px;top:210px; }
-#sum_box { left:0px;top:420px; }
-#mng_box { left:240px;top:420px; }*/
-/*
-#fdg_box { left:15px;top:15px; }
-#ddx_box { left:245px;top:15px; }
-#tst_box { left:15px;top:290px; }
-#mng_box { left:245px;top:290px; }
-#sum_box { left:15px;top:565px; }*/
-</style>
+
 <script language="JavaScript">
 
 var test = "#{crtContext.initSession}";
@@ -79,17 +65,19 @@ var active;
 var submitDDXOne = "#{prop['submit.minone']}";
 var submitted = "#{crtContext.patillscript.submitted}";
 var presubmitted = "#{crtContext.patillscript.submitted}";
+//if user has clicked on showSolution we record this here:
+var showSolutionStage = "#{crtContext.patillscript.showSolution}";
 var instance;
 var item_arr = new Array();
 var exp_arr = new Array();
-
+var fireAddConnection = true; //false during re-init of exp cnxs, otherwise new cnxs are stored!
 $(function() {
     postEnforceFinalDDXSubmission(submitted/*, myStage, maxSubmittedStage*/);
 
 	if(scriptlang=="de") listUrl = "jsonp_de.json";
 	$(".listdialog").hide();
 	$("#jdialogError").hide();
-	$("#jdialog").hide();
+	//$("#jdialog").hide();
 	$("#connContext").hide();
 	$("#help").hide();
 	$("#summStText").on('change',function(){
@@ -97,7 +85,7 @@ $(function() {
 		saveSummSt('#{crtContext.patillscript.summStId}');
 	 });
 	checkSubmitBtn();
-	toggleBefAfterSubmitOnLoad();
+	//toggleBefAfterSubmitOnLoad();
 
  
 
@@ -132,7 +120,14 @@ $(function() {
 		autoOpen: false,
 		modal: true,
 		width: "auto",
-		height: "auto"
+		height: "auto",
+		position: { my: "right-20 top+100", at: "right-20 top+100", of: window },
+		//we have to detect when the user simply closes the jdialog and check whether we have to reset some stuff
+		beforeClose: function( event ) {
+		    if ( event.originalEvent ) {
+		    	return closeSubmitDialog();
+		    }
+		}
 	});
 	
 	$("#connContext").dialog({
@@ -183,22 +178,6 @@ jsPlumb.ready(function () {
 
     // suspend drawing and initialise.
     instance.batch(function () {
-
-        // bind to connection/connectionDetached events, and update the list of connections on screen.
-       /* instance.bind("connection", function (info, originalEvent) {
-            updateConnections(info.connection);
-        });
-        instance.bind("connectionDetached", function (info, originalEvent) {
-            updateConnections(info.connection, true);
-        });
-
-        instance.bind("connectionMoved", function (info, originalEvent) {
-            //  only remove here, because a 'connection' event is also fired.
-            // in a future release of jsplumb this extra connection event will not
-            // be fired.
-            updateConnections(info.connection, true);
-        });*/
-
         instance.bind("click", function (component, originalEvent) {
         	//todo: ignore expert cnxs....
         	var id = component.id;
@@ -233,7 +212,7 @@ jsPlumb.ready(function () {
     //event triggers this. 
     instance.bind("connection", function (info, originalEvent){
     	if (!isDuplicateCnx(info, "#{prop['cnx.duplicate']}"))
-    		addConnection(info);
+    		if(fireAddConnection) addConnection(info);
     });
     $(".expbox").addClass("expboxstatus");
     jsPlumb.fire("jsPlumbDemoLoaded", instance);
@@ -248,8 +227,8 @@ item_arr = new Array();
 
 </script>
 </head>
-<body class="crtbody" data-demo-id="draggableConnectors" data-library="dom"><!-- test: #{crtContext.test}-->
-<f:view locale="#{crtContext.locale}">
+<h:body class="crtbody" data-demo-id="draggableConnectors" data-library="dom"><!-- test: #{crtContext.test}-->
+
 <div class="options">
 <div style="position:absolute;left:15px;top:5px;"><i mytooltip="#{prop['cnx.show']}" id="cnxtogglei" class="fa fa-conn"></i>  </div>
 <div class="switch" style="left:30px;">
@@ -346,7 +325,7 @@ item_arr = new Array();
 					<!--  <div id="confidence_slider" class="conf_slider" title="Please indicate how confident you are with your current differentials."></div>-->
 		  		<div class="footer">
 		  			<span id="submitBtnSpan" class="submitBtn submitBtnOff">
-		  				<a href="javascript:doSubmitDDXDialogCallback();" style="color:#ffffff" mytooltip="#{prop['ddx.submit']}">#{prop['ddx.submitFinal']}</a>
+		  				<a href="javascript:doSubmitDDXDialog();" style="color:#ffffff" mytooltip="#{prop['ddx.submit']}">#{prop['ddx.submitFinal']}</a>
 		  			</span>
 		  			<span class="errorsymbol errors_#{crtContext.patillscript.errorNum}"><h:panelGroup id="ddxubmitPG">
 						<a href="javascript:openErrorDialog();" style="color:#ffffff;"><i style="color:#ffffff;" mytooltip="#{prop['ddx.errors']} (#{crtContext.patillscript.errorNum})" class="fa fa-exclamation-circle"></i></a>		
@@ -424,22 +403,19 @@ item_arr = new Array();
 	</div>
 </div>
 
-	<!--  <h:form id="cnxsform">
-		 <h:panelGroup>-->
-		 	<div id="jsonConns" style="display:none;">#{crtContext.graph.jsonConns}</div><!-- </h:panelGroup>
+	 <h:form id="cnxsform">
+		 <h:panelGroup>
+		 	<div id="jsonConns" style="display:none;">#{crtContext.graph.jsonConns}</div> </h:panelGroup>
 		   <h:commandButton id="hiddenCnxButton" value="RenderSomething" style="visibility:hidden">
 	  		<f:ajax render="@form" onevent="reInitCnxsCallback"></f:ajax>
 		</h:commandButton>		 
-	</h:form>-->
-<div id="jdialog"><!--  <ui:include src="submitdialog.xhtml" />--></div>
+	</h:form>
+	
+	<div id="jdialog"></div>
+	<div id="jdialogError">	<ui:include src="errors.xhtml" /></div>
+	<div id="connContext"><ui:include src="cnxchange.xhtml" /></div>
+	<div id="jdialogHelp"></div>
 
-<div id="jdialogError">	<ui:include src="errors.xhtml" /></div>
-<div id="connContext">
-	<ui:include src="cnxchange.xhtml" />
-</div>
-<div id="jdialogHelp">
-	 <!--   <ui:include src="help/index_de.template" />-->
-</div>
+</h:body>
 </f:view>
-</body>
 </html>

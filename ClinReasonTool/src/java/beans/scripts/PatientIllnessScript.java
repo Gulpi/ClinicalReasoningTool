@@ -113,6 +113,12 @@ public class PatientIllnessScript extends Beans/*extends Node*/ implements Illne
 	 * id as key...
 	 */
 	private List<MyError> errors;
+	
+	/**
+	 * if the learner has chosen that the correct final diagnoses shall be revealed automatically we store this here 
+	 * (including the stage when this happened)
+	 */
+	private int showSolution = -1;
 	//private Map<Integer, List<MyError>> errors;
 	//private FinalDiagnosisSubmission finalddxs;
 	
@@ -179,16 +185,19 @@ public class PatientIllnessScript extends Beans/*extends Node*/ implements Illne
 		if(summSt.getStage()<=stage) return summSt;
 		return null;
 	}
-	public void setSummSt(SummaryStatement summSt) {this.summSt = summSt;	}		
+	public void setSummSt(SummaryStatement summSt) {this.summSt = summSt;	}	
+	public int getShowSolution() {return showSolution;}
+	public void setShowSolution(int showSolution) {this.showSolution = showSolution;}
 	public boolean isPeerSync() {return peerSync;}
 	public boolean getPeerSync() {return peerSync;}
 	public void setPeerSync(boolean peerSync) {this.peerSync = peerSync;}
 	public int getConfidence() {return confidence;}
 	public String getConfidenceRange() {
-		if(confidence<25) return IntlConfiguration.getValue("confidence.verylow");
-		if(confidence<50) return IntlConfiguration.getValue("confidence.low");
-		if(confidence<75) return IntlConfiguration.getValue("confidence.high");
-		else return IntlConfiguration.getValue("confidence.veryhigh");
+		if(showSolution>0) return ""; //do not display any previous confidence if learner has chosen to get the solution!
+		if(confidence<25) return IntlConfiguration.getValue("submit.slider.after") + " " + IntlConfiguration.getValue("confidence.verylow") +".";
+		if(confidence<50) return IntlConfiguration.getValue("submit.slider.after") + " " + IntlConfiguration.getValue("confidence.low") +".";
+		if(confidence<75) return IntlConfiguration.getValue("submit.slider.after") + " " + IntlConfiguration.getValue("confidence.high") +".";
+		else return IntlConfiguration.getValue("submit.slider.after") + " " + IntlConfiguration.getValue("confidence.veryhigh") +".";
 	}
 	public void setConfidence(int confidence) {this.confidence = confidence;}
 	public long getSummStId() {return summStId;}
@@ -234,6 +243,33 @@ public class PatientIllnessScript extends Beans/*extends Node*/ implements Illne
 		for(int i=0; i<list.size(); i++){
 			addError(list.get(i));
 		}
+	}
+	
+	/**
+	 * Creates the feedback string for the submitted diagnosis dialog. Feedback depends on the score and whether the learner
+	 * has chosen to get the solution of the expert.
+	 * @return
+	 */
+	public String getScoreFinalDDXFeedback(){
+		if(showSolution>0){ //solution was requested by learner 
+			PatientIllnessScript expScript = AppBean.getExpertPatIllScript(this.getVpId());
+			StringBuffer expFinal = new StringBuffer();
+			int counter = 0;
+			if(expScript!=null && expScript.getFinalDiagnoses()!=null){
+				Iterator<RelationDiagnosis> it =  expScript.getFinalDiagnoses().iterator();
+				while(it.hasNext()){					
+					expFinal.append(it.next().getLabelOrSynLabel());
+					if(it.hasNext()) expFinal.append(", ");
+					counter++;
+				}
+			}
+			if(counter==1) return IntlConfiguration.getValue("submit.expfinal") + expFinal.toString();
+			if(counter>1) return IntlConfiguration.getValue("submit.expfinals") + expFinal.toString();
+		}
+		if(this.getOverallFinalDDXScore() > DiagnosisSubmitAction.scoreForAllowReSubmit) //correct score by learner
+			return IntlConfiguration.getValue("submit.corr");
+		
+		return "";
 	}
 	
 	/**
@@ -284,16 +320,9 @@ public class PatientIllnessScript extends Beans/*extends Node*/ implements Illne
 	public void moveItem(String idStr, String x, String y){ new DragDropAction(this).move(idStr, x, y);}
 
 	public void changeProblem(String idStr,String changeMode){new ChangeProblemAction(this).changeProblem(idStr, changeMode);}
-	//public void changeProblem(String relIdStr){new ChangeProblemAction(this).changeProblem(relIdStr);}
-	//public void toggleProblem(String probRelIdStr){new ChangeProblemAction(this).toggleProblem(probRelIdStr);}
-	//public void changeDiagnosis(String relIdStr){new ChangeDiagnosisAction(this).changeDiagnosis(relIdStr);}
-	//public void changeMng(String relIdStr){new ChangeMngAction(this).changeMng(relIdStr);}
-	//public void changeTest(String relIdStr){new ChangeTestAction(this).changeTest(relIdStr);}
-
 	public void changeDiagnosis(String idStr,String changeMode){new ChangeDiagnosisAction(this).changeDiagnosis(idStr, changeMode);}
 	public void changeTest(String idStr,String changeMode){new ChangeTestAction(this).changeTest(idStr, changeMode);}
 	public void changeMng(String idStr,String changeMode){new ChangeMngAction(this).changeMng(idStr, changeMode);}
-	//public void changeEpi(String idStr,String changeMode){new ChangeEpiAction(this).changeEpi(idStr, changeMode);}
 	public void changeMnM(String idStr/*, String newValue*/){new ChangeDiagnosisAction(this).toggleMnM(idStr/*, newValue*/);}
 	
 	public void addConnection(String sourceId, String targetId){new AddConnectionAction(this).add(sourceId,targetId);}

@@ -7,33 +7,23 @@
       <script language="JavaScript">
   	
     $(function() {    
-    	presubmitted = "true";
-    	$(".tier_4").prop( "checked", true );
-		if($("#score").val()>=1){
-			$(".aftersubmit_succ").show();
-			$(".aftersubmit_fail").hide();
-			$(".errors").hide();
-			//submitted = "true";
-			postEnforceFinalDDXSubmission(submitted/*, myStage, maxSubmittedStage*/);
-		}
-		else{
-			$(".aftersubmit_fail").show();	
-			$(".aftersubmit_succ").hide();
-			if($("#errors").html().trim()=="") 
-				$(".errors").hide();
-		}
-		if($("#score").val()>=1){
-			submitted = "true";
-		}
+    	initSubmittedDialog();
+    	if($("#errorscontent").html()==""){
+    		$("#errors").hide();
+    	}
+    	else $("#errors").show();
+    	
     });
       </script>
 <div class="ddxsubmitconf">
+<span id="enforceSubmitMsg" class="errormsgdialog" style="display:none">#{prop['ddx.mustsubmit.hint']}<br/><br/> </span>
 	#{prop['submit.intro.after']}:<br/>
 	<h:form id="ddx_submit_form">
+		
 		<h:panelGroup >
 			<ui:repeat value="#{crtContext.patillscript.diagnoses}" var="ddx" varStatus="status">
-				<input type="checkbox" readonly="readonly" disabled="disabled" class="chb_ddx tier_#{ddx.tier}" value="#{ddx.id}" /> #{ddx.labelOrSynLabel}				
-					<i class="fa fa-user-md " mytooltip="#{ddx.exp}"></i>
+				<input id="chkb_#{ddx.id}" type="checkbox" readonly="readonly" disabled="disabled" class="chb_ddx tier_#{ddx.tier}" value="#{ddx.id}" /> #{ddx.labelOrSynLabel}				
+					<i class="fa fa-user-md expfb" mytooltip="#{ddx.exp}"></i>
 	 			<!-- <span class="peer_score" title="Percentage of peers who have added this problem as well" style="white-space: nowrap" id="peerscore#{prob.id}"> (#{prob.peerPercentage})</span>-->
 				
 				<br/>
@@ -51,28 +41,30 @@
 		<input type="text" id="score" style="visibility:hidden" value="#{crtContext.patillscript.overallFinalDDXScore}" />
 	</h:form>
 	
-		#{prop['submit.slider.after']} #{crtContext.patillscript.confidenceRange}.<br/>
+		<!-- #{prop['submit.slider.after']}--> #{crtContext.patillscript.confidenceRange}<br/>
 	
 		<span class="aftersubmit_fail">
-			<span class="errors">#{prop['ddx.errors.title']}:
-				<ul id="errors">
-					<ui:repeat value="#{crtContext.patillscript.errorsCurrStage}" var="err" varStatus="status">
+			#{prop['submit.nocorr']}<br/>
+			<span class="errors" id="errors"><b>#{prop['ddx.errors.title']}:</b><br/>
+				<!-- <ul id="errors">-->
+					<span id="errorscontent"><ui:repeat value="#{crtContext.patillscript.errorsCurrStage}" var="err" varStatus="status">
 						<ui:include src="errorline.xhtml" />
-			 		</ui:repeat>				
-				</ul>
+			 		</ui:repeat></span>			
+				<!--</ul>--><br/><br/>
 			</span>
 			#{prop['ddx.errors.donext']}<ul class="fa-ul">
-				<li class="aftersubmit_cont_#{crtContext.patillscript.offerContinueCase}"><i class="fa-li fa fa-arrow-rightb"></i> <a class="aftersubmit_cont_#{crtContext.patillscript.offerContinueCase}" href="javascript:backToCase();">#{prop['submit.cont']}</a></li><!--  (not max stage OR correct) -->
-				<li class="aftersubmit_cont_#{crtContext.patillscript.offerTryAgain}"><i class="fa-li fa fa-arrow-rightb"></i> <a class="aftersubmit_cont_#{crtContext.patillscript.offerTryAgain}" href="javascript:tryAgain();">#{prop['submit.try']}</a></li><!-- (max stage) -->
-				<li class="aftersubmit_cont_#{crtContext.patillscript.offerSolution}"><i class="fa-li fa fa-arrow-rightb"></i> <a class="aftersubmit_cont_#{crtContext.patillscript.offerSolution}" href="javascript:showSolution();">#{prop['submit.sol']}</a></li> <!--  (max stage only) -->
+				<li class="aftersubmit_cont_#{crtContext.patillscript.offerContinueCase}"> <a class="aftersubmit_cont_#{crtContext.patillscript.offerContinueCase}" href="javascript:backToCase();"><i class="fa-li fa fa-arrow-rightb"></i> #{prop['submit.cont']}</a></li><!--  (not max stage OR correct) -->
+				<li class="aftersubmit_cont_#{crtContext.patillscript.offerTryAgain}"><a class="aftersubmit_cont_#{crtContext.patillscript.offerTryAgain}" href="javascript:tryAgain();"><i class="fa-li fa fa-arrow-rightb"></i> #{prop['submit.try']}</a></li><!-- (max stage) -->
+				<li class="aftersubmit_cont_#{crtContext.patillscript.offerSolution}"><a class="aftersubmit_cont_#{crtContext.patillscript.offerSolution}" href="javascript:showSolution();"><i class="fa-li fa fa-arrow-rightb"></i> #{prop['submit.sol']}</a></li> <!--  (max stage only) -->
 				<!-- <li class="aftersubmit_cont_#{crtContext.patillscript.offerSolution}"><i class="fa-li fa fa-arrow-rightb"></i> <a class="aftersubmit_cont_#{crtContext.patillscript.offerSolution}" href="javascript:giveHint();">#{prop['submit.hint']}</a></li> -->
 			</ul>
 			</span>
 			
-			<span class="aftersubmit_succ">
-				<b>#{prop['submit.corr']}</b><br/>
-				<a href="javascript:continueCase();"><i class="fa-li fa fa-arrow-rightb"></i> #{prop['submit.cont']}</a>
+			<span class="aftersubmit_succ">#{crtContext.patillscript.scoreFinalDDXFeedback}
+				<b><!--  #{prop['submit.corr']}--> </b><br/><br/>
+				<a href="javascript:continueCase();"><i class="fa fa-arrow-rightb"></i> #{prop['submit.cont']}</a>
 			</span>	
+			
 </div>
 
 </ui:composition>

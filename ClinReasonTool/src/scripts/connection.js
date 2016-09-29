@@ -58,14 +58,14 @@ function createConnection(cnxId, sourceId, targetId, learner, exp, expWeight, le
 	var cnx = instance.connect({
 		source:epSource, 
 		target:epTarget,
-		deleteEndpointsOnDetach:false,
+		/*deleteEndpointsOnDetach:false,*/
 		paintStyle: { strokeStyle: color, lineWidth: lw }
 		//title: 'Click to change or delete'
 	});
 	$(cnx).attr('id', cnxId);
 	//$(cnx).attr('title', 'hallo');
 	//cnx.setLabel('Click to change or delete');
-	cnx.setPaintStyle({strokeStyle:color, lineWidth:lw}); //color depending on the weight!!!
+	//cnx.setPaintStyle({strokeStyle:color, lineWidth:lw}); //color depending on the weight!!!
 }
 
 function getEndpointForCnx(itemId, epIdx){
@@ -95,13 +95,19 @@ function createExpConnection(cnxId, sourceId, targetId, expWeight, learnerWeight
 	var cnx = instance.connect({
 		source:epSource, 
 		target:epTarget,
+		id:"exp_"+cnxId,
 		/*deleteEndpointsOnDetach:false,*/
 		connectorStyle: { strokeStyle: color, lineWidth: lw }
 	});
 	if(cnx!=undefined){
 		$(cnx).attr('id', "exp_"+cnxId);
 		cnx.setPaintStyle({strokeStyle:color, lineWidth: lw}); //color depending on the weight!!!
-		cnx.addClass("jsplumb-exp-connector-hide");
+		if(!isOverallExpertOn() || !isOverallCnxOn()){
+			//cnx.addClass("jsplumb-exp-connector-show");
+		//}
+		//else{
+			cnx.addClass("jsplumb-exp-connector-hide");
+		}
 		cnx.addClass("jsplumb-exp-connector");
 		cnx.removeClass("jsplumb-connector");
 	}
@@ -281,7 +287,6 @@ function initCnxDisplay(){
 	var cnxStatus = getCnxStatus();
 	if(cnxStatus==1 || cnxStatus=="1") showCnx();
 	else if(cnxStatus==0 || cnxStatus=="0") hideCnx();
-	//handleCnxDisplay();
 }
 
 function hideCnx(){
@@ -290,15 +295,11 @@ function hideCnx(){
 	$(".jsplumb-exp-connector").addClass("jsplumb-exp-connector-hide");
 	$("#cnxtoggle").attr("title", showCnxTitle);
 	$("#cnxtoggle").removeAttr("checked");
-	//$("#cnxtogglei").removeClass("fa-conn_on");
-	//$("#cnxtogglei").addClass("fa-conn_off");
 }
 
 function showCnx(){
 	$("#cnxtoggle").attr("title", hideCnxTitle);
 	$("#cnxtoggle").attr("checked", "checked");
-	//$("#cnxtogglei").removeClass("fa-conn_off");
-	//$("#cnxtogglei").addClass("fa-conn_on");
 	$(".jsplumb-connector").removeClass("jsplumb-connector-hide");
 	//if expert on -> display expert cnx: TODO
 	if(isOverallExpertOn()){
@@ -312,7 +313,6 @@ function isDuplicateCnx(info, errormsg){
 	//first we check whether there has already been made a connection between the source and target. 
 	//If so display an error msg
 	var con=info.connection;
-	//var arr = jsPlumb.getConnections({sourceId:con.sourceId,targetId:con.targetId});
 	var arr = getAllConnectionBySourceAndTargetId(con.sourceId, con.targetId);
 	if(arr.length>1){
 	    jsPlumb.detach(con);
@@ -339,4 +339,30 @@ function getErrorMsgSpanByTargetId(targetId){
 		return "msg_testform";
 		default: return "";
 	}
+}
+/**
+ * when an action has been performed we have to update the cnxs as well. It can be that we have to repaint the exp 
+ * cnxs if the learner has added an element that is correct and has an expert cnx (then the id of the element changes).
+ */
+function reInitCnxsCallback(data){
+	 var status = data.status; 
+	 if(isCallbackStatusSuccess(data)){
+    	fireAddConnection = false;
+    	var cnxs = instance.getConnections();
+    	if(cnxs!=null){
+        	for(i=0; i<cnxs.length;i++){
+        		var tmpCnx = cnxs[i];
+        		if(tmpCnx.id.startsWith("exp_"))
+        			instance.detach(tmpCnx);
+        	}
+    	}
+    	reInitExpConnections();
+    	fireAddConnection = true;        	
+    }
+}
+
+function isOverallCnxOn(){
+	if($("#cnxtoggle").prop("checked"))
+		return true;
+	return false;
 }

@@ -157,6 +157,21 @@ function displayErrorMsg(response){
 /* callback function if there is nothing to do */
 function doNothing(){}
 
+
+function isCallbackStatusSuccess(data){
+	 var status = data.status;
+	 switch (status) {
+     case "begin": // Before the ajax request is sent.    	
+         return false;
+
+     case "complete": // After the ajax response is arrived.
+     	//instance.removeGroup("fdg_group", true);
+    	 return false;
+
+     case "success":
+    	 return true;
+	 }
+}
 /*
  * We store the currently open tab in a cookie, to be able to reopen the same tab after a reload. 
  */
@@ -420,3 +435,4 @@ function postEnforceFinalDDXSubmission(isSubmitted/*, currentStage, maxStageForS
 function postFrameHeight(newHeight){
 	top.postMessage(newHeight, "*");
 }     
+

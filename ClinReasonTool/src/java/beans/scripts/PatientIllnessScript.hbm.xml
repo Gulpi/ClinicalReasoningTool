@@ -22,7 +22,7 @@
 		<property name="confidence" column="confidence" type="int"/>	
 		<property name="lastAccessDate" column="last_access_date" type="timestamp"/>
 		<property name="vpId" column="vp_id" type="string"/>	
-		
+		<property name="showSolution" column="show_sol" type="int"/>
 		<!--  <property name="creationDate" column="creation_date" update="false" type="timestamp"/>-->
 	    <!-- <many-to-one name="summSt" column="summst_id" not-null="false" update="false" insert="false" lazy="false" />-->
 	    <property name="summStId" column="summst_id" type="long"/>

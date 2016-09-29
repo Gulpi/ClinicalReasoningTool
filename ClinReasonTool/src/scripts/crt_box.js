@@ -49,13 +49,15 @@ function problemCallBack(testId, selTest){
 	$(".fdgs").remove();
 	//we update the problems list and the json string
 	$("[id='probform:hiddenProbButton']").click();		
+	$("[id='cnxsform:hiddenCnxButton']").click();
 }
 
 function updateProbCallback(data){
-	updateItemCallback(data, "fdgs", "fdg_box");
-	if(isOverallExpertOn()) //re-display expert items:
-		turnOverallExpFeedbackOn('expFeedback', 'icon-user-md');
-	//initBoxHeights();
+	if(isCallbackStatusSuccess(data)){
+		updateItemCallback(data, "fdgs", "fdg_box");
+		if(isOverallExpertOn()) //re-display expert items:
+			turnOverallExpFeedbackOn('expFeedback', 'icon-user-md');
+	}
 }
 
 
@@ -104,22 +106,18 @@ function diagnosisCallBack(){
 	$("#ddx").val("");		
 	$(".ddxs").remove();	
 	//we update the ddx boxes (re-printing all boxes)
-	$("[id='ddxform:hiddenDDXButton']").click();			
+	$("[id='ddxform:hiddenDDXButton']").click();	
+	$("[id='cnxsform:hiddenCnxButton']").click();	
 }
 
 function updateDDXCallback(data){
-	checkSubmitBtn();
-	updateItemCallback(data, "ddxs", "ddx_box");
-	if(isOverallExpertOn()) //re-display expert items:
-		turnOverallExpFeedbackOn('expFeedback', 'icon-user-md');
+	if(isCallbackStatusSuccess(data)){
+		checkSubmitBtn();
+		updateItemCallback(data, "ddxs", "ddx_box");
+		if(isOverallExpertOn()) //re-display expert items:
+			turnOverallExpFeedbackOn('expFeedback', 'icon-user-md');
+	}
 }
-
-/*function hasAFinalDiagnosis(){
-	//tiericon_1
-	var numFinDiagn = $(".icon-circle-tier4").length;
-	if(numFinDiagn>0) return true;
-	return false;
-}*/
 
 /** a diagnosis is changed to must not missed -red icon or toggled back*/
 function toggleMnM(id){
@@ -155,33 +153,33 @@ function togglePeersDDX(){
 	togglePeerBoxFeedback("peerFeedbackDDX", "peer_score_ddx", 2);
 }
 
-/* 1. we update the DDX before opening the dialog*/
-/*function doSubmitDDXDialog(){
-	clearErrorMsgs();
-	$("[id='ddx_submit_form:hiddenDDXSubmitButton']").click();	//update the ddxs to submit!
-}*/
-
 
 /* 2. we show the submit ddx dialog and ask for confidence */
-function doSubmitDDXDialogCallback(){
+function doSubmitDDXDialog(){
 	//we check whether there are diagnoses, if so we open a dialog, else we display a hint
 	var ddxNum = $( ".ddxs" ).length;
-	
+	$('.ui-tooltip').remove();
 	if(ddxNum>0){ //then open jdialog:
 		
 		$("#jdialog").dialog( "option", "width", ['300'] );
 		$("#jdialog").dialog( "option", "height", ['350'] );
+		
 		$("#jdialog").dialog( "option", "title", submitDialogTitle );
 		$("#jdialog").dialog( "option", "buttons", [ ] );
+		//$("#jdialog").dialog( "option", "position", [20,20] );
+		
 		//loadFile();
 		if(submitted=="true" || presubmitted=="true") $("#jdialog").load("submitteddialog.xhtml"); // $("#jdialog").load("submitteddialog.xhtml");
-		else loadFileSubmit(); //$("#jdialog").load("submitdialog.xhtml");	
-		$('.ui-tooltip').remove();
+		else $("#jdialog").load("submitdialog.xhtml"); //$("#jdialog").load("submitdialog.xhtml");	
+		
 		$("#jdialog" ).dialog( "open" );
+		
 		$("#jdialog").show();
+		
 	}
 	else{
 		alert(submitDDXOne);
+		$('.ui-tooltip').remove();
 	}
 }
 
@@ -190,10 +188,6 @@ function doSubmitDDXDialogCallback(){
  */
 function continueCase(){
 	$("#jdialog" ).dialog( "close" );
-}
-
-function loadFileSubmit(){
-	$("#jdialog").load("submitdialog.xhtml");
 }
 
 /* 3. user has selected ddxs and submits final ddxs */
@@ -213,121 +207,87 @@ function submitDDXConfirmed(){
 }
 
 /* 4. we come back after the submission and have to reload ddxs once again show feedback for submitted diagnoses */
-function submitDDXConfirmedCallBack(){
-	$("#jdialog").load("submitteddialog.xhtml");
+function submitDDXConfirmedCallBack(data){
+	if(isCallbackStatusSuccess(data))
+		$("#jdialog").load("submitteddialog.xhtml");
 	//$("[id='ddx_submit_form:hiddenDDXSubmitScoreButton']").click();	
 
 }
 
 /* 5. show feedback for submitted diagnoses */
 function doScoreDDXDialogCallback(){
-
 	$(".tier_4").prop( "checked", true );
 	$(".chb_ddx").attr("disabled","disabled");
-	
-	var val = $("#score").val();
-	
-	toggleBefAfterSubmit(true);
 }
-
-function toggleBefAfterSubmitOnLoad(){
-	toggleBefAfterSubmit(presubmitted);
-}
-function toggleBefAfterSubmit(isSubmitted){
-/*	if(isSubmitted==true || isSubmitted=="true"){
-		$(".aftersubmit").show();
-		presubmitted = "true";
-		$(".ddx_submit_btn2").hide();
-		$(".befsubmit").hide();
-		$(".chb_ddx").attr("disabled","disabled");
-		$(".ddxsubmit_score").show(); //show exp feedback
-		var val = $("#score").val();
-		if($("#score").val()>=1){
-			$(".aftersubmit_succ").show();
-			$(".aftersubmit_fail").hide();
-			$(".errors").hide();
-			submitted = "true";
-			postEnforceFinalDDXSubmission(submitted, myStage, maxSubmittedStage);
-		}
-		else{
-			$(".aftersubmit_fail").show();	
-			$(".aftersubmit_succ").hide();
-			if($("#errors").html().trim()=="") 
-				$(".errors").hide();
-		}
-		$(".ddxsubmit_score").show();
-	}
-	else{ //not (yet) submitted:
-		$(".chb_ddx").removeAttr("disabled"); //make checkboxes editable again
-		presubmitted = "false";
-		$(".aftersubmit").hide();
-		$(".befsubmit").show();
-		$(".ddxsubmit_score").hide(); //hide expert's feedback again
-		$(".submitBtn2").show();
-	}*/
-}
-
 
 /*
  * close the dialog and user continues with case....
  */
-function backToCase(){
-	//$("#ddx_submit_btn").show();
-	//toggleBefAfterSubmit(false);
-	
+function backToCase(){	
 	$("#jdialog" ).dialog( "close" );	
 	sendAjax("", revertSubmissionCallback, "resetFinalDDX","");
 }
 
-function revertSubmissionCallback(){
-	$(".ddxs").remove();
-	presubmitted = "false";
-	//hiding feedback and activating the checkboxes again:
-	//$(".tier_4").prop( "checked", false );
-	//toggleBefAfterSubmit(false);
-	checkSubmitBtn();
-	postEnforceFinalDDXSubmission("false");
-	$("[id='ddxform:hiddenDDXButton']").click();
+function revertSubmissionCallback(data){
+	if(isCallbackStatusSuccess(data)){
+		$(".ddxs").remove();
+		presubmitted = "false";
+		checkSubmitBtn();
+		postEnforceFinalDDXSubmission("false");
+		$("[id='ddxform:hiddenDDXButton']").click();
+	}
 }
 
 /* 
  * dialog remains open and user can choose again from list? -> what if correct diagnosis is not included 
  */
 function tryAgain(){
-	//toggleBefAfterSubmit(false);
-	
 	sendAjax("", tryAgainCallback, "resetFinalDDX","");
 }
 
-function tryAgainCallback(){
-	$(".ddxs").remove();
-	presubmitted = "false";
-	//hiding feedback and activating the checkboxes again:
-	//$(".tier_4").prop( "checked", false );
-	//toggleBefAfterSubmit(false);
-	//checkSubmitBtn();
-	postEnforceFinalDDXSubmission("false");
-	$("#jdialog").load("submitdialog.xhtml");
-	$("[id='ddxform:hiddenDDXButton']").click();
+function tryAgainCallback(data){
+	if(isCallbackStatusSuccess(data)){
+		$(".ddxs").remove();
+		presubmitted = "false";
+		postEnforceFinalDDXSubmission("false");
+		$("#jdialog").load("submitdialog.xhtml");
+		$("[id='ddxform:hiddenDDXButton']").click();
+	}
 }
 
 function showSolution(){
-	//$(".aftersubmit_succ").show();
 	sendAjax("", showSolutionCallBack, "showSolution",  "");
-	
-	//todo turn feedback for ddx on and show complete expert solution....
 }
 
-function showSolutionCallBack(){
-	$("#jdialog" ).dialog( "close" );
-	if(!isOverallExpertOn())
-		turnOverallExpFeedbackOn('expFeedback', 'icon-user-md'); //show expert feedback with then the final diagnoses/-is
-	postEnforceFinalDDXSubmission("true");
-	$("[id='ddxform:hiddenDDXButton']").click();
+function showSolutionCallBack(data){
+	if(isCallbackStatusSuccess(data)){
+		showSolutionStage = currentStageScriptNoUPdate;
+		$("#jdialog" ).dialog( "close" );
+		clickExpFeedbackOn();
+		presubmitted = "false";
+		submitted = "true";
+		postEnforceFinalDDXSubmission("true");
+		$(".ddxs").remove();
+		$("[id='ddxform:hiddenDDXButton']").click();
+	}
 }
 
-
-//var tiermsg=["I do not now","Clinically high likelyhood","Clinically moderate likelyhood","Clinically low likelyhood","My final diagnosis"];
+/**
+ * called when user clicks on close button of the submit dialog
+ */
+function closeSubmitDialog(){
+	//just close jdialog if diagnosis already submitted OR only submitdialog is opened.
+	if(submitted=="true" || presubmitted=="false") return true; 
+	if(parseInt(currentStage) < parseInt(maxSubmittedStage)){ //user can continue the case:
+		sendAjax("", revertSubmissionCallback, "resetFinalDDX","");
+		return true;
+	}
+	else{ //user has already reached max number of cards and has to decide about final diagnosis, so we do NOT close the dialog
+		//but display a message:
+		$("#enforceSubmitMsg").show();
+		return false;
+	}
+}
 
 /* change tier from dropdown menu*/
 function changeTier2(id, tier){
@@ -417,6 +377,44 @@ function submitSliderChange(){
 	var confVal = $( "#confidence_slider" ).slider( "value" );
 	//sendAjax(-1, doNothing, "changeConfidence",  confVal);
 }
+/**
+ * we init the display of the dialog shown after a diagnosis has been submitted
+ */
+function initSubmittedDialog(){
+	presubmitted = "true";
+	$(".tier_4").prop( "checked", true );
+	var ddxsFBIcons = $(".expfb");
+	if(ddxsFBIcons!=null){
+		for(i=0; i<ddxsFBIcons.length;i++){
+			var iItem =  ddxsFBIcons[i];
+			if($(iItem).attr("mytooltip")=="") $(iItem).hide();
+		}
+	}
+	if($("#score").val()>=1){ //correct solution:
+		submitted = "true";
+		presubmitted = "false";
+		$(".aftersubmit_succ").show();
+		$(".aftersubmit_fail").hide();
+		$(".errors").hide();
+		postEnforceFinalDDXSubmission(submitted/*, myStage, maxSubmittedStage*/);
+		return;
+	}
+	
+	if(showSolutionStage!="" && showSolutionStage!="-1" && showSolutionStage!="0"){ //show solution has been selected
+		submitted = "true";
+		$(".aftersubmit_succ").show();
+		$(".aftersubmit_fail").hide();
+		postEnforceFinalDDXSubmission(submitted/*, myStage, maxSubmittedStage*/);
+		return;
+	}
+	else{
+		$(".aftersubmit_fail").show();	
+		$(".aftersubmit_succ").hide();
+		if($("#errors").html().trim()=="") 
+			$(".errors").hide();
+	}
+
+}
 
 /******************** management *******************************/
 
@@ -440,22 +438,29 @@ function chgManagement(id, type){
 }
 
 function delManagementCallBack(mngId, selMng){
-	deleteEndpoints("mng_"+mngId);
-	managementCallBack(mngId, selMng);
+	//if(isCallbackStatusSuccess(data)){
+		deleteEndpoints("mng_"+mngId);
+		managementCallBack(mngId, selMng);
+	//}
 }
 
 function managementCallBack(mngId, selMng){
-	$("#mng").val("");	
-	$(".mngs").remove();
-
-	//we update the problems list and the json string
-	$("[id='mngform:hiddenMngButton']").click();	
+	//if(isCallbackStatusSuccess(data)){
+		$("#mng").val("");	
+		$(".mngs").remove();
+	
+		//we update the problems list and the json string
+		$("[id='mngform:hiddenMngButton']").click();	
+		$("[id='cnxsform:hiddenCnxButton']").click();
+	//}
 }
 
 function updatMngCallback(data){
-	updateItemCallback(data, "mngs", "mng_box");
-	if(isOverallExpertOn()) //re-display expert items:
-		turnOverallExpFeedbackOn('expFeedback', 'icon-user-md');
+	if(isCallbackStatusSuccess(data)){
+		updateItemCallback(data, "mngs", "mng_box");
+		if(isOverallExpertOn()) //re-display expert items:
+			turnOverallExpFeedbackOn('expFeedback', 'icon-user-md');
+	}
 }
 
 function addJokerMng(){
@@ -498,12 +503,15 @@ function testCallBack(testId, selTest){
 	$(".tests").remove();
 	//we update the problems list and the json string
 	$("[id='testform:hiddenTestButton']").click();		
+	$("[id='cnxsform:hiddenCnxButton']").click();s
 }
 
 function updateTestCallback(data){
-	updateItemCallback(data, "tests","tst_box");
-	if(isOverallExpertOn()) //re-display expert items:
-		turnOverallExpFeedbackOn('expFeedback', 'icon-user-md');
+	if(isCallbackStatusSuccess(data)){
+		updateItemCallback(data, "tests","tst_box");
+		if(isOverallExpertOn()) //re-display expert items:
+			turnOverallExpFeedbackOn('expFeedback', 'icon-user-md');
+	}
 }
 
 function chgTest(id, type){
@@ -536,8 +544,10 @@ function saveSummSt(id){
 	sendAjax(id, saveSummStatementCallBack, "saveSummStatement",text);	
 }
 
-function saveSummStatementCallBack(){
-	$("#msg_sumstform").html("Changes have been saved.");	
+function saveSummStatementCallBack(data){
+	if(isCallbackStatusSuccess(data)){
+		$("#msg_sumstform").html("Changes have been saved.");	
+	}
 }
 
 
@@ -637,6 +647,12 @@ function isOverallExpertOn(){
 	return false;
 }
 
+
+
+function clickExpFeedbackOn(){
+	$("#expFeedback").prop("checked", "true");
+}
+
 /* when displaying the expert summSt we have to increase the height of the box.*/
 function calcAddPixForExpSum(){
 	
@@ -689,9 +705,10 @@ function turnOverallExpFeedbackOn(iconId, itemClass){
 	turnExpBoxFeedbackOn("expFeedbackDDX", "ddxs");
 	turnExpBoxFeedbackOn("expFeedbackTest", "tests");
 	turnExpBoxFeedbackOn("expFeedbackMng", "mngs");
-	$(".jsplumb-exp-connector").addClass("jsplumb-exp-connector-show");
-	$(".jsplumb-exp-connector").removeClass("jsplumb-exp-connector-hide");
-	//initExpBoxHeights();
+	if(isOverallCnxOn()){
+		$(".jsplumb-exp-connector").addClass("jsplumb-exp-connector-show");
+		$(".jsplumb-exp-connector").removeClass("jsplumb-exp-connector-hide");
+	}
 }
 
 function turnOverallExpFeedbackOff(iconId, itemClass){

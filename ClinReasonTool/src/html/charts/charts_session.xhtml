@@ -11,89 +11,18 @@
 <f:event type="preRenderView" listener="#{facesContext.externalContext.response.setHeader('Cache-Control', 'no-cache, no-store')}" />
 
  <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
- <script type="text/javascript" src="../scripts/jquery112/jquery.js"></script>
-<script type="text/javascript" src="../scripts/jquery112/jquery-ui.min.js"></script>
-<script type="text/javascript" src="../scripts/jquery112/jquery-ui.js"></script>
-<script src="../scripts/d3/d3.js"></script>
-<script src="../scripts/nvd3/nv.d3.js"></script>
+ <script type="text/javascript" src="../../scripts/jquery112/jquery.js"></script>
+<script type="text/javascript" src="../../scripts/jquery112/jquery-ui.min.js"></script>
+<script type="text/javascript" src="../../scripts/jquery112/jquery-ui.js"></script>
+<script src="../../scripts/d3/d3.js"></script>
+<script src="../../scripts/nvd3/nv.d3.js"></script>
+<script src="../../scripts/d3utils.js"></script>
 
-<script src="../scripts/d3utils.js"></script>
+<link rel="stylesheet" type="text/css" href="../../scripts/jquery112/ui-lightness/jquery-ui.css" /> 
+<link rel="stylesheet" type="text/css" href="../../scripts/draw2d/css/contextmenu.css"  />
+<link rel="stylesheet" href="../../styles/clinreason.css" />
+<link rel="stylesheet" href="../../styles/portfolio.css" />
 
-<link rel="stylesheet" type="text/css" href="../scripts/jquery112/ui-lightness/jquery-ui.css" /> 
-<link rel="stylesheet" type="text/css" href="../scripts/draw2d/css/contextmenu.css"  />
-<link rel="stylesheet" href="../styles/clinreason.css" />
-<link rel="stylesheet" href="../styles/portfolio.css" />
-<style>
-
-.chart rect {
-    fill: steelblue;
-  }
-
-  .axis path,
-  .axis line {
-    fill: none;
-    stroke: #000;
-    shape-rendering: crispEdges;
-  }
-
-  .axis text {
-    font-size: 8px;
-  }
-  
-  text {
-            font-size: 8px;
-        }
-
-  .chart .current {
-    fill: green;
-    cursor: pointer;
-  }
-  
-  .nvd3 .nv-axis {
-    pointer-events:none;
-    opacity: 1;
-}
-
-.nvd3 .nv-axis path {
-    fill: none;
-    stroke: #000;
-    stroke-opacity: .75;
-    shape-rendering: crispEdges;
-}
-
-.nvd3 .nv-axis path.domain {
-    stroke-opacity: .75;
-}
-
-.nvd3 .nv-axis.nv-x path.domain {
-    stroke-opacity: 0;
-}
-
-.nvd3 .nv-axis line {
-    fill: none;
-    stroke: #e5e5e5;
-    shape-rendering: crispEdges;
-}
-
-.nvd3 .nv-axis .zero line,
-    /*this selector may not be necessary*/ .nvd3 .nv-axis line.zero {
-    stroke-opacity: .75;
-}
-
-.nvd3 .nv-axis .nv-axisMaxMin text {
-    font-weight: bold;
-}
-
-.nvd3 .x  .nv-axis .nv-axisMaxMin text,
-.nvd3 .x2 .nv-axis .nv-axisMaxMin text,
-.nvd3 .x3 .nv-axis .nv-axisMaxMin text {
-    text-anchor: middle
-}
-
-.nvd3 .nv-axis.nv-disabled {
-    opacity: 0;
-}
-</style>
 <!--  <svg class="chart"></svg>-->
 
 </head>

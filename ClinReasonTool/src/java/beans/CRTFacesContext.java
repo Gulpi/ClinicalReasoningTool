@@ -358,9 +358,9 @@ public class CRTFacesContext extends FacesContextWrapper /*implements Serializab
 	public Locale getLocale(){
 		return locale;//LocaleController.getLocale(this).getLanguage();
 	}
-	public void setLocale(Locale loc){
+	/*public void setLocale(Locale loc){
 		this.locale = loc;
-	}
+	}*/
 	
 	public String getLanguage(){
 		return locale.getLanguage();

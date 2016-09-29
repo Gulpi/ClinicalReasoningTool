@@ -1,5 +1,6 @@
 package controller;
 
+import java.util.Iterator;
 import java.util.Locale;
 
 import javax.faces.context.FacesContext;
@@ -21,22 +22,9 @@ public class LocaleController {
 	
 	public static Locale getLocale(){
 		CRTFacesContext cnxt =  (CRTFacesContext) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get(CRTFacesContext.CRT_FC_KEY);
-		return cnxt.getLocale();
-		
-		//return getLocale(cnxt);
+		return cnxt.getLocale();		
 	}
-	
-	/*public static Locale getLocale(CRTFacesContext cnxt){
-		if(cnxt==null || cnxt.getViewRoot()==null || cnxt.getViewRoot().getLocale()==null || cnxt.getViewRoot().getLocale()==null) 
-			return setLocale();
-		Locale loc = cnxt.getViewRoot().getLocale();
-		return cnxt.getViewRoot().getLocale();
-	}*/
-	
-    /*private void setLocale(Locale loc) {
-		CRTFacesContext cnxt =  (CRTFacesContext) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get(CRTFacesContext.CRT_FC_KEY);
-		cnxt.setLocale(loc);
-    }*/
+
     
     public Locale getScriptLocale(){
     	String locStr = AjaxController.getInstance().getRequestParamByKey(AjaxController.REQPARAM_SCRIPTLOC);
@@ -53,15 +41,9 @@ public class LocaleController {
 		String locStr = AjaxController.getInstance().getRequestParamByKey(AjaxController.REQPARAM_LOC);
 		if(isAcceptedLocale(locStr)) loc = new Locale(locStr);
 		FacesContext.getCurrentInstance().getViewRoot().setLocale(loc);
-		//CRTFacesContext cnxt =  (CRTFacesContext) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get(CRTFacesContext.CRT_FC_KEY);
-		//if(cnxt!=null && cnxt.getViewRoot()!=null) cnxt.getViewRoot().setLocale(loc);
-
 		return loc;
     }
-    
-    /*public void setScriptLocale(Locale loc){
-    	setLocale(loc);
-    }*/
+   
     
     private static boolean isAcceptedLocale(String locStr){
 		if(locStr!=null && !locStr.trim().equals("")){ 

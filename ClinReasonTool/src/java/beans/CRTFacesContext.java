@@ -279,6 +279,7 @@ public class CRTFacesContext extends FacesContextWrapper /*implements Serializab
 	}
 	
 	public PatientIllnessScript getPatillscript() { 
+		LocaleController.setLocale();
 		return patillscript;
 	}
 		

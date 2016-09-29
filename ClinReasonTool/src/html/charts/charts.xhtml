@@ -6,8 +6,9 @@
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:f="http://java.sun.com/jsf/core"
-      >
-<head>
+      xmlns:v="urn:schemas-microsoft-com:vml">
+ <f:view locale="#{crtContext.locale}">     
+ <head>
 <f:event type="preRenderView" listener="#{facesContext.externalContext.response.setHeader('Cache-Control', 'no-cache, no-store')}" />
 
 <title>Illness Script Portfolio</title>
@@ -77,7 +78,7 @@ $(function() {
  <div id="linkallcharts" style="display:none;font-size:0.8em;">
  	<a href="charts.xhtml?chart_size=lg&amp;chart_type=0" target="new">#{prop['charts.more']}</a>
  </div>
-<!--  <div id="tooltips">#{crtContext.learningAnalyticsContainer.VPNamesToJson}
-</div> -->
 
- </body></html>
+ </body>
+ </f:view>
+ </html>

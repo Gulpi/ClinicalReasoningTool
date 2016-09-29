@@ -2,7 +2,9 @@
     xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:ui="http://java.sun.com/jsf/facelets"
-      xmlns:f="http://java.sun.com/jsf/core">
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:v="urn:schemas-microsoft-com:vml">
+ <f:view locale="#{crtContext.locale}"> 
 	
 	<span style="display:none;" id="conn_id"></span>
 	<div class="linkscon">
@@ -13,5 +15,5 @@
 	</div><br/>
 		
 	<a class="del" href="javascript:delConnection();"><i class="fa fa-trash"></i> #{prop['delete']}</a>
-		
+</f:view>		
 </ui:composition>

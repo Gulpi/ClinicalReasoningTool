@@ -7,7 +7,9 @@
       xmlns:f="http://java.sun.com/jsf/core"
 	 xmlns:v="urn:schemas-microsoft-com:vml"     
 	  >
+<!-- <f:view locale="#{crtContext.locale}"> -->
 <f:view locale="#{crtContext.locale}">
+ <!-- <f:loadBundle basename="properties.intlproperties" var="prop" /> -->
 <head>
 <f:event type="preRenderView" listener="#{facesContext.externalContext.response.setHeader('Cache-Control', 'no-cache, no-store')}" />
 <title>Patient Illness Script</title>

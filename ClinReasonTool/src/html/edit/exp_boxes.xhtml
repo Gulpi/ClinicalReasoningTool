@@ -5,10 +5,9 @@
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:f="http://java.sun.com/jsf/core"
-      >
-<!-- <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:f="http://java.sun.com/jsf/core"      
-      xmlns:h="http://java.sun.com/jsf/html">-->
+      xmlns:v="urn:schemas-microsoft-com:vml">
+ <f:view locale="#{crtContext.locale}">     
+
 <head>
 <f:event type="preRenderView" listener="#{facesContext.externalContext.response.setHeader('Cache-Control', 'no-cache, no-store')}" />
 
@@ -299,8 +298,7 @@ Stage: <span id="stageSpan">#{crtContext.patillscript.stage} </span>
 	<ui:repeat value="#{crtContext.graph.allVertices}" var="nodes" varStatus="status">
 		<ui:include src="items_exp.xhtml" />
 	</ui:repeat>				
-
-
 </div>
 </body>
+</f:view>
 </html>

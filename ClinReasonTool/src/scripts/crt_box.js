@@ -208,7 +208,7 @@ function submitDDXConfirmed(){
 
 /* 4. we come back after the submission and have to reload ddxs once again show feedback for submitted diagnoses */
 function submitDDXConfirmedCallBack(data){
-	if(isCallbackStatusSuccess(data))
+	//if(isCallbackStatusSuccess(data))
 		$("#jdialog").load("submitteddialog.xhtml");
 	//$("[id='ddx_submit_form:hiddenDDXSubmitScoreButton']").click();	
 

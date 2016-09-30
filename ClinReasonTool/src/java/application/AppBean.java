@@ -71,7 +71,7 @@ public class AppBean extends ApplicationWrapper implements HttpSessionListener{
 	public AppBean(){
 		HibernateUtil.initHibernate();
 		intlConf = new IntlConfiguration();
-		setViewHandler(new CRTViewHandler(FacesContext.getCurrentInstance().getApplication().getViewHandler()));
+		//setViewHandler(new CRTViewHandler(FacesContext.getCurrentInstance().getApplication().getViewHandler()));
 	    ServletContext context = (ServletContext) FacesContext.getCurrentInstance().getExternalContext().getContext();
 	    context.setAttribute(APP_KEY, this);
 	    try{
@@ -81,7 +81,7 @@ public class AppBean extends ApplicationWrapper implements HttpSessionListener{
 	    }
 	    catch(Exception e){}
 	    //does not have to be done on every restart:
-	   // new JsonCreator().initJsonExport(); 
+	    new JsonCreator().initJsonExport(); 
 	   
 		//MeshImporter.main("en");
 	   // new TextSimilarityComparing().compareTestData();

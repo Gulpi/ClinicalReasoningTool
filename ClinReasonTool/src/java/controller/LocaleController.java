@@ -40,7 +40,8 @@ public class LocaleController {
 		
 		String locStr = AjaxController.getInstance().getRequestParamByKey(AjaxController.REQPARAM_LOC);
 		if(isAcceptedLocale(locStr)) loc = new Locale(locStr);
-		FacesContext.getCurrentInstance().getViewRoot().setLocale(loc);
+		if(FacesContext.getCurrentInstance()!=null && FacesContext.getCurrentInstance().getViewRoot()!=null) 
+			FacesContext.getCurrentInstance().getViewRoot().setLocale(loc);
 		return loc;
     }
    

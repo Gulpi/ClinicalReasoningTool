@@ -164,7 +164,7 @@ function reInitExpConnections(){
 	if(conns!=''){
 		for(j=0; j<conns.length;j++){
 			if(conns[j].e=="1")
-				createExpConnection(conns[j].id, conns[j].sourceid, conns[j].targetid, conns[j].l, conns[j].e,  conns[j].weight_e,  conns[j].weight_l, conns[j].start_ep, conns[j].target_ep);
+				createExpConnection(conns[j].id, conns[j].sourceid, conns[j].targetid,  conns[j].weight_e,  conns[j].weight_l, conns[j].start_ep, conns[j].target_ep);
 		}
 	}
 

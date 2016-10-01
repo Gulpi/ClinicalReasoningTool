@@ -11,6 +11,7 @@ import beans.scripts.*;
 import beans.graph.*;
 import beans.relation.Connection;
 import beans.relation.Relation;
+import beans.relation.RelationDiagnosis;
 import beans.scripts.IllnessScriptInterface;
 
 /**
@@ -159,18 +160,13 @@ public class GraphController implements Serializable{
 	 * @param vertex
 	 * @return
 	 */
-	private boolean[] getDisplayModusOfVertex(VertexInterface vertex, boolean[] feedbackModus){
+/*	private boolean[] getDisplayModusOfVertex(VertexInterface vertex, boolean[] feedbackModus){
 		feedbackModus = new boolean[]{true, true, false, false}; //show learner and expert, TODO get from user settings and/or store in FacesContext
 		boolean[] displayModus = new boolean[]{false, false, false, false}; //learner, expert, illscript, peer 
 		int currentStage = new NavigationController().getCRTFacesContext().getPatillscript().getCurrentStage();	
-		/*boolean showExp = false; 
-		boolean showLearner = false; 
-		boolean showIllScript = false; 
-		boolean showPeer = false; */
 		
 		//if(vertex instanceof MultiVertex){
 			MultiVertex mvertex = (MultiVertex) vertex;
-			/*Relation learnerRel = ;*/
 			Relation expRel = mvertex.getExpertVertex();
 		
 			if(mvertex.isLearnerVertex() && feedbackModus[0]){
@@ -184,12 +180,8 @@ public class GraphController implements Serializable{
 					displayModus[1] = true;
 			}	
 			return displayModus;
-		//}
-		/*if(vertex instanceof SynonymVertex){ //then it is a synonym
-			
-		}*/
 		
-	}
+	}*/
 	
 	/**
 	 * We look whether this vertex has any lower or higher hierarchy vertices within the 
@@ -208,7 +200,7 @@ public class GraphController implements Serializable{
 		for(int i=0; i<vertices.size(); i++){
 			MultiVertex mv2 = vertices.get(i);
 			if(mv2.getLearnerVertex()!=null && mv2.getLearnerVertex().getListItem()!=null){
-				int codeDiffTmp = mv.getLearnerVertex().getListItem().getHierarchyDiff(mv2.getLearnerVertex().getListItem());
+				int codeDiffTmp = mv.getLearnerVertex().getListItem().getAbsHierarchyDiff(mv2.getLearnerVertex().getListItem());
 				if(codeDiffTmp>-1 /*&& (codeDiff==-1 || codeDiffTmp<codeDiff)*/){
 					nextHierarchy.add(mv2);
 					//codeDiff = codeDiffTmp;
@@ -274,5 +266,24 @@ public class GraphController implements Serializable{
 				}
 			}
 		}
+	}
+	
+	/**
+	 * Gets all ddx vertices added by the expert and marked as a final diagnosis. 
+	 * @return
+	 */
+	public List<MultiVertex> getExpertFinalVertices(){
+		Set<MultiVertex> verts = graph.vertexSet();
+		if(verts==null) return null;
+		List<MultiVertex> list = new ArrayList<MultiVertex>();
+		Iterator<MultiVertex> it = verts.iterator();
+		while(it.hasNext()){
+			MultiVertex mv = it.next();
+			if(mv.getType()==Relation.TYPE_DDX && mv.getExpertVertex()!=null){
+				RelationDiagnosis expRel = (RelationDiagnosis) mv.getExpertVertex();
+				if(expRel.isFinalDDX()) list.add(mv);				
+			}
+		}
+		return list;
 	}
 }

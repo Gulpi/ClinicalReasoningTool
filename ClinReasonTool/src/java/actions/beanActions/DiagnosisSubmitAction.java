@@ -8,6 +8,7 @@ import actions.scoringActions.ScoringFinalDDXAction;
 import application.ErrorMessageContainer;
 import beans.LogEntry;
 import beans.scripts.*;
+import controller.ScoringController;
 import beans.relation.RelationDiagnosis;
 import database.DBClinReason;
 import util.StringUtilities;
@@ -20,7 +21,6 @@ import util.StringUtilities;
 public class DiagnosisSubmitAction /*implements Scoreable*/{
 
 	private PatientIllnessScript patIllScript;
-	public static final float scoreForAllowReSubmit = (float) 0.5; //of learner gets less than 50% correct on final diagnoses, we allow re-submit
 	
 	public DiagnosisSubmitAction(PatientIllnessScript patIllScript){
 		this.patIllScript = patIllScript;
@@ -56,7 +56,7 @@ public class DiagnosisSubmitAction /*implements Scoreable*/{
 		if(!hasDDX) return;
 		float score = triggerScoringAction(patIllScript);
 		//if learner submits the wrong diagnoses we allow him to re-submit 
-		if(score>=scoreForAllowReSubmit){
+		if(score>=ScoringController.scoreForAllowReSubmit){
 			patIllScript.setSubmittedStage(patIllScript.getCurrentStage());
 			patIllScript.save();
 		}

@@ -18,7 +18,7 @@ import util.*;
  *
  */
 public class ScoringFinalDDXAction /*implements ScoringAction*/{
-
+	private static final int MAX_DISTANCE_TO_SCORE = 3;
 	/**
 	 * scoring algorithm:
 	 * expert: 
@@ -111,6 +111,7 @@ public class ScoringFinalDDXAction /*implements ScoringAction*/{
 	private float scoreFinalDDXItem(MultiVertex vert, ScoreContainer cont, PatientIllnessScript patIllScript, PatientIllnessScript expIllScript){
 		RelationDiagnosis expRel = (RelationDiagnosis)vert.getExpertVertex(); 
 		RelationDiagnosis learnerRel = (RelationDiagnosis)vert.getLearnerVertex(); 
+		
 		float itemScore = 0;
 		boolean isChg = true;
 		//score the single learner final ddx
@@ -124,16 +125,55 @@ public class ScoringFinalDDXAction /*implements ScoringAction*/{
 			}
 
 			scoreBean.setTiming(patIllScript.getSubmittedStage(), expIllScript.getSubmittedStage());
+			itemScore = ScoringController.NO_SCORE;
 			//learner & expert have selected this ddx as final
 			if(expRel!=null && expRel.isFinalDDX())  itemScore = ScoringController.FULL_SCORE;
 			
-			//learner has wrong final diagnosis:
-			else itemScore = ScoringController.NO_SCORE;
+			//learner has wrong final diagnosis, but we might have a hierarchy relation, so it might not be 100% wrong!
+			else { 
+				itemScore = caclulateScoreForHierarchyRelation(vert, scoreBean);
+				
+			}
 			
 			scoreBean.setScoreBasedOnExp(itemScore, isChg);
 			new DBClinReason().saveAndCommit(scoreBean);
 			return itemScore;
 		}
 		return 0;
+	}
+	
+	/**
+	 * Learner has chosen a final diagnosis that does not match the expert one. BUT we look here, wether it is close
+	 * (e.g. final diagnosis of expert is "lobar pneumonia" and final diagnosis of learner is "pneumonia"). For such a 
+	 * relation the learner should get some credit, depending on how far the items are apart.
+	 * @param learnerRel
+	 * @return
+	 */
+	private float caclulateScoreForHierarchyRelation(MultiVertex learnerVertex, ScoreBean sb){
+		float score = 0;
+		Graph g = NavigationController.getInstance().getCRTFacesContext().getGraph();
+		GraphController gctrl = new GraphController(g);
+		
+		List<MultiVertex> expFinalDiagnoses = gctrl.getExpertFinalVertices();
+		if(expFinalDiagnoses==null || expFinalDiagnoses.isEmpty()) return 0;
+		int distance = -99;
+		MultiVertex closestExpVertex=null;
+		//look for the closest item:
+		for(int i=0; i<expFinalDiagnoses.size();i++){
+			//distance positive: learner more specific, distance negative: learner less specific:
+			int tmpdistance = g.getHierarchyDistance(learnerVertex, expFinalDiagnoses.get(i)); 
+			int dikstra = g.getDistance(learnerVertex, expFinalDiagnoses.get(i)); 
+			if(tmpdistance!=(int) Double.POSITIVE_INFINITY && (distance==-99 || tmpdistance<distance)){
+				distance = tmpdistance;
+				closestExpVertex = expFinalDiagnoses.get(i);
+			}
+		}
+		if(distance==-99) return 0; //no relation between final ddxs of expert and learner
+		sb.setDistance(distance);
+		if(closestExpVertex!=null) sb.setExpItemId(closestExpVertex.getVertexId());
+		if(Math.abs(distance)<=MAX_DISTANCE_TO_SCORE)
+			score = (float) 1-((float)Math.abs(distance)/10);
+		return score;
+		
 	}
 }

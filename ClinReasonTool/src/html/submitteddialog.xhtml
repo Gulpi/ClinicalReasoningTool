@@ -39,10 +39,10 @@
 		    <f:ajax render="@form" onevent="doScoreDDXDialogCallback"></f:ajax>
 		 </h:commandButton>
 		 <!-- this needs to be here in order to be updated: -->
-		<input type="text" id="score" style="visibility:hidden" value="#{crtContext.patillscript.overallFinalDDXScore}" />
+		<input type="text" id="score" style="display:none;" value="#{crtContext.patillscript.overallFinalDDXScore}" />
 	</h:form>
 	
-		<!-- #{prop['submit.slider.after']}--> #{crtContext.patillscript.confidenceRange}<br/>
+		<!-- #{prop['submit.slider.after']}--> #{crtContext.patillscript.confidenceRange}<br/><br/>
 	
 		<span class="aftersubmit_fail">
 			#{prop['submit.nocorr']}<br/>
@@ -64,8 +64,7 @@
 			<span class="aftersubmit_succ">#{crtContext.patillscript.scoreFinalDDXFeedback}
 				<b><!--  #{prop['submit.corr']}--> </b><br/><br/>
 				<a href="javascript:continueCase();"><i class="fa fa-arrow-rightb"></i> #{prop['submit.cont']}</a>
-			</span>	
-			
+			</span>			
 </div>
 </f:view>
 </ui:composition>

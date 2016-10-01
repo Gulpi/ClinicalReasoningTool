@@ -36,7 +36,8 @@
 
 var test = "#{crtContext.initSession}";
 var msg2="Please connect the hypotheses with the findings";
-var sessId = "1";
+//if learner has >= this score for final ddx submit, the correct dialog will be displayed (0.5)
+var minScoreCorrect = "#{crtContext.scoreForAllowReSubmit}"; 
 var scriptId = "#{crtContext.patillscript.id}";
 var listUrl="jsonp_en.json";
 var scriptlang = "#{crtContext.patillscript.locale}";
@@ -169,7 +170,6 @@ jsPlumb.ready(function () {
         EndpointStyle: { width: 25, height: 15, strokeStyle: '#666' },
         Endpoint: "Rectangle",
         Anchors: ["TopCenter", "TopCenter"],
-        //Anchors: ["Left", "Right"],
         Container: "canvas"
     });
 
@@ -214,7 +214,6 @@ jsPlumb.ready(function () {
     $(".expbox").addClass("expboxstatus");
     jsPlumb.fire("jsPlumbDemoLoaded", instance);
     
-   // initBoxHeights();
     //initContainerCollapsed(); //put back in if collapsing works again
    
 });
@@ -233,15 +232,10 @@ item_arr = new Array();
         <label for="cnxtoggle"></label>
 </div>
 <div style="position:absolute;left:85px;top:5px;" mytooltip="#{prop['feedback.exp']}"><i class="fa fa-user-md" mytooltip="#{prop['feedback.exp']}"></i></div>
-<div class="switch" style="left:100px;" >
-        <input id="expFeedback" class="cmn-toggle cmn-toggle-round" onchange="toggleExpFeedback('expFeedback', 'icon-user-md');" type="checkbox" />
-        <label for="expFeedback"></label>
-</div>
-<!--  
-	 <span class="cnx_on" id="cnxToggleSpan"><a href="javascript:toogleCnxDisplay();" id="cnxtoggle" title="#{prop['cnx.hide']}"><i id="cnxtogglei" class="fa fa-conn"></i> Connections</a></span>
-	 
-	 <a href="javascript:toggleExpFeedback('expFeedback', 'icon-user-md');"  title="#{prop['feedback.exp']}"><i id="expFeedback" class="fa fa-user-md_off"></i></a>
-	--> 
+	<div class="switch" style="left:100px;" >
+	        <input id="expFeedback" class="cmn-toggle cmn-toggle-round" onchange="toggleExpFeedback('expFeedback', 'icon-user-md');" type="checkbox" />
+	        <label for="expFeedback"></label>
+	</div>
 	<span class="help"><a href="javascript:openHelp();" style="float:right;top:5px;" ><i class="fa fa-question-circle " mytooltip="#{prop['help']}"></i></a></span>
 	<!--  <a href="exp_stages.xhtml" target="new">exp dev</a>-->
 	<!--  <a href="alert('not yet available, will show the development of the experts script during the case');">exp dev</a>-->
@@ -307,9 +301,12 @@ item_arr = new Array();
 		  			<div class="search boxchild"><input class="f_text" onkeyup="javascript:storeHistory('ddx');" placeholder="#{prop['search']} ..." id="ddx" title="#{prop['ddx.search']}"></input></div>
 			  			<h:form id="ddxform">
 						<h:panelGroup >
-							<ui:repeat value="#{crtContext.patillscript.diagnoses}" var="ddx" varStatus="status">
+							<ui:repeat value="#{crtContext.patillscript.diagnosesWithoutFinals}" var="ddx" varStatus="status">
 								<ui:include src="ddxbox.xhtml" />
 	     					</ui:repeat>	
+	     					<ui:repeat value="#{crtContext.patillscript.finalDiagnoses}" var="ddx" varStatus="status">
+								<ui:include src="ddxfinalbox.xhtml" />
+	     					</ui:repeat>
 	     					<ui:repeat value="#{crtContext.expPatIllScript.diagnoses}" var="expddx" varStatus="status">
 								<ui:include src="ddxexpbox.xhtml" />
 	     					</ui:repeat>				
@@ -401,8 +398,8 @@ item_arr = new Array();
 </div>
 
 	 <h:form id="cnxsform">
-		 <h:panelGroup>
-		 	<div id="jsonConns" style="display:none;">#{crtContext.graph.jsonConns}</div> </h:panelGroup>
+		 <h:panelGroup><!-- style="display:none;" -->
+		 	<div id="jsonConns">#{crtContext.graph.jsonConns}</div> </h:panelGroup>
 		   <h:commandButton id="hiddenCnxButton" value="RenderSomething" style="visibility:hidden">
 	  		<f:ajax render="@form" onevent="reInitCnxsCallback"></f:ajax>
 		</h:commandButton>		 

@@ -47,7 +47,7 @@ function sendAjaxCharts(id, callback, type, name){
 
 /**
  * This is for calls not directly related to the patientIllnessScript, but for the context
- * we start an ajax call with changed params. We also include always the session id!
+ * we start an ajax call with changed params.
  * id = id of the problem/diagnosis,...
  * callback = function to call when coming back from ajax cal
  * type = method name to call server-side to handle the call.
@@ -56,6 +56,19 @@ function sendAjaxCharts(id, callback, type, name){
 function sendAjaxContext(id, callback, type, name){
 	clearErrorMsgs();
 	sendAjaxUrl(id, callback, type, name, "/crt/src/html/tabs_ajax2.xhtml");
+}
+
+function sendAjaxAdmin(id, callback, type, name){
+	$.ajax({
+		  method: "POST",
+		  url: "/crt/src/html/admin/tabs_ajax_admin.xhtml",
+		  data: { type: type, id: id, name: name }
+		})
+	  .done(function( response ) {
+		  handleResponse(response, callback, name);		
+	  });	
+
+	//sendAjaxUrl(id, callback, type, name, "/crt/src/html/admin/tabs_ajax_admin.xhtml");
 }
 
 function sendAjaxUrl(id, callback, type, name, url){

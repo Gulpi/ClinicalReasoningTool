@@ -38,6 +38,10 @@ public class ScoringController {
 	public static final String ICON_PREFIX = "icon-ok";
 	//define possible scoring algorithms:
 	public static final int SCORING_ALGORITHM_BASIC = 1;
+	/**
+	 * if learner has less than this percentage for final ddx submission, we allow a re-submit
+	 */
+	public static final float scoreForAllowReSubmit = (float) 0.5; //of learner gets less than 50% correct on final diagnoses, we allow re-submit
 	
 	static private ScoringController instance = new ScoringController();
 	static public ScoringController getInstance() { return instance; }
@@ -78,12 +82,12 @@ public class ScoringController {
 		return "";
 	}
 	
-	public float getOverallFinalDDXScore(){
+	public ScoreBean getOverallFinalDDXScore(){
 		ScoreContainer scoreContainer = new NavigationController().getCRTFacesContext().getScoreContainer();
-		if (scoreContainer==null) return -1;
+		if (scoreContainer==null) return null;//-1;
 		ScoreBean bean = scoreContainer.getScoreByType(ScoreBean.TYPE_FINAL_DDX_LIST);
-		if(bean==null) return -1;
-		return bean.getScoreBasedOnExp();
+		if(bean==null) return null;//-1;
+		return bean; //.getScoreBasedOnExp();
 		/*if(beans.size()==1) return beans.get(0).getScoreBasedOnExp();
 		int scoreSum = 0;
 		for(int i=0; i<beans.size(); i++){
@@ -95,6 +99,12 @@ public class ScoringController {
 		ScoreContainer scoreContainer = new NavigationController().getCRTFacesContext().getScoreContainer();
 		if (scoreContainer==null) return null;
 		return scoreContainer.getScoreBeanByTypeAndItemId(type,itemId);
+	}
+	
+	public List<ScoreBean> getScoreBeansFortype(int type){
+		ScoreContainer scoreContainer = new NavigationController().getCRTFacesContext().getScoreContainer();
+		if (scoreContainer==null) return null;
+		return scoreContainer.getScoresByType(type);
 	}
 	
 	//public void setFeedbackInfo(ScoreBean scoreBean){ setFeedbackInfo(scoreBean, false);}

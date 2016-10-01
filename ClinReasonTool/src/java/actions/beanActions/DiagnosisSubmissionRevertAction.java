@@ -8,6 +8,7 @@ import beans.relation.Relation;
 import beans.relation.RelationDiagnosis;
 import beans.scoring.ScoreBean;
 import controller.NavigationController;
+import controller.ScoringController;
 import database.DBClinReason;
 
 public class DiagnosisSubmissionRevertAction {
@@ -31,7 +32,7 @@ public class DiagnosisSubmissionRevertAction {
 		for(int i=0; i<finalDDX.size(); i++){
 			RelationDiagnosis ddx = finalDDX.get(i);
 			ScoreBean score =  new NavigationController().getCRTFacesContext().getLearningAnalytics().getScoreContainer().getScoreBeanByTypeAndItemId(ScoreBean.TYPE_FINAL_DDX, ddx.getListItemId());
-			if(score==null || score.getScoreBasedOnExp()<DiagnosisSubmitAction.scoreForAllowReSubmit){
+			if(score==null || score.getScoreBasedOnExp()<ScoringController.scoreForAllowReSubmit){
 				ddx.setTier(RelationDiagnosis.TIER_NONE);		
 				ddx.setFinalDiagnosis(-1);
 			}

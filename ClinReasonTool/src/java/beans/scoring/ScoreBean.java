@@ -107,6 +107,13 @@ public class ScoreBean extends Beans implements Serializable{
 	 */
 	private long expItemId; 
 	
+	/**
+	 * if an item is related to an expert item, we store the distance to it here. 
+	 * (-) learner is less specific than expert
+	 * (+) learner is more specific than expert
+	 */
+	private int distance = -99;
+	
 	public ScoreBean(){}
 	public ScoreBean(PatientIllnessScript patIllScript, long scoredItem, int type){
 		this.patIllScriptId = patIllScript.getId();
@@ -177,7 +184,8 @@ public class ScoreBean extends Beans implements Serializable{
 	public void setStage(int stage) {this.stage = stage;}
 	public int getScoreBasedOnExpPerc() {return (int)(scoreBasedOnExp*100);}
 	public int getOrgScoreBasedOnExpPerc() {return (int)(orgScoreBasedOnExp*100);}
-
+	public int getDistance() {return distance;}
+	public void setDistance(int distance) {this.distance = distance;}
 	public long getExpItemId() {return expItemId;}
 	public void setExpItemId(long expItemId) {this.expItemId = expItemId;}	
 	public long getScoredRelId() {return scoredRelId;}

@@ -117,10 +117,11 @@ public class ScoringAddAction implements ScoringAction{
 	private void scoreHierarchyBasedOnExp(Graph g, ScoreBean scoreBean, MultiVertex mvertex,Relation learnerRel){
 		MultiVertex expVertex = g.getExpParentVertex(mvertex); //check whether user has picked a more specific item than expert
 		if(expVertex!=null){ //user was more specific than expert, we score 100%
-			//int distance = g.getDistance(expVertex, mvertex); //in this case distance is not considered for scoring
+			int distance = g.getHierarchyDistance(expVertex, mvertex); //in this case distance is not considered for scoring
 			scoreBean.setScoreBasedOnExp(ScoringController.SCORE_LEARNER_MORE_SPECIFIC, isChg);
 			scoreBean.setTiming(learnerRel.getStage(), expVertex.getExpertVertex().getStage());
 			scoreBean.setExpItemId(expVertex.getVertexId());
+			scoreBean.setDistance(distance);
 			return;
 		}
 		//check whether learner has picked something more general than expert -> can be more than one item!

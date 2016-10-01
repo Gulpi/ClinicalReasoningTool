@@ -154,7 +154,7 @@ function togglePeersDDX(){
 }
 
 
-/* 2. we show the submit ddx dialog and ask for confidence */
+/* 1. we show the submit ddx dialog and ask for confidence */
 function doSubmitDDXDialog(){
 	//we check whether there are diagnoses, if so we open a dialog, else we display a hint
 	var ddxNum = $( ".ddxs" ).length;
@@ -190,7 +190,7 @@ function continueCase(){
 	$("#jdialog" ).dialog( "close" );
 }
 
-/* 3. user has selected ddxs and submits final ddxs */
+/* 2. user has selected ddxs and submits final ddxs */
 function submitDDXConfirmed(){
 	var checks = $(".chb_ddx:checked");
 	if(checks.length<=0){
@@ -206,12 +206,10 @@ function submitDDXConfirmed(){
 	sendAjax(ids, submitDDXConfirmedCallBack, "submitDDXAndConf",  confVal);
 }
 
-/* 4. we come back after the submission and have to reload ddxs once again show feedback for submitted diagnoses */
+/* 3. we come back after the submission and have to reload ddxs once again show feedback for submitted diagnoses */
 function submitDDXConfirmedCallBack(data){
-	//if(isCallbackStatusSuccess(data))
-		$("#jdialog").load("submitteddialog.xhtml");
-	//$("[id='ddx_submit_form:hiddenDDXSubmitScoreButton']").click();	
-
+	$("#jdialog").load("submitteddialog.xhtml");
+	
 }
 
 /* 5. show feedback for submitted diagnoses */
@@ -229,13 +227,13 @@ function backToCase(){
 }
 
 function revertSubmissionCallback(data){
-	if(isCallbackStatusSuccess(data)){
+	//if(isCallbackStatusSuccess(data)){
 		$(".ddxs").remove();
 		presubmitted = "false";
 		checkSubmitBtn();
 		postEnforceFinalDDXSubmission("false");
 		$("[id='ddxform:hiddenDDXButton']").click();
-	}
+	//}
 }
 
 /* 
@@ -246,13 +244,13 @@ function tryAgain(){
 }
 
 function tryAgainCallback(data){
-	if(isCallbackStatusSuccess(data)){
-		$(".ddxs").remove();
+	//if(isCallbackStatusSuccess(data)){
+		//$(".ddxs").remove();
 		presubmitted = "false";
 		postEnforceFinalDDXSubmission("false");
 		$("#jdialog").load("submitdialog.xhtml");
-		$("[id='ddxform:hiddenDDXButton']").click();
-	}
+		//$("[id='ddxform:hiddenDDXButton']").click();
+	//}
 }
 
 function showSolution(){
@@ -260,16 +258,17 @@ function showSolution(){
 }
 
 function showSolutionCallBack(data){
-	if(isCallbackStatusSuccess(data)){
+	//if(isCallbackStatusSuccess(data)){
 		showSolutionStage = currentStageScriptNoUPdate;
 		$("#jdialog" ).dialog( "close" );
 		clickExpFeedbackOn();
 		presubmitted = "false";
 		submitted = "true";
 		postEnforceFinalDDXSubmission("true");
+		//make changes visible in the ddx box:
 		$(".ddxs").remove();
 		$("[id='ddxform:hiddenDDXButton']").click();
-	}
+	//}
 }
 
 /**
@@ -378,9 +377,12 @@ function submitSliderChange(){
 	//sendAjax(-1, doNothing, "changeConfidence",  confVal);
 }
 /**
- * we init the display of the dialog shown after a diagnosis has been submitted
+ * we init the display of the dialog shown after a diagnosis has been submitted.
+ * depending on the score we display different dialogs. If showSolution or score >=0.5 we als trigger 
+ * the update of the ddx box to show the final diagnosis in the appropriate color.
  */
 function initSubmittedDialog(){
+	if(minScoreCorrect=="") minScoreCorrect = "0.5";
 	presubmitted = "true";
 	$(".tier_4").prop( "checked", true );
 	var ddxsFBIcons = $(".expfb");
@@ -390,21 +392,30 @@ function initSubmittedDialog(){
 			if($(iItem).attr("mytooltip")=="") $(iItem).hide();
 		}
 	}
-	if($("#score").val()>=1){ //correct solution:
+	//learner has the correct or pretty correct solution:
+	if($("#score").val()>=parseFloat(minScoreCorrect)){ // 50 - 100% correct solution:
 		submitted = "true";
 		presubmitted = "false";
 		$(".aftersubmit_succ").show();
 		$(".aftersubmit_fail").hide();
 		$(".errors").hide();
 		postEnforceFinalDDXSubmission(submitted/*, myStage, maxSubmittedStage*/);
+		//update ddx box:
+		$(".ddxs").remove();
+		$("[id='ddxform:hiddenDDXButton']").click();
+
 		return;
 	}
-	
-	if(showSolutionStage!="" && showSolutionStage!="-1" && showSolutionStage!="0"){ //show solution has been selected
+	 //show solution has been selected
+	if(showSolutionStage!="" && showSolutionStage!="-1" && showSolutionStage!="0"){
 		submitted = "true";
 		$(".aftersubmit_succ").show();
 		$(".aftersubmit_fail").hide();
 		postEnforceFinalDDXSubmission(submitted/*, myStage, maxSubmittedStage*/);
+		//update ddx box:
+		$(".ddxs").remove();
+		$("[id='ddxform:hiddenDDXButton']").click();
+
 		return;
 	}
 	else{
@@ -503,7 +514,7 @@ function testCallBack(testId, selTest){
 	$(".tests").remove();
 	//we update the problems list and the json string
 	$("[id='testform:hiddenTestButton']").click();		
-	$("[id='cnxsform:hiddenCnxButton']").click();s
+	$("[id='cnxsform:hiddenCnxButton']").click();
 }
 
 function updateTestCallback(data){

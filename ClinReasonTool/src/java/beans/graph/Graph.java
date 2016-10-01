@@ -485,6 +485,24 @@ public class Graph extends DirectedWeightedMultigraph<MultiVertex, MultiEdge> {
 		DijkstraShortestPath shortestPath = new DijkstraShortestPath(this, source, target);
 		return (int) shortestPath.getPathLength();
 	}
+	
+	/**
+	 * TODO: we should be able to get the hierarchy and distance from the graph! For this the implicit edges 
+	 * inclusion needs to be more tested and reliable!
+	 * (-) learner is less specific than expert
+	 * (+) learner is more specific than expert
+	 * @param learnerVertex
+	 * @param expVertex
+	 * @return
+	 */
+	public int getHierarchyDistance(MultiVertex learnerVertex, MultiVertex expVertex){
+		if(learnerVertex==null || expVertex==null) return (int )Double.POSITIVE_INFINITY;		
+		int dist = learnerVertex.getLearnerVertex().getListItem().getHierarchyDiff(expVertex.getExpertVertex().getListItem());
+		int dist2 = expVertex.getExpertVertex().getListItem().getHierarchyDiff(learnerVertex.getLearnerVertex().getListItem());
+		return dist;
+	}
+
+
 	/**
 	 * look whether the expert has chosen a more specific term than the learner, if so return the vertex.
 	 * Can be more than one!!!! Therefore we return a list! 

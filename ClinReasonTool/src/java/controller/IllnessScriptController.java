@@ -8,10 +8,12 @@ import javax.faces.context.FacesContext;
 import application.AppBean;
 import beans.scripts.*;
 import beans.relation.Relation;
+import beans.relation.RelationDiagnosis;
 import beans.scoring.PeerBean;
 import beans.scoring.ScoreBean;
 import database.DBClinReason;
 import database.DBScoring;
+import properties.IntlConfiguration;
 import util.CRTLogger;
 import util.StringUtilities;
 
@@ -114,5 +116,27 @@ public class IllnessScriptController implements Serializable{
 		return refs;
 	}
 	
-	
+	/**
+	 * Returns the final diagnoses of the expert in a string (comma-seperated) or an empty string if nothing can be
+	 * found. 
+	 * @param vpId
+	 * @return
+	 */
+	public String getExpFinalsAsString(String vpId){
+		PatientIllnessScript expScript = AppBean.getExpertPatIllScript(vpId);
+		if(expScript==null) return "";
+		StringBuffer expFinal = new StringBuffer();
+		int counter = 0;
+		if(expScript!=null && expScript.getFinalDiagnoses()!=null){
+			Iterator<RelationDiagnosis> it =  expScript.getFinalDiagnoses().iterator();
+			while(it.hasNext()){					
+				expFinal.append(it.next().getLabelOrSynLabel());
+				if(it.hasNext()) expFinal.append(", ");
+				counter++;
+			}
+		}
+		if(counter==1) return IntlConfiguration.getValue("submit.expfinal") + expFinal.toString();
+		if(counter>1) return IntlConfiguration.getValue("submit.expfinals") + expFinal.toString();
+		return "";
+	}
 }

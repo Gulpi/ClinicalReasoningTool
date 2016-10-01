@@ -93,19 +93,28 @@ public class ListItem implements Serializable{
 	
 	/**
 	 * We look whether an Item is in a higher or lower hierarchy level. We compare both, firstCode and 
-	 * otherCodes with each other and return the closest disctance. If no hierarchy relation is there, we return -1.s
+	 * otherCodes with each other and return the closest disctance. If no hierarchy relation is there, we return -99.
+	 * Relation of child <-> parent is shown by negative/positive return value.
 	 * @param li
 	 * @return
 	 */
 	public int getHierarchyDiff(ListItem li){
 		int codeDiff = getHierarchyDiff(li.getFirstCode());
-		if(codeDiff > -1 || (li.getOtherCodes()==null || li.getOtherCodes().isEmpty())) return codeDiff;
-		Iterator it = li.getOtherCodes().iterator();
+		if(codeDiff > -99 || (li.getOtherCodes()==null || li.getOtherCodes().isEmpty())) return codeDiff/4;
+		Iterator<String> it = li.getOtherCodes().iterator();
 		while(it.hasNext()){
-			int diff2 = getHierarchyDiff((String)it.next());
-			if(diff2<codeDiff || codeDiff==-1) codeDiff = diff2;
+			int diff2 = getHierarchyDiff(it.next());
+			if(Math.abs(diff2)<Math.abs(codeDiff) || codeDiff==-99) codeDiff = diff2;
 		}
-		return codeDiff;
+		//divide by 4 because distance for mesh codes is always 3 numbers and a dot.
+		return codeDiff/4;
+	}
+	
+	public int getAbsHierarchyDiff(ListItem li){
+		int codeDiff = getHierarchyDiff(li);
+		if(codeDiff==-99) return -99;
+		//divide by 4 because distance for mesh codes is always 3 numbers and a dot.
+		return Math.abs(codeDiff);
 	}
 		
 	/**
@@ -114,26 +123,20 @@ public class ListItem implements Serializable{
 	 * @return
 	 */
 	private int getHierarchyDiff(String code){
-		if(code==null || firstCode==null) return -1;
-		int diff = -1;
-		/*String longerCode = code;
-		String shorterCode = code;
-		
-		if(code.length()>firstCode.length()) shorterCode = firstCode;
-		else longerCode = firstCode;*/
-		
+		if(code==null || firstCode==null) return -99;
+		int diff = -99;
 		if(!code.equals(firstCode) && (code.startsWith(firstCode) || firstCode.startsWith(code))){
 			//we look into the distance of the codes: 
-			diff = Math.abs(firstCode.length() - code.length());
+			diff = /*Math.abs*/(firstCode.length() - code.length());
 		}
-		if(diff>-1 || this.getOtherCodes()==null || this.getOtherCodes().isEmpty()) return diff;
+		if(diff>-99 || this.getOtherCodes()==null || this.getOtherCodes().isEmpty()) return diff;
 		
 		Iterator it = this.getOtherCodes().iterator();
 		while(it.hasNext()){
 			String otherCode = (String) it.next();
 			if(!code.equals(otherCode) && (code.startsWith(otherCode) || otherCode.startsWith(code))){
-				int diff2 = Math.abs(otherCode.length() - code.length());
-				if(diff2<diff || diff==-1) diff = diff2;
+				int diff2 = /*Math.abs*/(otherCode.length() - code.length());
+				if(Math.abs(diff2)<Math.abs(diff) || diff==-99) diff = diff2;
 			}			
 		}
 		return diff;

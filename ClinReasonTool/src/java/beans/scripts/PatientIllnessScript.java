@@ -19,6 +19,7 @@ import beans.scoring.LearningAnalyticsBean;
 import beans.scoring.LearningAnalyticsContainer;
 import beans.scoring.ScoreBean;
 import controller.AjaxController;
+import controller.IllnessScriptController;
 import controller.NavigationController;
 import controller.ScoringController;
 import database.DBClinReason;
@@ -250,25 +251,26 @@ public class PatientIllnessScript extends Beans/*extends Node*/ implements Illne
 	 * has chosen to get the solution of the expert.
 	 * @return
 	 */
-	public String getScoreFinalDDXFeedback(){
-		if(showSolution>0){ //solution was requested by learner 
-			PatientIllnessScript expScript = AppBean.getExpertPatIllScript(this.getVpId());
-			StringBuffer expFinal = new StringBuffer();
-			int counter = 0;
-			if(expScript!=null && expScript.getFinalDiagnoses()!=null){
-				Iterator<RelationDiagnosis> it =  expScript.getFinalDiagnoses().iterator();
-				while(it.hasNext()){					
-					expFinal.append(it.next().getLabelOrSynLabel());
-					if(it.hasNext()) expFinal.append(", ");
-					counter++;
-				}
-			}
-			if(counter==1) return IntlConfiguration.getValue("submit.expfinal") + expFinal.toString();
-			if(counter>1) return IntlConfiguration.getValue("submit.expfinals") + expFinal.toString();
-		}
-		if(this.getOverallFinalDDXScore() > DiagnosisSubmitAction.scoreForAllowReSubmit) //correct score by learner
-			return IntlConfiguration.getValue("submit.corr");
+	public String getScoreFinalDDXFeedback(){		
 		
+		if(showSolution>0){ //solution was requested by learner 
+			return IllnessScriptController.getInstance().getExpFinalsAsString(this.getVpId());
+		}
+		//solution was created by learner:
+		ScoreBean scoreBean = ScoringController.getInstance().getOverallFinalDDXScore();
+		List<ScoreBean> finalBeans = ScoringController.getInstance().getScoreBeansFortype(ScoreBean.TYPE_FINAL_DDX);
+		if(this.getOverallFinalDDXScore() == ScoringController.FULL_SCORE) // 100% correct score by learner
+			return IntlConfiguration.getValue("submit.corr");
+		if(this.getOverallFinalDDXScore() >= ScoringController.scoreForAllowReSubmit){ //99-50% score
+			StringBuffer sb = new StringBuffer();
+			if(finalBeans!=null && finalBeans.size()==1) sb.append(IntlConfiguration.getValue("submit.partcorr")+ " ");
+			else sb.append(IntlConfiguration.getValue("submit.partcorr") + " ");
+			String expFinals = IllnessScriptController.getInstance().getExpFinalsAsString(this.getVpId());
+			//append the solutions of the expert:
+			if(expFinals!=null && !expFinals.trim().equals(""))
+				sb.append(expFinals);
+			return sb.toString();		
+		}		
 		return "";
 	}
 	
@@ -364,15 +366,6 @@ public class PatientIllnessScript extends Beans/*extends Node*/ implements Illne
 		return false;
 	}
 
-	/* (non-Javadoc)
-	 * @see java.beans.PropertyChangeListener#propertyChange(java.beans.PropertyChangeEvent)
-	 */
-	/*public void propertyChange(PropertyChangeEvent evt) {
-		if(evt!=null){
-			CRTLogger.out(evt.getPropertyName(), CRTLogger.LEVEL_TEST);	
-
-		}		
-	}*/
 	
 	public RelationEpi getEpiById(long id){return (RelationEpi) getRelationById(epis, id);}	
 	public RelationProblem getProblemById(long id){return (RelationProblem) getRelationById(problems, id);}	
@@ -418,6 +411,11 @@ public class PatientIllnessScript extends Beans/*extends Node*/ implements Illne
 		return stageList; //nothing found
 	}
 	
+	/**
+	 * return all final diagnoses entered by the learner. We do this in order to 
+	 * display the final diagnoses in a different way (non-editable) than the other diagnoses.
+	 * @return
+	 */	
 	public List<RelationDiagnosis> getFinalDiagnoses(){
 		if(diagnoses==null || diagnoses.isEmpty()) return null; 
 		List<RelationDiagnosis> finals = new ArrayList<RelationDiagnosis>();
@@ -425,6 +423,21 @@ public class PatientIllnessScript extends Beans/*extends Node*/ implements Illne
 			if(diagnoses.get(i).isFinalDDX()) finals.add(diagnoses.get(i));
 		}
 		return finals;
+	}
+	
+	/**
+	 * return all diagnoses entered by the learner that are NOT final diagnoses. We do this in order to 
+	 * display the final diagnoses in a different way (non-editable).
+	 * @return
+	 */
+	public List<RelationDiagnosis> getDiagnosesWithoutFinals(){
+		if(diagnoses==null || diagnoses.isEmpty()) return null; 
+		List<RelationDiagnosis> ddxs = new ArrayList<RelationDiagnosis>();
+		for(int i=0; i<diagnoses.size(); i++){
+			if(!diagnoses.get(i).isFinalDDX()) ddxs.add(diagnoses.get(i));
+		}
+		return ddxs;
+		
 	}
 		
 	public Relation getRelationByIdAndType(long id, int type){
@@ -493,7 +506,7 @@ public class PatientIllnessScript extends Beans/*extends Node*/ implements Illne
 		LearningAnalyticsBean laBean = NavigationController.getInstance().getCRTFacesContext().getLearningAnalytics();
 		if(laBean==null || laBean.getScoreContainer()==null) return false;
 		ScoreBean finalDDXScore = laBean.getScoreContainer().getScoreByType(ScoreBean.TYPE_FINAL_DDX_LIST);
-		if(finalDDXScore==null || finalDDXScore.getScoreBasedOnExp()<DiagnosisSubmitAction.scoreForAllowReSubmit) return true;
+		if(finalDDXScore==null || finalDDXScore.getScoreBasedOnExp()<ScoringController.scoreForAllowReSubmit) return true;
 		/*for(int i=0; i<scores.size(); i++){
 			if(scores.get(i).getScoreBasedOnExpPerc()<DiagnosisSubmitAction.scoreForAllowReSubmit) return true;
 		}*/
@@ -524,7 +537,9 @@ public class PatientIllnessScript extends Beans/*extends Node*/ implements Illne
 	 * @return
 	 */
 	public float getOverallFinalDDXScore(){ 
-		return ScoringController.getInstance().getOverallFinalDDXScore();
+		ScoreBean scoreBean = ScoringController.getInstance().getOverallFinalDDXScore();
+		if(scoreBean==null) return -1;
+		return scoreBean.getScoreBasedOnExp();
 	}
 	
 	/**

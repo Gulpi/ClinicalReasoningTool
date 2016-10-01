@@ -201,13 +201,22 @@ function getConnectionBySourceAndTargetId(sourceId, targetId){
 	//return jsPlumb.select({source:sourceId,target:targetId});
 }
 
-function getAllConnectionBySourceAndTargetId(sourceId, targetId){
+/**
+ * looks whether a learner connections is already made between the source and target. If so return 
+ * it. We need this as an array, because the cnx the learner currently tries to make is also already
+ * registered. So, array length is always >=1! 
+ * @param sourceId
+ * @param targetId
+ * @returns {Array}
+ */
+function getAllLearnerConnectionBySourceAndTargetId(sourceId, targetId){
 	var cns = instance.getConnections('*');
 	var cnxArr = new Array();
 	var counter = 0;
 	for(var i =0; i<cns.length; i++){
 		cnx = cns[i];
-		if(cnx.sourceId==sourceId && cnx.targetId==targetId){
+		if(cnx.sourceId==sourceId && cnx.targetId==targetId && !cnx.id.startsWith("exp")){
+			//alert(cnx.getParameter("class"));
 			cnxArr[counter] = cnx;
 			counter ++;
 		}
@@ -313,7 +322,7 @@ function isDuplicateCnx(info, errormsg){
 	//first we check whether there has already been made a connection between the source and target. 
 	//If so display an error msg
 	var con=info.connection;
-	var arr = getAllConnectionBySourceAndTargetId(con.sourceId, con.targetId);
+	var arr = getAllLearnerConnectionBySourceAndTargetId(con.sourceId, con.targetId);
 	if(arr.length>1){
 	    jsPlumb.detach(con);
 	    var msgSpanId = getErrorMsgSpanByTargetId(con.targetId);

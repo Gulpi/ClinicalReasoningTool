@@ -11,46 +11,17 @@
 <head>
 <f:event type="preRenderView" listener="#{facesContext.externalContext.response.setHeader('Cache-Control', 'no-cache, no-store')}" />
 
-
-<!--  <headers header="Cache-Control" value="no-cache, no-store, must-revalidate"></headers>
-<headers header="Pragma" value="no-cache"></headers>
-<headers header="Expires" value="0"></headers>--> 
-<style>
-
-.chart rect {
-    fill: steelblue;
-  }
-
-  .axis path,
-  .axis line {
-    fill: none;
-    stroke: #000;
-    shape-rendering: crispEdges;
-  }
-
-  .axis text {
-    font-size: 7px;
-  }
-
-  .chart .current {
-    fill: green;
-    cursor: pointer;
-  }
-</style>
 <title>Illness Script Portfolio</title>
  <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
- <script type="text/javascript" src="../scripts/jquery112/jquery.js"></script>
-<script type="text/javascript" src="../scripts/jquery112/jquery-ui.min.js"></script>
-<script type="text/javascript" src="../scripts/jquery112/jquery-ui.js"></script>
-<script src="../scripts/portfolio.js"></script>
-<script src="../scripts/d3.js"></script>
-<script src="../scripts/d3utils.js"></script>
+ <script type="text/javascript" src="../../scripts/jquery112/jquery.js"></script>
+<script type="text/javascript" src="../../scripts/jquery112/jquery-ui.min.js"></script>
+<script type="text/javascript" src="../../scripts/jquery112/jquery-ui.js"></script>
+<script src="../../scripts/admin.js"></script>
+<script src="../../scripts/ajax.js"></script>
 
-<link rel="stylesheet" type="text/css" href="../scripts/jquery112/ui-lightness/jquery-ui.css" /> 
-<link rel="stylesheet" type="text/css" href="../scripts/draw2d/css/contextmenu.css"  />
-<link rel="stylesheet" href="../styles/clinreason.css" />
-<link rel="stylesheet" href="../styles/portfolio.css" />
-<link rel="stylesheet" href="../styles/font-awesome/css/font-awesome.css" />
+<link rel="stylesheet" type="text/css" href="../../scripts/jquery112/ui-lightness/jquery-ui.css" /> 
+<link rel="stylesheet" href="../../styles/clinreason_boxes.css" />
+<link rel="stylesheet" href="../../styles/font-awesome/css/font-awesome.css" />
 
 
 <script language="JavaScript">
@@ -76,21 +47,19 @@ var test = "#{crtContext.userId}";
 				<!--  <f:param name="script_id" value="#{scripts.id}" />-->
 					<f:param name="script_id" value="#{scripts.id}" />
 					<f:param name="user_id" value="#{scripts.userId}" />
+					
 			</h:commandLink>
 			language: #{scripts.locale}, vpId: #{scripts.vpId}
-			<!--  <h:outputLink value="exp_script_creator.xhtml">
-						script id:<h:outputText value="#{scripts.id}" />, vp id:<h:outputText value="#{scripts.parentId}" />
-						<f:param name="script_id" value="#{scripts.id}" />
-						<f:param name="user_id" value="#{scripts.userId}" />
-					</h:outputLink>-->
 					
 			<h:commandLink action="#{navController.openViewExpPatIllScript}" value="View Scriptid:#{scripts.id}" title="Open the prototype">
 				<f:param name="script_id" value="#{scripts.id}" />
 				<f:param name="user_id" value="#{scripts.userId}" />
 			</h:commandLink>
+			<a href="javascript:removeExpScriptFromCache('#{scripts.vpId}');">Remove from cache</a>
 				</li>
  		 </ui:repeat>				
 	</ul></h:form>
+	
  	<div class="footer"><a href="javascript:createNewScript();" title="Create new illness script"><i class="fa fa-plus-circle"></i></a></div>
  </div>
 

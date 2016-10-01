@@ -1,11 +1,14 @@
 package application;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.*;
 
 import javax.faces.bean.ApplicationScoped;
 import javax.faces.bean.ManagedBean;
 import javax.servlet.http.*;
+
+import controller.AjaxController;
 
 /**
  * View to display open sessions...
@@ -81,5 +84,13 @@ public  class Monitor extends Observable implements HttpSessionListener, HttpSes
 	public List<HttpSession> getHttpSessions() {
 		return httpSessions;
 	}   
+	
+	public void ajaxResponseHandler() throws IOException{
+		AjaxController.getInstance().receiveMonitorAjax(this);
+	}
+	
+	public void removeExpScriptFromCache(String vpId){
+		AppBean.updateExpertPatIllnessScriptForVpId(vpId);
+	}
     
 }

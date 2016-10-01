@@ -340,10 +340,7 @@ public class CRTFacesContext extends FacesContextWrapper /*implements Serializab
 		this.scriptContainer = null;
 	}
 
-	@Override
-	public FacesContext getWrapped() {
-		return FacesContext.getCurrentInstance();
-	}
+	public FacesContext getWrapped() {return FacesContext.getCurrentInstance();}
 	
 	public ExpViewPatientIllnessScript getExpPatIllScript(){
 		int stage = 1;
@@ -356,14 +353,9 @@ public class CRTFacesContext extends FacesContextWrapper /*implements Serializab
 		return false;
 	}
 	
-	public Locale getLocale(){
-		return locale;//LocaleController.getLocale(this).getLanguage();
-	}
-	/*public void setLocale(Locale loc){
-		this.locale = loc;
-	}*/
-	
-	public String getLanguage(){
-		return locale.getLanguage();
+	public Locale getLocale(){return locale;}//LocaleController.getLocale(this).getLanguage();}	
+	public String getLanguage(){return locale.getLanguage();}
+	public float getScoreForAllowReSubmit(){
+		return ScoringController.scoreForAllowReSubmit;
 	}
 }

@@ -22,6 +22,7 @@ import org.apache.commons.lang.StringUtils;
 
 import application.AppBean;
 import application.ErrorMessageContainer;
+import application.Monitor;
 import beans.*;
 import beans.scripts.*;
 import util.*;
@@ -112,6 +113,23 @@ public class AjaxController {
 		String methodName = reqParams.get("type");
 		String idStr = reqParams.get("id");
     	Statement stmt = new Statement(context.getLearningAnalyticsContainer(), methodName, new Object[]{idStr});
+    	
+    	try {
+			stmt.execute();				
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			CRTLogger.out(StringUtilities.stackTraceToString(e), CRTLogger.LEVEL_PROD);
+		}
+    	responseAjax(externalContext, reqParams.get("id"));
+
+	}
+	
+	public void receiveMonitorAjax(Monitor m) throws IOException{
+		ExternalContext externalContext = FacesContextWrapper.getCurrentInstance().getExternalContext();
+		Map<String, String> reqParams = externalContext.getRequestParameterMap();
+		String methodName = reqParams.get("type");
+		String idStr = reqParams.get("id");
+    	Statement stmt = new Statement(m, methodName, new Object[]{idStr});
     	
     	try {
 			stmt.execute();				

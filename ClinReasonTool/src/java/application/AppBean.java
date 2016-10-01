@@ -69,6 +69,7 @@ public class AppBean extends ApplicationWrapper implements HttpSessionListener{
 	 * Loading any 
 	 */
 	public AppBean(){
+		CRTLogger.out("Start AppBean init:"  + System.currentTimeMillis(), CRTLogger.LEVEL_TEST);
 		HibernateUtil.initHibernate();
 		intlConf = new IntlConfiguration();
 		//setViewHandler(new CRTViewHandler(FacesContext.getCurrentInstance().getApplication().getViewHandler()));
@@ -81,11 +82,14 @@ public class AppBean extends ApplicationWrapper implements HttpSessionListener{
 	    }
 	    catch(Exception e){}
 	    //does not have to be done on every restart:
-	    //new JsonCreator().initJsonExport(); 
+	   // new JsonCreator().initJsonExport(); 
 	   
 		//MeshImporter.main("en");
 	   // new TextSimilarityComparing().compareTestData();
+	    CRTLogger.out("Start Peer Container init:"  + System.currentTimeMillis(), CRTLogger.LEVEL_TEST);
 	    peers.initPeerContainer();
+	    CRTLogger.out("Ende Peer Container init:"  + System.currentTimeMillis(), CRTLogger.LEVEL_TEST);
+
 	    vpScriptRefs =  IllnessScriptController.getInstance().initVpScriptRefs();
 	    CRTLogger.out("Init done", CRTLogger.LEVEL_PROD);
 	    try{
@@ -94,6 +98,7 @@ public class AppBean extends ApplicationWrapper implements HttpSessionListener{
 	    catch(Exception e){
 	    	CRTLogger.out("AppBean(): " + StringUtilities.stackTraceToString(e), CRTLogger.LEVEL_ERROR);
 	    }
+	    CRTLogger.out("End AppBean init:"  + System.currentTimeMillis(), CRTLogger.LEVEL_TEST);
 	}
 	
 
@@ -116,6 +121,20 @@ public class AppBean extends ApplicationWrapper implements HttpSessionListener{
 		}
 		if(vpId!=null && expertPatIllScripts.containsKey(vpId)) return expertPatIllScripts.get(vpId);
 		return null;
+	}
+	
+	public static synchronized void updateExpertPatIllnessScriptForVpId(String vpId){
+		try{
+			if(expertPatIllScripts==null) expertPatIllScripts = new HashMap<String, PatientIllnessScript>();
+			PatientIllnessScript expScript = getExpertPatIllScript(vpId);
+			if(expScript == null) return;
+			expertPatIllScripts.remove(expScript);
+			PatientIllnessScript newExpScript = (PatientIllnessScript) new DBClinReason().selectExpertPatIllScriptByVPId(vpId);
+			if(newExpScript!=null) expertPatIllScripts.put(vpId, newExpScript);
+		}
+		catch (Exception e){
+			CRTLogger.out(StringUtilities.stackTraceToString(e), CRTLogger.LEVEL_ERROR);
+		}
 	}
 	
 	

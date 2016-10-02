@@ -236,7 +236,10 @@ item_arr = new Array();
 	        <input id="expFeedback" class="cmn-toggle cmn-toggle-round" onchange="toggleExpFeedback('expFeedback', 'icon-user-md');" type="checkbox" />
 	        <label for="expFeedback"></label>
 	</div>
-	<span class="help"><a href="javascript:openHelp();" style="float:right;top:5px;" ><i class="fa fa-question-circle " mytooltip="#{prop['help']}"></i></a></span>
+	<span class="help">
+		<a href="https://youtu.be/sTml6i0jLkI" target="new" style="float:right;top:5px;"><i class="fa fa-film" mytooltip="#{prop['help.movie']}"></i></a>
+		<a href="javascript:openHelp();" style="float:right;top:5px;" ><i class="fa fa-question-circle " mytooltip="#{prop['help']}"></i></a></span>
+	
 	<!--  <a href="exp_stages.xhtml" target="new">exp dev</a>-->
 	<!--  <a href="alert('not yet available, will show the development of the experts script during the case');">exp dev</a>-->
 </div>
@@ -399,7 +402,7 @@ item_arr = new Array();
 
 	 <h:form id="cnxsform">
 		 <h:panelGroup><!-- style="display:none;" -->
-		 	<div id="jsonConns">#{crtContext.graph.jsonConns}</div> </h:panelGroup>
+		 	<div id="jsonConns" style="display:none;">#{crtContext.graph.jsonConns}</div> </h:panelGroup>
 		   <h:commandButton id="hiddenCnxButton" value="RenderSomething" style="visibility:hidden">
 	  		<f:ajax render="@form" onevent="reInitCnxsCallback"></f:ajax>
 		</h:commandButton>		 

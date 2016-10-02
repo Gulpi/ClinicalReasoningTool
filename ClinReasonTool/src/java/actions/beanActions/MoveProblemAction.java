@@ -7,7 +7,10 @@ import beans.*;
 import beans.relation.*;
 import database.DBClinReason;
 import beans.scripts.*;
-
+/**
+ * @author ingahege
+ * @deprecated
+ */
 public class MoveProblemAction implements MoveAction{
 
 	private PatientIllnessScript patIllScript;

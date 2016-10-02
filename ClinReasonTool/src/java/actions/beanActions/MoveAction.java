@@ -9,7 +9,7 @@ import beans.relation.Relation;
  * The order of the problems was changed, so we reorder the problems list accordingly and save the 
  * new order to the database.
  * @author ingahege
- *
+ * @deprecated
  */
 public interface MoveAction {
 	/**

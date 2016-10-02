@@ -314,9 +314,29 @@ public class PatientIllnessScript extends Beans/*extends Node*/ implements Illne
 	public void delMng(String idStr){ new DelMngAction(this).delete(idStr);}
 	//public void delEpi(String idStr){ new DelEpiAction(this).delete(idStr);}
 
+	/**
+	 * @param idStr
+	 * @param newOrderStr
+	 * @deprecated
+	 */
 	public void reorderProblems(String idStr, String newOrderStr){ new MoveProblemAction(this).reorder(idStr, newOrderStr);}
+	/**
+	 * @param idStr
+	 * @param newOrderStr
+	 * @deprecated
+	 */
 	public void reorderDiagnoses(String idStr, String newOrderStr){ new MoveDiagnosisAction(this).reorder(idStr, newOrderStr);}
+	/**
+	 * @param idStr
+	 * @param newOrderStr
+	 * @deprecated
+	 */
 	public void reorderTests(String idStr, String newOrderStr){ new MoveTestAction(this).reorder(idStr, newOrderStr);}
+	/**
+	 * @param idStr
+	 * @param newOrderStr
+	 * @deprecated
+	 */
 	public void reorderMngs(String idStr, String newOrderStr){ new MoveMngAction(this).reorder(idStr, newOrderStr);}
 	public void moveItem(String idStr, String newOrderStr, String x, String y){ new DragDropAction(this).move(idStr, x, y);}
 	public void moveItem(String idStr, String x, String y){ new DragDropAction(this).move(idStr, x, y);}

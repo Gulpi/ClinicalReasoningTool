@@ -70,7 +70,9 @@ public class CRTFacesContext extends FacesContextWrapper /*implements Serializab
 	private LearningAnalyticsContainer analyticsContainer;
 	
 	public CRTFacesContext(){
-	    CRTLogger.out("Start CRTFacesContext init:"  + System.currentTimeMillis(), CRTLogger.LEVEL_TEST);
+		long startms = System.currentTimeMillis();
+
+	    CRTLogger.out("Start CRTFacesContext init:"  + startms + "ms", CRTLogger.LEVEL_PROD);
 
 		locale = LocaleController.setLocale();
 		setUser();
@@ -84,16 +86,18 @@ public class CRTFacesContext extends FacesContextWrapper /*implements Serializab
 			Monitor.addHttpSession((HttpSession)FacesContextWrapper.getCurrentInstance().getExternalContext().getSession(true));
 		}
 		catch(Exception e){}
-	    CRTLogger.out("End CRTFacesContext init:"  + System.currentTimeMillis(), CRTLogger.LEVEL_TEST);
+	    CRTLogger.out("End CRTFacesContext init: "  + (System.currentTimeMillis()- startms) +"ms", CRTLogger.LEVEL_PROD);
 
 	}
 	
 	private void initGraph(){
-	    CRTLogger.out("Start Graph init:"  + System.currentTimeMillis(), CRTLogger.LEVEL_TEST);
+	    
 		if(graph!=null && patillscript!=null && graph.getVpId().equals(patillscript.getVpId())) return; //nothing todo, graph already loaded
+		long startms = System.currentTimeMillis();
+		CRTLogger.out("Start Graph init:"  + startms + "ms", CRTLogger.LEVEL_PROD);
 		graph = new Graph(patillscript.getVpId());
 		CRTLogger.out(graph.toString(), CRTLogger.LEVEL_TEST);	
-	    CRTLogger.out("End Graph init:"  + System.currentTimeMillis(), CRTLogger.LEVEL_TEST);
+	    CRTLogger.out("End Graph init: "  + (System.currentTimeMillis() - startms) + "ms", CRTLogger.LEVEL_PROD);
 
 	}
 
@@ -161,16 +165,19 @@ public class CRTFacesContext extends FacesContextWrapper /*implements Serializab
 	}
 
 	public void initScriptContainer(){
-	    CRTLogger.out("Start ScripConatainer init:"  + System.currentTimeMillis(), CRTLogger.LEVEL_TEST);
 
 		if(user==null) setUser();
 		if(user==null) return;//not sure why this happens sometimes....
 		//if not yet loaded or from a different user we set scriptContainer:
 		if(scriptContainer==null || scriptContainer.getUserId()!=user.getUserId()){
+			long startms =  System.currentTimeMillis();
+		    CRTLogger.out("Start ScripConatainer init:"  + startms +"ms", CRTLogger.LEVEL_PROD);
+
 			scriptContainer = new PatIllScriptContainer(user.getUserId());
 			scriptContainer.loadScriptsOfUser();
+		    CRTLogger.out("End ScripConatainer init:"  + (System.currentTimeMillis()-startms) + "ms", CRTLogger.LEVEL_PROD);
+
 		}	
-	    CRTLogger.out("End ScripConatainer init:"  + System.currentTimeMillis(), CRTLogger.LEVEL_TEST);
 
 	}
 	
@@ -184,29 +191,34 @@ public class CRTFacesContext extends FacesContextWrapper /*implements Serializab
 	 * @param parentId
 	 */
 	private void initFeedbackContainer(){		
-	    CRTLogger.out("Start FeedbackContainer init:"  + System.currentTimeMillis(), CRTLogger.LEVEL_TEST);
 
 		if(patillscript!=null) {
+			long startms = System.currentTimeMillis();
 			if(feedbackContainer==null || feedbackContainer.getUserId()!=user.getUserId()){
+			    CRTLogger.out("Start FeedbackContainer init: "  + startms + "ms", CRTLogger.LEVEL_PROD);
+
 				feedbackContainer = new FeedbackContainer(patillscript.getId(), user.getUserId());				
 				feedbackContainer.initFeedbackContainer();
 			}
 			AppBean.getPeers().loadPeersForPatIllScript(patillscript.getVpId());
+		    CRTLogger.out("End FeedbackContainer init:"  + (System.currentTimeMillis()-startms) + "ms", CRTLogger.LEVEL_PROD);
+
 		}
-	    CRTLogger.out("End FeedbackContainer init:"  + System.currentTimeMillis(), CRTLogger.LEVEL_TEST);
 
 	}
 	
 	private void initLearningAnalyticsContainer(){
-	    CRTLogger.out("Start LearningAnalyticsContainer init:"  + System.currentTimeMillis(), CRTLogger.LEVEL_TEST);
 		if(user==null) setUser();
 		if(user==null) return;
+		long startms = System.currentTimeMillis();
 		if(analyticsContainer == null || analyticsContainer.getUserId() != user.getUserId()){ //load learningAnalyticsContainer also if not script is edited -> needed for charts etc...
+		    CRTLogger.out("Start LearningAnalyticsContainer init:"  + startms + "ms", CRTLogger.LEVEL_PROD);
 			analyticsContainer = new LearningAnalyticsContainer(user.getUserId());
+		    CRTLogger.out("End LearningAnalyticsContainer init:"  + (System.currentTimeMillis()-startms) + "ms", CRTLogger.LEVEL_PROD);
+
 		}	
 		if(patillscript!=null)
 			analyticsContainer.addLearningAnalyticsBean(patillscript.getId(), patillscript.getVpId());
-	    CRTLogger.out("End LearningAnalyticsContainer init:"  + System.currentTimeMillis(), CRTLogger.LEVEL_TEST);
 
 	}
 	
@@ -214,7 +226,8 @@ public class CRTFacesContext extends FacesContextWrapper /*implements Serializab
 	 * load PatientIllnessScript based on id or sessionId
 	 */
 	public void initSession(){ 
-	    CRTLogger.out("Start Session init:"  + System.currentTimeMillis(), CRTLogger.LEVEL_TEST);
+		long startms = System.currentTimeMillis();
+	    CRTLogger.out("Start Session init:" + startms, CRTLogger.LEVEL_PROD);
 
 		/*if(user==null)*/ setUser();
 		//this.getAppBean().getViewHandler().calculateLocale(this);
@@ -252,7 +265,9 @@ public class CRTFacesContext extends FacesContextWrapper /*implements Serializab
 			initGraph();
 			//LocaleController.getInstance().setScriptLocale(patillscript.getLocale());
 		}
-	    CRTLogger.out("End Session init:"  + System.currentTimeMillis(), CRTLogger.LEVEL_TEST);
+		
+		long endms = System.currentTimeMillis();
+	    CRTLogger.out("End Session init:"  + (endms-startms) + " ms", CRTLogger.LEVEL_PROD);
 
 	}
 	
@@ -281,7 +296,6 @@ public class CRTFacesContext extends FacesContextWrapper /*implements Serializab
 	
 	private void loadExpScripts(){
 		if(patillscript==null) return;
-		System.out.println("");
 		AppBean app = getAppBean();
 		PatientIllnessScript expScript = app.addExpertPatIllnessScriptForVpId(patillscript.getVpId());
 		//we have to overtake the max stage in which the final ddx has to be submitted from the expert's script: 

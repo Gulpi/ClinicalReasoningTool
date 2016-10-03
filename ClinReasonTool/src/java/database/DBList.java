@@ -9,6 +9,7 @@ import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import model.ListItem;
 import model.Synonym;
+import util.CRTLogger;
 
 /**
  * Contains all access methods for the list loading (mesh, etc)
@@ -83,9 +84,13 @@ public class DBList extends DBClinReason {
      * @return list of ListItem objects or null
      */
     public List<ListItem> selectParentAndChildListItems(ListItem li){
+    	long startms = System.currentTimeMillis();
     	if(li==null) return null;
+
     	String code = li.getFirstCode();
     	if(code==null || code.indexOf(".")<0) return null;
+    	CRTLogger.out("Start selectParentAndChildListItems " + startms + "ms", CRTLogger.LEVEL_PROD);
+
     	List<ListItem> items = new ArrayList<ListItem>();
     	Session s = instance.getInternalSession(Thread.currentThread(), false);
     	
@@ -102,6 +107,7 @@ public class DBList extends DBClinReason {
 		}
 
 		s.close();
+		CRTLogger.out("End selectParentAndChildListItems " + (System.currentTimeMillis() - startms) + "ms", CRTLogger.LEVEL_PROD);
 		return items;		
     }
     

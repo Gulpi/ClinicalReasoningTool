@@ -69,8 +69,10 @@ public class AppBean extends ApplicationWrapper implements HttpSessionListener{
 	 * Loading any 
 	 */
 	public AppBean(){
-		CRTLogger.out("Start AppBean init:"  + System.currentTimeMillis(), CRTLogger.LEVEL_TEST);
+		long startms = System.currentTimeMillis();
+		CRTLogger.out("Start AppBean init:"  + startms + "ms", CRTLogger.LEVEL_PROD);
 		HibernateUtil.initHibernate();
+		CRTLogger.out("Hibernate init done:"  + (System.currentTimeMillis() - startms) + "ms", CRTLogger.LEVEL_PROD);
 		intlConf = new IntlConfiguration();
 		//setViewHandler(new CRTViewHandler(FacesContext.getCurrentInstance().getApplication().getViewHandler()));
 	    ServletContext context = (ServletContext) FacesContext.getCurrentInstance().getExternalContext().getContext();
@@ -86,19 +88,20 @@ public class AppBean extends ApplicationWrapper implements HttpSessionListener{
 	   
 		//MeshImporter.main("en");
 	   // new TextSimilarityComparing().compareTestData();
-	    CRTLogger.out("Start Peer Container init:"  + System.currentTimeMillis(), CRTLogger.LEVEL_TEST);
+	    startms = System.currentTimeMillis();
+	    CRTLogger.out("Start Peer Container init:"  + startms + "ms", CRTLogger.LEVEL_PROD);
 	    peers.initPeerContainer();
-	    CRTLogger.out("Ende Peer Container init:"  + System.currentTimeMillis(), CRTLogger.LEVEL_TEST);
+	    CRTLogger.out("End Peer Container init:"  + (System.currentTimeMillis()-startms) + "ms", CRTLogger.LEVEL_PROD);
 
 	    vpScriptRefs =  IllnessScriptController.getInstance().initVpScriptRefs();
-	    CRTLogger.out("Init done", CRTLogger.LEVEL_PROD);
+	    
 	    try{
 	    	new PeerSyncController(peers).sync();
 	    }
 	    catch(Exception e){
 	    	CRTLogger.out("AppBean(): " + StringUtilities.stackTraceToString(e), CRTLogger.LEVEL_ERROR);
 	    }
-	    CRTLogger.out("End AppBean init:"  + System.currentTimeMillis(), CRTLogger.LEVEL_TEST);
+	    CRTLogger.out("End AppBean init:"  + System.currentTimeMillis(), CRTLogger.LEVEL_PROD);
 	}
 	
 

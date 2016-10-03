@@ -64,7 +64,7 @@ public class AjaxController {
 	    	}
 	    	if(patillscript==null || patillscriptId==null|| Long.parseLong(patillscriptId)!=patillscript.getId()){
 	    		
-	    		CRTLogger.out("Error: patillscriptId is:"+ patillscriptId + " is null", CRTLogger.LEVEL_PROD);
+	    		CRTLogger.out("Error: patillscriptId is:"+ patillscriptId + " is null", CRTLogger.LEVEL_ERROR);
 	    		return; //TODO we need some more error handling here, how can this happen? What shall we do? 
 	    	}
 	    	String methodName = reqParams.get("type");
@@ -118,7 +118,7 @@ public class AjaxController {
 			stmt.execute();				
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
-			CRTLogger.out(StringUtilities.stackTraceToString(e), CRTLogger.LEVEL_PROD);
+			CRTLogger.out(StringUtilities.stackTraceToString(e), CRTLogger.LEVEL_ERROR);
 		}
     	responseAjax(externalContext, reqParams.get("id"));
 
@@ -135,7 +135,7 @@ public class AjaxController {
 			stmt.execute();				
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
-			CRTLogger.out(StringUtilities.stackTraceToString(e), CRTLogger.LEVEL_PROD);
+			CRTLogger.out(StringUtilities.stackTraceToString(e), CRTLogger.LEVEL_ERROR);
 		}
     	responseAjax(externalContext, reqParams.get("id"));
 

@@ -34,6 +34,9 @@ public class PeerSyncController {
 	 * look for scripts and if there are new ones, add them to the peer table...
 	 */
 	public synchronized void sync(){
+		long startms = System.currentTimeMillis();
+		CRTLogger.out("Peer sync start: " + startms + "ms", CRTLogger.LEVEL_PROD);
+
 		PeerContainer peerCont = AppBean.getPeers();
 		//TODO only select scripts that are at the same stage as the expertscript?
 		scripts = new DBClinReason().selectLearnerPatIllScriptsByPeerSync();
@@ -58,7 +61,7 @@ public class PeerSyncController {
 			CRTLogger.out("Peer sync: " + script.getId() + "done", CRTLogger.LEVEL_PROD);
 		}
 		new DBClinReason().saveAndCommit(scripts); //save the changed sync status....
-		CRTLogger.out("Peer sync done", CRTLogger.LEVEL_PROD);
+		CRTLogger.out("Peer sync done: " + (System.currentTimeMillis() - startms) + "ms", CRTLogger.LEVEL_PROD);
 	}
 	
 	/**

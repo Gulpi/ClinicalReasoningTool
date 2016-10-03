@@ -94,7 +94,7 @@ public class ScoringFinalDDXAction /*implements ScoringAction*/{
 			return corrScore;
 		}
 		catch (Exception e){
-			CRTLogger.out(StringUtilities.stackTraceToString(e), CRTLogger.LEVEL_PROD);
+			CRTLogger.out(StringUtilities.stackTraceToString(e), CRTLogger.LEVEL_ERROR);
 			return -1;
 		}
 		

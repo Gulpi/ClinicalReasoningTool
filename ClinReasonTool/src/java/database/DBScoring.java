@@ -31,16 +31,17 @@ public class DBScoring extends DBClinReason {
     	return l;
     }
     
-    public List<ScoreBean> selectScoreBeansByActionTypeAndPatIllScriptId(int type, long patIllScriptId){
+    /*public List<ScoreBean> selectScoreBeansByActionTypeAndPatIllScriptId(int type, long patIllScriptId){
     	Session s = instance.getInternalSession(Thread.currentThread(), false);
     	Criteria criteria = s.createCriteria(ScoreBean.class,"ScoreBean");
     	criteria.add(Restrictions.eq("patIllScriptId", new Long(patIllScriptId)));
     	criteria.add(Restrictions.eq("type", new Integer(type)));    	
     	List<ScoreBean> l = criteria.list();
     	return l;
-    }
+    }*/
     
     public Map<Integer, List<FeedbackBean>> selectFeedbackBeansByPatIllScriptId(long patIllScriptId){
+    	if(patIllScriptId<0) return null;
     	Session s = instance.getInternalSession(Thread.currentThread(), false);
     	Criteria criteria = s.createCriteria(FeedbackBean.class,"FeedbackBean");
     	criteria.add(Restrictions.eq("patIllScriptId", new Long(patIllScriptId)));
@@ -54,28 +55,18 @@ public class DBScoring extends DBClinReason {
     			stageList = feedbackBeans.get(new Integer(fb.getStage()));
     		}
     		stageList.add(fb);
-    		feedbackBeans.put(new Integer(fb.getStage()), stageList);
-    		
-    			//feedbackBeans.put(new Integer(fb.getStage()), l.get(i));
+    		feedbackBeans.put(new Integer(fb.getStage()), stageList);   		
     	}
     	return feedbackBeans;
     }
-    /**
-     * @deprecated
-     * */
-  /* public List<PeerBean> selectPeerBeansByParentId(long parentId){
-    	Session s = instance.getInternalSession(Thread.currentThread(), false);
-    	Criteria criteria = s.createCriteria(PeerBean.class,"PeerBean");
-    	criteria.add(Restrictions.eq("parentId", new Long(parentId)));
-    	return criteria.list();
-    }*/
+
     
-    public List<PeerBean> selectPeerBeansByVPId(String vpId){
+    /*public List<PeerBean> selectPeerBeansByVPId(String vpId){
     	Session s = instance.getInternalSession(Thread.currentThread(), false);
     	Criteria criteria = s.createCriteria(PeerBean.class,"PeerBean");
     	criteria.add(Restrictions.eq("vpId", vpId));
     	return criteria.list();
-    }
+    }*/
     
     /**
      * We get ALL PeerBean objects for all scripts and put them into a map with the parentId as key. 
@@ -84,7 +75,6 @@ public class DBScoring extends DBClinReason {
     public Map<String, List<PeerBean>> selectAllPeerBeans(){
     	Session s = instance.getInternalSession(Thread.currentThread(), false);
     	Criteria criteria = s.createCriteria(PeerBean.class,"PeerBean");
-    	//criteria.add(Restrictions.eq("parentId", new Long(parentId)));
     	List<PeerBean> list =  criteria.list();
     	if(list==null || list.isEmpty()) return null;
     	Map<String, List<PeerBean>> m = new HashMap<String, List<PeerBean>>();

@@ -89,24 +89,6 @@ public class PeerContainer {
 		return null;
 	}
 	
-	/**
-	 * returns the PeerBean for the action of creation of an patientIllnessScript for the given 
-	 * parentId or null if no script has been created so far. 
-	 * We use this to store the overall number of peers who have created a script.
-	 *  
-	 * @param parentId
-	 * @return
-	 * @deprecated
-	 */
-	/*public PeerBean getPeerBeanByIllScriptCreationActionAndParentId(String parentId){
-		if(peerBeans==null || peerBeans.get(new Long(parentId))==null) return null;
-		List<PeerBean> beans = peerBeans.get(new Long(parentId));
-		for(int i=0; i<beans.size(); i++){
-			PeerBean pb = beans.get(i);
-			if(pb.getAction()==ScoreBean.TYPE_SCRIPT_CREATION) return pb;
-		}
-		return null;
-	}*/
 	
 	/**
 	 * returns the PeerBean for the action of creation of an patientIllnessScript for the given 
@@ -215,30 +197,13 @@ public class PeerContainer {
 		return lastBean;
 	}
 
-	
-	/*private List<PeerBean> getPeerResponsesForParentId(long parentId){
-		List<PeerBean> peers = null;
-		if(cont!=null) cont.getPeerBeans(parentId);
-		if(peers==null || peers.isEmpty()){
-			peers = new DBScoring().selectPeerBeansByParentId(parentId);
-			cont.addPeerBeans(peers, parentId); //caching...
-		}
-		return peers;
-	}*/
-	
-	/*private PeerBean getPeerBeanByListAction(List<PeerBean> peers, int action, int stage){		
-		for(int i=0; i<peers.size(); i++){
-			if(peers.get(i).getAction()==action && peers.get(i).getStage() == stage) return peers.get(i);
-		}
-		return null;	}*/
-
 	/**
 	 * should be obsolete, because we load all PeerBeans at the start of the application....
 	 * @param parentId
 	 */
-	public void loadPeersForPatIllScript(String vpId){
+	/*public void loadPeersForPatIllScript(String vpId){
 		if(AppBean.getPeers()!=null && AppBean.getPeers().getPeerBeans(vpId)!=null) return;
 		List<PeerBean> beans = new DBScoring().selectPeerBeansByVPId(vpId);
 		AppBean.getPeers().addPeerBeans(beans, vpId);
-	}
+	}*/
 }

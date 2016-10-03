@@ -40,8 +40,6 @@ public class FeedbackContainer implements Serializable{
 	
 	public FeedbackContainer(long patIllScriptId, long userId){
 		this.patIllScriptId = patIllScriptId;
-		//if()
-		//stage = new NavigationController().getCRTFacesContext().getPatillscript().getCurrentStage();
 	}
 
 	/**
@@ -57,26 +55,6 @@ public class FeedbackContainer implements Serializable{
 
 	public long getUserId() {return userId;}
 
-	/**
-	 * Has the learner seen the peer's solutions for this/these item(s) 
-	 * @param itemType
-	 * @return
-	 */
-	/*public boolean isPeerFeedbackOn(int itemType, int currStage) {
-		if(getFeedbackBean(FeedbackBean.FEEDBACK_PEER, itemType, currStage)==null) return false;
-		return true;
-	}*/
-	
-	/*private FeedbackBean getFeedbackBean(int feedbackType, int itemType, int currStage){
-		if(feedbackBeans==null) return null;
-		List<FeedbackBean> beans = feedbackBeans.get(new Integer(currStage)); 
-		if(beans==null || beans.isEmpty()) return null;
-		for(int i=0; i<beans.size(); i++){
-			FeedbackBean fb = beans.get(i);
-			if(fb.getType()==feedbackType && fb.getItemType() == itemType) return fb;
-		}
-		return null;		
-	}*/
 	
 	private FeedbackBean getFeedbackBean(int feedbackType, int currStage){
 		if(feedbackBeans==null) return null;
@@ -89,12 +67,6 @@ public class FeedbackContainer implements Serializable{
 		return null;		
 	}
 	
-	
-	/*public void toogleExpFeedback(String toggle, String taskStr, int currStage){
-		if(toggle==null) return;
-		if(toggle.equals("0")) expFeedbackOff();
-		else setExpFeedback(taskStr,currStage);
-	}*/
 	
 	/**
 	 * Learner has activated/deactivated the feedback within a box. This does not include the display of missing items.
@@ -126,30 +98,6 @@ public class FeedbackContainer implements Serializable{
 		if(addFeedbackBean(fb, currStage)) fb.save();
 	}
 	
-	/**
-	 * If no feedbackBean has been created for this task at this stage, we create one, save it, and store it in the 
-	 * container.
-	 * @param taskStr
-	 */
-	/*public void setExpFeedback(String taskStr, int currStage){
-		if(taskStr==null) return;
-		int task = Integer.parseInt(taskStr);
-		FeedbackBean fb = getFeedbackBean(FeedbackBean.FEEDBACK_EXP, task, currStage);
-		if(fb!=null) return; //already set
-		if(task==5){ //concept map -> 1-4 are true
-			for(int i=0; i<5; i++){
-				fb = new FeedbackBean(currStage, FeedbackBean.FEEDBACK_EXP, i, patIllScriptId);
-				
-				if(addFeedbackBean(fb, currStage)) fb.save();
-			}
-		}
-		else{ //Currently we do not have to do anything here for 1-4 because we do not display the missing items.
-			fb = new FeedbackBean(currStage, FeedbackBean.FEEDBACK_EXP, task, patIllScriptId);
-			//fb.save();
-			if(addFeedbackBean(fb, currStage)) fb.save();
-		}
-
-	}*/
 		
 	private boolean addFeedbackBean(FeedbackBean fb, int currStage){
 		if(feedbackBeans==null) feedbackBeans = new HashMap<Integer, List<FeedbackBean>>();
@@ -192,7 +140,5 @@ public class FeedbackContainer implements Serializable{
 	
 	public void initFeedbackContainer(){
 		feedbackBeans = new DBScoring().selectFeedbackBeansByPatIllScriptId(this.patIllScriptId);
-		//feedbackBeans = new DBClinReason().selectScoreBeansByPatIllScriptId(this.patIllScriptId);
-		//CRTLogger.out("FeedbackContainer init done", CRTLogger.LEVEL_TEST);
 	}
 }

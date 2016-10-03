@@ -158,7 +158,7 @@ public class CRTFacesContext extends FacesContextWrapper /*implements Serializab
 	}
 	
 	public LearningAnalyticsContainer getLearningAnalyticsContainer() {
-		setUser();
+		//if(user==null) setUser();
 		if(analyticsContainer==null) initLearningAnalyticsContainer();
 
 		return analyticsContainer;
@@ -199,9 +199,13 @@ public class CRTFacesContext extends FacesContextWrapper /*implements Serializab
 
 				feedbackContainer = new FeedbackContainer(patillscript.getId(), user.getUserId());				
 				feedbackContainer.initFeedbackContainer();
+			    CRTLogger.out("End FeedbackContainer init:"  + (System.currentTimeMillis()-startms) + "ms", CRTLogger.LEVEL_PROD);
+
 			}
-			AppBean.getPeers().loadPeersForPatIllScript(patillscript.getVpId());
-		    CRTLogger.out("End FeedbackContainer init:"  + (System.currentTimeMillis()-startms) + "ms", CRTLogger.LEVEL_PROD);
+			startms = System.currentTimeMillis();
+		   // CRTLogger.out("Start PeerContainer init: "  + startms + "ms", CRTLogger.LEVEL_PROD);
+			//AppBean.getPeers().loadPeersForPatIllScript(patillscript.getVpId());
+		 //   CRTLogger.out("End PeerContainer init:"  + (System.currentTimeMillis()-startms) + "ms", CRTLogger.LEVEL_PROD);
 
 		}
 

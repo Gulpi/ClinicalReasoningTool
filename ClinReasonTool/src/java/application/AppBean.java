@@ -101,7 +101,7 @@ public class AppBean extends ApplicationWrapper implements HttpSessionListener{
 	    catch(Exception e){
 	    	CRTLogger.out("AppBean(): " + StringUtilities.stackTraceToString(e), CRTLogger.LEVEL_ERROR);
 	    }
-	    CRTLogger.out("End AppBean init:"  + System.currentTimeMillis(), CRTLogger.LEVEL_PROD);
+	    CRTLogger.out("End AppBean init:"  + (System.currentTimeMillis()-startms) + "ms", CRTLogger.LEVEL_PROD);
 	}
 	
 

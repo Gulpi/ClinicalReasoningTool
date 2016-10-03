@@ -40,7 +40,7 @@ public class NavigationController implements Serializable {
 	 * called from AjaxController
 	 * @return
 	 */
-	public String openPatIllScript(){
+	/*public String openPatIllScript(){
 		CRTFacesContext context = getCRTFacesContext(); 
 		if(context!=null){
 			removePatIllScript();
@@ -48,9 +48,9 @@ public class NavigationController implements Serializable {
 		}
 		//TODO error handling
 		return "prototype_fs";
-	}
+	}*/
 	
-	public String openPatIllScript(String s){ return openPatIllScript(); }
+	//public String openPatIllScript(String s){ return openPatIllScript(); }
 		
 	/**
 	 * User has clicked on a link to open and edit an expert's patientIllnessScript

@@ -21,7 +21,7 @@ public class CRTLogger {
 		    logger.addAppender(new ConsoleAppender(layout, ConsoleAppender.SYSTEM_OUT));
 		    logger.addAppender(new FileAppender(layout, logfile));
 		    if(level == LEVEL_TEST && currentLogLevel==LEVEL_TEST) 
-		    	logger.debug(s); 
+		    	logger.info(s); 
 		    if(level == LEVEL_PROD) logger.info(s);
 		    if(level == LEVEL_ERROR) logger.error(s);
 		    //logger.info("Hello again...");  

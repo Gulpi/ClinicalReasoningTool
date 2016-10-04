@@ -15,6 +15,7 @@ public class User {
 	 * id a user has in an external system
 	 */
 	private String extUserId;
+	
 	/**
 	 * system the externalId is from (TODO could be more than one)
 	 */
@@ -31,6 +32,7 @@ public class User {
 	public String getExtUserId() {return extUserId;}
 	public void setExtUserId(String extUserId) {this.extUserId = extUserId;}
 	public int getSystemId() {return systemId;}
-	public void setSystemId(int systemId) {this.systemId = systemId;} 	
+	public void setSystemId(int systemId) {this.systemId = systemId;}
+	
 	
 }

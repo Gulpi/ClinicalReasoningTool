@@ -4,8 +4,8 @@
     xmlns:ui="http://java.sun.com/jsf/facelets"
     xmlns:f="http://java.sun.com/jsf/core">
 
-   	<div id="mng_#{mng.id}"   score="#{mng.score}" class="itembox row2 mngs" mytooltip="#{mng.labelOrSynLabel}" style="left:#{mng.x}px; top:#{mng.boxY}px;">  
-  	 	#{mng.shortLabelOrSynShortLabel}
+   	<div id="mng_#{mng.id}"   score="#{mng.score}" class="itembox row2 mngs" style="left:#{mng.x}px; top:#{mng.boxY}px;">  
+  	 	<span  mytooltip="#{mng.labelOrSynLabel}">#{mng.shortLabelOrSynShortLabel}</span>
   	 	 <script language="Javascript">
  			item_arr.push("mng_#{mng.id}");
  		</script>

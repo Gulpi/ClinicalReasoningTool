@@ -15,7 +15,7 @@ a:focus{outline:none !important;}
 
 .ui-widget-content { /*needs to be at the beginning, otherwise the slider background will be overwritten*/
 	border: 1px solid #dddddd;
-	background: #ffffff url("images/ui-bg_highlight-soft_100_eeeeee_1x100.png") 50% top repeat-x;
+	/*background: #ffffff url("images/ui-bg_highlight-soft_100_eeeeee_1x100.png") 50% top repeat-x;*/
 	color: #333333;
 }
 select.f_select {

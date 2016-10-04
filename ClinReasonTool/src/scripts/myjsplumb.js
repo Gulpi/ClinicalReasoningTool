@@ -285,16 +285,26 @@ function sameHeightForNeigborBoxes(){
 function initBoxHeights(){
 	var storedHeightRow1 = getBoxFdgDDXHeight();
 	var storedHeightRow2 = getBoxTstMngHeight();
-	//if(boxId=="fdg_box" || boxId=="ddx_box") storedHeight = getBoxFdgDDXHeight();
-	//if(boxId=="tst_box" || boxId=="mng_box") storedHeight = getBoxTstMngHeight();
 	var maxYRow1 = 210; //height of fdg & ddx containers
 	var maxYRow2 = 210; //height of tst & mng containers
 	
 	var itemArr2 = $(".row1");
 	if(itemArr2.length==0) return;
+	var isLastElemExpItem = false;
 	for(i=0; i<itemArr2.length; i++){
 		var myY = $(itemArr2[i]).position().top + 30;
-		if(myY > maxYRow1) maxYRow1 = myY;
+		if(myY > maxYRow1){
+			maxYRow1 = myY;
+			if($(itemArr2[i]).hasClass("expbox")){
+				isLastElemExpItem = true;
+			}
+			else isLastElemExpItem = false;
+		}
+	}
+	//if the last element (lowest) is an expert item, we have to add some more pixels to the box, because
+	//otherwise the lowest expBox lays over the submit button!
+	if(isLastElemExpItem==true){
+		maxYRow1 += 30; 
 	}
 	var itemArr3 = $(".row2");
 	if(itemArr3.length==0) return;
@@ -311,28 +321,11 @@ function initBoxHeights(){
 		storedHeightRow2 = maxYRow2;
 		setBoxHeight("mng_box", maxYRow2);
 	}
-	//if(maxY>400) maxY=400;
-	//if(maxYRow1>storedHeightRow1){
-		$("#fdg_box").height(storedHeightRow1);
-		$("#ddx_box").height(storedHeightRow1);
-		//setBoxHeight("fdg_box", maxYRow1);
-	//}
-	
-	//if(maxYRow2>storedHeightRow2){
-		$("#tst_box").height(maxYRow2);
-		$("#mng_box").height(maxYRow2);
-		//setBoxHeight("mng_box", maxYRow2);
-	//}
-	
-	
-	
-	/*if(maxY>=200 && $("#"+boxId).height()< maxY && maxY > storedHeight){
-		$("#"+boxId).height(maxY);
-		setBoxHeight(boxId, maxY);
-		//return;
-	}	
-	else if(storedHeight > $("#"+boxId).height()) 
-		$("#"+boxId).height(storedHeight);*/
+	$("#fdg_box").height(storedHeightRow1);
+	$("#ddx_box").height(storedHeightRow1);
+
+	$("#tst_box").height(maxYRow2);
+	$("#mng_box").height(maxYRow2);
 	
 	sendNewHeightToHostSystem();
 
@@ -341,14 +334,9 @@ function initBoxHeights(){
 function sendNewHeightToHostSystem(){
 	var rowsHeight = $("#fdg_box").height() + $("#mng_box").height();
 	var minHeight = 520;
-	//if(rowsHeight>520){
-		var newFrameHeight = 730;
-		if((rowsHeight-520)>0) newFrameHeight += rowsHeight-520;
-		//alert(newFrameHeight);
-		postFrameHeight(newFrameHeight);
-	//}
-		
-	
+	var newFrameHeight = 730;
+	if((rowsHeight-520)>0) newFrameHeight += rowsHeight-520;
+	postFrameHeight(newFrameHeight);			
 }
 
 

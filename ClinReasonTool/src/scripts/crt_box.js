@@ -641,13 +641,37 @@ function toggleSumFeedback(iconId, type){
 
 	}
 	else{ //turn feedback on
+		//sumstanchor
 		$("#"+iconId).removeClass("fa-user-md_off");	
 		$("#"+iconId).addClass("fa-user-md_on");
 		$("#"+iconId).attr("title", hideExpTitle);
 		$("#list_score_sum").show();
+		//var element = document.getElementById("list_score_sum");
+		$("#list_score_sum")[0].scrollIntoView({
+		    behavior: "smooth", // or "auto" or "instant"
+		    block: "start" // or "end"
+		});
+		//element.scrollIntoView();
+		//goToByScroll("sumstanchor");
 		//$("#sum_box").height("300");
 		sendAjaxContext(1, doNothing, "toogleExpBoxFeedback", type);
 	}
+}
+
+function goToByScroll(id){
+	//if ($j('#' + id).length) {
+		var posTop = parseInt($('#' + id).position().top);
+		/*var content_margin_top = $j('#s3col_main1').css("margin-top");
+		if (content_margin_top == null || content_margin_top == "") {
+			content_margin_top = "0px";
+		}
+		var content_margin_top_int = parseInt(content_margin_top.replace("px", ""));*/
+		//var act_scroll_top = $(window).scrollTop();
+		// alert(act_scroll_top + "," + posTop + "," + content_margin_top_int + "," + (posTop-content_margin_top_int));
+		//$(window).scrollTop(posTop-content_margin_top_int);
+		$(window).scrollTop(posTop)
+		// $j('html,body').animate({scrollTop: $j("#"+id).offset().top},'slow');
+	//}
 }
 
 function isOverallExpertOn(){

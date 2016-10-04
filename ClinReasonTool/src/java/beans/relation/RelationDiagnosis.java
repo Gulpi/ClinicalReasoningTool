@@ -264,7 +264,7 @@ public class RelationDiagnosis extends Relation implements Serializable {
 		
 		if(expRel.isFinalDDX() && (learnerscript.getCurrentStage()>learnerscript.getMaxSubmittedStage() || learnerscript.getSubmitted())) return TIER_FINAL;
 		if(isRuledOutBool() && ruledOut<=learnerscript.getCurrentStage()) return TIER_RULEDOUT;
-		if(workingDDX<=learnerscript.getCurrentStage()) return TIER_WORKINGDDX;
+		if(isWorkingDDXBool() && workingDDX<=learnerscript.getCurrentStage()) return TIER_WORKINGDDX;
 		return -1;
 		
 	}

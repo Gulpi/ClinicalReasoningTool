@@ -651,32 +651,11 @@ function toggleSumFeedback(iconId, type){
 		    behavior: "smooth", // or "auto" or "instant"
 		    block: "start" // or "end"
 		});
-		//element.scrollIntoView();
-		//goToByScroll("sumstanchor");
-		//$("#sum_box").height("300");
 		sendAjaxContext(1, doNothing, "toogleExpBoxFeedback", type);
 	}
 }
 
-function goToByScroll(id){
-	//if ($j('#' + id).length) {
-		var posTop = parseInt($('#' + id).position().top);
-		/*var content_margin_top = $j('#s3col_main1').css("margin-top");
-		if (content_margin_top == null || content_margin_top == "") {
-			content_margin_top = "0px";
-		}
-		var content_margin_top_int = parseInt(content_margin_top.replace("px", ""));*/
-		//var act_scroll_top = $(window).scrollTop();
-		// alert(act_scroll_top + "," + posTop + "," + content_margin_top_int + "," + (posTop-content_margin_top_int));
-		//$(window).scrollTop(posTop-content_margin_top_int);
-		$(window).scrollTop(posTop)
-		// $j('html,body').animate({scrollTop: $j("#"+id).offset().top},'slow');
-	//}
-}
-
 function isOverallExpertOn(){
-	//if($("#"+iconId).hasClass("fa-user-md_on"))
-	//alert($("#expFeedback").prop("checked"));
 	if($("#expFeedback").prop("checked"))
 		return true;
 	return false;

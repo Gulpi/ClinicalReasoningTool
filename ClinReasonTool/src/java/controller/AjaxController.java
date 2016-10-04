@@ -42,6 +42,7 @@ public class AjaxController {
 	public static final String REQPARAM_ENCODED = "encoded"; //are the query params encoded (true | false)
 	public static final String REQPARAM_SYSTEM = "system_id"; //are the query params encoded (true | false)
 	public static final String REQPARAM_CHARTPEER = "chart_peer"; //are the query params encoded (true | false)
+	public static final String REQPARAM_EXTUID = "uid"; //are the query params encoded (true | false)
 
 	static private AjaxController instance = new AjaxController();
 	static public AjaxController getInstance() { return instance; }
@@ -282,6 +283,20 @@ public class AjaxController {
 			return param;
 		}
 		return null;
+	}
+	
+	public String getRequestParamByKeyNoDecrypt(String key){
+		if(key==null || key.equals("")) return null;
+		key = key.trim();
+		//key = key.toLowerCase();
+		Map<String,String[]> p = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterValuesMap();
+		String[] p1 = p.get(key);
+		if(p1==null || p1.length==0) return null;
+		
+			return p1[0];
+			//return param;
+		//}
+		//return null;
 	}
 	
 	public long getLongRequestParamByKey(String key){

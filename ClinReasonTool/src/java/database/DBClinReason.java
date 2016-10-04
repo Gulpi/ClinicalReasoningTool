@@ -233,13 +233,16 @@ public class DBClinReason /*extends HibernateUtil*/{
     /**
      * Select the PatientIllnessScripts for the userId and parentId from the database. 
      * @param sessionId
+     * @param vpId
+     * @param uId (an optional unique id that can be transferred from the VP system, e.g. a sessionId)
      * @return PatientIllnessScript or null
      */
-    public PatientIllnessScript selectPatIllScriptsByUserIdAndVpId(long userId, String vpId){
+    public PatientIllnessScript selectPatIllScriptsByUserIdAndVpId(long userId, String vpId, String extUId){
     	Session s = instance.getInternalSession(Thread.currentThread(), false);
     	Criteria criteria = s.createCriteria(PatientIllnessScript.class,"PatientIllnessScript");
     	criteria.add(Restrictions.eq("userId", new Long(userId)));
     	criteria.add(Restrictions.eq("vpId", vpId));
+    	if(extUId!=null && !extUId.trim().equals("")) criteria.add(Restrictions.eq("extUId", extUId));
     	criteria.add(Restrictions.eq("type", PatientIllnessScript.TYPE_LEARNER_CREATED));
     	PatientIllnessScript patIllScript =  (PatientIllnessScript) criteria.uniqueResult();
     	if(patIllScript!=null)

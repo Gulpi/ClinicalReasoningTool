@@ -107,7 +107,7 @@ public class CRTFacesContext extends FacesContextWrapper /*implements Serializab
 	 */
 	private void setUser(){
 		String setUserIdStr = AjaxController.getInstance().getRequestParamByKey(AjaxController.REQPARAM_USER);
-		String extUserId = AjaxController.getInstance().getRequestParamByKey(AjaxController.REQPARAM_USER_EXT);
+		String extUserId = AjaxController.getInstance().getRequestParamByKeyNoDecrypt(AjaxController.REQPARAM_USER_EXT);
 		int systemId = AjaxController.getInstance().getIntRequestParamByKey(AjaxController.REQPARAM_SYSTEM, -1);
 		if(setUserIdStr==null && extUserId==null){
 			//userHasChanged(); //just to be sure...
@@ -231,20 +231,17 @@ public class CRTFacesContext extends FacesContextWrapper /*implements Serializab
 	 */
 	public void initSession(){ 
 		long startms = System.currentTimeMillis();
-	    CRTLogger.out("Start Session init:" + startms, CRTLogger.LEVEL_PROD);
 
 		/*if(user==null)*/ setUser();
-		//this.getAppBean().getViewHandler().calculateLocale(this);
 
 		initScriptContainer(); //this loads all scripts, needed for overview page and availability bias determination
 		
 		long id = AjaxController.getInstance().getLongRequestParamByKey(AjaxController.REQPARAM_SCRIPT);
 		String vpId = AjaxController.getInstance().getRequestParamByKey(AjaxController.REQPARAM_VP);
-		//long extUserId = new AjaxController().getLongRequestParamByKey(AjaxController.REQPARAM_USER_EXT);
 		int systemId = AjaxController.getInstance().getIntRequestParamByKey(AjaxController.REQPARAM_SYSTEM, -1);
-
-		//setUserIdFromExt(extUserId);
-		if(this.patillscript!=null && (id<0 || this.patillscript.getId()==id) && this.patillscript.getUserId()==this.user.getUserId()) return; //current script already loaded....
+		String extUId = AjaxController.getInstance().getRequestParamByKeyNoDecrypt(AjaxController.REQPARAM_EXTUID);
+		//current script already loaded....-> then return here....
+		if(this.patillscript!=null && (id<0 || this.patillscript.getId()==id) && this.patillscript.getUserId()==this.user.getUserId() && (extUId==null || this.patillscript.getExtUId().equals(extUId))) return; 
 
 		if(id<=0 && vpId==null) return; //then user has opened the overview page...y
 
@@ -255,9 +252,9 @@ public class CRTFacesContext extends FacesContextWrapper /*implements Serializab
 
 		}
 		else if(vpId!=null && !vpId.equals("") && systemId>0 && user!=null){ //look whether script created, if not create it...
-			this.patillscript = isc.loadIllnessScriptsByVpId(user.getUserId(), vpId+"_"+systemId);
+			this.patillscript = isc.loadIllnessScriptsByVpId(user.getUserId(), vpId+"_"+systemId, extUId);
 			if(this.patillscript==null){
-				this.patillscript = isc.createAndSaveNewPatientIllnessScript(user.getUserId(), vpId, systemId);
+				this.patillscript = isc.createAndSaveNewPatientIllnessScript(user.getUserId(), vpId, systemId, extUId);
 			}
 		}
 		//TODO error handling!!!!
@@ -265,10 +262,7 @@ public class CRTFacesContext extends FacesContextWrapper /*implements Serializab
 		loadExpScripts();
 		initFeedbackContainer();
 		
-		if(this.patillscript!=null){
-			initGraph();
-			//LocaleController.getInstance().setScriptLocale(patillscript.getLocale());
-		}
+		if(this.patillscript!=null){initGraph();}
 		
 		long endms = System.currentTimeMillis();
 	    CRTLogger.out("End Session init:"  + (endms-startms) + " ms", CRTLogger.LEVEL_PROD);

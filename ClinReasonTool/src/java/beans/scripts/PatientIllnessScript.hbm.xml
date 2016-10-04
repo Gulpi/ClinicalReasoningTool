@@ -28,6 +28,9 @@
 	    <property name="summStId" column="summst_id" type="long"/>
 	    <property name="peerSync" column="peer_sync" type="boolean"/>
 	     <property name="maxSubmittedStage" column="max_ddx_submitted" type="int"/>
+	     <property name="extUId" column="ext_uid" type="string"/>
+	     
+	     
 	
 		<list name="problems" table="crt.relation_problem" lazy="false"> 
     		<key column="dest_id"/> <!-- dest_id = patientIllnessScript id -->

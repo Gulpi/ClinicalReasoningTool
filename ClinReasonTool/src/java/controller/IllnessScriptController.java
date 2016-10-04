@@ -46,9 +46,9 @@ public class IllnessScriptController implements Serializable{
 	 * @param parentId
 	 * @return
 	 */
-	public PatientIllnessScript loadIllnessScriptsByVpId(long userId, String vpId){
+	public PatientIllnessScript loadIllnessScriptsByVpId(long userId, String vpId, String extUId){
 		if(vpId!=null && !vpId.equals("") && userId>0){
-			PatientIllnessScript patillscript =new DBClinReason().selectPatIllScriptsByUserIdAndVpId(userId, vpId);
+			PatientIllnessScript patillscript =new DBClinReason().selectPatIllScriptsByUserIdAndVpId(userId, vpId, extUId);
 			
 			return patillscript;
 		}
@@ -56,15 +56,21 @@ public class IllnessScriptController implements Serializable{
 	}
 	
 
-		
-	/**We create a new PatientIllnessScript and save it. 
+	
+	/**
+	 * We create a new PatientIllnessScript and save it. 
 	 * At this point the userId is already the internal userId of the tool! 
-	 * @param sessionId
+	 * @param userId (crt userId)
+	 * @param vpId
+	 * @param systemId
+	 * @param extUId (encyrpted)
+	 * @return
 	 */
-	public PatientIllnessScript createAndSaveNewPatientIllnessScript(long userId, String vpId, int systemId){
+	public PatientIllnessScript createAndSaveNewPatientIllnessScript(long userId, String vpId, int systemId, String extUId){
 		if(vpId==null || userId<=0) return null;
 		Locale loc = LocaleController.getInstance().getScriptLocale();//FacesContext.getCurrentInstance().getApplication().getViewHandler().calculateLocale(FacesContext.getCurrentInstance());
 		PatientIllnessScript patillscript = new PatientIllnessScript( userId, vpId, loc, systemId);
+		patillscript.setExtUId(extUId);
 		patillscript.save();
 
 		CRTLogger.out("New PatIllScript created for vp_id: " + vpId, CRTLogger.LEVEL_PROD);

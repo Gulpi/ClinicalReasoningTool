@@ -120,8 +120,7 @@ public class PatientIllnessScript extends Beans/*extends Node*/ implements Illne
 	 * (including the stage when this happened)
 	 */
 	private int showSolution = -1;
-	//private Map<Integer, List<MyError>> errors;
-	//private FinalDiagnosisSubmission finalddxs;
+	private String extUId="";
 	
 	/**
 	 * Has this script added to the peer table? ONLY learner scripts!
@@ -185,7 +184,9 @@ public class PatientIllnessScript extends Beans/*extends Node*/ implements Illne
 		if(summSt==null) return null;
 		if(summSt.getStage()<=stage) return summSt;
 		return null;
-	}
+	}	
+	public String getExtUId() {return extUId;}
+	public void setExtUId(String extUId) {this.extUId = extUId;}
 	public void setSummSt(SummaryStatement summSt) {this.summSt = summSt;	}	
 	public int getShowSolution() {return showSolution;}
 	public void setShowSolution(int showSolution) {this.showSolution = showSolution;}

@@ -547,7 +547,7 @@ public class PatientIllnessScript extends Beans/*extends Node*/ implements Illne
 	public boolean getOfferSolution(){
 		if(!getOfferTryAgain()) return false; //solution was correct anyway
 		if(AppBean.getExpertPatIllScript(this.getVpId())==null) return true; //we have no expert's script....
-		if(this.currentStage == AppBean.getExpertPatIllScript(this.getVpId()).getMaxSubmittedStage() /*&& this.currentStage >= AppBean.getExpertPatIllScript(this.getParentId()).getSubmittedStage()*/) return true;
+		if(this.currentStage >= AppBean.getExpertPatIllScript(this.getVpId()).getMaxSubmittedStage() /*&& this.currentStage >= AppBean.getExpertPatIllScript(this.getParentId()).getSubmittedStage()*/) return true;
 		return false;
 	}
 	

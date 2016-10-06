@@ -214,7 +214,7 @@ public class LearningAnalyticsContainer implements Serializable{
 			//sb.append("{\"id\":\""+sc.getScriptsOfUser().get(i).getVpId()+"\",");
 			//sb.append("\"name\":\""+AppBean.getVPNameByParentId(sc.getScriptsOfUser().get(i).getVpId())+"\"},");
 			sb.append("\""+sc.getScriptsOfUser().get(i).getVpId()+"\":\"");
-			sb.append(AppBean.getVPNameByParentId(sc.getScriptsOfUser().get(i).getVpId())+"\",");
+			sb.append(AppBean.getVPNameByVPId(sc.getScriptsOfUser().get(i).getVpId())+"\",");
 			
 		}
 		if(sb.length()>1) sb.replace(sb.length()-1, sb.length(), ""); //remove the last ","

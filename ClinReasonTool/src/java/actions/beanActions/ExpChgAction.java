@@ -16,7 +16,7 @@ public class ExpChgAction{
 	 */
 	public void chgStage(String itemId, String stageStr){
 		int stage = Integer.valueOf(stageStr);
-		Graph g = new NavigationController().getCRTFacesContext().getGraph();
+		Graph g = NavigationController.getInstance().getAdminFacesContext().getGraph();
 		long vertexId = Long.parseLong(itemId);
 		MultiVertex vertex = g.getVertexById(vertexId);
 		if(vertex!=null && vertex.getLearnerVertex()!=null){

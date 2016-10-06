@@ -3,9 +3,11 @@ package controller;
 import java.io.*;
 import java.util.*;
 
+import application.AppBean;
 import database.DBList;
 import model.ListItem;
 import model.Synonym;
+import properties.IntlConfiguration;
 import util.CRTLogger;
 import util.StringUtilities;
 
@@ -63,6 +65,8 @@ public class JsonCreator {
 					lines += addSynonyma(item, sb);
 				}
 			}
+			boolean allowOwnEntries = AppBean.getProperty("AllowOwnEntries", false);
+			if(allowOwnEntries) sb.append(getOwnEntry(loc));
 			sb.replace(sb.length()-2, sb.length(), "]");
 			pw.print(sb.toString());
 			pw.flush();
@@ -72,6 +76,11 @@ public class JsonCreator {
 		catch( Exception e){
 			CRTLogger.out(StringUtilities.stackTraceToString(e), CRTLogger.LEVEL_PROD);
 		}
+	}
+	
+	private String getOwnEntry(Locale loc){
+		String ownEntry = IntlConfiguration.getValue("list.ownEntry", loc);
+		return "{\"label\": \""+ownEntry+"\", \"value\": \"-99\"},\n";
 	}
 	
 	/**

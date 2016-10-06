@@ -123,7 +123,7 @@ public class LogEntry extends Beans{
 	public int getStage() {return stage;}
 	public void setStage(int stage) {this.stage = stage;}
 	private void setStageBasedOnCurrentStage(){
-		stage = new NavigationController().getCRTFacesContext().getPatillscript().getCurrentStage();
+		stage = NavigationController.getInstance().getMyFacesContext().getPatillscript().getCurrentStage();
 	}
 	public void save(){
 		setStageBasedOnCurrentStage();

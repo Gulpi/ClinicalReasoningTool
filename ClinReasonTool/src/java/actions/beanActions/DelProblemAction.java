@@ -57,7 +57,7 @@ public class DelProblemAction implements DelAction{
 	}
 	
 	public void updateGraph(Relation rel){
-		Graph graph = new NavigationController().getCRTFacesContext().getGraph();
+		Graph graph = NavigationController.getInstance().getMyFacesContext().getGraph();
 		MultiVertex vertex = graph.getVertexByIdAndType(rel.getListItemId(), Relation.TYPE_PROBLEM);
 		if(vertex==null) return; //Should not happen
 		vertex.setLearnerVertex(null);

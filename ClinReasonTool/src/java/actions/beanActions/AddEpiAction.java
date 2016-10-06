@@ -31,7 +31,7 @@ import actions.scoringActions.Scoreable;
  * @author ingahege
  *
  */
-public class AddEpiAction implements AddAction, Scoreable{
+public class AddEpiAction /*implements AddAction, Scoreable*/{
 
 	private PatientIllnessScript patIllScript;
 	
@@ -53,7 +53,7 @@ public class AddEpiAction implements AddAction, Scoreable{
 	 * @see actions.beanActions.AddAction#add(java.lang.String, java.lang.String, java.lang.String, java.lang.String)
 	 */
 	public void add(String idStr, String name, String xStr, String yStr){ 
-		new RelationController().initAdd(idStr, name, xStr, yStr, this);
+		//new RelationController().initAdd(idStr, name, xStr, yStr, this);
 	}
 	
 	public void addRelation(long id, String name, int x, int y, long synId){
@@ -123,17 +123,12 @@ public class AddEpiAction implements AddAction, Scoreable{
 		new ScoringAddAction().scoreAction(((RelationEpi) relEpi).getListItemId(), this.patIllScript, isJoker, Relation.TYPE_EPI);
 	}
 
-	@Override
-	/*public void triggerFeedbackAction() {
-		// TODO Auto-generated method stub
-		
-	}*/
 
 	/* (non-Javadoc)
 	 * @see actions.beanActions.AddAction#updateGraph(beans.relation.Relation)
 	 */
 	public void updateGraph(Relation rel) {
-		Graph graph = new NavigationController().getCRTFacesContext().getGraph();
+		Graph graph = NavigationController.getInstance().getMyFacesContext().getGraph();
 		graph.addVertex(rel, IllnessScriptInterface.TYPE_LEARNER_CREATED);
 		for(int i=0; i<patIllScript.getDiagnoses().size(); i++){
 			graph.addImplicitEdge(rel.getListItemId(), patIllScript.getDiagnoses().get(i).getListItemId(), IllnessScriptInterface.TYPE_LEARNER_CREATED);

@@ -7,7 +7,7 @@
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:f="http://java.sun.com/jsf/core"
       xmlns:v="urn:schemas-microsoft-com:vml">
- <f:view locale="#{crtContext.locale}"> 
+ <f:view locale="en"> 
 <head>
 <f:event type="preRenderView" listener="#{facesContext.externalContext.response.setHeader('Cache-Control', 'no-cache, no-store')}" />
 
@@ -34,15 +34,14 @@ $( document ).tooltip({
           }
 	}
 });
-
-var test = "#{crtContext.userId}";
+var test = "#{adminContext.userId}";
 </script>
  </head>
  <body>
  
 <div> 
 	<h:form><ul id="list" class="plainList">
-			<ui:repeat value="#{expport.expscripts}" var="scripts" varStatus="status">
+			<ui:repeat value="#{adminContext.adminPortfolio.expscripts}" var="scripts" varStatus="status">
 				<li><h:commandLink action="#{navController.openExpPatIllScript}" value="Edit Scriptid:#{scripts.id}" title="Open the prototype">
 				<!--  <f:param name="script_id" value="#{scripts.id}" />-->
 					<f:param name="script_id" value="#{scripts.id}" />

@@ -163,7 +163,7 @@ public class MultiVertex /*extends SynonymVertex*/ implements VertexInterface, S
 
 	public String toJson(){
 		StringBuffer sb = new StringBuffer();
-		int currentStage = new NavigationController().getCRTFacesContext().getPatillscript().getCurrentStage();
+		int currentStage = new NavigationController().getMyFacesContext().getPatillscript().getCurrentStage();
 
 		if(learnerVertex!=null && expertVertex==null )
 			sb.append(createLearnerJson());

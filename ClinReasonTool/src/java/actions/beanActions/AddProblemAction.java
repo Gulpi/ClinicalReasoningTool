@@ -21,6 +21,7 @@ import controller.NavigationController;
 import controller.RelationController;
 import database.DBClinReason;
 import database.DBList;
+import model.ListItem;
 import properties.IntlConfiguration;
 import util.CRTLogger;
 import actions.scoringActions.ScoringAddAction;
@@ -38,9 +39,14 @@ import actions.scoringActions.Scoreable;
 public class AddProblemAction implements AddAction, Scoreable{
 
 	private PatientIllnessScript patIllScript;
+	private String prefix = null;
 	
 	public AddProblemAction(PatientIllnessScript patIllScript){
 		this.patIllScript = patIllScript;
+	}
+	public AddProblemAction(PatientIllnessScript patIllScript, String prefix){
+		this.patIllScript = patIllScript;
+		this.prefix = prefix;
 	}
 	
 	/* (non-Javadoc)
@@ -57,18 +63,20 @@ public class AddProblemAction implements AddAction, Scoreable{
 	 * @see actions.beanActions.AddAction#add(java.lang.String, java.lang.String, java.lang.String, java.lang.String)
 	 */
 	public void add(String idStr, String prefix, String xStr, String yStr){ 
-		new RelationController().initAdd(idStr, prefix, xStr, yStr, this);
+		this.prefix = prefix;
+		new RelationController().initAdd(idStr, prefix, xStr, yStr, this, patIllScript.getLocale());
 	}
 	
-	public void addRelation(long id, String prefix, int x, int y, long synId){		
-		addRelation(id, prefix, x, y, synId, false);
+	public void addRelation(/*long id*/ListItem li, int x, int y, long synId){
+		this.prefix = prefix;
+		addRelation(li, x, y, synId, false);
 	}
 	/* (non-Javadoc)
 	 * @see actions.beanActions.AddAction#addRelation(long, java.lang.String, int, int, long)
 	 */
-	public void addRelation(long id, String prefix, int x, int y, long synId, boolean isJoker){
+	public void addRelation(ListItem li,/*long id, String prefix,*/ int x, int y, long synId, boolean isJoker){
 		if(patIllScript.getProblems()==null) patIllScript.setProblems(new ArrayList<RelationProblem>());
-		RelationProblem rel = new RelationProblem(id, patIllScript.getId(), synId);		
+		RelationProblem rel = new RelationProblem(li.getItem_id(), patIllScript.getId(), synId);		
 		if(patIllScript.getProblems().contains(rel)){
 			createErrorMessage(IntlConfiguration.getValue("findings.duplicate"),"optional details", FacesMessage.SEVERITY_WARN);
 			return;
@@ -79,13 +87,14 @@ public class AddProblemAction implements AddAction, Scoreable{
 		}
 		rel.setOrder(patIllScript.getProblems().size());
 		rel.setStage(patIllScript.getCurrentStage());
-		if(NavigationController.getInstance().isExpEdit()){
+		if(patIllScript.isExpScript()){
 			rel.setStage(patIllScript.getStage());
 		}
 		if(x<0 && y<0) rel.setXAndY(calculateNewItemPosInCanvas());		
 		else rel.setXAndY(new Point(x,y)); //problem has been created from the concept map, therefore we have a position
 		patIllScript.getProblems().add(rel);
-		rel.setProblem(new DBList().selectListItemById(id));
+		//rel.setProblem(new DBList().selectListItemById(id));
+		rel.setProblem(li);
 		save(rel);
 		notifyLog(rel);
 		updateGraph(rel);
@@ -112,7 +121,7 @@ public class AddProblemAction implements AddAction, Scoreable{
 			y = patIllScript.getProblems().size() * 26; //CAVE max y! 
 		}
 		//if an expert script we have to position the item on the x axis to the left:
-		if(NavigationController.getInstance().isExpEdit()){
+		if(patIllScript.isExpScript()){
 			return new Point(RelationProblem.DEFAULT_X+100,y);
 		}
 		return new Point(RelationProblem.DEFAULT_X,y);
@@ -128,7 +137,7 @@ public class AddProblemAction implements AddAction, Scoreable{
 	 */
 	public void notifyLog(Relation relProb){
 		new LogEntry(LogEntry.ADDPROBLEM_ACTION, patIllScript.getId(), relProb.getListItemId()).save();
-		new TypeAheadBean(relProb.getListItemId(), Relation.TYPE_PROBLEM).save();
+		if(!patIllScript.isExpScript()) new TypeAheadBean(relProb.getListItemId(), Relation.TYPE_PROBLEM).save();
 	}
 	
 
@@ -151,7 +160,7 @@ public class AddProblemAction implements AddAction, Scoreable{
 	 * @see actions.beanActions.AddAction#updateGraph(beans.relation.Relation)
 	 */
 	public void updateGraph(Relation rel) {
-		Graph graph = new NavigationController().getCRTFacesContext().getGraph();
+		Graph graph = NavigationController.getInstance().getMyFacesContext().getGraph();
 		graph.addVertex(rel, IllnessScriptInterface.TYPE_LEARNER_CREATED);
 		if( patIllScript.getDiagnoses()!=null && patIllScript.getDiagnoses().size()>0){
 			for(int i=0; i<patIllScript.getDiagnoses().size(); i++){

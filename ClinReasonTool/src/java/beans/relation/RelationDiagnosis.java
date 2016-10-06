@@ -101,7 +101,7 @@ public class RelationDiagnosis extends Relation implements Serializable {
 	 */
 	public int getExptier(){
 		if(tier!=TIER_FINAL) return tier; //everything except finals are displayed... 
-		PatientIllnessScript learnerscript = new NavigationController().getCRTFacesContext().getPatillscript();
+		PatientIllnessScript learnerscript = NavigationController.getInstance().getMyFacesContext().getPatillscript();
 		if(learnerscript.getSubmitted()) return TIER_FINAL;
 		return 0;
 	}
@@ -123,7 +123,7 @@ public class RelationDiagnosis extends Relation implements Serializable {
 	public int getRuledOut(){return ruledOut;}
 	public void setRuledOut(int ruledOut) {this.ruledOut = ruledOut;}
 	public void setRuledOutAtCurrStage() {
-		PatientIllnessScript patillscript = NavigationController.getInstance().getPatientIllnessScript();
+		PatientIllnessScript patillscript = NavigationController.getInstance().getMyFacesContext().getPatillscript();
 		if(patillscript!=null){
 			this.ruledOut = patillscript.getStageForAction();
 			/*if(patillscript.isExpScript())
@@ -147,7 +147,7 @@ public class RelationDiagnosis extends Relation implements Serializable {
 		return false;
 	}	
 	private void setWorkingDDXAtCurrStage(){
-		PatientIllnessScript patillscript = NavigationController.getInstance().getPatientIllnessScript();
+		PatientIllnessScript patillscript = NavigationController.getInstance().getMyFacesContext().getPatillscript();
 		if(patillscript!=null){
 			//if(patillscript.isExpScript())
 				this.workingDDX = patillscript.getStageForAction();
@@ -187,9 +187,9 @@ public class RelationDiagnosis extends Relation implements Serializable {
 	public void setWorkingDDX(int workingDDX) {this.workingDDX = workingDDX;}
 	
 	public String getColor(){		
-		boolean expEdit = NavigationController.getInstance().isExpEdit();
-		if(expEdit){ 
-			PatientIllnessScript learnerscript = new NavigationController().getCRTFacesContext().getPatillscript();
+		//boolean expEdit = NavigationController.getInstance().isExpEdit();
+		PatientIllnessScript learnerscript = new NavigationController().getMyFacesContext().getPatillscript();
+		if(learnerscript!=null && learnerscript.isExpScript()){ 			
 			if(isRuledOutBool() && ruledOut<=learnerscript.getStage()) return COLOR_RULEDOUT;
 			return COLOR_DEFAULT;//"#000000";
 		}
@@ -255,7 +255,8 @@ public class RelationDiagnosis extends Relation implements Serializable {
 	
 	public int getExpCssClass(){		
 		//if the current script is created as an expert script we display the colors only from the stage on in which they have been assigned.
-		PatientIllnessScript learnerscript = NavigationController.getInstance().getCRTFacesContext().getPatillscript();
+		PatientIllnessScript learnerscript = NavigationController.getInstance().getMyFacesContext().getPatillscript();
+		if(learnerscript.isExpScript()) return -1;
 		Graph g = NavigationController.getInstance().getCRTFacesContext().getGraph();
 		MultiVertex mv = g.getVertexByIdAndType(this.getListItemId(), Relation.TYPE_DDX);
 		if(mv==null || mv.getExpertVertex()==null) return -1;
@@ -270,9 +271,10 @@ public class RelationDiagnosis extends Relation implements Serializable {
 	}
 	
 	public int getCssClass(){
-		boolean expEdit = NavigationController.getInstance().isExpEdit();
-		if(expEdit){
-			PatientIllnessScript learnerscript = new NavigationController().getCRTFacesContext().getPatillscript();
+		//boolean expEdit = NavigationController.getInstance().isExpEdit();
+		PatientIllnessScript learnerscript = NavigationController.getInstance().getMyFacesContext().getPatillscript();
+
+		if(learnerscript!=null && learnerscript.isExpScript()){
 			if(isFinalDDX() && finalDiagnosis<=learnerscript.getStage()) return TIER_FINAL;
 			if(isWorkingDDXBool() && workingDDX<=learnerscript.getStage()) return TIER_WORKINGDDX;
 			if(isRuledOutBool() && ruledOut<=learnerscript.getStage()) return TIER_RULEDOUT;
@@ -326,7 +328,7 @@ public class RelationDiagnosis extends Relation implements Serializable {
 	 * @return
 	 */
 	public String getExp(){ 
-		Graph g = new NavigationController().getCRTFacesContext().getGraph();
+		Graph g = NavigationController.getInstance().getMyFacesContext().getGraph();
 		MultiVertex mvertex = g.getVertexByIdAndType(this.getListItemId(), Relation.TYPE_DDX);
 		if(mvertex==null || mvertex.getLearnerVertex()==null) return ""; //should not happen
 		//only return something if learner has chosen it as a final ddx:
@@ -346,6 +348,7 @@ public class RelationDiagnosis extends Relation implements Serializable {
 	 * is currently an expert script edited? If so we display a link to mark a diagnosis as final.
 	 * @return
 	 */
-	public boolean getIsExpEdit(){return NavigationController.getInstance().isExpEdit();}
+	public boolean getIsExpEdit(){
+		return NavigationController.getInstance().getMyFacesContext().getPatillscript().isExpScript();}
 
 }

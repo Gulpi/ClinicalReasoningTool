@@ -48,11 +48,11 @@ public class ChgConnectionAction {
 	}
 	
 	private void updateGraph(Connection cnx) {
-		Graph graph = new NavigationController().getCRTFacesContext().getGraph();
-		MultiEdge edge = graph.getEdgeByCnxId(IllnessScriptInterface.TYPE_LEARNER_CREATED, cnx.getId());
+		Graph g = NavigationController.getInstance().getMyFacesContext().getGraph();
+		MultiEdge edge = g.getEdgeByCnxId(IllnessScriptInterface.TYPE_LEARNER_CREATED, cnx.getId());
 		edge.changeExplicitWeight(cnx.getWeight());
 		//graph.addExplicitEdge(cnx, patIllScript, IllnessScriptInterface.TYPE_LEARNER_CREATED);
-		CRTLogger.out(graph.toString(), CRTLogger.LEVEL_TEST);	
+		CRTLogger.out(g.toString(), CRTLogger.LEVEL_TEST);	
 	}
 	
 	/*private void triggerScoringAction(long cnxId){

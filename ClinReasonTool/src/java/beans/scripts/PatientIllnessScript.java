@@ -484,6 +484,10 @@ public class PatientIllnessScript extends Beans/*extends Node*/ implements Illne
 	public void updateStage(String stage){
 		if(StringUtils.isNumeric(stage)){
 			int stageNum = Integer.valueOf(stage);
+			//at the next stage we disable the display of the help dialog:
+			if(stageNum==2){
+				NavigationController.getInstance().getCRTFacesContext().getUser().getUserSetting().setOpenHelpOnLoad(false);
+			}
 			this.stage = stageNum; //we always update the stage
 			if(stageNum > this.currentStage){
 				//now done for each action, because otherwise we have no accurate score if user just quits...

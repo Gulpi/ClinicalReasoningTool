@@ -137,8 +137,8 @@ public class DelConnectionAction /*implements DelAction*/{
 	}
 	
 	private void updateGraph(Connection connToDel){
-		Graph graph = new NavigationController().getCRTFacesContext().getGraph();
-		graph.removeExplicitEdgeWeight(connToDel.getId());
-		CRTLogger.out(graph.toString(), CRTLogger.LEVEL_TEST);
+		Graph g = NavigationController.getInstance().getMyFacesContext().getGraph();
+		g.removeExplicitEdgeWeight(connToDel.getId());
+		CRTLogger.out(g.toString(), CRTLogger.LEVEL_TEST);
 	}
 }

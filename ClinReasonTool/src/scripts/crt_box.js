@@ -19,10 +19,10 @@
 /**
  * a problem is added to the list of the already added problems:
  **/
-function addProblem(problemId, name){
+function addProblem(problemId, name, typedinName){
 	clearErrorMsgs();
 	var prefix = $("#fdg_prefix").val();
-	if(name!="") sendAjax(problemId, problemCallBack, "addProblem", prefix, name);
+	if(name!="") sendAjax(problemId, problemCallBack, "addProblem", prefix, typedinName);
 }
 
 
@@ -83,9 +83,9 @@ function togglePeersFdg(){
 /*
  * a diagnosis is added to the list of the already added diagnoses:
  */
-function addDiagnosis(diagnId, name){
+function addDiagnosis(diagnId, name, typedinName){
 	clearErrorMsgs();
-	if(name!="") sendAjax(diagnId, diagnosisCallBack, "addDiagnosis", name);
+	if(name!="") sendAjax(diagnId, diagnosisCallBack, "addDiagnosis", name, typedinName);
 		//sendAjaxUrlHtml(diagnId, diagnosisAddCallBack, "addDiagnosis", name, "ddxbox2.xhtml");
 }
 
@@ -432,9 +432,9 @@ function initSubmittedDialog(){
 /*
  * a management item is added to the list of the already added items:
  */
-function addManagement(mngId, name){
+function addManagement(mngId, name, typedinName){
 	clearErrorMsgs();
-	if(name!="") sendAjax(mngId, managementCallBack, "addMng", name);
+	if(name!="") sendAjax(mngId, managementCallBack, "addMng", name, typedinName);
 }
 
 function delManagement(id){
@@ -494,9 +494,9 @@ function togglePeersMng(){
 /*
  * a test is added to the list of the already added tests:
  */
-function addTest(testId, name){
+function addTest(testId, name, typedinName){
 	clearErrorMsgs();
-	if(name!="") sendAjax(testId, testCallBack, "addTest", name);
+	if(name!="") sendAjax(testId, testCallBack, "addTest", name, typedinName);
 }
 
 function delTest(id){
@@ -795,6 +795,24 @@ function openHelp(){
 	$("#jdialogHelp").load("help/index_"+lang+".template");
 	//$("#help" ).dialog.html(template);
 	$('.ui-tooltip').remove();
-	$("#jdialogHelp" ).dialog( "open" );
+	
+	$("#jdialogHelp" ).dialog( "open" ).dialog("widget").css("visibility", "hidden");
+	
+	$("#helpicon").effect("transfer", { //opening effect to show where help icon is:
+        to: $("#jdialogHelp").dialog("widget"),
+        className: "ui-effects-transfer"
+    	}, 500, function () {
+        $("#jdialogHelp").dialog("widget").css("visibility", "visible");
+    });
+	
+	//var helpoptions = { to: "#jdialogHelp" , className: "ui-effects-transfer" }
+	//$( "#helpicon" ).effect( "transfer", helpoptions, 500, openHelpCallback );
+}
+
+function closeHelpDialog(){
+	
+}
+
+function openHelpCallback() {
 	$("#jdialogHelp").show();
 }

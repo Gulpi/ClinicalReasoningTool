@@ -32,7 +32,7 @@ public abstract class ChgAction implements Scoreable{
 		ScoreBean score = new ScoringController().getScoreBeanForItem(type, probToChg.getListItemId());
 		//change in RelationProblem & Vertex:
 		
-		Graph g = new NavigationController().getCRTFacesContext().getGraph();
+		Graph g = NavigationController.getInstance().getCRTFacesContext().getGraph();
 		MultiVertex expVertex = g.getVertexByIdAndType(score.getExpItemId(), type);
 		MultiVertex learnerVertexOld = g.getVertexByIdAndType(probToChg.getListItemId(), type);
 		if(!expVertex.equals(learnerVertexOld)){ //then it is NOT a synonyma, but a hierarchy node

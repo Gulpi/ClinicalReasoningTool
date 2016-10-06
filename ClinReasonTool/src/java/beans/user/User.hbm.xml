@@ -13,6 +13,8 @@
 		</id>	
 		<property name="extUserId" column="user_id_ext" type="string" />
 		<property name="systemId" column="system_id" type="int" />
+		<property name="userName" column="username" type="string" />
+		<property name="password" column="password" type="string" />
 
 		
 </class>

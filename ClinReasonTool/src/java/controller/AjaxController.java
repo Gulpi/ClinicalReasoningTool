@@ -61,7 +61,7 @@ public class AjaxController {
 	    	String patillscriptId = reqParams.get(REQPARAM_SCRIPT);
 	    	if(patillscript==null && patillscriptId!=null){ //could be a timeout 
 	    		//long patIllScriptId = Long.parseLong(patillscriptId);
-	    		new NavigationController().getCRTFacesContext().initSession();
+	    		new NavigationController().getMyFacesContext().initSession();
 	    	}
 	    	if(patillscript==null || patillscriptId==null|| Long.parseLong(patillscriptId)!=patillscript.getId()){
 	    		
@@ -70,7 +70,8 @@ public class AjaxController {
 	    	}
 	    	String methodName = reqParams.get("type");
 	    	String idStr = reqParams.get("id");
-	    	String nameStr = reqParams.get("name");
+	    	String nameStr = reqParams.get("name"); //the list entry
+	    	String orgNameStr = reqParams.get("orgname"); //what the learner has typed in
 	    	String x = reqParams.get("x"); //either x-position of an item or startEpId
 	    	String y = reqParams.get("y"); //either y-position of an item or targetEpId
 	    	patillscript.updateStage(reqParams.get(REQPARAM_STAGE));

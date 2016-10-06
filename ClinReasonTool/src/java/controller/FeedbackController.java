@@ -49,7 +49,7 @@ public class FeedbackController {
 	 * @return
 	 */
 	public String getExpItemLabel(int type, long itemId){
-		ScoreContainer scoreContainer = new NavigationController().getCRTFacesContext().getScoreContainer();
+		ScoreContainer scoreContainer = NavigationController.getInstance().getMyFacesContext().getScoreContainer();
 		if (scoreContainer==null) return ""; //no icon
 		ScoreBean scoreBean = scoreContainer.getScoreBeanByTypeAndItemId(type,itemId);
 		if(scoreBean==null || scoreBean.getExpItemId()<=0) return "";

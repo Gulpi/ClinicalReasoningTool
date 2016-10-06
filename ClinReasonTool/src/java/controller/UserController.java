@@ -8,7 +8,9 @@ public class UserController {
 	
 	private User createAndSaveUser(int systemId, String extUserId){
 		User u = new User(systemId, extUserId);
+		u.getUserSetting().initNewUser();
 		new DBUser().saveAndCommit(u);
+		
 		return u;
 	}
 	
@@ -18,4 +20,5 @@ public class UserController {
 		if(u!=null) return u;
 		return createAndSaveUser(systemId, extUserId);
  	}
+	
 }

@@ -31,7 +31,7 @@ public class Graph extends DirectedWeightedMultigraph<MultiVertex, MultiEdge> {
 	private String vpId; //e.g. VPId,...
 	//private long userId;
 	private long expertPatIllScriptId;
-	private boolean expEdit = NavigationController.getInstance().isExpEdit();
+	private boolean expEdit = false; //NavigationController.getInstance().isExpEdit();
 	//private boolean peersConsidered = false; //we have to get this from a property file
 	/**
 	 * How many peers have completed this patientIllnessScript? If we have enough we can include the peers into 
@@ -57,7 +57,7 @@ public class Graph extends DirectedWeightedMultigraph<MultiVertex, MultiEdge> {
 	public int getPeerNums() {return peerNums;}
 	public void setPeerNums(int peerNums) {this.peerNums = peerNums;}
 	public String getVpId() {return vpId;}
-
+	public void setExpEdit(boolean expEdit){ this.expEdit = expEdit;}
 
 	public void addIllScriptId(long id){
 		if(illScriptIds==null) illScriptIds = new ArrayList<Long>();

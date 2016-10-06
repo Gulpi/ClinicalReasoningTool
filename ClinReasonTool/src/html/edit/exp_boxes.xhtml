@@ -6,7 +6,7 @@
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:f="http://java.sun.com/jsf/core"
       xmlns:v="urn:schemas-microsoft-com:vml">
- <f:view locale="#{crtContext.locale}">     
+ <f:view locale="#{adminContext.locale}">     
 
 <head>
 <f:event type="preRenderView" listener="#{facesContext.externalContext.response.setHeader('Cache-Control', 'no-cache, no-store')}" />
@@ -34,20 +34,19 @@
  
 <script language="JavaScript">
 
-var test = "#{crtContext.initSession}";
 var hideCnxTitle = "#{prop['cnx.hide']}";
 var showCnxTitle = "#{prop['cnx.show']}";
 var submitDialogTitle = "#{prop['submit.dialog.title']}";
 var chgCnxDialogTitle = "#{prop['cnx.dialog.title']}";
 
 var msg2="Please connect the hypotheses with the findings";
-var scriptId = "#{crtContext.patillscript.id}";
-var listUrl="../jsonp_#{crtContext.patillscript.locale}.json";
-var scriptlang = "#{crtContext.patillscript.locale}";
+var scriptId = "#{adminContext.patillscript.id}";
+var listUrl="../jsonp_#{adminContext.patillscript.locale}.json";
+var scriptlang = "#{adminContext.patillscript.locale}";
 if(scriptlang=="de") listUrl = "../jsonp_de.json";
-var lang="#{crtContext.locale}";
-var currentStage = #{crtContext.patillscript.stage};
-var currentStageScript = "#{crtContext.patillscript.currentStageWithUpdate}";
+var lang="#{adminContext.locale}";
+var currentStage = #{adminContext.patillscript.stage};
+var currentStageScript = "#{adminContext.patillscript.currentStageWithUpdate}";
 var active;
 var instance;
 var item_arr = new Array();
@@ -59,7 +58,7 @@ $(function() {
 	//$("#jdialogError").hide();
 	$("#connContext").hide();
 	$("#summStText").on('change',function(){
-		saveSummSt('#{crtContext.patillscript.summStId}');
+		saveSummSt('#{adminContext.patillscript.summStId}');
 	 });
 	$(".chgstage").on('change',function(){
 		chgStageItem(this);
@@ -106,21 +105,6 @@ jsPlumb.ready(function () {
     // suspend drawing and initialise.
     instance.batch(function () {
 
-        // bind to connection/connectionDetached events, and update the list of connections on screen.
-       /* instance.bind("connection", function (info, originalEvent) {
-            updateConnections(info.connection);
-        });
-        instance.bind("connectionDetached", function (info, originalEvent) {
-            updateConnections(info.connection, true);
-        });
-
-        instance.bind("connectionMoved", function (info, originalEvent) {
-            //  only remove here, because a 'connection' event is also fired.
-            // in a future release of jsplumb this extra connection event will not
-            // be fired.
-            updateConnections(info.connection, true);
-        });*/
-
         instance.bind("click", function (component, originalEvent) {
         	//todo: ignore expert cnxs....
         	var id = component.id;
@@ -166,16 +150,17 @@ jsPlumb.ready(function () {
 	
 });
 
-item_arr = new Array();
+var item_arr = new Array();
+var ajaxUrl = "/crt/src/html/edit/tabs_ajax.xhtml";
 
 </script>
 </head>
-<body style="font-family:arial;" data-demo-id="draggableConnectors" data-library="dom"><!-- test: #{crtContext.test}-->
+<body style="font-family:arial;" data-demo-id="draggableConnectors" data-library="dom">
 <div>
-ScriptId:  #{crtContext.patillscript.id}<br/>
-VPId: <input type="text" value="#{crtContext.patillscript.vpId}"></input><br/>
-System <select name="system"><option value="">Casus (uni)</option><option value="">Casus (MedU)</option></select><br/>
-Stage: <span id="stageSpan">#{crtContext.patillscript.stage} </span>
+ScriptId:  #{adminContext.patillscript.id}<br/>
+VPId: <input type="text" value="#{adminContext.patillscript.vpId}"></input><br/>
+System <select name="system"><option value="">Casus (uni)</option></select><br/>
+Stage: <span id="stageSpan">#{adminContext.patillscript.stage} </span>
 <a href="javascript:chgStage(-1,'exp_boxes.xhtml');">previous stage</a> <a href="javascript:chgStage(1,'exp_boxes.xhtml');">next stage</a>
 
 </div>
@@ -199,7 +184,7 @@ Stage: <span id="stageSpan">#{crtContext.patillscript.stage} </span>
 		  			<input class="f_text" style="width:155px;" id="problems" placeholder="Search..." title="Please add any problems, findings, exposures, or risk factors you consider as relevant"></input></div>
 						<h:form id="probform">
 						<h:panelGroup>
-						   <ui:repeat id="repeatprob" value="#{crtContext.patillscript.problemsStage}" var="prob" varStatus="status">
+						   <ui:repeat id="repeatprob" value="#{adminContext.patillscript.problemsStage}" var="prob" varStatus="status">
 						   		<ui:include src="../probbox.xhtml" />
 	    					</ui:repeat>	    						    					
 	    				</h:panelGroup>
@@ -219,7 +204,7 @@ Stage: <span id="stageSpan">#{crtContext.patillscript.stage} </span>
 		  			<div class="search boxchild"><input class="f_text" id="ddx" title="Please add your differentials"></input></div>
 			  			<h:form id="ddxform">
 						<h:panelGroup >
-							<ui:repeat value="#{crtContext.patillscript.diagnosesStage}" var="ddx" varStatus="status">
+							<ui:repeat value="#{adminContext.patillscript.diagnosesStage}" var="ddx" varStatus="status">
 								<ui:include src="../ddxbox.xhtml" />
 	     					</ui:repeat>					
 	    				</h:panelGroup>
@@ -237,11 +222,9 @@ Stage: <span id="stageSpan">#{crtContext.patillscript.stage} </span>
 		  			<h:form id="testform">
 		  			<h:panelGroup>
 					
-						<ui:repeat value="#{crtContext.patillscript.testsStage}" var="test" varStatus="status">
+						<ui:repeat value="#{adminContext.patillscript.testsStage}" var="test" varStatus="status">
 							<ui:include src="../testbox.xhtml" />
      					</ui:repeat>				
-						<!-- <li id="selds_1">Chest X-ray <select class="f_select"><option value="-1">scanning</option><option>r/c Pneumonia</option></select></li>-->
-					<!--  <div id="jsonTestsMap" style="visibility:hidden">#{crtContext.patillscript.testsJson}</div>-->
     				</h:panelGroup>
     				     <h:commandButton id="hiddenTestButton" value="RenderSomething" style="visibility:hidden">
     						<f:ajax render="@form" onevent="updateTestCallback"></f:ajax>
@@ -258,7 +241,7 @@ Stage: <span id="stageSpan">#{crtContext.patillscript.stage} </span>
 	  			<h:form id="mngform">
 	  			<h:panelGroup>
 	
-					<ui:repeat value="#{crtContext.patillscript.mngsStage}" var="mng" varStatus="status">
+					<ui:repeat value="#{adminContext.patillscript.mngsStage}" var="mng" varStatus="status">
 						<ui:include src="../mngbox.xhtml" />
 	   				</ui:repeat>				
 	  				</h:panelGroup>
@@ -273,20 +256,20 @@ Stage: <span id="stageSpan">#{crtContext.patillscript.stage} </span>
 		 	<div class="title">#{prop['summst']}
 		 	</div>
 		 	 <div class="node-collapse"></div>
-		 	 <textarea style="display:none;" id="summStTextHidden" cols="65" rows="3">#{crtContext.patillscript.summSt.text}</textarea>
-				<textarea class="f_textarea boxchild" name="summSt" id="summStText" cols="65" rows="3">#{crtContext.patillscript.summStStage.text}</textarea><br/>
+		 	 <textarea style="display:none;" id="summStTextHidden" cols="65" rows="3">#{adminContext.patillscript.summSt.text}</textarea>
+				<textarea class="f_textarea boxchild" name="summSt" id="summStText" cols="65" rows="3">#{adminContext.patillscript.summStStage.text}</textarea><br/>
 			 	<span class="errormsg" id="msg_sumstform"></span>
 		</div>
 	</div>
 </div>
-<div id="jsonConns" style="display:none;">#{crtContext.graph.jsonConns}</div> 
+<div id="jsonConns" style="display:none;">#{adminContext.graph.jsonConns}</div> 
 
 <div id="connContext">
 	<ui:include src="../cnxchange.xhtml" />
 </div>
 
 <div id="allitems" style="float:right;width:30%;">
-	<ui:repeat value="#{crtContext.graph.allVertices}" var="nodes" varStatus="status">
+	<ui:repeat value="#{adminContext.graph.allVertices}" var="nodes" varStatus="status">
 		<ui:include src="items_exp.xhtml" />
 	</ui:repeat>				
 </div>

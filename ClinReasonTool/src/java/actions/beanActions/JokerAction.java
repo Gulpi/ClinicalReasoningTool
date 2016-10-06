@@ -37,28 +37,28 @@ public class JokerAction {
 	 * Add a finding the expert has added 
 	 */
 	private void addFdgJoker(){
-		Graph g = new NavigationController().getCRTFacesContext().getGraph();
+		Graph g = NavigationController.getInstance().getMyFacesContext().getGraph();
 		List<MultiVertex> expsVertices = g.getVerticesByTypeAndStageExpOnly(Relation.TYPE_PROBLEM, patIllScript.getCurrentStage());
 		MultiVertex jokerVertex = chooseItem(expsVertices);
 		if(jokerVertex==null){ //no more fdgs to be added at this stage
 			new ErrorMessageContainer().addErrorMessage("probform", IntlConfiguration.getValue("findings.nojoker"), "", FacesMessage.SEVERITY_ERROR);
 			return;
 		}
-		new AddProblemAction(patIllScript).addRelation(jokerVertex.getExpertVertex().getListItemId(), jokerVertex.getExpertVertex().getPrefix(), -1, -1, -1, true);
+		new AddProblemAction(patIllScript, jokerVertex.getExpertVertex().getPrefix()).addRelation(jokerVertex.getExpertVertex().getListItem()/*, jokerVertex.getExpertVertex().getPrefix()*/, -1, -1, -1, true);
 	}
 	
 	/**
 	 * Add a differential the expert has added 
 	 */
 	private void addDDXJoker(){
-		Graph g = new NavigationController().getCRTFacesContext().getGraph();
+		Graph g = NavigationController.getInstance().getMyFacesContext().getGraph();
 		List<MultiVertex> expsVertices = g.getVerticesByTypeAndStageExpOnly(Relation.TYPE_DDX, patIllScript.getCurrentStage());
 		MultiVertex jokerVertex = chooseItem(expsVertices);
 		if(jokerVertex==null){ //no more fdgs to be added at this stage
 			new ErrorMessageContainer().addErrorMessage("ddxform", IntlConfiguration.getValue("ddx.nojoker"), "", FacesMessage.SEVERITY_ERROR);
 			return;
 		}
-		new AddDiagnosisAction(patIllScript).addRelation(jokerVertex.getExpertVertex().getListItemId(), jokerVertex.getExpertVertex().getPrefix(), -1, -1, -1, true);
+		new AddDiagnosisAction(patIllScript).addRelation(jokerVertex.getExpertVertex().getListItem()/*, jokerVertex.getExpertVertex().getPrefix()*/, -1, -1, -1, true);
 	}
 	
 	/**
@@ -72,21 +72,21 @@ public class JokerAction {
 			new ErrorMessageContainer().addErrorMessage("testform", IntlConfiguration.getValue("tests.nojoker"), "", FacesMessage.SEVERITY_ERROR);
 			return;
 		}
-		new AddTestAction(patIllScript).addRelation(jokerVertex.getExpertVertex().getListItemId(), jokerVertex.getExpertVertex().getPrefix(), -1, -1, -1, true);
+		new AddTestAction(patIllScript).addRelation(jokerVertex.getExpertVertex().getListItem(), /*jokerVertex.getExpertVertex().getPrefix(),*/ -1, -1, -1, true);
 	}
 	
 	/**
 	 * Add a management option the expert has added 
 	 */
 	private void addMngJoker(){
-		Graph g = new NavigationController().getCRTFacesContext().getGraph();
+		Graph g = NavigationController.getInstance().getCRTFacesContext().getGraph();
 		List<MultiVertex> expsVertices = g.getVerticesByTypeAndStageExpOnly(Relation.TYPE_MNG, patIllScript.getCurrentStage());
 		MultiVertex jokerVertex = chooseItem(expsVertices);
 		if(jokerVertex==null){ //no more fdgs to be added at this stage
 			new ErrorMessageContainer().addErrorMessage("mngform", IntlConfiguration.getValue("mng.nojoker"), "", FacesMessage.SEVERITY_ERROR);
 			return;
 		}
-		new AddMngAction(patIllScript).addRelation(jokerVertex.getExpertVertex().getListItemId(), jokerVertex.getExpertVertex().getPrefix(), -1, -1, -1, true);
+		new AddMngAction(patIllScript).addRelation(jokerVertex.getExpertVertex().getListItem()/*, jokerVertex.getExpertVertex().getPrefix()*/, -1, -1, -1, true);
 	}
 	
 	

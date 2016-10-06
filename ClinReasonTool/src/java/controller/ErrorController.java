@@ -62,7 +62,7 @@ public class ErrorController {
 	 * @return
 	 */
 	private void checkAvailabilityError(){
-		PatIllScriptContainer cont = new NavigationController().getCRTFacesContext().getScriptContainer();
+		PatIllScriptContainer cont = NavigationController.getInstance().getCRTFacesContext().getScriptContainer();
 		if(cont==null || cont.getScriptsOfUser()==null) return; //no previous scripts
 		List<PatientIllnessScript> lastScripts = cont.getLastCompletedScripts(AvailabilityBias.NUM_SCRIPTS, null);
 	}

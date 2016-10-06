@@ -54,7 +54,7 @@ public class DelEpiAction implements DelAction{
 	}
 	
 	public void updateGraph(Relation rel){
-		Graph graph = new NavigationController().getCRTFacesContext().getGraph();
+		Graph graph = NavigationController.getInstance().getMyFacesContext().getGraph();
 		MultiVertex vertex = graph.getVertexByIdAndType(rel.getListItemId(), Relation.TYPE_EPI);
 		if(vertex==null) return; //Should not happen
 		vertex.setLearnerVertex(null);

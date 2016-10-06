@@ -7,6 +7,8 @@ import org.hibernate.Session;
 import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
+import org.hibernate.ejb.criteria.expression.function.TrimFunction;
+
 import model.ListItem;
 import model.Synonym;
 import util.CRTLogger;
@@ -29,6 +31,19 @@ public class DBList extends DBClinReason {
     	criteria.add(Restrictions.eq("item_id", new Long(id)));
     	ListItem li = (ListItem) criteria.uniqueResult();
     	s.close();
+    	return li;
+    }
+    
+    /**
+     * Learner has chosen to add his/her own entry, so we add this entry marked as "PRIVATE" to the list.
+     * @param entry
+     * @param loc
+     * @return
+     */
+    public ListItem saveNewEntry(String entry, Locale loc){
+    	if(entry==null || entry.trim().equals("")) return null;
+    	ListItem li = new ListItem(loc.getLanguage(), ListItem.TYPE_OWN, entry.trim());
+    	saveAndCommit(li);
     	return li;
     }
     
@@ -61,6 +76,7 @@ public class DBList extends DBClinReason {
     	criteria.add(Restrictions.in("itemType", types));
     	criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
     	criteria.add(Restrictions.eq("language", loc));
+    	criteria.add(Restrictions.ne("type", ListItem.TYPE_OWN));
     	criteria.addOrder(Order.asc("name"));
     	List l = criteria.list();
     	s.close();

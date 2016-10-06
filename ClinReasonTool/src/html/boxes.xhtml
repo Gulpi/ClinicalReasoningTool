@@ -36,6 +36,9 @@
 <script language="JavaScript">
 
 var test = "#{crtContext.initSession}";
+var displayOwnEntryWarn = "#{crtContext.user.userSetting.displayOwnEntryWarn}";
+var displayOwnEntryWarnMsg = "#{prop['list.ownentrywarn']}";
+var openHelpOnLoad = "#{crtContext.user.userSetting.openHelpOnLoad}";
 var msg2="Please connect the hypotheses with the findings";
 //if learner has >= this score for final ddx submit, the correct dialog will be displayed (0.5)
 var minScoreCorrect = "#{crtContext.scoreForAllowReSubmit}"; 
@@ -68,6 +71,7 @@ var showSolutionStage = "#{crtContext.patillscript.showSolution}";
 var instance;
 var item_arr = new Array();
 var exp_arr = new Array();
+var ajaxUrl = "/crt/src/html/tabs_ajax.xhtml";
 var fireAddConnection = true; //false during re-init of exp cnxs, otherwise new cnxs are stored!
 $(function() {
     postEnforceFinalDDXSubmission(submitted/*, myStage, maxSubmittedStage*/);
@@ -142,13 +146,23 @@ $(function() {
 		height: "auto",
 		position: { my: "right-20 top+100", at: "right-20 top+100", of: window }
 	});
-	
 	$("#jdialogHelp").dialog({
 		autoOpen: false,
 		modal: true,
 		width: "auto",
-		height: "auto"
+		height: "auto",
+		close: function (event) { //closing effect to show where help button is
+	        $(this).dialog("widget").effect("transfer", {
+	            to: $("#helpicon"),
+	            className: "ui-effects-transfer"
+	        }, 500);
+	    }
 	});
+	
+	if(openHelpOnLoad=="true"){
+		 openHelp();
+		 openHelpOnLoad=="false";
+	}
 
 	$( this ).tooltip({
       	items: "[mytooltip]",
@@ -239,7 +253,7 @@ item_arr = new Array();
 	</div>
 	<span class="help">
 		<a href="https://youtu.be/sTml6i0jLkI" target="new" style="float:right;top:5px;"><i class="fa fa-film" style="width:24px;" mytooltip="#{prop['help.movie']}"></i></a>
-		<a href="javascript:openHelp();" style="float:right;top:5px;" ><i class="fa fa-question-circle " mytooltip="#{prop['help']}"></i></a></span>
+		<a href="javascript:openHelp();" style="float:right;top:5px;" id="helpicon"><i class="fa fa-question-circle " mytooltip="#{prop['help']}"></i></a></span>
 	
 	<!--  <a href="exp_stages.xhtml" target="new">exp dev</a>-->
 	<!--  <a href="alert('not yet available, will show the development of the experts script during the case');">exp dev</a>-->

@@ -8,9 +8,15 @@ import org.hibernate.criterion.*;
 import beans.user.User;
 
 
+/**
+ * All statements concerning a User object.
+ * @author ingahege
+ *
+ */
 public class DBUser extends DBClinReason{
 
     public User selectUserByExternalId(String extUserId, int systemId){
+    	if(extUserId==null || extUserId.trim().equals("")) return null;
     	Session s = instance.getInternalSession(Thread.currentThread(), false);
     	Criteria criteria = s.createCriteria(User.class,"User");
     	criteria.add(Restrictions.eq("extUserId", extUserId));
@@ -20,9 +26,18 @@ public class DBUser extends DBClinReason{
     }
     
     public User selectUserById(long userId){
+    	if(userId<0) return null;
     	Session s = instance.getInternalSession(Thread.currentThread(), false);
     	Criteria criteria = s.createCriteria(User.class,"User");
     	criteria.add(Restrictions.eq("userId", new Long(userId)));
+    	return (User) criteria.uniqueResult();
+    }
+    
+    public User selectUserByLogin(String login){
+    	if(login==null || login.trim().equals("")) return null;
+    	Session s = instance.getInternalSession(Thread.currentThread(), false);
+    	Criteria criteria = s.createCriteria(User.class,"User");
+    	criteria.add(Restrictions.eq("userName", login));
     	return (User) criteria.uniqueResult();
     }
 

@@ -38,7 +38,7 @@ public class TypeAheadBean {
 	
 	public TypeAheadBean(long finalItem, int type){
 		this.finalItemId = finalItem;
-		PatientIllnessScript patillscript = NavigationController.getInstance().getPatientIllnessScript();
+		PatientIllnessScript patillscript = NavigationController.getInstance().getCRTFacesContext().getPatillscript();
 		if(patillscript!=null){
 			this.userId = patillscript.getUserId();
 			this.scriptId = patillscript.getId();

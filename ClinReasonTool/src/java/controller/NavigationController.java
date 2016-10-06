@@ -1,17 +1,15 @@
 package controller;
 
 import java.io.Serializable;
-import java.util.Locale;
 
 import javax.enterprise.context.RequestScoped;
-import javax.enterprise.context.SessionScoped;
 import javax.faces.bean.ManagedBean;
-import javax.faces.context.FacesContext;
-import javax.faces.context.FacesContextWrapper;
+import javax.faces.context.*;
 
 import application.AppBean;
 import beans.*;
 import beans.scripts.*;
+import util.*;
 /**
  * handles the navigation between pages (e.g. overview page and single illnessscript page)
  * when a new page is opened we have to make sure that the CRTFacesContext is up-to-date
@@ -34,23 +32,6 @@ public class NavigationController implements Serializable {
 		removePatIllScript();	
 		return "portfolio";
 	}
-	
-	/**
-	 * User has clicked on a link to open a patientIllnessScript, a sessionId has to be included as a request param
-	 * called from AjaxController
-	 * @return
-	 */
-	/*public String openPatIllScript(){
-		CRTFacesContext context = getCRTFacesContext(); 
-		if(context!=null){
-			removePatIllScript();
-			context.initSession();
-		}
-		//TODO error handling
-		return "prototype_fs";
-	}*/
-	
-	//public String openPatIllScript(String s){ return openPatIllScript(); }
 		
 	/**
 	 * User has clicked on a link to open and edit an expert's patientIllnessScript
@@ -58,20 +39,20 @@ public class NavigationController implements Serializable {
 	 * @return
 	 */
 	public String openExpPatIllScript(){
-		CRTFacesContext context = getCRTFacesContext(); 
+		AdminFacesContext context = getAdminFacesContext(); 
 		if(context!=null){
-			removePatIllScript();
-			context.initExpEditSession();
+			context.reset();
+			context.initSession();
 		}
 		//TODO error handling
 		return "exp_boxes";
 	}
 	
 	public String openViewExpPatIllScript(){
-		CRTFacesContext context = getCRTFacesContext(); 
+		AdminFacesContext context = getAdminFacesContext(); 
 		if(context!=null){
-			removePatIllScript();
-			context.initExpEditSession();
+			context.reset();
+			context.initSession();
 		}
 		//TODO error handling
 		return "/src/html/view/exp_boxes_view";
@@ -89,33 +70,45 @@ public class NavigationController implements Serializable {
 	 * we have to remove the current patIllScript (if there is one) and sessionId from the externalContext
 	 */
 	public void removePatIllScript(){
-		CRTFacesContext crtFacesContext = getCRTFacesContext();
-		if(crtFacesContext!=null && crtFacesContext.getPatillscript()!=null){
-			notifyLog(crtFacesContext.getPatillscript());
-			crtFacesContext.reset();
+		MyFacesContext myFacesContext = getMyFacesContext();
+		if(myFacesContext!=null && myFacesContext.getPatillscript()!=null){
+			notifyLog(myFacesContext.getPatillscript());
+			myFacesContext.reset();
 		}
 	}
 	
 	public CRTFacesContext getCRTFacesContext(){
-		CRTFacesContext cnxt =  (CRTFacesContext) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get(CRTFacesContext.CRT_FC_KEY);
-		/*if(cnxt!=null)*/ return cnxt;
+		return (CRTFacesContext) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get(CRTFacesContext.CRT_FC_KEY);
 	}
 	
-	public PatientIllnessScript getPatientIllnessScript(){
+	public MyFacesContext getMyFacesContext(){
+		MyFacesContext learnerContext = (MyFacesContext) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get(CRTFacesContext.CRT_FC_KEY);
+		if(learnerContext!=null) return learnerContext;
+		MyFacesContext adminContext = (MyFacesContext) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get(AdminFacesContext.CRT_FC_KEY);
+		return adminContext;
+	}
+	
+	public AdminFacesContext getAdminFacesContext(){
+		AdminFacesContext cnxt =  (AdminFacesContext) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get(AdminFacesContext.CRT_FC_KEY);
+		return cnxt;
+	}
+	
+	
+	/*public PatientIllnessScript getPatientIllnessScript(){
 		CRTFacesContext cnxt = getCRTFacesContext();
 		if(cnxt!=null) return cnxt.getPatillscript();
 		return null;
-	}
+	}*/
 	
 	/**
 	 * Calls isExpEdit in CRTFacesContext to determine whether currently an expert script is edited
 	 * @return
 	 */
-	public boolean isExpEdit(){
+	/*public boolean isExpEdit(){
 		CRTFacesContext cnxt =  (CRTFacesContext) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get(CRTFacesContext.CRT_FC_KEY);
 		if(cnxt ==null) return false;
 		return cnxt.isExpEdit();
- 	}
+ 	}*/
 	
 	private void notifyLog(PatientIllnessScript patillscript){
 		LogEntry le = new LogEntry(LogEntry.CLOSEPATILLSCRIPT_ACTION, patillscript.getId(), patillscript.getId());
@@ -142,5 +135,16 @@ public class NavigationController implements Serializable {
 			if(cnxt.getPatillscript().getCurrentStage()<expScript.getMaxSubmittedStage()) return true; //final ddx not submitted, but maxStage not yet reached -> proceed allowed
 		}
 		return false;
+	}
+	
+	public void redirect(String url){
+		try{
+			ExternalContext externalContext = FacesContext.getCurrentInstance().getExternalContext();
+			//String tmp = externalContext.getRequestContextPath().;
+			FacesContext.getCurrentInstance().getExternalContext().redirect(url);
+		}
+		catch(Exception e){
+			CRTLogger.out("Exception: " + StringUtilities.stackTraceToString(e), CRTLogger.LEVEL_ERROR);
+		}
 	}
 }

@@ -4,10 +4,12 @@ import java.beans.Beans;
 import javax.faces.application.FacesMessage.Severity;
 
 import beans.relation.Relation;
+import model.ListItem;
 
 public interface AddAction{
 	public static final int ADD_TYPE_MAINITEM = 1;
 	public static final int ADD_TYPE_SYNITEM = 2;
+	public static final int ADD_TYPE_OWNITEM = 3;
 	public static final int MIN_Y = 10;
 	
 	void save(Beans b);
@@ -33,5 +35,5 @@ public interface AddAction{
 	void createErrorMessage(String summary, String details, Severity sev);
 	void updateGraph(Relation rel);
 	//void add(long id, String name, int x, int y);
-	void addRelation(long id, String name, int x, int y, long synId);
+	void addRelation(/*long id, String name*/ListItem li, int x, int y, long synId);
 }

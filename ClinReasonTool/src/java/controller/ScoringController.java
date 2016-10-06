@@ -63,7 +63,7 @@ public class ScoringController {
 	 * @return 0 (incorrect), 1 (correct), or 2 (partly correct)
 	 */
 	public int getExpScore(int type, long itemId){
-		ScoreContainer scoreContainer = new NavigationController().getCRTFacesContext().getScoreContainer();
+		ScoreContainer scoreContainer = NavigationController.getInstance().getMyFacesContext().getScoreContainer();
 		if (scoreContainer==null) return 0; //no icon
 		ScoreBean scoreBean = scoreContainer.getScoreBeanByTypeAndItemId(type,itemId);
 		if(scoreBean==null || scoreBean.getScoreBasedOnExp()<=0) return 0;
@@ -153,8 +153,10 @@ public class ScoringController {
 	 * @return
 	 */
 	public String getPeerPercentageForAction(int actionType, long patIllScriptId, long itemId){
-		CRTFacesContext crtContext = new NavigationController().getCRTFacesContext();
-		String vpId = crtContext.getPatillscript().getVpId();
+		PatientIllnessScript patIllScript = NavigationController.getInstance().getMyFacesContext().getPatillscript();
+		if(patIllScript==null || patIllScript.isExpScript()) return "";
+		String vpId = patIllScript.getVpId();
+		//String vpId = crtContext.getPatillscript().getVpId();
 		PeerBean peer = AppBean.getPeers().getPeerBeanByActionVpIdAndItemId(actionType, vpId, itemId);
 		PeerBean overallNum = AppBean.getPeers().getPeerBeanByIllScriptCreationActionAndVpId(vpId);
 		if(peer==null || overallNum==null) return "0%";

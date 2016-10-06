@@ -27,6 +27,7 @@ import controller.NavigationController;
 import controller.RelationController;
 import database.DBClinReason;
 import database.DBList;
+import model.ListItem;
 import model.Synonym;
 import properties.IntlConfiguration;
 import util.CRTLogger;
@@ -55,31 +56,32 @@ public class AddDiagnosisAction implements AddAction, Scoreable{
 	 * @param yStr
 	 */
 	public void add(String idStr, String name, String xStr, String yStr){ 
-		new RelationController().initAdd(idStr, name, xStr, yStr, this);
+		new RelationController().initAdd(idStr, name, xStr, yStr, this, patIllScript.getLocale());
 	}
 	
-	public void addRelation(long id, String name, int x, int y, long synId){
-		 addRelation(id, name, x, y, synId, false);
+	public void addRelation(/*long id, String name,*/ListItem li, int x, int y, long synId){
+		 addRelation(li, x, y, synId, false);
 
 	}
 	
-	public void addRelation(long id, String name, int x, int y, long synId, boolean isJoker){
+	public void addRelation(ListItem li, /*long id, String name2,*/ int x, int y, long synId, boolean isJoker){
 		if(patIllScript.getDiagnoses()==null) patIllScript.setDiagnoses(new ArrayList<RelationDiagnosis>());
-		RelationDiagnosis rel = new RelationDiagnosis(id, patIllScript.getId(), synId);		
+		RelationDiagnosis rel = new RelationDiagnosis(li.getItem_id(), patIllScript.getId(), synId);		
 		if(patIllScript.getDiagnoses().contains(rel)){
 			createErrorMessage(IntlConfiguration.getValue("ddx.duplicate"),"optional details", FacesMessage.SEVERITY_WARN);
 			return;
 		}
 		rel.setOrder(patIllScript.getDiagnoses().size());
 		rel.setStage(patIllScript.getCurrentStage());
-		if(new NavigationController().isExpEdit()){
+		if(patIllScript.isExpScript()){
 			rel.setStage(patIllScript.getStage());
 		}
 		if(x<0 && y<0) rel.setXAndY(calculateNewItemPosInCanvas());		
 		else rel.setXAndY(new Point(x,y)); //problem has been created from the concept map, therefore we have a position
 
 		patIllScript.getDiagnoses().add(rel);
-		rel.setDiagnosis(new DBList().selectListItemById(id));
+		rel.setDiagnosis(li);
+		//rel.setDiagnosis(new DBList().selectListItemById(id));
 		save(rel);
 		notifyLog(rel);
 		updateGraph(rel);
@@ -107,7 +109,7 @@ public class AddDiagnosisAction implements AddAction, Scoreable{
 		if(patIllScript.getDiagnoses()!=null || !patIllScript.getDiagnoses().isEmpty()){
 			y = patIllScript.getDiagnoses().size() * 26;//CAVE max y!
 		}
-		if(NavigationController.getInstance().isExpEdit()){
+		if(patIllScript.isExpScript()){
 			return new Point(RelationDiagnosis.DEFAULT_X+100,y);
 		}
 		return new Point(RelationDiagnosis.DEFAULT_X,y);
@@ -126,7 +128,8 @@ public class AddDiagnosisAction implements AddAction, Scoreable{
 	 */
 	public void notifyLog(Relation rel){
 		new LogEntry(LogEntry.ADDDIAGNOSIS_ACTION, patIllScript.getId(), rel.getListItemId()).save();
-		new TypeAheadBean(rel.getListItemId(), Relation.TYPE_DDX).save();
+		if(!patIllScript.isExpScript())
+			new TypeAheadBean(rel.getListItemId(), Relation.TYPE_DDX).save();
 
 	}
 	
@@ -142,7 +145,7 @@ public class AddDiagnosisAction implements AddAction, Scoreable{
 	 * @see actions.beanActions.AddAction#updateGraph(beans.relation.Relation)
 	 */
 	public void updateGraph(Relation rel) {
-		Graph graph = new NavigationController().getCRTFacesContext().getGraph();
+		Graph graph = NavigationController.getInstance().getMyFacesContext().getGraph();
 		graph.addVertex(rel, IllnessScriptInterface.TYPE_LEARNER_CREATED);
 
 		// add implicit edges:

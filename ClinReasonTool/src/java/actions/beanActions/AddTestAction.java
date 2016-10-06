@@ -26,6 +26,7 @@ import controller.NavigationController;
 import controller.RelationController;
 import database.DBClinReason;
 import database.DBList;
+import model.ListItem;
 import properties.IntlConfiguration;
 import util.CRTLogger;
 
@@ -48,7 +49,7 @@ public class AddTestAction implements AddAction, Scoreable/*, FeedbackCreator*/{
 	 */
 	public void notifyLog(Relation rel) {
 		new LogEntry(LogEntry.ADDTEST_ACTION, patIllScript.getId(), rel.getListItemId()).save();
-		new TypeAheadBean(rel.getListItemId(), Relation.TYPE_TEST).save();
+		if(!patIllScript.isExpScript()) new TypeAheadBean(rel.getListItemId(), Relation.TYPE_TEST).save();
 
 	}
 
@@ -64,37 +65,38 @@ public class AddTestAction implements AddAction, Scoreable/*, FeedbackCreator*/{
 	 * @param yStr
 	 */
 	public void add(String idStr, String name, String xStr, String yStr){ 
-		new RelationController().initAdd(idStr, name, xStr, yStr, this);
+		new RelationController().initAdd(idStr, name, xStr, yStr, this, patIllScript.getLocale());
 	}
 	
-	public void addRelation(long id, String prefix, int x, int y, long synId){		
-		addRelation(id, prefix, x, y, synId, false);
+	public void addRelation(/*long id, String prefix*/ListItem li, int x, int y, long synId){		
+		addRelation(li/*id, prefix*/, x, y, synId, false);
 	}
 	/* (non-Javadoc)
 	 * @see actions.beanActions.AddAction#addRelation(long, java.lang.String, int, int, long)
 	 */
-	public void addRelation(long id, String name, int x, int y, long synId, boolean isJoker){
+	public void addRelation(/*long id, String name*/ListItem li, int x, int y, long synId, boolean isJoker){
 		if(patIllScript.getTests()==null) patIllScript.setTests(new ArrayList<RelationTest>());
-		RelationTest rel = new RelationTest(id, patIllScript.getId(), synId);		
+		RelationTest rel = new RelationTest(li.getItem_id(), patIllScript.getId(), synId);		
 		if(patIllScript.getTests().contains(rel)){
 			createErrorMessage(IntlConfiguration.getValue("tests.duplicate"),"optional details", FacesMessage.SEVERITY_WARN);
 			return;
 		}
 		rel.setOrder(patIllScript.getTests().size());
 		rel.setStage(patIllScript.getCurrentStage());
-		if(new NavigationController().isExpEdit()){
+		if(patIllScript.isExpScript()){
 			rel.setStage(patIllScript.getStage());
 		}
 		if(x<0 && y<0) rel.setXAndY(calculateNewItemPosInCanvas());		
 		else rel.setXAndY(new Point(x,y)); //problem has been created from the concept map, therefore we have a position
 
 		patIllScript.getTests().add(rel);
-		rel.setTest(new DBList().selectListItemById(id));
+		//rel.setTest(new DBList().selectListItemById(id));
+		rel.setTest(li);
 		save(rel);
 		updateGraph(rel);
 		notifyLog(rel);
 		triggerScoringAction(rel, isJoker);		
-		((HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest()).setAttribute("tst", rel);
+		//((HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest()).setAttribute("tst", rel);
 
 	}
 	
@@ -108,7 +110,7 @@ public class AddTestAction implements AddAction, Scoreable/*, FeedbackCreator*/{
 		if(patIllScript.getTests()!=null || !patIllScript.getTests().isEmpty()){
 			y = patIllScript.getTests().size() * 26; //CAVE max y! 
 		}
-		if(NavigationController.getInstance().isExpEdit()){
+		if(patIllScript.isExpScript()){
 			return new Point(RelationTest.DEFAULT_X+100,y);
 		}
 		return new Point(RelationTest.DEFAULT_X,y);
@@ -131,7 +133,7 @@ public class AddTestAction implements AddAction, Scoreable/*, FeedbackCreator*/{
 	 * @see actions.beanActions.AddAction#updateGraph(beans.relation.Relation)
 	 */
 	public void updateGraph(Relation rel) {
-		Graph graph = new NavigationController().getCRTFacesContext().getGraph();
+		Graph graph = NavigationController.getInstance().getMyFacesContext().getGraph();
 		graph.addVertex(rel, IllnessScriptInterface.TYPE_LEARNER_CREATED);
 	
 		// add implicit edges:

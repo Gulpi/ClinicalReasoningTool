@@ -24,7 +24,7 @@ var isSuccess = false;
 	            minLength: minLengthTypeAhead,
 	            select: function( event, ui ) {
 	            	isSuccess = true;
-	            	addProblem(ui.item.value, ui.item.label);	            	
+	            	addProblem(ui.item.value, ui.item.label, $("#problems").val());	            	
 	            },
 	  	      	close: function(ui) {
 	  	      		$("#problems").val("");
@@ -37,7 +37,7 @@ var isSuccess = false;
 		            minLength: minLengthTypeAhead,
 		            select: function( event, ui ) {
 		            	isSuccess = true;
-		            	addDiagnosis(ui.item.value, ui.item.label);
+		            	addDiagnosis(ui.item.value, ui.item.label, $("#ddx").val());
 		            },
 		  	      	close: function(ui) {
 		  	      		$("#ddx").val("");
@@ -49,7 +49,7 @@ var isSuccess = false;
 		            minLength: minLengthTypeAhead,
 		            select: function( event, ui ) {
 		            	isSuccess = true;
-		            	addTest(ui.item.value, ui.item.label);
+		            	addTest(ui.item.value, ui.item.label, $("#tests").val());
 		            },
 		  	      	close: function(ui) {
 		  	      		$("#tests").val("");
@@ -61,7 +61,7 @@ var isSuccess = false;
 		            minLength: minLengthTypeAhead,
 		            select: function( event, ui ) {
 		            	isSuccess = true;
-		            	addManagement(ui.item.value, ui.item.label);
+		            	addManagement(ui.item.value, ui.item.label, $("#mng").val());
 		            },
 		  	      	close: function(ui) {
 		  	      		$("#mng").val("");
@@ -93,7 +93,7 @@ var isSuccess = false;
    * matches the user input with the list labels. Also considers multiple terms and negations
    */
 function doMatch(request,response){
-	if (request.term == "") {
+	if (request.term == "") { //user has entered nothing, so we return here....
 		response( $.map( item_data, function( item ) {
 			return {
 				value: item.value,
@@ -107,6 +107,9 @@ function doMatch(request,response){
 		
 		var my_map = $.map( item_data, function( item ) {
 			if(item.label=="") return;
+			if(item.value=="-99"){
+				var myid = item.id;
+			}
 			var matcher;
 			var user_input = request.term;
 			var isNegStart = checkStartUserInput(user_input); //Then user started with something like "No ..."
@@ -140,7 +143,7 @@ function doMatch(request,response){
 					arr_match = matcher.test(item.label)
 				}
 							
-				if (!user_input || arr_match ||  item.label == user_input) {
+				if (item.value=="-99" || !user_input || arr_match ||  item.label == user_input) {
 					var tmpLabel = item.label;
 					if(isNegStart) tmpLabel = user_input_arr[0]+ " " +item.label;
 					return {

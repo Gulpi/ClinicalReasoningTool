@@ -60,7 +60,7 @@ public class DelTestAction implements DelAction{
 	 * @see actions.beanActions.DelAction#updateGraph(beans.relation.Relation)
 	 */
 	public void updateGraph(Relation rel){
-		Graph graph = new NavigationController().getCRTFacesContext().getGraph();
+		Graph graph = NavigationController.getInstance().getMyFacesContext().getGraph();
 		MultiVertex vertex = graph.getVertexByIdAndType(rel.getListItemId(), Relation.TYPE_TEST);
 		if(vertex==null) return; //Should not happen
 		vertex.setLearnerVertex(null);

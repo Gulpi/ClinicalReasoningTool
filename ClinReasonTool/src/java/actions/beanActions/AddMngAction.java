@@ -26,6 +26,7 @@ import controller.NavigationController;
 import controller.RelationController;
 import database.DBClinReason;
 import database.DBList;
+import model.ListItem;
 import properties.IntlConfiguration;
 import util.CRTLogger;
 
@@ -48,7 +49,7 @@ public class AddMngAction implements AddAction, Scoreable{
 	 */
 	public void notifyLog(Relation rel) {
 		new LogEntry(LogEntry.ADDMNG_ACTION, patIllScript.getId(), rel.getListItemId()).save();
-		new TypeAheadBean(rel.getListItemId(), Relation.TYPE_MNG).save();
+		if(!patIllScript.isExpScript()) new TypeAheadBean(rel.getListItemId(), Relation.TYPE_MNG).save();
 
 	}
 
@@ -68,29 +69,30 @@ public class AddMngAction implements AddAction, Scoreable{
 	 * @param yStr
 	 */
 	public void add(String idStr, String name, String xStr, String yStr){ 
-		new RelationController().initAdd(idStr, name, xStr, yStr, this);
+		new RelationController().initAdd(idStr, name, xStr, yStr, this, patIllScript.getLocale() );
 	}
 	
-	public void addRelation(long id, String prefix, int x, int y, long synId){		
-		addRelation(id, prefix, x, y, synId, false);
+	public void addRelation(/*long id, String prefix*/ListItem li, int x, int y, long synId){		
+		addRelation(/*id, prefix*/li, x, y, synId, false);
 	}
-	public void addRelation(long id, String name, int x, int y, long synId, boolean isJoker){
+	public void addRelation(/*long id, String name*/ ListItem li, int x, int y, long synId, boolean isJoker){
 		if(patIllScript.getMngs()==null) patIllScript.setMngs(new ArrayList<RelationManagement>());
-		RelationManagement rel = new RelationManagement(id, patIllScript.getId(), synId);		
+		RelationManagement rel = new RelationManagement(li.getItem_id(), patIllScript.getId(), synId);		
 		if(patIllScript.getMngs().contains(rel)){
 			createErrorMessage(IntlConfiguration.getValue("mng.duplicate"),"optional details", FacesMessage.SEVERITY_WARN);
 			return;
 		}
 		rel.setOrder(patIllScript.getMngs().size());
 		rel.setStage(patIllScript.getCurrentStage());
-		if(new NavigationController().isExpEdit()){
+		if(patIllScript.isExpScript()){
 			rel.setStage(patIllScript.getStage());
 		}
 		if(x<0 && y<0) rel.setXAndY(calculateNewItemPosInCanvas());		
 		else rel.setXAndY(new Point(x,y)); //problem has been created from the concept map, therefore we have a position
 
 		patIllScript.getMngs().add(rel);
-		rel.setManagement(new DBList().selectListItemById(id));
+		//rel.setManagement(new DBList().selectListItemById(id));
+		rel.setManagement(li);
 		save(rel);
 		updateGraph(rel);
 		notifyLog(rel);
@@ -110,7 +112,7 @@ public class AddMngAction implements AddAction, Scoreable{
 		if(patIllScript.getMngs()!=null || !patIllScript.getMngs().isEmpty()){
 			y = patIllScript.getMngs().size() * 26; //CAVE max y! 
 		}
-		if(NavigationController.getInstance().isExpEdit()){
+		if(patIllScript.isExpScript()){
 			return new Point(RelationManagement.DEFAULT_X+100,y);
 		}
 		return new Point(RelationManagement.DEFAULT_X,y);
@@ -132,7 +134,7 @@ public class AddMngAction implements AddAction, Scoreable{
 	 * @see actions.beanActions.AddAction#updateGraph(beans.relation.Relation)
 	 */
 	public void updateGraph(Relation rel) {
-		Graph graph = new NavigationController().getCRTFacesContext().getGraph();
+		Graph graph = NavigationController.getInstance().getMyFacesContext().getGraph();
 		graph.addVertex(rel, IllnessScriptInterface.TYPE_LEARNER_CREATED);
 	
 		// add implicit edges:

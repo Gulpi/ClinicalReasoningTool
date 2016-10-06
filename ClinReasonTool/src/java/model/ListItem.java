@@ -28,6 +28,8 @@ public class ListItem implements Serializable{
 	private Locale language; //en, de,...
 	private String mesh_ec; //EC
 	private String itemType; //D=Diagnosis, ...
+	
+	public static final String TYPE_OWN = "PRIVATE";
 	/**
 	 * if true, we do not export this item (including synonyma) into the json list.
 	 */

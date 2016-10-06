@@ -2,8 +2,10 @@ package beans.user;
 
 import javax.faces.bean.SessionScoped;
 
+import beans.UserSetting;
+
 /**
- * A user object 
+ * A user object. We create it when a user comes from a VP system or when an admin logs in to edit an expert script.
  * @author ingahege
  *
  */
@@ -21,6 +23,18 @@ public class User {
 	 */
 	private int systemId;
 	
+	/**
+	 * currently only needed for login of admins/exp script editors
+	 */
+	private String userName;
+	/**
+	 * currently only needed for login of admins/exp script editors
+	 */
+	private String password;
+	
+
+	private UserSetting userSetting = new UserSetting();
+	
 	public User(){}
 	public User(int systemId, String extUserId){
 		this.systemId = systemId;
@@ -33,6 +47,21 @@ public class User {
 	public void setExtUserId(String extUserId) {this.extUserId = extUserId;}
 	public int getSystemId() {return systemId;}
 	public void setSystemId(int systemId) {this.systemId = systemId;}
-	
-	
+
+	public String getUserName() {return userName;}
+	public void setUserName(String userName) {this.userName = userName;}
+	public String getPassword() {return password;}
+	public void setPassword(String password) {this.password = password;}
+	public UserSetting getUserSetting() {return userSetting;}
+	public void setUserSetting(UserSetting userSetting) {this.userSetting = userSetting;}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	public boolean equals(Object o){
+		if(o instanceof User){
+			if(this.getUserId() == ((User)o).getUserId()) return true;
+		}
+		return false;
+	}
 }

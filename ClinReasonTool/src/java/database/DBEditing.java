@@ -15,15 +15,13 @@ public class DBEditing extends DBClinReason{
      * @param sessionId
      * @return PatientIllnessScript or null
      */
-    public List<PatientIllnessScript> selectAllExpertPatIllScripts(){
+    public List<PatientIllnessScript> selectAllExpertPatIllScriptsByUserId(long userId){
     	Session s = instance.getInternalSession(Thread.currentThread(), false);
     	Criteria criteria = s.createCriteria(PatientIllnessScript.class,"PatientIllnessScript");
-    	//criteria.add(Restrictions.eq("parentId", new Long(parentId)));
     	criteria.add(Restrictions.eq("type", new Integer(PatientIllnessScript.TYPE_EXPERT_CREATED)));
+    	criteria.add(Restrictions.eq("userId", new Long(userId)));
     	List<PatientIllnessScript> patIllScripts = criteria.list();
     	s.close();
-    	/*if(patIllScript!=null)
-    		patIllScript.setSummSt(loadSummSt(patIllScript.getSummStId()));*/
     	return patIllScripts;  	
     }
     

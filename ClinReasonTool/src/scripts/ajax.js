@@ -35,13 +35,26 @@ $.extend({
  */
 function sendAjax(id, callback, type, name){
 	clearErrorMsgs();
-	sendAjaxUrl(id, callback, type, name, "/crt/src/html/tabs_ajax.xhtml");
+	sendAjaxUrl(id, callback, type, name, "", ajaxUrl);
+}
+
+function sendAjax(id, callback, type, name, typedinName){
+	clearErrorMsgs();
+	var confirmed = true;
+	if(typedinName!="" && displayOwnEntryWarn=="true"){
+		confirmed = confirm(displayOwnEntryWarnMsg);
+	}
+	if(confirmed){
+		displayOwnEntryWarn = "false";
+		sendAjaxUrl(id, callback, type, name, typedinName, ajaxUrl);
+	}
+	
 }
 
 
 function sendAjaxCharts(id, callback, type, name){
 	clearErrorMsgs();
-	sendAjaxUrl(id, callback, type, name, "/crt/src/html/charts_ajax.xhtml");
+	sendAjaxUrl(id, callback, type, name, "", "/crt/src/html/charts_ajax.xhtml");
 }
 
 
@@ -55,7 +68,7 @@ function sendAjaxCharts(id, callback, type, name){
  */
 function sendAjaxContext(id, callback, type, name){
 	clearErrorMsgs();
-	sendAjaxUrl(id, callback, type, name, "/crt/src/html/tabs_ajax2.xhtml");
+	sendAjaxUrl(id, callback, type, name, "", "/crt/src/html/tabs_ajax2.xhtml");
 }
 
 function sendAjaxAdmin(id, callback, type, name){
@@ -71,11 +84,11 @@ function sendAjaxAdmin(id, callback, type, name){
 	//sendAjaxUrl(id, callback, type, name, "/crt/src/html/admin/tabs_ajax_admin.xhtml");
 }
 
-function sendAjaxUrl(id, callback, type, name, url){
+function sendAjaxUrl(id, callback, type, name, orgname, url){
 	$.ajax({
 		  method: "POST",
 		  url: url,
-		  data: { type: type, id: id, name: name, script_id: scriptId, stage:currentStage, typehistory:inputhistory }
+		  data: { type: type, id: id, name: name, orgname: orgname, script_id: scriptId, stage:currentStage, typehistory:inputhistory }
 		})
 	  .done(function( response ) {
 		  handleResponse(response, callback, name);		
@@ -103,7 +116,7 @@ function sendAjaxUrlHtml(id, callback, type, name, url){
 function sendAjaxCM(id, callback, type, name, x, y){
 	$.ajax({
 		  method: "POST",
-		  url: "/crt/src/html/tabs_ajax.xhtml",
+		  url: ajaxUrl,
 		  data: { type: type, id: id, name: name, x: x, y: y, script_id: scriptId, stage:currentStage }
 		})
 	  .done(function( response ) {	

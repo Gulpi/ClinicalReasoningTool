@@ -116,8 +116,8 @@ public class AddConnectionAction implements Scoreable{
 	 * @see actions.beanActions.AddAction#updateGraph(beans.relation.Relation)
 	 */
 	public void updateGraph(Connection cnx) {
-		Graph graph = new NavigationController().getCRTFacesContext().getGraph();
-		graph.addExplicitEdge(cnx, patIllScript, IllnessScriptInterface.TYPE_LEARNER_CREATED, cnx.getWeight());
-		CRTLogger.out(graph.toString(), CRTLogger.LEVEL_TEST);
+		Graph g = NavigationController.getInstance().getMyFacesContext().getGraph();
+		g.addExplicitEdge(cnx, patIllScript, IllnessScriptInterface.TYPE_LEARNER_CREATED, cnx.getWeight());
+		CRTLogger.out(g.toString(), CRTLogger.LEVEL_TEST);
 	}
 }

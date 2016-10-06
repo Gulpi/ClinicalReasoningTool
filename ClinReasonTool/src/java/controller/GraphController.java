@@ -64,7 +64,7 @@ public class GraphController implements Serializable{
 	 * @param parentId
 	 */
 	public void addLearnerPatIllScript(){
-		PatientIllnessScript patIllScript = new NavigationController().getCRTFacesContext().getPatillscript();
+		PatientIllnessScript patIllScript = NavigationController.getInstance().getMyFacesContext().getPatillscript();
 	    addVerticesOfPatientIllnessScript(patIllScript, IllnessScriptInterface.TYPE_LEARNER_CREATED);
 	    addExplicitEdgesOfPatientIllnessScript(patIllScript, IllnessScriptInterface.TYPE_LEARNER_CREATED);
 	    addImplicitEdgesOfPatientIllnessScript(patIllScript,  IllnessScriptInterface.TYPE_LEARNER_CREATED);

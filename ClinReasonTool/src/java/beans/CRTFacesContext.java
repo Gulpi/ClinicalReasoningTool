@@ -30,7 +30,7 @@ import util.CRTLogger;
  */
 @ManagedBean(name = "crtContext", eager = true)
 @SessionScoped
-public class CRTFacesContext extends FacesContextWrapper /*implements Serializable*/{
+public class CRTFacesContext extends FacesContextWrapper implements MyFacesContext/*implements Serializable*/{
 	public static final String CRT_FC_KEY = "crtContext";
 	
 	//private long userId = -1;
@@ -38,7 +38,7 @@ public class CRTFacesContext extends FacesContextWrapper /*implements Serializab
 	private IllnessScriptController isc = new IllnessScriptController();
 	private PatientIllnessScript patillscript;
 	private Graph graph;
-	private UserSetting userSetting;	
+		
 	/**
 	 * This is the locale of the navigation etc. script locale (for lists) is in PatientIllnessScript
 	 */
@@ -71,6 +71,7 @@ public class CRTFacesContext extends FacesContextWrapper /*implements Serializab
 	
 	public CRTFacesContext(){
 		long startms = System.currentTimeMillis();
+		ExternalContext ec =  FacesContextWrapper.getCurrentInstance().getExternalContext();
 
 	    CRTLogger.out("Start CRTFacesContext init:"  + startms + "ms", CRTLogger.LEVEL_PROD);
 
@@ -79,7 +80,7 @@ public class CRTFacesContext extends FacesContextWrapper /*implements Serializab
 		if(user!=null){
 		    FacesContextWrapper.getCurrentInstance().getExternalContext().getSessionMap().put(CRTFacesContext.CRT_FC_KEY, this);
 			initSession();
-			userSetting = new UserSetting(); //TODO get from Database...
+			//userSetting = new UserSetting(); //TODO get from Database...
 		}
 		try{
 			CRTLogger.out(FacesContextWrapper.getCurrentInstance().getApplication().getStateManager().getViewState(FacesContext.getCurrentInstance()), CRTLogger.LEVEL_TEST);
@@ -145,13 +146,9 @@ public class CRTFacesContext extends FacesContextWrapper /*implements Serializab
 		if(user!=null) return user.getUserId();
 		return -1;
 	}
-	//public void setUserId(long userId) {this.userId = userId;}
+	public User getUser(){return user;}
 	public Graph getGraph() {return graph;}
-	//public int getMaxStage() {return maxStage;}
 
-	public UserSetting getUserSetting() {return userSetting;}
-	public void setUserSetting(UserSetting userSetting) {this.userSetting = userSetting;}
-	//public void setScriptsOfUser(List<PatientIllnessScript> scriptsOfUser) {this.scriptsOfUser = scriptsOfUser;}
 	public LearningAnalyticsBean getLearningAnalytics() {
 		if(analyticsContainer==null) return null;//analyticsContainer = new LearningAnalyticsContainer(userId);
 		return analyticsContainer.getLearningAnalyticsBeanByPatIllScriptId(patillscript.getId(), patillscript.getVpId());
@@ -176,9 +173,7 @@ public class CRTFacesContext extends FacesContextWrapper /*implements Serializab
 			scriptContainer = new PatIllScriptContainer(user.getUserId());
 			scriptContainer.loadScriptsOfUser();
 		    CRTLogger.out("End ScripConatainer init:"  + (System.currentTimeMillis()-startms) + "ms", CRTLogger.LEVEL_PROD);
-
 		}	
-
 	}
 	
 	public PatIllScriptContainer getScriptContainer(){ 
@@ -203,10 +198,6 @@ public class CRTFacesContext extends FacesContextWrapper /*implements Serializab
 
 			}
 			startms = System.currentTimeMillis();
-		   // CRTLogger.out("Start PeerContainer init: "  + startms + "ms", CRTLogger.LEVEL_PROD);
-			//AppBean.getPeers().loadPeersForPatIllScript(patillscript.getVpId());
-		 //   CRTLogger.out("End PeerContainer init:"  + (System.currentTimeMillis()-startms) + "ms", CRTLogger.LEVEL_PROD);
-
 		}
 
 	}
@@ -272,8 +263,8 @@ public class CRTFacesContext extends FacesContextWrapper /*implements Serializab
 	/**
 	 * load exp PatientIllnessScript based on id
 	 */
-	public void initExpEditSession(){ 
-		/*if(user==null)*/ setUser();
+	/*public void initExpEditSession(){ 
+		 setUser();
 		long id = AjaxController.getInstance().getLongRequestParamByKey(AjaxController.REQPARAM_SCRIPT);
 		if(this.patillscript!=null && (id<0 || this.patillscript.getId()==id)) return; //current script already loaded....
 		if(id<=0) return;
@@ -284,7 +275,7 @@ public class CRTFacesContext extends FacesContextWrapper /*implements Serializab
 		}
 		//TODO error handling!!!!
 		if(this.patillscript!=null)  initGraph();		
-	}
+	}*/
 	
 	
 	public boolean getInitSession(){
@@ -381,10 +372,10 @@ public class CRTFacesContext extends FacesContextWrapper /*implements Serializab
 		return new ExpViewPatientIllnessScript(graph, stage);
 	}
 	
-	public boolean isExpEdit(){
+	/*public boolean isExpEdit(){
 		if(this.patillscript!=null && this.patillscript.getType()==IllnessScriptInterface.TYPE_EXPERT_CREATED) return true;
 		return false;
-	}
+	}*/
 	
 	public Locale getLocale(){return locale;}//LocaleController.getLocale(this).getLanguage();}	
 	public String getLanguage(){return locale.getLanguage();}

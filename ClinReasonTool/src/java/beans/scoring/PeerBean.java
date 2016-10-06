@@ -171,6 +171,6 @@ public class PeerBean extends Beans{
 	}
 	
 	public String getVpName(){
-		return AppBean.getVPNameByParentId(vpId);
+		return AppBean.getVPNameByVPId(vpId);
 	}
 }

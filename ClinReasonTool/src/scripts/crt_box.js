@@ -361,11 +361,19 @@ function workingDDXOff(id){
 
 function checkSubmitBtn(){
 	var ddxNum = $( ".ddxs" ).length;
-	if(ddxNum>0){
+	//enable submit button:
+	if(ddxNum>0 && submitted!="true"){
 		$("#submitBtnSpan").removeClass("submitBtnOff");
 	}
-	else if(ddxNum<=0 && !$("#submitBtnSpan").hasClass("submitBtnOff"))
+	//disable submit button:
+	else if((ddxNum<=0 || submitted=="true") && !$("#submitBtnSpan").hasClass("submitBtnOff")){
 		$("#submitBtnSpan").addClass("submitBtnOff");		
+	}
+	if( submitted=="true"){
+		$("#submitBtnA").html(submittedButonName);
+	}
+	else $("#submitBtnA").html(submitButonName);
+
 }
 
 /*

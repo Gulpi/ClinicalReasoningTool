@@ -231,7 +231,7 @@ public class ScoreBean extends Beans implements Serializable{
 	}
 	
 	public String getVpName(){
-		return AppBean.getVPNameByParentId(vpId);
+		return AppBean.getVPNameByVPId(vpId);
 	}
 	
 }

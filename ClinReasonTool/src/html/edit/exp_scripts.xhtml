@@ -48,7 +48,7 @@ var test = "#{adminContext.userId}";
 					<f:param name="user_id" value="#{scripts.userId}" />
 					
 			</h:commandLink>
-			language: #{scripts.locale}, vpId: #{scripts.vpId}
+			(#{scripts.locale}, vpId: #{scripts.vpId}, #{scripts.VPName})
 					
 			<h:commandLink action="#{navController.openViewExpPatIllScript}" value="View Scriptid:#{scripts.id}" title="Open the prototype">
 				<f:param name="script_id" value="#{scripts.id}" />

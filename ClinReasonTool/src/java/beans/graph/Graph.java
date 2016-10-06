@@ -41,13 +41,28 @@ public class Graph extends DirectedWeightedMultigraph<MultiVertex, MultiEdge> {
 	private List<Long> illScriptIds;//TODO: more than one! 
 	private GraphController gctrl;
 	
+	/**
+	 * Called from Admin Interface to set the expedit param to true
+	 * @param vpId
+	 * @param isExpEdit
+	 */
+	public Graph(String vpId, boolean isExpEdit){
+		super(MultiEdge.class);
+		this.expEdit = isExpEdit;
+		initGraph(vpId);
+	}
 	public Graph(String vpId){
 		super(MultiEdge.class);
+		initGraph(vpId);		
+	}
+	
+	private void initGraph(String vpId){
 		this.vpId = vpId;
 		gctrl = new GraphController(this);
 		gctrl.addExpPatIllScript(vpId);
 		gctrl.addLearnerPatIllScript();
 		gctrl.addIllnessScripts(vpId);
+		
 	}
 		
 	public long getExpertPatIllScriptId() {return expertPatIllScriptId;}
@@ -57,7 +72,8 @@ public class Graph extends DirectedWeightedMultigraph<MultiVertex, MultiEdge> {
 	public int getPeerNums() {return peerNums;}
 	public void setPeerNums(int peerNums) {this.peerNums = peerNums;}
 	public String getVpId() {return vpId;}
-	public void setExpEdit(boolean expEdit){ this.expEdit = expEdit;}
+	public void setExpEdit(boolean expEdit){ 
+		this.expEdit = expEdit;}
 
 	public void addIllScriptId(long id){
 		if(illScriptIds==null) illScriptIds = new ArrayList<Long>();

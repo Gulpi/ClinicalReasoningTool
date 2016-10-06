@@ -485,7 +485,7 @@ public class PatientIllnessScript extends Beans/*extends Node*/ implements Illne
 		if(StringUtils.isNumeric(stage)){
 			int stageNum = Integer.valueOf(stage);
 			//at the next stage we disable the display of the help dialog:
-			if(stageNum==2){
+			if(stageNum==2 && !this.isExpScript()){
 				NavigationController.getInstance().getCRTFacesContext().getUser().getUserSetting().setOpenHelpOnLoad(false);
 			}
 			this.stage = stageNum; //we always update the stage
@@ -575,6 +575,14 @@ public class PatientIllnessScript extends Beans/*extends Node*/ implements Illne
 	public int getStageForAction(){
 		if(isExpScript()) return stage;
 		return currentStage;
+	}
+	
+	/**
+	 * For displaying expert scripts in admin area we display name of VP to make selection easier
+	 * @return
+	 */
+	public String getVPName(){
+		return AppBean.getVPNameByVPId(this.vpId);
 	}
 
 }

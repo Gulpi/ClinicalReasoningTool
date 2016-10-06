@@ -136,7 +136,7 @@ function sendAjaxCM(id, callback, type, name, x, y){
 function sendAjaxCnx(id, callback, type, name, startEpId, targetEpId){
 	$.ajax({
 		  method: "POST",
-		  url: "/crt/src/html/tabs_ajax.xhtml",
+		  url: ajaxUrl,
 		  data: { type: type, id: id, name: name, x: startEpId, y: targetEpId, script_id: scriptId, stage:currentStage }
 		})
 	  .done(function( response ) {	

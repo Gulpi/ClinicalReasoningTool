@@ -193,8 +193,9 @@ public class AppBean extends ApplicationWrapper implements HttpSessionListener{
 		catch(Exception e){return defaultVal;}
 	}
 	
-	public static String getVPNameByParentId(String id){
+	public static String getVPNameByVPId(String id){
 		if(vpScriptRefs==null || vpScriptRefs.get(id)==null) return "";
 		return vpScriptRefs.get(id).getVpName();
 	}
+
 }

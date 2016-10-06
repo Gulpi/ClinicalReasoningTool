@@ -76,7 +76,7 @@ public class DBList extends DBClinReason {
     	criteria.add(Restrictions.in("itemType", types));
     	criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
     	criteria.add(Restrictions.eq("language", loc));
-    	criteria.add(Restrictions.ne("type", ListItem.TYPE_OWN));
+    	criteria.add(Restrictions.ne("itemType", ListItem.TYPE_OWN));
     	criteria.addOrder(Order.asc("name"));
     	List l = criteria.list();
     	s.close();

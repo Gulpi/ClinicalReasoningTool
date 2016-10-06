@@ -38,6 +38,8 @@ var hideCnxTitle = "#{prop['cnx.hide']}";
 var showCnxTitle = "#{prop['cnx.show']}";
 var submitDialogTitle = "#{prop['submit.dialog.title']}";
 var chgCnxDialogTitle = "#{prop['cnx.dialog.title']}";
+var displayOwnEntryWarn = "false";
+var displayOwnEntryWarnMsg = "";
 
 var msg2="Please connect the hypotheses with the findings";
 var scriptId = "#{adminContext.patillscript.id}";
@@ -143,6 +145,9 @@ jsPlumb.ready(function () {
     		addConnection(info);
     });
     $(".expbox").addClass("expboxstatus");
+	//$(".jsplumb-exp-connector").addClass("jsplumb-exp-connector-show");
+	//$(".jsplumb-exp-connector").removeClass("jsplumb-exp-connector-hide");
+
     jsPlumb.fire("jsPlumbDemoLoaded", instance);
     
     initBoxHeights();

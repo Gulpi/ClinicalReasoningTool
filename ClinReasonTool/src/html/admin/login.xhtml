@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"   
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+	 xmlns:v="urn:schemas-microsoft-com:vml"     
+	  >
+<head>
+
+</head>
+<body>
+<h:form>
+    <h:outputLabel for="username" value="Username" />
+    <h:inputText id="username" name="username" value="#{auth.username}" required="true" />
+    <h:message for="username" />
+    <br />
+    <h:outputLabel for="password" value="Password" />
+    <h:inputSecret id="password" name="password" value="#{auth.password}" required="true" />
+    <h:message for="password" />
+    <br />
+    <h:commandButton value="Login" action="#{auth.login}" />
+    <h:messages globalOnly="true" />
+</h:form>
+</body>
+</html>

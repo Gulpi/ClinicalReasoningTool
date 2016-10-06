@@ -84,7 +84,7 @@ public class AppBean extends ApplicationWrapper implements HttpSessionListener{
 	    }
 	    catch(Exception e){}
 	    //does not have to be done on every restart:
-	   // new JsonCreator().initJsonExport(); 
+	    //new JsonCreator().initJsonExport(); 
 	   
 		//MeshImporter.main("en");
 	   // new TextSimilarityComparing().compareTestData();
@@ -182,6 +182,15 @@ public class AppBean extends ApplicationWrapper implements HttpSessionListener{
 	public static String getSharedSecret(){
 		if(properties==null) return null; 
 		return properties.getProperty("SharedSecret");
+	}
+	
+	public static boolean getProperty(String key, boolean defaultVal){
+		if(properties==null) return defaultVal; 
+		String val = properties.getProperty(key);
+		try{
+			return Boolean.parseBoolean(val);
+		}
+		catch(Exception e){return defaultVal;}
 	}
 	
 	public static String getVPNameByParentId(String id){

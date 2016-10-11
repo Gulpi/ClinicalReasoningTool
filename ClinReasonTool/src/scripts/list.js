@@ -111,10 +111,20 @@ function doMatch(request,response){
 				var myid = item.id;
 			}
 			var matcher;
-			var user_input = request.term;
+			//We replace blanks and commas to improve the comparison mechanisms
+			var user_input = request.term.replace(",","");
+			user_input = user_input.replace("-","");
+			user_input = user_input.trim();
+			user_input = user_input.replace("ß","ss");
+			
+			var listEntry = item.label.replace(",","");
+			listEntry = listEntry.replace("-","");
+			listEntry = listEntry.trim();
+			listEntry = listEntry.replace("ß","ss");
+			
 			var isNegStart = checkStartUserInput(user_input); //Then user started with something like "No ..."
 			var user_input_arr = user_input.split(" ");
-			
+			var listentry_arr = listEntry.split(" ");
 
 			var arr_match = false;
 			if(isNegStart && (user_input_arr.length==1 || user_input_arr.length>1 && user_input_arr[1].length<minLengthTypeAhead)){
@@ -130,8 +140,7 @@ function doMatch(request,response){
 						}
 						else{
 							matcher = new RegExp( $.ui.autocomplete.escapeRegex(user_input_arr[i]), "i" );	
-						
-							if(!matcher.test(item.label)){
+							if(!matcher.test(listEntry)){
 								arr_match = false;
 								break;
 							}
@@ -140,10 +149,20 @@ function doMatch(request,response){
 				}
 				else{ //only one search term:
 					matcher = new RegExp( $.ui.autocomplete.escapeRegex(user_input), "i" );
-					arr_match = matcher.test(item.label)
+					arr_match = matcher.test(listEntry);
+					if(!arr_match && listentry_arr.length>1){
+						//we check combinations e.g. if user enters "PneumonieAspiration" to match "Pneumonie, -Aspirations"
+						var listEntryOne = listEntry.replace(" ","");
+						arr_match = matcher.test(listEntryOne);
+						if(!arr_match && listentry_arr.length==2){ //now check Aspirationspneumonie vs "Pneumonie, -Aspirations"
+							var listEntryReverse = listentry_arr[1].trim() + listentry_arr[0].trim();
+							listEntryReverse = listEntryReverse.trim();
+							arr_match = matcher.test(listEntryReverse);
+						}
+					}
 				}
 							
-				if (item.value=="-99" || !user_input || arr_match ||  item.label == user_input) {
+				if (item.value=="-99" || !user_input || arr_match ||  listEntry == user_input) {
 					var tmpLabel = item.label;
 					if(isNegStart) tmpLabel = user_input_arr[0]+ " " +item.label;
 					return {
@@ -156,6 +175,7 @@ function doMatch(request,response){
 		response( my_map );
 	}
 }
+
 
 var inputhistory = "";
 

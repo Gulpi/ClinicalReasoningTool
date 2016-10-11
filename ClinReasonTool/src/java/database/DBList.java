@@ -76,6 +76,7 @@ public class DBList extends DBClinReason {
     	criteria.add(Restrictions.in("itemType", types));
     	criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
     	criteria.add(Restrictions.eq("language", loc));
+    	//do NOT include items that have been added by learners:
     	criteria.add(Restrictions.ne("itemType", ListItem.TYPE_OWN));
     	criteria.addOrder(Order.asc("name"));
     	List l = criteria.list();

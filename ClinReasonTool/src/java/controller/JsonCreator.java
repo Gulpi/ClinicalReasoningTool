@@ -5,6 +5,7 @@ import java.util.*;
 
 import application.AppBean;
 import database.DBList;
+import model.ListInterface;
 import model.ListItem;
 import model.Synonym;
 import properties.IntlConfiguration;
@@ -60,9 +61,7 @@ public class JsonCreator {
 			for(int i=0; i<items.size(); i++){
 				ListItem item = items.get(i);
 				if(doAddItem(item)){
-					sb.append("{\"label\": \""+item.getName()+"\", \"value\": \""+item.getItem_id()+"\"},\n");
-					lines++;
-					lines += addSynonyma(item, sb);
+					lines += addItemAndSynonymaNew(item, sb);
 				}
 			}
 			boolean allowOwnEntries = AppBean.getProperty("AllowOwnEntries", false);
@@ -139,27 +138,30 @@ public class JsonCreator {
 	 * @param pw
 	 * @return
 	 */
-	private int addSynonyma(ListItem item, StringBuffer sb/*PrintWriter pw, boolean lastEntry*/){
+	/*private int addSynonyma(ListItem item, StringBuffer sb){
 		if(item.getSynonyma()==null) return 0;
 		List<Synonym> addedSyn = new ArrayList<Synonym>();
 		Iterator<Synonym> it = item.getSynonyma().iterator();
 		int counter = 0;
-		/*if(item.getName().startsWith("Sputum")){
-			System.out.println("");
-		}*/
+		//we store the best term here -> optimally one word
+		String bestTerm = item.getName();
+
 		while(it.hasNext()){	
 			Synonym syn = it.next();
 			if(!syn.isIgnored()){
 				boolean isSimilar = StringUtilities.similarStrings(item.getName(), syn.getName(), item.getLanguage());
-				if(!isSimilar/*distance > MIN_SIMILARITY_DISTANCE*/){ //then it has enough difference to add 
+				if(isSimilar){
+					bestTerm = bestTerm(bestTerm,syn.getName());
+				}
+				else{ //then it has enough difference to add 
 					//now check similarity to already added synonyma: 
 					boolean doAdd = true;
 					if(addedSyn!=null || !addedSyn.isEmpty()){
 						for(int i=0; i < addedSyn.size(); i++){
 							boolean isSimilar2 = StringUtilities.similarStrings(syn.getName(), addedSyn.get(i).getName(), syn.getLocale());
-							if(isSimilar2/*distance2<=MIN_SIMILARITY_DISTANCE*/){ //then we have found a similar item
-								//System.out.println("not added: " + syn + " - " + addedSyn.get(i).getName());
+							if(isSimilar2){ //then we have found a similar item
 								doAdd = false;
+								bestTerm = bestTerm(bestTerm, syn.getName());
 								break;
 							}
 						}
@@ -173,6 +175,74 @@ public class JsonCreator {
 			}
 		}
 		return counter;
+	}*/
+	
+	private int addItemAndSynonymaNew(ListItem item, StringBuffer sb/*PrintWriter pw, boolean lastEntry*/){
+		List<ListInterface> toAddItems = new ArrayList<ListInterface>();
+		if(item.getSynonyma()==null || item.getSynonyma().isEmpty()){ //no synonyma, only one main item:
+			toAddItems.add(item);
+		}
+		//now we compare the synonyma
+		else{
+			Iterator<Synonym> it = item.getSynonyma().iterator();
+			toAddItems.add(item);
+			while(it.hasNext()){	
+				Synonym syn = it.next();
+				if(!syn.isIgnored()){
+					boolean isSimilar = false;
+					for(int i=0;i<toAddItems.size(); i++){
+						isSimilar = StringUtilities.similarStrings(toAddItems.get(i).getName(), syn.getName(), item.getLanguage());
+						if(isSimilar){
+							ListInterface bestItem = bestTerm(toAddItems.get(i),syn);
+							if(!bestItem.equals(toAddItems.get(i))){
+								toAddItems.remove(i);
+								toAddItems.add(i, bestItem);
+							}
+							break;
+						}
+					}
+					if(!isSimilar && !toAddItems.contains(syn))
+						toAddItems.add(syn);
+				}
+			}
+					
+			for(int i=0; i<toAddItems.size();i++){
+				sb.append("{\"label\": \""+toAddItems.get(i).getName()+"\", \"value\": \""+toAddItems.get(i).getIdForJsonList()+"\"},\n");
+			}
+			
+		}
+		return toAddItems.size();
+	}					
+					
+					
+		/*			if(!isSimilar){
+						bestTerm = bestTerm(bestTerm,syn.getName());
+					}
+					else{ //then it has enough difference to add 
+						//now check similarity to already added synonyma: 
+						boolean doAdd = true;
+						if(addedSyn!=null || !addedSyn.isEmpty()){
+							for(int i=0; i < addedSyn.size(); i++){
+								boolean isSimilar2 = StringUtilities.similarStrings(syn.getName(), addedSyn.get(i).getName(), syn.getLocale());
+								if(isSimilar2){ //then we have found a similar item
+									doAdd = false;
+									bestTerm = bestTerm(bestTerm, syn.getName());
+									break;
+								}
+							}
+						}
+					}
+				}
+			}*/
+			//now add the items to the list:
+
+	
+	private ListInterface bestTerm(ListInterface currBestTerm, ListInterface newTerm){
+		
+		if(!currBestTerm.getName().contains(" ")) return currBestTerm; //current term is one word
+		if(!newTerm.getName().contains(" ")) return newTerm; //new term is one word -> better term
+		if(currBestTerm.getName().contains(",") && !newTerm.getName().contains(",")) return newTerm;
+		return currBestTerm;
 	}
 	
 	public static File getMeshJsonFileByLoc(Locale loc){

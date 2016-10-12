@@ -5,7 +5,7 @@ import java.util.*;
 
 import org.apache.commons.lang3.StringUtils;
 
-public class Synonym implements Serializable{
+public class Synonym implements Serializable, ListInterface{
 
 	private String name;
 	private long id;
@@ -59,6 +59,10 @@ public class Synonym implements Serializable{
 	
 	public String getShortName(){ 
 		return StringUtils.abbreviate(this.name, ListItem.MAXLENGTH_NAME);
+	}
+
+	public String getIdForJsonList() {
+		return Synonym.SYN_VERTEXID_PREFIX+id;
 	}
 	
 }

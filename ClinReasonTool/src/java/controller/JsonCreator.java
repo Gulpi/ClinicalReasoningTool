@@ -205,12 +205,12 @@ public class JsonCreator {
 						toAddItems.add(syn);
 				}
 			}
-					
-			for(int i=0; i<toAddItems.size();i++){
-				sb.append("{\"label\": \""+toAddItems.get(i).getName()+"\", \"value\": \""+toAddItems.get(i).getIdForJsonList()+"\"},\n");
-			}
-			
+								
 		}
+		for(int i=0; i<toAddItems.size();i++){
+			sb.append("{\"label\": \""+toAddItems.get(i).getName()+"\", \"value\": \""+toAddItems.get(i).getIdForJsonList()+"\"},\n");
+		}
+
 		return toAddItems.size();
 	}					
 					

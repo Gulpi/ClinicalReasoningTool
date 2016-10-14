@@ -41,13 +41,19 @@ function sendAjax(id, callback, type, name){
 function sendAjax(id, callback, type, name, typedinName){
 	clearErrorMsgs();
 	var confirmed = true;
-	if(typedinName!="" && displayOwnEntryWarn=="true"){
+	if(id=="-99" && displayOwnEntryWarn=="true"){
 		confirmed = confirm(displayOwnEntryWarnMsg);
 	}
 	if(confirmed){
-		displayOwnEntryWarn = "false";
+		if(id=="-99") displayOwnEntryWarn = "false";
 		sendAjaxUrl(id, callback, type, name, typedinName, ajaxUrl);
 	}
+/*	else{//empty boxes -> too early
+		$("#problems").val("");
+		$("#ddx").val("");
+		$("#tests").val("");
+		$("#mng").val("");
+	}*/
 	
 }
 

@@ -30,6 +30,8 @@ public class ListItem implements Serializable, ListInterface{
 	private String itemType; //D=Diagnosis, ...
 	
 	public static final String TYPE_OWN = "PRIVATE";
+	public static final String TYPE_ADDED = "ADDED";
+	public static final String TYPE_MESH = "MESH";
 	/**
 	 * if true, we do not export this item (including synonyma) into the json list.
 	 */

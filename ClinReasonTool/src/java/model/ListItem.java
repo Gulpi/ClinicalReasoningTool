@@ -103,8 +103,12 @@ public class ListItem implements Serializable, ListInterface{
 	 * @return
 	 */
 	public int getHierarchyDiff(ListItem li){
+		if(this.equals(li)) return -99;
 		int codeDiff = getHierarchyDiff(li.getFirstCode());
-		if(codeDiff > -99 || (li.getOtherCodes()==null || li.getOtherCodes().isEmpty())) return codeDiff/4;
+		//code does not match and there are no other codes:
+		if(codeDiff == -99 && (li.getOtherCodes()==null || li.getOtherCodes().isEmpty()) && (this.getOtherCodes()==null || this.getOtherCodes().isEmpty())) return -99;
+		//code does match and there are no other codes (that might be closer)
+		if(codeDiff > -99 && (li.getOtherCodes()==null || li.getOtherCodes().isEmpty()) && (this.getOtherCodes()==null || this.getOtherCodes().isEmpty())) return codeDiff/4;
 		Iterator<String> it = li.getOtherCodes().iterator();
 		while(it.hasNext()){
 			int diff2 = getHierarchyDiff(it.next());

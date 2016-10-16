@@ -260,7 +260,6 @@ item_arr = new Array();
 	<!--  <a href="exp_stages.xhtml" target="new">exp dev</a>-->
 	<!--  <a href="alert('not yet available, will show the development of the experts script during the case');">exp dev</a>-->
 </div>
-<!-- <div> <h:form id="cnxform"><span class="errormsg" id="msg_cnxform"></span></h:form></div>-->
 <div class="boxes_container">
 	<div id="canvas" class="canvas jtk-surface drag-drop jtk-surface-nopan" >
 		 <!--   <div id="pat_box" class="container" group="pat_group">
@@ -318,7 +317,7 @@ item_arr = new Array();
 		  			</span>-->
 		  		</div>	
 		  		<!-- <div class="node-collapse"></div>	  -->		
-		  			<div class="search boxchild"><input class="f_text" onkeyup="javascript:storeHistory('ddx');" placeholder="#{prop['search']} ..." id="ddx" title="#{prop['ddx.search']}"></input></div>
+		  			<div class="search boxchild"><input class="f_text" onkeyup="javascript:storeHistory('ddx');" placeholder="#{prop['search']} ..." id="ddx" mytooltip="#{prop['ddx.search']}"></input></div>
 			  			<h:form id="ddxform">
 						<h:panelGroup >
 							<ui:repeat value="#{crtContext.patillscript.diagnosesWithoutFinals}" var="ddx" varStatus="status">
@@ -356,7 +355,7 @@ item_arr = new Array();
 		  			</span>-->
 		  		</div>
 		 	 	<!-- <div class="node-collapse"></div>-->
-		  		<div class="search boxchild"><input class="f_text" onkeyup="javascript:storeHistory('tests');" placeholder="#{prop['search']} ..." id="tests" title="#{prop['tests.search']}"></input></div>
+		  		<div class="search boxchild"><input class="f_text" onkeyup="javascript:storeHistory('tests');" placeholder="#{prop['search']} ..." id="tests" mytooltip="#{prop['tests.search']}"></input></div>
 		  			<h:form id="testform">
 		  			<h:panelGroup>
 					
@@ -383,7 +382,7 @@ item_arr = new Array();
 		  		</span>-->
 		  	</div>
 		 	<!--   <div class="node-collapse"></div>-->
-		  	<div class="search boxchild"><input class="f_text" id="mng" onkeyup="javascript:storeHistory('mng');" placeholder="#{prop['search']} ..." title="#{prop['mng.search']}"></input></div>
+		  	<div class="search boxchild"><input class="f_text" id="mng" onkeyup="javascript:storeHistory('mng');" placeholder="#{prop['search']} ..." mytooltip="#{prop['mng.search']}"></input></div>
 	  			<h:form id="mngform">
 	  			<h:panelGroup>
 	

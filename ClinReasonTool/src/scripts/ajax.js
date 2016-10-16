@@ -42,10 +42,11 @@ function sendAjax(id, callback, type, name, typedinName){
 	clearErrorMsgs();
 	var confirmed = true;
 	if(id=="-99" && displayOwnEntryWarn=="true"){
+		displayOwnEntryWarn = "false"
 		confirmed = confirm(displayOwnEntryWarnMsg);
 	}
 	if(confirmed){
-		if(id=="-99") displayOwnEntryWarn = "false";
+		//if(id=="-99") displayOwnEntryWarn = "false";
 		sendAjaxUrl(id, callback, type, name, typedinName, ajaxUrl);
 	}
 /*	else{//empty boxes -> too early

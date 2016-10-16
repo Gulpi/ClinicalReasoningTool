@@ -24,7 +24,8 @@ var isSuccess = false;
 	            minLength: minLengthTypeAhead,
 	            select: function( event, ui ) {
 	            	isSuccess = true;
-	            	addProblem(ui.item.value, ui.item.label, $("#problems").val());	            	
+	            	addProblem(ui.item.value, ui.item.label, $("#problems").val());	 
+	            	ui.item.value = ""; //necessary if action is cancelled
 	            },
 	  	      	close: function(ui) {
 	  	      		$("#problems").val("");
@@ -38,6 +39,7 @@ var isSuccess = false;
 		            select: function( event, ui ) {
 		            	isSuccess = true;
 		            	addDiagnosis(ui.item.value, ui.item.label, $("#ddx").val());
+		            	ui.item.value = ""; //necessary if action is cancelled
 		            },
 		  	      	close: function(ui) {
 		  	      		$("#ddx").val("");
@@ -50,6 +52,7 @@ var isSuccess = false;
 		            select: function( event, ui ) {
 		            	isSuccess = true;
 		            	addTest(ui.item.value, ui.item.label, $("#tests").val());
+		            	ui.item.value = ""; //necessary if action is cancelled
 		            },
 		  	      	close: function(ui) {
 		  	      		$("#tests").val("");
@@ -62,6 +65,7 @@ var isSuccess = false;
 		            select: function( event, ui ) {
 		            	isSuccess = true;
 		            	addManagement(ui.item.value, ui.item.label, $("#mng").val());
+		            	ui.item.value = ""; //necessary if action is cancelled
 		            },
 		  	      	close: function(ui) {
 		  	      		$("#mng").val("");

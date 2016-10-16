@@ -97,8 +97,6 @@ public class StringUtilities {
 	 * @return
 	 */
 	public static boolean similarStrings(String item1, String item2, Locale loc){
-		if(item1.equalsIgnoreCase("Sichelzellanämie") || item2.equalsIgnoreCase("Sichelzellanämie"))
-			System.out.println("huhu");
 
 		item1 = item1.replace("-", "");
 		item2 = item2.replace("-", "");

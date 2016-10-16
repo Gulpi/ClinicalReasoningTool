@@ -29,10 +29,8 @@ public class Graph extends DirectedWeightedMultigraph<MultiVertex, MultiEdge> {
 
 	private static final long serialVersionUID = 1L;
 	private String vpId; //e.g. VPId,...
-	//private long userId;
 	private long expertPatIllScriptId;
-	private boolean expEdit = false; //NavigationController.getInstance().isExpEdit();
-	//private boolean peersConsidered = false; //we have to get this from a property file
+	private boolean expEdit = false; 
 	/**
 	 * How many peers have completed this patientIllnessScript? If we have enough we can include the peers into 
 	 * the scoring algorithm.
@@ -417,6 +415,7 @@ public class Graph extends DirectedWeightedMultigraph<MultiVertex, MultiEdge> {
 		StringBuffer sb = new StringBuffer("[");
 		while(it.hasNext()){
 			MultiEdge edge = it.next();
+			boolean showExpEdge = true;
 			//if((edge.getLearnerWeight()>=MultiEdge.WEIGHT_EXPLICIT && edge.getLearnerWeight()<MultiEdge.WEIGHT_PARENT) || (edge.getExpertWeight()>=MultiEdge.WEIGHT_EXPLICIT && edge.getExpertWeight()<MultiEdge.WEIGHT_PARENT)){ //then we add the edge to the concept map
 			if(edge.isExplicitExpertEdge() || edge.isExplicitLearnerEdge()){
 				long cnxId = 0;
@@ -428,7 +427,19 @@ public class Graph extends DirectedWeightedMultigraph<MultiVertex, MultiEdge> {
 					l = "1";
 				}
 				else cnxId = edge.getExpCnxId();
-				if(edge.getExpCnxId()>0) e = "1";
+				if(edge.getExpCnxId()>0){
+					e = "1";
+				}
+				
+				//if(this.expEdit || (edge.getLearnerCnxId()<=0 && edge.getExpertCnx()!=null)){ //then it is only an expert edge and we 
+				int currentStage = NavigationController.getInstance().getMyFacesContext().getPatillscript().getCurrentStage();
+				if(expEdit) currentStage = NavigationController.getInstance().getMyFacesContext().getPatillscript().getStage();
+				if(expEdit && edge.getLearnerCnx()!=null && edge.getLearnerCnx().getStage()>currentStage) 
+					showExpEdge = false;
+				
+				else if(edge.getExpertCnx()!=null && edge.getLearnerCnx()==null && edge.getExpertCnx().getStage()>0 && edge.getExpertCnx().getStage()>currentStage) 
+					showExpEdge = false;
+				//}
 				MultiVertex sourceVertex = edge.getSource();
 				MultiVertex targetVertex = edge.getTarget();
 				if((e.equals("1") && l.equals("0"))){ //only expert cnx, do not include connections for which the vertices have not yet been added
@@ -451,7 +462,7 @@ public class Graph extends DirectedWeightedMultigraph<MultiVertex, MultiEdge> {
 					//startIdWithPrefix = GraphController.getPrefixByType(sourceVertex.getType())+sourceVertex.getExpertVertex().getId(); 	
 					targetIdWithPrefix = GraphController.getPrefixByType(targetVertex.getType())+targetVertex.getExpertVertex().getId();
 				}
-				if(cnxId>0 && startIdWithPrefix!=null && targetIdWithPrefix!=null){
+				if(cnxId>0 && startIdWithPrefix!=null && targetIdWithPrefix!=null && showExpEdge){
 					sb.append("{\"id\":\""+GraphController.PREFIX_CNX + cnxId+"\",");
 					sb.append("\"l\":\""+l+"\", \"e\":\""+e+"\",");
 					sb.append("\"sourceid\": \""+startIdWithPrefix+"\",\"targetid\": \""+targetIdWithPrefix+"\",");

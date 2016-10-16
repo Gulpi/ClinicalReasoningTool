@@ -215,7 +215,7 @@ function getAllLearnerConnectionBySourceAndTargetId(sourceId, targetId){
 	var counter = 0;
 	for(var i =0; i<cns.length; i++){
 		cnx = cns[i];
-		if(cnx.sourceId==sourceId && cnx.targetId==targetId && !cnx.id.startsWith("exp")){
+		if(cnx.sourceId==sourceId && cnx.targetId==targetId && !cnx.id.startsWith("exp") && !cnx.id.startsWith("con_")){
 			//alert(cnx.getParameter("class"));
 			cnxArr[counter] = cnx;
 			counter ++;

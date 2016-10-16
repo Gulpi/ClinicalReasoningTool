@@ -36,15 +36,6 @@ public class MultiEdge extends DefaultWeightedEdge{
 	 * value = weight (for peers the number of conx)
 	 */
 	Map<Integer, Integer> types;
-	/*private int edgeExplicitInPeers = WEIGHT_NONE; //how many peers have included this cnx.
-	private int edgeImplicitInPeers = WEIGHT_NONE;
-	private int edgeInexpPatIllScript = WEIGHT_NONE; //has expert make a implicit/explicit conx
-	private int edgeInLearnerPatIllScript = WEIGHT_NONE;
-	private int edgeInIllScript = WEIGHT_NONE; //can be none or explicit (no implicit!)*/
-	//private long sourceId;
-	//private long targetId; 
-	//private long learnerCnxId;
-	//private long expCnxId;
 	private Connection learnerCnx;
 	private Connection expertCnx;
 	public MultiEdge(){}

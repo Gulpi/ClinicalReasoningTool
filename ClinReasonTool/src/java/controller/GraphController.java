@@ -129,10 +129,12 @@ public class GraphController implements Serializable{
 		if(patIllScript==null || patIllScript.getDiagnoses()==null) return;
 		for(int i=0; i < patIllScript.getDiagnoses().size(); i++){
 			//add problems -> ddx
-			for(int j=0; j < patIllScript.getProblems().size(); j++){
-				//graph.addImplicitEdge(sourceId, targetId, type);
-				if(patIllScript.getProblems().get(j)!=null && patIllScript.getDiagnoses().get(i)!=null)
-					graph.addImplicitEdge(patIllScript.getProblems().get(j).getListItemId(), patIllScript.getDiagnoses().get(i).getListItemId(), illScriptType);
+			if(patIllScript.getProblems()!=null){
+				for(int j=0; j < patIllScript.getProblems().size(); j++){
+					//graph.addImplicitEdge(sourceId, targetId, type);
+					if(patIllScript.getProblems().get(j)!=null && patIllScript.getDiagnoses().get(i)!=null)
+						graph.addImplicitEdge(patIllScript.getProblems().get(j).getListItemId(), patIllScript.getDiagnoses().get(i).getListItemId(), illScriptType);
+				}
 			}
 			/*for(int j=0; j < patIllScript.getEpis().size(); j++){
 				//graph.addImplicitEdge(sourceId, targetId, type);
@@ -141,14 +143,17 @@ public class GraphController implements Serializable{
 			}*/
 
 			//add ddx -> tests
-			for(int j=0; j < patIllScript.getTests().size(); j++){
-				graph.addImplicitEdge(patIllScript.getDiagnoses().get(i).getListItemId(), patIllScript.getTests().get(j).getListItemId(), illScriptType);
+			if(patIllScript.getTests()!=null){
+				for(int j=0; j < patIllScript.getTests().size(); j++){
+					graph.addImplicitEdge(patIllScript.getDiagnoses().get(i).getListItemId(), patIllScript.getTests().get(j).getListItemId(), illScriptType);
+				}
 			}
 			//add ddx -> mng
-			for(int j=0; j < patIllScript.getMngs().size(); j++){
-				graph.addImplicitEdge(patIllScript.getDiagnoses().get(i).getListItemId(), patIllScript.getMngs().get(j).getListItemId(), illScriptType);
+			if(patIllScript.getMngs()!=null){
+				for(int j=0; j < patIllScript.getMngs().size(); j++){
+					graph.addImplicitEdge(patIllScript.getDiagnoses().get(i).getListItemId(), patIllScript.getMngs().get(j).getListItemId(), illScriptType);
+				}
 			}
-
 		}
 	}
 	

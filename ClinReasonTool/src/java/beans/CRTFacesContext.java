@@ -13,6 +13,7 @@ import javax.servlet.http.HttpSession;
 import application.AppBean;
 import application.Monitor;
 import beans.graph.Graph;
+import beans.relation.Connection;
 import beans.scoring.*;
 import beans.scripts.*;
 import beans.user.User;
@@ -257,6 +258,18 @@ public class CRTFacesContext extends FacesContextWrapper implements MyFacesConte
 		
 		long endms = System.currentTimeMillis();
 	    CRTLogger.out("End Session init:"  + (endms-startms) + " ms", CRTLogger.LEVEL_PROD);
+	    if(patillscript!=null){
+	    	PatientIllnessScript pi = AppBean.getExpertPatIllScript(this.patillscript.getVpId());
+	    	if(pi==null || pi.getConns()==null) CRTLogger.out("expscript: no cnxs",CRTLogger.LEVEL_PROD);
+	    	else{
+	    		Iterator it = pi.getConns().values().iterator();
+	    		while(it.hasNext()){
+	    			Connection cnx = (Connection) it.next();
+	    			CRTLogger.out("expscript: cnx id: " + cnx.getId(), CRTLogger.LEVEL_PROD);
+	    		}	    		
+	    	}
+	    }
+	    
 
 	}
 	

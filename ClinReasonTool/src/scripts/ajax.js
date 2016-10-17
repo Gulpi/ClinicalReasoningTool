@@ -460,7 +460,7 @@ function toggleStoredContainerCollapsed(type){
  */
 function postEnforceFinalDDXSubmission(isSubmitted/*, currentStage, maxStageForSubmission*/){
 	var message = 1; //default 
-	if(isSubmitted!="true" && currentStage>=maxSubmittedStage) message  = 0; 
+	if(isSubmitted!="true" && parseInt(currentStage)>=parseInt(maxSubmittedStage)) message  = 0; 
 	
 	top.postMessage(message, "*");
 }

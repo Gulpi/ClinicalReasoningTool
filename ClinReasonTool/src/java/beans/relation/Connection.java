@@ -13,7 +13,7 @@ import controller.ConceptMapController;
  * @author ingahege
  *
  */
-public class Connection extends Beans implements Serializable{
+public class Connection extends Beans implements Serializable, Comparable{
 	
 	public static final int WEIGHT_NONE = MultiEdge.WEIGHT_NONE;	
 	public static final int WEIGHT_SLIGHTLY_RELATED = MultiEdge.WEIGHT_SLIGHTLY_RELATED;
@@ -100,6 +100,20 @@ public class Connection extends Beans implements Serializable{
 			if(o instanceof Connection && ((Connection)o).getStartId()==this.startId && ((Connection)o).getTargetId()==this.targetId) return true;
 		}
 		return false;
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Comparable#compareTo(java.lang.Object)
+	 */
+	public int compareTo(Object o) {
+		if(o instanceof Connection){
+			Connection cnx = (Connection) o;
+			if(this.getId() < cnx.getId()) return -1;
+			if(this.getId() > cnx.getId()) return 1;
+			if(this.getId() == cnx.getId()) return 0;
+			
+		}		
+		return 0;
 	}
 	
 

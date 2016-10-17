@@ -32,7 +32,7 @@ import properties.IntlConfiguration;
  */
 /*@ManagedBean(name = "patillscript", eager = true)*/
 @SessionScoped
-public class PatientIllnessScript extends Beans/*extends Node*/ implements IllnessScriptInterface, Serializable /*, PropertyChangeListener*/ {
+public class PatientIllnessScript extends Beans/*extends Node*/ implements Comparable, IllnessScriptInterface, Serializable /*, PropertyChangeListener*/ {
 
 	
 	private static final long serialVersionUID = 1L;
@@ -585,6 +585,16 @@ public class PatientIllnessScript extends Beans/*extends Node*/ implements Illne
 	 */
 	public String getVPName(){
 		return AppBean.getVPNameByVPId(this.vpId);
+	}
+	
+	public int compareTo(Object o) {
+		if(o instanceof PatientIllnessScript){
+			PatientIllnessScript pat = (PatientIllnessScript) o;
+			if(this.getId() < pat.getId()) return -1;
+			if(this.getId() > pat.getId()) return 1;
+			if(this.getId() == pat.getId()) return 0;			
+		}		
+		return 0;
 	}
 
 }

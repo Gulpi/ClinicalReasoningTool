@@ -19,7 +19,7 @@ import beans.scripts.*;
  */
 @ManagedBean(name = "analyticsbean", eager = true)
 @SessionScoped
-public class LearningAnalyticsBean extends Beans implements Serializable{
+public class LearningAnalyticsBean extends Beans implements Serializable, Comparable{
 	
 	private long userId; 
 	/**
@@ -146,4 +146,14 @@ public class LearningAnalyticsBean extends Beans implements Serializable{
 	public long getUserId() {return userId;}
 	public long getPatIllScriptId() {return patIllScriptId;}
 	public String getVpId() {return vpId;}
+	
+	public int compareTo(Object o) {
+		if(o instanceof LearningAnalyticsBean){
+			LearningAnalyticsBean lab = (LearningAnalyticsBean) o;
+			if(this.getPatIllScriptId() < lab.getPatIllScriptId()) return -1;
+			if(this.getPatIllScriptId() > lab.getPatIllScriptId()) return 1;
+			if(this.getPatIllScriptId() == lab.getPatIllScriptId()) return 0;			
+		}		
+		return 0;
+	}
 }

@@ -25,6 +25,7 @@ import beans.LogEntry;
 import database.DBClinReason;
 import properties.IntlConfiguration;
 import util.CRTLogger;
+import util.StringUtilities;
 
 public class AddConnectionAction implements Scoreable{
 
@@ -67,7 +68,9 @@ public class AddConnectionAction implements Scoreable{
 			startEpIdx = Integer.parseInt(startEpIdxStr);
 			targetEpIdx = Integer.parseInt(targetEpIdxStr);
 		}
-		catch(Exception e){}
+		catch(Exception e){
+			CRTLogger.out("AddConnectionAction.add(), Exception: " + StringUtilities.stackTraceToString(e), CRTLogger.LEVEL_ERROR);
+		}
 		
 		addConnection(sourceId, targetId, GraphController.getTypeByPrefix(startType), GraphController.getTypeByPrefix(targetType), MultiEdge.WEIGHT_EXPLICIT, startEpIdx, targetEpIdx);
 	}

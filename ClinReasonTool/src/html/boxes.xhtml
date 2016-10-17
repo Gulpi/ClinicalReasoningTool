@@ -418,7 +418,7 @@ item_arr = new Array();
 
 	 <h:form id="cnxsform">
 		 <h:panelGroup><!-- style="display:none;" -->
-		 	<div id="jsonConns">#{crtContext.graph.jsonConns}</div> </h:panelGroup>
+		 	<div id="jsonConns" style="display:none;">#{crtContext.graph.jsonConns}</div> </h:panelGroup>
 		   <h:commandButton id="hiddenCnxButton" value="RenderSomething" style="visibility:hidden">
 	  		<f:ajax render="@form" onevent="reInitCnxsCallback"></f:ajax>
 		</h:commandButton>		 

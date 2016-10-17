@@ -103,12 +103,14 @@ public class Graph extends DirectedWeightedMultigraph<MultiVertex, MultiEdge> {
 		if(edge==null) return; //should not happen
 		edge.removeExplicitWeight();
 	}
-	
+
 	public MultiEdge getEdgeByCnxId(int illScriptType, long cnxId){
 		if(this.edgeSet()==null) return null;
 		Iterator<MultiEdge> it = this.edgeSet().iterator();
 		while(it.hasNext()){
 			MultiEdge edge = it.next();
+			if(expEdit && edge.getLearnerCnxId()==cnxId) return edge;
+
 			if(illScriptType == IllnessScriptInterface.TYPE_LEARNER_CREATED && edge.getLearnerCnxId()==cnxId) return edge;
 			if(illScriptType == IllnessScriptInterface.TYPE_EXPERT_CREATED && edge.getExpCnxId()==cnxId) return edge;			
 		}
@@ -337,6 +339,7 @@ public class Graph extends DirectedWeightedMultigraph<MultiVertex, MultiEdge> {
 
 	/**
 	 * Returns all vertices added by the expert. 
+	 * Needed/used for Expert script creation
 	 * @return
 	 */
 	public List<MultiVertex> getAllVertices(){
@@ -349,6 +352,23 @@ public class Graph extends DirectedWeightedMultigraph<MultiVertex, MultiEdge> {
 			if( mv.getLearnerVertex()!=null)  list.add(mv);				
 		}
 		return list;
+	}
+	/**
+	 * Returns all edges added by the expert. 
+	 * Needed/used for Expert script creation
+	 * @return
+	 */	
+	public List<MultiEdge> getAllEdges(){
+		Set<MultiEdge> edges = this.edgeSet();
+		if(edges==null || edges.isEmpty()) return null;
+		List<MultiEdge> expEdges = new ArrayList<MultiEdge>();
+		Iterator<MultiEdge> it = edges.iterator();
+		while(it.hasNext()){
+			MultiEdge e = it.next();
+			if(e.isExplicitLearnerEdge()) expEdges.add(e);
+		}
+		
+		return expEdges;
 	}
 	
 	/* (non-Javadoc)

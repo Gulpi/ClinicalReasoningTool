@@ -68,6 +68,9 @@ $(function() {
 	$(".chgstage").on('change',function(){
 		chgStageItem(this);
 	 });
+	$(".chgstage2").on('change',function(){
+		chgStageEdge(this);
+	 });
 
 	$("#jdialog").dialog({
 		autoOpen: false,
@@ -273,12 +276,15 @@ Stage: <span id="stageSpan">#{adminContext.patillscript.stage} </span>
 <div id="jsonConns" style="display:none;">#{adminContext.graph.jsonConns}</div> 
 
 <div id="connContext">
-	<ui:include src="../cnxchange.xhtml" />
+	<ui:include src="expcnxchange.xhtml" />
 </div>
 
 <div id="allitems" style="float:right;width:30%;">
 	<ui:repeat value="#{adminContext.graph.allVertices}" var="nodes" varStatus="status">
 		<ui:include src="items_exp.xhtml" />
+	</ui:repeat>	<hr/>
+		<ui:repeat value="#{adminContext.graph.allEdges}" var="edges" varStatus="status">
+		<ui:include src="edges_exp.xhtml" />
 	</ui:repeat>				
 </div>
 </body>

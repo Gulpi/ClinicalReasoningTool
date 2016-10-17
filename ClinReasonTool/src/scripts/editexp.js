@@ -29,4 +29,11 @@ function chgStageItem(obj){
 	sendAjax(realId, chgStageCallback, "chgStateOfItem", newStage);
 }
 
+function chgStageEdge(obj){
+	var id = obj.id;
+	var realId = id.substring(9);
+	var newStage = $("#"+id).val();
+	sendAjax(realId, chgStageCallback, "chgStateOfEdge", newStage);
+}
+
 function chgStageCallback(){}

@@ -360,6 +360,8 @@ public class PatientIllnessScript extends Beans/*extends Node*/ implements Illne
 	public void expSetFinalDiagnosis(String idStr){new DiagnosisSubmitAction(this).submitExpFinalDiagnosis(idStr);}
 	public void resetFinalDDX(String idStr){new DiagnosisSubmissionRevertAction(this).revertSubmission();}
 	public void chgStateOfItem(String itemId, String newStage){ new ExpChgAction().chgStage(itemId, newStage);}
+	public void chgStateOfEdge(String itemId, String newStage){ new ExpChgAction().chgEdgeStage(itemId, newStage);}
+
 	//public void submitDDX(){new DiagnosisSubmitAction(this).submitDDX();}
 	public void changeTier(String idStr, String tierStr){new DiagnosisSubmitAction(this).changeTier(idStr, tierStr);}
 	public void changeConfidence(String idStr, String confVal){new ChgPatIllScriptAction(this).changeConfidence(idStr, confVal);}

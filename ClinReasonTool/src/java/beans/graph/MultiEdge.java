@@ -22,7 +22,7 @@ public class MultiEdge extends DefaultWeightedEdge{
 	public static final int WEIGHT_SOMEWHAT_RELATED = 4;
 	public static final int WEIGHT_HIGHLY_RELATED = 5;
 	public static final int WEIGHT_SPEAKS_AGAINST = 6;
-	public static final int WEIGHT_PARENT = 7;  //an item higher up in the hierarchy
+	public static final int WEIGHT_PARENT = 7;  //an item higher up in the hierarchy, but implicit
 	public static final int WEIGHT_EXPLICIT_HIERARCHY = 8;
 	
 	public static final int ENDPOINT_RIGHT = 1;
@@ -62,8 +62,23 @@ public class MultiEdge extends DefaultWeightedEdge{
 			if(types.get(new Integer(type)) < weight){
 				types.put(new Integer(type), new Integer(weight));
 			}
+			//we need this in case the old weight was 7 and the new e.g. 4:
+			else if (isImplicitEdge(type) && isExplicitWeight(weight))
+				types.put(new Integer(type), new Integer(weight));
 		}
 	}	
+	
+	private boolean isImplicitEdge(int type){
+		if(types.get(new Integer(type))<=WEIGHT_IMPLICIT) return true;
+		if(types.get(new Integer(type))==WEIGHT_PARENT) return true;
+		
+		return false;
+	}
+	
+	private boolean isExplicitWeight(int weight){
+		if(weight>WEIGHT_IMPLICIT && weight!=WEIGHT_PARENT) return true;
+		return false;
+	}
 	
 	public long getLearnerCnxId() {
 		if(learnerCnx!=null) return learnerCnx.getId();
@@ -207,6 +222,16 @@ public class MultiEdge extends DefaultWeightedEdge{
 		if(learnerCnx!=null) return learnerCnx.getTargetEpIdx();
 		if(expertCnx!=null) return expertCnx.getTargetEpIdx();
 		return -1;
+	}
+	
+	public String getSourceName(){
+		if(this.getSource()!=null) return this.getSource().getLabel();
+		return "";
+	}
+	
+	public String getTargetName(){
+		if(this.getTarget()!=null) return this.getTarget().getLabel();
+		return "";
 	}
 	
 }

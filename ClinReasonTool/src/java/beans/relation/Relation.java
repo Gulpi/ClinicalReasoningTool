@@ -152,7 +152,7 @@ public abstract class Relation extends Beans implements Rectangle{
 	}
 	public boolean getIsExpertHierarchyItem(){
 		String expLabel = getExpItemLabel();
-		if(expLabel==null || expLabel.isEmpty()) return false;
+		if(expLabel==null || expLabel.isEmpty() || expLabel.trim().equals("")) return false;
 		return true;
 	}
 	

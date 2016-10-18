@@ -77,9 +77,17 @@ function updateItemCallback(data, items, boxId){
 				 
 				instance.draggable(jsPlumb.getSelector("#"+id));
 				 $( "#"+id).draggable({
-				        containment:"parent"
+				        containment:"parent",
+			        	start: function(event, ui) {             
+			                // $(ui.helper).find('.tooltip').hide(); 
+			                 $('.ui-tooltip').remove();
+			             }, 
 				  });
 			     $( "#"+id).draggable({
+		    	 start: function(event, ui) {             
+		                // $(ui.helper).find('.tooltip').hide(); 
+		                 $('.ui-tooltip').remove();
+		             }, 
 			   	  stop: function( event, ui ) {
 			   		  handleRectDrop(ui);
 			   	  }

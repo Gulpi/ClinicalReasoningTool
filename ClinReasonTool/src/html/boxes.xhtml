@@ -82,15 +82,12 @@ $(function() {
 	if(scriptlang=="de") listUrl = "jsonp_de.json";
 	$(".listdialog").hide();
 	$("#jdialogError").hide();
-	//$("#jdialog").hide();
 	$("#connContext").hide();
 	$("#help").hide();
 	$("#summStText").on('change',function(){
-		//setDirtySummSt();
 		saveSummSt('#{crtContext.patillscript.summStId}');
 	 });
 	checkSubmitBtn();
-	//toggleBefAfterSubmitOnLoad();
 
  
 
@@ -171,8 +168,13 @@ $(function() {
       	items: "[mytooltip]",
       	position: { my: "left+5 center", at: "right center" },
       	content: function() {
-        var element = $( this );
-		return $( this ).attr( "mytooltip" );
+        	var element = $( this );
+        	var parent = $( this ).parent();
+			//only show tooltip if item is currently not dragged
+       		if (!$(parent).is('.ui-draggable-dragging')) {
+       		    return $( this ).attr( "mytooltip" );
+       		}
+
 		}
     });
 });
@@ -205,7 +207,12 @@ jsPlumb.ready(function () {
         $( ".drag-drop .itembox" ).draggable({
         	  stop: function( event, ui ) {
         		  handleRectDrop(ui);
-        	  }
+        	  },	
+	        start: function(event, ui) {             
+	            // $(ui.helper).find('.tooltip').hide(); 
+	             $('.ui-tooltip').remove();
+	         }, 
+        
         });
        
         initGroups(instance);
@@ -290,7 +297,7 @@ item_arr = new Array();
 		  			<div class="search boxchild"><span class="icon"><i class="icon-search"></i></span>
 		  			<input type="text" id="fdg_prefix" style="display:none;" />
 		  			<!-- <select class="f_select" style="width:40px;" id="fdg_prefix"><option value="0">-</option><option value="1">#{prop['no']}</option></select>-->
-		  			<input class="f_text" onkeyup="javascript:storeHistory('problems');" id="problems" placeholder="#{prop['search']} ..." mytooltip="#{prop['findings.search']}"></input></div>
+		  			<input class="f_text" onkeyup="javascript:storeHistory('problems');" onFocus="javascript:hideTooltips();" id="problems" placeholder="#{prop['search']} ..." mytooltip="#{prop['findings.search']}"></input></div>
 						<h:form id="probform">
 						<h:panelGroup>
 						   <ui:repeat id="repeatprob" value="#{crtContext.patillscript.problems}" var="prob" varStatus="status">
@@ -318,7 +325,7 @@ item_arr = new Array();
 		  			</span>-->
 		  		</div>	
 		  		<!-- <div class="node-collapse"></div>	  -->		
-		  			<div class="search boxchild"><input class="f_text" onkeyup="javascript:storeHistory('ddx');" placeholder="#{prop['search']} ..." id="ddx" mytooltip="#{prop['ddx.search']}"></input></div>
+		  			<div class="search boxchild"><input class="f_text" onkeyup="javascript:storeHistory('ddx');" onFocus="javascript:hideTooltips();"  placeholder="#{prop['search']} ..." id="ddx" mytooltip="#{prop['ddx.search']}"></input></div>
 			  			<h:form id="ddxform">
 						<h:panelGroup >
 							<ui:repeat value="#{crtContext.patillscript.diagnosesWithoutFinals}" var="ddx" varStatus="status">
@@ -356,7 +363,7 @@ item_arr = new Array();
 		  			</span>-->
 		  		</div>
 		 	 	<!-- <div class="node-collapse"></div>-->
-		  		<div class="search boxchild"><input class="f_text" onkeyup="javascript:storeHistory('tests');" placeholder="#{prop['search']} ..." id="tests" mytooltip="#{prop['tests.search']}"></input></div>
+		  		<div class="search boxchild"><input class="f_text" onkeyup="javascript:storeHistory('tests');" onFocus="javascript:hideTooltips();"  placeholder="#{prop['search']} ..." id="tests" mytooltip="#{prop['tests.search']}"></input></div>
 		  			<h:form id="testform">
 		  			<h:panelGroup>
 					
@@ -383,7 +390,7 @@ item_arr = new Array();
 		  		</span>-->
 		  	</div>
 		 	<!--   <div class="node-collapse"></div>-->
-		  	<div class="search boxchild"><input class="f_text" id="mng" onkeyup="javascript:storeHistory('mng');" placeholder="#{prop['search']} ..." mytooltip="#{prop['mng.search']}"></input></div>
+		  	<div class="search boxchild"><input class="f_text" id="mng" onkeyup="javascript:storeHistory('mng');" onFocus="javascript:hideTooltips();"  placeholder="#{prop['search']} ..." mytooltip="#{prop['mng.search']}"></input></div>
 	  			<h:form id="mngform">
 	  			<h:panelGroup>
 	
@@ -411,7 +418,7 @@ item_arr = new Array();
 		 	 <textarea style="display:none;" id="summStTextHidden" cols="65" rows="4">#{crtContext.patillscript.summSt.text}</textarea>
 				<textarea class="f_textarea boxchild sum_textarea" name="summSt" id="summStText" cols="65" rows="3">#{crtContext.patillscript.summSt.text}</textarea>
 		  		<!-- <a href="javascript:saveSummSt('#{crtContext.patillscript.summStId}');" title="Save your summary statement"><i class="icon-floppy"></i></a>-->
-			 	<span class="errormsg" id="msg_sumstform">hallo</span>
+			 	<span class="errormsg" id="msg_sumstform"></span>
 			 	<span id="list_score_sum" class="list_score_sum" style="color:green; display:none;"> #{crtContext.patillscript.summStExp}</span> 		  
 		<input type="text" id="sumstanchor" style="visibility:hidden;"/></div>
 	</div>

@@ -789,6 +789,10 @@ function hideAllDropDowns(){
 function clearErrorMsgs(){
 	$(".errormsg").html("");
 }
+
+function hideTooltips(){
+	$('.ui-tooltip').remove();
+}
 /**
  * opens the help dialog
  */

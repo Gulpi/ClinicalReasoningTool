@@ -22,7 +22,7 @@ var isSuccess = false;
 	           /* source: data,*/
 	        	source: doMatch,
 	            minLength: minLengthTypeAhead,
-	            select: function( event, ui ) {
+	            select: function( event, ui ) {	        		
 	            	isSuccess = true;
 	            	addProblem(ui.item.value, ui.item.label, $("#problems").val());	 
 	            	ui.item.value = ""; //necessary if action is cancelled
@@ -97,6 +97,8 @@ var isSuccess = false;
    * matches the user input with the list labels. Also considers multiple terms and negations
    */
 function doMatch(request,response){
+	$('.ui-tooltip').remove();
+
 	if (request.term == "") { //user has entered nothing, so we return here....
 		response( $.map( item_data, function( item ) {
 			return {
@@ -110,6 +112,7 @@ function doMatch(request,response){
 	else {
 		
 		var my_map = $.map( item_data, function( item ) {
+			 
 			if(item.label=="") return;
 			if(item.value=="-99"){
 				var myid = item.id;
@@ -202,7 +205,7 @@ function handleClose(type){
 }
 
 var start_de_arr=["kei", "kein", "keine"];
-var start_en_arr=["no"];
+var start_en_arr=["no "];
 function checkStartUserInput(user_input){
 	var my_arr = start_en_arr;
 	if(scriptlang=="de") my_arr = start_de_arr;

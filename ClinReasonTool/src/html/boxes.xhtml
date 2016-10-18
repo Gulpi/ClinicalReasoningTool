@@ -70,6 +70,7 @@ var submitted = "#{crtContext.patillscript.submitted}";
 var presubmitted = "#{crtContext.patillscript.submitted}";
 //if user has clicked on showSolution we record this here:
 var showSolutionStage = "#{crtContext.patillscript.showSolution}";
+var saveSumConfirm = "#{prop['summst.saveconfirm']}";
 var instance;
 var item_arr = new Array();
 var exp_arr = new Array();
@@ -410,7 +411,7 @@ item_arr = new Array();
 		 	 <textarea style="display:none;" id="summStTextHidden" cols="65" rows="4">#{crtContext.patillscript.summSt.text}</textarea>
 				<textarea class="f_textarea boxchild sum_textarea" name="summSt" id="summStText" cols="65" rows="3">#{crtContext.patillscript.summSt.text}</textarea>
 		  		<!-- <a href="javascript:saveSummSt('#{crtContext.patillscript.summStId}');" title="Save your summary statement"><i class="icon-floppy"></i></a>-->
-			 	<span class="errormsg" id="msg_sumstform"></span>
+			 	<span class="errormsg" id="msg_sumstform">hallo</span>
 			 	<span id="list_score_sum" class="list_score_sum" style="color:green; display:none;"> #{crtContext.patillscript.summStExp}</span> 		  
 		<input type="text" id="sumstanchor" style="visibility:hidden;"/></div>
 	</div>

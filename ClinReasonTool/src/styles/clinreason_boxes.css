@@ -121,7 +121,7 @@ select.f_select{
 	background: -webkit-linear-gradient(right, #088A29 0%, #FE2E2E 100%, #ffffff 100%);
 	background: -ms-linear-gradient(right, #088A29 0%, #FE2E2E 100%, #ffffff 100%);
 	background: -o-linear-gradient(right, #088A29 0%, #FE2E2E 100%, #ffffff 100%);
-	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#088A29, endColorstr=#ffffff,GradientType=1);
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#FE2E2E, endColorstr=#088A29,GradientType=1);
 }
 
 

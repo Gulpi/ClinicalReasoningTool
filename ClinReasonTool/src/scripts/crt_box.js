@@ -564,9 +564,9 @@ function saveSummSt(id){
 }
 
 function saveSummStatementCallBack(data){
-	if(isCallbackStatusSuccess(data)){
-		$("#msg_sumstform").html("Changes have been saved.");	
-	}
+	//if(isCallbackStatusSuccess(data)){
+	$("#msg_sumstform").html(saveSumConfirm);	
+	//}
 }
 
 

@@ -7,6 +7,7 @@ import javax.faces.context.FacesContext;
 
 import application.AppBean;
 import beans.CRTFacesContext;
+import beans.MyFacesContext;
 
 /**
  * Handles the setting/getting of the Locale. We have two kinds of LOcale - the language of the script and the language of the navigation elements. 
@@ -21,7 +22,7 @@ public class LocaleController {
 	private static Locale defaulLoc = new Locale("en");
 	
 	public static Locale getLocale(){
-		CRTFacesContext cnxt =  (CRTFacesContext) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get(CRTFacesContext.CRT_FC_KEY);
+		MyFacesContext  cnxt = NavigationController.getInstance().getMyFacesContext();
 		return cnxt.getLocale();		
 	}
 

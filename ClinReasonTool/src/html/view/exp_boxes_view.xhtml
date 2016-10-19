@@ -52,7 +52,6 @@
 </style>
 <script language="JavaScript">
 
-var test = "#{adminContext.initSession}";
 var hideCnxTitle = "#{prop['cnx.hide']}";
 var showCnxTitle = "#{prop['cnx.show']}";
 var submitDialogTitle = "#{prop['submit.dialog.title']}";
@@ -172,10 +171,10 @@ Stage: <span id="stageSpan">#{adminContext.patillscript.stage} </span>
 	<!--  <a href="alert('not yet available, will show the development of the experts script during the case');">exp dev</a>-->
 </div>
 <div class="boxes_container" style="float:left;width:60%;">
-	<div id="canvas" class="canvas jtk-surface drag-drop jtk-surface-nopan" style="height:750px; max-height:750px;">
+	<div id="canvas" class="canvas jtk-surface drag-drop jtk-surface-nopan" style="width:750px;height:750px; max-height:750px;">
 		  <!-- problems -->
 		  <div id="fdg_box"  class="container viewcontainer" group="fdg_group">
-		   		<div class="title">#{prop['findings']} </div>
+		   		<div class="title" style="font-size:16px;">#{prop['findings']} </div>
 		   		<div class="node-collapse"></div>
 						<h:form id="probform">
 						<h:panelGroup>
@@ -191,14 +190,10 @@ Stage: <span id="stageSpan">#{adminContext.patillscript.stage} </span>
 						</h:form>
 						<span class="errormsg" id="msg_probform"></span>
 		  </div>
-		 <div id="sum_box" class="container sum_container_view" group="sum_group">	
-		 	<div class="title">#{prop['summst']}</div>
-		 	 <div class="node-collapse"></div>
-		 	 #{adminContext.patillscript.summStStage.text}
-		</div>
+
 		  <!--  diagnoses -->
 		  <div id="ddx_box" class="container viewcontainer" group="ddx_group">	
-		  		<div class="title">#{prop['ddx']}</div>	
+		  		<div class="title" style="font-size:16px;">#{prop['ddx']}</div>	
 		  		<div class="node-collapse"></div>	  		
 			  			<h:form id="ddxform">
 						<h:panelGroup >
@@ -213,7 +208,7 @@ Stage: <span id="stageSpan">#{adminContext.patillscript.stage} </span>
 		  </div>
 		  <!-- tests -->
 		  <div id="tst_box" class="container viewcontainer" group="tst_group">
-		  		<div class="title">#{prop['tests']}</div>
+		  		<div class="title" style="font-size:16px;">#{prop['tests']}</div>
 		 	 	<div class="node-collapse"></div>
 		  			<h:form id="testform">
 		  			<h:panelGroup>
@@ -232,7 +227,7 @@ Stage: <span id="stageSpan">#{adminContext.patillscript.stage} </span>
 		</div>
 		  <!-- managements -->
 		  <div id="mng_box" class="container viewcontainer" group="mng_group">
-		  	<div class="title">#{prop['mng']}</div>
+		  	<div class="title" style="font-size:16px;">#{prop['mng']}</div>
 		 	 <div class="node-collapse"></div>
 	  			<h:form id="mngform">
 	  			<h:panelGroup>
@@ -248,6 +243,11 @@ Stage: <span id="stageSpan">#{adminContext.patillscript.stage} </span>
 				<span class="errormsg" id="msg_mngform"></span>
 				
 	  		</div>
+	  		<div id="sum_box" class="container sum_container_view" group="sum_group">	
+		 	<div class="title" style="font-size:16px;">#{prop['summst']}</div>
+		 	 <div class="node-collapse"></div>
+		 	 <span style="font-size:16px;">  #{adminContext.patillscript.summStStage.text}</span>
+		</div>
 	</div>
 </div>
 <div id="jsonConns" style="display:none;">#{adminContext.graph.jsonConns}</div> 

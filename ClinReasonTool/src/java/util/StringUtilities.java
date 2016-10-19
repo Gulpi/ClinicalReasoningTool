@@ -174,12 +174,12 @@ public class StringUtilities {
 		//if(s1.equals("Abdomen, Acute") || item2.equals("Abdomen, Acute"))
 		//	System.out.println("Leven: " + leven + ", fuzzy: " + fuzzy + " Item1: " + item1 + " Item2: " + item2);
 
-		if(leven < MIN_LEVEN_DISTANCE /*&& firstLetterItem1.equalsIgnoreCase(firstLetterItem2)*/){
+		if(leven < MIN_LEVEN_DISTANCE && fuzzy>=MAX_FUZZY_DISTANCE/*&& firstLetterItem1.equalsIgnoreCase(firstLetterItem2)*/){
 			return true; //these items are not added
 		}
-		if(fuzzy>=MAX_FUZZY_DISTANCE){
+		/*if(fuzzy>=MAX_FUZZY_DISTANCE){
 			return true;			
-		}
+		}*/
 		return false;
 		
 	}

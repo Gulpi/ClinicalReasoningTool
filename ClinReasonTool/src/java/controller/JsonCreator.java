@@ -122,62 +122,6 @@ public class JsonCreator {
 		return true;
 	}
 	
-	/*private void setIdsForSyn(){
-		DBClinReason dbcr = new DBClinReason();
-		List<Synonym> l = dbcr.selectSynonyma();
-		long counter = 142620;
-		for(int i=0; i<l.size(); i++){
-			l.get(i).setId(counter);
-			dbcr.saveAndCommit(l.get(i));
-			counter++;
-		}
-	}*/
-	
-	/**
-	 * We check all Synonyma for the given ListItem and add them to the list if they are not too similar to the main 
-	 * listItem or any already added synonyma of this ListItem.
-	 * @param item
-	 * @param pw
-	 * @return
-	 */
-	/*private int addSynonyma(ListItem item, StringBuffer sb){
-		if(item.getSynonyma()==null) return 0;
-		List<Synonym> addedSyn = new ArrayList<Synonym>();
-		Iterator<Synonym> it = item.getSynonyma().iterator();
-		int counter = 0;
-		//we store the best term here -> optimally one word
-		String bestTerm = item.getName();
-
-		while(it.hasNext()){	
-			Synonym syn = it.next();
-			if(!syn.isIgnored()){
-				boolean isSimilar = StringUtilities.similarStrings(item.getName(), syn.getName(), item.getLanguage());
-				if(isSimilar){
-					bestTerm = bestTerm(bestTerm,syn.getName());
-				}
-				else{ //then it has enough difference to add 
-					//now check similarity to already added synonyma: 
-					boolean doAdd = true;
-					if(addedSyn!=null || !addedSyn.isEmpty()){
-						for(int i=0; i < addedSyn.size(); i++){
-							boolean isSimilar2 = StringUtilities.similarStrings(syn.getName(), addedSyn.get(i).getName(), syn.getLocale());
-							if(isSimilar2){ //then we have found a similar item
-								doAdd = false;
-								bestTerm = bestTerm(bestTerm, syn.getName());
-								break;
-							}
-						}
-					}
-					addedSyn.add(syn);
-					if(doAdd){
-						sb.append("{\"label\": \""+syn.getName()+"\", \"value\": \""+Synonym.SYN_VERTEXID_PREFIX+syn.getId()+"\"},\n");
-						counter++;
-					}
-				}
-			}
-		}
-		return counter;
-	}*/
 	
 	private int addItemAndSynonymaNew(ListItem item, StringBuffer sb/*PrintWriter pw, boolean lastEntry*/){
 		List<ListInterface> toAddItems = new ArrayList<ListInterface>();
@@ -193,6 +137,9 @@ public class JsonCreator {
 				if(!syn.isIgnored()){
 					boolean isSimilar = false;
 					for(int i=0;i<toAddItems.size(); i++){
+						if(item.getItem_id()==14847){
+							System.out.println("");
+						}
 						isSimilar = StringUtilities.similarStrings(toAddItems.get(i).getName(), syn.getName(), item.getLanguage());
 						if(isSimilar){
 							ListInterface bestItem = bestTerm(toAddItems.get(i),syn);
@@ -216,28 +163,7 @@ public class JsonCreator {
 		return toAddItems.size();
 	}					
 					
-					
-		/*			if(!isSimilar){
-						bestTerm = bestTerm(bestTerm,syn.getName());
-					}
-					else{ //then it has enough difference to add 
-						//now check similarity to already added synonyma: 
-						boolean doAdd = true;
-						if(addedSyn!=null || !addedSyn.isEmpty()){
-							for(int i=0; i < addedSyn.size(); i++){
-								boolean isSimilar2 = StringUtilities.similarStrings(syn.getName(), addedSyn.get(i).getName(), syn.getLocale());
-								if(isSimilar2){ //then we have found a similar item
-									doAdd = false;
-									bestTerm = bestTerm(bestTerm, syn.getName());
-									break;
-								}
-							}
-						}
-					}
-				}
-			}*/
-			//now add the items to the list:
-
+			
 	
 	private ListInterface bestTerm(ListInterface currBestTerm, ListInterface newTerm){
 		

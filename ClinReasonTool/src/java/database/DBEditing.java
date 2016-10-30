@@ -21,6 +21,12 @@ public class DBEditing extends DBClinReason{
     	criteria.add(Restrictions.eq("type", new Integer(PatientIllnessScript.TYPE_EXPERT_CREATED)));
     	criteria.add(Restrictions.eq("userId", new Long(userId)));
     	List<PatientIllnessScript> patIllScripts = criteria.list();
+    	if(patIllScripts!=null){
+    		for(int i=0; i<patIllScripts.size(); i++){
+    			PatientIllnessScript patIllScript = patIllScripts.get(i);
+    			patIllScript.setSummSt(loadSummSt(patIllScript.getSummStId()));
+    		}
+    	}
     	s.close();
     	return patIllScripts;  	
     }

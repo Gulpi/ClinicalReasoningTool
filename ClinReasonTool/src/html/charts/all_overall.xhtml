@@ -15,11 +15,11 @@
 
 var overalldata = [];
 var overallpeerdata = [];
-<ui:repeat value="#{crtContext.learningAnalyticsContainer.overallScores}" var="scoreItem4">
-overalldata.push({ x: "#{scoreItem4.vpId}", y: #{scoreItem4.scoreBasedOnExpPerc}, title: "#{scoreItem4.vpName}"});
+<ui:repeat value="#{crtContext.learningAnalyticsContainer.overallScores}" var="scoreItem5">
+overalldata.push({ x: "#{scoreItem5.vpId}", y: #{scoreItem5.scoreBasedOnExpPerc}, title: "#{scoreItem5.vpName}"});
 </ui:repeat>
-<ui:repeat value="#{crtContext.learningAnalyticsContainer.overallPeerScores}" var="scoreItemP">
-	overallpeerdata.push({ x: "#{scoreItemP.vpId}", y: #{scoreItemP.expPeerPercentagePerc}, title: "#{scoreItemP.vpName}" });
+<ui:repeat value="#{crtContext.learningAnalyticsContainer.overallPeerScores}" var="scoreItemPo">
+	overallpeerdata.push({ x: "#{scoreItemPo.vpId}", y: #{scoreItemPo.expPeerPercentagePerc}, title: "#{scoreItemPo.vpName}" });
 </ui:repeat>
 
 //overalldata.push({x:"1313", y:63});

@@ -127,6 +127,7 @@ public class FeedbackController {
 		PatientIllnessScript expScript = AppBean.getExpertPatIllScript(vpId);
 		//if for some reason we cannot get the expertscript just consider the stage:
 		if(expScript==null && stage>=4) return 1;
+		if(stage<=2) return 0;
 		if(expScript==null && stage<4) return 0;
 		if(expScript.getSummSt()==null) return 0; //expert has no summary statement
 		if(stage > expScript.getSummSt().getStage()) return 1;

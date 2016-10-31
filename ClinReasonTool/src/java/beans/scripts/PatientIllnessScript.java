@@ -19,6 +19,7 @@ import beans.scoring.LearningAnalyticsBean;
 import beans.scoring.LearningAnalyticsContainer;
 import beans.scoring.ScoreBean;
 import controller.AjaxController;
+import controller.FeedbackController;
 import controller.IllnessScriptController;
 import controller.NavigationController;
 import controller.ScoringController;
@@ -202,7 +203,9 @@ public class PatientIllnessScript extends Beans/*extends Node*/ implements Compa
 		else return IntlConfiguration.getValue("submit.slider.after") + " " + IntlConfiguration.getValue("confidence.veryhigh") +".";
 	}
 	public void setConfidence(int confidence) {this.confidence = confidence;}
-	public long getSummStId() {return summStId;}
+	public long getSummStId() {
+		return summStId;
+		}
 	public void setSummStId(long summStId) {this.summStId = summStId;}	
 	public Note getNote() {return note;}
 	public void setNote(Note note) {this.note = note;}
@@ -596,5 +599,27 @@ public class PatientIllnessScript extends Beans/*extends Node*/ implements Compa
 		}		
 		return 0;
 	}
-
+	
+	public int getProblemsDiff(){
+		if(this.isExpScript()) return 0;
+		return FeedbackController.getInstance().getItemsDiffExpForStage(currentStage, getProblems(), Relation.TYPE_PROBLEM);
+	}
+	public int getDDXDiff(){
+		if(this.isExpScript()) return 0;
+		if(this.getSubmitted()) return 0; //if diagnosis has been made, we do not have to make the box red any longer...
+		return FeedbackController.getInstance().getItemsDiffExpForStage(currentStage, getDiagnoses(), Relation.TYPE_DDX);
+	}
+	public int getTestsDiff(){
+		if(this.isExpScript()) return 0;
+		return FeedbackController.getInstance().getItemsDiffExpForStage(currentStage, getTests(), Relation.TYPE_TEST);
+	}
+	public int getMngsDiff(){
+		if(this.isExpScript()) return 0;
+		return FeedbackController.getInstance().getItemsDiffExpForStage(currentStage, getMngs(), Relation.TYPE_MNG);
+	}
+	
+	public int getSumDiff(){
+		if(this.getSummStId()>0) return 0;
+		return FeedbackController.getInstance().getSumStDiffForStage(currentStage, vpId);
+	}
 }

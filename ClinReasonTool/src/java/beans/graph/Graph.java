@@ -331,8 +331,21 @@ public class Graph extends DirectedWeightedMultigraph<MultiVertex, MultiEdge> {
 			if(mv.getType()==type && mv.getExpertVertex()!=null && !mv.isLearnerVertex()){
 				if(mv.getExpertVertex().getStage() >= startStage && mv.getExpertVertex().getStage()<=endStage)
 					list.add(mv);
-			}
-								
+			}								
+		}
+		return list;
+	}
+	public List<MultiVertex> getVerticesByTypeAndStageRangeExp(int type, int startStage, int endStage){
+		Set<MultiVertex> verts = this.vertexSet();
+		if(verts==null) return null;
+		List<MultiVertex> list = new ArrayList<MultiVertex>();
+		Iterator<MultiVertex> it = verts.iterator();
+		while(it.hasNext()){
+			MultiVertex mv = it.next();
+			if(mv.getType()==type && mv.getExpertVertex()!=null){
+				if(mv.getExpertVertex().getStage() >= startStage && mv.getExpertVertex().getStage()<=endStage)
+					list.add(mv);
+			}								
 		}
 		return list;
 	}

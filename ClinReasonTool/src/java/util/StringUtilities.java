@@ -98,10 +98,20 @@ public class StringUtilities {
 	 */
 	public static boolean similarStrings(String item1, String item2, Locale loc){
 
-		item1 = item1.replace("-", "");
-		item2 = item2.replace("-", "");
+		item1 = item1.replace("-", " ");
+		item2 = item2.replace("-", " ");
 		item1 = item1.replace(",", "");
 		item2 = item2.replace(",", "");
+		item1 = item1.replace("'", "");
+		item2 = item2.replace("'", "");
+		item1 = item1.replace("ö", "oe");
+		item2 = item2.replace("ö", "oe");
+		item1 = item1.replace("ä", "ae");
+		item2 = item2.replace("ä", "ae");
+		item2 = item2.replace("ß", "ss");
+		item1 = item1.replace("ß", "ss");
+		item1 = item1.replace("ü", "ue");
+		item2 = item2.replace("ü", "ue");
 		if(isMatchBasedOnLevelAndFuzzy(item1, item2, loc)) return true;
 		
 		//if we have multiple words we split them and compare them separately
@@ -168,12 +178,17 @@ public class StringUtilities {
 	
 	private static boolean isMatchBasedOnLevelAndFuzzy(String s1, String s2, Locale loc){
 		int leven = StringUtils.getLevenshteinDistance(s1, s2);
-		int fuzzy = StringUtils.getFuzzyDistance(s1, s2, loc);
+		int fuzzy = StringUtils.getFuzzyDistance(s1.toLowerCase(), s2.toLowerCase(), loc);
 		
 		//compare Strings as they are:
 		//if(s1.equals("Abdomen, Acute") || item2.equals("Abdomen, Acute"))
 		//	System.out.println("Leven: " + leven + ", fuzzy: " + fuzzy + " Item1: " + item1 + " Item2: " + item2);
+		if(leven ==2 && fuzzy>20 && fuzzy<MAX_FUZZY_DISTANCE)
+			System.out.println(s1 + ", " + s2 + ", leven " + leven + ", fuzzy: " + fuzzy);
 
+		if(s1.length()>3 && leven == 1 && fuzzy > 1) return true; 
+		if(leven == 2 && fuzzy > 30) return true; 
+		
 		if(leven < MIN_LEVEN_DISTANCE && fuzzy>=MAX_FUZZY_DISTANCE/*&& firstLetterItem1.equalsIgnoreCase(firstLetterItem2)*/){
 			return true; //these items are not added
 		}

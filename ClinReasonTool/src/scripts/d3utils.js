@@ -9,8 +9,8 @@ function printBarChart(data, height, width, chartName, title){
    nv.addGraph({
         generate: function() {
             var chart = nv.models.discreteBarChart()
-            	.staggerLabels(true)
-            	.showValues(true)
+            	.staggerLabels(false)
+            	.showValues(false)
             	.duration(1)
             ;
 
@@ -45,7 +45,7 @@ function printBarChart(data, height, width, chartName, title){
  * the individual performance (or vv).
  */
 function printGroupedBarChart(data, peerdata, height, width, chartName, title){
-	var data1 = [];
+	var data1 = [];//createDataArrs(data, peerdata); //[];
 	data1[0] = {key: chartLabelMe , nonStackable: 1 ,values: data};
 	data1[1] = {key: chartLabelPeer , nonStackable: 1, values: peerdata};
 	

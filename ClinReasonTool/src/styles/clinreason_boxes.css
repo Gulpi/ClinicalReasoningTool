@@ -336,21 +336,21 @@ a#ddx_submit_btn, errorsymbol.a{
 /* changing bg color for boxes if nothing is entered:*/
 .contcol_1{
 	/*background-color:#006699 !important;*/
-	background:#006699;
+	/*background:#006699;*/
 	/*background: rgb(187,187,187); */
-	background: -moz-linear-gradient(top,  rgba(187,187,187,1) 0%, rgba(205,205,205,1) 100%); /* FF3.6-15 */
-	background: -webkit-linear-gradient(top,  rgba(187,187,187,1) 0%,rgba(205,205,205,1) 100%); /* Chrome10-25,Safari5.1-6 */
-	background: linear-gradient(to bottom,  rgba(100,100,100,1) 0%,rgba(200,200,200,1) 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
-	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#006699', endColorstr='#cdcdcd',GradientType=0 ); /* IE6-9 */
+	background: -moz-linear-gradient(top,  rgba(192, 8, 21,1) 0%, rgba(253, 206, 209,1) 100%) !important; /* FF3.6-15 */
+	background: -webkit-linear-gradient(top,  rgba(192, 8, 21,1) 0%,rgba(253, 206, 209,1) 100%) !important; /* Chrome10-25,Safari5.1-6 */
+	background: linear-gradient(to bottom,  rgba(192, 8, 21,1) 0%,rgba(253, 206, 209,1) 100%) !important; /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#c00815', endColorstr='#fdced1',GradientType=0 ) !important; /* IE6-9 */
  
 }
 
 .contcol_2{
-	/*background-color:#006666 !important;*/
-	background: -moz-linear-gradient(top,  rgba(100,100,100,1) 0%, rgba(200,200,200,1) 100%) !important; /* FF3.6-15 */
-	background: -webkit-linear-gradient(top,  rgba(100,100,100,1) 0%,rgba(200,200,200,1) 100%) !important; /* Chrome10-25,Safari5.1-6 */
-	background: linear-gradient(to bottom,  rgba(100,100,100,1) 0%,rgba(200,200,200,1) 100%) !important; /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
-	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#006666', endColorstr='#cdcdcd',GradientType=0 ) !important; /* IE6-9 */
+	/*background-color:#006666 !important; 179,0,0 */
+	background: -moz-linear-gradient(top,  rgba(192, 8, 21,1) 0%, rgba(253, 206, 209,1) 100%) !important; /* FF3.6-15 */
+	background: -webkit-linear-gradient(top,  rgba(192, 8, 21,1) 0%,rgba(253, 206, 209,1) 100%) !important; /* Chrome10-25,Safari5.1-6 */
+	background: linear-gradient(to bottom,  rgba(192, 8, 21,1) 0%,rgba(253, 206, 209,1) 100%) !important; /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#c00815', endColorstr='#fdced1',GradientType=0 ) !important; /* IE6-9 */
  
 }
 

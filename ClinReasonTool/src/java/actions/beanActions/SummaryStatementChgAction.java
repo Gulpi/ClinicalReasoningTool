@@ -38,7 +38,7 @@ public class SummaryStatementChgAction /*extends ChgAction*/{
 	 * @param text
 	 */
 	public void updateOrCreateSummaryStatement(String summStId, String text){
-		if(patIllScript.getSummSt()==null || summStId.equals("-1")) createSummaryStatement(text);
+		if(patIllScript.getSummSt()==null /*|| summStId.equals("-1")*/) createSummaryStatement(text);
 		else updateSummaryStatement(text);
 	}
 	

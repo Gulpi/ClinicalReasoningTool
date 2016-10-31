@@ -149,7 +149,7 @@ public class LearningAnalyticsContainer implements Serializable{
 	public List<PeerBean> getSumPeerScores(){ return getPeerScoresLastStage(ScoreBean.TYPE_SUMMST);}
 	public List<PeerBean> getOverallPeerScores(){ 
 		if(AppBean.getPeers()==null) return null;
-		PatIllScriptContainer cont = new NavigationController().getCRTFacesContext().getScriptContainer();
+		PatIllScriptContainer cont = NavigationController.getInstance().getCRTFacesContext().getScriptContainer();
 		return AppBean.getPeers().getPeerBeansByAction(ScoreBean.TYPE_OVERALL_SCORE, cont);
 		//return getPeerScores(ScoreBean.TYPE_OVERALL_SCORE);
 	}
@@ -171,7 +171,7 @@ public class LearningAnalyticsContainer implements Serializable{
 			ScoreContainer scoreContainer = it.next().getScoreContainer();
 			if(scoreContainer!=null){
 				ScoreBean score = scoreContainer.getListScoreBeanOfLastStage(type);
-				if(score!=null) l.add(score);
+				if(score!=null && score.getScoreBasedOnExp()>=0) l.add(score);
 			}
 		}
 		return l;
@@ -194,7 +194,7 @@ public class LearningAnalyticsContainer implements Serializable{
 				if(score==null){
 					score = new ScoringOverallAction().scoreAction(lab);
 				}
-				if(score!=null) l.add(score);
+				if(score!=null &&score.getScoreBasedOnExp()>=0) l.add(score);
 			}
 		}
 		return l;

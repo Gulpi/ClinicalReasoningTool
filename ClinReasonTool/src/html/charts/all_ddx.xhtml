@@ -13,7 +13,7 @@
 var ddxdata = [];
 var ddxpeerdata = [];
 <ui:repeat value="#{crtContext.learningAnalyticsContainer.DDXScores}" var="scoreItem2">
-	ddxdata.push({x:"#{scoreItem2.vpId}", y:#{scoreItem2.scoreBasedOnExpPerc}, title: "#{scoreItem4.vpName}" });
+	ddxdata.push({x:"#{scoreItem2.vpId}", y:#{scoreItem2.scoreBasedOnExpPerc}, title: "#{scoreItem2.vpName}" });
 </ui:repeat>
 <ui:repeat value="#{crtContext.learningAnalyticsContainer.DDXPeerScores}" var="scoreItemP">
 	ddxpeerdata.push({x:"#{scoreItemP.vpId}", y:#{scoreItemP.expPeerPercentagePerc} , title: "#{scoreItemP.vpName}"});

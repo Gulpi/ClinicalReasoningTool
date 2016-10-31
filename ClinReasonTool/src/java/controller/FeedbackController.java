@@ -1,9 +1,14 @@
 package controller;
 
+import java.util.List;
+
+import application.AppBean;
 import beans.graph.Graph;
 import beans.graph.MultiVertex;
+import beans.relation.Relation;
 import beans.scoring.ScoreBean;
 import beans.scoring.ScoreContainer;
+import beans.scripts.PatientIllnessScript;
 
 /**
  * Handles all kinds of feedback displayed to the learner (except the direct scoring, which is handled by the ScoringController): 
@@ -13,7 +18,12 @@ import beans.scoring.ScoreContainer;
  *
  */
 public class FeedbackController {
+	static private FeedbackController instance = new FeedbackController();
+	static public FeedbackController getInstance() { return instance; }
+	public static final int SLIGHT_RED_BOX_CUTOFF = 3; //if the difference between learner and exp item num is >=3 we make the box slightly red
+	public static final int RED_BOX_CUTOFF = 5; //if the difference between learner and exp item num is >=5 we make the box slightly red
 	
+
 	/**
 	 * Give feedback for an added item for the mouseover texts over checkmarks. 
 	 * @param type
@@ -73,5 +83,53 @@ public class FeedbackController {
 		if(scoreBean.getExpItemId()>0) return true;
 		return false;
 		//if(scoreBean.getScoreBasedOnExp()>0 && scoreBean.getScoreBasedOnExp()<1) return true;
+	}
+	
+	/**
+	 * We calculate the difference of number of items the expert has added and number of items the learner has added.
+	 * If the difference becomes too big, we change the color of the box to indicate that the learner should do something.
+	 * expnum-learnernum >=0 && <=3 -> 0
+	 * expnum-learnernum >3 && <=5 -> 1
+	 * expnum-learnernum >5 -> 2
+	 * @param stage
+	 * @param items
+	 * @param type
+	 * @return 0 (normal), 1 (slight red), 2 (dark red)
+	 */
+	public int getItemsDiffExpForStage(int stage, List items, int type){
+		if(stage==1) return 0; //we do not do anything in the beginning
+		Graph g = NavigationController.getInstance().getCRTFacesContext().getGraph();
+		//we use stage-1 to avoid that already on opening the next card a box is turned to red: 
+		List<MultiVertex> expVertices = g.getVerticesByTypeAndStageRangeExp(type, 1, stage-1);
+		//expert has no items:
+		if(expVertices==null || expVertices.isEmpty()) return 0;
+		//learner has no items:
+		if(items==null ||items.isEmpty()){
+			if(expVertices.size()<= SLIGHT_RED_BOX_CUTOFF) return 0;
+			if(expVertices.size()> RED_BOX_CUTOFF) return 2;
+			return 1;
+		}
+		//learner has same or more items:
+		if(expVertices.size() - items.size()<=0) return 0;
+		//learner has less items:
+		if(expVertices.size() - items.size() <= SLIGHT_RED_BOX_CUTOFF) return 0;
+		if(expVertices.size() - items.size() > RED_BOX_CUTOFF) return 2;
+		return 1;		
+	}
+	
+	/** We make the summary statement box light red if expert has added a summary statement and the learner is past 
+	 * the stage at which the expert did it. 
+	 * @param stage
+	 * @param vpId
+	 * @return
+	 */
+	public int getSumStDiffForStage(int stage, String vpId){
+		PatientIllnessScript expScript = AppBean.getExpertPatIllScript(vpId);
+		//if for some reason we cannot get the expertscript just consider the stage:
+		if(expScript==null && stage>=4) return 1;
+		if(expScript==null && stage<4) return 0;
+		if(expScript.getSummSt()==null) return 0; //expert has no summary statement
+		if(stage > expScript.getSummSt().getStage()) return 1;
+		return 0;
 	}
 }

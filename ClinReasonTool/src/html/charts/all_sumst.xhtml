@@ -12,8 +12,8 @@
 <script language="JavaScript">
 	var sumdata = [];
 	var sumpeerdata = [];
-	<ui:repeat value="#{crtContext.learningAnalyticsContainer.sumScores}" var="scoreItem4">
-		sumdata.push({ x: "#{scoreItem4.vpId}", y: #{scoreItem4.scoreBasedOnExpPerc}, title: "#{scoreItem4.vpName}" });
+	<ui:repeat value="#{crtContext.learningAnalyticsContainer.sumScores}" var="scoreItem6">
+		sumdata.push({ x: "#{scoreItem6.vpId}", y: #{scoreItem6.scoreBasedOnExpPerc}, title: "#{scoreItem6.vpName}" });
 	</ui:repeat>
 	<ui:repeat value="#{crtContext.learningAnalyticsContainer.sumPeerScores}" var="scoreItemP">
 		sumpeerdata.push({ x: "#{scoreItemP.vpId}", y: #{scoreItemP.expPeerPercentagePerc} });

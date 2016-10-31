@@ -14,7 +14,7 @@
 	var probdata = [];//[1212,0.1]; //{key:"stud", bar:true, values:[1212,1]};	
 	var probpeerdata = []; //[{1212,0.5}]; //{key:"peer", values: [1212,1]};
 	<ui:repeat value="#{crtContext.learningAnalyticsContainer.problemScores}" var="scoreItem">
-		probdata.push({x:"#{scoreItem.vpId}", y:#{scoreItem.scoreBasedOnExpPerc}, title: "#{scoreItem4.vpName}"});
+		probdata.push({x:"#{scoreItem.vpId}", y:#{scoreItem.scoreBasedOnExpPerc}, title: "#{scoreItem.vpName}"});
 		</ui:repeat>
 	<ui:repeat value="#{crtContext.learningAnalyticsContainer.problemPeerScores}" var="scoreItemP">
 		probpeerdata.push({x:"#{scoreItemP.vpId}", y:#{scoreItemP.expPeerPercentagePerc}, title: "#{scoreItemP.vpName}"});

@@ -286,7 +286,7 @@ item_arr = new Array();
 		  </div>-->
 		  <!-- problems -->
 		  <div id="fdg_box"  class="container fdg_cont" group="fdg_group">
-		   		<div class="title">#{prop['findings']} 
+		   		<div id="fdg_title" class="title contcol_#{crtContext.patillscript.problemsDiff}">#{prop['findings']} 
 		   			<!--  <span class="icons">
 		   				<a href="javascript:addJokerFdg();" title="#{prop['findings.joker']}"><i mytooltip="#{prop['findings.joker']}" class="fa fa-puzzle-piece"></i></a> 
 		   				<a href="javascript:togglePeersFdg();" title="#{prop['findings.peers']}"><i mytooltip="#{prop['findings.peers']}" class="fa fa-users_off" id="peerFeedbackFdg"></i></a> 
@@ -312,12 +312,12 @@ item_arr = new Array();
 						</h:commandButton>
 												
 						<!-- <h:messages errorClass="errorMessage" infoClass="infoMessage" showDetail="true" showSummary="true"/>-->						
-						</h:form>
+						 </h:form>
 						<span class="errormsg" id="msg_probform"></span>
 		  </div>
 		  <!--  diagnoses -->
 		  <div id="ddx_box" class="container ddx_cont" group="ddx_group">	
-		  		<div class="title">#{prop['ddx']}
+		  		<div id="ddx_title" class="title contcol_#{crtContext.patillscript.DDXDiff}">#{prop['ddx']}
 		  			<!--  <span class="icons">
 		  				<a href="javascript:addJokerDDX();" title="#{prop['ddx.joker']}"><i mytooltip="#{prop['ddx.joker']}" class="fa fa-puzzle-piece"></i></a> 
 		   				<a href="javascript:togglePeersDDX();" title="#{prop['ddx.peers']}"><i mytooltip="#{prop['ddx.peers']}" class="fa fa-users_off" id="peerFeedbackDDX"></i></a> 
@@ -355,7 +355,7 @@ item_arr = new Array();
 		  </div>
 		  <!-- tests -->
 		  <div id="tst_box" class="container tst_cont" group="tst_group">
-		  		<div class="title">#{prop['tests']}
+		  		<div id="tst_title" class="title  contcol_#{crtContext.patillscript.testsDiff}">#{prop['tests']}
 		  			<!--  <span class="icons">
 		  				<a href="javascript:addJokerTest();" title="#{prop['tests.joker']}"><i mytooltip="#{prop['tests.joker']}" class="fa fa-puzzle-piece"></i></a> 
 		   				<a href="javascript:togglePeersTest();" title="#{prop['tests.peers']}"><i mytooltip="#{prop['tests.peers']}" class="fa fa-users_off" id="peerFeedbackTest"></i></a> 
@@ -382,7 +382,7 @@ item_arr = new Array();
 		</div>
 		  <!-- managements -->
 		  <div id="mng_box" class="container mng_cont" group="mng_group">
-		  	<div class="title">#{prop['mng']}
+		  	<div id="mng_title"  class="title contcol_#{crtContext.patillscript.mngsDiff}">#{prop['mng']}
 		  		<!-- <span class="icons">
 		  			<a href="javascript:addJokerMng();" title="#{prop['mng.joker']}"><i mytooltip="#{prop['mng.joker']}" class="fa fa-puzzle-piece"></i></a> 
 		   			<a href="javascript:togglePeersMng();" title="#{prop['mng.peers']}"><i mytooltip="#{prop['mng.peers']}" class="fa fa-users_off" id="peerFeedbackMng"></i></a> 
@@ -409,7 +409,7 @@ item_arr = new Array();
 				
 	  		</div>
 		 <div id="sum_box" class="container sum_container" group="sum_group">	
-		 	<div class="title">#{prop['summst']}
+		 	<div id="sum_title"  class="title contcol_#{crtContext.patillscript.sumDiff}">#{prop['summst']}
 		 		<span class="icons sumicons">
 		 			<a href="javascript:toggleSumFeedback('expFeedbackSum', 14);" title="#{prop['summst.exp']}"><i mytooltip="#{prop['summst.exp']}" class="fa fa-user-md_off" id="expFeedbackSum"></i></a>
 		 		</span>

@@ -22,7 +22,29 @@
 function addProblem(problemId, name, typedinName){
 	clearErrorMsgs();
 	var prefix = $("#fdg_prefix").val();
-	if(name!="") sendAjax(problemId, problemCallBack, "addProblem", prefix, typedinName);
+	
+	if(name!=""){
+		checkBoxColorOnAdd("fdg_title", "fdgs");
+		sendAjax(problemId, problemCallBack, "addProblem", prefix, typedinName);
+	}
+}
+
+/**
+ * we check whether we have to change the box color from red to light red/gray when an item has been added.
+ * @param titleId
+ * @param boxnames
+ */
+function checkBoxColorOnAdd(titleId, boxnames){
+	if($("#"+titleId).hasClass("contcol_0")) return; 
+	var learnerNumItems = $("."+boxnames);
+	var expNumItems = $(".exp"+boxnames);
+	var learnerNum = learnerNumItems.length;
+	var expNum = expNumItems.length;
+	$("#"+titleId).removeClass("contcol_1");
+	$("#"+titleId).removeClass("contcol_2");
+	if(expNum - learnerNum > 5) $("#"+titleId).addClass("contcol_2") ;
+	else if(expNum - learnerNum > 3) $("#"+titleId).addClass("contcol_1") ;
+	else  $("#"+titleId).addClass("contcol_0");	
 }
 
 
@@ -85,7 +107,10 @@ function togglePeersFdg(){
  */
 function addDiagnosis(diagnId, name, typedinName){
 	clearErrorMsgs();
-	if(name!="") sendAjax(diagnId, diagnosisCallBack, "addDiagnosis", name, typedinName);
+	if(name!=""){
+		checkBoxColorOnAdd("ddx_title", "ddxs");
+		sendAjax(diagnId, diagnosisCallBack, "addDiagnosis", name, typedinName);
+	}
 		//sendAjaxUrlHtml(diagnId, diagnosisAddCallBack, "addDiagnosis", name, "ddxbox2.xhtml");
 }
 
@@ -442,7 +467,10 @@ function initSubmittedDialog(){
  */
 function addManagement(mngId, name, typedinName){
 	clearErrorMsgs();
-	if(name!="") sendAjax(mngId, managementCallBack, "addMng", name, typedinName);
+	if(name!=""){
+		checkBoxColorOnAdd("mng_title", "mngs");
+		sendAjax(mngId, managementCallBack, "addMng", name, typedinName);
+	}
 }
 
 function delManagement(id){
@@ -504,7 +532,10 @@ function togglePeersMng(){
  */
 function addTest(testId, name, typedinName){
 	clearErrorMsgs();
-	if(name!="") sendAjax(testId, testCallBack, "addTest", name, typedinName);
+	if(name!=""){
+		checkBoxColorOnAdd("tst_title", "tests");
+		sendAjax(testId, testCallBack, "addTest", name, typedinName);
+	}
 }
 
 function delTest(id){

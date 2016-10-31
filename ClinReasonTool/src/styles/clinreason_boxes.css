@@ -370,15 +370,15 @@ a#ddx_submit_btn, errorsymbol.a{
 }
 
 .viewcontainer{
-	/* min-height: 210px;
-	 width:310px;*/
+	/* min-height: 210px;*/
+	 width:250px;
 }
 
 .container .footer {display:block;}
 
 .sum_container_view{
-	/*width: 630px !important;
-	min-height:80px;*/
+	width: 500px !important;
+	min-height:80px;
 
 }
 
@@ -672,7 +672,7 @@ span.icons{
 /* we have broader boxes for a view-only/print interfaces (e.g. for reviewers)*/
 .viewbox{
 	width:120px;
-	font-size:15px;
+	/*font-size:15px;*/
 }
 
 .expbox{

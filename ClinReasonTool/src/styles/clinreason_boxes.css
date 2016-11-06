@@ -270,6 +270,14 @@ a#ddx_submit_btn, errorsymbol.a{
 	top:5px;
 }
 
+.movlinkde_en{
+	display:none;
+}
+
+.movlinken_de{
+	display:none;
+}
+
 /*cnx toggle button */
 .cnx_on{
 	float:left;

@@ -43,6 +43,8 @@ public class AjaxController {
 	public static final String REQPARAM_SYSTEM = "system_id"; //are the query params encoded (true | false)
 	public static final String REQPARAM_CHARTPEER = "chart_peer"; //are the query params encoded (true | false)
 	public static final String REQPARAM_EXTUID = "uid"; //are the query params encoded (true | false)
+	public static final String REQPARAM_REPORTS_VP = "r_vp_id"; //are the query params encoded (true | false)
+	public static final String REQPARAM_REPORTS_SCRIPT_ID = "r_scriptid"; //are the query params encoded (true | false)
 
 	static private AjaxController instance = new AjaxController();
 	static public AjaxController getInstance() { return instance; }
@@ -140,6 +142,23 @@ public class AjaxController {
 			CRTLogger.out(StringUtilities.stackTraceToString(e), CRTLogger.LEVEL_ERROR);
 		}
     	responseAjax(externalContext, reqParams.get("id"));
+
+	}
+	
+	public void receiveResportsAjax(ReportBean b) throws IOException{
+		ExternalContext externalContext = FacesContextWrapper.getCurrentInstance().getExternalContext();
+		Map<String, String> reqParams = externalContext.getRequestParameterMap();
+		String methodName = reqParams.get("type");
+		String idStr = reqParams.get(REQPARAM_REPORTS_VP);
+    	Statement stmt = new Statement(b, methodName, new Object[]{idStr});
+    	
+    	try {
+			stmt.execute();				
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			CRTLogger.out(StringUtilities.stackTraceToString(e), CRTLogger.LEVEL_ERROR);
+		}
+    	responseAjax(externalContext, reqParams.get(REQPARAM_REPORTS_VP));
 
 	}
 	

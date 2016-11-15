@@ -4,6 +4,7 @@ import java.beans.Beans;
 import java.sql.Timestamp;
 
 import application.AppBean;
+import properties.IntlConfiguration;
 
 /**
  * A PeerBean models the peers responses for a single action or scoring.
@@ -57,6 +58,10 @@ public class PeerBean extends Beans{
 	public String getVpId() {return vpId;}
 	public void setVpId(String vpId) {this.vpId = vpId;}
 	public int getAction() {return action;}
+	public String getActionStr() {
+		if(action<0) return "-";
+		return IntlConfiguration.getValue("reports.action."+action);
+	}
 	public void setAction(int action) {this.action = action;}
 	public long getItemId() {return itemId;}
 	public void setItemId(long itemId) {this.itemId = itemId;}

@@ -23,6 +23,7 @@ public class VPScriptRef {
 	 */
 	private String parentId;
 
+	public VPScriptRef(){}
 	public long getVpId() {return vpId;}
 	public long getInternalId() {return internalId;}
 	public void setInternalId(long internalId) {this.internalId = internalId;}

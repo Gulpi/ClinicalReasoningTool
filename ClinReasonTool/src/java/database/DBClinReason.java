@@ -120,9 +120,9 @@ public class DBClinReason /*extends HibernateUtil*/{
      * @param parentId
      * @return IllnessScript or null
      */
-    public List<IllnessScript> selectIllScriptByParentId(long parentId){
+   /* public List<IllnessScript> selectIllScriptByParentId(long parentId){
     	return selectIllScripts(parentId, "parentId");
-    }
+    }*/
     
     /**
      * Select the PatientIllnessScript for the parentId (e.g. vpId) from the database. 
@@ -173,9 +173,9 @@ public class DBClinReason /*extends HibernateUtil*/{
      * @param sessionId
      * @return PatientIllnessScript or null
      */
-    public PatientIllnessScript selectPatIllScriptBySessionId(long sessionId){
+    /*public PatientIllnessScript selectPatIllScriptBySessionId(long sessionId){
     	return selectLearnerPatIllScript(sessionId, "sessionId");
-    }
+    }*/
     
     /**
      * Select the PatientIllnessScript of the expert, which is identified by the parentId and type from the database. 
@@ -192,6 +192,26 @@ public class DBClinReason /*extends HibernateUtil*/{
     	if(patIllScript!=null)
     		patIllScript.setSummSt(loadSummSt(patIllScript.getSummStId()));
     	return patIllScript;  	
+    }
+    
+    /**
+     * loads all learner scripts for a given vpId, called from the reports section....
+     * Doe NOT load the summary statements!!!
+     * @param vpId
+     * @return
+     */
+    public List<PatientIllnessScript> selectLearnerPatIllScriptsByVPId(String vpId){
+    	Session s = instance.getInternalSession(Thread.currentThread(), false);
+    	Criteria criteria = s.createCriteria(PatientIllnessScript.class,"PatientIllnessScript");
+    	criteria.add(Restrictions.eq("vpId", vpId));
+    	criteria.add(Restrictions.eq("type", new Integer(PatientIllnessScript.TYPE_LEARNER_CREATED)));
+    	List patIllScripts =  criteria.list();
+    	s.close();
+    	//if(patIllScripts==null) return null;
+    	return patIllScripts;
+    	/*if(patIllScript!=null)
+    		patIllScript.setSummSt(loadSummSt(patIllScript.getSummStId()));
+    	return patIllScript;  */	
     }
    
     

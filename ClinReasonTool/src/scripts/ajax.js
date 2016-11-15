@@ -91,6 +91,19 @@ function sendAjaxAdmin(id, callback, type, name){
 	//sendAjaxUrl(id, callback, type, name, "/crt/src/html/admin/tabs_ajax_admin.xhtml");
 }
 
+function sendAjaxReports(id, callback, type, scriptId){
+	$.ajax({
+		  method: "POST",
+		  url: "/crt/src/html/reports/tabs_ajax_reports.xhtml",
+		  data: { type: type, r_vp_id: id, r_scriptid: scriptId }
+		})
+	  .done(function( response ) {
+		  handleResponse(response, callback, name);		
+	  });	
+
+	//sendAjaxUrl(id, callback, type, name, "/crt/src/html/admin/tabs_ajax_admin.xhtml");
+}
+
 function sendAjaxUrl(id, callback, type, name, orgname, url){
 	$.ajax({
 		  method: "POST",

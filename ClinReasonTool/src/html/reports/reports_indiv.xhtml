@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"   
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      >
+<head>
+<meta http-equiv="EXPIRES" content="0" />
+<meta http-equiv="PRAGMA" content="NO-CACHE" />
+<meta http-equiv="CACHE-CONTROL" content="NO-CACHE" />
+<script type="text/javascript" src="../../scripts/jquery112/jquery.js"></script>
+<script language="JavaScript" src="../../scripts/ajax.js"></script>
+
+<script language="JavaScript" src="../../scripts/admin.js"></script>
+<script language="JavaScript">
+	var test = "#{adminContext.userId}"; //we call getUserId() method to redirect to login page if not yet logged in
+	var selVpId = "#{adminContext.reports.selVpId}";
+	var selScript = "#{adminContext.reports.selScriptId}";
+	
+	$(function() {
+		if(selVpId!=""){
+			$("#report_vpid").val(selVpId);
+		}
+		if(selScript!="")
+			$("#report_scripId").val(selScript);
+	});
+</script>
+</head>
+<body>
+
+	<h:form>
+		<select id="report_vpid" onchange="javascript:selectScriptForVPId();"><option value="-1"></option>
+			<ui:repeat value="#{adminContext.reports.allVPs}" var="vps" varStatus="status">
+			
+				<option value="#{vps.parentId}">#{vps.vpName}</option>
+				</ui:repeat>
+		</select>
+	<select id="report_scripId" onchange="javascript:displayScript();"><option value="-1"></option>
+	<ui:repeat value="#{adminContext.reports.learnerScripts}" var="scripts" varStatus="status">
+		<option value="#{scripts.id}">#{scripts.id}</option>
+	</ui:repeat>
+
+	</select><div style="float:right;width:400px;">
+	<ui:repeat value="#{adminContext.reports.peerBeanByVpId}" var="peers" varStatus="status">
+		num: #{peers.peerNum}, action:  #{peers.actionStr} (#{peers.stage}), scoreReal: #{peers.orgScoreBasedOnExp}, score: #{peers.scoreBasedOnExp}<br/>
+	</ui:repeat></div>	
+	</h:form>
+	<iframe id="report_iframe" width="800px" height="700px"></iframe>
+	
+	
+</body>
+</html>

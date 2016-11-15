@@ -18,6 +18,7 @@ import beans.relation.*;
 import beans.scoring.LearningAnalyticsBean;
 import beans.scoring.LearningAnalyticsContainer;
 import beans.scoring.ScoreBean;
+import beans.user.User;
 import controller.AjaxController;
 import controller.FeedbackController;
 import controller.IllnessScriptController;
@@ -375,6 +376,8 @@ public class PatientIllnessScript extends Beans/*extends Node*/ implements Compa
 	public void addTypeAheadBean(String type){
 		new TypeAheadBean(type).save();}
 	public void save(){
+		User u = NavigationController.getInstance().getMyFacesContext().getUser();
+		if(u!=null && u.getUserId()!=this.userId) return; //so not save if the users do not match!
 		boolean isNew = false;
 		if(getId()<=0) isNew = true;
 		new DBClinReason().saveAndCommit(this);
@@ -491,12 +494,12 @@ public class PatientIllnessScript extends Beans/*extends Node*/ implements Compa
 			int stageNum = Integer.valueOf(stage);
 			//at the next stage we disable the display of the help dialog:
 			if(stageNum==2 && !this.isExpScript()){
-				NavigationController.getInstance().getCRTFacesContext().getUser().getUserSetting().setOpenHelpOnLoad(false);
+				if(NavigationController.getInstance().getMyFacesContext().getUser()!=null)
+					NavigationController.getInstance().getMyFacesContext().getUser().getUserSetting().setOpenHelpOnLoad(false);
 			}
 			this.stage = stageNum; //we always update the stage
-			if(stageNum > this.currentStage){
-				//now done for each action, because otherwise we have no accurate score if user just quits...
-				//new ScoringController().scoringListsForStage(this, currentStage);
+			if(stageNum > this.currentStage && !NavigationController.getInstance().getMyFacesContext().isView()){
+				//we cannot save if the user is an admin and views a learners script
 				this.setCurrentStage(stageNum);	
 				save();
 			}

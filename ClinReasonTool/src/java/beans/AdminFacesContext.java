@@ -41,6 +41,7 @@ public class AdminFacesContext extends FacesContextWrapper implements MyFacesCon
 	private ExpPortfolio adminPortfolio;
 	private PatientIllnessScript patillscript;
 	private Graph graph;
+	private ReportBean reports;
 	
 	public String getTest(){return "hallo";}
 	
@@ -56,6 +57,7 @@ public class AdminFacesContext extends FacesContextWrapper implements MyFacesCon
 	}
 	
 	public void setUser(User u){this.user = u;}
+	public User getUser(){return user;}
 	public Graph getGraph(){return graph;}
 	public long getUserId() {
 		if(user!=null) return user.getUserId();
@@ -63,6 +65,23 @@ public class AdminFacesContext extends FacesContextWrapper implements MyFacesCon
 		return -1;
 	}
 	
+	public boolean isView(){
+		String path = FacesContextWrapper.getCurrentInstance().getExternalContext().getRequestServletPath();
+		if(path!=null && path.contains("view/exp_boxes_view")) return true;
+		return false;
+	}
+	
+	
+	public ReportBean getReports() {
+		if(reports==null)
+			reports = new ReportBean();
+		return reports;
+	}
+
+	public void setReports(ReportBean reports) {
+		this.reports = reports;
+	}
+
 	public AppBean getAppBean(){
 	    ServletContext context = (ServletContext) FacesContext.getCurrentInstance().getExternalContext().getContext();
 	   return (AppBean) context.getAttribute(AppBean.APP_KEY);
@@ -75,6 +94,10 @@ public class AdminFacesContext extends FacesContextWrapper implements MyFacesCon
 	 **/
 	public void ajaxResponseHandler() throws IOException {
 		AjaxController.getInstance().receiveAjax(this.getPatillscript());
+	}
+	
+	public void ajaxResponseHandlerReports() throws IOException{
+		AjaxController.getInstance().receiveResportsAjax(reports);
 	}
 
 	public FacesContext getWrapped() {return FacesContext.getCurrentInstance();}
@@ -116,6 +139,7 @@ public class AdminFacesContext extends FacesContextWrapper implements MyFacesCon
 
 	}
 	public PatientIllnessScript getPatillscript() {return this.patillscript;}
+	public void setPatillscript(PatientIllnessScript pi) {this.patillscript = pi;}
 	public ScoreContainer getScoreContainer(){return null;}
 
 }

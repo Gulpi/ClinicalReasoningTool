@@ -5,6 +5,7 @@ import java.util.Locale;
 import beans.graph.Graph;
 import beans.scoring.ScoreContainer;
 import beans.scripts.PatientIllnessScript;
+import beans.user.User;
 
 public interface MyFacesContext {
 
@@ -14,4 +15,6 @@ public interface MyFacesContext {
 	public void reset();
 	public ScoreContainer getScoreContainer();
 	public Locale getLocale();
+	public User getUser();
+	public boolean isView();
 }

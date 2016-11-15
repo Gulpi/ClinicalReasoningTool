@@ -319,6 +319,9 @@ public class CRTFacesContext extends FacesContextWrapper implements MyFacesConte
 		LocaleController.setLocale();
 		return patillscript;
 	}
+	
+	public boolean isView(){
+		return false;}
 		
 	public void setPatillscript(PatientIllnessScript patillscript) { this.patillscript = patillscript;}	
 	
@@ -390,7 +393,8 @@ public class CRTFacesContext extends FacesContextWrapper implements MyFacesConte
 		return false;
 	}*/
 	
-	public Locale getLocale(){return locale;}//LocaleController.getLocale(this).getLanguage();}	
+	public Locale getLocale(){
+		return locale;}//LocaleController.getLocale(this).getLanguage();}	
 	public String getLanguage(){return locale.getLanguage();}
 	public float getScoreForAllowReSubmit(){
 		return ScoringController.scoreForAllowReSubmit;

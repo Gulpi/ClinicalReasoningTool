@@ -59,7 +59,7 @@ var chgCnxDialogTitle = "#{prop['cnx.dialog.title']}";
 
 var msg2="Please connect the hypotheses with the findings";
 var scriptId = "#{adminContext.patillscript.id}";
-var listUrl="../jsonp_#{adminContext.patillscript.locale}.json";
+var listUrl="";
 var lang = "#{adminContext.patillscript.locale}";
 if(lang=="de") listUrl = "../jsonp_de.json";
 
@@ -158,9 +158,9 @@ item_arr = new Array();
 </head>
 <body style="font-family:arial;" data-demo-id="draggableConnectors" data-library="dom">
 <div>
-ScriptId:  #{adminContext.patillscript.id}<br/>
-VPId: #{adminContext.patillscript.vpId}
-Stage: <span id="stageSpan">#{adminContext.patillscript.stage} </span>
+ScriptId:  #{adminContext.patillscript.id}, VPId: #{adminContext.patillscript.vpId}, Date:  #{adminContext.patillscript.creationDate}<br/>
+
+MaxStage: #{adminContext.patillscript.currentStage}, Stage: <span id="stageSpan">#{adminContext.patillscript.stage} </span>
 <a href="javascript:chgStage(-1, '../view/exp_boxes_view.xhtml');">previous stage</a> <a href="javascript:chgStage(1, '../view/exp_boxes_view.xhtml');">next stage</a>
 
 </div>

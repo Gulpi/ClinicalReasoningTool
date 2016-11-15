@@ -84,7 +84,7 @@ public class AppBean extends ApplicationWrapper implements HttpSessionListener{
 	    }
 	    catch(Exception e){}
 	    //does not have to be done on every restart:
-	    new JsonCreator().initJsonExport(); 
+	    //new JsonCreator().initJsonExport(); 
 	   
 		//MeshImporter.main("en");
 	   // new TextSimilarityComparing().compareTestData();
@@ -196,6 +196,10 @@ public class AppBean extends ApplicationWrapper implements HttpSessionListener{
 	public static String getVPNameByVPId(String id){
 		if(vpScriptRefs==null || vpScriptRefs.get(id)==null) return "";
 		return vpScriptRefs.get(id).getVpName();
+	}
+	
+	public static Map<String,VPScriptRef> getVpScriptRefs(){
+		return vpScriptRefs;
 	}
 
 }

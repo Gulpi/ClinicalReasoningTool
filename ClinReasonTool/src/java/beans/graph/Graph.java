@@ -29,6 +29,11 @@ public class Graph extends DirectedWeightedMultigraph<MultiVertex, MultiEdge> {
 
 	private static final long serialVersionUID = 1L;
 	private String vpId; //e.g. VPId,...
+	/**
+	 * We need this here in addition to the vpId, because we allow redoing a session so there might 
+	 * be multiple scripts for one VPId and it is no longer unique 
+	 */
+	private long patIllScriptId;
 	private long expertPatIllScriptId;
 	private boolean expEdit = false; 
 	/**
@@ -44,18 +49,19 @@ public class Graph extends DirectedWeightedMultigraph<MultiVertex, MultiEdge> {
 	 * @param vpId
 	 * @param isExpEdit
 	 */
-	public Graph(String vpId, boolean isExpEdit){
+	public Graph(String vpId, boolean isExpEdit, long  patIllScriptId){
 		super(MultiEdge.class);
 		this.expEdit = isExpEdit;
-		initGraph(vpId);
+		initGraph(vpId, patIllScriptId);
 	}
-	public Graph(String vpId){
+	public Graph(String vpId, long  patIllScriptId){
 		super(MultiEdge.class);
-		initGraph(vpId);		
+		initGraph(vpId, patIllScriptId);		
 	}
 	
-	private void initGraph(String vpId){
+	private void initGraph(String vpId, long patIllScriptId){
 		this.vpId = vpId;
+		this.patIllScriptId = patIllScriptId;
 		gctrl = new GraphController(this);
 		gctrl.addExpPatIllScript(vpId);
 		gctrl.addLearnerPatIllScript();
@@ -70,9 +76,9 @@ public class Graph extends DirectedWeightedMultigraph<MultiVertex, MultiEdge> {
 	public int getPeerNums() {return peerNums;}
 	public void setPeerNums(int peerNums) {this.peerNums = peerNums;}
 	public String getVpId() {return vpId;}
-	public void setExpEdit(boolean expEdit){ 
-		this.expEdit = expEdit;}
-
+	public void setExpEdit(boolean expEdit){ this.expEdit = expEdit;}
+	public long getPatIllScriptId() {return patIllScriptId;}
+	public void setPatIllScriptId(long patIllScriptId) {this.patIllScriptId = patIllScriptId;}
 	public void addIllScriptId(long id){
 		if(illScriptIds==null) illScriptIds = new ArrayList<Long>();
 		if(!illScriptIds.contains(new Long(id))) illScriptIds.add(new Long(id));
@@ -634,5 +640,11 @@ public class Graph extends DirectedWeightedMultigraph<MultiVertex, MultiEdge> {
 			if(e.isExplicitLearnerEdge()) edges.add(e);
 		}
 		return edges;
+	}
+	
+	public boolean isSameGraph(String vpId, long patillscriptId){
+		if(this.vpId==null || vpId==null || patillscriptId<0) return false;
+		if(this.vpId.equals(vpId) && this.patIllScriptId == patillscriptId) return true;
+		return false;
 	}
 }

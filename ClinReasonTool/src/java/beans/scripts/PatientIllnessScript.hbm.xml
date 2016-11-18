@@ -29,6 +29,7 @@
 	    <property name="peerSync" column="peer_sync" type="boolean"/>
 	     <property name="maxSubmittedStage" column="max_ddx_submitted" type="int"/>
 	     <property name="extUId" column="ext_uid" type="string"/>
+	     <property name="deleteFlag" column="delete_flag" type="boolean"/>
 	     
 	     
 	

@@ -49,6 +49,20 @@ public class ScoreBean extends Beans implements Serializable{
 	public static final int TIME_LATE = 1;
 	public static final int TIME_EARLY = 2;
 	
+	public static final int SCORE_RANGE_LOW = 0;
+	public static final int SCORE_RANGE_MEDIUM = 1;
+	public static final int SCORE_RANGE_HIGH = 2;
+
+	/**
+	 * if a score is <0.3 the score is low
+	 */
+	public static final double SCORE_RANGE_LOW_PERC = 0.3; 
+	/**
+	 * if a score is between SCORE_RANGE_LOW_PERC and 0.7 the score is medium. above that the score is high
+	 */
+	public static final double SCORE_RANGE_MEDIUM_PERC = 0.7;
+	
+	
 	private long id; 
 	private long patIllScriptId; 
 	/**
@@ -61,19 +75,20 @@ public class ScoreBean extends Beans implements Serializable{
 	/**
 	 * current score for this action, is constantly updated, when the user makes changes.
 	 */
-	private float scoreBasedOnExp = -1;
+	private float scoreBasedOnExp = 0;
 	/**
-	 * We store the oroginal score here, which is not changed no matter which changes the learner makes 
+	 * We store the original score here, which is not changed no matter which changes the learner makes 
 	 * the score is 0 if added via a joker or user has seen the experts solution before adding it.
 	 */
-	private float orgScoreBasedOnExp = -1;
+	private float orgScoreBasedOnExp = 0;
 	/**
 	 * percentage of other users who have chosen this item, or average score of peers....
 	 */
-	private float scoreBasedOnPeer = -1;
+	private float scoreBasedOnPeer = 0;
 	//private float scoreBasedOnIllScript = -1;
 	/**
 	 * We can calculate an overall score based on the components expert, peer, illScript,...
+	 * @deprecated (we have more specific scores instead)
 	 */
 	private float overallScore;
 	/**
@@ -114,6 +129,8 @@ public class ScoreBean extends Beans implements Serializable{
 	 */
 	private int distance = -99;
 	
+	private boolean deleteFlag = false;
+	
 	public ScoreBean(){}
 	public ScoreBean(PatientIllnessScript patIllScript, long scoredItem, int type){
 		this.patIllScriptId = patIllScript.getId();
@@ -141,13 +158,7 @@ public class ScoreBean extends Beans implements Serializable{
 		this.vpId = laBean.getVpId();
 		this.userId = laBean.getUserId();		
 	}
-	
-	public ScoreBean(long patIllScriptId, String vpId, long userId, int type){
-		this.patIllScriptId = patIllScriptId;
-		this.type = type;
-		this.vpId = vpId;
-		this.userId = userId;		
-	}
+
 	
 	public String getVpId() {return vpId;}
 	public void setVpId(String vpId) {this.vpId = vpId;}
@@ -164,7 +175,7 @@ public class ScoreBean extends Beans implements Serializable{
 	public float getScoreBasedOnPeer() {return scoreBasedOnPeer;}
 	public void setScoreBasedOnPeer(float scoreBasedOnPeer) {
 		this.scoreBasedOnPeer = scoreBasedOnPeer;
-		calculateOverallScore();
+		//calculateOverallScore();
 	}
 	//public float getScoreBasedOnIllScript() {return scoreBasedOnIllScript;}
 	//public void setScoreBasedOnIllScript(float scoreBasedOnIllScript) {this.scoreBasedOnIllScript = scoreBasedOnIllScript;}
@@ -173,8 +184,15 @@ public class ScoreBean extends Beans implements Serializable{
 	public int getType() {return type;}
 	public void setType(int type) {this.type = type;}
 	public int getWeight() {return weight;}
-	public void setWeight(int weight) {this.weight = weight;}		
+	public void setWeight(int weight) {this.weight = weight;}	
+	
+	/**
+	 * @deprecated
+	 */
 	public float getOverallScore() {return overallScore;}
+	/**
+	 * @deprecated
+	 */
 	public void setOverallScore(float overallScore) {this.overallScore = overallScore;}	
 	public int getTiming() {return timing;}
 	public void setTiming(int timing) {this.timing = timing;}	
@@ -193,8 +211,12 @@ public class ScoreBean extends Beans implements Serializable{
 	public float getOrgScoreBasedOnExp() {return orgScoreBasedOnExp;}
 	public void setOrgScoreBasedOnExp(float orgScoreBasedOnExp) {
 		this.orgScoreBasedOnExp = orgScoreBasedOnExp;
-		calculateOverallScore();
+		//calculateOverallScore();
 	}
+	
+	public boolean isDeleteFlag() {return deleteFlag;}
+	public void setDeleteFlag(boolean deleteFlag) {this.deleteFlag = deleteFlag;}
+	
 	public void setTiming(int learnerStage, int expStage){
 		if(learnerStage>expStage) setTiming(TIME_LATE);
 		if(learnerStage==expStage) setTiming(TIME_OK);
@@ -224,6 +246,7 @@ public class ScoreBean extends Beans implements Serializable{
 
 	/** TODO we could consider all components and calculate based on these an overall score.
 	 * For now we just take the expertsScore.
+	 * @deprecated
 	 * @param scoreBean
 	 */
 	private void calculateOverallScore(){
@@ -232,6 +255,26 @@ public class ScoreBean extends Beans implements Serializable{
 	
 	public String getVpName(){
 		return AppBean.getVPNameByVPId(vpId);
+	}
+	
+	/**
+	 * We return a category for the score, either high score, medium score, or low score.
+	 * @return
+	 */
+	public int getScoreRange(){
+		if(scoreBasedOnExp>=ScoreBean.SCORE_RANGE_MEDIUM_PERC) return ScoreBean.SCORE_RANGE_HIGH;
+		if(scoreBasedOnExp>=ScoreBean.SCORE_RANGE_LOW_PERC && scoreBasedOnExp<ScoreBean.SCORE_RANGE_MEDIUM_PERC) return ScoreBean.SCORE_RANGE_MEDIUM;
+		return ScoreBean.SCORE_RANGE_LOW;
+	}
+
+	/**
+	 * We return a category for the org score, either high score, medium score, or low score.
+	 * @return
+	 */
+	public int getOrgScoreRange(){
+		if(orgScoreBasedOnExp>=ScoreBean.SCORE_RANGE_MEDIUM_PERC) return ScoreBean.SCORE_RANGE_HIGH;
+		if(orgScoreBasedOnExp>=ScoreBean.SCORE_RANGE_LOW_PERC && orgScoreBasedOnExp<ScoreBean.SCORE_RANGE_MEDIUM_PERC) return ScoreBean.SCORE_RANGE_MEDIUM;
+		return ScoreBean.SCORE_RANGE_LOW;
 	}
 	
 }

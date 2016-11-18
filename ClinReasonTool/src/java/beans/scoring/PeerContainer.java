@@ -129,36 +129,47 @@ public class PeerContainer {
 	}
 	
 	/**
-	 * returns the peerBeans for all scripts in the learner's scriptContainer
+	 * returns the peerBeans for all scores of a given action/type in the learner's scriptContainer
+	 * We add a dummy peerBean id needed (can happen in new VPs)
 	 * @param action
-	 * @param sc
+	 * @param scores
 	 * @return
 	 */
-	public List<PeerBean> getPeerBeansByActionLastStage(int action, PatIllScriptContainer sc){
-		if(peerBeans==null || sc==null || sc.getScriptsOfUser()==null) return null;
+	public List<PeerBean> getPeerBeansByActionLastStage(int action, List<ScoreBean> scores){
+		if(peerBeans==null || scores==null) return null;
 		List<PeerBean> peerBeansForAction = new ArrayList<PeerBean>();
-		Iterator<PatientIllnessScript> it = sc.getScriptsOfUser().iterator();
+		Iterator<ScoreBean> it = scores.iterator();
 		while (it.hasNext()){			
-			List<PeerBean> beans = peerBeans.get(it.next().getVpId());
+			ScoreBean score = it.next();
+			List<PeerBean> beans = peerBeans.get(score.getVpId());
 			PeerBean bean = getPeerBeanOfLastStage(action, beans);
-			if(bean!=null) peerBeansForAction.add(bean);
+			if(bean==null){
+				bean = new PeerBean(score.getType(), score.getVpId(), score.getStage());
+			}
+			peerBeansForAction.add(bean);
 		}
 		return peerBeansForAction;
 	}
 	
 	/**
-	 * returns peerBeans fro actions that are independent from stage (e.g. overall performance)
+	 * returns peerBeans for actions that are independent from stage (e.g. overall performance)
+	 * To make sure that we return the peerscores in the same order as the scores we hand over the score list.
+	 * We also add "dummy" peerbeans if needed.
 	 * @param action
 	 * @return
 	 */
-	public List<PeerBean> getPeerBeansByAction(int action, PatIllScriptContainer sc){
-		if(peerBeans==null || sc==null || sc.getScriptsOfUser()==null) return null;
+	public List<PeerBean> getPeerBeansByAction(int action,List<ScoreBean>scores){
+		if(peerBeans==null || scores==null) return null;
 		List<PeerBean> peerBeansForAction = new ArrayList<PeerBean>();		
-		Iterator<PatientIllnessScript> it = sc.getScriptsOfUser().iterator();
-		while (it.hasNext()){			
-			List<PeerBean> beans = peerBeans.get(it.next().getVpId());
+		Iterator<ScoreBean> it = scores.iterator();
+		while (it.hasNext()){		
+			ScoreBean score = it.next();
+			List<PeerBean> beans = peerBeans.get(score.getVpId());
 			PeerBean bean = getPeerBean(action, beans);
-			if(bean!=null) peerBeansForAction.add(bean);
+			if(bean==null){ //can happen for a new case and the first user!
+				bean = new PeerBean( score.getType(), score.getVpId(), score.getStage());
+			}
+			/*if(bean!=null)*/ peerBeansForAction.add(bean);
 		}
 		return peerBeansForAction;
 	}

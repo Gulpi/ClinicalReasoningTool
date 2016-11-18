@@ -13,14 +13,14 @@
 	var probpeerdata = []; 
 	var proborgdata = [];
 	var counter =1;
-	<ui:repeat value="#{crtContext.learningAnalyticsContainer.problemScores}" var="scoreItem">
-		probdata.push({x:counter, y:#{scoreItem.scoreBasedOnExpPerc}, title: "#{scoreItem.vpName}"});
-		proborgdata.push({x:counter, y:#{scoreItem.orgScoreBasedOnExpPerc}, title: "#{scoreItem.vpName}"});
+	<ui:repeat value="#{crtContext.learningAnalyticsContainer.VPProblemScores}" var="scoreItem">
+		probdata.push({x:#{scoreItem.stage}, y:#{scoreItem.scoreBasedOnExpPerc}, title: "#{scoreItem.vpName}"});
+		proborgdata.push({x:#{scoreItem.stage}, y:#{scoreItem.orgScoreBasedOnExpPerc}, title: "#{scoreItem.vpName}"});
 		counter++;
 	</ui:repeat>
 		var counter2 =1;
-	<ui:repeat value="#{crtContext.learningAnalyticsContainer.problemPeerScores}" var="scoreItemP">
-		probpeerdata.push({x:counter2, y:#{scoreItemP.expPeerPercentagePerc}, title: "#{scoreItemP.vpName}"});
+	<ui:repeat value="#{crtContext.learningAnalyticsContainer.VPProblemPeers}" var="scoreItemP">
+		probpeerdata.push({x:#{scoreItemP.stage}, y:#{scoreItemP.expPeerPercentagePerc}, title: "#{scoreItemP.vpName}"});
 		counter2++;
 	</ui:repeat>
 	/*if(peerChk=="1"){

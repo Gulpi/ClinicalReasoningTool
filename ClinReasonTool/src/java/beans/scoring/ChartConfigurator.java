@@ -76,7 +76,8 @@ public class ChartConfigurator {
 	public int getDisplayOverallChart(){ return displayChart(LearningAnalyticsContainer.CATEGORY_OVERALL);}
 	
 	private int displayChart(int type){
-		if(typeOfChart==DISPLAY_ALLCHARTS || typeOfChart==type || DISPLAY_ALLCHARTS==type) return 1; 
+		if(typeOfChart==DISPLAY_ALLCHARTS || DISPLAY_ALLCHARTS==type) return 2; 
+		if(typeOfChart==type) return 1;
 		return 0;
 	}
 	

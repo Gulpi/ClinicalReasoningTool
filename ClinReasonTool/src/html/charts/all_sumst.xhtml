@@ -5,21 +5,30 @@
     xmlns:f="http://java.sun.com/jsf/core">
 <!-- problem scores for all VPs of user -->
 
-<div class="chart_header">#{prop['chart.all.summst']}</div>
-<div>
-	<svg id="sumchart" class="chart"></svg>
-</div>
+<!--  <div class="chart_header">#{prop['chart.all.summst']}</div>-->
+	<svg id="sumchart" mytooltip="#{prop['chart.all.summst']}" class="chart svgsmall"></svg>
 <script language="JavaScript">
 	var sumdata = [];
 	var sumpeerdata = [];
+	var counter = 1;
 	<ui:repeat value="#{crtContext.learningAnalyticsContainer.sumScores}" var="scoreItem6">
-		sumdata.push({ x: "#{scoreItem6.vpId}", y: #{scoreItem6.scoreBasedOnExpPerc}, title: "#{scoreItem6.vpName}" });
+		sumdata.push({ x: counter, y: #{scoreItem6.scoreBasedOnExpPerc}, title: "#{scoreItem6.vpName}" });
+		counter++;
 	</ui:repeat>
+	var counter2 = 1;
 	<ui:repeat value="#{crtContext.learningAnalyticsContainer.sumPeerScores}" var="scoreItemP">
-		sumpeerdata.push({ x: "#{scoreItemP.vpId}", y: #{scoreItemP.expPeerPercentagePerc} });
+		sumpeerdata.push({ x: counter2, y: #{scoreItemP.expPeerPercentagePerc} });
+		counter2++;
 	</ui:repeat>
 	
-	printGroupedBarChart(sumdata, sumpeerdata, 150, 250, "sumchart","Summary");
-
+	printGroupedBarChart(sumdata, sumpeerdata, "sumchart","Summary", false);
+	
+	function printLargeSum(){
+		currentChartNum = 6;
+		if(peerStatus==1)
+			printBarLineComboChart(sumdata, sumpeerdata/*, 280, 380*/, "chartlarge","Sum");
+		else 
+			printGroupedBarChart(sumdata, sumpeerdata, "chartlarge","Summary", true);
+	}
 </script>
 </ui:composition>

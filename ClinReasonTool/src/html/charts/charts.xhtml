@@ -24,60 +24,91 @@
 <link rel="stylesheet" type="text/css" href="../../scripts/jquery112/ui-lightness/jquery-ui.css" /> 
 <!--  <link rel="stylesheet" href="../../styles/clinreason_boxes.css" />-->
 <link rel="stylesheet" href="../../styles/portfolio.css" />
+<link rel="stylesheet" href="../../styles/clinreason_boxes.css" />
+
 <link rel="stylesheet" href="../../styles/font-awesome/css/font-awesome.css" />
 
+<link rel="stylesheet" href="../../scripts/nvd3/nvd3.css" />
 
 <script language="JavaScript">
-
+var currentChartNum = 1; //default is overall performance
 var chartLabelMe = "#{prop['charts.me']}";
 var chartLabelPeer = "#{prop['charts.peer']}";
-var peerChk = "#{chartConf.displayPeers}";
+//var peerChk = "#{chartConf.displayPeers}";
+var peerStatus = 1;
 //var tooltips;
-/*$( document ).tooltip({
-	items: " rect, [title], text, tspan",
-	content: function() {
-		var element = $( this );
-        if ( element.is( "[title]" ) ) { //this is a "normal" tooltip returning the title of an element
-            return element.attr( "title" );
-          }
-	}
-});*/
+$(function() {
+	$( this ).tooltip({
+      	items: "[mytooltip]",
+      	position: { my: "left+5 center", at: "right center" },
+      	content: function() {
+        	var element = $( this );
+        	var parent = $( this ).parent();
+			//only show tooltip if item is currently not dragged
+       		if (!$(parent).is('.ui-draggable-dragging')) {
+       		    return $( this ).attr( "mytooltip" );
+       		}
+
+		}
+    });
+	printLargeOverall();
+	//test();
+	//resizeHandling();
+});
 
 var chartTypeDisplay = "#{chartConf.typeOfChart}";
 var widgetSize = "#{chartConf.widgetSize}";
-$(function() {
-	if(peerChk=="1") $("#peerToggleBox").prop("checked", true);
+/*$(function() {
+	//if(peerChk=="1") $("#peerToggleBox").prop("checked", true);
 	if(widgetSize=="sm" || widgetSize=="SM"){
 		$(".chart_lg").hide();
-		$("#linkallcharts").show();
+		$(".chart_sm").show();
 	}
-	//tooltips = #{crtContext.learningAnalyticsContainer.VPNamesToJson}; //{"1313_1":"mycase","167745_1":"noname","1212_1":"testcase"}; //$("#tooltips").html();
-	//alert(tooltips);
-	//var tst = tooltips["1212_1"];
-	//alert(tst);
-});
+	else{
+		$(".chart_lg").show();
+		$(".chart_sm").hide();
+	}
+});*/
 
-//if(chartTypeDisplay=="") chartTypeDisplay = "0"; //display all charts
 </script>
  </head>
  <body class="chartbody">
  
-<div class="chart_lg"> #{prop['charts.lg.intro']} More information about these charts...</div>
+<div class="chart_lg"> #{prop['charts.lg.intro']}</div>
 
-  <div class="chart_lg"><!-- only show peer performance display for selected problem <select ><option value="-1">todo </option></select><br/>-->
-#{prop['charts.peers']} <input id="peerToggleBox" type="checkbox"  onchange="javascript:togglePeers();" /><br/><br/>
+<div id="chart-container" class="chart_container chart_lg">
+		
+		<div class="displaychart_#{chartConf.displayOverallChart} chartbox">
+		Overall
+			<a href="javascript:printLargeOverall();"><ui:include src="all_overall.xhtml" /></a>
+		</div><br/>
+		<div class="displaychart_#{chartConf.displayProblemChart} chartbox">
+			<a href="javascript:printLargeFdg();"><ui:include src="all_prob.xhtml" /></a>
+		</div><br/>
+		<div class="displaychart_#{chartConf.displayDDXChart} chartbox">
+			<a href="javascript:printLargeDDX();"><ui:include src="all_ddx.xhtml" /></a>
+		</div><br/>
+		<div class="displaychart_#{chartConf.displayTestChart} chartbox">
+			<a href="javascript:printLargeTst();"><ui:include src="all_test.xhtml" /></a>
+		</div><br/>
+		<div class="displaychart_#{chartConf.displayMngChart} chartbox">
+			<a href="javascript:printLargeMng();"><ui:include src="all_mng.xhtml" /></a>
+		</div><br/>
+		<!-- <div class="displaychart_#{chartConf.displaySumStChart} chartbox">
+			<a href="javascript:printLargeSum();"><ui:include src="all_sumst.xhtml" /></a>
+		</div><br/>-->
 </div>
-<div id="chart-container" class="chart_container">
-		<div class="displaychart_#{chartConf.displayOverallChart} chartbox"><ui:include src="all_overall.xhtml" /></div>
-		<div class="displaychart_#{chartConf.displayProblemChart} chartbox"><ui:include src="all_prob.xhtml" /></div>
-		<div class="displaychart_#{chartConf.displayDDXChart} chartbox"><ui:include src="all_ddx.xhtml" /></div>
-		<div class="displaychart_#{chartConf.displayTestChart} chartbox"><ui:include src="all_test.xhtml" /></div>
-		<div class="displaychart_#{chartConf.displayMngChart} chartbox"><ui:include src="all_mng.xhtml" /></div>
-		<div class="displaychart_#{chartConf.displaySumStChart} chartbox"><ui:include src="all_sumst.xhtml" /></div>
+<div style="float:left;position:relative" class="chart_lg">
+	<div style="left:15px;top:5px;"><i mytooltip="#{prop['charts.peers']}" class="fa fa-users"></i> <br/> </div>
+
+	<div class="switch" style="left:30px;">
+	        <input id="peertoggle" class="cmn-toggle cmn-toggle-round" checked="checked" onchange="javascript:togglePeers();" type="checkbox" />
+	        <label for="peertoggle"></label>
+	</div>
+	<div class="chart_lg" style="border:1px;width:400px;height:320px;">
+		<svg id="chartlarge" class="chart" style="width:380px;height:280px;"></svg>
+	</div>
 </div>
- <div id="linkallcharts" style="display:none;font-size:0.8em;">
- 	<a href="charts.xhtml?chart_size=lg&amp;chart_type=0" target="new">#{prop['charts.more']}</a>
- </div>
 
  </body>
  </f:view>

@@ -5,28 +5,43 @@
     xmlns:f="http://java.sun.com/jsf/core">
 <!-- overall scores for all VPs of user -->
 
-<div class="chart_header chart_lg">#{prop['chart.all.overall']}</div>
-<div>
-	<svg id="overallchart" class="chart"></svg>
-</div>
+<!-- <div class="chart_header chart_lg">#{prop['chart.all.overall']}</div>-->
+<!--  <div mytooltip="#{prop['chart.all.overall']}">-->
+	<svg  id="overallchart" mytooltip="#{prop['chart.all.overall']} - click to enlarge" class="chart svgsmall"></svg>
+<!-- </div>-->
 
 <script language="JavaScript">
 
 
 var overalldata = [];
 var overallpeerdata = [];
+var overallorgdata = [];
+var counter2 = 1;
 <ui:repeat value="#{crtContext.learningAnalyticsContainer.overallScores}" var="scoreItem5">
-overalldata.push({ x: "#{scoreItem5.vpId}", y: #{scoreItem5.scoreBasedOnExpPerc}, title: "#{scoreItem5.vpName}"});
+	overalldata.push({ x: counter2, y: #{scoreItem5.scoreBasedOnExpPerc}, title: "#{scoreItem5.vpName}"});
+	overallorgdata.push({x: counter2, y: #{scoreItem5.orgScoreBasedOnExpPerc}, title: "#{scoreItem5.vpName}"})
+	counter2++;
 </ui:repeat>
+var counter = 1;
 <ui:repeat value="#{crtContext.learningAnalyticsContainer.overallPeerScores}" var="scoreItemPo">
-	overallpeerdata.push({ x: "#{scoreItemPo.vpId}", y: #{scoreItemPo.expPeerPercentagePerc}, title: "#{scoreItemPo.vpName}" });
+	overallpeerdata.push({ x: counter, y: #{scoreItemPo.expPeerPercentagePerc}, title: "#{scoreItemPo.vpName}" });
+	counter++;
 </ui:repeat>
 
-//overalldata.push({x:"1313", y:63});
 
-if(peerChk=="1")
-	printGroupedBarChart(overalldata, overallpeerdata, 150, 250, "overallchart","Overall");
-else 
-	printBarChart(overalldata, 150, 250, "overallchart","Overall");
+//if(peerChk=="1" &amp;&amp; chartWidth>200)
+//	printGroupedBarChart(overalldata, overallpeerdata, chartHeight, chartWidth, "overallchart","Overall");
+//else 
+	printBarChart(overalldata, "overallchart","Overall", false);
+	
+	
+function printLargeOverall(){
+	currentChartNum = 1;
+	if(peerStatus==1){
+		printBarLineComboChartTwoLines(overalldata, overallorgdata, overallpeerdata/*, 280, 380*/, "chartlarge","Overall");		
+	}
+	else
+		printBarChart(overalldata, "chartlarge","Overall", true);
+}
 </script>
 </ui:composition>

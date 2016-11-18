@@ -8,6 +8,7 @@ import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 
 import beans.scoring.FeedbackBean;
+import beans.scoring.LearningBean;
 import beans.scoring.PeerBean;
 import beans.scoring.ScoreBean;
 
@@ -23,12 +24,36 @@ public class DBScoring extends DBClinReason {
     	return l;
     }
     
+    /**
+     * Gets the ScroeBean objects for the given scriptIds and deletFlag=0
+     * @param scriptIds
+     * @return
+     */
+    public List<ScoreBean> selectScoreBeansByPatIllScriptIds(List<Long> scriptIds){
+    	Session s = instance.getInternalSession(Thread.currentThread(), false);
+    	Criteria criteria = s.createCriteria(ScoreBean.class,"ScoreBean");
+    	criteria.add(Restrictions.in("patIllScriptId", scriptIds));
+    	criteria.add(Restrictions.eq("deleteFlag", new Boolean(false)));
+    	List<ScoreBean> l = criteria.list();
+    	return l;
+    }
+    
     public List<ScoreBean> selectScoreBeansByUserId(long userId){
     	Session s = instance.getInternalSession(Thread.currentThread(), false);
     	Criteria criteria = s.createCriteria(ScoreBean.class,"ScoreBean");
     	criteria.add(Restrictions.eq("userId", new Long(userId)));
+    	criteria.add(Restrictions.eq("deleteFlag", new Boolean(false)));
     	List<ScoreBean> l = criteria.list();
     	return l;
+    }
+    
+    public List<LearningBean> selectLearningBeansByUserId(long userId){
+    	Session s = instance.getInternalSession(Thread.currentThread(), false);
+    	Criteria criteria = s.createCriteria(LearningBean.class,"LearningBean");
+    	criteria.add(Restrictions.eq("userId", new Long(userId)));
+    	criteria.add(Restrictions.eq("deleteFlag", new Boolean(false)));
+    	criteria.addOrder(Order.desc("creationDate"));
+    	return criteria.list();
     }
     
     /*public List<ScoreBean> selectScoreBeansByActionTypeAndPatIllScriptId(int type, long patIllScriptId){

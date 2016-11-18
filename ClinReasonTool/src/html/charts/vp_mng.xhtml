@@ -13,16 +13,12 @@
 	var mngdata = [];
 	var mngpeerdata = [];
 	var orgmngdata = [];
-	var counter = 1;
-	<ui:repeat value="#{crtContext.learningAnalyticsContainer.mngScores}" var="scoreItem4">
-		mngdata.push({ x: counter, y: #{scoreItem4.scoreBasedOnExpPerc}, title: "#{scoreItem4.vpName}" });
-		orgmngdata.push({ x: counter, y: #{scoreItem4.orgScoreBasedOnExpPerc}, title: "#{scoreItem4.vpName}" });
-		counter++;
+	<ui:repeat value="#{crtContext.learningAnalyticsContainer.VPMngScores}" var="scoreItem4">
+		mngdata.push({ x: #{scoreItem4.stage}, y: #{scoreItem4.scoreBasedOnExpPerc}, title: "#{scoreItem4.vpName}" });
+		orgmngdata.push({ x: #{scoreItem4.stage}, y: #{scoreItem4.orgScoreBasedOnExpPerc}, title: "#{scoreItem4.vpName}" });
 	</ui:repeat>
-	var counter2 = 1;
-	<ui:repeat value="#{crtContext.learningAnalyticsContainer.mngPeerScores}" var="scoreItemP">
-		mngpeerdata.push({ x: counter2, y: #{scoreItemP.expPeerPercentagePerc} , title: "#{scoreItemP.vpName}"});
-		counter2++;
+	<ui:repeat value="#{crtContext.learningAnalyticsContainer.VPMngPeers}" var="scoreItemP">
+		mngpeerdata.push({ x: #{scoreItemP.stage}, y: #{scoreItemP.expPeerPercentagePerc} , title: "#{scoreItemP.vpName}"});
 	</ui:repeat>
 	//if(peerChk=="1")
 	//	printGroupedBarChart(mngdata, mngpeerdata, 150, 250, "mngchart","Management");

@@ -94,10 +94,10 @@ public class CRTFacesContext extends FacesContextWrapper implements MyFacesConte
 	
 	private void initGraph(){
 	    
-		if(graph!=null && patillscript!=null && graph.getVpId().equals(patillscript.getVpId())) return; //nothing todo, graph already loaded
+		if(graph!=null && patillscript!=null && graph.isSameGraph(patillscript.getVpId(), patillscript.getId())) return; //nothing todo, graph already loaded
 		long startms = System.currentTimeMillis();
 		CRTLogger.out("Start Graph init:"  + startms + "ms", CRTLogger.LEVEL_PROD);
-		graph = new Graph(patillscript.getVpId());
+		graph = new Graph(patillscript.getVpId(), patillscript.getId());
 		CRTLogger.out(graph.toString(), CRTLogger.LEVEL_TEST);	
 	    CRTLogger.out("End Graph init: "  + (System.currentTimeMillis() - startms) + "ms", CRTLogger.LEVEL_PROD);
 
@@ -235,7 +235,8 @@ public class CRTFacesContext extends FacesContextWrapper implements MyFacesConte
 		//current script already loaded....-> then return here....
 		if(this.patillscript!=null && (id<0 || this.patillscript.getId()==id) && this.patillscript.getUserId()==this.user.getUserId() && (extUId==null || this.patillscript.getExtUId().equals(extUId))) return; 
 
-		if(id<=0 && vpId==null) return; //then user has opened the overview page...y
+		if(id<=0 && vpId==null)
+			return; //then user has opened the overview page...y
 
 		if(id>0){ //open an created script
 			this.patillscript = isc.loadPatIllScriptById(id, user.getUserId());

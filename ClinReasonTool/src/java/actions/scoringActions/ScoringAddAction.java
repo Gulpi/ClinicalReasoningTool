@@ -75,14 +75,13 @@ public class ScoringAddAction implements ScoringAction{
 		Relation learnerRel = mvertex.getLearnerVertex();
 		scoreBean.setScoreBasedOnExp(ScoringController.SCORE_NOEXP_BUT_LEARNER, isChg);
 		if(learnerRel!=null && expRel!=null) scoreBean.setTiming(learnerRel.getStage(), expRel.getStage());
-		
-		
+				
 		if(expRel!=null){ //expert has chosen this item (not synonym)
 			if(learnerRel!=null && learnerRel.getSynId()<=0){
 				if(learnerRel.hasPrefix()==expRel.hasPrefix())
 					scoreBean.setScoreBasedOnExp(ScoringController.SCORE_EXP_SAMEAS_LEARNER, isChg);
 				else scoreBean.setScoreBasedOnExp(ScoringController.NO_SCORE, isChg);
-				return;
+				//return;
 			}
 			if(learnerRel!=null && learnerRel.getSynId()>0){//learner has chosen a synonym:
 				Synonym learnerSyn = learnerRel.getSynonym();
@@ -91,7 +90,7 @@ public class ScoringAddAction implements ScoringAction{
 				}
 				else scoreBean.setScoreBasedOnExp(ScoringController.NO_SCORE, isChg);
 				scoreBean.setExpItemId(expRel.getListItemId());
-				return;
+				//return;
 			}
 		}
 		
@@ -99,7 +98,9 @@ public class ScoringAddAction implements ScoringAction{
 			scoreHierarchyBasedOnExp(g, scoreBean, mvertex, learnerRel);						
 			//if(!scored) scoreBean.setScoreBasedOnExp(ScoringController.SCORE_NOEXP_BUT_LEARNER);
 		}
-		new ScoringController().setFeedbackInfo(scoreBean, isChg, isJoker);
+		
+		ScoringController.getInstance().setFeedbackInfo(scoreBean, isChg, isJoker);
+
 
 	}
 

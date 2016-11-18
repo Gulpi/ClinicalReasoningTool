@@ -117,10 +117,7 @@ public class ScoringController {
 	public void setFeedbackInfo(ScoreBean scoreBean, boolean isChg, boolean isJoker){
 		CRTFacesContext crtContext = new NavigationController().getCRTFacesContext();
 		boolean expFBOn = crtContext.getFeedbackContainer().isExpFeedbackOn(scoreBean.getType(), scoreBean.getStage());
-		//boolean peerFBOn = crtContext.getFeedbackContainer().isPeerFeedbackOn(scoreBean.getStage());
 		if(expFBOn) scoreBean.setFeedbackOn(FeedbackBean.FEEDBACK_EXP);
-		//if(peerFBOn) scoreBean.setFeedbackOn(FeedbackBean.FEEDBACK_PEER);
-		//if(expFBOn && peerFBOn) scoreBean.setFeedbackOn(FeedbackBean.FEEDBACK_EXP_PEER);
 		if(isChg) scoreBean.setFeedbackOn(FeedbackBean.FEEDBACK_CHG);
 		if(isJoker) scoreBean.setFeedbackOn(FeedbackBean.FEEDBACK_JOKER);
 		

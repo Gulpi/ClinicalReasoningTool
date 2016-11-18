@@ -7,8 +7,10 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 
 import actions.scoringActions.ScoringOverallAction;
+import actions.scoringActions.ScoringSummStAction;
 import application.AppBean;
 import beans.scripts.PatIllScriptContainer;
+import beans.scripts.PatientIllnessScript;
 import controller.NavigationController;
 import database.DBScoring;
 import util.CRTLogger;
@@ -47,6 +49,13 @@ public class LearningAnalyticsContainer implements Serializable{
 	 */
 	private Map<Long,LearningAnalyticsBean> analytics = new HashMap<Long,LearningAnalyticsBean>(); 
 	private long userId; 
+
+	/**
+	 * LearningBean objects of all patillscripts of the learner. We need these to determine the 
+	 * tip to display in the current learningBean.
+	 */
+	private List<LearningBean> learningBeans;
+	private LearningBean currLearningBean;
 	
 	//public LearningAnalyticsContainer(){}
 	public LearningAnalyticsContainer(long userId){
@@ -57,10 +66,25 @@ public class LearningAnalyticsContainer implements Serializable{
 	public long getUserId() {return userId;}
 
 	/**
-	 * select all ScoreBeans of the user and add these to LearningAnalyticsBean objects (in the ScoreContainers)
+	 * select all ScoreBeans of the user and add these to LearningAnalyticsBean objects (in the 
+	 * ScoreContainers), also set all LearningBean objects
 	 */
 	private void initLearningAnalyticsContainer(){
 		List<ScoreBean> scores = new DBScoring().selectScoreBeansByUserId(userId);
+		learningBeans =  new DBScoring().selectLearningBeansByUserId(userId);
+		/*int counter = 0;
+		if(lbs!=null){
+			Iterator<LearningBean> it = lbs.iterator();
+			while(it.hasNext()){
+				LearningBean lb = it.next();
+				if(counter<3)lastScriptIds.add(new Long(lb.getPatIllScriptId()));
+				counter++;
+				LearningAnalyticsBean lab =  getLearningAnalyticsBeanByPatIllScriptId(lb.getPatIllScriptId(), lb.getVpId());
+				if(lab==null) lab = initLearningAnalyticsBean(lb.getPatIllScriptId(), lb.getVpId());
+				lab.setLearningBean(lb);
+			
+			}
+		}*/
 		if(scores==null) return;
 		Iterator<ScoreBean> it = scores.iterator();
 		while(it.hasNext()){
@@ -112,12 +136,82 @@ public class LearningAnalyticsContainer implements Serializable{
 	public List<ScoreBean> getProblemScores(){ 
 		return getListScores(ScoreBean.TYPE_PROBLEM_LIST); 
 	}
+	
+	public List<ScoreBean> getVPProblemScores(){ 		
+		LearningAnalyticsBean labean = this.getLearningAnalyticsBeanByPatIllScript();
+		if(labean==null) return null;
+		return labean.getProblemScoreStages();
+	}
+	public List<PeerBean> getVPProblemPeers(){ 		
+		LearningAnalyticsBean labean = this.getLearningAnalyticsBeanByPatIllScript();
+		if(labean==null) return null;
+		return labean.getProblemPeerStages();
+	}
+	
+	public List<PeerBean> getVPDDXPeers(){ 		
+		LearningAnalyticsBean labean = this.getLearningAnalyticsBeanByPatIllScript();
+		if(labean==null) return null;
+		return labean.getDDXPeerStages();
+	}
+	public List<PeerBean> getVPTestPeers(){ 		
+		LearningAnalyticsBean labean = this.getLearningAnalyticsBeanByPatIllScript();
+		if(labean==null) return null;
+		return labean.getTestPeerStages();
+	}	
+	public List<PeerBean> getVPMngPeers(){ 		
+		LearningAnalyticsBean labean = this.getLearningAnalyticsBeanByPatIllScript();
+		if(labean==null) return null;
+		return labean.getMngPeerStages();
+	}
+	public List<ScoreBean> getVPDDXScores(){ 		
+		LearningAnalyticsBean labean = this.getLearningAnalyticsBeanByPatIllScript();
+		if(labean==null) return null;
+		return labean.getDDXScoreStages();
+	}
+	
+	public List<ScoreBean> getVPTestScores(){ 		
+		LearningAnalyticsBean labean = this.getLearningAnalyticsBeanByPatIllScript();
+		if(labean==null) return null;
+		return labean.getTestScoreStages();
+	}
+	
+	public List<ScoreBean> getVPMngScores(){ 		
+		LearningAnalyticsBean labean = this.getLearningAnalyticsBeanByPatIllScript();
+		if(labean==null) return null;
+		return labean.getMngScoreStages();
+	}
 	public List<ScoreBean> getDDXScores(){ 
 		//TODO: we have to combine it with the final diagnosis score!
 		return getListScores(ScoreBean.TYPE_DDX_LIST);
 	}
+	
+	/**
+	 * overall score for a VP
+	 * @return
+	 */
+	public ScoreBean getOverallScore(){ 		
+		LearningAnalyticsBean labean = this.getLearningAnalyticsBeanByPatIllScript();
+		if(labean==null) return null;
+		ScoreBean overallScore = labean.getOverallScore();
+		//if(overallScore==null){ //then we calculate it based on the current stage
+			//we update it in any case:
+			overallScore = new ScoringOverallAction().scoreAction(labean);
+		//}
+		return overallScore;
+	}
+	
+	public ScoreBean getSumScore(){ 		
+		LearningAnalyticsBean labean = this.getLearningAnalyticsBeanByPatIllScript();
+		if(labean==null) return null;
+		ScoreBean sumStScore = labean.getLastSummStScore();
+		if(sumStScore==null) 
+			sumStScore = new ScoringSummStAction().scoreAction(labean);
+		return sumStScore;
+	}
 	public List<ScoreBean> getTestScores(){ return getListScores(ScoreBean.TYPE_TEST_LIST);}
 	public List<ScoreBean> getMngScores(){ return getListScores(ScoreBean.TYPE_MNG_LIST);}
+	
+	
 	/**
 	 * Get a combined score of summary statement similarity and use of semantic qualifier
 	 * @return
@@ -129,8 +223,7 @@ public class LearningAnalyticsContainer implements Serializable{
 		while(it.hasNext()){
 			LearningAnalyticsBean laBean = it.next();
 			if(laBean!=null){
-				//can only be one, but for security reasons this method returns a list...
-				ScoreBean score = laBean.getSummStScore();
+				ScoreBean score = laBean.getLastSummStScore();
 				if(score!=null) l.add(score);
 			}
 		}
@@ -141,23 +234,24 @@ public class LearningAnalyticsContainer implements Serializable{
 	 * returns all PeerBean problem list objects for the learner's scripts
 	 * @return
 	 */
-	public List<PeerBean> getProblemPeerScores(){ 
-		return getPeerScoresLastStage(ScoreBean.TYPE_PROBLEM_LIST);}
-	public List<PeerBean> getDDXPeerScores(){ return getPeerScoresLastStage(ScoreBean.TYPE_DDX_LIST);}
-	public List<PeerBean> getTestPeerScores(){ return getPeerScoresLastStage(ScoreBean.TYPE_TEST_LIST);}
-	public List<PeerBean> getMngPeerScores(){ return getPeerScoresLastStage(ScoreBean.TYPE_MNG_LIST);}
-	public List<PeerBean> getSumPeerScores(){ return getPeerScoresLastStage(ScoreBean.TYPE_SUMMST);}
+	public List<PeerBean> getProblemPeerScores(){ return getPeerScoresLastStage(ScoreBean.TYPE_PROBLEM_LIST, getProblemScores());}
+	public List<PeerBean> getDDXPeerScores(){ return getPeerScoresLastStage(ScoreBean.TYPE_DDX_LIST, getDDXScores());}
+	public List<PeerBean> getTestPeerScores(){ return getPeerScoresLastStage(ScoreBean.TYPE_TEST_LIST, getTestScores());}
+	public List<PeerBean> getMngPeerScores(){ return getPeerScoresLastStage(ScoreBean.TYPE_MNG_LIST, getMngScores());}
+	public List<PeerBean> getSumPeerScores(){ return getPeerScoresLastStage(ScoreBean.TYPE_SUMMST, getSumScores());}
+	
 	public List<PeerBean> getOverallPeerScores(){ 
 		if(AppBean.getPeers()==null) return null;
-		PatIllScriptContainer cont = NavigationController.getInstance().getCRTFacesContext().getScriptContainer();
-		return AppBean.getPeers().getPeerBeansByAction(ScoreBean.TYPE_OVERALL_SCORE, cont);
+		//PatIllScriptContainer cont = NavigationController.getInstance().getCRTFacesContext().getScriptContainer();
+		return AppBean.getPeers().getPeerBeansByAction(ScoreBean.TYPE_OVERALL_SCORE, getOverallScores());
 		//return getPeerScores(ScoreBean.TYPE_OVERALL_SCORE);
 	}
 	
-	private List<PeerBean> getPeerScoresLastStage(int type){
+	private List<PeerBean> getPeerScoresLastStage(int type, List<ScoreBean> scores){
 		if(AppBean.getPeers()==null) return null;
-		PatIllScriptContainer cont = new NavigationController().getCRTFacesContext().getScriptContainer();
-		return AppBean.getPeers().getPeerBeansByActionLastStage(type, cont);
+		//PatIllScriptContainer cont = new NavigationController().getCRTFacesContext().getScriptContainer();
+		
+		return AppBean.getPeers().getPeerBeansByActionLastStage(type, scores);
 	}
 	/**
 	 * We take the list score of the last stage for every scripts of the learner
@@ -175,6 +269,13 @@ public class LearningAnalyticsContainer implements Serializable{
 			}
 		}
 		return l;
+	}
+	
+	private LearningAnalyticsBean getLearningAnalyticsBeanByPatIllScript(){
+		PatientIllnessScript patillscript = NavigationController.getInstance().getCRTFacesContext().getPatillscript();
+		if(patillscript==null) return null;
+		return getLearningAnalyticsBeanByPatIllScriptId(patillscript.getId(), patillscript.getVpId());
+
 	}
 	
 	/**

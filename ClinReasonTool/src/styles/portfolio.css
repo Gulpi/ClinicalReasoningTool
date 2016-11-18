@@ -1,7 +1,9 @@
  
 .chartbody{
-	margin:5px;
+	margin-left:15px;
+	margin-top:15px;
 	font-family:Arial;
+	font-size:0.9em;
 }
 
 a{
@@ -47,17 +49,19 @@ a:focus{outline:none !important;}
 }
 
 .chart{
-	width:280px;
+	/*width:280px;*/
 	position:relative;
 }
 .chart_header{
 	font-size:0.8em;
-	width:280px;
+	/*width:280px;*/
 }
 .chart_container{
-	width:90%;
+	width:250px;
+	float:left;
 	/*height:150px;*/
 }
+
 
 .displaychart_0{
 	display:none;
@@ -69,6 +73,17 @@ a:focus{outline:none !important;}
 	position:relative;
 	float:left;
 }
+
+.displaychart_2{
+	width:150px;
+	height:75px;
+}
+
+.svgsmall{
+	width:150px;
+	height:75px;
+}
+
 
 .chartbox{
 	margin-bottom:20px;
@@ -90,9 +105,58 @@ a:focus{outline:none !important;}
   }
   
   text {
-            font-size: 8px;
+            font-size: 8px !important;
         }
 
+
+/*low score */
+/*.score_0{
+	content: "\f00c";
+	color:red;
+}
+*/
+/*no score, because nothing done, red cross*/
+.score_0:before{
+	content: "\f00d";
+	color:red;
+}
+
+/*medium score, yellow check */
+.score_1:before{
+	content: "\f00c";
+	color:yellow;
+}
+
+/*high score, green check */
+.score_2:before{
+	content: "\f00c";
+	color:green;
+}
+
+/*score display as circles with different colors*/
+.overallscore_0:before{
+	content: "\f111";
+	color:red;
+}
+
+.overallscore_1:before{
+	content: "\f111";
+	color:yellow;
+}
+
+.overallscore_2:before{
+	content: "\f111";
+	color:green;
+}
+
+.nvd3.nv-noData{
+	font-size:10px !important;
+}
+
+.chart_sm{
+	height:150px;
+}
+/*
   .chart .current {
     fill: green;
     cursor: pointer;
@@ -124,8 +188,7 @@ a:focus{outline:none !important;}
     shape-rendering: crispEdges;
 }
 
-.nvd3 .nv-axis .zero line,
-    /*this selector may not be necessary*/ .nvd3 .nv-axis line.zero {
+.nvd3 .nv-axis .zero line, .nvd3 .nv-axis line.zero {
     stroke-opacity: .75;
 }
 
@@ -141,4 +204,4 @@ a:focus{outline:none !important;}
 
 .nvd3 .nv-axis.nv-disabled {
     opacity: 0;
-}
+}*/

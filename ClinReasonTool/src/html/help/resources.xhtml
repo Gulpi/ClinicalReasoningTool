@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="#{crtContext.language}" xmlns="http://www.w3.org/1999/xhtml"   
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+	 xmlns:v="urn:schemas-microsoft-com:vml"     
+	  >
+<!-- <f:view locale="#{crtContext.locale}"> -->
+<f:view locale="#{crtContext.locale}">
+ <!-- <f:loadBundle basename="properties.intlproperties" var="prop" /> -->
+<head>
+<f:event type="preRenderView" listener="#{facesContext.externalContext.response.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, post-check=0, pre-check=0')}" />
+<f:event type="preRenderView" listener="#{facesContext.externalContext.response.setHeader('Pragma', 'no-cache')}" />
+<script type="text/javascript" src="../../scripts/jquery112/jquery.js"></script>
+<link rel="stylesheet" href="../../styles/portfolio.css" />
+<link rel="stylesheet" href="../../styles/font-awesome/css/font-awesome.css" />
+
+<script language="JavaScript">
+var locale = "#{crtContext.locale}";
+
+$(function() {
+if(locale=="de"){
+	$("#res_de").show();
+	$("#res_en").hide();
+}
+
+else{
+	$("#res_en").show();
+	$("#res_de").hide();
+}
+});
+	
+
+</script>
+</head>
+<body class="chartbody">
+<ul id="res_de" style="margin-left:0px;">
+<li><a href="" target="new"><i class="fa fa-film"></i> #{prop['resources.whatiscr']}</a></li>
+<li><a href="https://youtu.be/sTml6i0jLkI" target="new"><i class="fa fa-film"></i> #{prop['resources.tool']}</a></li>
+</ul>
+
+<ul id="res_en" style="margin-left:0px;padding-left:5px;">
+<li><a href="" target="new"><i class="fa fa-film"></i> #{prop['resources.whatiscr']}</a></li>
+<li><a href="https://youtu.be/WgQxinhiw24" target="new"><i class="fa fa-film"></i>  #{prop['resources.tool']}</a></li>
+<li><a href="https://youtu.be/zvlNSU2ys7k" target="new"><i class="fa fa-film"></i>  #{prop['resources.sumst']}</a></li>
+
+</ul>
+
+
+</body></f:view></html>

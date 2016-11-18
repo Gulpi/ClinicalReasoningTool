@@ -239,13 +239,15 @@ public class DBClinReason /*extends HibernateUtil*/{
     /**
      * Select the PatientIllnessScripts for the userId from the database. 
      * Beware: summStatement not loaded!
+     * We only load the latest script of a user (not any previous, which have a deleteFlag=1) 
      * @param sessionId
      * @return PatientIllnessScript or null
      */
-    public List<PatientIllnessScript> selectPatIllScriptsByUserId(long userId){
+    public List<PatientIllnessScript> selectActivePatIllScriptsByUserId(long userId){
     	Session s = instance.getInternalSession(Thread.currentThread(), false);
     	Criteria criteria = s.createCriteria(PatientIllnessScript.class,"PatientIllnessScript");
     	criteria.add(Restrictions.eq("userId", new Long(userId)));
+    	criteria.add(Restrictions.eq("deleteFlag", new Boolean(false)));
     	criteria.addOrder(Order.desc("lastAccessDate"));
     	return  criteria.list();
     }
@@ -269,6 +271,23 @@ public class DBClinReason /*extends HibernateUtil*/{
     		patIllScript.setSummSt(loadSummSt(patIllScript.getSummStId()));
     	return patIllScript;
     }
+    
+    /**
+     * Select the PatientIllnessScripts for the userId and parentId from the database. 
+     * @param sessionId
+     * @param vpId
+     * @param uId (an optional unique id that can be transferred from the VP system, e.g. a sessionId)
+     * @return PatientIllnessScript or null
+     */
+    public List<PatientIllnessScript> selectPatIllScriptsByUserIdAndVpId(long userId, String vpId){
+    	Session s = instance.getInternalSession(Thread.currentThread(), false);
+    	Criteria criteria = s.createCriteria(PatientIllnessScript.class,"PatientIllnessScript");
+    	criteria.add(Restrictions.eq("userId", new Long(userId)));
+    	criteria.add(Restrictions.eq("vpId", vpId));
+    	criteria.add(Restrictions.eq("type", PatientIllnessScript.TYPE_LEARNER_CREATED));
+    	return criteria.list();
+    }
+    
     
     /**
      * Selects all PatientIllnessScripts that can be included into the peer responses. 

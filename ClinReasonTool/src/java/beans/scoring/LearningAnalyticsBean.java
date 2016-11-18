@@ -10,6 +10,7 @@ import javax.faces.bean.SessionScoped;
 import application.AppBean;
 import beans.LogEntry;
 import beans.scripts.*;
+import controller.NavigationController;
 
 /**
  * LearninAnalytics takes into account all users' actions, scores, and goals for one VP.
@@ -36,6 +37,7 @@ public class LearningAnalyticsBean extends Beans implements Serializable, Compar
 	//TODO include when an action was performed? E.g. problems created at end or throughout session? 
 	private long patIllScriptId;
 	private String vpId;
+	private LearningBean learningBean;
 	
 	public LearningAnalyticsBean(){}
 	public LearningAnalyticsBean(long patIllScripId, long userId, String vpId){
@@ -64,37 +66,58 @@ public class LearningAnalyticsBean extends Beans implements Serializable, Compar
 		return scoreContainer.getScoresByType(ScoreBean.TYPE_PROBLEM_LIST);
 	}
 	
-	public ScoreBean getSummStScore(){
+	public ScoreBean getLastSummStScore(){
 		if(scoreContainer==null) return null; 
 		return scoreContainer.getScoreByType(ScoreBean.TYPE_SUMMST);
 	}
 	/**
-	 * we get the list score for problems at the last stage
+	 * we get the list score for problems over all stages. 
 	 * @return
 	 */
-	public ScoreBean getFinalProblemScore(){
-		List<ScoreBean> listScores = getProblemScoreStages();
+	public ScoreBean getOverallProblemScore(){
+		return getOverallListScores(getProblemScoreStages());
+	}
+	
+	public ScoreBean getOverallDDXScore(){
+		return getOverallListScores(getDDXScoreStages());
+		/*List<ScoreBean> listScores = getDDXScoreStages();
 		if(listScores==null || listScores.isEmpty()) return null;
+		return listScores.get(listScores.size()-1);*/
+	}
+
+	public ScoreBean getOverallTestScore(){
+		return getOverallListScores(getTestScoreStages());
+	}
+
+	public ScoreBean getOverallMngScore(){
+		return getOverallListScores(getMngScoreStages());
+	}
+	
+	/**
+	 * We go through the given list and calculate the overall score and orgscore by summing up all scores and dividing 
+	 * it by the number of scores. This way someone who enters all items at the final stage does not get a score of 1, 
+	 * but 1/number of stages. 
+	 * @param listScores
+	 * @return a new ScoreBean with the orgScore and score....
+	 */
+	private ScoreBean getOverallListScores(List<ScoreBean> listScores){
+		if(listScores==null || listScores.isEmpty()) return null;
+		Iterator<ScoreBean> it = listScores.iterator();
+		float overallScoreCount = 0;
+		float overallScoreOrgCount = 0;
+		while(it.hasNext()){
+			ScoreBean probScore = it.next();
+			overallScoreCount += probScore.getScoreBasedOnExp();
+			overallScoreOrgCount += probScore.getOrgScoreBasedOnExp();
+		}
+		ScoreBean result = new ScoreBean();
+		float overallScore = overallScoreCount/(float)listScores.size();
+		float overallScoreOrg = overallScoreOrgCount/(float) listScores.size();
+		result.setScoreBasedOnExp(overallScore);
+		result.setOrgScoreBasedOnExp(overallScoreOrg);
 		return listScores.get(listScores.size()-1);
 	}
 	
-	public ScoreBean getFinalDDXScore(){
-		List<ScoreBean> listScores = getDDXScoreStages();
-		if(listScores==null || listScores.isEmpty()) return null;
-		return listScores.get(listScores.size()-1);
-	}
-
-	public ScoreBean getFinalTestScore(){
-		List<ScoreBean> listScores = getTestScoreStages();
-		if(listScores==null || listScores.isEmpty()) return null;
-		return listScores.get(listScores.size()-1);
-	}
-
-	public ScoreBean getFinalMngScore(){
-		List<ScoreBean> listScores = getMngScoreStages();
-		if(listScores==null || listScores.isEmpty()) return null;
-		return listScores.get(listScores.size()-1);
-	}
 	public List<PeerBean> getProblemPeerStages(){
 		if(AppBean.getPeers()==null) return null;
 		return AppBean.getPeers().getPeerBeansByActionAndVpId(vpId, ScoreBean.TYPE_PROBLEM_LIST);
@@ -156,4 +179,16 @@ public class LearningAnalyticsBean extends Beans implements Serializable, Compar
 		}		
 		return 0;
 	}
+	
+	public LearningBean getLearningBean(){
+		if(learningBean==null){
+			PatientIllnessScript patillscript = NavigationController.getInstance().getMyFacesContext().getPatillscript();
+			if(patillscript!=null && patillscript.getSubmitted()){
+				learningBean = new LearningBean(this);
+			}			
+		}
+		return learningBean;
+	}
+	public void setLearningBean(LearningBean learningBean) {this.learningBean = learningBean;}
+		
 }

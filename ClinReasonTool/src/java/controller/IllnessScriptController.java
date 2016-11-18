@@ -68,6 +68,7 @@ public class IllnessScriptController implements Serializable{
 	 */
 	public PatientIllnessScript createAndSaveNewPatientIllnessScript(long userId, String vpId, int systemId, String extUId){
 		if(vpId==null || userId<=0) return null;
+		checkAndSetDeleteFlagOfOldSCriptsAndScore(userId, vpId, systemId);
 		Locale loc = LocaleController.getInstance().getScriptLocale();//FacesContext.getCurrentInstance().getApplication().getViewHandler().calculateLocale(FacesContext.getCurrentInstance());
 		PatientIllnessScript patillscript = new PatientIllnessScript( userId, vpId, loc, systemId);
 		patillscript.setExtUId(extUId);
@@ -75,7 +76,46 @@ public class IllnessScriptController implements Serializable{
 
 		CRTLogger.out("New PatIllScript created for vp_id: " + vpId, CRTLogger.LEVEL_PROD);
 		addScriptCreationToPeerBean(patillscript);
+		
 		return patillscript;
+	}
+	
+	/**
+	 * Before we save the new patenIllnessscript we check whether the user has older scripts for the same vpId. If so, 
+	 * we mark these scripts with deleteFlag=1 to make sure we do not load it into the scriptsOfUser container.
+	 * We do the same with the ScoreBeans...
+	 * @param userId
+	 * @param vpId
+	 */
+	private void checkAndSetDeleteFlagOfOldSCriptsAndScore(long userId, String vpId, int systemId){
+		DBClinReason dcr = new DBClinReason(); 
+		List<PatientIllnessScript> scripts = dcr.selectPatIllScriptsByUserIdAndVpId(userId, vpId+"_"+systemId);
+		if(scripts==null || scripts.isEmpty()) return;
+		ArrayList<Long> scriptIds = new ArrayList();
+		for(int i=0; i<scripts.size();i++){
+			scripts.get(i).setDeleteFlag(true);
+			scriptIds.add(new Long(scripts.get(i).getId()));
+		}
+		checkAndSetDeleteFlagOfOldScores(scriptIds);
+		dcr.saveAndCommit(scripts);
+		
+	}
+	
+	/**
+	 * We check whether we have "undeleted" scoreBeans for the given scriptIds and set the delete flag to true/1
+	 * if we find any.
+	 * @param scriptsIds
+	 */
+	private void checkAndSetDeleteFlagOfOldScores(List<Long> scriptsIds){
+		if(scriptsIds==null || scriptsIds.isEmpty()) return;
+		DBScoring dbs = new DBScoring();
+		List<ScoreBean> scores = dbs.selectScoreBeansByPatIllScriptIds(scriptsIds);
+		if(scores==null || scores.isEmpty()) return;
+		for(int i=0;i<scores.size(); i++){
+			scores.get(i).setDeleteFlag(true);
+		}
+		dbs.saveAndCommit(scores);
+		
 	}
 	
 	/**
@@ -86,7 +126,7 @@ public class IllnessScriptController implements Serializable{
 		try{
 			PeerBean peer = AppBean.getPeers().getPeerBeanByIllScriptCreationActionAndVpId(patillscript.getVpId());
 			if(peer==null){
-				peer = new PeerSyncController(AppBean.getPeers()).createNewPeerBean(ScoreBean.TYPE_SCRIPT_CREATION, patillscript.getVpId(), -1, 0, 0, 0, 0);
+				peer = new PeerSyncController(AppBean.getPeers()).createNewPeerBean(ScoreBean.TYPE_SCRIPT_CREATION, patillscript.getVpId(), -1, /*0,*/ 0, 0, 0);
 			}
 			else{
 				peer.incrPeerNum();

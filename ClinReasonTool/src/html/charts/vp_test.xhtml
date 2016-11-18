@@ -12,17 +12,12 @@
 	var testdata = [];
 	var testpeerdata = [];
 	var testorgdata = [];
-	var counter = 1;
-	<ui:repeat value="#{crtContext.learningAnalyticsContainer.testScores}" var="scoreItem3">
-		testdata.push({ x: counter, y: #{scoreItem3.scoreBasedOnExpPerc}, title: "#{scoreItem3.vpName}" });
-		testorgdata.push({ x: counter, y: #{scoreItem3.orgScoreBasedOnExpPerc}, title: "#{scoreItem3.vpName}" });
-
-		counter ++;
+	<ui:repeat value="#{crtContext.learningAnalyticsContainer.VPTestScores}" var="scoreItem3">
+		testdata.push({ x: #{scoreItem3.stage}, y: #{scoreItem3.scoreBasedOnExpPerc}, title: "#{scoreItem3.vpName}" });
+		testorgdata.push({ x: #{scoreItem3.stage}, y: #{scoreItem3.orgScoreBasedOnExpPerc}, title: "#{scoreItem3.vpName}" });
 	</ui:repeat>
-	var counter2 = 1;
-	<ui:repeat value="#{crtContext.learningAnalyticsContainer.testPeerScores}" var="scoreItemP">
-		testpeerdata.push({ x: counter2, y: #{scoreItemP.expPeerPercentagePerc}, title: "#{scoreItemP.vpName}" });
-		counter2++;
+	<ui:repeat value="#{crtContext.learningAnalyticsContainer.VPTestPeers}" var="scoreItemP">
+		testpeerdata.push({ x: #{scoreItemP.stage}, y: #{scoreItemP.expPeerPercentagePerc}, title: "#{scoreItemP.vpName}" });
 	</ui:repeat>
 	/*if(peerChk=="1")
 		printGroupedBarChart(testdata, testpeerdata, 150, 250, "testchart","Diagnostic steps");

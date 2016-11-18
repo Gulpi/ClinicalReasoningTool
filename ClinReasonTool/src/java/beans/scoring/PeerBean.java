@@ -29,6 +29,7 @@ public class PeerBean extends Beans{
 	/**
 	 * for all list scoring we store the sum of all scores of all peers here...
 	 * (for average score divide by the peerNum!)
+	 * @deprecated
 	 */
 	private float overallScoreSum;
 	
@@ -81,11 +82,11 @@ public class PeerBean extends Beans{
 	public void setStage(int stage) {this.stage = stage;}
 	
 	public PeerBean(){}
-	public PeerBean(int action, String vpId, int peerNum, float overallScoreSum, int stage, float expScore, float orgExpScore){
+	public PeerBean(int action, String vpId, int peerNum, /*float overallScoreSum,*/ int stage, float expScore, float orgExpScore){
 		this.action = action; 
 		//this.parentId = parentId;
 		this.peerNum = peerNum;
-		this.overallScoreSum = overallScoreSum;
+		//this.overallScoreSum = overallScoreSum;
 		this.vpId = vpId;
 		this.orgScoreBasedOnExp = orgExpScore;
 		this.scoreBasedOnExp = expScore;
@@ -98,6 +99,21 @@ public class PeerBean extends Beans{
 		this.peerNum = peerNum;
 		this.itemId = itemId;
 		this.vpId = vpId;
+	}
+	
+	/**
+	 * This is a constructor that creates a dummy peerBean (for charts). In rare cases for new 
+	 * Vps, there might not be yet a peerBean....
+	 * @param action
+	 * @param vpId
+	 */
+	public PeerBean(int action, String vpId, int stage){
+		this.action = action; 
+		this.vpId = vpId;
+		this.stage = stage;
+		scoreBasedOnExp = 0;
+		orgScoreBasedOnExp = 0;
+		overallScoreSum = 0;
 	}
 	/* (non-Javadoc)
 	 * @see java.lang.Object#equals(java.lang.Object)

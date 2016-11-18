@@ -82,7 +82,7 @@ public class PeerSyncController {
 				if(peerBean==null){
 					//	protected PeerBean createNewPeerBean(int action, String vpId, long itemId, float score, int stage, float expScore, float orgExpScore){
 
-					peerBean = createNewPeerBean(score.getType(), vpId, -1, score.getOverallScore(), score.getStage(), score.getScoreBasedOnExp(), score.getOrgScoreBasedOnExp());
+					peerBean = createNewPeerBean(score.getType(), vpId, -1, /*score.getOverallScore(),*/ score.getStage(), score.getScoreBasedOnExp(), score.getOrgScoreBasedOnExp());
 					//peerCont.addPeerBean(peerBean, vpId);
 				}
 				else{
@@ -166,7 +166,7 @@ public class PeerSyncController {
 			if(peerBean==null){
 				//createNewPeerBean(int action, String vpId, long itemId, float score, int stage, float expScore, float orgExpScore){
 
-				peerBean = createNewPeerBean(rel.getRelationType(), vpId,  rel.getListItemId(), 0, -1, 0, 0);				
+				peerBean = createNewPeerBean(rel.getRelationType(), vpId,  rel.getListItemId(), /*0,*/ -1, 0, 0);				
 			}
 			else{
 				peerBean.incrPeerNum();
@@ -183,9 +183,9 @@ public class PeerSyncController {
 	 * @param patIllScriptId
 	 * @return
 	 */
-	protected PeerBean createNewPeerBean(int action, String vpId, long itemId, float score, int stage, float expScore, float orgExpScore){
+	protected PeerBean createNewPeerBean(int action, String vpId, long itemId, /*float score,*/ int stage, float expScore, float orgExpScore){
 
-		PeerBean pb = new PeerBean(action, vpId, 1, score, stage, expScore, orgExpScore);
+		PeerBean pb = new PeerBean(action, vpId, 1, /*score,*/ stage, expScore, orgExpScore);
 		pb.setItemId(itemId);		
 		//new DBScoring().saveAndCommit(pb);
 		cont.addPeerBean(pb, vpId);

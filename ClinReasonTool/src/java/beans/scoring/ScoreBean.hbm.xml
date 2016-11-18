@@ -30,6 +30,7 @@
 		<!-- <property name="parentId" column="parent_id" type="long"/>-->
 		<property name="vpId" column="vp_id" type="string"/>
 		<property name="distance" column="distance" type="int"/>
+		<property name="deleteFlag" column="delete_flag" type="boolean"/>
 		
 		
 		

@@ -134,7 +134,7 @@ public class AdminFacesContext extends FacesContextWrapper implements MyFacesCon
 	
 	private void initGraph(){	    
 		if(graph!=null) return; //nothing todo, graph already loaded
-		graph = new Graph(patillscript.getVpId(), true);
+		graph = new Graph(patillscript.getVpId(), true, patillscript.getId());
 		//if(graph!=null) graph.setExpEdit(true);
 
 	}

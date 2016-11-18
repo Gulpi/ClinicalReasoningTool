@@ -10,6 +10,7 @@ import javax.faces.bean.*;
 import org.apache.commons.lang.StringUtils;
 
 import actions.beanActions.*;
+import actions.scoringActions.ScoringListAction;
 import application.AppBean;
 import beans.*;
 import beans.error.MyError;
@@ -125,6 +126,11 @@ public class PatientIllnessScript extends Beans/*extends Node*/ implements Compa
 	private String extUId="";
 	
 	/**
+	 * true for old scripts if learner creates a new script for the same VP.
+	 */
+	private boolean deleteFlag = false;
+	
+	/**
 	 * Has this script added to the peer table? ONLY learner scripts!
 	 */
 	private boolean peerSync = false;
@@ -164,6 +170,9 @@ public class PatientIllnessScript extends Beans/*extends Node*/ implements Compa
 		if(type==TYPE_EXPERT_CREATED) return true;
 		return false;
 	}
+	
+	public boolean isDeleteFlag() {return deleteFlag;}
+	public void setDeleteFlag(boolean deleteFlag) {this.deleteFlag = deleteFlag;}
 	public List<RelationDiagnosis> getDiagnoses() {return diagnoses;}
 	public List<RelationDiagnosis> getDiagnosesStage() { return getRelationsByStage(diagnoses);}
 	public void setDiagnoses(List<RelationDiagnosis> diagnoses) {this.diagnoses = diagnoses;}
@@ -498,8 +507,10 @@ public class PatientIllnessScript extends Beans/*extends Node*/ implements Compa
 					NavigationController.getInstance().getMyFacesContext().getUser().getUserSetting().setOpenHelpOnLoad(false);
 			}
 			this.stage = stageNum; //we always update the stage
+			//we cannot save if the user is an admin and views a learners script
 			if(stageNum > this.currentStage && !NavigationController.getInstance().getMyFacesContext().isView()){
-				//we cannot save if the user is an admin and views a learners script
+				//if user is on first card, do NOT calculate list scores:
+				if(stageNum>=2) new ScoringListAction(this).checkListScoresAtStage();
 				this.setCurrentStage(stageNum);	
 				save();
 			}

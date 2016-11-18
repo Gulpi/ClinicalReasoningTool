@@ -25,7 +25,7 @@ public class PatIllScriptContainer implements Serializable{
 	}
 	
 	public void loadScriptsOfUser(){
-		if(scriptsOfUser==null) scriptsOfUser = new DBClinReason().selectPatIllScriptsByUserId(userId);
+		if(scriptsOfUser==null) scriptsOfUser = new DBClinReason().selectActivePatIllScriptsByUserId(userId);
 	}
 	
 	public List<PatientIllnessScript> getScriptsOfUser(){return scriptsOfUser;}	
@@ -55,7 +55,7 @@ public class PatIllScriptContainer implements Serializable{
 		return lastSubmittedScripts;		
 	}
 	
-	public PatientIllnessScript getScriptById(String vpId){
+	/*public PatientIllnessScript getScriptById(String vpId){
 		if(scriptsOfUser==null || scriptsOfUser.isEmpty()) return null;
 		Iterator<PatientIllnessScript> it = scriptsOfUser.iterator();
 		while(it.hasNext()){			
@@ -63,5 +63,5 @@ public class PatIllScriptContainer implements Serializable{
 			if(pi.getVpId().equals(vpId)) return pi;
 		}
 		return null;
-	}
+	}*/
 }

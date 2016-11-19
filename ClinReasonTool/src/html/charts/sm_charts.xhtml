@@ -39,7 +39,7 @@ var peerStatus = 0;
 </script>
 
 </head>
- <body class="chartbody">
+ <body class="chartbody_sm">
  <div class="chart_sm">
 	<div class="chartbox">
 		<svg  id="overallchart" mytooltip="#{prop['chart.all.overall']}" class="chart svgsmall"></svg>
@@ -56,9 +56,9 @@ var peerStatus = 0;
 	</ui:repeat>
 	printBarChart(overalldata, "overallchart","Overall", false);
 	
-</script>
+</script>	 	
+<a href="charts.xhtml?chart_size=lg&amp;chart_type=0" target="new">#{prop['charts.more']}</a>
 		</div>
-	 	<a href="charts.xhtml?chart_size=lg&amp;chart_type=0" target="new">#{prop['charts.more']}</a>
 </div>
  </body>
  </f:view>

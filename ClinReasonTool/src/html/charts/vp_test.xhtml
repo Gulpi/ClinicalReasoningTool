@@ -6,32 +6,33 @@
 <!-- problem scores for all VPs of user -->
 
 <!-- <div class="chart_header">#{prop['chart.all.tests']}</div>-->
-	<svg id="testchart" mytooltip="#{prop['chart.all.tests']}"  class="chart svgsmall"></svg>
+	<svg id="testchart"  class="chart svgsmall"></svg>
 
 <script language="JavaScript">
 	var testdata = [];
 	var testpeerdata = [];
 	var testorgdata = [];
 	<ui:repeat value="#{crtContext.learningAnalyticsContainer.VPTestScores}" var="scoreItem3">
-		testdata.push({ x: #{scoreItem3.stage}, y: #{scoreItem3.scoreBasedOnExpPerc}, title: "#{scoreItem3.vpName}" });
-		testorgdata.push({ x: #{scoreItem3.stage}, y: #{scoreItem3.orgScoreBasedOnExpPerc}, title: "#{scoreItem3.vpName}" });
+		testdata.push({ x: #{scoreItem3.stage}, y: #{scoreItem3.scoreBasedOnExpPerc}, title:"#{prop['charts.card']} #{scoreItem3.stage}" });
+		testorgdata.push({ x: #{scoreItem3.stage}, y: #{scoreItem3.orgScoreBasedOnExpPerc}, title: "#{prop['charts.card']} #{scoreItem3.stage}" });
 	</ui:repeat>
 	<ui:repeat value="#{crtContext.learningAnalyticsContainer.VPTestPeers}" var="scoreItemP">
-		testpeerdata.push({ x: #{scoreItemP.stage}, y: #{scoreItemP.expPeerPercentagePerc}, title: "#{scoreItemP.vpName}" });
+		testpeerdata.push({ x: #{scoreItemP.stage}, y: #{scoreItemP.expPeerPercentagePerc}, title: "#{prop['charts.card']} #{scoreItem3.stage}" });
 	</ui:repeat>
 	/*if(peerChk=="1")
 		printGroupedBarChart(testdata, testpeerdata, 150, 250, "testchart","Diagnostic steps");
 	else */
-		printBarChart(testdata, "testchart","Diagnostic steps", false);
-		
-	function printLargeTst(){
+		//printBarChart(testdata, "testchart","Diagnostic steps", false);
+	printBarLineComboChartTwoLines(testdata, testorgdata, testpeerdata, "testchart","Tests", false);
+
+/*	function printLargeTst(){
 		currentChartNum = 4;
 		if(peerStatus==1)
-			printBarLineComboChartTwoLines(testdata, testorgdata, testpeerdata, "chartlarge","DDX");
+			printBarLineComboChartTwoLines(testdata, testorgdata, testpeerdata, "chartlarge","Tests", false);
 
-			//printBarLineComboChart(testdata, testpeerdata/*, 280, 380*/, "chartlarge","Tst");
+			//printBarLineComboChart(testdata, testpeerdata, "chartlarge","Tst");
 		else
 			printBarChart(testdata, "chartlarge","Diagnostic steps", true);
-		}
+		}*/
 </script>
 </ui:composition>

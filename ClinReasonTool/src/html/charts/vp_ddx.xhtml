@@ -7,29 +7,30 @@
 
 <!-- <div class="chart_header">#{prop['chart.all.ddx']}</div> -->
 
-	<svg id="ddxchart" mytooltip="#{prop['chart.all.ddx']}" class="chart svgsmall"></svg>
+	<svg id="ddxchart"  class="chart svgsmall"></svg>
 <script language="JavaScript">
 var ddxdata = [];
 var ddxorgdata = [];
 var ddxpeerdata = [];
 <ui:repeat value="#{crtContext.learningAnalyticsContainer.VPDDXScores}" var="scoreItem2">
-	ddxdata.push({x:#{scoreItem2.stage}, y:#{scoreItem2.scoreBasedOnExpPerc}, title: "#{scoreItem2.vpName}" });
-	ddxorgdata.push({x:#{scoreItem2.stage}, y:#{scoreItem2.orgScoreBasedOnExpPerc}, title: "#{scoreItem2.vpName}" });
+	ddxdata.push({x:#{scoreItem2.stage}, y:#{scoreItem2.scoreBasedOnExpPerc}, title: "#{prop['charts.card']} #{scoreItem2.stage}" });
+	ddxorgdata.push({x:#{scoreItem2.stage}, y:#{scoreItem2.orgScoreBasedOnExpPerc}, title: "#{prop['charts.card']} #{scoreItem2.stage}" });
 </ui:repeat>
 
 <ui:repeat value="#{crtContext.learningAnalyticsContainer.VPDDXPeers}" var="scoreItemP">
-	ddxpeerdata.push({x: #{scoreItemP.stage}, y:#{scoreItemP.expPeerPercentagePerc} , title: "#{scoreItemP.vpName}"});
+	ddxpeerdata.push({x: #{scoreItemP.stage}, y:#{scoreItemP.expPeerPercentagePerc} , title: "#{prop['charts.card']} #{scoreItem2.stage}"});
 </ui:repeat>
 
 /*if(peerChk=="1")
 	printGroupedBarChart(ddxdata, ddxpeerdata,  "ddxchart","Differentials");
 else */
-	printBarChart(ddxdata, "ddxchart","Differentials", false);
-	
+	//printBarChart(ddxdata, "ddxchart","Differentials", false);
+				printBarLineComboChartTwoLines(ddxdata, ddxorgdata, ddxpeerdata, "ddxchart","DDX");
+
 	function printLargeDDX(){
 		currentChartNum = 3;
 		if(peerStatus==1)
-			printBarLineComboChartTwoLines(ddxdata, ddxorgdata, ddxpeerdata, "chartlarge","DDX");
+			printBarLineComboChartTwoLines(ddxdata, ddxorgdata, ddxpeerdata, "chartlarge","DDX", false);
 			//printBarLineComboChart(ddxdata, ddxpeerdata, "chartlarge","DDX");
 		else
 			printBarChart(ddxdata, "chartlarge","Differentials", true);

@@ -6,6 +6,13 @@
 	font-size:0.9em;
 }
 
+.chartbody_sm{
+	margin-left:5px;
+	margin-top:5px;
+	font-family:Arial;
+	font-size:0.9em;
+}
+
 a{
 	text-decoration:none;
 	color:#006699 !important;
@@ -80,13 +87,35 @@ a:focus{outline:none !important;}
 }
 
 .svgsmall{
-	width:150px;
-	height:75px;
+	width:220px !important;
+	height:110px !important;
 }
 
 
 .chartbox{
-	margin-bottom:20px;
+	margin-bottom:10px;
+}
+
+.chartsummary{
+	float:left;
+	width:80%;
+	margin-left:20px;
+	
+}
+.chartbox_indiv{
+	width:300px;
+	height:100px;
+}
+
+.chartbox_cont{
+	float: left;
+	min-height:250px;
+	width:300px;
+	position:relative;
+	margin-left:10px;
+}
+.chart_footer{
+	margin-left:10px;
 }
 
 .chart rect {
@@ -153,8 +182,53 @@ a:focus{outline:none !important;}
 	font-size:10px !important;
 }
 
+.nv-bar{
+	fill:#006699 !important;
+	stroke:#006699 !important;
+}
+
 .chart_sm{
-	height:150px;
+	height:120px;
+}
+
+.legend_my:before{
+	content: "\f0c8";
+	/*background-color:#006699;*/
+	color:#006699;
+}
+
+
+.legend_myorg:before{
+	content: "\f0c8";
+	color:#2ca02c;
+}
+
+.legend_peer:before{
+	content: "\f0c8";
+	color:orange;
+}
+
+.perfstatus {
+	display: inline-block;
+	/*width: 60px;
+	height: 11px;*/
+	width: 4.8em;
+	height: 1.3em;
+	/*border: solid 1px #333333;*/
+	margin-top: 0.3em;
+	margin-right: 0.2em;
+	background-color: none;
+	border:0.10em solid #c2c0c1;
+	-moz-border-radius: 0.1em;
+	border-radius: 0.1em;
+	cursor:help;
+	vertical-align: middle;
+}
+
+
+.perfstatus .success {
+     background-color: #4e8443;
+     height: 100%;
 }
 /*
   .chart .current {

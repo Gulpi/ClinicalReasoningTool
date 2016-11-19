@@ -74,37 +74,37 @@ var widgetSize = "#{chartConf.widgetSize}";
  </head>
  <body class="chartbody">
  
-<div class="chart_lg"> #{prop['charts.lg.intro']}</div>
+<div class="chart_lg"> #{prop['charts.lg.intro']}</div><br/>
 
 <div id="chart-container" class="chart_container chart_lg">
 		
 		<div class="displaychart_#{chartConf.displayOverallChart} chartbox">
-		Overall
+		
 			<a href="javascript:printLargeOverall();"><ui:include src="all_overall.xhtml" /></a>
-		</div><br/>
+		</div><br/><span style="font-size:0.9em;margin-left:20px;">#{prop['chart.all.overall']}</span><br/><br/>
 		<div class="displaychart_#{chartConf.displayProblemChart} chartbox">
 			<a href="javascript:printLargeFdg();"><ui:include src="all_prob.xhtml" /></a>
-		</div><br/>
+		</div><br/><span style="font-size:0.9em;margin-left:20px;">#{prop['chart.all.findings']}</span><br/><br/>
 		<div class="displaychart_#{chartConf.displayDDXChart} chartbox">
 			<a href="javascript:printLargeDDX();"><ui:include src="all_ddx.xhtml" /></a>
-		</div><br/>
+		</div><br/><span style="font-size:0.9em;margin-left:20px;">#{prop['chart.all.ddx']}</span><br/><br/>
 		<div class="displaychart_#{chartConf.displayTestChart} chartbox">
 			<a href="javascript:printLargeTst();"><ui:include src="all_test.xhtml" /></a>
-		</div><br/>
+		</div><br/><span style="font-size:0.9em;margin-left:20px;">#{prop['chart.all.tests']}</span><br/><br/>
 		<div class="displaychart_#{chartConf.displayMngChart} chartbox">
 			<a href="javascript:printLargeMng();"><ui:include src="all_mng.xhtml" /></a>
-		</div><br/>
+		</div><br/><span style="font-size:0.9em;margin-left:20px;">#{prop['chart.all.mng']}</span><br/><br/>
 		<!-- <div class="displaychart_#{chartConf.displaySumStChart} chartbox">
 			<a href="javascript:printLargeSum();"><ui:include src="all_sumst.xhtml" /></a>
 		</div><br/>-->
 </div>
 <div style="float:left;position:relative" class="chart_lg">
-	<div style="left:15px;top:5px;"><i mytooltip="#{prop['charts.peers']}" class="fa fa-users"></i> <br/> </div>
+	<!-- <div style="left:15px;top:5px;"><i mytooltip="#{prop['charts.peers']}" class="fa fa-users"></i> <br/> </div>
 
 	<div class="switch" style="left:30px;">
 	        <input id="peertoggle" class="cmn-toggle cmn-toggle-round" checked="checked" onchange="javascript:togglePeers();" type="checkbox" />
 	        <label for="peertoggle"></label>
-	</div>
+	</div>-->
 	<div class="chart_lg" style="border:1px;width:400px;height:320px;">
 		<svg id="chartlarge" class="chart" style="width:380px;height:280px;"></svg>
 	</div>

@@ -7,31 +7,33 @@
 
 <!-- <div class="chart_header">#{prop['chart.all.mng']}</div>-->
 
-	<svg id="mngchart" mytooltip="#{prop['chart.all.mng']}" class="chart svgsmall"></svg>
+	<svg id="mngchart" class="chart svgsmall"></svg>
 
 <script language="JavaScript">
 	var mngdata = [];
 	var mngpeerdata = [];
 	var orgmngdata = [];
 	<ui:repeat value="#{crtContext.learningAnalyticsContainer.VPMngScores}" var="scoreItem4">
-		mngdata.push({ x: #{scoreItem4.stage}, y: #{scoreItem4.scoreBasedOnExpPerc}, title: "#{scoreItem4.vpName}" });
-		orgmngdata.push({ x: #{scoreItem4.stage}, y: #{scoreItem4.orgScoreBasedOnExpPerc}, title: "#{scoreItem4.vpName}" });
+		mngdata.push({ x: #{scoreItem4.stage}, y: #{scoreItem4.scoreBasedOnExpPerc}, title: "#{prop['charts.card']} #{scoreItem4.stage}" });
+		orgmngdata.push({ x: #{scoreItem4.stage}, y: #{scoreItem4.orgScoreBasedOnExpPerc}, title: "#{prop['charts.card']} #{scoreItem4.stage}" });
 	</ui:repeat>
 	<ui:repeat value="#{crtContext.learningAnalyticsContainer.VPMngPeers}" var="scoreItemP">
-		mngpeerdata.push({ x: #{scoreItemP.stage}, y: #{scoreItemP.expPeerPercentagePerc} , title: "#{scoreItemP.vpName}"});
+		mngpeerdata.push({ x: #{scoreItemP.stage}, y: #{scoreItemP.expPeerPercentagePerc} , title: "#{prop['charts.card']} #{scoreItem4.stage}"});
 	</ui:repeat>
 	//if(peerChk=="1")
 	//	printGroupedBarChart(mngdata, mngpeerdata, 150, 250, "mngchart","Management");
 	//else 
-		printBarChart(mngdata, "mngchart","Management", false);	
-		function printLargeMng(){
+		//printBarChart(mngdata, "mngchart","Management", false);	
+		printBarLineComboChartTwoLines(mngdata,orgmngdata, mngpeerdata, "mngchart","Mng", false);
+
+	/*	function printLargeMng(){
 			currentChartNum = 5;
 			if(peerStatus==1)
-				printBarLineComboChartTwoLines(mngdata,orgmngdata, mngpeerdata, "chartlarge","DDX");
+				printBarLineComboChartTwoLines(mngdata,orgmngdata, mngpeerdata, "chartlarge","Mng", false);
 
 				//printBarLineComboChart(mngdata, mngpeerdata, "chartlarge","Mng");
 			else 
 				printBarChart(mngdata, "chartlarge","Management", true);	
-		}
+		}*/
 </script>
 </ui:composition>

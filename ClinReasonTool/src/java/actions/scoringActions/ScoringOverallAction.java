@@ -106,8 +106,11 @@ public class ScoringOverallAction {
 			scoreSummSt = scoreSummStBean.getScoreBasedOnExp();
 		}
 		
-		float finalOrgScore = (scoreOrgProb * WEIGHT_PROB + scoreOrgDDX * WEIGHT_DDX + scoreOrgTest * WEIGHT_TESTS + scoreOrgMng * WEIGHT_MNG + scoreOrgSummSt * WEIGHT_SUMMST) /5;
-		float finalScore = (scoreProb * WEIGHT_PROB + scoreDDX * WEIGHT_DDX + scoreTest * WEIGHT_TESTS + scoreMng * WEIGHT_MNG + scoreSummSt * WEIGHT_SUMMST) /5;
+		float finalOrgScore = (scoreOrgProb + scoreOrgDDX  + scoreOrgTest  + scoreOrgMng  + scoreOrgSummSt ) /5;
+		float finalScore = (scoreProb  + scoreDDX  + scoreTest  + scoreMng  + scoreSummSt ) /5;
+
+		//float finalOrgScore = (scoreOrgProb * WEIGHT_PROB + scoreOrgDDX * WEIGHT_DDX + scoreOrgTest * WEIGHT_TESTS + scoreOrgMng * WEIGHT_MNG + scoreOrgSummSt * WEIGHT_SUMMST) /5;
+		//float finalScore = (scoreProb * WEIGHT_PROB + scoreDDX * WEIGHT_DDX + scoreTest * WEIGHT_TESTS + scoreMng * WEIGHT_MNG + scoreSummSt * WEIGHT_SUMMST) /5;
 
 		overallScore.setOrgScoreBasedOnExp(finalOrgScore);
 		overallScore.setScoreBasedOnExp(finalScore);

@@ -5,7 +5,7 @@ function printBarChart(data, chartName, title, isLarge){
 	if(isLarge) $("#chartlarge").html(""); 
 	var data1 = [];
 	//var isLarge = width>200; //otherwise thumbnail...
-	data1[0] = {key: chartLabelMe , nonStackable: 1 ,values: data};
+	data1[0] = {"key": chartLabelMe , nonStackable: 1 ,"values": data};
 	//data1[1] = {key: chartLabelPeer , nonStackable: 1, values: peerdata};
 	//data: { x: "1212", y: 52 }
    nv.addGraph({
@@ -19,7 +19,7 @@ function printBarChart(data, chartName, title, isLarge){
             chart.yAxis.tickFormat(d3.format(''));
             if(isLarge) chart.yAxis.ticks(10, "%");
             chart.margin({"left":15,"right":5,"top":5,"bottom":15});
-            if(isLarge){
+           /* if(isLarge)*/{
             	chart.tooltip.enabled(true);
             
 	            chart.tooltip.contentGenerator(function(obj) {
@@ -83,7 +83,7 @@ function printBarLineComboChart(data, peerdata, chartName, title){
                 });
 }
 
-function printBarLineComboChartTwoLines(data, orgdata, peerdata, chartName, title){
+function printBarLineComboChartTwoLines(data, orgdata, peerdata, chartId, title, showLeg){
 	$("#chartlarge").html("");
 	var testdata = [];
 	testdata[0] = {"key": chartLabelMe ,"values": data};
@@ -100,7 +100,8 @@ function printBarLineComboChartTwoLines(data, orgdata, peerdata, chartName, titl
                 nv.addGraph(function() {
                     chart = nv.models.multiChart()
                     .margin({"left":25,"right":5,"top":5,"bottom":15})
-                    .color(d3.scale.category10().range());
+                    .color(d3.scale.category10().range())
+                    .showLegend(showLeg);
 
                     chart.yAxis1.tickFormat(d3.format(''));
                     //chart.xAxis.tickFormat('');
@@ -112,7 +113,7 @@ function printBarLineComboChartTwoLines(data, orgdata, peerdata, chartName, titl
                     });
 
                 chart.yDomain1([0,100]);
-                d3.select('#chartlarge')
+                d3.select('#'+chartId)
                     .datum(testdata)
                   .transition().duration(0).call(chart);
 

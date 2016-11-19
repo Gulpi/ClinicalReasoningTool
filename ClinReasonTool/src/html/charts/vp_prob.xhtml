@@ -6,30 +6,25 @@
 <!-- problem scores for all VPs of user -->
 
 <!-- <div class="chart_header">#{prop['chart.all.findings']}</div>-->
-	<svg id="probchart" mytooltip="#{prop['chart.all.findings']}" class="chart svgsmall"></svg>
+	<svg id="probchart" class="chart svgsmall"></svg>
 
 <script language="JavaScript">
 	var probdata = [];
 	var probpeerdata = []; 
 	var proborgdata = [];
-	var counter =1;
 	<ui:repeat value="#{crtContext.learningAnalyticsContainer.VPProblemScores}" var="scoreItem">
-		probdata.push({x:#{scoreItem.stage}, y:#{scoreItem.scoreBasedOnExpPerc}, title: "#{scoreItem.vpName}"});
-		proborgdata.push({x:#{scoreItem.stage}, y:#{scoreItem.orgScoreBasedOnExpPerc}, title: "#{scoreItem.vpName}"});
-		counter++;
+		probdata.push({x:#{scoreItem.stage}, y:#{scoreItem.scoreBasedOnExpPerc}, title: "#{prop['charts.card']} #{scoreItem.stage}"});
+		proborgdata.push({x:#{scoreItem.stage}, y:#{scoreItem.orgScoreBasedOnExpPerc}, title: "#{prop['charts.card']} #{scoreItem.stage}"});
 	</ui:repeat>
-		var counter2 =1;
 	<ui:repeat value="#{crtContext.learningAnalyticsContainer.VPProblemPeers}" var="scoreItemP">
-		probpeerdata.push({x:#{scoreItemP.stage}, y:#{scoreItemP.expPeerPercentagePerc}, title: "#{scoreItemP.vpName}"});
-		counter2++;
+		probpeerdata.push({x:#{scoreItemP.stage}, y:#{scoreItemP.expPeerPercentagePerc}, title: "#{prop['charts.card']} #{scoreItem.stage}"});
 	</ui:repeat>
-	/*if(peerChk=="1"){
-		printGroupedBarChart(probdata, probpeerdata, 150, 250, "probchart", "Problems");
-	}
-	else */
-		printBarChart(probdata, "probchart","Problems", false);
+
+		printBarLineComboChartTwoLines(probdata, proborgdata, probpeerdata, "probchart","Problems", false);		
 	
-	function printLargeFdg(){
+		//printBarChart(probdata, "probchart","Problems", false);
+	
+	/*function printLargeFdg(){
 		currentChartNum = 2;
 		if(peerStatus==1)
 			printBarLineComboChartTwoLines(probdata, proborgdata, probpeerdata, "chartlarge","Overall");		
@@ -37,6 +32,6 @@
 			//printBarLineComboChart(probdata, probpeerdata, "chartlarge","Fdg");
 		else
 			printBarChart(probdata, "chartlarge","Problems", true);
-	}
+	}*/
 </script>
 </ui:composition>

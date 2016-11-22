@@ -485,6 +485,6 @@ function postEnforceFinalDDXSubmission(isSubmitted/*, currentStage, maxStageForS
 }
 
 function postFrameHeight(newHeight){
-	top.postMessage(newHeight, "*");
+	top.postMessage("h"+newHeight, "*");
 }     
 

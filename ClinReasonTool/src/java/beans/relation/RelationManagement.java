@@ -1,16 +1,9 @@
 package beans.relation;
 
-import java.awt.Point;
-import java.beans.Beans;
 import java.io.Serializable;
-import java.util.Set;
+import java.util.*;
 
-import org.apache.commons.lang3.StringUtils;
-
-import controller.ConceptMapController;
 import controller.GraphController;
-import controller.RelationController;
-import controller.ScoringController;
 import model.ListItem;
 import model.Synonym;
 

@@ -1,21 +1,9 @@
 package beans.relation;
 
-import java.awt.Point;
-import java.beans.Beans;
 import java.io.Serializable;
-import java.sql.Timestamp;
 import java.util.*;
 
-import javax.faces.context.FacesContext;
-
-import org.apache.commons.lang3.StringUtils;
-
-import beans.scoring.ScoreContainer;
-import controller.ConceptMapController;
 import controller.GraphController;
-import controller.NavigationController;
-import controller.RelationController;
-import controller.ScoringController;
 import model.ListItem;
 import model.Synonym;
 

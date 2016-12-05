@@ -18,7 +18,6 @@ import beans.graph.MultiEdge;
 import beans.relation.Connection;
 import beans.relation.Relation;
 import beans.scripts.IllnessScriptInterface;
-import controller.ConceptMapController;
 import controller.GraphController;
 import controller.NavigationController;
 import beans.LogEntry;

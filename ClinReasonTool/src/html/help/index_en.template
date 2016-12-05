@@ -1,5 +1,5 @@
 <div id="help_idx">
-<a href="https://youtu.be/WgQxinhiw24" target="new"><i class="fa fa-film" style="width:24px;"></i>Short movie about the tool</a><br/><br/>
+<a href="https://youtu.be/WgQxinhiw24" onclick="javascript:openVideo('2');" target="new"><i class="fa fa-film" style="width:24px;"></i>Short movie about the tool</a><br/><br/>
 This tool helps you to document findings, differentials, tests, management, and a summary statement in a concept
 map. This approach supports the development of clinical reasoning skills. 
 <br/><br/>

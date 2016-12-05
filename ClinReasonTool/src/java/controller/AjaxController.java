@@ -176,9 +176,13 @@ public class AjaxController {
 	    Map<String, String> reqParams = externalContext.getRequestParameterMap();
 	    if(reqParams!=null){
 	    	String patillscriptId = reqParams.get(REQPARAM_SCRIPT);
-	    	if(crContext==null || patillscriptId==null || crContext.getPatillscript()==null || Long.parseLong(patillscriptId)!=crContext.getPatillscript().getId()){
+	    	if(crContext==null || patillscriptId==null) {
 	    		CRTLogger.out("Error: receiveAjax", CRTLogger.LEVEL_PROD);
 	    		return; //TODO we need some more error handling here, how can this happen? What shall we do? 
+	    	}
+	    	if(!patillscriptId.equals("-99") && (crContext.getPatillscript()==null || Long.parseLong(patillscriptId)!=crContext.getPatillscript().getId())){
+	    		CRTLogger.out("Error: receiveAjax", CRTLogger.LEVEL_PROD);
+	    		return;
 	    	}
 	    	String methodName = reqParams.get("type");
 	    	String idStr = reqParams.get("id");

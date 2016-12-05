@@ -26,6 +26,11 @@ $.extend({
 	  }
 	});
 
+
+function clearErrorMsgs(){
+	$(".errormsg").html("");
+}
+
 /**
  * we start an ajax call with changed params. We also include always the session id!
  * id = id of the problem/diagnosis,...
@@ -487,4 +492,13 @@ function postEnforceFinalDDXSubmission(isSubmitted/*, currentStage, maxStageForS
 function postFrameHeight(newHeight){
 	top.postMessage("h"+newHeight, "*");
 }     
+
+/******************clicks **************/
+function openVideo(num){
+	clearErrorMsgs();
+	sendAjaxUrl('45', doNothing, "createClickLogEntry", num, "", "/crt/src/html/tabs_ajax2.xhtml");
+	//sendAjaxContext('45', doNothing, "createClickLogEntry", num);
+}
+
+function doNothing(){}
 

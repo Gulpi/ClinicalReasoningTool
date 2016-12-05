@@ -344,6 +344,10 @@ public class CRTFacesContext extends FacesContextWrapper implements MyFacesConte
 		feedbackContainer.toogleExpFeedback(toggleStr, this.patillscript.getCurrentStage());
 	}
 	
+	public void createClickLogEntry(String action, String item){
+		feedbackContainer.createClickLogEntry(Integer.parseInt(action), Long.parseLong(item));
+	}
+	
 	public void tooglePeerBoxFeedback(String toggleStr, String taskStr){
 		feedbackContainer.tooglePeerBoxFeedback(toggleStr, taskStr, this.patillscript.getCurrentStage());
 	}

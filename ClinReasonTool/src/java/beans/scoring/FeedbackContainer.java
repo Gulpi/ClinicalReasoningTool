@@ -1,17 +1,12 @@
 package beans.scoring;
 
-import java.beans.Beans;
 import java.io.Serializable;
 import java.util.*;
 
 import javax.faces.bean.SessionScoped;
 
 import beans.LogEntry;
-import beans.scripts.ExpViewPatientIllnessScript;
-import controller.NavigationController;
-import database.DBClinReason;
 import database.DBScoring;
-import util.CRTLogger;
 
 /**
  * Contains all elements we need for the different types of Feedback, such as the illnessScripts,
@@ -22,6 +17,9 @@ import util.CRTLogger;
  */
 @SessionScoped
 public class FeedbackContainer implements Serializable{
+	public static final int MOVIE_WHATISCR = 1;
+	public static final int MOVIE_TOOLNAV = 2;
+	public static final int MOVIE_SUMST = 3;
 	
 	private static final long serialVersionUID = 1L;
 
@@ -96,6 +94,16 @@ public class FeedbackContainer implements Serializable{
 		if(fb!=null) return; //already set
 		fb = new FeedbackBean(currStage, FeedbackBean.FEEDBACK_EXP, patIllScriptId);
 		if(addFeedbackBean(fb, currStage)) fb.save();
+	}
+	
+	/**
+	 * we store a LogEntry when the user clicks on something (e.g. video. help page,...)
+	 * @param action
+	 * @param num
+	 */
+	public void createClickLogEntry(int action, long item){
+		LogEntry log = new LogEntry(action , patIllScriptId, item);
+		log.save();
 	}
 	
 		

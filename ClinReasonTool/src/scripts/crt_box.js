@@ -747,6 +747,7 @@ function toggleExpFeedback(iconId, itemClass){
 	}
 }
 
+
 function turnOverallExpFeedbackOn(iconId, itemClass){
 	$("#"+iconId).removeClass("fa-user-md_off");	
 	$("#"+iconId).addClass("fa-user-md_on");

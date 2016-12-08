@@ -21,10 +21,9 @@
         <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet"/>
         <link href="//fonts.googleapis.com/css?family=Lato:400,700" rel="stylesheet"/>-->
 <link rel="stylesheet" type="text/css" href="../../scripts/jquery112/ui-lightness/jquery-ui.css" /> 
-<!--  <link rel="stylesheet" type="text/css" href="../scripts/draw2d/css/contextmenu.css"  />-->
 <link rel="stylesheet" type="text/css" href="../../styles/jsPlumbToolkit-defaults.css" />
-<!--  <link rel="stylesheet" type="text/css" href="<PMW fcache>files/html/scripts/draw2d/css/contextmenu.css"  />-->
 <link rel="stylesheet" href="../../styles/clinreason_boxes.css" />
+<link rel="stylesheet" href="../../styles/portfolio.css" />
 <link rel="stylesheet" href="../../styles/font-awesome/css/font-awesome.css" />
 
 <script type="text/javascript" src="../../scripts/jquery112/jquery.js"></script>
@@ -36,7 +35,6 @@
 
 <script src="../../scripts/crt_box.js"></script>
 <script src="../../scripts/ajax.js"></script>
-<!-- <script src="../../scripts/js.cookie.js"></script>-->
 <script src="../../scripts/jsplumb/jsPlumb.min.js"></script>
 <script src="../../scripts/myjsplumb.js"></script>
 <script src="../../scripts/editexp.js"></script>
@@ -69,6 +67,7 @@ var active;
 var instance;
 var item_arr = new Array();
 var exp_arr = new Array();
+var summSt = "#{adminContext.patillscript.summStStage.textSQ}";
 
 $(function() {
 	if(lang=="de") listUrl = "../jsonp_de.json";
@@ -95,6 +94,8 @@ $(function() {
 		width: "auto",
 		height: "auto"
 	});
+	
+	$("#summstdisplay").html(summSt);
 });
 
 
@@ -158,7 +159,7 @@ item_arr = new Array();
 </head>
 <body style="font-family:arial;" data-demo-id="draggableConnectors" data-library="dom">
 <div>
-ScriptId:  #{adminContext.patillscript.id}, VPId: #{adminContext.patillscript.vpId}, Date:  #{adminContext.patillscript.creationDate}<br/>
+ScriptId:  #{adminContext.patillscript.id}, VPId: #{adminContext.patillscript.vpId}, Date:  #{adminContext.patillscript.lastAccessDate}<br/>
 
 MaxStage: #{adminContext.patillscript.currentStage}, Stage: <span id="stageSpan">#{adminContext.patillscript.stage} </span>
 <a href="javascript:chgStage(-1, '../view/exp_boxes_view.xhtml');">previous stage</a> <a href="javascript:chgStage(1, '../view/exp_boxes_view.xhtml');">next stage</a>
@@ -246,7 +247,7 @@ MaxStage: #{adminContext.patillscript.currentStage}, Stage: <span id="stageSpan"
 	  		<div id="sum_box" class="container sum_container_view" group="sum_group">	
 		 	<div class="title" style="font-size:12px;">#{prop['summst']}</div>
 		 	 <div class="node-collapse"></div>
-		 	 <span style="font-size:16px;">  #{adminContext.patillscript.summStStage.text}</span>
+		 	 <span style="font-size:16px;" id="summstdisplay"></span>
 		</div>
 	</div>
 </div>

@@ -243,6 +243,10 @@ public class ScoreBean extends Beans implements Serializable{
 		if(type==TYPE_PROBLEM_LIST  || type == TYPE_DDX_LIST || type==TYPE_MNG_LIST || type==TYPE_TEST_LIST || type==TYPE_EPI_LIST) return true;
 		return false;
 	}
+	public boolean isAddItemScoreBean(){
+		if(type==TYPE_ADD_PROBLEM  || type == TYPE_ADD_DDX || type==TYPE_ADD_MNG || type==TYPE_ADD_TEST || type==TYPE_ADD_EPI) return true;
+		return false;		
+	}
 
 	/** TODO we could consider all components and calculate based on these an overall score.
 	 * For now we just take the expertsScore.

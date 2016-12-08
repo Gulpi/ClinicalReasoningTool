@@ -8,6 +8,7 @@ import beans.scoring.ScoreBean;
 import beans.scoring.ScoreContainer;
 import controller.NavigationController;
 import controller.ScoringController;
+import controller.SummaryStatementController;
 import database.DBScoring;
 //import it.uniroma1.lcl.adw.*;
 //import it.uniroma1.lcl.adw.comparison.*;
@@ -43,6 +44,8 @@ public class ScoringSummStAction {
 	 * @param patIllScript
 	 */
 	public ScoreBean scoreAction(PatientIllnessScript patIllScript, int stage){
+		SummaryStatementController.getInstance().checkForSemanticQualifiers(patIllScript.getSummSt());
+
 		if(patIllScript.isExpScript()) return null;
 		PatientIllnessScript expScript = AppBean.getExpertPatIllScript(patIllScript.getVpId());
 		ScoreContainer scoreContainer = NavigationController.getInstance().getCRTFacesContext().getScoreContainer();		
@@ -53,6 +56,7 @@ public class ScoringSummStAction {
 			scoreBean = new ScoreBean(patIllScript, -1, ScoreBean.TYPE_SUMMST, stage);
 			isChg = false;
 		}
+		//we analyze the text concerning semantic qualifiers:
 		if(expScript!=null && expScript.getSummSt()!=null){ //otherwise we do not have an experts' patIllScript to compare with				
 			calculateAddActionScoreBasedOnExpert(scoreBean, expScript.getSummSt(), patIllScript.getSummSt(), isChg);				
 		}
@@ -71,19 +75,47 @@ public class ScoringSummStAction {
 	 * @param courseOfTimeLearner
 	 */
 	private void calculateAddActionScoreBasedOnExpert(ScoreBean scoreBean, SummaryStatement expSt, SummaryStatement learnerSt, boolean isChg){
+
 		if(learnerSt==null || learnerSt.getText()==null || learnerSt.getText().trim().equals(""))
 			scoreBean.setScoreBasedOnExp(ScoringController.NO_SCORE, isChg);
 		else{
-			if(learnerSt.getText().length()>MIN_LENGTH_SUMST){
-				scoreBean.setScoreBasedOnExp(ScoringController.SCORE_EXP_SAMEAS_LEARNER, isChg);
-				//we need to do the scoring here, for now we just set the score to 1
+			
+			//not enough useful text is there:
+			if(learnerSt.getText().length()<=MIN_LENGTH_SUMST){
+				scoreBean.setScoreBasedOnExp(ScoringController.NO_SCORE, isChg);
 			}
+			
+			//we have some text to analyze, but currently we only have the check for semantic qualifiers...
+			else{
+				int sqScore = calculateSemanticQualScore(expSt, learnerSt); //0, 1, or 2
+				if(sqScore==2) scoreBean.setScoreBasedOnExp(ScoringController.FULL_SCORE, isChg);
+				//for the moment we give half score if we find a few or no sematic qualifiers:
+				else scoreBean.setScoreBasedOnExp(ScoringController.HALF_SCORE, isChg);
+			}
+			
 		}		
 		if(expSt!=null && learnerSt!=null)
 			scoreBean.setTiming(learnerSt.getStage(), expSt.getStage());
 
 		ScoringController.getInstance().setFeedbackInfo(scoreBean, isChg, false);
 
+	}
+	
+	/**
+	 * score = 0, if no semantic qualifiers used or less than 30% of the expert
+	 * score = 1, if more than 30% and less than 60% of the expert
+	 * score = 2, if more than 60% of the expert
+	 * @param expSt
+	 * @param learnerSt
+	 * @return
+	 */
+	private int calculateSemanticQualScore(SummaryStatement expSt, SummaryStatement learnerSt){
+		if(learnerSt.getSqHits()==null || learnerSt.getSqHits().isEmpty()) return 0;
+		if(expSt.getSqHits()==null || expSt.getSqHits().isEmpty()) return 2; //should not happen, would be a bad statement
+		if(learnerSt.getSqHits().size() / expSt.getSqHits().size() >=0.6 ) return 2;
+		if(learnerSt.getSqHits().size() / expSt.getSqHits().size() >=0.3 ) return 1;
+		return 0;
+		
 	}
 
 	
@@ -109,7 +141,7 @@ public class ScoringSummStAction {
 		return 0; // similarity;
 	}
 	
-	private void calculateSQUse(){
-		
+	private void calculateSQUse(SummaryStatement stst){
+		SummaryStatementController.checkForSemanticQualifiers(stst);
 	}
 }

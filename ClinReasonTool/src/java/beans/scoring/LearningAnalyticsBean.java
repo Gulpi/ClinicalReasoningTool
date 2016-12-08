@@ -11,6 +11,7 @@ import application.AppBean;
 import beans.LogEntry;
 import beans.scripts.*;
 import controller.NavigationController;
+import database.DBScoring;
 
 /**
  * LearninAnalytics takes into account all users' actions, scores, and goals for one VP.
@@ -166,6 +167,12 @@ public class LearningAnalyticsBean extends Beans implements Serializable, Compar
 		if(scoreContainer==null) return null; 
 		return scoreContainer.getScoreByType(ScoreBean.TYPE_OVERALL_SCORE);
 	}
+	
+	public PeerBean getOverallPeerScore(){
+		if(AppBean.getPeers()==null) return null;
+		return AppBean.getPeers().getPeerBeanByVpIdActionAndStage(ScoreBean.TYPE_OVERALL_SCORE, -1, vpId);
+	}
+	
 	public long getUserId() {return userId;}
 	public long getPatIllScriptId() {return patIllScriptId;}
 	public String getVpId() {return vpId;}
@@ -180,11 +187,16 @@ public class LearningAnalyticsBean extends Beans implements Serializable, Compar
 		return 0;
 	}
 	
+	/**
+	 * Try to select the learningBean from the database, if not there, we create a new one and save it.
+	 * @return
+	 */
 	public LearningBean getLearningBean(){
 		if(learningBean==null){
 			PatientIllnessScript patillscript = NavigationController.getInstance().getMyFacesContext().getPatillscript();
 			if(patillscript!=null && patillscript.getSubmitted()){
-				learningBean = new LearningBean(this);
+				learningBean = new DBScoring().selectLearningBeanByScriptId(patillscript.getId());
+				if(learningBean==null) learningBean = new LearningBean(this);
 			}			
 		}
 		return learningBean;

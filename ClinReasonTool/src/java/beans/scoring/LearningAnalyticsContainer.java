@@ -54,8 +54,8 @@ public class LearningAnalyticsContainer implements Serializable{
 	 * LearningBean objects of all patillscripts of the learner. We need these to determine the 
 	 * tip to display in the current learningBean.
 	 */
-	private List<LearningBean> learningBeans;
-	private LearningBean currLearningBean;
+	//private List<LearningBean> learningBeans;
+	//private LearningBean currLearningBean;
 	
 	//public LearningAnalyticsContainer(){}
 	public LearningAnalyticsContainer(long userId){
@@ -71,7 +71,7 @@ public class LearningAnalyticsContainer implements Serializable{
 	 */
 	private void initLearningAnalyticsContainer(){
 		List<ScoreBean> scores = new DBScoring().selectScoreBeansByUserId(userId);
-		learningBeans =  new DBScoring().selectLearningBeansByUserId(userId);
+		//learningBeans =  new DBScoring().selectLearningBeansByUserId(userId);
 		/*int counter = 0;
 		if(lbs!=null){
 			Iterator<LearningBean> it = lbs.iterator();
@@ -200,6 +200,12 @@ public class LearningAnalyticsContainer implements Serializable{
 		return overallScore;
 	}
 	
+	public PeerBean getOverallPeerScore(){	
+		LearningAnalyticsBean labean = this.getLearningAnalyticsBeanByPatIllScript();
+		if(labean==null) return null;
+		return labean.getOverallPeerScore();
+	}
+	
 	public ScoreBean getSumScore(){ 		
 		LearningAnalyticsBean labean = this.getLearningAnalyticsBeanByPatIllScript();
 		if(labean==null) return null;
@@ -275,8 +281,9 @@ public class LearningAnalyticsContainer implements Serializable{
 		PatientIllnessScript patillscript = NavigationController.getInstance().getCRTFacesContext().getPatillscript();
 		if(patillscript==null) return null;
 		return getLearningAnalyticsBeanByPatIllScriptId(patillscript.getId(), patillscript.getVpId());
-
 	}
+	
+	public LearningAnalyticsBean getLearningAnalyticsBean(){return getLearningAnalyticsBeanByPatIllScript();}
 	
 	/**
 	 * overall scores of the learner for all VPs she/he has worked on so far. For calculation algorithm see 

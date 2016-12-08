@@ -225,10 +225,24 @@ a:focus{outline:none !important;}
 	vertical-align: middle;
 }
 
+.charts_tip{
+	float:left;
+	position:relative;
+	margin-left:20px;
+}
+
+.tip_-1, .tip_{
+	display:none;
+}
+
 
 .perfstatus .success {
      background-color: #4e8443;
      height: 100%;
+}
+
+.sqhit{
+	background-color:yellow;
 }
 /*
   .chart .current {

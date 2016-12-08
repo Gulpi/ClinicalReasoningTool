@@ -3,6 +3,7 @@ package controller;
 import java.io.*;
 import java.util.*;
 
+import javax.faces.bean.ManagedBean;
 import javax.faces.bean.RequestScoped;
 import org.apache.commons.lang.StringUtils;
 
@@ -17,6 +18,7 @@ import model.ListItem;
  * @author ingahege
  * 
  */
+@ManagedBean(name = "searchctr", eager = true)
 @RequestScoped
 public class SearchController {
 	
@@ -25,9 +27,16 @@ public class SearchController {
 	//TODO: we need a module id later on, to decide which scripts the user has access to...
 	
 	public SearchController(){
-		doSearch(createSearchBeanForSearch());
+		//doSearch(createSearchBeanForSearch());
 	}
 	
+	public String getTest(){
+		return "hallo";}
+	
+	public Set getSearchResults(){
+		Map<Long, List<SearchBean>> map = doSearch(createSearchBeanForSearch());
+		return map.keySet();
+	}
 	private Map<Long, List<SearchBean>> doSearch(SearchBean sb){
 		if(sb==null || sb.getSearchTerm()==null) return null;
 		return doSearch(sb.getSearchTerm(), sb.getUserId(), sb.getLoc());

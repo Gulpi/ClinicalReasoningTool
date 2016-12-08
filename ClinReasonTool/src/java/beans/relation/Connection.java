@@ -5,7 +5,6 @@ import java.io.Serializable;
 import java.sql.Timestamp;
 
 import beans.graph.MultiEdge;
-import controller.ConceptMapController;
 
 /**
  * Connection in the concept map between Relation objects, e.g. ProblemRelation -> DiagnosisRelation. 

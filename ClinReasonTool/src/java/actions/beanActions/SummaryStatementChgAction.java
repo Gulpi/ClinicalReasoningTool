@@ -51,13 +51,17 @@ public class SummaryStatementChgAction /*extends ChgAction*/{
 		SummaryStatement sumSt = new SummaryStatement(text, patIllScript.getId());
 		if(patIllScript.isExpScript()) sumSt.setStage(patIllScript.getStage());
 		else sumSt.setStage(patIllScript.getCurrentStage());
+		sumSt.setType(patIllScript.getType());
+		sumSt.setLang(patIllScript.getLocale().getLanguage());
 		save(sumSt);
 		
 		patIllScript.setSummSt(sumSt);
 		patIllScript.setSummStId(sumSt.getId());
 		patIllScript.save();
-		//new DBClinReason().saveAndCommit(sumSt, patIllScript);
 		notifyLog(patIllScript.getSummSt(), patIllScript.getSummSt().getId());
+		new ScoringSummStAction().scoreAction(patIllScript, patIllScript.getCurrentStage());
+		save(sumSt); //save again, because now we have analyzed it (flag is set to true)
+
 	}
 	
 	/**
@@ -68,6 +72,11 @@ public class SummaryStatementChgAction /*extends ChgAction*/{
 		if(patIllScript.getSummSt().getText()!=null && patIllScript.getSummSt().getText().equals(text)) 
 			return; //nothing to do, user made no change....
 		patIllScript.getSummSt().setText(text);
+		//we have to make sure that we reanalyze the text and delete all SumSttSQ obejcts
+		if(patIllScript.getSummSt().getSqHits()!=null) {
+			new DBClinReason().deleteAndCommit(patIllScript.getSummSt().getSqHits());
+			patIllScript.getSummSt().setSqHits(null);
+		}
 		save(patIllScript.getSummSt());
 		notifyLogUpdate(patIllScript.getSummSt(), patIllScript.getSummSt().getId());
 		new ScoringSummStAction().scoreAction(patIllScript, patIllScript.getCurrentStage());

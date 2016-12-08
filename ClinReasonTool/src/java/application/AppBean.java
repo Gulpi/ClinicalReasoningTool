@@ -17,8 +17,10 @@ import controller.IllnessScriptController;
 import controller.JsonCreator;
 import controller.MeshImporter;
 import controller.PeerSyncController;
+import controller.SummaryStatementController;
 import database.DBClinReason;
 import database.HibernateUtil;
+import model.SemanticQual;
 import util.CRTLogger;
 import util.StringUtilities;
 import properties.IntlConfiguration;
@@ -63,6 +65,12 @@ public class AppBean extends ApplicationWrapper implements HttpSessionListener{
 	private static PeerContainer peers = new PeerContainer();
 	
 	private static Map<String, VPScriptRef> vpScriptRefs;
+	
+	/**
+	 * lists of semantic qualifiers, key = language ("en", "de"), value is list of SemanticQual objects
+	 * for this language.
+	 */
+	private static Map<String, List<SemanticQual>> semanticQuals;
 	/**
 	 * called when the application is started... We init Hibernate and a ViewHandler (for Locale handling)
 	 * We also put this AppBean into the ServletContext for later access to the applicationScoped scripts
@@ -100,6 +108,16 @@ public class AppBean extends ApplicationWrapper implements HttpSessionListener{
 	    }
 	    catch(Exception e){
 	    	CRTLogger.out("AppBean(): " + StringUtilities.stackTraceToString(e), CRTLogger.LEVEL_ERROR);
+	    }
+	   
+	    try{
+	    	//we load the semantic qualifiers and analyze any summary statements that have not yet been analyzed.
+	    	if(semanticQuals==null) semanticQuals = SummaryStatementController.loadSemanticQuals();
+	    	if(semanticQuals!=null) SummaryStatementController.analyzeSemanticQualsStatements();
+	    }
+	    catch(Exception e){
+	    	CRTLogger.out("AppBean(): " + StringUtilities.stackTraceToString(e), CRTLogger.LEVEL_ERROR);
+    	
 	    }
 	    CRTLogger.out("End AppBean init:"  + (System.currentTimeMillis()-startms) + "ms", CRTLogger.LEVEL_PROD);
 	}
@@ -200,6 +218,11 @@ public class AppBean extends ApplicationWrapper implements HttpSessionListener{
 	
 	public static Map<String,VPScriptRef> getVpScriptRefs(){
 		return vpScriptRefs;
+	}
+	
+	public static List<SemanticQual> getSemantiQualsByLang(String lang){
+		if(semanticQuals==null) return null;
+		return semanticQuals.get(lang);
 	}
 
 }

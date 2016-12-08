@@ -8,6 +8,7 @@ import org.hibernate.criterion.*;
 import beans.scripts.*;
 import beans.relation.RelationProblem;
 import beans.relation.SummaryStatement;
+import beans.relation.SummaryStatementSQ;
 import controller.IllnessScriptController;
 import util.StringUtilities;
 
@@ -318,12 +319,36 @@ public class DBClinReason /*extends HibernateUtil*/{
     	return criteria.list();
     }*/
     
-	protected SummaryStatement loadSummSt(long id){
+	public SummaryStatement loadSummSt(long id){
 		if(id<=0) return null;
 		Session s = instance.getInternalSession(Thread.currentThread(), false);
 		Criteria criteria = s.createCriteria(SummaryStatement.class,"SummaryStatement");
 		criteria.add(Restrictions.eq("id", new Long(id)));
-		return (SummaryStatement) criteria.uniqueResult();
+		SummaryStatement st = (SummaryStatement) criteria.uniqueResult();
+		st.setSqHits(selectSummaryStatementSQsBySumId(st.getId()));
+		return st;
+	}
+	
+	private List selectSummaryStatementSQsBySumId(long summStId){
+		Session s = instance.getInternalSession(Thread.currentThread(), false);
+		Criteria criteria = s.createCriteria(SummaryStatementSQ.class,"SummaryStatementSQ");
+		criteria.add(Restrictions.eq("summStId", new Long(summStId)));
+		return criteria.list();
+	}
+	
+	/**
+	 * Get all summary statements (experts & learners) depending of analyze status. Called on start 
+	 * to analyze all non-analyzed statements.
+	 * @param type
+	 * @param analyzed
+	 * @return
+	 */
+	public List<SummaryStatement> getSummaryStatementsByAnalyzed(boolean analyzed){
+		Session s = instance.getInternalSession(Thread.currentThread(), false);
+		Criteria criteria = s.createCriteria(SummaryStatement.class,"SummaryStatement");
+		//criteria.add(Restrictions.eq("type", new Integer(type)));
+		criteria.add(Restrictions.eq("analyzed", new Boolean(analyzed)));
+		return criteria.list();
 	}
 	
 	public static List<VPScriptRef> getVPScriptRefs(){

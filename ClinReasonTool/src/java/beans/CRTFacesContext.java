@@ -393,6 +393,11 @@ public class CRTFacesContext extends FacesContextWrapper implements MyFacesConte
 		return new ExpViewPatientIllnessScript(graph, stage);
 	}
 	
+	public PatientIllnessScript getExpertPatIllScript(){
+		if(this.patillscript==null) return null;
+		return AppBean.getExpertPatIllScript(patillscript.getVpId());
+	}
+	
 	/*public boolean isExpEdit(){
 		if(this.patillscript!=null && this.patillscript.getType()==IllnessScriptInterface.TYPE_EXPERT_CREATED) return true;
 		return false;
@@ -400,7 +405,8 @@ public class CRTFacesContext extends FacesContextWrapper implements MyFacesConte
 	
 	public Locale getLocale(){
 		return locale;}//LocaleController.getLocale(this).getLanguage();}	
-	public String getLanguage(){return locale.getLanguage();}
+	public String getLanguage(){
+		return locale.getLanguage();}
 	public float getScoreForAllowReSubmit(){
 		return ScoringController.scoreForAllowReSubmit;
 	}

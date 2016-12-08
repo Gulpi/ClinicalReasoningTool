@@ -10,6 +10,7 @@ import org.hibernate.criterion.Restrictions;
 import org.hibernate.ejb.criteria.expression.function.TrimFunction;
 
 import model.ListItem;
+import model.SemanticQual;
 import model.Synonym;
 import util.CRTLogger;
 
@@ -154,6 +155,19 @@ public class DBList extends DBClinReason {
     	criteria.add(Restrictions.eq("language", lang));
     	criteria.add(Restrictions.eq("ignored", false));
     	criteria.add(Restrictions.ilike("name", searchTerm, MatchMode.ANYWHERE));
+    	return criteria.list();
+    }
+    
+	/**
+     * Select the ListItem with the given id from the database.
+     * @param id
+     * @return ListItem or null
+     */
+    public List<SemanticQual> selectSemanticQuals(String lang){
+    	Session s = instance.getInternalSession(Thread.currentThread(), false);
+    	Criteria criteria = s.createCriteria(SemanticQual.class,"SemanticQual");
+    	criteria.add(Restrictions.eq("lang", lang));
+    	criteria.add(Restrictions.eq("deleteFlag", new Integer(0)));
     	return criteria.list();
     }
      

@@ -35,6 +35,22 @@ function togglePeers(){
 function togglePeersCallBack(){
 	
 }
+
+/**
+ * open a jdialog to display the summary statement of the learner with highlighted sematic qualifiers.
+ */
+function openSumStDetails(){
+	$("#jdialog").dialog( "option", "width", ['300'] );
+	$("#jdialog").dialog( "option", "height", ['250'] );	
+	$("#jdialog").dialog( "option", "title", sumstDialogTitle );
+	$("#jdialog").dialog( "option", "buttons", [ ] );
+	$("#jdialog" ).dialog( "open" );	
+	$("#jdialog").dialog( "option", "position", [0,0] );
+	var s = "<br/><br/>*<span class=\"sqhit\">"+sumstLegend+"</span>";
+	$("#jdialog" ).html(sumstSQ + "<br/><br/>" + sumstExpSQ + s);
+	$("#jdialog").show();
+}
+
 /**
  * user clicks on a chart thumbnail, so, we enlarge it...
  * @param typeOfChart

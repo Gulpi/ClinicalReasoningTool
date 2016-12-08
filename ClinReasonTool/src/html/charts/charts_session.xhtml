@@ -35,7 +35,26 @@ var currentChartNum = 1; //default is overall performance
 var chartLabelMe = "#{prop['charts.me']}";
 var chartLabelPeer = "#{prop['charts.peer']}";
 var peerStatus = 1;
+var sumstDialogTitle = "#{prop['sumst.details']}";
+var sumstSQ = "#{prop['sumst.chart.my']} <br/> #{crtContext.patillscript.summSt.textSQ}";
+var sumstExpSQ = "#{prop['sumst.chart.exp']} <br/>  #{crtContext.expertPatIllScript.summSt.textSQ}";
+var sumstLegend = "#{prop['sumst.sq']}";
+
 $(function() {
+	$("#jdialog").dialog({ //dialog to display sumary statement details:
+		autoOpen: false,
+		modal: true,
+		width: "auto",
+		height: "auto",
+		position: { my: "left+20 top+20", at: "left-0 top+0", of: window },
+		//we have to detect when the user simply closes the jdialog and check whether we have to reset some stuff
+		/*beforeClose: function( event ) {
+		    if ( event.originalEvent ) {
+		    	return closeSubmitDialog();
+		    }
+		}*/
+	});
+	
 	$( this ).tooltip({
       	items: "[mytooltip]",
       	position: { my: "left+5 center", at: "right center" },
@@ -62,17 +81,20 @@ var chartTypeDisplay = "#{chartConf.typeOfChart}";
 <div id="chart-summary" class="chartsummary">
 		#{prop['chart.all.overall']}: <!-- <i class="fa overallscore_#{crtContext.learningAnalyticsContainer.overallScore.scoreRange}" mytooltip="#{crtContext.learningAnalyticsContainer.overallScore.scoreBasedOnExp}"></i><br/>-->
 		
-		<div class="perfstatus" mytooltip="#{crtContext.learningAnalyticsContainer.overallScore.scoreBasedOnExpPerc}%">
+		<div class="perfstatus" mytooltip="#{crtContext.learningAnalyticsContainer.overallScore.scoreBasedOnExpPerc}% (#{crtContext.learningAnalyticsContainer.overallPeerScore.expPeerPercentagePerc}%)">
 			<div class="success" style="width:#{crtContext.learningAnalyticsContainer.overallScore.scoreBasedOnExpPerc}%"></div>
 		</div><br/>		
-		#{prop['chart.all.summst']}: <i class="fa score_#{crtContext.learningAnalyticsContainer.sumScore.scoreRange}"></i><br/><br/>	
+		#{prop['chart.all.summst']}: <i class="fa score_#{crtContext.learningAnalyticsContainer.sumScore.scoreRange}"></i>
+		<a href="javascript:openSumStDetails();" mytooltip="#{prop['sumst.details.hint']}"><i class="fa fa-info-circle"></i></a>
+		<br/><br/>	
 <i class="fa legend_my"></i> #{prop['charts.legend.me']} 
 <span mytooltip="#{prop['charts.legend.meorg.expl']}" style="cursor:help;"><i class="fa legend_myorg" style="margin-left:10px" ></i> #{prop['charts.legend.meorg']} </span>
 <i class="fa legend_peer" style="margin-left:10px"></i> #{prop['charts.legend.peers']}
-</div><!-- <div style="float:left;position:relative;margin-left:20px;"><i class="fa fa-lightbulb-o"></i> 
+</div>
+ <div class="charts_tip tip_#{crtContext.learningAnalyticsContainer.learningAnalyticsBean.learningBean.tip}"><i class="fa fa-lightbulb-o"></i> 
 	#{prop['charts.tips']}:<br/>
-	todo....
-</div>--><br clear="all"/><br/>
+	#{crtContext.learningAnalyticsContainer.learningAnalyticsBean.learningBean.printTip}
+</div><br clear="all"/><br/>
 <div id="chart-container">
 		<!-- self directed learning: TODO-->
 		<div class="chartbox_cont">
@@ -112,7 +134,10 @@ var chartTypeDisplay = "#{chartConf.typeOfChart}";
 	</div>
 </div>-->
 
-
+<div id="jdialog">
+	<!-- #{crtContext.patillscript.summSt.textSQ}-->
+	
+</div>
 
  </body>
  </f:view>

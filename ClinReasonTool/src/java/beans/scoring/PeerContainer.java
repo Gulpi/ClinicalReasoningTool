@@ -76,7 +76,7 @@ public class PeerContainer {
 	/**
 	 * Get the peerBean object for a given parentId, action and stage (can only be ONE!)
 	 * @param action
-	 * @param stage
+	 * @param stage (can be -1 for overall score)
 	 * @param parentId
 	 * @return PeerBean or null
 	 */
@@ -84,7 +84,7 @@ public class PeerContainer {
 		if(peerBeans==null || peerBeans.get(vpId)==null) return null;
 		List<PeerBean> beans = peerBeans.get(vpId);
 		for(int i=0; i<beans.size(); i++){
-			if(beans.get(i).getAction()==action && beans.get(i).getStage() == stage) return beans.get(i);
+			if(beans.get(i).getAction()==action && (stage==-1 || beans.get(i).getStage() == stage)) return beans.get(i);
 		}
 		return null;
 	}

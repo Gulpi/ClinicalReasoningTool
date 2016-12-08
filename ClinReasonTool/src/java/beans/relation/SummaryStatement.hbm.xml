@@ -14,7 +14,15 @@
 		<property name="text" column="text" type="string" />
 		<property name="stage" column="stage" type="int" />
 		<property name="patillscriptId" column="patillscript_id" type="long" />
-		
+		<property name="analyzed" column="analyzed" type="boolean" />
+		<property name="type" column="type" type="int" />
+		<property name="lang" column="lang" type="string" />
+
+		<!-- <map name="sqHits" table="crt.sumstatement_sq" lazy="false" cascade="delete" fetch="select"  order-by="id" >
+	   		<key column="sumst_id" />
+	   		<map-key column="id" type="long"/>	   		
+	    	<one-to-many class="beans.relation.SummaryStatementSQ" />
+	    </map>	-->		
 
 </class>
 </hibernate-mapping>

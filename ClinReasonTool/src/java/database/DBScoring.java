@@ -47,13 +47,14 @@ public class DBScoring extends DBClinReason {
     	return l;
     }
     
-    public List<LearningBean> selectLearningBeansByUserId(long userId){
+    public LearningBean selectLearningBeanByScriptId(long scriptId){
     	Session s = instance.getInternalSession(Thread.currentThread(), false);
     	Criteria criteria = s.createCriteria(LearningBean.class,"LearningBean");
-    	criteria.add(Restrictions.eq("userId", new Long(userId)));
-    	criteria.add(Restrictions.eq("deleteFlag", new Boolean(false)));
-    	criteria.addOrder(Order.desc("creationDate"));
-    	return criteria.list();
+    	//criteria.add(Restrictions.eq("userId", new Long(userId)));
+    	//criteria.add(Restrictions.eq("deleteFlag", new Boolean(false)));
+    	criteria.add(Restrictions.eq("patIllScriptId", new Long(scriptId)));
+    	//criteria.addOrder(Order.desc("creationDate"));
+    	return (LearningBean) criteria.uniqueResult();
     }
     
     /*public List<ScoreBean> selectScoreBeansByActionTypeAndPatIllScriptId(int type, long patIllScriptId){

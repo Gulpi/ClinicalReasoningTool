@@ -27,6 +27,8 @@ import controller.NavigationController;
 import controller.ScoringController;
 import database.DBClinReason;
 import properties.IntlConfiguration;
+import util.CRTLogger;
+import util.StringUtilities;
 
 /**
  * This is the Illness script the learner creates during the VP session.
@@ -161,7 +163,8 @@ public class PatientIllnessScript extends Beans/*extends Node*/ implements Compa
 	public void setProblems(List<RelationProblem> problems) {this.problems = problems;}
 	public Timestamp getCreationDate(){ return this.creationDate;} //setting is done in DB	
 	public void setCreationDate(Timestamp creationDate) {this.creationDate = creationDate;}	
-	public Timestamp getLastAccessDate() {return lastAccessDate;}
+	public Timestamp getLastAccessDate() {
+		return lastAccessDate;}
 	public void setLastAccessDate(Timestamp lastAccessDate) {this.lastAccessDate = lastAccessDate;}
 
 	public int getType() {return type;}
@@ -192,7 +195,15 @@ public class PatientIllnessScript extends Beans/*extends Node*/ implements Compa
 	public void setLocale(Locale locale) {this.locale = locale;}	
 	public SummaryStatement getSummSt() {return summSt;}
 	public SummaryStatement getSummStStage() {
-		if(summSt==null) return null;
+		if(summSt==null && summStId<=0) return null;
+		if(summSt==null && summStId>0){ //for some reason summSt not yet loaded, so load it now:
+			try{
+				summSt = new DBClinReason().loadSummSt(summStId);
+			}
+			catch(Exception e){
+				CRTLogger.out(StringUtilities.stackTraceToString(e), CRTLogger.LEVEL_ERROR);
+			}
+		}
 		if(summSt.getStage()<=stage) return summSt;
 		return null;
 	}	
@@ -389,6 +400,7 @@ public class PatientIllnessScript extends Beans/*extends Node*/ implements Compa
 		if(u!=null && u.getUserId()!=this.userId) return; //so not save if the users do not match!
 		boolean isNew = false;
 		if(getId()<=0) isNew = true;
+		setLastAccessDate(new Timestamp(System.currentTimeMillis()));
 		new DBClinReason().saveAndCommit(this);
 		if(isNew) notifyLog();
 	}	

@@ -100,6 +100,8 @@ public class HibernateSession {
 			cfg.addClass(beans.scripts.VPScriptRef.class);
 			cfg.addClass(beans.helper.TypeAheadBean.class);
 			cfg.addClass(beans.scoring.LearningBean.class);
+			cfg.addClass(model.SemanticQual.class);
+			cfg.addClass(beans.relation.SummaryStatementSQ.class);
 			
 			if (factory==null) {
 				//init_setHibernateDialect();

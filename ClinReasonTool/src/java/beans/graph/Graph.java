@@ -14,6 +14,8 @@ import beans.scripts.IllnessScriptInterface;
 import controller.*;
 import database.DBList;
 import model.ListItem;
+import util.CRTLogger;
+import util.StringUtilities;
 
 /**
  * A Graph that models the components of (Patient-)IllnessScripts in a MultiGraph. 
@@ -562,10 +564,19 @@ public class Graph extends DirectedWeightedMultigraph<MultiVertex, MultiEdge> {
 	 * @return
 	 */
 	public int getHierarchyDistance(MultiVertex learnerVertex, MultiVertex expVertex){
-		if(learnerVertex==null || expVertex==null) return (int )Double.POSITIVE_INFINITY;		
-		int dist = learnerVertex.getLearnerVertex().getListItem().getHierarchyDiff(expVertex.getExpertVertex().getListItem());
-		int dist2 = expVertex.getExpertVertex().getListItem().getHierarchyDiff(learnerVertex.getLearnerVertex().getListItem());
-		return dist;
+		try{
+			if(learnerVertex==null || expVertex==null) return (int )Double.POSITIVE_INFINITY;	
+			if(learnerVertex.getLearnerVertex()==null || expVertex.getExpertVertex()==null) return (int )Double.POSITIVE_INFINITY;
+			if(learnerVertex.getLearnerVertex().getListItem()==null || expVertex.getExpertVertex().getListItem()==null) return (int )Double.POSITIVE_INFINITY;
+			
+			int dist = learnerVertex.getLearnerVertex().getListItem().getHierarchyDiff(expVertex.getExpertVertex().getListItem());
+			//int dist2 = expVertex.getExpertVertex().getListItem().getHierarchyDiff(learnerVertex.getLearnerVertex().getListItem());
+			return dist;
+		}
+		catch(Exception e){
+			CRTLogger.out(StringUtilities.stackTraceToString(e), CRTLogger.LEVEL_ERROR);
+			return (int )Double.POSITIVE_INFINITY; 
+		}
 	}
 
 

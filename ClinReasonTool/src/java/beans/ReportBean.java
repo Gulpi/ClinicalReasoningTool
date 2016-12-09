@@ -114,10 +114,10 @@ public class ReportBean {
 				peerBeanDisplay.add(pb);
 		}
 		PeerContainer pc = new PeerContainer();
-		pc.getPeerBeanOfLastStage(ScoreBean.TYPE_PROBLEM_LIST, peerBeans);
-		pc.getPeerBeanOfLastStage(ScoreBean.TYPE_DDX_LIST, peerBeans);
-		pc.getPeerBeanOfLastStage(ScoreBean.TYPE_TEST_LIST, peerBeans);
-		pc.getPeerBeanOfLastStage(ScoreBean.TYPE_MNG_LIST, peerBeans);
+		peerBeanDisplay.add(pc.getPeerBeanOfLastStage(ScoreBean.TYPE_PROBLEM_LIST, peerBeans));
+		peerBeanDisplay.add(pc.getPeerBeanOfLastStage(ScoreBean.TYPE_DDX_LIST, peerBeans));
+		peerBeanDisplay.add(pc.getPeerBeanOfLastStage(ScoreBean.TYPE_TEST_LIST, peerBeans));
+		peerBeanDisplay.add(pc.getPeerBeanOfLastStage(ScoreBean.TYPE_MNG_LIST, peerBeans));
 		return peerBeanDisplay;
 	}
 }

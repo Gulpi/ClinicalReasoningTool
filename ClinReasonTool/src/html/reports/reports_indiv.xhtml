@@ -6,8 +6,13 @@
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:f="http://java.sun.com/jsf/core"
-      >
+      xmlns:v="urn:schemas-microsoft-com:vml">
+       <f:view locale="en"> 
 <head>
+<f:event type="preRenderView" listener="#{facesContext.externalContext.response.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, post-check=0, pre-check=0')}" />
+<f:event type="preRenderView" listener="#{facesContext.externalContext.response.setHeader('Pragma', 'no-cache')}" />
+
+ <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
 <meta http-equiv="EXPIRES" content="0" />
 <meta http-equiv="PRAGMA" content="NO-CACHE" />
 <meta http-equiv="CACHE-CONTROL" content="NO-CACHE" />
@@ -44,12 +49,13 @@
 	</ui:repeat>
 
 	</select><div style="float:right;width:400px;">
+	num=number of peers, action (stage)
 	<ui:repeat value="#{adminContext.reports.peerBeanByVpId}" var="peers" varStatus="status">
-		num: #{peers.peerNum}, action:  #{peers.actionStr} (#{peers.stage}), scoreReal: #{peers.orgScoreBasedOnExp}, score: #{peers.scoreBasedOnExp}<br/>
+		num: #{peers.peerNum}, action:  #{peers.actionStr} (#{peers.stage}), scoreReal: #{peers.orgExpPeerPercentagePerc}%, score: #{peers.expPeerPercentagePerc}%<br/>
 	</ui:repeat></div>	
 	</h:form>
 	<iframe id="report_iframe" width="800px" height="700px"></iframe>
 	
 	
-</body>
+</body></f:view>
 </html>

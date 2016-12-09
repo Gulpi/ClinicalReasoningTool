@@ -7,6 +7,7 @@ import javax.faces.bean.SessionScoped;
 
 import application.AppBean;
 import beans.scoring.PeerBean;
+import beans.scoring.ScoreBean;
 import beans.scripts.*;
 import controller.AjaxController;
 import controller.NavigationController;
@@ -102,6 +103,14 @@ public class ReportBean {
 	public List<PeerBean> getPeerBeanByVpId(){
  		String vpId = AjaxController.getInstance().getRequestParamByKeyNoDecrypt(AjaxController.REQPARAM_REPORTS_VP);
  		if(vpId==null || vpId.equals("") || vpId.equals("-1")) return null;
-		return AppBean.getPeers().getPeerBeans(vpId);
+		List<PeerBean> peerBeans = AppBean.getPeers().getPeerBeans(vpId);
+		if(peerBeans==null) return null;
+		List<PeerBean> peerBeanDisplay = new ArrayList();
+		for (int i=0; i<peerBeans.size(); i++){
+			PeerBean pb = peerBeans.get(i);
+			if((pb.getAction()>6 && pb.getAction()<=12) || pb.getAction()==ScoreBean.TYPE_FINAL_DDX || pb.getAction()==ScoreBean.TYPE_FINAL_DDX_LIST || pb.getAction()== ScoreBean.TYPE_OVERALL_SCORE)
+				peerBeanDisplay.add(pb);
+		}
+		return peerBeanDisplay;
 	}
 }

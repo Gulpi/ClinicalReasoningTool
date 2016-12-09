@@ -30,6 +30,7 @@ function displayScript(){
 }
 
 function displayScriptCallback(){
-	$("#report_iframe").attr("src", "../view/exp_boxes_view.xhtml");
+	var d = new Date().getMilliseconds(); 
+	$("#report_iframe").attr("src", "../view/exp_boxes_view.xhtml?ts="+d);
 
 }

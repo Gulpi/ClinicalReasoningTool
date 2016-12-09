@@ -179,7 +179,7 @@ public class PeerContainer {
 	 * @param type
 	 * @return
 	 */
-	private PeerBean getPeerBeanOfLastStage(int type, List<PeerBean> beans){
+	public PeerBean getPeerBeanOfLastStage(int type, List<PeerBean> beans){
 		if(beans==null || beans.isEmpty()) return null;
 		Iterator<PeerBean> it = beans.iterator();
 		PeerBean lastBean = null;

@@ -7,6 +7,7 @@ import javax.faces.bean.SessionScoped;
 
 import application.AppBean;
 import beans.scoring.PeerBean;
+import beans.scoring.PeerContainer;
 import beans.scoring.ScoreBean;
 import beans.scripts.*;
 import controller.AjaxController;
@@ -97,6 +98,7 @@ public class ReportBean {
 		return AjaxController.getInstance().getRequestParamByKeyNoDecrypt(AjaxController.REQPARAM_REPORTS_SCRIPT_ID);
 	}
 	
+	
 	/**
 	 * @return PeerBean for currently selected vpId to display in reports
 	 */
@@ -108,9 +110,14 @@ public class ReportBean {
 		List<PeerBean> peerBeanDisplay = new ArrayList();
 		for (int i=0; i<peerBeans.size(); i++){
 			PeerBean pb = peerBeans.get(i);
-			if((pb.getAction()>6 && pb.getAction()<=12) || pb.getAction()==ScoreBean.TYPE_FINAL_DDX || pb.getAction()==ScoreBean.TYPE_FINAL_DDX_LIST || pb.getAction()== ScoreBean.TYPE_OVERALL_SCORE)
+			if(pb.getAction()==ScoreBean.TYPE_FINAL_DDX || pb.getAction()==ScoreBean.TYPE_FINAL_DDX_LIST || pb.getAction()== ScoreBean.TYPE_OVERALL_SCORE)
 				peerBeanDisplay.add(pb);
 		}
+		PeerContainer pc = new PeerContainer();
+		pc.getPeerBeanOfLastStage(ScoreBean.TYPE_PROBLEM_LIST, peerBeans);
+		pc.getPeerBeanOfLastStage(ScoreBean.TYPE_DDX_LIST, peerBeans);
+		pc.getPeerBeanOfLastStage(ScoreBean.TYPE_TEST_LIST, peerBeans);
+		pc.getPeerBeanOfLastStage(ScoreBean.TYPE_MNG_LIST, peerBeans);
 		return peerBeanDisplay;
 	}
 }

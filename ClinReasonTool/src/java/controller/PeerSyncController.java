@@ -87,7 +87,14 @@ public class PeerSyncController {
 				}
 				else{
 					peerBean.incrPeerNum();
-					peerBean.incrScoreSums(score.getOverallScore(), score.getScoreBasedOnExp(), score.getOrgScoreBasedOnExp());
+					float orgScore = 0;
+					if(score.getOrgScoreBasedOnExp() > 0) orgScore = score.getOrgScoreBasedOnExp();
+					float scoreNot0 = 0;
+					if(score.getScoreBasedOnExp()>0) scoreNot0 = score.getScoreBasedOnExp();
+					
+					peerBean.incrScoreSums(score.getOverallScore(), scoreNot0, orgScore);
+
+					//peerBean.incrScoreSums(score.getOverallScore(), score.getScoreBasedOnExp(), score.getOrgScoreBasedOnExp());
 					//peerBean.incrExpScoreSum(score.getScoreBasedOnExp());
 					//new DBScoring().saveAndCommit(peerBean);
 				}
@@ -121,7 +128,12 @@ public class PeerSyncController {
 			peerBean = pbs.get(0);
 		
 			peerBean.incrPeerNum();
-			peerBean.incrScoreSums(sumScore.getOverallScore(), sumScore.getScoreBasedOnExp(), sumScore.getOrgScoreBasedOnExp());
+			//make sure that we do not have negative values:
+			float orgScore = 0;
+			if(sumScore.getOrgScoreBasedOnExp() > 0) orgScore = sumScore.getOrgScoreBasedOnExp();
+			float score = 0;
+			if(sumScore.getScoreBasedOnExp()>0) score = sumScore.getScoreBasedOnExp();
+			peerBean.incrScoreSums(sumScore.getOverallScore(), score, orgScore);
 		}
 		new DBScoring().saveAndCommit(peerBean);
 	}
@@ -144,7 +156,12 @@ public class PeerSyncController {
 		else{
 			peerBean = pbs.get(0);
 			peerBean.incrPeerNum();
-			peerBean.incrScoreSums(overallScore.getOverallScore(), overallScore.getScoreBasedOnExp(), overallScore.getOrgScoreBasedOnExp());
+			float orgScore = 0;
+			if(overallScore.getOrgScoreBasedOnExp() > 0) orgScore = overallScore.getOrgScoreBasedOnExp();
+			float score = 0;
+			if(overallScore.getScoreBasedOnExp()>0) score = overallScore.getScoreBasedOnExp();
+			
+			peerBean.incrScoreSums(overallScore.getOverallScore(), score, orgScore);
 		}
 		new DBScoring().saveAndCommit(peerBean);
 		//peerBean.incrScoreSum(overallScore.getScoreBasedOnExp());	

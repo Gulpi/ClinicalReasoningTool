@@ -49,9 +49,9 @@
 	</ui:repeat>
 
 	</select><div style="float:right;width:400px;">
-	num=number of peers, action (stage)
+	num=number of peers, action (stage)<br/>
 	<ui:repeat value="#{adminContext.reports.peerBeanByVpId}" var="peers" varStatus="status">
-		num: #{peers.peerNum}, action:  #{peers.actionStr} (#{peers.stage}), scoreReal: #{peers.orgExpPeerPercentagePerc}%, score: #{peers.expPeerPercentagePerc}%<br/>
+		num: #{peers.peerNum}, action:  #{peers.actionStr} (#{peers.stage}), scoreOrg: #{peers.orgExpPeerPercentagePerc}%, score: #{peers.expPeerPercentagePerc}%<br/>
 	</ui:repeat></div>	
 	</h:form>
 	<iframe id="report_iframe" width="800px" height="700px"></iframe>

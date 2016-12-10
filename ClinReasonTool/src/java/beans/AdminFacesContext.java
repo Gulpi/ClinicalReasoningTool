@@ -18,6 +18,7 @@ import beans.scripts.*;
 import beans.user.User;
 import controller.*;
 import database.DBEditing;
+import database.DBScoring;
 import database.DBUser;
 import util.CRTLogger;
 
@@ -43,6 +44,7 @@ public class AdminFacesContext extends FacesContextWrapper implements MyFacesCon
 	private Graph graph;
 	private ReportBean reports;
 	private FeedbackContainer feedbackContainer;
+	private LearningAnalyticsBean labean;
 	
 	public String getTest(){return "hallo";}
 	
@@ -149,9 +151,13 @@ public class AdminFacesContext extends FacesContextWrapper implements MyFacesCon
 		//if(graph!=null) graph.setExpEdit(true);
 
 	}
-	public PatientIllnessScript getPatillscript() {
-		return this.patillscript;}
+	public PatientIllnessScript getPatillscript() {return this.patillscript;}
 	public void setPatillscript(PatientIllnessScript pi) {this.patillscript = pi;}
-	public ScoreContainer getScoreContainer(){return null;}
+	public ScoreContainer getScoreContainer(){
+		if((labean==null && patillscript!=null) || labean.getPatIllScriptId() != patillscript.getId())
+			labean = new LearningAnalyticsBean(patillscript.getId(), patillscript.getUserId(), patillscript.getVpId());
+		if(labean!=null) return labean.getScoreContainer();
+		return null;
+	}
 
 }

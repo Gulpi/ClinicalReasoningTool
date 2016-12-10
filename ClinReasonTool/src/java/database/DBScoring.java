@@ -50,21 +50,10 @@ public class DBScoring extends DBClinReason {
     public LearningBean selectLearningBeanByScriptId(long scriptId){
     	Session s = instance.getInternalSession(Thread.currentThread(), false);
     	Criteria criteria = s.createCriteria(LearningBean.class,"LearningBean");
-    	//criteria.add(Restrictions.eq("userId", new Long(userId)));
-    	//criteria.add(Restrictions.eq("deleteFlag", new Boolean(false)));
     	criteria.add(Restrictions.eq("patIllScriptId", new Long(scriptId)));
-    	//criteria.addOrder(Order.desc("creationDate"));
     	return (LearningBean) criteria.uniqueResult();
     }
     
-    /*public List<ScoreBean> selectScoreBeansByActionTypeAndPatIllScriptId(int type, long patIllScriptId){
-    	Session s = instance.getInternalSession(Thread.currentThread(), false);
-    	Criteria criteria = s.createCriteria(ScoreBean.class,"ScoreBean");
-    	criteria.add(Restrictions.eq("patIllScriptId", new Long(patIllScriptId)));
-    	criteria.add(Restrictions.eq("type", new Integer(type)));    	
-    	List<ScoreBean> l = criteria.list();
-    	return l;
-    }*/
     
     public Map<Integer, List<FeedbackBean>> selectFeedbackBeansByPatIllScriptId(long patIllScriptId){
     	if(patIllScriptId<0) return null;
@@ -86,13 +75,7 @@ public class DBScoring extends DBClinReason {
     	return feedbackBeans;
     }
 
-    
-    /*public List<PeerBean> selectPeerBeansByVPId(String vpId){
-    	Session s = instance.getInternalSession(Thread.currentThread(), false);
-    	Criteria criteria = s.createCriteria(PeerBean.class,"PeerBean");
-    	criteria.add(Restrictions.eq("vpId", vpId));
-    	return criteria.list();
-    }*/
+   
     
     /**
      * We get ALL PeerBean objects for all scripts and put them into a map with the parentId as key. 

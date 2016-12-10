@@ -266,6 +266,13 @@ MaxStage: #{adminContext.patillscript.currentStage}, Stage: <span id="stageSpan"
 						<li>#{fb.itemType} (#{fb.stage})</li>
 	   				</ui:repeat></ul>		 		
 	  				</h:panelGroup>
+	  				<h:panelGroup>
+					
+					type (stage): score (org)<br/>
+			 		<ui:repeat value="#{adminContext.scoreContainer.scores}" var="score" varStatus="status">
+						#{score.typeStr} (#{score.stage}): #{score.scoreBasedOnExp} (#{score.orgScoreBasedOnExp})<br/>
+	   				</ui:repeat>	 		
+	  				</h:panelGroup>
 				</h:form>
 </div>
 <!-- <div style="float:right;width:300px;"><br/>

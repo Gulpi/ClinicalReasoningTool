@@ -12,6 +12,7 @@ import beans.relation.Relation;
 import beans.scripts.PatIllScriptContainer;
 import beans.scripts.PatientIllnessScript;
 import controller.NavigationController;
+import properties.IntlConfiguration;
 
 /**
  * This is a single score for a specific action in an patientIllnessScript, such as an added problem or the summary 
@@ -279,6 +280,10 @@ public class ScoreBean extends Beans implements Serializable{
 		if(orgScoreBasedOnExp>=ScoreBean.SCORE_RANGE_MEDIUM_PERC) return ScoreBean.SCORE_RANGE_HIGH;
 		if(orgScoreBasedOnExp>=ScoreBean.SCORE_RANGE_LOW_PERC && orgScoreBasedOnExp<ScoreBean.SCORE_RANGE_MEDIUM_PERC) return ScoreBean.SCORE_RANGE_MEDIUM;
 		return ScoreBean.SCORE_RANGE_LOW;
+	}
+	
+	public String getTypeStr(){
+		return IntlConfiguration.getValue("scoretype."+type);
 	}
 	
 }

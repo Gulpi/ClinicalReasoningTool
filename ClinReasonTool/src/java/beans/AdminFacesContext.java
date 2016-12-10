@@ -42,6 +42,7 @@ public class AdminFacesContext extends FacesContextWrapper implements MyFacesCon
 	private PatientIllnessScript patillscript;
 	private Graph graph;
 	private ReportBean reports;
+	private FeedbackContainer feedbackContainer;
 	
 	public String getTest(){return "hallo";}
 	
@@ -76,6 +77,16 @@ public class AdminFacesContext extends FacesContextWrapper implements MyFacesCon
 		if(reports==null)
 			reports = new ReportBean();
 		return reports;
+	}
+	
+	public List<FeedbackBean> getFeedbackBeans(){
+		if(feedbackContainer==null && this.patillscript==null) return null;
+		if(feedbackContainer == null || feedbackContainer.getUserId()!=patillscript.getUserId()){
+			feedbackContainer = new FeedbackContainer(patillscript.getId(), patillscript.getUserId());				
+			feedbackContainer.initFeedbackContainer();
+		}
+		if(feedbackContainer==null) return null;
+		return feedbackContainer.getFeedbackBeansList();
 	}
 
 	public void setReports(ReportBean reports) {
@@ -138,7 +149,8 @@ public class AdminFacesContext extends FacesContextWrapper implements MyFacesCon
 		//if(graph!=null) graph.setExpEdit(true);
 
 	}
-	public PatientIllnessScript getPatillscript() {return this.patillscript;}
+	public PatientIllnessScript getPatillscript() {
+		return this.patillscript;}
 	public void setPatillscript(PatientIllnessScript pi) {this.patillscript = pi;}
 	public ScoreContainer getScoreContainer(){return null;}
 

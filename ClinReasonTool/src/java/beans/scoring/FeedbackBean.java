@@ -4,6 +4,7 @@ import java.beans.Beans;
 import java.io.Serializable;
 import java.sql.Timestamp;
 
+import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 
 import database.DBClinReason;
@@ -17,6 +18,7 @@ import database.DBClinReason;
  * @author ingahege
  *
  */
+@ManagedBean(name = "feedbackbean", eager = true)
 @SessionScoped
 public class FeedbackBean extends Beans implements Serializable{
 	public static final int FEEDBACK_NONE = 0;

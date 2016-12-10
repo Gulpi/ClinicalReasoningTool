@@ -149,4 +149,19 @@ public class FeedbackContainer implements Serializable{
 	public void initFeedbackContainer(){
 		feedbackBeans = new DBScoring().selectFeedbackBeansByPatIllScriptId(this.patIllScriptId);
 	}
+
+	public Map<Integer, List<FeedbackBean>> getFeedbackBeans() {return feedbackBeans;}	
+	
+	public List<FeedbackBean> getFeedbackBeansList() {
+		if(feedbackBeans==null) return null;
+		List<FeedbackBean> l = new ArrayList<FeedbackBean>();
+		Iterator<List<FeedbackBean>> it = feedbackBeans.values().iterator();
+		while(it.hasNext()){
+			l.addAll(it.next());
+		}
+		return l;
+			
+		
+	}		
+
 }

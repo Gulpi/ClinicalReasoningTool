@@ -174,7 +174,7 @@ MaxStage: #{adminContext.patillscript.currentStage}, Stage: <span id="stageSpan"
 	<!--  <a href="alert('not yet available, will show the development of the experts script during the case');">exp dev</a>-->
 </div>
 <div class="boxes_container" style="float:left;width:60%;">
-	<div id="canvas" class="canvas jtk-surface drag-drop jtk-surface-nopan" style="width:750px;height:750px; max-height:750px;">
+	<div id="canvas" class="canvas jtk-surface drag-drop jtk-surface-nopan" style="width:550px;height:750px; max-height:750px;">
 		  <!-- problems -->
 		  <div id="fdg_box"  class="container viewcontainer" group="fdg_group">
 		   		<div class="title">#{prop['findings']} </div>
@@ -258,7 +258,17 @@ MaxStage: #{adminContext.patillscript.currentStage}, Stage: <span id="stageSpan"
 <div id="connContext">
 	<ui:include src="../cnxchange.xhtml" />
 </div>
-<div style="float:right;width:300px;"><br/>
+<div style="float:right;width:200px;height:100%;z-index:99;">
+<h:form id="fdbform">
+	  			<h:panelGroup>
+					<ul>
+			 		<ui:repeat value="#{adminContext.feedbackBeans}" var="fb" varStatus="status">
+						<li>#{fb.itemType} (#{fb.stage})</li>
+	   				</ui:repeat></ul>		 		
+	  				</h:panelGroup>
+				</h:form>
+</div>
+<!-- <div style="float:right;width:300px;"><br/>
 	<div style="background-color:#cce6ff;width:200px;padding:5px;">#{prop['ddx.workingddx.on']}</div><br/>
 	<div style="background-color:#80bfff;width:200px;padding:5px;">#{prop['ddx.finalddx']}</div><br/>
 	<div style="width:200px;padding:5px;color:#cccccc; border:1px;border-color:#cccccc;">#{prop['ddx.ruledout']}</div><br/>
@@ -272,6 +282,6 @@ MaxStage: #{adminContext.patillscript.currentStage}, Stage: <span id="stageSpan"
 	<div style="width:200px;padding:5px;"><hr style="width:20px;height:5px;float:left;border-color:#006699;background-color:#006699;"/> #{prop['cnx.relation.8']}</div>
 	
 	
-</div>
+</div>-->
 </body></f:view>
 </html>

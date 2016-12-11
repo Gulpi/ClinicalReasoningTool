@@ -92,7 +92,7 @@ public class AppBean extends ApplicationWrapper implements HttpSessionListener{
 	    }
 	    catch(Exception e){}
 	    //does not have to be done on every restart:
-	    //new JsonCreator().initJsonExport(); 
+	   // new JsonCreator().initJsonExport(); 
 	   
 		//MeshImporter.main("en");
 	   // new TextSimilarityComparing().compareTestData();

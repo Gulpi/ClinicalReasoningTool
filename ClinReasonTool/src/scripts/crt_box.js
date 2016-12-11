@@ -853,9 +853,7 @@ function openHelp(){
 	//$( "#helpicon" ).effect( "transfer", helpoptions, 500, openHelpCallback );
 }
 
-function closeHelpDialog(){
-	
-}
+function closeHelpDialog(){}
 
 function openHelpCallback() {
 	$("#jdialogHelp").show();

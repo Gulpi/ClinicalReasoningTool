@@ -98,7 +98,9 @@ var isSuccess = false;
    */
 function doMatch(request,response){
 	$('.ui-tooltip').remove();
-
+	var exact_item_label = "";
+	var exact_item_value = "";
+	
 	if (request.term == "") { //user has entered nothing, so we return here....
 		response( $.map( item_data, function( item ) {
 			return {
@@ -129,6 +131,10 @@ function doMatch(request,response){
 			listEntry = listEntry.trim();
 			listEntry = listEntry.replace("ß","ss");
 			
+			if(user_input.toLowerCase()==listEntry.toLowerCase()){
+				exact_item_label = item.label;
+				exact_item_value = item.value;
+			}
 			var isNegStart = checkStartUserInput(user_input); //Then user started with something like "No ..."
 			var user_input_arr = user_input.split(" ");
 			var listentry_arr = listEntry.split(" ");
@@ -179,6 +185,13 @@ function doMatch(request,response){
 				}
 			}
 		});
+		//if we have an exact match, we display it at the top with a delimiter:
+		if(exact_item_label!="" && exact_item_value!=""){
+			var del = "-----------";
+			my_map.unshift(del);
+			var obj = {label:exact_item_label, value:exact_item_value};
+			my_map.unshift(obj);
+		}
 		response( my_map );
 	}
 }

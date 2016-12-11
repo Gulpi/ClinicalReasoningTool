@@ -10,7 +10,7 @@ import java.util.*;
  * @author ingahege
  *
  */
-public class ListItem implements Serializable, ListInterface{
+public class ListItem implements Serializable, ListInterface, Comparable{
 
 	public static final int MAXLENGTH_NAME = 15;
 	private static final long serialVersionUID = 1L;
@@ -152,6 +152,14 @@ public class ListItem implements Serializable, ListInterface{
 	
 	public String getIdForJsonList(){
 		return String.valueOf(item_id);
+	}
+
+	public int compareTo(Object o) {
+		if(o instanceof ListInterface){
+			ListInterface li = (ListInterface) o;
+			return name.compareToIgnoreCase(li.getName());
+		}
+		return 0;
 	}
 	
 }

@@ -81,6 +81,7 @@ public class DBList extends DBClinReason {
     	criteria.add(Restrictions.ne("source", ListItem.TYPE_OWN));
     	criteria.addOrder(Order.asc("name"));
     	List l = criteria.list();
+    	//Collections.sort(l);
     	s.close();
     	return l;
     }

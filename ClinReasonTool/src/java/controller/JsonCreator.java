@@ -54,6 +54,9 @@ public class JsonCreator {
 	private void exportOneList(Locale loc){
 		//setIdsForSyn();
 		List<ListItem> items = new DBList().selectListItemsByTypesAndLang(loc, new String[]{TYPE_PROBLEM, TYPE_TEST,TYPE_DRUGS, TYPE_EPI, TYPE_MANUALLY_ADDED, TYPE_PERSONS, TYPE_HEALTHCARE, TYPE_CONTEXT, TYPE_B, TYPE_G});
+		//we collect all items here, to sort it alphabetically
+		List itemsAndSyns = new ArrayList();
+		
 		if(items==null || items.isEmpty()) return; //then something went really wrong!
 		try{
 			File f = getMeshJsonFileByLoc(loc);
@@ -63,8 +66,13 @@ public class JsonCreator {
 			for(int i=0; i<items.size(); i++){
 				ListItem item = items.get(i);
 				if(doAddItem(item)){
-					lines += addItemAndSynonymaNew(item, sb);
+					lines += addItemAndSynonymaNew(item, sb, itemsAndSyns);
 				}
+			}
+			Collections.sort(itemsAndSyns);
+			for(int i=0; i<itemsAndSyns.size();i++){
+				ListInterface li = (ListInterface) itemsAndSyns.get(i);
+				sb.append("{\"label\": \""+li.getName()+"\", \"value\": \""+li.getIdForJsonList()+"\"},\n");
 			}
 			boolean allowOwnEntries = AppBean.getProperty("AllowOwnEntries", false);
 			if(allowOwnEntries) sb.append(getOwnEntry(loc));
@@ -123,7 +131,7 @@ public class JsonCreator {
 	}
 	
 	
-	private int addItemAndSynonymaNew(ListItem item, StringBuffer sb/*PrintWriter pw, boolean lastEntry*/){
+	private int addItemAndSynonymaNew(ListItem item, StringBuffer sb, List itemsAndSyns/*PrintWriter pw, boolean lastEntry*/){
 		List<ListInterface> toAddItems = new ArrayList<ListInterface>();
 		if(item.getSynonyma()==null || item.getSynonyma().isEmpty()){ //no synonyma, only one main item:
 			toAddItems.add(item);
@@ -136,10 +144,7 @@ public class JsonCreator {
 				Synonym syn = it.next();
 				if(!syn.isIgnored()){
 					boolean isSimilar = false;
-					for(int i=0;i<toAddItems.size(); i++){
-						if(item.getItem_id()==14847){
-							System.out.println("");
-						}
+					for(int i=0;i<toAddItems.size(); i++){						
 						isSimilar = StringUtilities.similarStrings(toAddItems.get(i).getName(), syn.getName(), item.getLanguage());
 						if(isSimilar){
 							ListInterface bestItem = bestTerm(toAddItems.get(i),syn);
@@ -156,9 +161,10 @@ public class JsonCreator {
 			}
 								
 		}
-		for(int i=0; i<toAddItems.size();i++){
+		itemsAndSyns.addAll(toAddItems);
+		/*for(int i=0; i<toAddItems.size();i++){
 			sb.append("{\"label\": \""+toAddItems.get(i).getName()+"\", \"value\": \""+toAddItems.get(i).getIdForJsonList()+"\"},\n");
-		}
+		}*/
 
 		return toAddItems.size();
 	}					

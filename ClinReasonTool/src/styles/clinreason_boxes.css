@@ -27,7 +27,7 @@ select.f_select {
 }
 
 input.f_text, textarea.f_textarea {
-    border: 1px solid #CCCCCC;
+    border: 1px solid #888888;
     padding: 5px;
     background: none repeat scroll 0 0 #FFFFFF;
     font-family:arial;
@@ -36,6 +36,9 @@ input.f_text, textarea.f_textarea {
 	border-bottom-left-radius: 0px;
 	border-top-right-radius: 0px;
 	border-top-left-radius: 0px;
+	    -webkit-border-radius: 3px;
+ 	 -moz-border-radius: 3px;
+  	border-radius: 3px;
 }
 
 select.f_select{
@@ -85,9 +88,9 @@ select.f_select{
 .search input.f_text{
 
   padding-left: 5px; /*45px;*/
-  -webkit-border-radius: 5px;
-  -moz-border-radius: 5px;
-  border-radius: 5px;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
   width: 200px; /*95px;*/
 }
 
@@ -393,6 +396,7 @@ a#ddx_submit_btn, errorsymbol.a{
 .sum_textarea{
 	margin-left: 10px;
     margin-top: 5px;
+
 }
 
 .list_score_sum{
@@ -499,13 +503,23 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#bbbbbb', end
 }
 
 
-.title i{
+.icons i{
 	background: #ffffff;
     border-radius: 50%;
     padding: 5px;
     margin-top: -5px;
 	margin-left:5px;
     width:22px;
+}
+
+/* positioning of icon into the input field */
+.ininput{
+position: absolute;
+    right: 15px;
+    top: 10px;
+    pointer-events: none;
+    font-size: 1.5em;	
+    color: #888888;
 }
 
 .help i{
@@ -530,7 +544,9 @@ span.icons{
     text-align: center;
     width: 25px;
     z-index: 100;
+
 }
+
 
 .icons_score{
     display: block;

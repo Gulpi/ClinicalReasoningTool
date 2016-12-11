@@ -8,6 +8,7 @@ import javax.faces.application.FacesMessage;
 import javax.faces.bean.*;
 import javax.faces.context.*;
 import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import application.AppBean;
@@ -248,6 +249,11 @@ public class CRTFacesContext extends FacesContextWrapper implements MyFacesConte
 			this.patillscript = isc.loadIllnessScriptsByVpId(user.getUserId(), vpId+"_"+systemId, extUId);
 			if(this.patillscript==null){
 				this.patillscript = isc.createAndSaveNewPatientIllnessScript(user.getUserId(), vpId, systemId, extUId);
+				//for debugging purposes we log the userAgent:
+				if(patillscript!=null){
+					String userAgent = FacesContext.getCurrentInstance().getExternalContext().getRequestHeaderMap().get("User-Agent");
+					CRTLogger.out("SCRIP_CREATED: id= "+ patillscript.getId() + " user_id= " + this.getUserId() + " httpsess= " + userAgent , CRTLogger.LEVEL_PROD);
+				}
 			}
 		}
 		//TODO error handling!!!!

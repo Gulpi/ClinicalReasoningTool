@@ -5,7 +5,7 @@ import java.util.*;
 
 import org.apache.commons.lang3.StringUtils;
 
-public class Synonym implements Serializable, ListInterface{
+public class Synonym implements Serializable, ListInterface, Comparable{
 
 	private String name;
 	private long id;
@@ -63,6 +63,14 @@ public class Synonym implements Serializable, ListInterface{
 
 	public String getIdForJsonList() {
 		return Synonym.SYN_VERTEXID_PREFIX+id;
+	}
+	
+	public int compareTo(Object o) {
+		if(o instanceof ListInterface){
+			ListInterface li = (ListInterface) o;
+			return name.compareToIgnoreCase(li.getName());
+		}
+		return 0;
 	}
 	
 }

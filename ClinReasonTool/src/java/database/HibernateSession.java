@@ -102,6 +102,7 @@ public class HibernateSession {
 			cfg.addClass(beans.scoring.LearningBean.class);
 			cfg.addClass(model.SemanticQual.class);
 			cfg.addClass(beans.relation.SummaryStatementSQ.class);
+			cfg.addClass(beans.search.SearchResult.class);
 			
 			if (factory==null) {
 				//init_setHibernateDialect();

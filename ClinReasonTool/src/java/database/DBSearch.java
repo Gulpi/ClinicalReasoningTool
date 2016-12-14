@@ -1,11 +1,9 @@
 package database;
 
 import java.util.*;
-
 import org.hibernate.*;
-
-import beans.scripts.IllnessScriptInterface;
-import beans.search.SearchBean;
+import org.hibernate.criterion.Restrictions;
+import beans.search.SearchResult;
 
 public class DBSearch extends DBClinReason{
 	
@@ -15,17 +13,18 @@ public class DBSearch extends DBClinReason{
 	 * @param userId
 	 * @return Map: key=parentId, value=List of SearchBean objects for this parentId
 	 */
-	public Map<Long, List<SearchBean>> selectSearchBeansForItemIds(List<Long> itemIds, String searchTerm, long userId){
-
+	/*public Map<Long, List<SearchBean>> selectSearchBeansForItemIds(List<Long> itemIds, String searchTerm, long userId){
+		if (itemIds==null || itemIds.isEmpty()) return null;
+		Session s = instance.getInternalSession(Thread.currentThread(), false);
 		List l = new ArrayList();
-		List ddx = selectScriptsForItemIds(itemIds, "script.selByRelDDX", userId);
-		if(ddx!=null) l.addAll(ddx);
-		List probs = selectScriptsForItemIds(itemIds, "script.selByRelProb", userId);
+		//List ddx = selectScriptsForItemIds(itemIds, "script.selByRelDDX", userId);
+		//if(ddx!=null) l.addAll(ddx);
+		List probs = selectScriptsForItemIds(itemIds, "script.selByRelProb", userId, s);
 		if(probs!=null) l.addAll(probs);
-		List tests = selectScriptsForItemIds(itemIds, "script.selByRelTest", userId);
-		if(tests!=null) l.addAll(tests);
-		List mngs = selectScriptsForItemIds(itemIds, "script.selByRelMng", userId);
-		if(mngs!=null) l.addAll(mngs);
+		//List tests = selectScriptsForItemIds(itemIds, "script.selByRelTest", userId);
+		//if(tests!=null) l.addAll(tests);
+		//List mngs = selectScriptsForItemIds(itemIds, "script.selByRelMng", userId);
+		//if(mngs!=null) l.addAll(mngs);
 		
 		if(l==null || l.isEmpty()) return null;
 		Map<Long, List<SearchBean>> sbs = new HashMap<Long, List<SearchBean>>();
@@ -41,15 +40,13 @@ public class DBSearch extends DBClinReason{
 			sbs.put(new Long(sb.getParentId()), list);
 		}
 		return sbs;
-	}
-	//TODO we could get the matches from the learner's script from the scripts that are already loaded from database.
-	private List<Object> selectScriptsForItemIds(List<Long> itemIds, String namedQuery, long userId){
+	}*/
+
+	public List<SearchResult> selectScriptsForSearchTerm(String searchTerm){
 		Session s = instance.getInternalSession(Thread.currentThread(), false);
-		Query q = s.getNamedQuery(namedQuery);
-		q.setLong("userId", new Long(userId));
-		q.setInteger("type", new Integer(IllnessScriptInterface.TYPE_EXPERT_CREATED));
-		q.setParameterList("ids",itemIds); 		
-		return q.list();
+      	Criteria criteria = s.createCriteria(SearchResult.class,"SearchResult");
+    	criteria.add(Restrictions.ilike("name", searchTerm.toLowerCase()));
+    	return criteria.list();
 	}
 	
 	

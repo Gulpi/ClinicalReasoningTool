@@ -1,0 +1,15 @@
+ <ui:composition 
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core">
+<response>
+	<error></error>
+	<f:view contentType="text/xml">
+		<ui:repeat value="#{searchctr.searchResults}" var="srch" varStatus="status">
+		<id value="#{srch.truncVpId}">#{srch.truncVpId}</id> <!-- #{srch.truncVpId}</id_#{srch.truncVpId}>-->
+		
+	 </ui:repeat>		</f:view>
+	
+</response>
+</ui:composition>

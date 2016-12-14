@@ -38,6 +38,7 @@ public class ScoringListAction {
 	}
 	
 	private void checkListScoreAtStage(int listType, int relType){
+		if(patillscript.isExpScript()) return;
 		ScoreContainer scoreContainer = new NavigationController().getCRTFacesContext().getScoreContainer();		
 		ScoreBean bean = scoreContainer.getListScoreBeanByStage(listType, patillscript.getCurrentStage());
 		if(bean==null){

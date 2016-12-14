@@ -150,14 +150,14 @@ public class DBList extends DBClinReason {
     	return criteria.list();
     }
     
-    public List<ListItem> selectListItemBySearchTerm(String searchTerm, Locale lang){
+    /*public List<ListItem> selectListItemBySearchTerm(String searchTerm, Locale lang){
     	Session s = instance.getInternalSession(Thread.currentThread(), false);
     	Criteria criteria = s.createCriteria(ListItem.class,"ListItem");
-    	criteria.add(Restrictions.eq("language", lang));
+    	//criteria.add(Restrictions.eq("language", lang));
     	criteria.add(Restrictions.eq("ignored", false));
-    	criteria.add(Restrictions.ilike("name", searchTerm, MatchMode.ANYWHERE));
+    	criteria.add(Restrictions.ilike("name", searchTerm.toLowerCase(), MatchMode.ANYWHERE));
     	return criteria.list();
-    }
+    }*/
     
 	/**
      * Select the ListItem with the given id from the database.

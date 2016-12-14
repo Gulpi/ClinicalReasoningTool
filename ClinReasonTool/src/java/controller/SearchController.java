@@ -8,6 +8,7 @@ import javax.faces.bean.RequestScoped;
 import org.apache.commons.lang.StringUtils;
 
 import beans.search.SearchBean;
+import beans.search.SearchResult;
 import database.DBList;
 import database.DBSearch;
 import model.ListItem;
@@ -33,24 +34,23 @@ public class SearchController {
 	public String getTest(){
 		return "hallo";}
 	
-	public Set getSearchResults(){
-		Map<Long, List<SearchBean>> map = doSearch(createSearchBeanForSearch());
-		return map.keySet();
+	public List<SearchResult> getSearchResults(){
+		SearchBean sb = createSearchBeanForSearch();
+		if(sb==null || sb.getSearchTerm()==null || sb.getSearchTerm().length() < MINLENGTH_SEARCHTERM) return null; 
+		List<SearchResult> results = new DBSearch().selectScriptsForSearchTerm(sb.getSearchTerm());
+		return results;
 	}
-	private Map<Long, List<SearchBean>> doSearch(SearchBean sb){
-		if(sb==null || sb.getSearchTerm()==null) return null;
-		return doSearch(sb.getSearchTerm(), sb.getUserId(), sb.getLoc());
-	}
+
 	/**
 	 * We have to load the json file for the given locale and scan it for the term.
 	 * @param searchTerm
 	 * @param userId
 	 * @return
 	 */
-	private Map<Long, List<SearchBean>> doSearch(String searchTerm, long userId, Locale loc){
-		if(StringUtils.isEmpty(searchTerm) || searchTerm.length()<=MINLENGTH_SEARCHTERM) return null; 
-		List<ListItem> items = new DBList().selectListItemBySearchTerm(searchTerm, loc);
-		return getSearchBeansForItems(items, searchTerm, userId);
+	//private Map<Long, List<SearchBean>> doSearch(SearchBean ){
+	//	if(StringUtils.isEmpty(searchTerm) || searchTerm.length()<MINLENGTH_SEARCHTERM) return null; 
+		//List<ListItem> items = new DBList().selectListItemBySearchTerm(searchTerm, loc);
+	//	return getSearchBeansForItems(items, searchTerm, userId);
 
 
 		/*String jsonFile = JsonCreator.getMeshJsonFileNameByLoc(loc);
@@ -74,18 +74,18 @@ public class SearchController {
 		//Map<Long, List<SearchBean>> searchHits = new HashMap<Long, List<SearchBean>>();
 
 		//return searchHits;
-	}
+	//}
 	
-	private Map<Long, List<SearchBean>> getSearchBeansForItems(List<ListItem> items, String searchTerm, long userId){
+	/*private Map<Long, List<SearchBean>> getSearchBeansForItems(List<ListItem> items, String searchTerm, long userId){
 		//TODO get from a view??? 
 		if(items==null || items.isEmpty()) return null;
 		List<Long> itemIds = new ArrayList<Long>();
-		for(int i=0; i<itemIds.size(); i++){
+		for(int i=0; i<items.size(); i++){
 			itemIds.add(items.get(i).getItem_id());
 		}
 		DBSearch dbs = new DBSearch();
 		return dbs.selectSearchBeansForItemIds(itemIds, searchTerm, userId);		
-	}
+	}*/
 	
 	private SearchBean createSearchBeanForSearch(){
 		//assuming that search is triggered  from a VP system: 
@@ -94,8 +94,8 @@ public class SearchController {
 		if(!AjaxController.getInstance().isValidSharedSecret(sharedSecret)) return null; //invalid shared secret -> todo error message
 		SearchBean sb = new SearchBean();
 		sb.setUserId(AjaxController.getInstance().getLongRequestParamByKey(AjaxController.REQPARAM_USER));
-		sb.setSearchTerm(AjaxController.getInstance().getRequestParamByKey(AjaxController.REQPARAM_SEARCHTERM));
-		sb.setLoc(new Locale(AjaxController.getInstance().getRequestParamByKey(AjaxController.REQPARAM_LOC)));
+		sb.setSearchTerm(AjaxController.getInstance().getRequestParamByKeyNoDecrypt(AjaxController.REQPARAM_SEARCHTERM));
+		sb.setLoc(new Locale(AjaxController.getInstance().getRequestParamByKeyNoDecrypt(AjaxController.REQPARAM_LOC)));
 		return sb;
 	}
 	

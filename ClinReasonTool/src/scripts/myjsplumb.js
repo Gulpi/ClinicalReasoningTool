@@ -44,21 +44,21 @@ function createEndpointsForItems(itemId, endpointtmp){
 	var eps = instance.getEndpoints(itemId);
 	if(eps!=undefined) return; ///do not create endpoints again if they are already there, e.g. for boxes added by learner & expert
 	
-	if(itemId.startsWith("fdg") || itemId.startsWith("tst")){
+	/*if(itemId.startsWith("fdg") || itemId.startsWith("tst")){
 		//endpoint.id="hallo_"+itemId;
 		var ep = instance.addEndpoint(itemId, { anchor:"RightMiddle" }, endpointtmp);
 		ep.id = ep_right_prefix + itemId;
 	}
-	else if(itemId.startsWith("ddx")){
+	else if(itemId.startsWith("ddx")){*/
 		var ep = instance.addEndpoint(itemId, { anchor:"LeftMiddle" }, endpointtmp);
 		ep.id = ep_left_prefix + itemId;
 		var ep2 = instance.addEndpoint(itemId, { anchor:"RightMiddle" }, endpointtmp);
 		ep2.id = ep_right_prefix + itemId;
-	}
+	/*}
 	else{
 		var ep = instance.addEndpoint(itemId, { anchor:"LeftMiddle" }, endpointtmp);
 		ep.id = ep_left_prefix + itemId;
-	}
+	}*/
 }
 
 /*

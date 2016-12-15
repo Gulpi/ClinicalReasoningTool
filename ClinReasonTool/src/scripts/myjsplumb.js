@@ -40,6 +40,7 @@ function initGroups(){
 	instance.addToGroup("sum_group", $("#summStText"));
 }
 
+/*all boxes have 2 endpoints (left and right) */
 function createEndpointsForItems(itemId, endpointtmp){
 	var eps = instance.getEndpoints(itemId);
 	if(eps!=undefined) return; ///do not create endpoints again if they are already there, e.g. for boxes added by learner & expert

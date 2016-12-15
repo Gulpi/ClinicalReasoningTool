@@ -13,6 +13,13 @@
 	font-size:0.9em;
 }
 
+.resourcesBody{
+	margin-left:0px;
+	margin-top:0px;
+	font-family:Arial;
+	font-size:0.9em;	
+}
+
 a{
 	text-decoration:none;
 	color:#006699 !important;
@@ -244,52 +251,9 @@ a:focus{outline:none !important;}
 .sqhit{
 	background-color:yellow;
 }
-/*
-  .chart .current {
-    fill: green;
-    cursor: pointer;
-  }
-  
-  .nvd3 .nv-axis {
-    pointer-events:none;
-    opacity: 1;
-}
 
-.nvd3 .nv-axis path {
-    fill: none;
-    stroke: #000;
-    stroke-opacity: .75;
-    shape-rendering: crispEdges;
+.resourceslist{
+	margin-left:0px;
+	padding-left:0px;
+	list-style:none;
 }
-
-.nvd3 .nv-axis path.domain {
-    stroke-opacity: .75;
-}
-
-.nvd3 .nv-axis.nv-x path.domain {
-    stroke-opacity: 0;
-}
-
-.nvd3 .nv-axis line {
-    fill: none;
-    stroke: #e5e5e5;
-    shape-rendering: crispEdges;
-}
-
-.nvd3 .nv-axis .zero line, .nvd3 .nv-axis line.zero {
-    stroke-opacity: .75;
-}
-
-.nvd3 .nv-axis .nv-axisMaxMin text {
-    font-weight: bold;
-}
-
-.nvd3 .x  .nv-axis .nv-axisMaxMin text,
-.nvd3 .x2 .nv-axis .nv-axisMaxMin text,
-.nvd3 .x3 .nv-axis .nv-axisMaxMin text {
-    text-anchor: middle
-}
-
-.nvd3 .nv-axis.nv-disabled {
-    opacity: 0;
-}*/

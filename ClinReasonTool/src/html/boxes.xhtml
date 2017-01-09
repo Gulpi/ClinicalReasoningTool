@@ -252,12 +252,12 @@ item_arr = new Array();
 <h:body class="crtbody" data-demo-id="draggableConnectors" data-library="dom"><!-- test: #{crtContext.test}-->
 
 <div class="options">
-<div style="position:absolute;left:15px;top:5px;" ><i id="cnxtogglei" class="fa fa-conn" mytooltip="#{prop['cnx.show']}"></i>  </div>
+<div style="position:absolute;left:15px;top:5px;" ><i id="cnxtogglei" class="fa fa-conn" style="cursor:pointer;" mytooltip="#{prop['cnx.show']}"></i>  </div>
 <div class="switch" style="left:30px;" mytooltip="#{prop['cnx.show']}">
         <input id="cnxtoggle" class="cmn-toggle cmn-toggle-round" checked="checked" onchange="javascript:toogleCnxDisplay();" type="checkbox" />
         <label for="cnxtoggle"></label>
 </div>
-<div style="position:absolute;left:85px;top:5px;" mytooltip="#{prop['feedback.exp']}"><i class="fa fa-user-md" mytooltip="#{prop['feedback.exp']}"></i></div>
+<div style="position:absolute;left:85px;top:5px;" mytooltip="#{prop['feedback.exp']}"><i class="fa fa-user-md" style="cursor:pointer;" mytooltip="#{prop['feedback.exp']}"></i></div>
 	<div class="switch" style="left:100px;" mytooltip="#{prop['feedback.exp']}">
 	        <input id="expFeedback" class="cmn-toggle cmn-toggle-round" onchange="toggleExpFeedback('expFeedback', 'icon-user-md');" type="checkbox" />
 	        <label for="expFeedback"></label>

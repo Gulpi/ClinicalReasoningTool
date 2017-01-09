@@ -17,11 +17,11 @@
       
 		<ui:repeat value="#{crtContext.patillscript.errors}" var="errr" varStatus="status">
 			<!--  <ui:include src="errorline.xhtml" />-->
-			#{errr.name} <i class="fa fa-info-circle"  mytooltip="#{errr.description}"></i>
+			#{errr.name} <i class="fa fa-info-circle" style="cursor:pointer;" mytooltip="#{errr.description}"></i>
  		 </ui:repeat>				
 	
 	</h:panelGroup></h:form><br/><br/>
-	<!-- <a href="javascript:alert('Not yet available');">#{prop['info']}</a>-->
+	 <a href="https://youtu.be/LzkmabM_Rxw" onclick="javascript:openVideo('4');" target="new"><i class="fa fa-film"></i> #{prop['info']}</a>
 	
 	</div>
 </ui:composition>

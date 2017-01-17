@@ -119,6 +119,7 @@ select.f_select{
 	height:10px;
 	width:200px;
 	cursor: pointer;
+	margin-left:35px;
 	background: linear-gradient(right, #088A29 0%, #FE2E2E 100%, #ffffff 100%);
 	background: -moz-linear-gradient(right, #088A29 0%, #FE2E2E 100%, #ffffff 100%);
 	background: -webkit-linear-gradient(right, #088A29 0%, #FE2E2E 100%, #ffffff 100%);

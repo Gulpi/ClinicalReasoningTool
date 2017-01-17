@@ -34,6 +34,7 @@
 <script src="../scripts/myjsplumb.js"></script>
 
 <script language="JavaScript">
+//<![CDATA[
 var test = "#{crtContext.initSession}";
 var displayOwnEntryWarn = "#{crtContext.user.userSetting.displayOwnEntryWarn}";
 var displayOwnEntryWarnMsg = "#{prop['list.ownentrywarn']}";
@@ -246,7 +247,7 @@ jsPlumb.ready(function () {
 
 item_arr = new Array();
 
-
+//]]>
 </script>
 </head>
 <h:body class="crtbody" data-demo-id="draggableConnectors" data-library="dom"><!-- test: #{crtContext.test}-->
@@ -346,7 +347,7 @@ item_arr = new Array();
 	    				</h:panelGroup>
 	    				     <h:commandButton id="hiddenDDXButton" value="RenderSomething" style="visibility:hidden">
 	    						<f:ajax render="@form" onevent="updateDDXCallback"></f:ajax>
-							</h:commandButton></h:form>
+							</h:commandButton>
 					<span class="errormsg" id="msg_ddxform"></span>
 							
 					<!--  <div id="confidence_slider" class="conf_slider" title="Please indicate how confident you are with your current differentials."></div>-->
@@ -354,10 +355,10 @@ item_arr = new Array();
 		  			<span id="submitBtnSpan" class="submitBtn submitBtnOff">
 		  				<a href="javascript:doSubmitDDXDialog();" style="color:#ffffff" mytooltip="#{prop['ddx.submit']}" id="submitBtnA">#{prop['ddx.submitFinal']}</a>
 		  			</span>
-		  			<span class="errorsymbol errors_#{crtContext.patillscript.errorNum}"><h:panelGroup id="ddxubmitPG">
+		  			<span id="errorsymbol" class="errorsymbol errors_#{crtContext.patillscript.errorNum}"><h:panelGroup id="ddxubmitPG">
 						<a href="javascript:openErrorDialog();" style="color:#ffffff;"><i style="color:#ffffff;" mytooltip="#{prop['ddx.errors']} (#{crtContext.patillscript.errorNum})" class="fa fa-exclamation-circle"></i></a>		
     				</h:panelGroup></span>
-		  		</div>
+		  		</div></h:form>
 		  </div>
 		  <!-- tests -->
 		  <div id="tst_box" class="container tst_cont" group="tst_group">

@@ -171,8 +171,8 @@ var ajaxUrl = "/crt/src/html/edit/tabs_ajax.xhtml";
 <body style="font-family:arial;" data-demo-id="draggableConnectors" data-library="dom">
 <div>
 ScriptId:  #{adminContext.patillscript.id}<br/>
-VPId: <input type="text" value="#{adminContext.patillscript.vpId}"></input><br/>
-System <select name="system"><option value="">Casus (uni)</option></select><br/>
+VPId: #{adminContext.patillscript.vpId} Casus)<br/>
+VP Name:  #{adminContext.patillscript.VPName} <br/>
 Stage: <span id="stageSpan">#{adminContext.patillscript.stage} </span>
 <a href="javascript:chgStage(-1,'exp_boxes.xhtml');">previous stage</a> <a href="javascript:chgStage(1,'exp_boxes.xhtml');">next stage</a>
 

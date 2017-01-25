@@ -15,7 +15,11 @@
 		<property name="systemId" column="system_id" type="int" />
 		<property name="userName" column="username" type="string" />
 		<property name="password" column="password" type="string" />
-
+		<property name="editor" column="editor" type="boolean" />
+		
+		<!--  <component  name="adress" class="Adress" insert="true" update="true" lazy="false">        
+	        <property name="streetName" column="street" type="string" not-null="false" />
+	     </component>-->
 		
 </class>
 </hibernate-mapping>

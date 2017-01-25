@@ -17,6 +17,12 @@ import util.CRTLogger;
 import util.Encoder;
 import util.StringUtilities;
 
+/**
+ * Authentication of admins or editors; the need to login in order to access the script editor or reports
+ * (corresponds with login.xhtml)
+ * @author ingahege
+ *
+ */
 @ManagedBean
 @ViewScoped
 public class Auth implements Serializable{
@@ -43,6 +49,10 @@ public class Auth implements Serializable{
 
     //private UserService userService;
 
+    /**
+     * login of admin users for script editing or reports
+     * @throws IOException
+     */
     public void login() throws IOException {
         FacesContext context = FacesContext.getCurrentInstance();
         ExternalContext externalContext = context.getExternalContext();
@@ -50,26 +60,32 @@ public class Auth implements Serializable{
         
         try {
         	User user = new DBUser().selectUserByLogin(username);
-        	if(user!=null && compareEncrPwd(password, user.getPassword())){
+        	if(user!=null && user.isEditor() && compareEncrPwd(password, user.getPassword())){
         		AdminFacesContext cnxt =  (AdminFacesContext) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get(AdminFacesContext.CRT_FC_KEY);
         		if(cnxt!=null) cnxt.setUser(user);
         		externalContext.getSessionMap().put("user", user);
         		externalContext.redirect(originalURL);
         	}
-        	else handleError();
+        	else handleError(user);
         } 
         catch (Exception e) {
         	CRTLogger.out("Auth.login(): " + StringUtilities.stackTraceToString(e), CRTLogger.LEVEL_ERROR);
-            handleError();
+            handleError(null);
         }
     }
     
     /** 
  	 * Handle unknown username/password in request.login().
      */
-    private void handleError(){
+    private void handleError(User user){
     	FacesContext context = FacesContext.getCurrentInstance();
-    	context.addMessage(null, new FacesMessage("Unknown login/Pwd"));
+    	if(user!=null && !compareEncrPwd(password, user.getPassword()))
+    		context.addMessage(null, new FacesMessage("Unknown login/Pwd"));
+    	else if (!user.isEditor())
+    		context.addMessage(null, new FacesMessage("No permission to access admin area"));
+    	else 
+    		context.addMessage(null, new FacesMessage("Unknow error...Shit happens..."));
+
     }
     
     /**

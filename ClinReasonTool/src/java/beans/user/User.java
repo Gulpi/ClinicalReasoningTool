@@ -32,6 +32,10 @@ public class User {
 	 */
 	private String password;
 	
+	/**
+	 * if true, this user is allowed to edit or create expert scripts
+	 */
+	private boolean editor = false;
 
 	private UserSetting userSetting = new UserSetting();
 	
@@ -47,7 +51,8 @@ public class User {
 	public void setExtUserId(String extUserId) {this.extUserId = extUserId;}
 	public int getSystemId() {return systemId;}
 	public void setSystemId(int systemId) {this.systemId = systemId;}
-
+	public boolean isEditor() {return editor;}
+	public void setEditor(boolean editor) {this.editor = editor;}
 	public String getUserName() {return userName;}
 	public void setUserName(String userName) {this.userName = userName;}
 	public String getPassword() {return password;}

@@ -18,13 +18,35 @@
 <script type="text/javascript" src="../../scripts/jquery112/jquery-ui.js"></script>
 <script src="../../scripts/admin.js"></script>
 <script src="../../scripts/ajax.js"></script>
+<script src="../../scripts/editexp.js"></script>
 
 <link rel="stylesheet" type="text/css" href="../../scripts/jquery112/ui-lightness/jquery-ui.css" /> 
 <link rel="stylesheet" href="../../styles/clinreason_boxes.css" />
+<link rel="stylesheet" href="../../styles/portfolio.css" />
+
 <link rel="stylesheet" href="../../styles/font-awesome/css/font-awesome.css" />
 
 
 <script language="JavaScript">
+$(function() {
+	$("#jdialog").dialog({
+		autoOpen: false,
+		modal: true,
+		width: "auto",
+		height: "auto",
+		//position: { my: "right-20 top+100", at: "right-20 top+100", of: window },
+	});
+	$("#jdialog").hide();
+});
+$( this ).tooltip({
+  	items: "[mytooltip]",
+  	position: { my: "left+5 center", at: "right center" },
+  	content: function() {
+    	var element = $( this );
+    	var parent = $( this ).parent();
+   		return $( this ).attr( "mytooltip" );
+	}
+});
 $( document ).tooltip({
 	items: " rect, [title], text, tspan",
 	content: function() {
@@ -34,13 +56,19 @@ $( document ).tooltip({
           }
 	}
 });
+
+
 var test = "#{adminContext.userId}";
 </script>
  </head>
- <body>
+ <body class="chartbody">
  
 <div> 
-	<h:form><ul id="list" class="plainList">
+	<h:form>
+	 	<a href="javascript:createNewScript();" title="Create new illness script"><i class="fa fa-plus-circle"></i> Create new script</a><br/>
+	
+	#{adminContext.adminPortfolio.noscripts}
+	<ul id="list" class="plainList">
 			<ui:repeat value="#{adminContext.adminPortfolio.expscripts}" var="scripts" varStatus="status">
 				<li><h:commandLink action="#{navController.openExpPatIllScript}" value="Edit Scriptid:#{scripts.id}" title="Open the prototype">
 				<!--  <f:param name="script_id" value="#{scripts.id}" />-->
@@ -59,9 +87,9 @@ var test = "#{adminContext.userId}";
  		 </ui:repeat>				
 	</ul></h:form>
 	
- 	<div class="footer"><a href="javascript:createNewScript();" title="Create new illness script"><i class="fa fa-plus-circle"></i></a></div>
  </div>
 
-  
+	<div id="jdialog" >	<ui:include src="createscript.xhtml" /></div>
+
  </body></f:view>
  </html>

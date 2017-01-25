@@ -64,8 +64,8 @@ public class PatientIllnessScript extends Beans/*extends Node*/ implements Compa
 	private Locale locale; // do we need this here to determine which list to load?	
 	private SummaryStatement summSt;
 	private long summStId = -1;
-	private Note note;
-	private long noteId;
+	//private Note note;
+	//private long noteId;
 	/**
 	 * If we get this information from the VP (or other) system, we store it here.
 	 */
@@ -139,12 +139,18 @@ public class PatientIllnessScript extends Beans/*extends Node*/ implements Compa
 	
 	public PatientIllnessScript(){}
 	public PatientIllnessScript(long userId, String vpId, Locale loc, int systemId){
-		//if(sessionId>0) this.sessionId = sessionId;
 		if(userId>0) this.userId = userId;
-		//if(parentId>0) this.parentId = parentId;
 		this.locale = loc;
 		this.vpId = vpId +"_"+systemId;
-		//this.summSt = new SummaryStatement();
+	}
+	
+	/**
+	 * Expert creates a script, so we init the basic parameters and make sure that the type is set correctly
+	 */
+	public void iniExpertScript(int maxStage, int maxddxstage){
+		this.type = TYPE_EXPERT_CREATED;	
+		this.currentStage = maxStage;
+		this.maxSubmittedStage = maxddxstage;
 	}
 	
 	public long getId() {return id;}
@@ -221,17 +227,18 @@ public class PatientIllnessScript extends Beans/*extends Node*/ implements Compa
 		if(confidence<25) return IntlConfiguration.getValue("submit.slider.after") + " " + IntlConfiguration.getValue("confidence.verylow") +".";
 		if(confidence<50) return IntlConfiguration.getValue("submit.slider.after") + " " + IntlConfiguration.getValue("confidence.low") +".";
 		if(confidence<75) return IntlConfiguration.getValue("submit.slider.after") + " " + IntlConfiguration.getValue("confidence.high") +".";
-		else return IntlConfiguration.getValue("submit.slider.after") + " " + IntlConfiguration.getValue("confidence.veryhigh") +".";
+		if(confidence==100) return IntlConfiguration.getValue("submit.slider.after") + " " + IntlConfiguration.getValue("confidence.high") +"."; 
+		else return IntlConfiguration.getValue("submit.slider.after") + " " + IntlConfiguration.getValue("confidence.highest") +".";
 	}
 	public void setConfidence(int confidence) {this.confidence = confidence;}
 	public long getSummStId() {
 		return summStId;
 		}
 	public void setSummStId(long summStId) {this.summStId = summStId;}	
-	public Note getNote() {return note;}
+	/*public Note getNote() {return note;}
 	public void setNote(Note note) {this.note = note;}
 	public long getNoteId() {return noteId;}
-	public void setNoteId(long noteId) {this.noteId = noteId;}
+	public void setNoteId(long noteId) {this.noteId = noteId;}*/
 	
 	public String getVpId() {return vpId;}
 	public void setVpId(String vpId) {this.vpId = vpId;}
@@ -378,7 +385,7 @@ public class PatientIllnessScript extends Beans/*extends Node*/ implements Compa
 	public void chgConnection(String idStr, String weightStr){new ChgConnectionAction(this).chgConnection(idStr, weightStr);}
 
 	public void saveSummStatement(String idStr, String text){new SummaryStatementChgAction(this).updateOrCreateSummaryStatement( idStr, text);}
-	public void saveNote(String idStr, String text){new NoteChgAction(this).updateOrCreateNote( idStr, text);}
+	//public void saveNote(String idStr, String text){new NoteChgAction(this).updateOrCreateNote( idStr, text);}
 	public void submitDDX(String idStr){new DiagnosisSubmitAction(this).submitDDX(idStr);}
 	public void submitDDXAndConf(String idStr, String confStr){new DiagnosisSubmitAction(this).submitDDXAndConf(idStr, confStr);}
 	public void expSetFinalDiagnosis(String idStr){new DiagnosisSubmitAction(this).submitExpFinalDiagnosis(idStr);}
@@ -394,7 +401,9 @@ public class PatientIllnessScript extends Beans/*extends Node*/ implements Compa
 
 	public void addJoker(String idStr, String type){ new JokerAction(this).addJoker(type);}
 	public void addTypeAheadBean(String type){
-		new TypeAheadBean(type).save();}
+		new TypeAheadBean(type).save();
+	}
+	
 	public void save(){
 		User u = NavigationController.getInstance().getMyFacesContext().getUser();
 		if(u!=null && u.getUserId()!=this.userId) return; //so not save if the users do not match!

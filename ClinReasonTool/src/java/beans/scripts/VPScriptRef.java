@@ -24,6 +24,13 @@ public class VPScriptRef {
 	private String parentId;
 
 	public VPScriptRef(){}
+	public VPScriptRef(String parentId, String vpName, int systemId, String vpId){
+		this.parentId = parentId;
+		this.vpName = vpName;
+		this.systemId = systemId;
+		//todo convert vpId and store as well - really necessary?
+		
+	}
 	public long getVpId() {return vpId;}
 	public long getInternalId() {return internalId;}
 	public void setInternalId(long internalId) {this.internalId = internalId;}

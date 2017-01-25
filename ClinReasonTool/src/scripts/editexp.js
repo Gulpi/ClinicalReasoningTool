@@ -37,3 +37,18 @@ function chgStageEdge(obj){
 }
 
 function chgStageCallback(){}
+
+
+/**
+ * open the jdialog to display the editor to create a new script 
+ **/
+function createNewScript(){
+	$("#jdialog").dialog( "option", "width", ['350'] );
+	$("#jdialog").dialog( "option", "height", ['250'] );	
+	$("#jdialog").dialog( "option", "title", "Create new script" );
+	$("#jdialog").dialog( "option", "buttons", [ ] );
+	$("#jdialog").dialog( "open" );	
+	$("#jdialog").dialog( "option", "position", [0,0] );
+	$("#jdialog").html();
+	$("#jdialog").show();
+}

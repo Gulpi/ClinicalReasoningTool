@@ -10,6 +10,7 @@ import javax.faces.bean.SessionScoped;
  * at distinct steps), all changes, variants are saved in the PIS_Log object.
  * @author ingahege
  * (currently not in use)
+ * @deprecated
  */
 @SessionScoped
 public class Note extends Beans implements Serializable{

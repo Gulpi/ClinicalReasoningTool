@@ -157,7 +157,9 @@ public class IllnessScriptController implements Serializable{
 		Map<String, VPScriptRef> refs = new HashMap<String, VPScriptRef>();
 		if(vprefs==null) return null;
 		for(int i=0; i<vprefs.size(); i++){
-			refs.put(vprefs.get(i).getVpId()+"_"+vprefs.get(i).getSystemId(), vprefs.get(i));
+			//refs.put(vprefs.get(i).getVpId()+"_"+vprefs.get(i).getSystemId(), vprefs.get(i));
+			refs.put(vprefs.get(i).getParentId(), vprefs.get(i));
+
 		}
 		return refs;
 	}

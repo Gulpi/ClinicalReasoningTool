@@ -220,6 +220,12 @@ public class AppBean extends ApplicationWrapper implements HttpSessionListener{
 		return vpScriptRefs;
 	}
 	
+	public static void addVpScriptRef(VPScriptRef ref){
+		if(vpScriptRefs==null) vpScriptRefs = new HashMap<String, VPScriptRef>();
+		vpScriptRefs.put(ref.getParentId(), ref);
+		
+	}
+	
 	public static List<SemanticQual> getSemantiQualsByLang(String lang){
 		if(semanticQuals==null) return null;
 		return semanticQuals.get(lang);

@@ -7,7 +7,9 @@ import beans.scripts.*;
 import beans.Note;
 import database.DBClinReason;
 
-
+/**
+ * @deprecated
+ **/
 public class NoteChgAction /*implements ChgAction*/{
 
 	private PatientIllnessScript patIllScript;
@@ -36,17 +38,17 @@ public class NoteChgAction /*implements ChgAction*/{
 	 * @param summStId (not really needed)
 	 * @param text
 	 */
-	public void updateOrCreateNote(String noteId, String text){
+	/*public void updateOrCreateNote(String noteId, String text){
 		if(patIllScript.getNote()==null || noteId.equals("-1")) createNote(text);
 		else updateNote(text);
-	}
+	}*/
 	
 	/**
 	 * No summaryStatement has been created so far, so we create one, save it and attach it to the 
 	 * PatientIllnessScript.
 	 * @param text
 	 */
-	private void createNote(String text){
+	/*private void createNote(String text){
 		Note note = new Note(text);
 		save(note);
 		patIllScript.setNote(note);
@@ -54,17 +56,17 @@ public class NoteChgAction /*implements ChgAction*/{
 		patIllScript.save();
 		//new DBClinReason().saveAndCommit(sumSt, patIllScript);
 		notifyLog(patIllScript.getNote(), patIllScript.getNote().getId());
-	}
+	}*/
 	
 	/**
 	 * Summary Statement already attached to PatientIllnessScript, so we just update it. 
 	 * @param text
 	 */
-	private void updateNote(String text){
+	/*private void updateNote(String text){
 		patIllScript.getNote().setText(text);
 		save(patIllScript.getNote());
 		notifyLogUpdate(patIllScript.getNote(), patIllScript.getNote().getId());
-	}
+	}*/
 	
 	/* (non-Javadoc)
 	 * @see beanActions.ChgAction#save(java.beans.Beans)

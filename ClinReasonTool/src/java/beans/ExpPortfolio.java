@@ -77,7 +77,7 @@ public class ExpPortfolio implements Serializable{
 		int maxddxstage = AjaxController.getInstance().getIntRequestParamByKey("maxddxstage", -1);
 		patillscript.iniExpertScript(maxStage, maxddxstage);
 		new DBClinReason().saveAndCommit(patillscript);
-		String vpName = AjaxController.getInstance().getRequestParamByKey("vp_name");
+		String vpName = AjaxController.getInstance().getRequestParamByKeyNoDecrypt("vp_name");
 
 		VPScriptRef ref= new VPScriptRef(patillscript.getVpId(), vpName, 2, vpId);
 		new DBClinReason().saveAndCommit(ref);

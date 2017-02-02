@@ -115,6 +115,9 @@ public class StringUtilities {
 		//unilateral/bilateral is too similar, but needs to be both in the list:
 		if(item1.startsWith("Unilat") && item2.startsWith("Bilat") || item2.startsWith("Unilat") && item1.startsWith("Bilat"))
 			return false;
+		if(item1.startsWith("Type I") && item2.startsWith("Type II") || item2.startsWith("Type I") && item1.startsWith("Type II"))
+			return false;
+
 		if(isMatchBasedOnLevelAndFuzzy(item1, item2, loc)) return true;
 		
 		//if we have multiple words we split them and compare them separately

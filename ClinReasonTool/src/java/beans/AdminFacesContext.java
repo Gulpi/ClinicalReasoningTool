@@ -15,6 +15,7 @@ import application.Monitor;
 import beans.graph.Graph;
 import beans.scoring.*;
 import beans.scripts.*;
+import beans.user.SessionSetting;
 import beans.user.User;
 import controller.*;
 import database.DBEditing;

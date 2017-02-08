@@ -12,7 +12,6 @@ import javax.faces.bean.SessionScoped;
  * (currently not in use)
  * @deprecated
  */
-@SessionScoped
 public class Note extends Beans implements Serializable{
 
 	private static final long serialVersionUID = 1L;

@@ -76,6 +76,7 @@ var item_arr = new Array();
 var exp_arr = new Array();
 var ajaxUrl = "/crt/src/html/tabs_ajax.xhtml";
 var fireAddConnection = true; //false during re-init of exp cnxs, otherwise new cnxs are stored!
+
 $(function() {
     postEnforceFinalDDXSubmission(submitted/*, myStage, maxSubmittedStage*/);
 
@@ -88,7 +89,7 @@ $(function() {
 		saveSummSt('#{crtContext.patillscript.summStId}');
 	 });
 	checkSubmitBtn();
-
+	
  
 
 //uncomment if endpoint issues with dragging boxes is solved:
@@ -159,6 +160,17 @@ $(function() {
 	        }, 500);
 	    }
 	});
+	
+	/*$("#jdialogFbHint").dialog({
+		autoOpen: false,
+		modal: true,
+		width: "auto",
+		height: "auto",
+		position: { my: "left+70 top+10", at: "left+70 top+10", of: window }
+
+	});
+	checkDisplayExpFbHint(fireExpNowAvailable);*/
+
 	
 	if(openHelpOnLoad=="true"){
 		 if(currentStageScript=="1")openHelp();
@@ -252,25 +264,26 @@ item_arr = new Array();
 <h:body class="crtbody" data-demo-id="draggableConnectors" data-library="dom"><!-- test: #{crtContext.test}-->
 
 <div class="options">
-<div style="position:absolute;left:15px;top:5px;" ><i id="cnxtogglei" class="fa fa-conn" style="cursor:pointer;" mytooltip="#{prop['cnx.show']}"></i>  </div>
+<div  style="position:absolute;left:15px;top:5px;" ><i id="cnxtogglei" class="fa fa-conn" style="cursor:pointer;" mytooltip="#{prop['cnx.show']}"></i>  </div>
 <div class="switch" style="left:30px;" mytooltip="#{prop['cnx.show']}">
-        <input id="cnxtoggle" class="cmn-toggle cmn-toggle-round" checked="checked" onchange="javascript:toogleCnxDisplay();" type="checkbox" />
+        <input id="cnxtoggle" class="cmn-toggle cmn-toggle-round" checked="checked" onchange="javascript:toggleCnxDisplay();" type="checkbox" />
         <label for="cnxtoggle"></label>
 </div>
-<div style="position:absolute;left:85px;top:5px;" mytooltip="#{prop['feedback.exp']}"><i class="fa fa-user-md" style="cursor:pointer;" mytooltip="#{prop['feedback.exp']}"></i></div>
-	<div class="switch" style="left:100px;" mytooltip="#{prop['feedback.exp']}">
-	        <input id="expFeedback" class="cmn-toggle cmn-toggle-round" onchange="toggleExpFeedback('expFeedback', 'icon-user-md');" type="checkbox" />
-	        <label for="expFeedback"></label>
-	</div>
+<div class="expfb_#{crtContext.displayExpFb}" style="position:absolute;left:85px;top:5px;" mytooltip="#{prop['feedback.exp']}"><i class="fa fa-user-md expfb_#{crtContext.displayExpFb}" style="cursor:pointer;" mytooltip="#{prop['feedback.exp']}"></i></div>
+<div class="switch expfb_#{crtContext.displayExpFb}" style="left:100px;" mytooltip="#{prop['feedback.exp']}">
+        <input id="expFeedback" class="cmn-toggle cmn-toggle-round" onchange="toggleExpFeedback('expFeedback', 'icon-user-md', 'expfb_#{crtContext.displayExpFb}');" type="checkbox" />
+        <label for="expFeedback"></label>
+</div>
 	<span class="help">
-	
 		<a href="https://youtu.be/WgQxinhiw24" onclick="javascript:openVideo('2');" target="new" class="movlinken_#{crtContext.locale}" style="float:right;top:5px;"><i class="fa fa-film" style="width:24px;" mytooltip="#{prop['help.movie']}"></i></a>
 		<a href="https://youtu.be/sTml6i0jLkI" onclick="javascript:openVideo('2');" target="new" class="movlinkde_#{crtContext.locale}" style="float:right;top:5px;"><i class="fa fa-film" style="width:24px;" mytooltip="#{prop['help.movie']}"></i></a>
-		<a href="javascript:openHelp();" style="float:right;top:5px;" id="helpicon"><i class="fa fa-question-circle " mytooltip="#{prop['help']}"></i></a></span>
+		<a href="javascript:openHelp('#{crtContext.sessSetting.expFeedbackMode}');" style="float:right;top:5px;" id="helpicon"><i class="fa fa-question-circle " mytooltip="#{prop['help']}"></i></a></span>
 	
 	<!--  <a href="exp_stages.xhtml" target="new">exp dev</a>-->
 	<!--  <a href="alert('not yet available, will show the development of the experts script during the case');">exp dev</a>-->
 </div>
+<div class="exphintdiv exphintdivvis_#{crtContext.chgDisplayExpFb}"><i class="fa fa-arrow-left2 exphintarrow"></i> #{prop['feedback.exp.hint']}</div>
+
 <div class="boxes_container">
 	<div id="canvas" class="canvas jtk-surface drag-drop jtk-surface-nopan" >
 		 <!--   <div id="pat_box" class="container" group="pat_group">
@@ -447,7 +460,7 @@ item_arr = new Array();
 	<div id="jdialogError">	<ui:include src="errors.xhtml" /></div>
 	<div id="connContext"><ui:include src="cnxchange.xhtml" /></div>	
 	<div id="jdialogHelp"></div>
-
+	<!-- <div id="jdialogFbHint"><i class="fa fa-arrow-left2"></i> #{prop['feedback.exp.hint']}</div>-->
 </h:body>
 </f:view>
 </html>

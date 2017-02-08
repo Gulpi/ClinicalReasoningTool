@@ -3,7 +3,7 @@ package model;
  * Each IllnessScript can be associated to mutiple cases, and one case can have multiple IllnessScripts. 
  * 
  * @author ingahege
- *
+ * @deprecated
  */
 public class IllnessScript_VP_Ref {
 

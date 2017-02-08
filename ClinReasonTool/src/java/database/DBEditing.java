@@ -4,6 +4,7 @@ import java.util.*;
 
 import org.hibernate.Criteria;
 import org.hibernate.Session;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 
 import beans.scripts.*;
@@ -20,6 +21,7 @@ public class DBEditing extends DBClinReason{
     	Criteria criteria = s.createCriteria(PatientIllnessScript.class,"PatientIllnessScript");
     	criteria.add(Restrictions.eq("type", new Integer(PatientIllnessScript.TYPE_EXPERT_CREATED)));
     	criteria.add(Restrictions.eq("userId", new Long(userId)));
+    	criteria.addOrder(Order.desc("id"));
     	List<PatientIllnessScript> patIllScripts = criteria.list();
     	if(patIllScripts!=null){
     		for(int i=0; i<patIllScripts.size(); i++){

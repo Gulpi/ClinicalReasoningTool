@@ -274,6 +274,14 @@ a#ddx_submit_btn, errorsymbol.a{
 	top:5px;
 }
 
+.expfb_true{
+	display:block;
+}
+
+.expfb_false{
+	display:none;
+}
+
 .movlinkde_en{
 	display:none;
 }
@@ -1115,4 +1123,29 @@ input.cmn-toggle-round:checked + label:after {
 
 .ui-effects-transfer {
     border: 3px dotted #006699;
+}
+
+.exphintdiv{
+	position:absolute; 
+	left:150px;
+	background-color:#ffffff;
+	z-index:99999;
+	padding:5px;
+	color:#c00815;
+	border:1px;
+	border-style: solid;
+	border-color:#c00815;
+}
+
+.exphintarrow{
+	 -ms-transform: rotate(12deg); /* IE 9 */
+    -webkit-transform: rotate(12deg); /* Chrome, Safari, Opera */
+    transform: rotate(12deg);
+}
+
+.exphintdivvis_true{
+	display:block;
+}
+.exphintdivvis_false{
+	display:none;
 }

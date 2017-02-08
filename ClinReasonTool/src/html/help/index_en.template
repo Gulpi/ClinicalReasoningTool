@@ -29,9 +29,14 @@ it and change the weight. <br/><br/>
 
 You can edit or delete all components of you map anytime. <br/><br/>
 
-<b><i class="fa fa-user-md"></i> Feedback:</b> <br/>
-You can view the author's map at all stages (activate ...). However, please keep in mind that there are no
+<span id="help_expfb_0"><b><i class="fa fa-user-md"></i> Feedback:</b> <br/>
+You can view the author's map at all stages. However, please keep in mind that there are no
 wrong answers in the clinical reasoning process. Pathways to the final diagnosis are very individual and the 
 author's solution represents one possible solution which can be a rough guide. 
-
+</span>
+<span id="help_expfb_1"><b><i class="fa fa-user-md"></i> Feedback:</b> <br/>
+You can view the author's map at the end of a case. However, please keep in mind that there are no
+wrong answers in the clinical reasoning process. Pathways to the final diagnosis are very individual and the 
+author's solution represents one possible solution which can be a rough guide. 
+</span>
 </div>

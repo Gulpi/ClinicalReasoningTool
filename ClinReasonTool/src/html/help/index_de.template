@@ -25,14 +25,20 @@ finale Diagnose bezogen sein, als auch im Fallverlauf dem Patienten helfen (z.B.
 <br/><br/>
 
 <b><i class="cmn-toggle cmn-toggle-round"></i> Verbindungen:</b><br/>
-Sie können beliebig Verbindungen zwischen Knoten ziehen. Durck Klicken auf die Verbindung können Sie die Bedeutung
+Sie können beliebig Verbindungen zwischen Elementen ziehen. Durck Klicken auf die Verbindung können Sie die Bedeutung
 der Verbindung bearbeiten. <br/><br/>
 
 Alle Bestandteile der Map können Sie jederzeit verändern oder löschen.<br/><br/>
 
-<b><i class="fa fa-user-md"></i> Rückmeldung:</b> <br/>
-Sie können jederzeit sich die Lösung des Autors zum aktuellen Zeitpunkt ansehen. Bitte beachten Sie, dass es aber 
+<div id="help_expfb_0"><b><i class="fa fa-user-md"></i> Rückmeldung:</b> <br/>
+Sie können sich jederzeit die Lösung des Autors zum aktuellen Zeitpunkt ansehen. Bitte beachten Sie, dass es aber 
 bei der klinischen Entscheidungsfindung keine richtigen/falschen Antworten gibt. Die Wege zur Diagnose sind 
-individuell sehr unterschiedlich und die Lösung des Autors soll Ihnen lediglich einen Anhaltspunkt geben. 
+individuell sehr unterschiedlich und die Lösung des Autors soll Ihnen lediglich als Anhaltspunkt dienen. 
+</div>
 
+<div id="help_expfb_1"><b><i class="fa fa-user-md"></i> Rückmeldung:</b> <br/>
+Sie können sich am Ende des Falles die Lösung des Autors ansehen. Bitte beachten Sie, dass es aber 
+bei der klinischen Entscheidungsfindung keine richtigen/falschen Antworten gibt. Die Wege zur Diagnose sind 
+individuell sehr unterschiedlich und die Lösung des Autors soll Ihnen lediglich als Anhaltspunkt dienen. 
+</div>
 </div>

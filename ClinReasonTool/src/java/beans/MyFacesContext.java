@@ -7,6 +7,11 @@ import beans.scoring.ScoreContainer;
 import beans.scripts.PatientIllnessScript;
 import beans.user.User;
 
+/**
+ * Interface for FacesContext objects. Currently we have two - one for learners and one for admins/script editors...
+ * @author ingahege
+ *
+ */
 public interface MyFacesContext {
 
 	public Graph getGraph();

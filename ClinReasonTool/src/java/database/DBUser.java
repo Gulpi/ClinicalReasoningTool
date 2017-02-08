@@ -5,6 +5,7 @@ import java.util.*;
 import org.hibernate.*;
 import org.hibernate.criterion.*;
 
+import beans.user.SessionSetting;
 import beans.user.User;
 
 
@@ -39,6 +40,16 @@ public class DBUser extends DBClinReason{
     	Criteria criteria = s.createCriteria(User.class,"User");
     	criteria.add(Restrictions.eq("userName", login));
     	return (User) criteria.uniqueResult();
+    }
+    
+    public SessionSetting selectSessionSettingByUserAndVPId(long userId, String vpId){
+    	if(vpId==null || vpId.trim().equals("") || userId<=0) return null;
+    	Session s = instance.getInternalSession(Thread.currentThread(), false);
+    	Criteria criteria = s.createCriteria(SessionSetting.class,"SessionSetting");
+    	criteria.add(Restrictions.eq("vpId", vpId));
+    	criteria.add(Restrictions.eq("userId", new Long(userId)));
+    	return (SessionSetting) criteria.uniqueResult();
+    	
     }
 
 }

@@ -17,11 +17,13 @@ import beans.graph.Graph;
 import beans.relation.Connection;
 import beans.scoring.*;
 import beans.scripts.*;
+import beans.user.SessionSetting;
 import beans.user.User;
 import controller.*;
 import database.DBEditing;
 import database.DBUser;
 import util.CRTLogger;
+import util.StringUtilities;
 
 /**
  * The facesContext for a session....
@@ -45,11 +47,6 @@ public class CRTFacesContext extends FacesContextWrapper implements MyFacesConte
 	 * This is the locale of the navigation etc. script locale (for lists) is in PatientIllnessScript
 	 */
 	private Locale locale;
-	/**
-	 * TODO: get from VP system or calculate from expert script
-	 */
-	//private int maxStage = 4;
-	//private boolean feedbackOn;
 
 	/**
 	 * all scripts of the user, needed for the overview/portfolio page to display a list. 
@@ -71,6 +68,12 @@ public class CRTFacesContext extends FacesContextWrapper implements MyFacesConte
 	 */
 	private LearningAnalyticsContainer analyticsContainer;
 	
+	/**
+	 * Any specific settings for this session are stored here, e.g. display of expert feedback variants...
+	 * CAVE: is null if no specific settings have been defined.
+	 */
+	private SessionSetting sessSetting = null;
+	
 	public CRTFacesContext(){
 		long startms = System.currentTimeMillis();
 		ExternalContext ec =  FacesContextWrapper.getCurrentInstance().getExternalContext();
@@ -81,8 +84,7 @@ public class CRTFacesContext extends FacesContextWrapper implements MyFacesConte
 		setUser();
 		if(user!=null){
 		    FacesContextWrapper.getCurrentInstance().getExternalContext().getSessionMap().put(CRTFacesContext.CRT_FC_KEY, this);
-			initSession();
-			//userSetting = new UserSetting(); //TODO get from Database...
+			initSession();		
 		}
 		try{
 			CRTLogger.out(FacesContextWrapper.getCurrentInstance().getApplication().getStateManager().getViewState(FacesContext.getCurrentInstance()), CRTLogger.LEVEL_TEST);
@@ -90,18 +92,18 @@ public class CRTFacesContext extends FacesContextWrapper implements MyFacesConte
 		}
 		catch(Exception e){}
 	    CRTLogger.out("End CRTFacesContext init: "  + (System.currentTimeMillis()- startms) +"ms", CRTLogger.LEVEL_PROD);
-
 	}
 	
-	private void initGraph(){
-	    
+	/**
+	 * Load and build the graph, which is the basis of all operations!
+	 */
+	private void initGraph(){	    
 		if(graph!=null && patillscript!=null && graph.isSameGraph(patillscript.getVpId(), patillscript.getId())) return; //nothing todo, graph already loaded
 		long startms = System.currentTimeMillis();
 		CRTLogger.out("Start Graph init:"  + startms + "ms", CRTLogger.LEVEL_PROD);
 		graph = new Graph(patillscript.getVpId(), patillscript.getId());
 		CRTLogger.out(graph.toString(), CRTLogger.LEVEL_TEST);	
 	    CRTLogger.out("End Graph init: "  + (System.currentTimeMillis() - startms) + "ms", CRTLogger.LEVEL_PROD);
-
 	}
 
 	/**
@@ -113,7 +115,6 @@ public class CRTFacesContext extends FacesContextWrapper implements MyFacesConte
 		String extUserId = AjaxController.getInstance().getRequestParamByKeyNoDecrypt(AjaxController.REQPARAM_USER_EXT);
 		int systemId = AjaxController.getInstance().getIntRequestParamByKey(AjaxController.REQPARAM_SYSTEM, -1);
 		if(setUserIdStr==null && extUserId==null){
-			//userHasChanged(); //just to be sure...
 			return;
 		}
 		//userIdStr is same as userId of loaded user -> return
@@ -128,7 +129,6 @@ public class CRTFacesContext extends FacesContextWrapper implements MyFacesConte
 		else if(extUserId!=null && !extUserId.trim().equals("")){
 			user =  new UserController().getUser(systemId, extUserId);
 			userHasChanged(); //user is different
-			//if(u!=null) this.userId = u.getUserId();
 		}
 		if(user==null){
 			CRTLogger.out("Userid is null", CRTLogger.LEVEL_ERROR);
@@ -150,6 +150,41 @@ public class CRTFacesContext extends FacesContextWrapper implements MyFacesConte
 	}
 	public User getUser(){return user;}
 	public Graph getGraph() {return graph;}
+
+	/**
+	 * Depending on the sessionSettings we hide/display the expert feedback. Default is always display....
+	 * @return
+	 */
+	public boolean getDisplayExpFb(){
+		try{
+			if(sessSetting==null) return true;
+			if(AppBean.getExpertPatIllScript(patillscript.getVpId())==null) return false; //do not display expert feedback if there is no expert VP script!
+			return sessSetting.displayExpFeedback(patillscript.getStage(), AppBean.getExpertPatIllScript(patillscript.getVpId()).getCurrentStage());
+		}
+		catch(Exception e){
+			CRTLogger.out("Exception + " + StringUtilities.stackTraceToString(e), CRTLogger.LEVEL_ERROR);
+			return true;
+		}
+	}
+	
+	/**
+	 * If the learner comes to a stage where the expert feedback is available for the first time, we display a 
+	 * hint for him/her. 
+	 * @return true (display a hint), false (no hint)
+	 */
+	public boolean getChgDisplayExpFb(){
+		try{
+			if(sessSetting==null) return false;
+			if(AppBean.getExpertPatIllScript(patillscript.getVpId())==null) return false;
+			return sessSetting.displayExpFeedbackHint(patillscript.getStage(), AppBean.getExpertPatIllScript(patillscript.getVpId()).getCurrentStage());
+		}
+		catch(Exception e){
+			CRTLogger.out("Exception + " + StringUtilities.stackTraceToString(e), CRTLogger.LEVEL_ERROR);
+			return false;
+		}
+	}
+	
+	public SessionSetting getSessSetting(){ return sessSetting;}
 
 	public LearningAnalyticsBean getLearningAnalytics() {
 		if(analyticsContainer==null) return null;//analyticsContainer = new LearningAnalyticsContainer(userId);
@@ -219,6 +254,8 @@ public class CRTFacesContext extends FacesContextWrapper implements MyFacesConte
 
 	}
 	
+
+	
 	/**
 	 * load PatientIllnessScript based on id or sessionId
 	 */
@@ -260,6 +297,8 @@ public class CRTFacesContext extends FacesContextWrapper implements MyFacesConte
 		initLearningAnalyticsContainer();
 		loadExpScripts();
 		initFeedbackContainer();
+		if(user!=null && this.patillscript!=null && vpId!=null && (sessSetting==null || !sessSetting.getVpId().equals(vpId)))
+				sessSetting = SessionSettingController.getInstance().initSessionSettings(vpId, user.getUserId());
 		
 		if(this.patillscript!=null){initGraph();}
 		
@@ -276,27 +315,7 @@ public class CRTFacesContext extends FacesContextWrapper implements MyFacesConte
 	    		}	    		
 	    	}
 	    }
-	    
-
 	}
-	
-	/**
-	 * load exp PatientIllnessScript based on id
-	 */
-	/*public void initExpEditSession(){ 
-		 setUser();
-		long id = AjaxController.getInstance().getLongRequestParamByKey(AjaxController.REQPARAM_SCRIPT);
-		if(this.patillscript!=null && (id<0 || this.patillscript.getId()==id)) return; //current script already loaded....
-		if(id<=0) return;
-
-		if(id>0){ //open an created script
-			this.patillscript = new DBEditing().selectExpertPatIllScriptById(id);
-			if(this.patillscript!=null && user==null) setUser(this.patillscript.getUserId()); //can happen if we have to re-init after timeout, there we do not get the userId, just the illscriptId
-		}
-		//TODO error handling!!!!
-		if(this.patillscript!=null)  initGraph();		
-	}*/
-	
 	
 	public boolean getInitSession(){
 		initSession();
@@ -383,6 +402,7 @@ public class CRTFacesContext extends FacesContextWrapper implements MyFacesConte
 		setPatillscript(null);
 		this.graph = null;
 		this.feedbackContainer = null;
+		this.sessSetting = null;
 	}
 	
 	private void userHasChanged(){

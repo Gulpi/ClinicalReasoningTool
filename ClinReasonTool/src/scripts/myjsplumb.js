@@ -231,66 +231,6 @@ function deleteEndpoints(id){
 	}
 }
 
-/**init box heights on loading
- * 
- */
-/*function initBoxHeights(){
-	initBoxHeight("fdg_box", "fdgs");
-	initBoxHeight("ddx_box", "ddxs");
-	initBoxHeight("tst_box", "tests");
-	initBoxHeight("mng_box", "mngs");
-	sameHeightForNeigborBoxes();
-	//instance.repaintEverything();
-
-}
-function initExpBoxHeights(){
-	initBoxHeight("fdg_box", "expfdgs");
-	initBoxHeight("ddx_box", "expddxs");
-	initBoxHeight("tst_box", "exptests");
-	initBoxHeight("mng_box", "expmngs");
-	sameHeightForNeigborBoxes();
-	//instance.repaintEverything();
-}
-
-function sameHeightForNeigborBoxes(){
-	//make neighbor boxes the same height:
-	if($("#fdg_box").height()>$("#ddx_box").height()) $("#ddx_box").height($("#fdg_box").height());
-	if($("#ddx_box").height()>$("#fdg_box").height()) $("#fdg_box").height($("#ddx_box").height());
-	if($("#tst_box").height()>$("#mng_box").height()) $("#mng_box").height($("#mng_box").height());
-	if($("#mng_box").height()>$("#tst_box").height()) $("#tst_box").height($("#mng_box").height());
-}*/
-
-/**
- * automatically enlarge a box, depending on the number of items in it.
- * @param boxId
- * @param itemCls
- */
-/*function initBoxHeight(boxId, itemCls){
-	var storedHeight = -1;
-	if(boxId=="fdg_box" || boxId=="ddx_box") storedHeight = getBoxFdgDDXHeight();
-	if(boxId=="tst_box" || boxId=="mng_box") storedHeight = getBoxTstMngHeight();
-	
-	var itemArr = $("."+itemCls);
-	if(itemArr.length==0) return;
-	var maxY = 0; //item that is the farthest below and determines the height of the box
-	for(i=0; i<itemArr.length; i++){
-		var myY = $(itemArr[i]).position().top + 30;
-		if(myY > maxY) maxY = myY;
-	}
-	if(maxY>400) maxY=400;
-
-	if(maxY>=200 && $("#"+boxId).height()< maxY && maxY > storedHeight){
-		$("#"+boxId).height(maxY);
-		setBoxHeight(boxId, maxY);
-		//return;
-	}	
-	else if(storedHeight > $("#"+boxId).height()) 
-		$("#"+boxId).height(storedHeight);
-	
-	sendNewHeightToHostSystem();
-
-}*/
-
 function initBoxHeights(){
 	var storedHeightRow1 = getBoxFdgDDXHeight();
 	var storedHeightRow2 = getBoxTstMngHeight();

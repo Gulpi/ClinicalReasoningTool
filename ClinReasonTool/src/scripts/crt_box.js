@@ -714,6 +714,7 @@ function calcAddPixForExpSum(){
  * we display the peer feedback for the given box/type
  */
 function togglePeerBoxFeedback(iconId, itemClass, type){
+	hideTooltips();
 	if($("#"+iconId).hasClass("fa-users_on")){ //turn off
 		$("#"+iconId).removeClass("fa-users_on");
 		$("#"+iconId).addClass("fa-users_off");		
@@ -735,8 +736,11 @@ function togglePeerBoxFeedback(iconId, itemClass, type){
 
 /*
  * display/hide overall expert feedback (including missing items)
+ * if isAllowed=false, then user is not allwoed to access feedback at this time
  */
-function toggleExpFeedback(iconId, itemClass){
+function toggleExpFeedback(iconId, itemClass, isAllowed){
+	hideTooltips();
+	if(isAllowed=="false" || !isAllowed) return; //should not happen, because button is hidden anyway. 
 	if($("#"+iconId).hasClass("fa-user-md_on")){ //turn feedback off
 		turnOverallExpFeedbackOff(iconId, itemClass);
 		sendAjaxContext(0, doNothing, "toogleExpFeedback", "");
@@ -778,6 +782,22 @@ function turnOverallExpFeedbackOff(iconId, itemClass){
 	$(".jsplumb-exp-connector").addClass("jsplumb-exp-connector-hide");
 	$(".jsplumb-exp-connector").removeClass("jsplumb-exp-connector-show");
 }
+
+/**
+ * if fireExpNowAvailable is true we display a jdialog with a hint about the availability of the expert feedback button.
+ * @param fireExpNowAvailable
+ */
+/*function checkDisplayExpFbHint(fireExpNowAvailable){
+	if(fireExpNowAvailable=="true" || fireExpNowAvailable){
+		$("#jdialogFbHint").dialog( "option", "width", ['180'] );
+		$("#jdialogFbHint").dialog( "option", "height", ['220'] );
+		//$("#jdialogFbHint").dialog( "option", "title", "Feedback");
+		$("#jdialogFbHint").dialog( "option", "buttons", [ ] );
+		//$("#jdialogFbHint").html(expFbHint);
+		$('.ui-tooltip').remove();
+		$("#jdialogFbHint" ).dialog( "open" );
+	}
+}*/
 
 function openErrorDialog(){
 	$("#jdialogError").dialog( "option", "width", ['300'] );
@@ -824,11 +844,12 @@ function clearErrorMsgs(){
 
 function hideTooltips(){
 	$('.ui-tooltip').remove();
+	$('.exphintdivvis_true').hide();
 }
 /**
  * opens the help dialog
  */
-function openHelp(){
+function openHelp(expFBMode){
 	clearErrorMsgs();
 	
 	$("#jdialogHelp").dialog( "option", "width", ['350'] );
@@ -848,13 +869,26 @@ function openHelp(){
     	}, 500, function () {
         $("#jdialogHelp").dialog("widget").css("visibility", "visible");
     });
-	
+	toggleExpFBHelp(expFBMode);
+
 	//var helpoptions = { to: "#jdialogHelp" , className: "ui-effects-transfer" }
 	//$( "#helpicon" ).effect( "transfer", helpoptions, 500, openHelpCallback );
+}
+
+/**
+ * depending on the exp feedback mode we hide/display different sections in the help pages
+ * @param expFBMode
+ */
+function toggleExpFBHelp(expFBMode){
+	if(expFBMode<0) expFBMode = 0;
+	$("#help_expfb_0").hide();
+	$("#help_expfb_1").hide();
+	$("#help_expfb_"+ expFBMode).show();
 }
 
 function closeHelpDialog(){}
 
 function openHelpCallback() {
 	$("#jdialogHelp").show();
+	//toggleExpFBHelp(1);
 }

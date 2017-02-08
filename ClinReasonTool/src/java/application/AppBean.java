@@ -92,7 +92,7 @@ public class AppBean extends ApplicationWrapper implements HttpSessionListener{
 	    }
 	    catch(Exception e){}
 	    //does not have to be done on every restart:
-	   // new JsonCreator().initJsonExport(); 
+	    //new JsonCreator().initJsonExport(); 
 	   
 		//MeshImporter.main("en");
 	   // new TextSimilarityComparing().compareTestData();
@@ -214,6 +214,20 @@ public class AppBean extends ApplicationWrapper implements HttpSessionListener{
 	public static String getVPNameByVPId(String id){
 		if(vpScriptRefs==null || vpScriptRefs.get(id)==null) return "";
 		return vpScriptRefs.get(id).getVpName();
+	}
+	
+	public static String getVPSystemByVPId(String id){
+		if(vpScriptRefs==null || vpScriptRefs.get(id)==null) return "";
+		int systemId = vpScriptRefs.get(id).getSystemId();
+		if(systemId==2) return "CASUS";
+		if(systemId==4) return "OpenLabyrinth";
+		return "Unknown";
+		//TODO get available systems from database...
+	}
+	
+	public static long getVPOrgIdByVPId(String id){
+		if(vpScriptRefs==null || vpScriptRefs.get(id)==null) return 0;
+		return vpScriptRefs.get(id).getVpId();
 	}
 	
 	public static Map<String,VPScriptRef> getVpScriptRefs(){

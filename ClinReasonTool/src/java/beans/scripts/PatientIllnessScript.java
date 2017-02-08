@@ -241,6 +241,7 @@ public class PatientIllnessScript extends Beans/*extends Node*/ implements Compa
 	public void setNoteId(long noteId) {this.noteId = noteId;}*/
 	
 	public String getVpId() {return vpId;}
+		
 	public void setVpId(String vpId) {this.vpId = vpId;}
 	
 	public int getCurrentStage() {return currentStage;}	
@@ -623,6 +624,18 @@ public class PatientIllnessScript extends Beans/*extends Node*/ implements Compa
 	 */
 	public String getVPName(){
 		return AppBean.getVPNameByVPId(this.vpId);
+	}
+	
+	/**
+	 * For displaying expert scripts in admin area we display the VP system to make selection easier
+	 * @return
+	 */
+	public String getVPSystem(){
+		return AppBean.getVPSystemByVPId(this.vpId);
+	}
+	
+	public long getVpIdCrop() {		
+		return AppBean.getVPOrgIdByVPId(this.vpId);
 	}
 	
 	public int compareTo(Object o) {

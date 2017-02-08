@@ -481,6 +481,9 @@
   content: "\f060";
   color:#ffffff;
 }
+.fa-arrow-left2:before {
+  content: "\f060";
+}
 .fa-arrow-right:before {
   content: "\f061";
   color:#ffffff;
@@ -910,7 +913,7 @@
 }
 .fa-user-md_off:before {
   content: "\f0f0";
-  color:#000000;
+  color:#006699;
 }
 .fa-stethoscope:before {
   content: "\f0f1";

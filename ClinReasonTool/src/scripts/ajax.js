@@ -223,28 +223,6 @@ function isCallbackStatusSuccess(data){
     	 return true;
 	 }
 }
-/*
- * We store the currently open tab in a cookie, to be able to reopen the same tab after a reload. 
- */
-/*function switchTab(tabidx){	
-	Cookies.set('tab', tabidx);
-	$("#msg").html("");
-	if(tabidx==6) updateGraph();
-	
-	if(expFeedback==true || peerFeedback==true){ //we only have to trigger a call if the expert feedback is on 
-		sendAjaxContext(tabidx, doNothing, "toogleExpFeedback", tabidx);
-		//TODO peerfeedback...
-	}
-	
-}*/
-
-/*function getCurrentTab(){	
-	var currTab = Cookies.get('tab');
-	if(currTab=="" || currTab=="undefined" || currTab==undefined){
-		currTab = 0;
-	}
-	return currTab;
-}*/
 
 function storeContainerPos(type, x, y){
 	if(type=="fdg_box"){
@@ -277,19 +255,27 @@ function toggleCnxStatus(){
 
 /* storing the max height for boxes fdg/ddx and test/mng for use on next card. */ 
 function getBoxFdgDDXHeight(){
-	if(sessionStorage.fdgddxHeight) return sessionStorage.fdgddxHeight;
+	if(sessionStorage.fdgddxHeight && sessionStorage.fdgddxHeight>0) return sessionStorage.fdgddxHeight;
 	return -1;
 }
 
 function getBoxTstMngHeight(){
-	if(sessionStorage.testmngHeight) return sessionStorage.testmngHeight;
+	if(sessionStorage.testmngHeight && sessionStorage.testmngHeight>0) return sessionStorage.testmngHeight;
 	return -1;
 }
 
 function setBoxHeight(boxId, height){
 	if(boxId=="fdg_box" || boxId=="ddx_box") setBoxFdgDDXHeight(height);
-	if(boxId=="tst_box" || boxId=="mng_box") setBoxTstMngHeight(height);
-		
+	if(boxId=="tst_box" || boxId=="mng_box") setBoxTstMngHeight(height);		
+}
+
+/**
+ * The sessionStorage is valid as long as the window is open. To avoid effects between different VP sessions, we reset 
+ * the sessionStorage when the user starts a new session.
+ */
+function resetSessionStorage(){
+	sessionStorage.testmngHeight = -1;
+	sessionStorage.fdgddxHeight = -1;
 }
 
 function setBoxFdgDDXHeight(height){
@@ -369,7 +355,7 @@ function getContainerY(type){
 }
 
 /*
- * returns true if container is collapsed, else false. 
+ * returns true if container is collapsed, else false, currently not in use 
  */
 function getContainerCollapsed(type){
 	if(type=="fdg"){

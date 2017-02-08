@@ -63,7 +63,7 @@ public class FeedbackController {
 		if (scoreContainer==null) return ""; //no icon
 		ScoreBean scoreBean = scoreContainer.getScoreBeanByTypeAndItemId(type,itemId);
 		if(scoreBean==null || scoreBean.getExpItemId()<=0) return "";
-		Graph g = new NavigationController().getCRTFacesContext().getGraph();
+		Graph g = new NavigationController().getMyFacesContext().getGraph();
 		MultiVertex expVertex = g.getVertexByIdAndType(scoreBean.getExpItemId(), type);
 		if(expVertex!=null) return expVertex.getLabel();
 		return "";

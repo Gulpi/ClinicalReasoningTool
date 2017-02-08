@@ -287,7 +287,8 @@ function getWeightToColorExp(weight){
 	*/
 }
 
-function toogleCnxDisplay(){
+function toggleCnxDisplay(){
+	hideTooltips();
 	toggleCnxStatus();
 	initCnxDisplay();
 }

@@ -29,6 +29,7 @@
 
 <script language="JavaScript">
 $(function() {
+	resetSessionStorage(); 
 	$("#jdialog").dialog({
 		autoOpen: false,
 		modal: true,
@@ -68,24 +69,25 @@ var test = "#{adminContext.userId}";
 	 	<a href="javascript:createNewScript();" title="Create new illness script"><i class="fa fa-plus-circle"></i> Create new script</a><br/>
 	
 	#{adminContext.adminPortfolio.noscripts}
-	<ul id="list" class="plainList">
+	<table id="list"  cellpadding="5" cellspacing="0" border="1">
+	<tr><td><b>Edit</b></td><td><b>Vp Name</b></td><td><b>VP id</b></td><td><b>Lang</b></td><td><b>System</b></td><td><b>View</b></td><td><b>Remove<br/>from cache</b></td></tr>
 			<ui:repeat value="#{adminContext.adminPortfolio.expscripts}" var="scripts" varStatus="status">
-				<li><h:commandLink action="#{navController.openExpPatIllScript}" value="Edit Scriptid:#{scripts.id}" title="Open the prototype">
+				<tr><td><i class="fa fa-pencil"></i><h:commandLink action="#{navController.openExpPatIllScript}" value=" #{scripts.id}" title="Open the prototype">
 				<!--  <f:param name="script_id" value="#{scripts.id}" />-->
 					<f:param name="script_id" value="#{scripts.id}" />
 					<f:param name="user_id" value="#{scripts.userId}" />
 					
-			</h:commandLink>
-			(#{scripts.locale}, vpId: #{scripts.vpId}, #{scripts.VPName})
-					
-			<h:commandLink action="#{navController.openViewExpPatIllScript}" value="View Scriptid:#{scripts.id}" title="Open the prototype">
+			</h:commandLink></td>
+			<td>#{scripts.VPName}</td><td> #{scripts.vpIdCrop}</td><td>#{scripts.locale}</td><td>#{scripts.VPSystem}</td>
+			<td>  		
+			<i class="fa fa-eye"></i> <h:commandLink action="#{navController.openViewExpPatIllScript}" value=" #{scripts.id}" title="Open the prototype">
 				<f:param name="script_id" value="#{scripts.id}" />
 				<f:param name="user_id" value="#{scripts.userId}" />
-			</h:commandLink>
-			<a href="javascript:removeExpScriptFromCache('#{scripts.vpId}');">Remove from cache</a>
-				</li>
+			</h:commandLink></td>
+			<td><a href="javascript:removeExpScriptFromCache('#{scripts.vpId}');"><i class="fa fa-eraser"></i></a>
+				</td></tr>
  		 </ui:repeat>				
-	</ul></h:form>
+	</table></h:form>
 	
  </div>
 

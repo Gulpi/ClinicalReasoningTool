@@ -1143,9 +1143,9 @@ input.cmn-toggle-round:checked + label:after {
     transform: rotate(12deg);
 }
 
-.exphintdivvis_true{
+/*.exphintdivvis_true{
 	display:block;
-}
-.exphintdivvis_false{
+}*/
+.exphintdivvis_false, .exphintdivvis_true{
 	display:none;
 }

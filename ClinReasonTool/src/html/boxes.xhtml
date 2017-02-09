@@ -89,10 +89,9 @@ $(function() {
 		saveSummSt('#{crtContext.patillscript.summStId}');
 	 });
 	checkSubmitBtn();
-	//$(".exphintdivvis_true").hide();
-	$(".exphintdivvis_true").toggle("drop", {direction: "right"});
- 
-
+	$(".exphintdivvis_true").toggle("drop", {direction: "right"}, 1000); //effect for the expert feedback hint
+	checkDisplayCnxHint(); //display of hint for connections
+	
 //uncomment if endpoint issues with dragging boxes is solved:
   /*  $( ".container" ).draggable({
         stop: function() {
@@ -283,7 +282,7 @@ item_arr = new Array();
 	<!--  <a href="exp_stages.xhtml" target="new">exp dev</a>-->
 	<!--  <a href="alert('not yet available, will show the development of the experts script during the case');">exp dev</a>-->
 </div>
-<div class="exphintdiv exphintdivvis_#{crtContext.chgDisplayExpFb}"><i class="fa fa-arrow-left2 exphintarrow"></i> #{prop['feedback.exp.hint']}</div>
+<div class="hintdiv exphintdivvis_#{crtContext.chgDisplayExpFb}" onclick="javascript:hideTooltips();"><i class="fa fa-arrow-left2 exphintarrow"></i> #{prop['feedback.exp.hint']}</div>
 
 <div class="boxes_container">
 	<div id="canvas" class="canvas jtk-surface drag-drop jtk-surface-nopan" >
@@ -451,6 +450,7 @@ item_arr = new Array();
 
 	 <h:form id="cnxsform">
 		 <h:panelGroup><!-- style="display:none;" -->
+		 	<div id="cnxhint" onclick="javascript:hideTooltips();" class="hintdiv cnxhint_#{crtContext.displayCnxHint}"><i class="fa fa-arrow-left2"></i> #{prop['cnx.hint']}</div>
 		 	<div id="jsonConns" style="display:none;">#{crtContext.graph.jsonConns}</div> </h:panelGroup>
 		   <h:commandButton id="hiddenCnxButton" value="RenderSomething" style="visibility:hidden">
 	  		<f:ajax render="@form" onevent="reInitCnxsCallback"></f:ajax>

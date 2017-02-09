@@ -288,4 +288,18 @@ function sendNewHeightToHostSystem(){
 	postFrameHeight(newFrameHeight);			
 }
 
+/**
+ * we display the connection hint close to the first element we see. The arrow should point onto the endpoint of 
+ * this element.
+ */
+function checkDisplayCnxHint(){
+	var item = $(".itembox")[0];	
+	var posLeft = item.offsetLeft + item.offsetParent.offsetLeft + item.offsetWidth + 20;
+	var posTop = item.offsetTop  + item.offsetParent.offsetTop + item.offsetHeight;
+	
+	$(".cnxhint_true").css({top: posTop+'px', left: posLeft+'px'});
+	$(".cnxhint_true").hide();
+	$(".cnxhint_true").toggle("drop", {direction: "right"},1000);
+}
+
 

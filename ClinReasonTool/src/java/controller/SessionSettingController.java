@@ -22,7 +22,10 @@ public class SessionSettingController {
 	public SessionSetting initSessionSettings(String vpId, long userId){
 		DBUser dbu = new DBUser();
 		SessionSetting sessSetting = dbu.selectSessionSettingByUserAndVPId(userId, vpId);
-		if(sessSetting!=null) return sessSetting;
+		if(sessSetting!=null){
+			sessSetting.setExpHintDisplayed(false); //we set it here to false, to make sure that it is displayed even if learner has stopped the session before
+			return sessSetting;
+		}
 		
 		sessSetting = new SessionSetting(vpId , userId);
 		initSessSetting(sessSetting);

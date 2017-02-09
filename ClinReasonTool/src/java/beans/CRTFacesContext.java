@@ -184,6 +184,21 @@ public class CRTFacesContext extends FacesContextWrapper implements MyFacesConte
 		}
 	}
 	
+	/**
+	 * if the user is new and has added two different items for the first time, we display a hint that he/she can 
+	 * draw connections between such elements.
+	 * @return
+	 */
+	public boolean getDisplayCnxHint(){
+		if(user==null && user.getUserSetting()==null) return false;
+		if(!user.getUserSetting().getIsNewUser() || !user.getUserSetting().isDisplayCnxHint()) return false;
+		if(new GraphController(graph).hasTwoDiffVertices()){
+			user.getUserSetting().setDisplayCnxHint(false);
+			return true;
+		}		
+		return false;
+	}
+	
 	public SessionSetting getSessSetting(){ return sessSetting;}
 
 	public LearningAnalyticsBean getLearningAnalytics() {

@@ -40,6 +40,10 @@ public class UserSetting implements Serializable{
 	public void setDisplayOwnEntryWarn(boolean bool) {this.displayOwnEntryWarn = bool;}	
 	public boolean getOpenHelpOnLoad() {return openHelpOnLoad;}
 	public void setOpenHelpOnLoad(boolean openHelpOnLoad) {this.openHelpOnLoad = openHelpOnLoad;}	
+	/**
+	 * if true, we display a hint, if false not.
+	 * @return
+	 */
 	public boolean isDisplayCnxHint() {return displayCnxHint;}
 	public void setDisplayCnxHint(boolean displayCnxHint) {this.displayCnxHint = displayCnxHint;}
 	

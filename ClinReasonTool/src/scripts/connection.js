@@ -31,10 +31,8 @@ var expendpoint = {
 	    //Anchors: ["TopCenter", "TopCenter"],
 	    isTarget: true,
 	    //dropOptions: myDropOptions,
-	    deleteEndpointsOnDetach:false	
-		
+	    deleteEndpointsOnDetach:false			
 }
-
 
 /*var con=info.connection;
 var arr=jsPlumb.select({source:con.sourceId,target:con.targetId});
@@ -367,7 +365,8 @@ function reInitCnxsCallback(data){
         	}
     	}
     	reInitExpConnections();
-    	fireAddConnection = true;        	
+    	fireAddConnection = true;  
+    	checkDisplayCnxHint();
     }
 }
 

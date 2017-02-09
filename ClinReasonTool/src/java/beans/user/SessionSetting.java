@@ -52,7 +52,7 @@ public class SessionSetting {
 	public long getId() {return id;}
 	public void setId(long id) {this.id = id;}	
 	private boolean isExpHintDisplayed() {return expHintDisplayed;}
-	private void setExpHintDisplayed(boolean hintDisplayed) {this.expHintDisplayed = hintDisplayed;}
+	public void setExpHintDisplayed(boolean hintDisplayed) {this.expHintDisplayed = hintDisplayed;}
 	
 	/**
 	 * return true if exp feedback shall be accessible, otherwise false. Depends on current stage in session and 

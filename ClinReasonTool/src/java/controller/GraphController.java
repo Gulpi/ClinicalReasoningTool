@@ -291,4 +291,22 @@ public class GraphController implements Serializable{
 		}
 		return list;
 	}
+	
+	/**
+	 * We check whether the graph has two different vertices, so that the learner could draw a connection. 
+	 * Only call if user is new, to determine whether we shall display a hint on how to draw connections
+	 * @return
+	 */
+	public boolean hasTwoDiffVertices(){
+		if(graph==null) return false;
+		List<MultiVertex> l = graph.getAllVertices();
+		if(l==null || l.isEmpty() || l.size()==1) return false;
+		int tmp = -1;
+		for(int i=0; i<l.size(); i++){
+			MultiVertex mv = l.get(i);
+			if(tmp<0) tmp = mv.getType();
+			if(tmp>0 && tmp!=mv.getType()) return true;
+		}
+		return false;
+	}
 }

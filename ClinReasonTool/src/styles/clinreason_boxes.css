@@ -1125,7 +1125,7 @@ input.cmn-toggle-round:checked + label:after {
     border: 3px dotted #006699;
 }
 
-.exphintdiv{
+.hintdiv{
 	position:absolute; 
 	left:150px;
 	background-color:#ffffff;
@@ -1135,6 +1135,10 @@ input.cmn-toggle-round:checked + label:after {
 	border:1px;
 	border-style: solid;
 	border-color:#c00815;
+	font-size: 0.8em;
+}
+
+.cnxhint_true{
 }
 
 .exphintarrow{
@@ -1146,6 +1150,6 @@ input.cmn-toggle-round:checked + label:after {
 /*.exphintdivvis_true{
 	display:block;
 }*/
-.exphintdivvis_false, .exphintdivvis_true{
+.exphintdivvis_false, .exphintdivvis_true, .cnxhint_false{
 	display:none;
 }

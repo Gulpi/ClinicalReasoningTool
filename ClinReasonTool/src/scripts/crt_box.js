@@ -844,7 +844,7 @@ function clearErrorMsgs(){
 
 function hideTooltips(){
 	$('.ui-tooltip').remove();
-	$('.exphintdivvis_true').hide();
+	$('.hintdiv').hide();
 }
 /**
  * opens the help dialog

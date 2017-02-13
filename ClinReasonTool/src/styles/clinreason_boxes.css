@@ -279,7 +279,7 @@ a#ddx_submit_btn, errorsymbol.a{
 }
 
 .expfb_false{
-	display:none;
+	display:none !important;
 }
 
 .movlinkde_en{

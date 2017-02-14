@@ -4,3 +4,4 @@ $ cat .gitignore
     /crt/src/doku/*
     /crt/src/nogit/
      /crt/src/nogit/*
+/.DS_Store

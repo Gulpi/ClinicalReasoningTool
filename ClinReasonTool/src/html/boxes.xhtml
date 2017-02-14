@@ -275,8 +275,8 @@ item_arr = new Array();
         <label for="expFeedback"></label>
 </div>
 	<span class="help">
-		<a href="https://youtu.be/WgQxinhiw24" onclick="javascript:openVideo('2');" target="new" class="movlinken_#{crtContext.locale}" style="float:right;top:5px;"><i class="fa fa-film" style="width:24px;" mytooltip="#{prop['help.movie']}"></i></a>
-		<a href="https://youtu.be/sTml6i0jLkI" onclick="javascript:openVideo('2');" target="new" class="movlinkde_#{crtContext.locale}" style="float:right;top:5px;"><i class="fa fa-film" style="width:24px;" mytooltip="#{prop['help.movie']}"></i></a>
+		<!-- en movie --><a href="#{crtContext.toolVideoUrl}" onclick="javascript:openVideo('2');" target="new" class="movlinken_#{crtContext.locale}" style="float:right;top:5px;"><i class="fa fa-film" style="width:24px;" mytooltip="#{prop['help.movie']}"></i></a>
+		<!-- de movie --><a href="https://youtu.be/sTml6i0jLkI" onclick="javascript:openVideo('2');" target="new" class="movlinkde_#{crtContext.locale}" style="float:right;top:5px;"><i class="fa fa-film" style="width:24px;" mytooltip="#{prop['help.movie']}"></i></a>
 		<a href="javascript:openHelp('#{crtContext.sessSetting.expFeedbackMode}');" style="float:right;top:5px;" id="helpicon"><i class="fa fa-question-circle " mytooltip="#{prop['help']}"></i></a></span>
 	
 	<!--  <a href="exp_stages.xhtml" target="new">exp dev</a>-->
@@ -443,7 +443,7 @@ item_arr = new Array();
 				<textarea class="f_textarea boxchild sum_textarea" name="summSt" id="summStText" cols="65" rows="3" placeholder="#{prop['sumst.hint']}">#{crtContext.patillscript.summSt.text}</textarea>
 		  		<!-- <a href="javascript:saveSummSt('#{crtContext.patillscript.summStId}');" title="Save your summary statement"><i class="icon-floppy"></i></a>-->
 			 	<span class="errormsg" id="msg_sumstform"></span>
-			 	<span id="list_score_sum" class="list_score_sum" style="color:green; display:none;"> #{crtContext.patillscript.summStExp}</span> 		  
+			 	<span id="list_score_sum" class="list_score_sum sum_textarea" style="color:green; display:none;"> #{crtContext.patillscript.summStExp}</span> 		  
 		<input type="text" id="sumstanchor" style="visibility:hidden;"/></div>
 	</div>
 </div>

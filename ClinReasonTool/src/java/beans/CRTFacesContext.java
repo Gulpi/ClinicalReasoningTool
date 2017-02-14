@@ -185,6 +185,17 @@ public class CRTFacesContext extends FacesContextWrapper implements MyFacesConte
 	}
 	
 	/**
+	 * Hack for study, depending on feedback mode we return the video url... 
+	 * CAVE: only interpreted if language = en.
+	 * @return
+	 */
+	public String getToolVideoUrl(){
+		if(sessSetting==null) return"https://youtu.be/WgQxinhiw24"; //default
+		if(sessSetting.getExpFeedbackMode()==SessionSetting.EXPFEEDBACKMODE_END) return "http://crt.casus.net/crt/src/crtool.mp4";
+		return"https://youtu.be/WgQxinhiw24"; //default
+	}
+	
+	/**
 	 * if the user is new and has added two different items for the first time, we display a hint that he/she can 
 	 * draw connections between such elements.
 	 * @return

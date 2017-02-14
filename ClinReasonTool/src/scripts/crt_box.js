@@ -868,8 +868,9 @@ function openHelp(expFBMode){
         className: "ui-effects-transfer"
     	}, 500, function () {
         $("#jdialogHelp").dialog("widget").css("visibility", "visible");
+        toggleExpFBHelp(expFBMode);
     });
-	toggleExpFBHelp(expFBMode);
+	//toggleExpFBHelp(expFBMode);
 
 	//var helpoptions = { to: "#jdialogHelp" , className: "ui-effects-transfer" }
 	//$( "#helpicon" ).effect( "transfer", helpoptions, 500, openHelpCallback );

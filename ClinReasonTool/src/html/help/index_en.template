@@ -1,5 +1,5 @@
 <div id="help_idx">
-<a href="https://youtu.be/WgQxinhiw24" onclick="javascript:openVideo('2');" target="new"><i class="fa fa-film" style="width:24px;"></i>Short movie about the tool</a><br/><br/>
+<!--<a href="https://youtu.be/WgQxinhiw24" onclick="javascript:openVideo('2');" target="new"><i class="fa fa-film" style="width:24px;"></i>Short movie about the tool</a><br/><br/>-->
 This tool helps you to document findings, differentials, tests, management, and a summary statement in a concept
 map. This approach supports the development of clinical reasoning skills. 
 <br/><br/>
@@ -16,7 +16,7 @@ At a certain stage of the scenario you will have to make a decision about your f
 with your patient. <br/><br/>
 
 <b>Examinations/Tests:</b><br/>
-Please document examinations and tests you would like to perform or order to clarify your differntials.
+Please document examinations and tests you would like to perform or order to clarify your differentials.
 <br/><br/>
 <b>Therapy/Management:</b><br/>
 Please enter any therapeutic steps for your patient. These can be related to your final diagnoses or general 
@@ -34,6 +34,7 @@ You can view the author's map at all stages. However, please keep in mind that t
 wrong answers in the clinical reasoning process. Pathways to the final diagnosis are very individual and the 
 author's solution represents one possible solution which can be a rough guide. 
 </span>
+
 <span id="help_expfb_1"><b><i class="fa fa-user-md"></i> Feedback:</b> <br/>
 You can view the author's map at the end of a case. However, please keep in mind that there are no
 wrong answers in the clinical reasoning process. Pathways to the final diagnosis are very individual and the 

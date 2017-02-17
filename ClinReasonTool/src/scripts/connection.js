@@ -87,7 +87,7 @@ function createExpConnection(cnxId, sourceId, targetId, expWeight, learnerWeight
 	var epSource = getEndpointForCnx(sourceId, startEpIdx);//instance.getEndpoints(sourceId)[startEpIdx];
 	var epTarget =  getEndpointForCnx(targetId, targetEpIdx); // instance.getEndpoints(targetId)[targetEpIdx];
 
-	var color = getWeightToColorExp(expWeight);
+	var color = getWeightToColor(expWeight);
 	var lw = getWeightToLineWidth(expWeight);
 	//alert(color);
 	var cnx = instance.connect({

@@ -5,15 +5,15 @@
 --   DB Connect String  : CASUS_NEW 
 --   Schema             : CRT 
 --   Script Created by  : CRT 
---   Script Created at  : 28.12.2016 16:15:29 
+--   Script Created at  : 18.04.2017 10:00:51 
 --   Physical Location  :  
 --   Notes              :  
 --
 
 -- Object Counts: 
---   Indexes: 12        Columns: 15         
+--   Indexes: 13        Columns: 16         
 --   Sequences: 3 
---   Tables: 22         Columns: 206        
+--   Tables: 23         Columns: 215        
 --   Views: 1           
 
 
@@ -73,7 +73,8 @@ CREATE TABLE CRUSER
   FIRSTNAME      VARCHAR2(200 BYTE),
   CREATION_DATE  DATE                           DEFAULT SYSDATE,
   USERNAME       VARCHAR2(100 BYTE),
-  PASSWORD       VARCHAR2(100 BYTE)
+  PASSWORD       VARCHAR2(100 BYTE),
+  EDITOR         NUMBER                         DEFAULT 0
 )
 LOGGING 
 NOCOMPRESS 
@@ -215,7 +216,8 @@ CREATE TABLE RELATION_DIAGNOSIS
   RULED_OUT      NUMBER                         DEFAULT 0,
   WORKING_DDX    NUMBER                         DEFAULT -1,
   PREFIX         VARCHAR2(50 BYTE),
-  FINAL_DDX      NUMBER                         DEFAULT -1
+  FINAL_DDX      NUMBER                         DEFAULT -1,
+  PREVALENCE     NUMBER                         DEFAULT -1
 )
 LOGGING 
 NOCOMPRESS 
@@ -255,7 +257,8 @@ CREATE TABLE RELATION_PROBLEM
   Y              NUMBER,
   SYN_ID         VARCHAR2(50 BYTE),
   STAGE          NUMBER                         DEFAULT 1,
-  PREFIX         VARCHAR2(50 BYTE)
+  PREFIX         VARCHAR2(50 BYTE),
+  PROTOTYPICAL   NUMBER                         DEFAULT -1
 )
 LOGGING 
 NOCOMPRESS 
@@ -418,6 +421,21 @@ NOPARALLEL
 MONITORING;
 
 
+CREATE TABLE SETTINGS
+(
+  ID                 NUMBER,
+  USER_ID            NUMBER,
+  VP_ID              VARCHAR2(20 BYTE),
+  EXP_FEEDBACK_MODE  NUMBER,
+  CREATION_DATE      DATE                       DEFAULT SYSDATE
+)
+LOGGING 
+NOCOMPRESS 
+NOCACHE
+NOPARALLEL
+MONITORING;
+
+
 CREATE TABLE CLINREASON_LIST_CODES
 (
   ITEM_ID  NUMBER,
@@ -444,7 +462,8 @@ CREATE TABLE CLINREASON_LIST
   ITEM_DESCRIPTION  VARCHAR2(2000 BYTE),
   MESH_EC           VARCHAR2(500 BYTE),
   MESH_CATEGORY     VARCHAR2(500 BYTE),
-  IGNORE            NUMBER                      DEFAULT 0
+  IGNORE            NUMBER                      DEFAULT 0,
+  CREATION_DATE     DATE                        DEFAULT SYSDATE
 )
 LOGGING 
 NOCOMPRESS 
@@ -469,12 +488,15 @@ NOCACHE
 NOPARALLEL
 MONITORING;
 
-ALTER TABLE CRT.CRUSER
-ADD (EDITOR NUMBER DEFAULT 0);
-
 
 CREATE INDEX LOG_SCRIPTID_IDX ON LOG
 (PATILLSCRIPT_ID)
+LOGGING
+NOPARALLEL;
+
+
+CREATE UNIQUE INDEX PATILLSCRIPT_ID_IDX ON PATIENT_ILLNESSSCRIPT
+(ID)
 LOGGING
 NOPARALLEL;
 
@@ -615,5 +637,3 @@ SELECT pis.vp_id, rp.source_id, cl.NAME
       AND cl.item_id = 0
       AND pis.ID = rp.dest_id
       AND (rp.source_id = cl.item_id);
-
-

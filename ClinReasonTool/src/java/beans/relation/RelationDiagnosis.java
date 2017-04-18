@@ -40,6 +40,9 @@ public class RelationDiagnosis extends Relation implements Serializable {
 	private static final String COLOR_WORKINGDDX = "3";//"#cce6ff";
 	private static final String COLOR_FINAL = "4";//"#80bfff";
 	private static final String COLOR_BGDEFAULT = "5";
+	public static final int PREVALENCE_RARE = 1; //disease is relatively rare
+	public static final int PREVALENCE_COMMON = 2; //we could add a more detailed scale here... 
+	
 
 	/**
 	 * has this diagnosis been submitted as final the learner? If yes for certain components no more changes 
@@ -74,6 +77,13 @@ public class RelationDiagnosis extends Relation implements Serializable {
 	 * Current working diagnosis (most likely one at current stage)
 	 */
 	private int workingDDX;
+	
+	/**
+	 * How common is this diagnosis in patients like the one this diagnosis is assigned to. 
+	 * Currently can only be set in the expert maps to be able to detec BaseRateNeglect errors...
+	 * This could also be something to be inherited from the ListItem if a disease is very rare in general... 
+	 */
+	private int prevalence = -1;
 
 	
 	public RelationDiagnosis(){}
@@ -100,11 +110,10 @@ public class RelationDiagnosis extends Relation implements Serializable {
 	public ListItem getDiagnosis() {return diagnosis;}
 	public void setDiagnosis(ListItem diagnosis) {this.diagnosis = diagnosis;}	
 	public String getShortLabelOrSynShortLabel(){return StringUtils.abbreviate(getLabelOrSynLabel(), ListItem.MAXLENGTH_NAME-2);}
-
-	//public int getSubmittedStage() {return submittedStage;}
-	//public void setSubmittedStage(int submittedStage) {this.submittedStage = submittedStage;}
 	
-	//public int getRuledOut() {return ruledOut;}
+	public int getPrevalence() {return prevalence;}
+	public void setPrevalence(int prevalence) {this.prevalence = prevalence;}
+	
 	public boolean isRuledOutBool(){
 		if(ruledOut>0) return true;
 		return false;
@@ -189,59 +198,6 @@ public class RelationDiagnosis extends Relation implements Serializable {
 		}
 	}
 	
-	
-	/**
-	 * color of the expert boxes for the learner feedback. 
-	 * if a ddx has been ruled out by an expert it is displayed as ruled out from the stage on where it has been ruled out.  
-	 * @return
-	 */
-	/*public String getExpColor(){	
-		PatientIllnessScript learnerscript = new NavigationController().getCRTFacesContext().getPatillscript();
-		if(isRuledOutBool() && ruledOut<=learnerscript.getCurrentStage()) return COLOR_RULEDOUT;
-		return COLOR_DEFAULT; //"#000000";
-	}*/
-	
-	/**
-	 * Background color of boxes for learner boxes and expert edit boxes. 
-	 * For expert edit we consider the actual stage (not may stage!), to make it easier to display the changes of 
-	 * the script during the scenario.
-	 * @return
-	 */
-	/*public String getBackgroundColor(){		
-		boolean expEdit = NavigationController.getInstance().isExpEdit();
-		//if the current script is created as an expert script we display the colors only from the stage on in which they have been assigned.
-		if(expEdit){ 
-			PatientIllnessScript learnerscript = new NavigationController().getCRTFacesContext().getPatillscript();
-			if(isFinalDDX() && learnerscript.getSubmittedStage()<=learnerscript.getStage()) return COLOR_FINAL;
-			if(workingDDX<=0) return COLOR_BGDEFAULT;
-
-			if(workingDDX<=learnerscript.getStage()) return COLOR_WORKINGDDX;
-			return COLOR_BGDEFAULT;
-		}
-		else{
-			if(isFinalDDX()) return COLOR_FINAL;
-			if(workingDDX>0) return COLOR_WORKINGDDX;			
-			return COLOR_BGDEFAULT;
-		}
-	}*/
-
-	/**
-	 * background color of the expert boxes for the learner feedback. 
-	 * if a ddx has been defined as working ddx it is displayed as such from the (max) stage on where it has been made. 
-	 *  final diagnoses are only displayed after user has passed the maxDDXSubmission stage (after that he must have
-	 *  made a final diagnosis). 
-	 * @return
-	 */
-	/*public String getExpBackgroundColor(){		
-		//if the current script is created as an expert script we display the colors only from the stage on in which they have been assigned.
-		PatientIllnessScript learnerscript = new NavigationController().getCRTFacesContext().getPatillscript();
-		//if(isFinalDiagnosis() && learnerscript.getSubmittedStage()<=learnerscript.getStage()) return COLOR_FINAL;
-		
-		if(isFinalDDX() && learnerscript.getCurrentStage()>learnerscript.getMaxSubmittedStage()) return COLOR_FINAL;
-		if(workingDDX<=0) return COLOR_DEFAULT;
-		if(workingDDX<=learnerscript.getCurrentStage()) return COLOR_WORKINGDDX;
-		return COLOR_DEFAULT;			
-	}*/
 	
 	public int getExpCssClass(){		
 		//if the current script is created as an expert script we display the colors only from the stage on in which they have been assigned.

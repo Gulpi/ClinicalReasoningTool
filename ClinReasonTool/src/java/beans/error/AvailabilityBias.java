@@ -8,10 +8,13 @@ package beans.error;
  */
 public class AvailabilityBias extends MyError{
 
+	private static final long serialVersionUID = 1L;
+	
 	/**
 	 * Number of recent scripts we include into the determination of an availability bias.
 	 */
 	public static final int NUM_SCRIPTS = 10;
+	public static final int NUM_DAYS = 5;
 	
 	public AvailabilityBias(){
 		setType(MyError.TYPE_AVAILABILITY);

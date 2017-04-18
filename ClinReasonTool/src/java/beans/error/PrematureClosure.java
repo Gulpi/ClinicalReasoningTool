@@ -14,7 +14,8 @@ import javax.faces.bean.SessionScoped;
  */
 @SessionScoped
 public class PrematureClosure extends MyError{
-	//do we need any specifics here?
+
+	private static final long serialVersionUID = 1L;
 	
 	public PrematureClosure(){
 		setType(MyError.TYPE_PREMATURE_CLOUSRE);

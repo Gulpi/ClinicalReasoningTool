@@ -142,6 +142,7 @@ public class MultiEdge extends DefaultWeightedEdge{
 	}
 	
 	private int getParamByType(int illScriptType){
+		if(types==null) return -1;
 		Integer param = types.get(new Integer(illScriptType)); 
 		if(param==null) return 0;
 		return param.intValue();

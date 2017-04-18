@@ -3,6 +3,8 @@ package beans.scripts;
 import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.*;
+
+import beans.error.AvailabilityBias;
 import database.DBClinReason;
 
 /**
@@ -37,7 +39,9 @@ public class PatIllScriptContainer implements Serializable{
 	 * @param cutoff optional cutoff date after which we do not include the scripts
 	 * @return
 	 */
-	public List<PatientIllnessScript> getLastCompletedScripts(int num, Timestamp cutoff){
+	public List<PatientIllnessScript> getLastCompletedScripts(int num/*, Timestamp cutoff*/){
+		long cutoffMillies = System.currentTimeMillis() - 1000*3600*24*AvailabilityBias.NUM_DAYS;
+		Timestamp cutoff = new Timestamp(cutoffMillies);
 		if(scriptsOfUser==null || scriptsOfUser.isEmpty()) return null;
 		List<PatientIllnessScript> lastSubmittedScripts = new ArrayList<PatientIllnessScript>();
 		Iterator<PatientIllnessScript> it = scriptsOfUser.iterator();

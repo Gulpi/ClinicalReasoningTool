@@ -66,6 +66,20 @@ public class DBList extends DBClinReason {
     }
     
     /**
+     * CAVE: Do not call, just for testing!!!
+     * @param id
+     * @return ListItem or null
+     */
+    public List<ListItem> selectListItemByLang(String lang){
+    	Session s = instance.getInternalSession(Thread.currentThread(), false);
+    	Criteria criteria = s.createCriteria(ListItem.class,"ListItem");
+    	criteria.add(Restrictions.eq("language", new Locale(lang)));
+    	return criteria.list();
+    	//s.close();
+    	//return li;
+    }
+    
+    /**
      * Loads ListItems for the given types. CAVE: This returns lots of items, only call during init of application 
      * or for testing!
      * @param types

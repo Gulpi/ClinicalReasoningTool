@@ -12,6 +12,7 @@ import util.CRTLogger;
 import beans.scripts.*;
 import beans.user.User;
 import controller.AjaxController;
+import controller.NavigationController;
 /**
  * all scripts of an expert, needed for the overview/portfolio page to display a list. 
  *
@@ -83,6 +84,12 @@ public class ExpPortfolio implements Serializable{
 		new DBClinReason().saveAndCommit(ref);
 		addExpertScript(patillscript);
 		CRTLogger.out("Create new script: id= " + patillscript.getId(), CRTLogger.LEVEL_PROD);
-
+	}
+	
+	/**
+	 * called from the overview page to avoid caching issues
+	 */
+	public void getInit(){
+		NavigationController.getInstance().getAdminFacesContext().setPatillscript(null);
 	}
 }

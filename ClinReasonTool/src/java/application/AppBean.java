@@ -225,9 +225,9 @@ public class AppBean extends ApplicationWrapper implements HttpSessionListener{
 		//TODO get available systems from database...
 	}
 	
-	public static long getVPOrgIdByVPId(String id){
-		if(vpScriptRefs==null || vpScriptRefs.get(id)==null) return 0;
-		return vpScriptRefs.get(id).getVpId();
+	public static String getVPOrgIdByVPId(String id){
+		if(vpScriptRefs==null || vpScriptRefs.get(id)==null) return "";
+		return vpScriptRefs.get(id).getParentId();
 	}
 	
 	public static Map<String,VPScriptRef> getVpScriptRefs(){

@@ -35,6 +35,7 @@
 <script src="../../scripts/editexp.js"></script>
  
 <script language="JavaScript">
+var isViaAPI = "#{adminContext.openedViaAPI}";
 
 var hideCnxTitle = "#{prop['cnx.hide']}";
 var showCnxTitle = "#{prop['cnx.show']}";
@@ -98,6 +99,9 @@ $(function() {
 		return $( this ).attr( "mytooltip" );
 		}
     });
+	if(isViaAPI=="true"){ //then we hide some elements:
+		$(".nonapi").hide();
+	}
 });
 
 
@@ -173,19 +177,22 @@ var ajaxUrl = "/crt/src/html/edit/tabs_ajax.xhtml";
 </script>
 </head>
 <body style="font-family:arial;" data-demo-id="draggableConnectors" data-library="dom">
-<div>
-ScriptId:  #{adminContext.patillscript.id}<br/>
-VPId: #{adminContext.patillscript.vpId} Casus)<br/>
+<div >
+<span class="nonapi">ScriptId:  #{adminContext.patillscript.id}
+<br/>VPId: #{adminContext.patillscript.vpId} (Casus)<br/>
 VP Name:  #{adminContext.patillscript.VPName} <br/>
 Stage: <span id="stageSpan">#{adminContext.patillscript.stage} </span>
 <a href="javascript:chgStage(-1,'exp_boxes.xhtml');">previous stage</a> <a href="javascript:chgStage(1,'exp_boxes.xhtml');">next stage</a>
-
+</span>
 </div>
 
 <div class="options">
-	<a href="javascript:toggleCnxDisplay();" id="cnxtoggle" title="Hide connections"><i id="cnxtogglei" class="fa fa-conn_on"></i></a>
-	<!--  <a href="exp_stages.xhtml" target="new">exp dev</a>-->
-	<!--  <a href="alert('not yet available, will show the development of the experts script during the case');">exp dev</a>-->
+<div  style="position:absolute;left:15px;top:5px;" ><i id="cnxtogglei" class="fa fa-conn" style="cursor:pointer;" mytooltip="#{prop['cnx.show']}"></i>  </div>
+	<!-- <a href="javascript:toggleCnxDisplay();" id="cnxtoggle" title="Hide connections"><i id="cnxtogglei" class="fa fa-conn_on"></i></a>-->
+	<div class="switch" style="left:30px;" mytooltip="#{prop['cnx.show']}">
+        <input id="cnxtoggle" class="cmn-toggle cmn-toggle-round" checked="checked" onchange="javascript:toggleCnxDisplay();" type="checkbox" />
+        <label for="cnxtoggle"></label>
+</div>
 </div>
 <div class="boxes_container" style="float:left;width:60%;">
 	<div id="canvas" class="canvas jtk-surface drag-drop jtk-surface-nopan" >
@@ -284,8 +291,8 @@ Stage: <span id="stageSpan">#{adminContext.patillscript.stage} </span>
 <div id="connContext">
 	<ui:include src="expcnxchange.xhtml" />
 </div>
-
-<div id="allitems" style="float:right;width:30%;">
+<br clear="all"/>
+<div id="allitems">
 	<ui:repeat value="#{adminContext.graph.allVertices}" var="nodes" varStatus="status">
 		<ui:include src="items_exp.xhtml" />
 	</ui:repeat>	<hr/>

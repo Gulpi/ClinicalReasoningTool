@@ -9,8 +9,8 @@ import beans.graph.Graph;
 import beans.graph.MultiVertex;
 import beans.relation.*;
 import beans.scoring.ScoreBean;
-import beans.scripts.IllnessScriptInterface;
 import controller.NavigationController;
+import controller.XAPIController;
 import database.DBClinReason;
 import util.CRTLogger;
 
@@ -51,6 +51,7 @@ public class DelProblemAction implements DelAction{
 		notifyLog(rel);
 		updateGraph(rel);
 		new DelConnectionAction(patIllScript).deleteConns(rel.getId());
+		if(!patIllScript.isExpScript()) XAPIController.getInstance().removeXAPIAddActionStatement(rel);
 		save(rel);
 		new ScoringListAction(this.patIllScript).scoreList(ScoreBean.TYPE_PROBLEM_LIST, Relation.TYPE_PROBLEM);
 

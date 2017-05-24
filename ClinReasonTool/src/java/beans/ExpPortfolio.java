@@ -24,7 +24,7 @@ public class ExpPortfolio implements Serializable{
 	private static final long serialVersionUID = 1L;
 	private long userId;
 	private List<PatientIllnessScript> expscripts;
-
+	
 	
 	public ExpPortfolio(User u ){
 		this.userId = u.getUserId();
@@ -68,28 +68,49 @@ public class ExpPortfolio implements Serializable{
 	/**
 	 * A new expert script is created and stored into the database
 	 */
-	public void createNewExpScript(){
+	public PatientIllnessScript createNewExpScript(){
 		CRTLogger.out("Create new script", CRTLogger.LEVEL_PROD);
-		String vpId = AjaxController.getInstance().getRequestParamByKey("vp_id");
-		String lang = AjaxController.getInstance().getRequestParamByKey("vp_lang");
+		String vpId = AjaxController.getInstance().getRequestParamByKey(AjaxController.REQPARAM_VP);
+		String systemId = AjaxController.getInstance().getRequestParamByKey(AjaxController.REQPARAM_SYSTEM);
+		if(!vpId.contains("_")) vpId = vpId + "_" +systemId;
+		String lang = AjaxController.getInstance().getRequestParamByKey(AjaxController.REQPARAM_SCRIPTLOC);
 		if(lang==null || lang.isEmpty()) lang = "en";
 		PatientIllnessScript patillscript = new PatientIllnessScript(userId, vpId, new Locale(lang), 2);
-		int maxStage = AjaxController.getInstance().getIntRequestParamByKey("maxstage", -1);
+		int maxStage = AjaxController.getInstance().getIntRequestParamByKey(AjaxController.REQPARAM_MAXSTAGE, -1);
 		int maxddxstage = AjaxController.getInstance().getIntRequestParamByKey("maxddxstage", -1);
 		patillscript.iniExpertScript(maxStage, maxddxstage);
 		new DBClinReason().saveAndCommit(patillscript);
-		String vpName = AjaxController.getInstance().getRequestParamByKeyNoDecrypt("vp_name");
+		String vpName = AjaxController.getInstance().getRequestParamByKeyNoDecrypt(AjaxController.REQPARAM_VP_NAME);
 
 		VPScriptRef ref= new VPScriptRef(patillscript.getVpId(), vpName, 2, vpId);
 		new DBClinReason().saveAndCommit(ref);
 		addExpertScript(patillscript);
 		CRTLogger.out("Create new script: id= " + patillscript.getId(), CRTLogger.LEVEL_PROD);
+
+		return patillscript;
+	}
+	
+	/**
+	 * We check whether an expert script for a vp_id has been created. If not we trigger the creation.
+	 */
+	public PatientIllnessScript getOrCreateExpScriptFromVPSystem(){
+		CRTLogger.out("Create new script", CRTLogger.LEVEL_PROD);
+		String vpId = AjaxController.getInstance().getRequestParamByKey("vp_id");
+		String systemId = AjaxController.getInstance().getRequestParamByKey("system_id");
+		PatientIllnessScript patillscript = new DBClinReason().selectExpertPatIllScriptByVPId(vpId+"_"+systemId);
+		if(patillscript!=null){
+			return patillscript;
+		}
+		//not yet created
+		return createNewExpScript();
+		
 	}
 	
 	/**
 	 * called from the overview page to avoid caching issues
 	 */
-	public void getInit(){
+	public boolean getInit(){
 		NavigationController.getInstance().getAdminFacesContext().setPatillscript(null);
+		return true;
 	}
 }

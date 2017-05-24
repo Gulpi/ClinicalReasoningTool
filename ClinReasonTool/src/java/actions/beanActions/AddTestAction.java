@@ -24,6 +24,7 @@ import beans.scoring.ScoreBean;
 import beans.scripts.IllnessScriptInterface;
 import controller.NavigationController;
 import controller.RelationController;
+import controller.XAPIController;
 import database.DBClinReason;
 import database.DBList;
 import model.ListItem;
@@ -95,7 +96,8 @@ public class AddTestAction implements AddAction, Scoreable/*, FeedbackCreator*/{
 		save(rel);
 		updateGraph(rel);
 		notifyLog(rel);
-		triggerScoringAction(rel, isJoker);		
+		triggerScoringAction(rel, isJoker);	
+		if(!patIllScript.isExpScript()) updateXAPIStatement(rel);
 		//((HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest()).setAttribute("tst", rel);
 
 	}
@@ -143,5 +145,9 @@ public class AddTestAction implements AddAction, Scoreable/*, FeedbackCreator*/{
 			}
 		}
 		CRTLogger.out(graph.toString(), CRTLogger.LEVEL_TEST);
+	}
+	
+	public void updateXAPIStatement(Relation rel){
+		XAPIController.getInstance().addOrUpdateAddStatement(rel);
 	}
 }

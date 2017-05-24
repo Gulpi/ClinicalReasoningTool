@@ -47,6 +47,10 @@ public class AjaxController {
 	public static final String REQPARAM_REPORTS_SCRIPT_ID = "r_scriptid"; //are the query params encoded (true | false)
 	public static final String REQPARAM_EXP_FB_MODE = "expfbmode";
 	public static final String REQPARAM_PEER_FB_MODE = "peerfbmode";
+	public static final String REQPARAM_API = "api";
+	public static final String REQPARAM_MAXSTAGE = "maxstage";
+	public static final String REQPARAM_VP_NAME = "vp_name";
+
 
 	static private AjaxController instance = new AjaxController();
 	static public AjaxController getInstance() { return instance; }

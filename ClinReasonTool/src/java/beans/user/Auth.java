@@ -74,6 +74,34 @@ public class Auth implements Serializable{
         }
     }
     
+    /**
+     * Automatic login of expert map editors if they connect thru the parent VP system, 
+     * CAVE: currently we do not check for password here...
+     * @throws IOException
+     */
+    public void loginAdminsViaAPI() throws IOException {
+        FacesContext context = FacesContext.getCurrentInstance();
+        ExternalContext externalContext = context.getExternalContext();
+       // HttpServletRequest request = (HttpServletRequest) externalContext.getRequest();
+        String extUserId = AjaxController.getInstance().getRequestParamByKeyNoDecrypt("userid_ext");
+        int systemId = AjaxController.getInstance().getIntRequestParamByKey("system_id", 2);
+        if(extUserId==null || extUserId.trim().isEmpty()) return;
+        try {
+        	User user = new DBUser().selectUserByExternalId(extUserId, systemId);
+        	if(user==null){ //create user:
+        		//UserController
+        	}
+        	AdminFacesContext cnxt =  (AdminFacesContext) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get(AdminFacesContext.CRT_FC_KEY);
+        	if(cnxt!=null) cnxt.setUser(user);
+        	externalContext.getSessionMap().put("user", user);
+
+        } 
+        catch (Exception e) {
+        	CRTLogger.out("Auth.loginAdminsViaAPI(): " + StringUtilities.stackTraceToString(e), CRTLogger.LEVEL_ERROR);
+            handleError(null);
+        }
+    }
+    
     /** 
  	 * Handle unknown username/password in request.login().
      */

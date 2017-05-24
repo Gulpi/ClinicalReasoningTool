@@ -13,7 +13,7 @@
 			</generator>
 		</id>
 		
-		<property name="vpId" column="vp_id" type="long" />	
+		<!-- <property name="vpId" column="vp_id" type="long" />	-->
 		<property name="systemId" column="system_id" type="int" />		
 		<property name="vpName" column="vp_name" type="string"/>	
 		<property name="parentId" column="parent_id" type="string"/>	

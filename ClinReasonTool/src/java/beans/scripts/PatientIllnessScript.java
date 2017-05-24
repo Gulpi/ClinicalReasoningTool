@@ -20,6 +20,7 @@ import beans.scoring.LearningAnalyticsBean;
 import beans.scoring.LearningAnalyticsContainer;
 import beans.scoring.ScoreBean;
 import beans.user.User;
+import beans.xAPI.StatementContainer;
 import controller.AjaxController;
 import controller.FeedbackController;
 import controller.IllnessScriptController;
@@ -137,11 +138,18 @@ public class PatientIllnessScript extends Beans/*extends Node*/ implements Compa
 	 */
 	private boolean peerSync = false;
 	
+	/**
+	 * We store here all xAPI statements for this script
+	 */
+	private StatementContainer stmtContainer;
+	
 	public PatientIllnessScript(){}
 	public PatientIllnessScript(long userId, String vpId, Locale loc, int systemId){
 		if(userId>0) this.userId = userId;
 		this.locale = loc;
-		this.vpId = vpId +"_"+systemId;
+		if(!vpId.contains("_")) this.vpId = vpId +"_"+systemId;
+		else this.vpId = vpId;
+		this.stmtContainer = new StatementContainer(userId, vpId, systemId);
 	}
 	
 	/**
@@ -401,6 +409,9 @@ public class PatientIllnessScript extends Beans/*extends Node*/ implements Compa
 	//public void chgCourseOfTime(String courseOfTimeStr) { new ChgPatIllScriptAction(this).chgCourseOfTime(courseOfTimeStr);}
 
 	public void addJoker(String idStr, String type){ new JokerAction(this).addJoker(type);}
+	public StatementContainer getStmtContainer() {
+		if(stmtContainer==null) stmtContainer = new StatementContainer(userId, vpId, 2);
+		return stmtContainer;}
 	public void addTypeAheadBean(String type){
 		new TypeAheadBean(type).save();
 	}
@@ -496,9 +507,9 @@ public class PatientIllnessScript extends Beans/*extends Node*/ implements Compa
 		for(int i=0; i<diagnoses.size(); i++){
 			if(!diagnoses.get(i).isFinalDDX()) ddxs.add(diagnoses.get(i));
 		}
-		return ddxs;
-		
+		return ddxs;	
 	}
+	
 		
 	public Relation getRelationByIdAndType(long id, int type){
 		if(type==Relation.TYPE_PROBLEM) return getRelationById(this.problems, id);
@@ -634,8 +645,10 @@ public class PatientIllnessScript extends Beans/*extends Node*/ implements Compa
 		return AppBean.getVPSystemByVPId(this.vpId);
 	}
 	
-	public long getVpIdCrop() {		
-		return AppBean.getVPOrgIdByVPId(this.vpId);
+	public String getVpIdCrop() {		
+		if(this.vpId==null || this.vpId.trim().equals("")) return "";
+		if(!this.vpId.contains("_")) return vpId;
+		else return vpId.substring(0, vpId.indexOf("_"));
 	}
 	
 	public int compareTo(Object o) {

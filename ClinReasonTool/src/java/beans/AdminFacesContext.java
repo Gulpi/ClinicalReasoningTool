@@ -15,6 +15,7 @@ import application.Monitor;
 import beans.graph.Graph;
 import beans.scoring.*;
 import beans.scripts.*;
+import beans.user.Auth;
 import beans.user.SessionSetting;
 import beans.user.User;
 import controller.*;
@@ -22,6 +23,7 @@ import database.DBEditing;
 import database.DBScoring;
 import database.DBUser;
 import util.CRTLogger;
+import util.StringUtilities;
 
 /**
  * The facesContext for a session....
@@ -50,7 +52,7 @@ public class AdminFacesContext extends FacesContextWrapper implements MyFacesCon
 	public String getTest(){return "hallo";}
 	
 	public AdminFacesContext(){
-		ExternalContext ec =  FacesContextWrapper.getCurrentInstance().getExternalContext();
+		//ExternalContext ec =  FacesContextWrapper.getCurrentInstance().getExternalContext();
 		locale = LocaleController.setLocale();
 		try{
 			CRTLogger.out(FacesContextWrapper.getCurrentInstance().getApplication().getStateManager().getViewState(FacesContext.getCurrentInstance()), CRTLogger.LEVEL_TEST);
@@ -146,19 +148,54 @@ public class AdminFacesContext extends FacesContextWrapper implements MyFacesCon
 		this.graph = null;
 	}
 	
-	private void initGraph(){	    
+	public void initGraph(){	    
 		if(graph!=null) return; //nothing todo, graph already loaded
 		graph = new Graph(patillscript.getVpId(), true, patillscript.getId());
 		//if(graph!=null) graph.setExpEdit(true);
 
 	}
-	public PatientIllnessScript getPatillscript() {return this.patillscript;}
+	public PatientIllnessScript getPatillscript() {
+		/*if(this.patillscript==null){ //can happen if an expert map is edited from a VP system, then we have to load/create it here...
+			try{
+				new Auth().loginAdminsViaAPI();
+			}
+			catch (Exception e){}
+			this.patillscript = new ExpPortfolio().getOrCreateExpScriptFromVPSystem();
+			if(this.patillscript!=null) initGraph();
+
+		}*/
+		return this.patillscript;
+	}
 	public void setPatillscript(PatientIllnessScript pi) {this.patillscript = pi;}
 	public ScoreContainer getScoreContainer(){
 		if((labean==null && patillscript!=null) || labean.getPatIllScriptId() != patillscript.getId())
 			labean = new LearningAnalyticsBean(patillscript.getId(), patillscript.getUserId(), patillscript.getVpId());
 		if(labean!=null) return labean.getScoreContainer();
 		return null;
+	}
+	
+	/**
+	 * If the edit page is opened via an API from a VP authoing system, we get a paramater ("api=true")
+	 * We then have to log the user in and load the script... 
+	 * @return
+	 */
+	public boolean isOpenedViaAPI(){
+		boolean isViaAPI =  AjaxController.getInstance().getBooleanRequestParamByKey(AjaxController.REQPARAM_API, false);
+		if(isViaAPI){
+			try{
+				if(this.user==null){ //load user:
+					new Auth().loginAdminsViaAPI();
+				}
+				if(this.user!=null && this.patillscript==null){ //load script and init graph:
+					this.patillscript = new ExpPortfolio(this.user).getOrCreateExpScriptFromVPSystem();
+					if(this.patillscript!=null) initGraph();
+				}
+			}
+			catch (Exception e){
+				CRTLogger.out(StringUtilities.stackTraceToString(e), CRTLogger.LEVEL_ERROR);
+			}
+		}
+		return isViaAPI;
 	}
 
 }

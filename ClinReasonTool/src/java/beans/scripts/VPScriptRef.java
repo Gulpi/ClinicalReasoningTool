@@ -14,7 +14,7 @@ public class VPScriptRef {
 	 */
 	private String vpName; 
 	
-	private long vpId; 
+	//private long vpId; 
 	
 	private int systemId;
 	
@@ -28,13 +28,12 @@ public class VPScriptRef {
 		this.parentId = parentId;
 		this.vpName = vpName;
 		this.systemId = systemId;
-		//todo convert vpId and store as well - really necessary?
-		
 	}
-	public long getVpId() {return vpId;}
+
+	//public long getVpId() {return vpId;}
 	public long getInternalId() {return internalId;}
 	public void setInternalId(long internalId) {this.internalId = internalId;}
-	public void setVpId(long vpId) {this.vpId = vpId;}
+	//public void setVpId(long vpId) {this.vpId = vpId;}
 	public String getVpName() {return vpName;}
 	public void setVpName(String vpName) {this.vpName = vpName;}
 	public int getSystemId() {return systemId;}
@@ -44,8 +43,10 @@ public class VPScriptRef {
 	public void setParentId(String parentId) {this.parentId = parentId;}
 	
 	public boolean equals(Object o){
+		//if(o==null) return false;
 		if(o instanceof VPScriptRef){
-			if(((VPScriptRef) o).getSystemId() == systemId && ((VPScriptRef) o).getVpId()==vpId) return true;
+			if(((VPScriptRef)o).getParentId()==null) return false;
+			if(((VPScriptRef) o).getSystemId() == systemId && ((VPScriptRef) o).getParentId().equalsIgnoreCase(parentId)) return true;
 		}
 		return false;
 	}

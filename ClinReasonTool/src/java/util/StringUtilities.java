@@ -97,7 +97,6 @@ public class StringUtilities {
 	 * @return
 	 */
 	public static boolean similarStrings(String item1, String item2, Locale loc){
-
 		item1 = item1.replace("-", " ");
 		item2 = item2.replace("-", " ");
 		item1 = item1.replace(",", "");
@@ -123,9 +122,10 @@ public class StringUtilities {
 		//if we have multiple words we split them and compare them separately
 		String[] item1Arr = item1.trim().split(" ");
 		String[] item2Arr = item2.trim().split(" ");
-		//if(/*item1Arr.length!=item2Arr.length ||*/ (item1Arr.length==1 || item2Arr.length==1)) return false; //TODO: we might still compare them?
+		if(/*item1Arr.length!=item2Arr.length ||*/ (item1Arr.length==1 || item2Arr.length==1)) return false; //TODO: we might still compare them?
 			//we go thru each item and compare it with the items2
 			boolean[] isMatch;
+			System.out.println("");
 			if(item1Arr.length>=item2Arr.length)
 				isMatch = runThrugStringArr(item1Arr, item2Arr, loc);			
 			else  isMatch = runThrugStringArr(item2Arr, item1Arr, loc);
@@ -173,7 +173,9 @@ public class StringUtilities {
 				sb2.append(item2_2+"#");
 				int leven2 = StringUtils.getLevenshteinDistance(item1_1, item2_2);
 				int fuzzy2 = StringUtils.getFuzzyDistance(item1_1, item2_2, loc);
-				if(leven2<MIN_LEVEN_DISTANCE || fuzzy2>=MAX_FUZZY_DISTANCE){ //then the are similar
+				int minLeven = MIN_LEVEN_DISTANCE;
+				if(item1_1.length()<=3 || item2_2.length()<=3) minLeven = 1;
+				if(leven2<minLeven || fuzzy2>=MAX_FUZZY_DISTANCE){ //then they are similar
 					isMatch[i] = true;
 					break innerLoop;
 				}
@@ -236,5 +238,9 @@ public class StringUtilities {
 		    //sb.append(' ');
 		}
 		return sb.toString();
+	}
+	
+	public static void main (String[] args) {
+		System.out.println(StringUtilities.similarStrings("Farbe des Urins", "Red Dye No. 2", new Locale("de")));
 	}
 }

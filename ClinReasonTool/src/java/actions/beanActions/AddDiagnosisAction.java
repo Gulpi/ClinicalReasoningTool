@@ -25,6 +25,7 @@ import beans.scripts.IllnessScriptInterface;
 import controller.GraphController;
 import controller.NavigationController;
 import controller.RelationController;
+import controller.XAPIController;
 import database.DBClinReason;
 import database.DBList;
 import model.ListItem;
@@ -86,6 +87,7 @@ public class AddDiagnosisAction implements AddAction, Scoreable{
 		notifyLog(rel);
 		updateGraph(rel);
 		triggerScoringAction(rel, isJoker);	
+		if(!patIllScript.isExpScript()) updateXAPIStatement(rel);
 		//((HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest()).setAttribute("ddx", rel);
 
 	}
@@ -184,5 +186,9 @@ public class AddDiagnosisAction implements AddAction, Scoreable{
 				new AddConnectionAction(patIllScript).addConnection(rel.getId(), mv2.get(i).getLearnerVertex().getId(), Relation.TYPE_DDX, Relation.TYPE_DDX, MultiEdge.WEIGHT_EXPLICIT_HIERARCHY, MultiEdge.ENDPOINT_RIGHT, MultiEdge.ENDPOINT_RIGHT);
 			}
 		}
+	}
+	
+	public void updateXAPIStatement(Relation rel){
+		XAPIController.getInstance().addOrUpdateAddStatement(rel);
 	}
 }

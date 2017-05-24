@@ -14,6 +14,15 @@ public class UserController {
 		return u;
 	}
 	
+	public User createAndSaveExpertUser(int systemId, String extUserId){
+		User u = new User(systemId, extUserId);
+		u.setEditor(true);
+		u.getUserSetting().initNewUser();
+		new DBUser().saveAndCommit(u);
+		
+		return u;
+	}
+	
 	public User getUser(int systemId, String extUserId){
 		DBUser dbu = new DBUser();
 		User u = dbu.selectUserByExternalId(extUserId, systemId);

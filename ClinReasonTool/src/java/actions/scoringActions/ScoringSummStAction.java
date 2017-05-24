@@ -24,7 +24,11 @@ public class ScoringSummStAction {
 	 * if the summary statement is shorter, we do not even consider to score it
 	 */
 	private static final int MIN_LENGTH_SUMST = 10;
-	
+	public static final int RUBRIC_SQ = 1;
+	public static final int RUBRIC_ACCURACY = 2;
+	public static final int RUBRIC_NARROWDDX = 3;
+	public static final int RUBRIC_INFOTRAMSFORM = 4;
+	public static final int RUBRIC_GLOBALRATE = 5;
 	
 	/**
 	 * scoring triggered from chart page, if no summary statement has been created so far, it will 
@@ -44,7 +48,7 @@ public class ScoringSummStAction {
 	 * @param patIllScript
 	 */
 	public ScoreBean scoreAction(PatientIllnessScript patIllScript, int stage){
-		SummaryStatementController.getInstance().checkForSemanticQualifiers(patIllScript.getSummSt());
+		SummaryStatementController.checkForSemanticQualifiers(patIllScript.getSummSt());
 
 		if(patIllScript.isExpScript()) return null;
 		PatientIllnessScript expScript = AppBean.getExpertPatIllScript(patIllScript.getVpId());

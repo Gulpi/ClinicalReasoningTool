@@ -19,6 +19,7 @@ import beans.scoring.ScoreBean;
 import beans.scripts.*;
 import controller.NavigationController;
 import controller.RelationController;
+import controller.XAPIController;
 import database.DBClinReason;
 import database.DBList;
 import model.ListItem;
@@ -98,7 +99,8 @@ public class AddProblemAction implements AddAction, Scoreable{
 		save(rel);
 		notifyLog(rel);
 		updateGraph(rel);
-		triggerScoringAction(rel, isJoker);	
+		triggerScoringAction(rel, isJoker);
+		if(!patIllScript.isExpScript()) updateXAPIStatement(rel);
 		//((HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest()).setAttribute("prob", rel);
 
 	}
@@ -168,5 +170,9 @@ public class AddProblemAction implements AddAction, Scoreable{
 			}
 		}
 		CRTLogger.out(graph.toString(), CRTLogger.LEVEL_TEST);
+	}
+	
+	private void updateXAPIStatement(Relation rel){
+		XAPIController.getInstance().addOrUpdateAddStatement(rel);
 	}
 }

@@ -134,7 +134,7 @@ public class ScoringAddAction implements ScoringAction{
 			scoreBean.setExpItemId(expVertices.get(0).getVertexId());
 			scoreBean.setDistance(-distance);
 		}
-		//we have more than one childs of the expert:
+		//we have more than one child of the expert:
 		else if(expVertices!=null && !expVertices.isEmpty() && expVertices.size()>1){
 			scoreBean.setScoreBasedOnExp(ScoringController.SCORE_LEARNER_MORE_GENERAL_MULT_EXP, isChg);
 			scoreBean.setExpItemId(ScoringController.MULTIPLE_EXPERT_CHLDS);

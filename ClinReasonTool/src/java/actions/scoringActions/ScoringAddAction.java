@@ -118,7 +118,7 @@ public class ScoringAddAction implements ScoringAction{
 	private void scoreHierarchyBasedOnExp(Graph g, ScoreBean scoreBean, MultiVertex mvertex,Relation learnerRel){
 		MultiVertex expVertex = g.getExpParentVertex(mvertex); //check whether user has picked a more specific item than expert
 		if(expVertex!=null){ //user was more specific than expert, we score 100%
-			int distance = g.getHierarchyDistance(expVertex, mvertex); //in this case distance is not considered for scoring
+			int distance = g.getHierarchyDistance(mvertex, expVertex); //in this case distance is not considered for scoring
 			scoreBean.setScoreBasedOnExp(ScoringController.SCORE_LEARNER_MORE_SPECIFIC, isChg);
 			scoreBean.setTiming(learnerRel.getStage(), expVertex.getExpertVertex().getStage());
 			scoreBean.setExpItemId(expVertex.getVertexId());
@@ -132,8 +132,9 @@ public class ScoringAddAction implements ScoringAction{
 			float score = (float) ScoringController.SCORE_EXP_SAMEAS_LEARNER/(distance+1);
 			scoreBean.setScoreBasedOnExp(score, isChg);
 			scoreBean.setExpItemId(expVertices.get(0).getVertexId());
+			scoreBean.setDistance(-distance);
 		}
-		//we have more than one childs of the expert:
+		//we have more than one child of the expert:
 		else if(expVertices!=null && !expVertices.isEmpty() && expVertices.size()>1){
 			scoreBean.setScoreBasedOnExp(ScoringController.SCORE_LEARNER_MORE_GENERAL_MULT_EXP, isChg);
 			scoreBean.setExpItemId(ScoringController.MULTIPLE_EXPERT_CHLDS);

@@ -29,7 +29,7 @@ public class MultiVertex /*extends SynonymVertex*/ implements VertexInterface, S
 	private Relation expertVertex;
 	//private Relation illScriptVertex;
 	private String label;
-	private long vertexId;
+	private long vertexId; //list_id (e.g. of Mesh item)
 	/**
 	 * Problem, DDX,... see definitions in Relation
 	 */

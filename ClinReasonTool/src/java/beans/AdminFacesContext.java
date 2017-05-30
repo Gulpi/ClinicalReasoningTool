@@ -181,12 +181,14 @@ public class AdminFacesContext extends FacesContextWrapper implements MyFacesCon
 	 */
 	public boolean isOpenedViaAPI(){
 		boolean isViaAPI =  AjaxController.getInstance().getBooleanRequestParamByKey(AjaxController.REQPARAM_API, false);
+		String vpId = AjaxController.getInstance().getRequestParamByKey("vp_id");
+
 		if(isViaAPI){
 			try{
 				if(this.user==null){ //load user:
 					new Auth().loginAdminsViaAPI();
 				}
-				if(this.user!=null && this.patillscript==null){ //load script and init graph:
+				if(this.user!=null && (this.patillscript==null || !this.patillscript.getVpIdCrop().trim().equals(vpId))){ //load script and init graph:
 					this.patillscript = new ExpPortfolio(this.user).getOrCreateExpScriptFromVPSystem();
 					if(this.patillscript!=null) initGraph();
 				}

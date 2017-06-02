@@ -24,10 +24,13 @@ import properties.IntlConfiguration;
  *
  */
 public class AddActionXAPIStatement extends XAPIStatement implements AddActionStatement{
-	public static final String VERB = "added";
-	public static final String INTERACT_TYPE = "fill-in";
 
-	private long itemId;
+	private static final long serialVersionUID = 1L;
+	//public static final String VERB = "added";
+
+	public static final String[] VERBS = {"", "identified", "identified", "investigated", "treated"};
+
+	public static final String INTERACT_TYPE = "fill-in";
 	
 	/**
 	 * @param userId (id of the actor/agent)
@@ -40,7 +43,7 @@ public class AddActionXAPIStatement extends XAPIStatement implements AddActionSt
 		setType(relType);
 		setActivity(relType);
 		setResult(term);
-		setVerb(VERB);
+		setVerb(VERBS[relType]);
 		//this.setTimestamp(new Timestamp(System.currentTimeMillis()));
 	}
 	
@@ -50,8 +53,8 @@ public class AddActionXAPIStatement extends XAPIStatement implements AddActionSt
 		setType(rel.getRelationType());
 		setActivity(getType());
 		setResult(rel.getLabelOrSynLabel());		
-		this.itemId = rel.getListItemId();
-		setVerb(VERB);
+		//this.itemId = rel.getListItemId();
+		setVerb(VERBS[rel.getRelationType()]);
 		//this.setTimestamp(new Timestamp(System.currentTimeMillis()));
 	}
 
@@ -71,7 +74,7 @@ public class AddActionXAPIStatement extends XAPIStatement implements AddActionSt
 		HashMap<String, String> names = new HashMap<String, String>();
 		//names.put("en","Identifying problems");
 		names.put("en", IntlConfiguration.getValue("scoretype."+ relType, new Locale("en")));
-		names.put("de", IntlConfiguration.getValue("scoretype."+ relType, new Locale("dej")));
+		names.put("de", IntlConfiguration.getValue("scoretype."+ relType, new Locale("de")));
 
 		actDef.setName(names);
 		this.setObject(act);

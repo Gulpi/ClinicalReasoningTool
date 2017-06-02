@@ -290,10 +290,12 @@ function sendNewHeightToHostSystem(){
 
 /**
  * we display the connection hint close to the first element we see. The arrow should point onto the endpoint of 
- * this element.
+ * this element. Whether the box shall be displayed or not is handled server-side (only then the display box has the  
+ * css class cnxhint_true).
  */
 function checkDisplayCnxHint(){
 	var item = $(".itembox")[0];	
+	if(item===undefined) return;//important, otherwise we cause trouble for the page initialization!
 	var posLeft = item.offsetLeft + item.offsetParent.offsetLeft + item.offsetWidth + 20;
 	var posTop = item.offsetTop  + item.offsetParent.offsetTop + item.offsetHeight;
 	

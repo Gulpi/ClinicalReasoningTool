@@ -145,11 +145,12 @@ public class PatientIllnessScript extends Beans/*extends Node*/ implements Compa
 	
 	public PatientIllnessScript(){}
 	public PatientIllnessScript(long userId, String vpId, Locale loc, int systemId){
+		if(vpId==null) vpId = "";
 		if(userId>0) this.userId = userId;
 		this.locale = loc;
-		if(!vpId.contains("_")) this.vpId = vpId +"_"+systemId;
-		else this.vpId = vpId;
-		this.stmtContainer = new StatementContainer(userId, vpId, systemId);
+		if(!vpId.contains("_")) this.vpId = vpId.trim() +"_"+systemId;
+		else this.vpId = vpId.trim();
+		this.stmtContainer = new StatementContainer(userId, this.vpId, systemId);
 	}
 	
 	/**

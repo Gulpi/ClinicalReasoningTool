@@ -14,18 +14,17 @@ import properties.IntlConfiguration;
  *
  */
 public class TextActionXAPIStatement extends XAPIStatement{
-	public static final String VERB = "commented"; //composed?
+	private static final long serialVersionUID = 1L;
+	public static final String VERB = "reported"; //composed?
 	public static final String INTERACT_TYPE = "long-fill-in";
-	
-	private long itemId;
-	
+		
 	public TextActionXAPIStatement(SummaryStatement sumst, User user, String vpId){
 		initStatement(vpId);
 		super.setActor(user);
 		setType(ScoreBean.TYPE_SUMMST);
 		setVerb(VERB);
 		setResult(sumst.getText());
-		this.itemId = sumst.getId();
+		//this.itemId = sumst.getId();
 		setActivity(getType());
 	}
 	
@@ -44,7 +43,7 @@ public class TextActionXAPIStatement extends XAPIStatement{
 		
 		HashMap<String, String> names = new HashMap<String, String>();
 		names.put("en", IntlConfiguration.getValue("scoretype."+ relType, new Locale("en")));
-		names.put("de", IntlConfiguration.getValue("scoretype."+ relType, new Locale("dej")));
+		names.put("de", IntlConfiguration.getValue("scoretype."+ relType, new Locale("de")));
 
 		actDef.setName(names);
 		this.setObject(act);

@@ -54,9 +54,18 @@ public class StatementContainer {
 		updateAddCollStatement(st, user);
 	}
 	
+	public void addStatement(DiagnosisXAPIStatement st, User user){
+		if (statements==null) statements = new ArrayList<XAPIStatement>();
+		statements.add(st);
+		logStatement(st);
+
+		//updateAddCollStatement(st, user);
+	}
+	
 	public void addStatement(TextActionXAPIStatement st){
 		if (statements==null) statements = new ArrayList<XAPIStatement>();
 		statements.add(st);
+		logStatement(st);
 		//updateAddCollStatement(st, user);
 	}
 	

@@ -57,7 +57,8 @@ public class ScoringSummStAction {
 		boolean isChg = true;
 		//if(scoreBean!=null) return;
 		if(scoreBean==null){
-			scoreBean = new ScoreBean(patIllScript, -1, ScoreBean.TYPE_SUMMST, stage);
+			scoreBean = new ScoreBean(patIllScript, patIllScript.getSummStId(), ScoreBean.TYPE_SUMMST, stage);
+			if(patIllScript.getSummSt()!=null) scoreBean.setDetails(patIllScript.getSummSt().getText());
 			isChg = false;
 		}
 		//we analyze the text concerning semantic qualifiers:
@@ -145,7 +146,7 @@ public class ScoringSummStAction {
 		return 0; // similarity;
 	}
 	
-	private void calculateSQUse(SummaryStatement stst){
+	/*private void calculateSQUse(SummaryStatement stst){
 		SummaryStatementController.checkForSemanticQualifiers(stst);
-	}
+	}*/
 }

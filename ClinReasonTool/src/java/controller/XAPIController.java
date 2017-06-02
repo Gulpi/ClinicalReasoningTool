@@ -3,6 +3,7 @@ package controller;
 import beans.CRTFacesContext;
 import beans.relation.Relation;
 import beans.relation.SummaryStatement;
+import beans.scripts.PatientIllnessScript;
 import beans.user.User;
 import beans.xAPI.*;
 import gov.adlnet.xapi.model.Statement;
@@ -27,13 +28,13 @@ public class XAPIController {
 		
 	}
 	
-	public static void testXAPI(){
+	/*public static void testXAPI(){
 		AddActionXAPIStatement aast = new AddActionXAPIStatement(new User(), "dyspnea", Relation.TYPE_PROBLEM, "12345");
 		aast.addResponseToResult("fever");
 		aast.addResponseToResult("cough");
 		String s = aast.serialize().toString();
 		CRTLogger.out("statement:" + s, CRTLogger.LEVEL_TEST);
-	}
+	}*/
 	
 	/**
 	 * We look whether for the given action a statement has been created, if not, we create it, otherwise we update it.
@@ -52,10 +53,27 @@ public class XAPIController {
 	}
 	
 	public void addTextActionStatement(SummaryStatement sumst){
-		CRTFacesContext crtContext = NavigationController.getInstance().getCRTFacesContext();
-		StatementContainer sc = crtContext.getPatillscript().getStmtContainer();
-		TextActionXAPIStatement tast = new TextActionXAPIStatement(sumst, crtContext.getUser(),sc.getVpId());
-		sc.addStatement(tast);
+		try{
+			CRTFacesContext crtContext = NavigationController.getInstance().getCRTFacesContext();
+			StatementContainer sc = crtContext.getPatillscript().getStmtContainer();
+			TextActionXAPIStatement tast = new TextActionXAPIStatement(sumst, crtContext.getUser(),sc.getVpId());
+			sc.addStatement(tast);
+		}
+		catch(Exception e){}
+	}
+	
+	public void addFinalDiagnosisActionStatement(PatientIllnessScript patillscript){
+		try{
+			CRTFacesContext crtContext = NavigationController.getInstance().getCRTFacesContext();
+			StatementContainer sc = crtContext.getPatillscript().getStmtContainer();
+			DiagnosisXAPIStatement tast = new DiagnosisXAPIStatement(patillscript, crtContext.getUser(),sc.getVpId());
+			sc.addStatement(tast, crtContext.getUser());
+		}
+		catch(Exception e){
+			CRTLogger.out("XAPIController.addFinalDiagnosisActionStatement:" + StringUtilities.stackTraceToString(e), CRTLogger.LEVEL_ERROR);
+			
+		}
+		
 	}
 	
 	public void removeXAPIAddActionStatement(Relation rel){

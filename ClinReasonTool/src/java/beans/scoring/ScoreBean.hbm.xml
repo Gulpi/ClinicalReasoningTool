@@ -31,8 +31,7 @@
 		<property name="vpId" column="vp_id" type="string"/>
 		<property name="distance" column="distance" type="int"/>
 		<property name="deleteFlag" column="delete_flag" type="boolean"/>
-		
-		
+		<property name="details" column="details" type="string"/>			
 		
 </class>
 </hibernate-mapping>

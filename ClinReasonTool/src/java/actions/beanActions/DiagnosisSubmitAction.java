@@ -9,12 +9,14 @@ import application.ErrorMessageContainer;
 import beans.LogEntry;
 import beans.scripts.*;
 import controller.ScoringController;
+import controller.XAPIController;
+import beans.relation.Relation;
 import beans.relation.RelationDiagnosis;
 import database.DBClinReason;
 import util.StringUtilities;
 
 /**
- * Learner has to actively submit ddx...
+ * Learner has to actively submit ddx as final diagnoses...
  * @author ingahege
  *
  */
@@ -49,7 +51,7 @@ public class DiagnosisSubmitAction /*implements Scoreable*/{
 	/**
 	 * Called when diagnosis are submitted one at a time (link for submission provided for each diagnosis). 
 	 * We then have to change the tier for the diagnosis to "final" before scoring.
-	 * @param idStr
+	 * @param idStr (all ids of final diagnoses separated with #)
 	 */
 	public void submitDDX(String idStr){
 		boolean hasDDX = changeTierForDDXs(idStr);
@@ -60,6 +62,8 @@ public class DiagnosisSubmitAction /*implements Scoreable*/{
 			patIllScript.setSubmittedStage(patIllScript.getCurrentStage());
 			patIllScript.save();
 		}
+		if(!patIllScript.isExpScript()) XAPIController.getInstance().addFinalDiagnosisActionStatement(patIllScript);
+
 		notifyLog();
 	}
 	
@@ -154,6 +158,10 @@ public class DiagnosisSubmitAction /*implements Scoreable*/{
 		patIllScript.setShowSolution(patIllScript.getCurrentStage());
 		patIllScript.save();
 		notifyLogShowSolution();
+	}
+	
+	public void updateXAPIStatement(Relation rel){
+		XAPIController.getInstance().addOrUpdateAddStatement(rel);
 	}
 
 }

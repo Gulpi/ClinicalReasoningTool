@@ -131,6 +131,10 @@ public class ScoreBean extends Beans implements Serializable{
 	private int distance = -99;
 	
 	private boolean deleteFlag = false;
+	/**
+	 * We can store here any details relevant for a scorBean object (e.g. for the summary statement we can store the current text)
+	 */
+	private String details;
 	
 	public ScoreBean(){}
 	public ScoreBean(PatientIllnessScript patIllScript, long scoredItem, int type){
@@ -208,7 +212,9 @@ public class ScoreBean extends Beans implements Serializable{
 	public long getExpItemId() {return expItemId;}
 	public void setExpItemId(long expItemId) {this.expItemId = expItemId;}	
 	public long getScoredRelId() {return scoredRelId;}
-	public void setScoredRelId(long scoredRelId) {this.scoredRelId = scoredRelId;}	
+	public void setScoredRelId(long scoredRelId) {this.scoredRelId = scoredRelId;}		
+	public String getDetails() {return details;}
+	public void setDetails(String details) {this.details = details;}
 	public float getOrgScoreBasedOnExp() {return orgScoreBasedOnExp;}
 	public void setOrgScoreBasedOnExp(float orgScoreBasedOnExp) {
 		this.orgScoreBasedOnExp = orgScoreBasedOnExp;

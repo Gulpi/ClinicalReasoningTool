@@ -37,6 +37,12 @@ public class ListItem implements Serializable, ListInterface, Comparable{
 	 */
 	private boolean ignored = false;
 	
+	/**
+	 * we can have items that are composed of several findings, e.g. shock (hypotension, tachcardia, acidosis,...)
+	 * 0: is not a syndrome, 1 = is a syndrome (can be extended....) 
+	 */
+	private int isSyndrome = 0;
+	
 	public ListItem(){}
 	public ListItem(String lang,String source, String name){
 		this.language = new Locale(lang);
@@ -73,9 +79,10 @@ public class ListItem implements Serializable, ListInterface, Comparable{
 	public String getMesh_ec() {return mesh_ec;}
 	public void setMesh_ec(String mesh_ec) {this.mesh_ec = mesh_ec;}
 	public String getItemType() {return itemType;}
-	public void setItemType(String itemType) {this.itemType = itemType;}	
-
-	
+	public void setItemType(String itemType) {this.itemType = itemType;}			
+	public int getIsSyndrome() {return isSyndrome;}
+	public void setIsSyndrome(int isSyndrome) {this.isSyndrome = isSyndrome;}
+		
 	public String getShortName(){ 
 		return StringUtils.abbreviate(this.name, MAXLENGTH_NAME);
 		/*if(this.name==null || this.name.length()<=MAXLENGTH_NAME) return name;

@@ -34,7 +34,9 @@ import util.StringUtilities;
  */
 @ManagedBean(name = "adminContext", eager = true)
 @SessionScoped
-public class AdminFacesContext extends FacesContextWrapper implements MyFacesContext/*implements Serializable*/{
+public class AdminFacesContext extends FacesContextWrapper implements MyFacesContext, Serializable{
+	private static final long serialVersionUID = 1L;
+
 	public static final String CRT_FC_KEY = "adminContext";
 	
 	private User user;

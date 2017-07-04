@@ -322,6 +322,23 @@ public class Graph extends DirectedWeightedMultigraph<MultiVertex, MultiEdge> {
 	}
 	
 	/**
+	 * gets all expert vertices that are syndromes or part of syndromes (depending on syndrType)
+	 * @return
+	 */
+	public List<MultiVertex> getVerticesSyndromeExpOnly(int syndrType){
+		Set<MultiVertex> verts = this.vertexSet();
+		if(verts==null) return null;
+		List<MultiVertex> list = new ArrayList<MultiVertex>();
+		Iterator<MultiVertex> it = verts.iterator();
+		while(it.hasNext()){
+			MultiVertex mv = it.next();
+			if(mv.getExpertVertex()!=null && mv.getExpertVertex().getIsSyndrome()==syndrType)
+				list.add(mv);
+		}
+		return list;
+	}
+	
+	/**
 	 * Returns a list of vertices that have been added by the expert (and not the learner) in the given stage interval 
 	 * (including start- and endstage). We use that for determination of premature closure errors.
 	 * @param type
@@ -649,6 +666,17 @@ public class Graph extends DirectedWeightedMultigraph<MultiVertex, MultiEdge> {
 		while(it.hasNext()){
 			MultiEdge e = it.next();
 			if(e.isExplicitLearnerEdge()) edges.add(e);
+		}
+		return edges;
+	}
+	
+	public Set<MultiEdge> getExplicitExpertEdges(MultiVertex v){
+		if(this.edgesOf(v)==null) return null;
+		Iterator<MultiEdge> it = this.edgesOf(v).iterator();
+		Set<MultiEdge> edges = new TreeSet<MultiEdge>();
+		while(it.hasNext()){
+			MultiEdge e = it.next();
+			if(e.isExplicitExpertEdge()) edges.add(e);
 		}
 		return edges;
 	}

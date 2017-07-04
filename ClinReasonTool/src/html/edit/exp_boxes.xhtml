@@ -209,7 +209,7 @@ Stage: <span id="stageSpan">#{adminContext.patillscript.stage} </span>
 						<h:form id="probform">
 						<h:panelGroup>
 						   <ui:repeat id="repeatprob" value="#{adminContext.patillscript.problemsStage}" var="prob" varStatus="status">
-						   		<ui:include src="../probbox.xhtml" />
+						   		<ui:include src="probbox.xhtml" />
 	    					</ui:repeat>	    						    					
 	    				</h:panelGroup>
     				     <h:commandButton id="hiddenProbButton" value="RenderSomething" style="visibility:hidden">

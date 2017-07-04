@@ -24,8 +24,13 @@
 
 		<!--  <property name="creationDate" column="creation_date" update="false" type="timestamp"/>-->
 		
-		<!--  <property name="name" column="name" type="string"/>	-->
 		<many-to-one name="problem" class="model.ListItem" column="source_id"  lazy="false" insert="false" update="false"/>
+		
+		<set name="syndromItems" table="crt.RELATION_SYNDROME" lazy="false" fetch="join" batch-size="100">
+    		<key column="syndrome_id"/>
+    		<one-to-many class="RelationSyndrome"/>
+    		<!-- <element column="name" type="string"/>-->
+		</set>	
 		<!-- <many-to-one name="syn" class="model.Synonym" column="syn_id"  lazy="false" not-null="false"/>-->
 		
 </class>

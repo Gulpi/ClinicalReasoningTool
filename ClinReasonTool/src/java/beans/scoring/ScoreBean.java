@@ -30,7 +30,6 @@ public class ScoreBean extends Beans implements Serializable{
 	public static final int TYPE_ADD_DDX = Relation.TYPE_DDX; //2
 	public static final int TYPE_ADD_TEST = Relation.TYPE_TEST; //3
 	public static final int TYPE_ADD_MNG = Relation.TYPE_MNG; //4
-	public static final int TYPE_ADD_EPI = Relation.TYPE_EPI; //6
 	public static final int TYPE_ADD_CNX = Relation.TYPE_CNX; //5
 	
 	public static final int TYPE_PROBLEM_LIST = 7;
@@ -41,7 +40,6 @@ public class ScoreBean extends Beans implements Serializable{
 	public static final int TYPE_CNXS = 12;
 	public static final int TYPE_COURSETIME = 13;
 	public static final int TYPE_SUMMST = 14;
-	public static final int TYPE_EPI_LIST = 15;
 	public static final int TYPE_SCRIPT_CREATION = 16; //we use this for PeerBean creation 
 	public static final int TYPE_OVERALL_SCORE = 17;
 	public static final int TYPE_FINAL_DDX_LIST = 18;
@@ -247,11 +245,11 @@ public class ScoreBean extends Beans implements Serializable{
 	}
 	
 	public boolean isListScoreBean(){
-		if(type==TYPE_PROBLEM_LIST  || type == TYPE_DDX_LIST || type==TYPE_MNG_LIST || type==TYPE_TEST_LIST || type==TYPE_EPI_LIST) return true;
+		if(type==TYPE_PROBLEM_LIST  || type == TYPE_DDX_LIST || type==TYPE_MNG_LIST || type==TYPE_TEST_LIST) return true;
 		return false;
 	}
 	public boolean isAddItemScoreBean(){
-		if(type==TYPE_ADD_PROBLEM  || type == TYPE_ADD_DDX || type==TYPE_ADD_MNG || type==TYPE_ADD_TEST || type==TYPE_ADD_EPI) return true;
+		if(type==TYPE_ADD_PROBLEM  || type == TYPE_ADD_DDX || type==TYPE_ADD_MNG || type==TYPE_ADD_TEST) return true;
 		return false;		
 	}
 

@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="beans.relation">
+
+	<class name="RelationSyndrome" table="crt.relation_syndrome">
+		<cache usage="nonstrict-read-write" />
+		<comment>Syndrome Relation</comment>	
+		<id name="id" type="long" column="id">
+			<generator class="sequence">
+				<param name ="sequence">CRT.CR_SEQ</param>
+			</generator>
+		</id>	
+		<property name="syndromeId" column="syndrome_id" type="long" />
+		<property name="listItemIdChild" column="child_id" type="long"/>
+		<many-to-one name="ListItem" class="model.ListItem" column="child_id"  lazy="false" insert="false" update="false"/>
+		
+</class>
+</hibernate-mapping>

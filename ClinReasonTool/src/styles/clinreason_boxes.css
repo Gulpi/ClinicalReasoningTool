@@ -1123,6 +1123,16 @@ input.cmn-toggle-round:checked + label:after {
 	color:#000000;
 }
 
+/*display of a syndrome*/
+.synd_1{
+	background-color:#cce6ff;
+}
+
+/*display of a syndrome part*/
+.synd_2{
+	background-color:#cccccc;
+}
+
 .ui-effects-transfer {
     border: 3px dotted #006699;
 }

@@ -190,8 +190,9 @@ public class DBClinReason /*extends HibernateUtil*/{
     	criteria.add(Restrictions.eq("type", new Integer(PatientIllnessScript.TYPE_EXPERT_CREATED)));
     	PatientIllnessScript patIllScript =  (PatientIllnessScript) criteria.uniqueResult();
     	s.close();
-    	if(patIllScript!=null)
+    	if(patIllScript!=null){
     		patIllScript.setSummSt(loadSummSt(patIllScript.getSummStId()));
+    	}
     	return patIllScript;  	
     }
     

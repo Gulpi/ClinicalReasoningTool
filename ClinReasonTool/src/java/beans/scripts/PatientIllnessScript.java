@@ -97,7 +97,6 @@ public class PatientIllnessScript extends Beans/*extends Node*/ implements Compa
 	private List<RelationDiagnosis> diagnoses; //contains all diagnoses, including the final(s)?
 	private List<RelationManagement> mngs;
 	private List<RelationTest> tests;
-	private List<RelationEpi> epis;
 		
 	/**
 	 * key = cnxId (Long), value = Connection object
@@ -200,8 +199,6 @@ public class PatientIllnessScript extends Beans/*extends Node*/ implements Compa
 	public List<RelationTest> getTests() {return tests;}
 	public List<RelationTest> getTestsStage() { return getRelationsByStage(tests);}
 	public void setTests(List<RelationTest> tests) {this.tests = tests;}	
-	public List<RelationEpi> getEpis() {return epis;}
-	public void setEpis(List<RelationEpi> epis) {this.epis = epis;}
 	public Map<Long,Connection> getConns() {return conns;}
 	public void setConns(Map<Long,Connection> conns) {this.conns = conns;}
 	public long getUserId() {return userId;}
@@ -439,7 +436,6 @@ public class PatientIllnessScript extends Beans/*extends Node*/ implements Compa
 	}
 
 	
-	public RelationEpi getEpiById(long id){return (RelationEpi) getRelationById(epis, id);}	
 	public RelationProblem getProblemById(long id){return (RelationProblem) getRelationById(problems, id);}	
 	public RelationDiagnosis getDiagnosisById(long id){return (RelationDiagnosis) getRelationById(diagnoses, id);}	
 	public RelationTest getTestById(long id){return (RelationTest) getRelationById(tests, id);}		
@@ -450,7 +446,6 @@ public class PatientIllnessScript extends Beans/*extends Node*/ implements Compa
 		if(type==Relation.TYPE_DDX) return getRelationByListItemId(this.diagnoses, id);
 		if(type==Relation.TYPE_MNG) return getRelationByListItemId(this.mngs, id);
 		if(type==Relation.TYPE_TEST) return getRelationByListItemId(this.tests, id);
-		if(type==Relation.TYPE_EPI) return getRelationByListItemId(this.epis, id);
 		
 		return null;
 	}
@@ -517,7 +512,6 @@ public class PatientIllnessScript extends Beans/*extends Node*/ implements Compa
 		if(type==Relation.TYPE_DDX) return getRelationById(this.diagnoses, id);
 		if(type==Relation.TYPE_MNG) return getRelationById(this.mngs, id);
 		if(type==Relation.TYPE_TEST) return getRelationById(this.tests, id);
-		if(type==Relation.TYPE_EPI) return getRelationById(this.epis, id);
 		
 		return null;
 	}

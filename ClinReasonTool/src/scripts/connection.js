@@ -233,11 +233,13 @@ function getWeightToColor(weight){
 	//case 4: return "#999999"; //"#00e64d"; //somewhat related (dark grey)
 	case 3: return "#b3e6ff"; //"#e6e6e6"; //"#e6ffee"; //slightly related (light grey)
 	case 8: return "#006699"; //hierarchy
+	case 9: return "#cccccc"; //syndrome
 	case "6": return "#990000";
 	case "5": return "#004466";
 	//case "4": return "#999999";
 	case "3": return "#b3e6ff";
 	case "8": return "#006699";
+	case "9": return "#cccccc"; //syndrome
 	default: 
 		return "#006699"; //"#999999";
 	}
@@ -257,13 +259,15 @@ function getWeightToLineWidth(weight){
 	case 5: return strong_linewidth; 		//"#009933"; //highly related (black)
 	//case 4: return 4; 	//"#00e64d"; //somewhat related (dark grey)
 	case 3: return light_linewidth; 		//"#e6ffee"; //slightly related (light grey)
-	case 8: return default_linewidth; 
+	case 8: return default_linewidth;
+	case 9: return default_linewidth; 
 	case 2: return default_linewidth; 		//default
 	case "6": return default_linewidth; 	//speaks against (red)
 	case "5": return strong_linewidth; 	//"#009933"; //highly related (black)
 	//case "4": return 4; 	//"#00e64d"; //somewhat related (dark grey)
 	case "3": return light_linewidth; 	//"#e6ffee"; //slightly related (light grey)
 	case "8": return default_linewidth; 
+	case "9": return default_linewidth; 
 	case "2": return default_linewidth; 	//default
 	default: 
 		return default_linewidth;

@@ -208,6 +208,10 @@ a#ddx_submit_btn, errorsymbol.a{
 #ddx_submit_form{ padding-left:20px;}
 #ddx_submit_form input{margin-left:-20px;}
 
+.noddx_0, .noddx_-1{
+	display:none;
+}
+
 .errors_0{
 	display:none;
 }

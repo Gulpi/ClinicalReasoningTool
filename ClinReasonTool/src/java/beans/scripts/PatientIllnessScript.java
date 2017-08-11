@@ -14,6 +14,7 @@ import actions.scoringActions.ScoringListAction;
 import application.AppBean;
 import beans.*;
 import beans.error.MyError;
+import beans.graph.Graph;
 import beans.helper.TypeAheadBean;
 import beans.relation.*;
 import beans.scoring.LearningAnalyticsBean;
@@ -27,6 +28,8 @@ import controller.IllnessScriptController;
 import controller.NavigationController;
 import controller.ScoringController;
 import database.DBClinReason;
+import database.DBList;
+import model.ListItem;
 import properties.IntlConfiguration;
 import util.CRTLogger;
 import util.StringUtilities;
@@ -37,11 +40,25 @@ import util.StringUtilities;
  *
  */
 /*@ManagedBean(name = "patillscript", eager = true)*/
+/**
+ * @author ingahege
+ *
+ */
 @SessionScoped
-public class PatientIllnessScript extends Beans/*extends Node*/ implements Comparable, IllnessScriptInterface, Serializable /*, PropertyChangeListener*/ {
+public class PatientIllnessScript extends Beans implements Comparable, IllnessScriptInterface, Serializable /*, PropertyChangeListener*/ {
 
 	
 	private static final long serialVersionUID = 1L;
+	/**
+	 * The VP has one or more final diagnoses
+	 */
+	public static final int FINAL_DDX_YES = 0;
+	
+	/**
+	 * The VP has no final diagnosis
+	 */
+	public static final int FINAL_DDX_NO = 1; //2 could be to continue with a working diagnosis ...
+
 	private Timestamp creationDate;
 	/**
 	 * We need this for example for determining availability biases...
@@ -57,12 +74,15 @@ public class PatientIllnessScript extends Beans/*extends Node*/ implements Compa
 	 * unique across systems and vps. format: "vpId_systemId"
 	 */
 	private String vpId;
-	private long userId; //needed so that we can display all the users' scripts to him
+	private long userId; //needed so that we can display all the users' scripts to him/her
 	/**
 	 * Id of the PatientIllnessScript
 	 */
 	private long id = -1;
-	private Locale locale; // do we need this here to determine which list to load?	
+	/**
+	 * language of the VP / script 
+	 */
+	private Locale locale; 
 	private SummaryStatement summSt;
 	private long summStId = -1;
 	//private Note note;
@@ -141,6 +161,11 @@ public class PatientIllnessScript extends Beans/*extends Node*/ implements Compa
 	 * We store here all xAPI statements for this script
 	 */
 	private StatementContainer stmtContainer;
+	
+	/**
+	 * does the VP have a final diagnosis (0) or not (1), -1 = not yet at this stage
+	 */
+	private int finalDDXType = -1;
 	
 	public PatientIllnessScript(){}
 	public PatientIllnessScript(long userId, String vpId, Locale loc, int systemId){
@@ -237,19 +262,12 @@ public class PatientIllnessScript extends Beans/*extends Node*/ implements Compa
 		else return IntlConfiguration.getValue("submit.slider.after") + " " + IntlConfiguration.getValue("confidence.highest") +".";
 	}
 	public void setConfidence(int confidence) {this.confidence = confidence;}
-	public long getSummStId() {
-		return summStId;
-		}
-	public void setSummStId(long summStId) {this.summStId = summStId;}	
-	/*public Note getNote() {return note;}
-	public void setNote(Note note) {this.note = note;}
-	public long getNoteId() {return noteId;}
-	public void setNoteId(long noteId) {this.noteId = noteId;}*/
-	
-	public String getVpId() {return vpId;}
-		
-	public void setVpId(String vpId) {this.vpId = vpId;}
-	
+	public long getSummStId() {return summStId;}
+	public void setSummStId(long summStId) {this.summStId = summStId;}		
+	public int getFinalDDXType() {return finalDDXType;}
+	public void setFinalDDXType(int finalDDXType) {this.finalDDXType = finalDDXType;}
+	public String getVpId() {return vpId;}		
+	public void setVpId(String vpId) {this.vpId = vpId;}	
 	public int getCurrentStage() {return currentStage;}	
 	public int getMaxSubmittedStage() {
 		if(maxSubmittedStage>0) return maxSubmittedStage;
@@ -491,6 +509,16 @@ public class PatientIllnessScript extends Beans/*extends Node*/ implements Compa
 		}
 		return finals;
 	}
+	
+	/**
+	 * @return the final diagnoses of this script OR if "no diagnosis" has been chosen, a dummy RelationDiagnosis for display purposes
+	 */
+	/*public List<RelationDiagnosis> getFinalDiagnosesOrNoDiagnosis(){
+		if(this.finalDDXType == FINAL_DDX_NO){ //then no final diagnosis has been made
+			
+		}
+		return getFinalDiagnoses();
+	}*/
 	
 	/**
 	 * return all diagnoses entered by the learner that are NOT final diagnoses. We do this in order to 

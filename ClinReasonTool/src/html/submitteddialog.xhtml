@@ -25,7 +25,7 @@
 	<h:form id="ddx_submit_form">
 		
 		<h:panelGroup >
-			<ui:repeat value="#{crtContext.patillscript.diagnoses}" var="ddx" varStatus="status">
+			<ui:repeat value="#{crtContext.patillscript.finalDiagnoses}" var="ddx" varStatus="status">
 				<input id="chkb_#{ddx.id}" type="checkbox" readonly="readonly" disabled="disabled" class="chb_ddx tier_#{ddx.tier}" value="#{ddx.id}" /> #{ddx.labelOrSynLabel}				
 					<i class="fa fa-user-md expfb" mytooltip="#{ddx.exp}"></i>
 	 			<!-- <span class="peer_score" title="Percentage of peers who have added this problem as well" style="white-space: nowrap" id="peerscore#{prob.id}"> (#{prob.peerPercentage})</span>-->

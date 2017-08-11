@@ -2,13 +2,9 @@ package controller;
 
 import java.util.*;
 
-import actions.scoringActions.ScoringCnxsAction;
-import actions.scoringActions.ScoringListAction;
-import actions.scoringActions.ScoringSummStAction;
 import application.AppBean;
 import beans.CRTFacesContext;
 import beans.scripts.*;
-import beans.graph.Graph;
 import beans.scoring.FeedbackBean;
 import beans.scoring.PeerBean;
 import beans.scoring.ScoreBean;

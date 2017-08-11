@@ -64,6 +64,10 @@ public class ScoringFinalDDXAction /*implements ScoringAction*/{
 			List<RelationDiagnosis> learnerFinals = patIllScript.getFinalDiagnoses();//new ArrayList<Relation>();
 			float sumScore = 0;
 			boolean isChg = true;
+			//expert has chosen "No diagnosis" for this VP:
+			if(expIllScript.getFinalDDXType()==PatientIllnessScript.FINAL_DDX_NO || patIllScript.getFinalDDXType()==PatientIllnessScript.FINAL_DDX_NO){
+				return handleNoDiagnosisScoring(patIllScript, expIllScript, cont);		
+			}
 			//calculate individual score for each of the learner's final diagnosis:s
 			for(int i=0; i<ddxs.size(); i++){
 				MultiVertex vert = ddxs.get(i);
@@ -97,7 +101,48 @@ public class ScoringFinalDDXAction /*implements ScoringAction*/{
 			CRTLogger.out(StringUtilities.stackTraceToString(e), CRTLogger.LEVEL_ERROR);
 			return -1;
 		}
+	}
+	
+	/**
+	 * Expert has chosen "no diagnosis", so we check here, whether the learner has chosen the same.
+	 * If so, score is 1, else 0.
+	 * @param patIllScript
+	 * @return
+	 */
+	private float handleNoDiagnosisScoring(PatientIllnessScript patIllScript, PatientIllnessScript expScript, ScoreContainer cont){
+		ScoreBean scoreBean = cont.getScoreBeanByTypeAndItemId(ScoreBean.TYPE_FINAL_DDX, 0);
+		boolean isChg = true;
+		float score = 0;
+		if(scoreBean == null){
+			scoreBean = new ScoreBean(patIllScript, 0, ScoreBean.TYPE_FINAL_DDX);
+			cont.addScore(scoreBean);
+			isChg = false;
+		}
 		
+		//learner AND expert have chosen no diagnosis
+		if(patIllScript.getFinalDDXType()==PatientIllnessScript.FINAL_DDX_NO && expScript.getFinalDDXType()==PatientIllnessScript.FINAL_DDX_NO){
+			score = 1;
+		}
+		scoreBean.setScoreBasedOnExp(score, isChg);
+		new DBClinReason().saveAndCommit(scoreBean);
+		ScoreBean finalListScore = cont.getScoreByType(ScoreBean.TYPE_FINAL_DDX_LIST);
+		if(finalListScore==null){
+			finalListScore = new ScoreBean(patIllScript, -1, ScoreBean.TYPE_FINAL_DDX_LIST);
+			cont.addScore(finalListScore);
+			isChg = false;
+		}
+		finalListScore.setScoreBasedOnExp(score, isChg);
+		new DBClinReason().saveAndCommit(finalListScore);
+		//in addition we have to create a scoreBean for the AddDDXAction, so that the feedback is displayed correctly:
+		
+		ScoreBean addScore = cont.getScoreBeanByTypeAndItemId(ScoreBean.TYPE_ADD_DDX, 0);
+		if(addScore==null){
+			addScore = new ScoreBean(patIllScript, 0, ScoreBean.TYPE_ADD_DDX);
+			cont.addScore(addScore);
+		}
+		addScore.setScoreBasedOnExp(ScoringController.SCORE_EXP_SAMEAS_LEARNER, isChg);
+		new DBClinReason().saveAndCommit(addScore);
+		return  score;
 	}
 	
 	/**

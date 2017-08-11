@@ -3,6 +3,9 @@ package beans.user;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 
+import beans.scripts.PatientIllnessScript;
+import controller.NavigationController;
+
 /**
  * Special settings for a VP session, e.g. different modes for feedback or scaffolding,...
  * Currently this needs to be provided by the parent VP system, otherwise default setting is used (e.g. expert feedback
@@ -34,6 +37,11 @@ public class SessionSetting {
 	 */
 	private boolean expHintDisplayed = false;
 	
+	/**
+	 * is choosing "no diagnosis" enabled (0) or not (1)
+	 */
+	private int ddxMode = 0;
+	
 	public SessionSetting(){}
 	
 	public SessionSetting(String vpId, long userId){
@@ -53,7 +61,22 @@ public class SessionSetting {
 	public void setId(long id) {this.id = id;}	
 	private boolean isExpHintDisplayed() {return expHintDisplayed;}
 	public void setExpHintDisplayed(boolean hintDisplayed) {this.expHintDisplayed = hintDisplayed;}
-	
+	public int getDdxMode() {return ddxMode;}
+	/**
+	 * only allow "no diagnosis" option when the learner is at the point where he/she has to submit a daignosis. Otherwise
+	 * this could be misleading....
+	 * @return
+	 */
+	public int getDdxModeForStage() {
+		PatientIllnessScript patillscript = NavigationController.getInstance().getMyFacesContext().getPatillscript();
+		if(patillscript!=null && patillscript.getCurrentStage()==patillscript.getMaxSubmittedStage())
+			return ddxMode;
+		
+		else return PatientIllnessScript.FINAL_DDX_YES;
+	}
+			
+	public void setDdxMode(int ddxMode) {this.ddxMode = ddxMode;}
+
 	/**
 	 * return true if exp feedback shall be accessible, otherwise false. Depends on current stage in session and 
 	 * feedback mode.

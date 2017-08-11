@@ -257,6 +257,9 @@ public class RelationDiagnosis extends Relation implements Serializable {
 	 * @see beans.relation.Relation#getLabelOrSynLabel()
 	 */
 	public String getLabelOrSynLabel(){		
+		if(this.diagnosis.getItem_id()==0){
+			return IntlConfiguration.getValue("ddx.nodiagnosis");
+		}
 		if(getSynId()<=0) return diagnosis.getName();
 		else return getSynonym().getName();
 	}

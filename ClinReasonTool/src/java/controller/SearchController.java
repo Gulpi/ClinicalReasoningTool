@@ -1,17 +1,13 @@
 package controller;
 
-import java.io.*;
 import java.util.*;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.RequestScoped;
-import org.apache.commons.lang.StringUtils;
 
 import beans.search.SearchBean;
 import beans.search.SearchResult;
-import database.DBList;
 import database.DBSearch;
-import model.ListItem;
 
 /**
  * We can search for scripts of a user (learner or editor) based on a search term

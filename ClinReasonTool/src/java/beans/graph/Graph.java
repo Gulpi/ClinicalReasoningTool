@@ -146,9 +146,8 @@ public class Graph extends DirectedWeightedMultigraph<MultiVertex, MultiEdge> {
 	 * @param rel ALWAYS the Relation containing the ListItem (optional with the synonymId)
 	 * @param illnessScriptType
 	 */
-	public void addVertex(Relation rel, int illScriptType){
-		if(rel==null)
-			return;
+	public MultiVertex addVertex(Relation rel, int illScriptType){
+		if(rel==null) return null;
 		MultiVertex multiVertex = getVertexByIdAndType(rel.getListItemId(), rel.getRelationType());
 		if(multiVertex==null){ //create a new one:
 			multiVertex = new MultiVertex(rel, illScriptType); 
@@ -160,6 +159,8 @@ public class Graph extends DirectedWeightedMultigraph<MultiVertex, MultiEdge> {
 		}
 		if(illScriptType==IllnessScriptInterface.TYPE_EXPERT_CREATED)
 			addParentAndChildVertices(multiVertex);
+		
+		return multiVertex;
 	}
 	
 	/**

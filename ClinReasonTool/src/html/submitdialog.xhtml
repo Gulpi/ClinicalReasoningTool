@@ -36,7 +36,6 @@
       </script>
 <div class="ddxsubmitconf">
 	<span class="befsubmit">#{prop['submit.intro']}</span>
-	<!--  <span class="aftersubmit">#{prop['submit.intro.after']}:</span><br/>-->
 	<h:form id="ddx_submit_form">
 		<h:panelGroup >
 			<ui:repeat value="#{crtContext.patillscript.diagnoses}" var="ddx" varStatus="status">
@@ -47,6 +46,10 @@
 				
 				<br/>
 			</ui:repeat>
+			<span id="nodiagnosis" class="noddx_#{crtContext.sessSetting.ddxModeForStage}">
+				<span style="text-transform:uppercase;">#{prop['or']}</span><br/>
+				<input type="checkbox" class="chb_ddx" value="0" /> #{prop['submit.nodiagnosis']} <br/>
+			</span>
 		</h:panelGroup>
 		<!-- click before opening dialog to reload ddxs (make sure we have all of them) -->
 		<h:commandButton id="hiddenDDXSubmitButton" value="RenderSomething" style="display:none;">

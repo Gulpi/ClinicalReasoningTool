@@ -5,12 +5,10 @@ import java.util.*;
 import application.AppBean;
 import beans.relation.SummaryStatement;
 import beans.relation.SummaryStatementSQ;
-import beans.scripts.PatientIllnessScript;
 import database.DBClinReason;
 import database.DBList;
 import model.SemanticQual;
-import util.CRTLogger;
-import util.StringUtilities;
+import util.*;
 
 /**
  * handles everything concerning summary statements and semantic qualifiers.

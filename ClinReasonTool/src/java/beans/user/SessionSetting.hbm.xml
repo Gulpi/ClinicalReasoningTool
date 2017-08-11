@@ -14,6 +14,7 @@
 		<property name="userId" column="user_id" type="long" />
 		<property name="vpId" column="vp_id" type="string" />
 		<property name="expFeedbackMode" column="exp_feedback_mode" type="int" />
+		<property name="ddxMode" column="ddx_mode" type="int" />
 		
 </class>
 </hibernate-mapping>

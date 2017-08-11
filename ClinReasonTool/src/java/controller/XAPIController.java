@@ -4,7 +4,6 @@ import beans.CRTFacesContext;
 import beans.relation.Relation;
 import beans.relation.SummaryStatement;
 import beans.scripts.PatientIllnessScript;
-import beans.user.User;
 import beans.xAPI.*;
 import gov.adlnet.xapi.model.Statement;
 import util.*;

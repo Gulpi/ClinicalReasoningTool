@@ -210,7 +210,8 @@ public class CRTFacesContext extends FacesContextWrapper implements MyFacesConte
 		return false;
 	}
 	
-	public SessionSetting getSessSetting(){ return sessSetting;}
+	public SessionSetting getSessSetting(){ 
+		return sessSetting;}
 
 	public LearningAnalyticsBean getLearningAnalytics() {
 		if(analyticsContainer==null) return null;//analyticsContainer = new LearningAnalyticsContainer(userId);

@@ -1,12 +1,9 @@
 package controller;
 
-import java.util.Iterator;
-import java.util.Locale;
+import java.util.*;
 
 import javax.faces.context.FacesContext;
-
 import application.AppBean;
-import beans.CRTFacesContext;
 import beans.MyFacesContext;
 
 /**

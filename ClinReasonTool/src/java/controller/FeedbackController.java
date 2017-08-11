@@ -5,7 +5,6 @@ import java.util.List;
 import application.AppBean;
 import beans.graph.Graph;
 import beans.graph.MultiVertex;
-import beans.relation.Relation;
 import beans.scoring.ScoreBean;
 import beans.scoring.ScoreContainer;
 import beans.scripts.PatientIllnessScript;

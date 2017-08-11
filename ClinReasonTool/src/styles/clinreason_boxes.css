@@ -208,6 +208,10 @@ a#ddx_submit_btn, errorsymbol.a{
 #ddx_submit_form{ padding-left:20px;}
 #ddx_submit_form input{margin-left:-20px;}
 
+.noddx_0, .noddx_-1{
+	display:none;
+}
+
 .errors_0{
 	display:none;
 }
@@ -1121,6 +1125,16 @@ input.cmn-toggle-round:checked + label:after {
 .ddxclass_6{
 	background-color:#cce6ff;
 	color:#000000;
+}
+
+/*display of a syndrome*/
+.synd_1{
+	background-color:#cce6ff;
+}
+
+/*display of a syndrome part*/
+.synd_2{
+	background-color:#cccccc;
 }
 
 .ui-effects-transfer {

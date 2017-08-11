@@ -12,11 +12,13 @@ import controller.ScoringController;
 import controller.XAPIController;
 import beans.relation.Relation;
 import beans.relation.RelationDiagnosis;
+import beans.scoring.ScoreBean;
 import database.DBClinReason;
+import model.ListItem;
 import util.StringUtilities;
 
 /**
- * Learner has to actively submit ddx as final diagnoses...
+ * Learner has to actively submit ddx as final diagnoses or choose "no diagnosis" (if enabled)
  * @author ingahege
  *
  */
@@ -54,9 +56,16 @@ public class DiagnosisSubmitAction /*implements Scoreable*/{
 	 * @param idStr (all ids of final diagnoses separated with #)
 	 */
 	public void submitDDX(String idStr){
+		//if idStr = 0, then learner has chosen "no diagnosis" option
+		
 		boolean hasDDX = changeTierForDDXs(idStr);
 		if(!hasDDX) return;
+		
 		float score = triggerScoringAction(patIllScript);
+		//if learner has correctly chosen "no diagnosis" we create a dummy RelationDiagnosis for display purposes:
+		if(score==1 && this.patIllScript.getFinalDDXType()==PatientIllnessScript.FINAL_DDX_NO){
+			new AddNoDiagnosisAction(this.patIllScript).add();
+		}
 		//if learner submits the wrong diagnoses we allow him to re-submit 
 		if(score>=ScoringController.scoreForAllowReSubmit){
 			patIllScript.setSubmittedStage(patIllScript.getCurrentStage());
@@ -73,8 +82,13 @@ public class DiagnosisSubmitAction /*implements Scoreable*/{
 			createErrorMessage("Diagnosis submission without DDX", "", FacesMessage.SEVERITY_ERROR);
 			return false;
 		}
-		for(int i=0; i<ids.length; i++){
-			setFinal( ids[i]);
+		if(ids[0]==0){ //"no diagnosis" option has been chosen!
+			this.patIllScript.setFinalDDXType(PatientIllnessScript.FINAL_DDX_NO);
+		}
+		else{
+			for(int i=0; i<ids.length; i++){
+				setFinal( ids[i]);
+			}
 		}
 		return true;
 	}
@@ -116,7 +130,7 @@ public class DiagnosisSubmitAction /*implements Scoreable*/{
 		new DBClinReason().saveAndCommit(rel);
 		//re-score the ddx list.... or re-score the item?
 		//new ScoringListAction(patIllScript).scoreList(ScoreBean.TYPE_DDX_LIST, Relation.TYPE_DDX);
-		notifyLogChgTier(rel.getId(), rel.getTier());		
+		notifyLogChgTier(rel.getListItemId(), rel.getTier());		
 	}
 	
 	/**

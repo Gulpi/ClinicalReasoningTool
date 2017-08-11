@@ -30,7 +30,7 @@
 	     <property name="maxSubmittedStage" column="max_ddx_submitted" type="int"/>
 	     <property name="extUId" column="ext_uid" type="string"/>
 	     <property name="deleteFlag" column="delete_flag" type="boolean"/>
-	     
+	      <property name="finalDDXType" column="final_ddx_type" type="int"/>
 	     
 	
 		<list name="problems" table="crt.relation_problem" lazy="false"> 

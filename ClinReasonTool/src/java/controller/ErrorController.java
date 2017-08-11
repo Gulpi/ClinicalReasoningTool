@@ -6,18 +6,10 @@ import application.AppBean;
 import beans.LogEntry;
 import beans.scripts.*;
 import beans.error.*;
-import beans.error.MyError;
-import beans.graph.Graph;
-import beans.graph.MultiEdge;
-import beans.graph.MultiVertex;
-import beans.relation.Connection;
-import beans.relation.Relation;
-import beans.relation.RelationDiagnosis;
-import beans.relation.RelationProblem;
-import beans.scoring.ScoreBean;
+import beans.graph.*;
+import beans.relation.*;
 import database.DBClinReason;
-import util.CRTLogger;
-import util.StringUtilities;
+import util.*;
 
 /**
  * If the leaner has submitted a wrong final diagnosis, we check whether we can see a pattern that 

@@ -2,14 +2,11 @@ package controller;
 
 import java.util.*;
 import javax.faces.FacesException;
-import javax.faces.FactoryFinder;
-import javax.faces.bean.*;
 import javax.faces.context.FacesContext;
 import javax.faces.context.FacesContextFactory;
 import javax.faces.lifecycle.Lifecycle;
 
 import beans.CRTFacesContext;
-import database.HibernateUtil;
 
 /**
  * We init here some application stuff, like hibernate,....

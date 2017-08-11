@@ -146,9 +146,8 @@ public class Graph extends DirectedWeightedMultigraph<MultiVertex, MultiEdge> {
 	 * @param rel ALWAYS the Relation containing the ListItem (optional with the synonymId)
 	 * @param illnessScriptType
 	 */
-	public void addVertex(Relation rel, int illScriptType){
-		if(rel==null)
-			return;
+	public MultiVertex addVertex(Relation rel, int illScriptType){
+		if(rel==null) return null;
 		MultiVertex multiVertex = getVertexByIdAndType(rel.getListItemId(), rel.getRelationType());
 		if(multiVertex==null){ //create a new one:
 			multiVertex = new MultiVertex(rel, illScriptType); 
@@ -160,6 +159,8 @@ public class Graph extends DirectedWeightedMultigraph<MultiVertex, MultiEdge> {
 		}
 		if(illScriptType==IllnessScriptInterface.TYPE_EXPERT_CREATED)
 			addParentAndChildVertices(multiVertex);
+		
+		return multiVertex;
 	}
 	
 	/**
@@ -317,6 +318,23 @@ public class Graph extends DirectedWeightedMultigraph<MultiVertex, MultiEdge> {
 			MultiVertex mv = it.next();
 			if(mv.getType()==type && mv.getExpertVertex()!=null && mv.getExpertVertex().getStage()<= stage && !mv.isLearnerVertex()) 
 				list.add(mv);				
+		}
+		return list;
+	}
+	
+	/**
+	 * gets all expert vertices that are syndromes or part of syndromes (depending on syndrType)
+	 * @return
+	 */
+	public List<MultiVertex> getVerticesSyndromeExpOnly(int syndrType){
+		Set<MultiVertex> verts = this.vertexSet();
+		if(verts==null) return null;
+		List<MultiVertex> list = new ArrayList<MultiVertex>();
+		Iterator<MultiVertex> it = verts.iterator();
+		while(it.hasNext()){
+			MultiVertex mv = it.next();
+			if(mv.getExpertVertex()!=null && mv.getExpertVertex().getIsSyndrome()==syndrType)
+				list.add(mv);
 		}
 		return list;
 	}
@@ -649,6 +667,17 @@ public class Graph extends DirectedWeightedMultigraph<MultiVertex, MultiEdge> {
 		while(it.hasNext()){
 			MultiEdge e = it.next();
 			if(e.isExplicitLearnerEdge()) edges.add(e);
+		}
+		return edges;
+	}
+	
+	public Set<MultiEdge> getExplicitExpertEdges(MultiVertex v){
+		if(this.edgesOf(v)==null) return null;
+		Iterator<MultiEdge> it = this.edgesOf(v).iterator();
+		Set<MultiEdge> edges = new TreeSet<MultiEdge>();
+		while(it.hasNext()){
+			MultiEdge e = it.next();
+			if(e.isExplicitExpertEdge()) edges.add(e);
 		}
 		return edges;
 	}

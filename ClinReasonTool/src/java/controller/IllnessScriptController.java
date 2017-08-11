@@ -3,8 +3,6 @@ package controller;
 import java.io.Serializable;
 import java.util.*;
 
-import javax.faces.context.FacesContext;
-
 import application.AppBean;
 import beans.scripts.*;
 import beans.relation.Relation;

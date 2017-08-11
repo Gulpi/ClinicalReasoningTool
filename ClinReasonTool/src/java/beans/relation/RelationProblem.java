@@ -73,8 +73,10 @@ public class RelationProblem extends Relation implements Serializable{
 	 * @see beans.relation.Relation#getLabelOrSynLabel()
 	 */
 	public String getLabelOrSynLabel(){	
-		if(getSynId()<=0) return problem.getName();
-		else return getSynonym().getName();
+		String postStr = "";
+		if(this.getIsSyndrome()==1) postStr = " (Syndrome)";
+		if(getSynId()<=0) return problem.getName() + postStr;
+		else return getSynonym().getName() + postStr;
 	}
 	
 	public int getPrototypical() {return prototypical;}
@@ -84,4 +86,5 @@ public class RelationProblem extends Relation implements Serializable{
 	 * @see beans.relation.Relation#getSynonyma()
 	 */
 	public Set<Synonym> getSynonyma(){ return problem.getSynonyma();}
+	
 }

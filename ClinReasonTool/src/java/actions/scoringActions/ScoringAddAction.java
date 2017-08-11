@@ -67,6 +67,7 @@ public class ScoringAddAction implements ScoringAction{
 	 * User has added an item to the list, we score it based on the experts list
 	 * 1 = exact same problem is in experts' list (dark green check)
 	 * 0.x = synonyma is in the experts' list (light green check -> learner can change to better term) -> see weight in synonym object
+	 * 0.5 = part of a syndrome
 	 * 0 = problem is not at all in the experts' list (no check) 
 	 * TODO consider position? probably not possible on add, but on move! 
 	 */	
@@ -78,8 +79,13 @@ public class ScoringAddAction implements ScoringAction{
 				
 		if(expRel!=null){ //expert has chosen this item (not synonym)
 			if(learnerRel!=null && learnerRel.getSynId()<=0){
-				if(learnerRel.hasPrefix()==expRel.hasPrefix())
-					scoreBean.setScoreBasedOnExp(ScoringController.SCORE_EXP_SAMEAS_LEARNER, isChg);
+				if(learnerRel.hasPrefix()==expRel.hasPrefix()){				
+					if(expRel.getIsSyndrome()==Relation.IS_SYNDROME_PART){ //learner has chosen a part of a syndrome:
+						scoreBean.setScoreBasedOnExp(ScoringController.HALF_SCORE, isChg);
+						scoreBean.setDetails("part of syndrome");
+					}
+					else scoreBean.setScoreBasedOnExp(ScoringController.SCORE_EXP_SAMEAS_LEARNER, isChg);
+				}
 				else scoreBean.setScoreBasedOnExp(ScoringController.NO_SCORE, isChg);
 				//return;
 			}
@@ -96,7 +102,6 @@ public class ScoringAddAction implements ScoringAction{
 		
 		else{ //expert has not picked this item (nor a synonym), we check whether a more specific/general item has been chosen.
 			scoreHierarchyBasedOnExp(g, scoreBean, mvertex, learnerRel);						
-			//if(!scored) scoreBean.setScoreBasedOnExp(ScoringController.SCORE_NOEXP_BUT_LEARNER);
 		}
 		
 		ScoringController.getInstance().setFeedbackInfo(scoreBean, isChg, isJoker);
@@ -104,6 +109,26 @@ public class ScoringAddAction implements ScoringAction{
 
 	}
 
+	/**
+	 * We check whether the learner has entered something that is part of a syndrome entered by the expert, 
+	 * e.g. if the learner has entered "hypotension" and the expert "shock", the learner gets credit for 
+	 * "hypotension" as well. Calculation is (1/possible number of parts) - 0.05
+	 * @param g
+	 * @param scoreBean
+	 * @param mvertex
+	 * @param learnerRel
+	 * @return
+	 */
+	/*private boolean checkForSyndromes(Graph g, ScoreBean scoreBean, MultiVertex mvertex, Relation learnerRel){
+		List<MultiVertex> expSyndromes = g.getVerticesSyndromeExpOnly(Relation.IS_SYNDROME_PART);
+		if(expSyndromes==null || expSyndromes.isEmpty()) return false; //no syndromes added by expert
+		Iterator<MultiVertex> it = expSyndromes.iterator();
+		while(it.hasNext()){ ////go through parts of the syndrome
+			MultiVertex mv = it.next();
+			
+			
+		}
+	}*/
 	/**
 	 * Check and score if the learner has chosen a child or parent item of the expert's choice.
 	 * if it is is child item (more specific) we do not reduce the score. If it is a parent item we reduce the score 

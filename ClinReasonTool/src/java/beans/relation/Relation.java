@@ -6,8 +6,12 @@ import java.util.*;
 
 import org.apache.commons.lang3.StringUtils;
 
+import beans.graph.Graph;
+import beans.graph.MultiEdge;
+import beans.graph.MultiVertex;
 import beans.graph.VertexInterface;
 import controller.FeedbackController;
+import controller.NavigationController;
 import controller.RelationController;
 import controller.ScoringController;
 import model.ListItem;
@@ -28,8 +32,9 @@ public abstract class Relation extends Beans implements Rectangle{
 	public static final int TYPE_TEST = 3;
 	public static final int TYPE_MNG = 4;
 	public static final int TYPE_CNX = 5;
-	public static final int TYPE_EPI = 6;
-
+	public static final int IS_SYNDROME = 1;
+	public static final int IS_SYNDROME_PART = 2;
+	
 	private long id;
 	
 	/**
@@ -67,19 +72,22 @@ public abstract class Relation extends Beans implements Rectangle{
 	 * We do not need the object, since it is already stored in the ListItem 
 	 */
 	private long synId;
+	
 
 	public long getListItemId() {return listItemId;}
 	public void setListItemId(long listItemId) {this.listItemId = listItemId;}
-	public abstract ListItem getListItem();
+	public abstract ListItem getListItem(); 
 	public abstract String getLabel();
+	/**
+	 * if isSyndrome is set, we add the related items here...
+	 */
+	private Set<RelationSyndrome> syndromItems;
 	/**
 	 * =PatientIllnessScriptId or IllnessScriptId
 	 * @return
 	 */
 	public long getDestId(){return destId;} 
-	public void setDestId(long destId){this.destId = destId;}
-	//public abstract int getOrder(); 
-	//spublic abstract void setOrder(int o); 	
+	public void setDestId(long destId){this.destId = destId;}	
 	public long getId(){return id;}
 	public void setId(long id){this.id = id;}
 	public int getX() {return x;}
@@ -98,19 +106,6 @@ public abstract class Relation extends Beans implements Rectangle{
 	public void setOrder(int order) {this.order = order;}		
 	public String getPrefix() {return prefix;}
 	public void setPrefix(String prefix) {this.prefix = prefix;}
-	/*public String getPrefixStr(){
-		if(prefix<=0) return "";
-		return IntlConfiguration.getValue("no");
-	}
-	public String getToggledPrefixStr(){
-		if(prefix>0) return "";
-		return IntlConfiguration.getValue("no");
-	}
-	
-	public void togglePrefix(){
-		if(prefix<=0) prefix = 1;
-		else prefix = 0;
-	}*/
 	
 	/**
 	 * Currently all prefixes are a negation, if expanding this to e.g. include qualifiers such as "acute/chronic" etc.
@@ -123,15 +118,16 @@ public abstract class Relation extends Beans implements Rectangle{
 	}
 	/**
 	 * When during a session was the item added (e.g. on which card number, if provided by 
-	 * the API), minimun 2 stages (before & after diagnosis submission)
+	 * the API), minimum 2 stages (before & after diagnosis submission)
 	 */
-	//public abstract int getStage();
 	public int getStage() {return stage;}
 	public void setStage(int stage) {this.stage = stage;}
 
 	public abstract Set<Synonym> getSynonyma();
 	public long getSynId() {return synId;}
 	public void setSynId(long synId) {this.synId = synId;}
+	public Set<RelationSyndrome> getSyndromItems() {return syndromItems;}
+	public void setSyndromItems(Set<RelationSyndrome> syndromItems) {this.syndromItems = syndromItems;}
 
 	public abstract String getIdWithPrefix();
 	
@@ -156,7 +152,9 @@ public abstract class Relation extends Beans implements Rectangle{
 		return true;
 	}
 	
-	public String getShortLabelOrSynShortLabel(){return StringUtils.abbreviate(getLabelOrSynLabel(), ListItem.MAXLENGTH_NAME);}
+	public String getShortLabelOrSynShortLabel(){
+		return StringUtils.abbreviate(getLabelOrSynLabel(), ListItem.MAXLENGTH_NAME);
+	}
 	/**
 	 * @return 0 (incorrect), 1 (correct), or 2 (partly correct)
 	 */
@@ -196,4 +194,38 @@ public abstract class Relation extends Beans implements Rectangle{
 	 * @see java.lang.Object#toString()
 	 */
 	public String toString(){ return getLabelOrSynLabel()+ "("+getId()+")";}
+	
+	/**
+	 * If a node has a syndrome-connection to a syndrome it is part of it and shall be displayed in a different
+	 * color.
+	 * @return 0(not a syndrome part) | 1 (is part of a syndrome)
+	 */
+	private int getIsSyndromePart(){
+		//if(this.getIsSyndrome()==1) return 0; //if it is a syndrome it cannot be a child!
+		Graph g = NavigationController.getInstance().getMyFacesContext().getGraph();
+		MultiVertex mv = g.getVertexByIdAndType(this.getListItemId(), this.getRelationType());
+		if(mv==null) return 0;
+		Set<MultiEdge> cnxs = g.getExplicitExpertEdges(mv);
+		if(cnxs==null || cnxs.isEmpty()) return 0;
+		Iterator<MultiEdge> it = cnxs.iterator();
+		while(it.hasNext()){
+			MultiEdge me = it.next();
+			if(me.getExpertWeight()==MultiEdge.WEIGHT_SYNDROME) return Relation.IS_SYNDROME_PART;
+		}
+		return 0;
+	}
+	
+	/**
+	 * Node is a syndrome (has components), e.g. shock is a combination of hypotension, tachycardia, paleness,... 
+	 * Typically this is related to problems/findings, but it could also be that we have such a component-relation
+	 * for the other node types. Therefore, we have it here in the super class. 
+	 * 0 = not syndrome-related, 1 = is syndrome, 2 = is part of syndrome 
+	 * @return
+	 */
+	public int getIsSyndrome(){
+		if(this.getListItem().getIsSyndrome()==Relation.IS_SYNDROME) return Relation.IS_SYNDROME;
+		return getIsSyndromePart();
+		
+	}
+
 }

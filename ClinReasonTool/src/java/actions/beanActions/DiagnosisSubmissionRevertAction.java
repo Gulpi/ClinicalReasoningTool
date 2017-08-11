@@ -26,6 +26,7 @@ public class DiagnosisSubmissionRevertAction {
 	 */
 	public void revertSubmission(){
 		patIllScript.setSubmittedStage(-1);
+		this.patIllScript.setFinalDDXType(-1);
 		List<RelationDiagnosis> finalDDX = patIllScript.getFinalDiagnoses();
 		//List<ScoreBean> scores = new NavigationController().getCRTFacesContext().getLearningAnalytics().getScoreContainer().getScoresByType(ScoreBean.TYPE_FINAL_DDX);
 		if(finalDDX==null) return;

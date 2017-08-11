@@ -12,9 +12,10 @@ import beans.scripts.IllnessScriptInterface;
  * @author ingahege
  *
  */
-public class MultiEdge extends DefaultWeightedEdge{
+public class MultiEdge extends DefaultWeightedEdge implements Comparable{
 
-	private static final int[] EDGES_AS_CNX = new int[]{2,3,4,5,6,8};
+	private static final long serialVersionUID = 1L;
+	private static final int[] EDGES_AS_CNX = new int[]{2,3,4,5,6,8,9};
 	public static final int WEIGHT_NONE = 0;	
 	public static final int WEIGHT_IMPLICIT = 1; //a connection has made in the concept map, tests have been associated to DDX  
 	public static final int WEIGHT_EXPLICIT = 2; //implicit connection - being in the same illnessScript	
@@ -24,6 +25,7 @@ public class MultiEdge extends DefaultWeightedEdge{
 	public static final int WEIGHT_SPEAKS_AGAINST = 6;
 	public static final int WEIGHT_PARENT = 7;  //an item higher up in the hierarchy, but implicit
 	public static final int WEIGHT_EXPLICIT_HIERARCHY = 8;
+	public static final int WEIGHT_SYNDROME = 9;
 	
 	public static final int ENDPOINT_RIGHT = 1;
 	public static final int ENDPOINT_LEFT = 2;
@@ -233,6 +235,11 @@ public class MultiEdge extends DefaultWeightedEdge{
 	public String getTargetName(){
 		if(this.getTarget()!=null) return this.getTarget().getLabel();
 		return "";
+	}
+	@Override
+	public int compareTo(Object o) {
+		// TODO Auto-generated method stub
+		return 0;
 	}
 	
 }

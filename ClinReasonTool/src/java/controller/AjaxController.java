@@ -1,24 +1,10 @@
 package controller;
 
 import java.beans.Statement;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
-import java.io.StringWriter;
+import java.io.*;
 import java.util.*;
-
 import javax.faces.context.*;
-import javax.servlet.ServletException;
-import javax.servlet.ServletOutputStream;
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletRequestWrapper;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpServletResponseWrapper;
-
-import org.apache.commons.lang.StringUtils;
 
 import application.AppBean;
 import application.ErrorMessageContainer;
@@ -47,6 +33,8 @@ public class AjaxController {
 	public static final String REQPARAM_REPORTS_SCRIPT_ID = "r_scriptid"; //are the query params encoded (true | false)
 	public static final String REQPARAM_EXP_FB_MODE = "expfbmode";
 	public static final String REQPARAM_PEER_FB_MODE = "peerfbmode";
+	public static final String REQPARAM_DDX_MODE = "ddx_mode";
+
 	public static final String REQPARAM_API = "api";
 	public static final String REQPARAM_MAXSTAGE = "maxstage";
 	public static final String REQPARAM_VP_NAME = "vp_name";

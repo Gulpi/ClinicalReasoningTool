@@ -97,7 +97,6 @@ public class GraphController implements Serializable{
 		 addVertices( patIllScript.getDiagnoses(), illnessScriptType);
 		 addVertices( patIllScript.getMngs(), illnessScriptType);
 		 addVertices( patIllScript.getTests(), illnessScriptType);
-		 addVertices( patIllScript.getEpis(), illnessScriptType);
 
 	}
 	
@@ -222,7 +221,6 @@ public class GraphController implements Serializable{
 		if(prefix.equals(PREFIX_DDX) || prefix.equals(PREFIX_DDX2)) return Relation.TYPE_DDX;
 		if(prefix.equals(PREFIX_TEST) || prefix.equals(PREFIX_TEST2)) return Relation.TYPE_TEST;
 		if(prefix.equals(PREFIX_MNG) || prefix.equals(PREFIX_MNG2)) return Relation.TYPE_MNG;
-		if(prefix.equals(PREFIX_EPI) || prefix.equals(PREFIX_EPI2) ) return Relation.TYPE_EPI;
 
 		return 0;
 	}
@@ -232,7 +230,6 @@ public class GraphController implements Serializable{
 		if(type==Relation.TYPE_DDX) return PREFIX_DDX2;
 		if(type==Relation.TYPE_TEST) return PREFIX_TEST2;
 		if(type==Relation.TYPE_MNG) return PREFIX_MNG2;
-		if(type==Relation.TYPE_EPI) return PREFIX_EPI2;
 
 		return "";
 	}

@@ -74,7 +74,14 @@ public class ExpViewPatientIllnessScript {
 		List<Relation> expRels = new ArrayList<Relation>();
 		Iterator<MultiVertex> it = l.iterator();
 		while(it.hasNext()){
-			expRels.add(it.next().getExpertVertex());
+			MultiVertex mv = it.next(); 
+			//do NOT display nodes that are part of a syndrome, unless it has been added by a learner and been
+			//scored -> then it is helpful as feedback
+			if(mv.getExpertVertex().getIsSyndrome()==Relation.IS_SYNDROME_PART && mv.getLearnerVertex()==null){
+				//do nothing here...
+			}
+			else 
+				expRels.add(mv.getExpertVertex());
 		}
 		return expRels;			
 	}

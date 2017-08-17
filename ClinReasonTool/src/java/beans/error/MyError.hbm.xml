@@ -18,6 +18,11 @@
 		<property name="idx" column="idx" type="int" />
 		
 		<property name="type" column="type" type="int"/>
-	 <subclass name="PrematureClosure" discriminator-value="1"></subclass>
+	 	<subclass name="PrematureClosure" discriminator-value="1"></subclass>
+	 	<subclass name="AvailabilityBias" discriminator-value="2"></subclass>
+	  	<subclass name="ConfirmationBias" discriminator-value="3"></subclass>
+	  	<subclass name="Anchoring" discriminator-value="4"></subclass>
+	  	<subclass name="BaseRateNeglect" discriminator-value="5"></subclass>
+	  	<subclass name="Representativeness" discriminator-value="6"></subclass>
 </class>
 </hibernate-mapping>

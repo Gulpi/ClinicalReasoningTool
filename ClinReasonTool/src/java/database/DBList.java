@@ -157,6 +157,10 @@ public class DBList extends DBClinReason {
     	return li;
     }
     
+    public ListItem selectListItemByCode(String code, Locale lang){ 
+    	return selectListItemByCode(code, instance.getInternalSession(Thread.currentThread(), false), lang);
+    }
+    
     private List<ListItem> selectChildListItemsByCode(String code, Session s, Locale lang){
        	Criteria criteria = s.createCriteria(ListItem.class,"ListItem");
     	criteria.add(Restrictions.like("firstCode", code+".", MatchMode.START));

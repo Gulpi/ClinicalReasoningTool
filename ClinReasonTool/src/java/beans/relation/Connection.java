@@ -20,7 +20,7 @@ public class Connection extends Beans implements Serializable, Comparable{
 	public static final int WEIGHT_HIGHLY_RELATED = MultiEdge.WEIGHT_HIGHLY_RELATED;
 	public static final int WEIGHT_SPEAKS_AGAINST = MultiEdge.WEIGHT_SPEAKS_AGAINST;
 	public static final int WEIGHT_HIERARCHY = MultiEdge.WEIGHT_EXPLICIT_HIERARCHY;
-	public static final int WEIGHT_SYNDROME = MultiEdge.WEIGHT_EXPLICIT_HIERARCHY;
+	public static final int WEIGHT_SYNDROME = MultiEdge.WEIGHT_SYNDROME;
 	
 
 	private static final long serialVersionUID = 1L;

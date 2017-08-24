@@ -236,8 +236,4 @@ public class StringUtilities {
 		}
 		return sb.toString();
 	}
-	
-	public static void main (String[] args) {
-		System.out.println(StringUtilities.similarStrings("Farbe des Urins", "Red Dye No. 2", new Locale("de")));
-	}
 }

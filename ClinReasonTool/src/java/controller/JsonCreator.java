@@ -136,8 +136,12 @@ public class JsonCreator {
 		if(item.getSynonyma()==null || item.getSynonyma().isEmpty()){ //no synonyma, only one main item:
 			toAddItems.add(item);
 		}
+		
 		//now we compare the synonyma
 		else{
+			if(item.getItem_id()==150012){
+				System.out.println("");
+			}
 			Iterator<Synonym> it = item.getSynonyma().iterator();
 			toAddItems.add(item);
 			while(it.hasNext()){	

@@ -16,9 +16,20 @@ VP name <input type="text" name="vp_name"></input><br/>
 VP System <select name="system"><option value="2">Casus</option></select><br/>
 max stage/cards: <input name="maxstage" size="2"></input> <i class="fa fa-info-circle" mytooltip="How many cards/stages does the VP have?"></i> <br/>
 max ddx submission stage:  <input name="maxddxstage" size="2"></input><i class="fa fa-info-circle" mytooltip="On which card/stage the learner has to submit final diagnoses in order to proceed"></i>  <br/>
-Language <select name="script_locale"><option value="en">en</option><option value="de">de</option></select><i class="fa fa-info-circle" mytooltip="Language in which VP is written"></i><br/>
+Language <select name="script_locale"><option value="en">en</option><option value="de">de</option><option value="pl">pl</option></select><i class="fa fa-info-circle" mytooltip="Language in which VP is written"></i><br/>
 </div>
     <h:commandButton value="Submit" action="#{adminContext.adminPortfolio.createNewExpScript}">
+    </h:commandButton>
+  </h:form>
+
+ <h:form><br/><br/>
+<div>
+Copy and Translate Script:<br/>
+org VPId: <input type="text" name="org_vp_id"></input><br/>
+new VPId: <input type="text" name="new_vp_id"></input><br/>
+new language <select name="script_locale"><option value="en">en</option><option value="de">de</option><option value="pl">pl</option></select><i class="fa fa-info-circle" mytooltip="Language in which VP is written"></i><br/>
+</div>
+    <h:commandButton value="Submit" action="#{adminContext.adminPortfolio.copyExpScript}">
     </h:commandButton>
   </h:form>
 </ui:composition>

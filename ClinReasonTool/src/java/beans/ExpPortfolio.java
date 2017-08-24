@@ -13,6 +13,7 @@ import beans.scripts.*;
 import beans.user.User;
 import controller.AjaxController;
 import controller.NavigationController;
+import controller.ScriptCopyController;
 /**
  * all scripts of an expert, needed for the overview/portfolio page to display a list. 
  *
@@ -88,6 +89,17 @@ public class ExpPortfolio implements Serializable{
 		CRTLogger.out("Create new script: id= " + patillscript.getId(), CRTLogger.LEVEL_PROD);
 
 		return patillscript;
+	}
+	
+	/**
+	 * We trigger the copying and translating of an expert script... 
+	 */
+	public void copyExpScript(){
+		CRTLogger.out("Copy script", CRTLogger.LEVEL_PROD);
+		String orgVpId = AjaxController.getInstance().getRequestParamByKey("org_vp_id");
+		String newVPId = AjaxController.getInstance().getRequestParamByKey("new_vp_id");
+		String lang = AjaxController.getInstance().getRequestParamByKey(AjaxController.REQPARAM_SCRIPTLOC);
+		ScriptCopyController.initCopyAndTranslate(orgVpId, newVPId, lang);
 	}
 	
 	/**

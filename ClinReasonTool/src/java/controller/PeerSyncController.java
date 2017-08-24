@@ -177,14 +177,16 @@ public class PeerSyncController {
 			Relation rel = (Relation) rels.get(i);
 			PeerBean peerBean = null;
 			if(rel!=null) peerBean = peerCont.getPeerBeanByActionVpIdAndItemId(rel.getRelationType(), vpId, rel.getListItemId());
-			if(peerBean==null){
-				//createNewPeerBean(int action, String vpId, long itemId, float score, int stage, float expScore, float orgExpScore){
-
-				peerBean = createNewPeerBean(rel.getRelationType(), vpId,  rel.getListItemId(), /*0,*/ -1, 0, 0);				
-			}
-			else{
-				peerBean.incrPeerNum();
-				//new DBScoring().saveAndCommit(peerBean);
+			if(rel!=null){
+				if(peerBean==null){
+					//createNewPeerBean(int action, String vpId, long itemId, float score, int stage, float expScore, float orgExpScore){
+	
+					peerBean = createNewPeerBean(rel.getRelationType(), vpId,  rel.getListItemId(), /*0,*/ -1, 0, 0);				
+				}
+				else{
+					peerBean.incrPeerNum();
+					//new DBScoring().saveAndCommit(peerBean);
+				}
 			}
 			new DBScoring().saveAndCommit(peerBean);
 		}

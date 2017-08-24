@@ -6,6 +6,7 @@
 	<class name="MyError" table="crt.error">
 		<cache usage="nonstrict-read-write" />
 		<comment>MyError</comment>	
+		
 		<id name="id" type="long" column="id">
 			<generator class="sequence">
 				<param name ="sequence">CRT.CR_SEQ</param>

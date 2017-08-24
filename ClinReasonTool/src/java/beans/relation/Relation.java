@@ -193,7 +193,13 @@ public abstract class Relation extends Beans implements Rectangle{
 	/* (non-Javadoc)
 	 * @see java.lang.Object#toString()
 	 */
-	public String toString(){ return getLabelOrSynLabel()+ "("+getId()+")";}
+	public String toString() { try {
+			return getLabelOrSynLabel()+ "("+getId()+")";
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return "";
+	}
 	
 	/**
 	 * If a node has a syndrome-connection to a syndrome it is part of it and shall be displayed in a different

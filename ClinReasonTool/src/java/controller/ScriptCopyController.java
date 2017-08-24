@@ -57,21 +57,21 @@ public class ScriptCopyController {
 			for(int i=0;i<orgScript.getProblems().size();i++){
 				copyAndTranslateProblem(orgScript.getProblems().get(i));
 			}
-			if(orgScript.getDiagnoses()!=null){
-				for(int i=0;i<orgScript.getDiagnoses().size();i++){
-					copyAndTranslateDDX(orgScript.getDiagnoses().get(i));
-				}
+		if(orgScript.getDiagnoses()!=null){
+			for(int i=0;i<orgScript.getDiagnoses().size();i++){
+				copyAndTranslateDDX(orgScript.getDiagnoses().get(i));
 			}
-			if(orgScript.getTests()!=null){
-				for(int i=0;i<orgScript.getTests().size();i++){
-					copyAndTranslateTests(orgScript.getTests().get(i));
-				}
 			}
-			if(orgScript.getMngs()!=null){
-				for(int i=0;i<orgScript.getMngs().size();i++){
-					copyAndTranslateManagements(orgScript.getMngs().get(i));
-				}
-			}						
+		if(orgScript.getTests()!=null){
+			for(int i=0;i<orgScript.getTests().size();i++){
+				copyAndTranslateTests(orgScript.getTests().get(i));
+			}
+		}
+		if(orgScript.getMngs()!=null){
+			for(int i=0;i<orgScript.getMngs().size();i++){
+				copyAndTranslateManagements(orgScript.getMngs().get(i));
+			}
+		}						
 			copyConnections();	
 		}
 	}
@@ -108,7 +108,7 @@ public class ScriptCopyController {
 			idTable.put(new Long(rel.getId()), newRel.getId());
 			return newRel;
 		}
-		idTable.put(new Long(rel.getId()), null);
+		idTable.put(new Long(rel.getId()), new Long(-1));
 		return null;
 	}
 	
@@ -183,7 +183,7 @@ public class ScriptCopyController {
 			newCnx.setWeight(orgCnx.getWeight());
 			Long newStartId = (Long) idTable.get(new Long(orgCnx.getStartId()));
 			Long newTargetId = (Long) idTable.get(new Long(orgCnx.getTargetId()));
-			if(newStartId!=null && newTargetId!=null){
+			if(newStartId!=null && newTargetId!=null && newStartId.longValue()>0 && newTargetId.longValue()>0){
 				newCnx.setStartId(newStartId.longValue());
 				newCnx.setTargetId(newTargetId.longValue());
 				new DBClinReason().saveAndCommit(newCnx);

@@ -175,7 +175,8 @@ public class PeerSyncController {
 		if(peerCont==null) return;
 		for(int i=0; i<rels.size(); i++){
 			Relation rel = (Relation) rels.get(i);
-			PeerBean peerBean = peerCont.getPeerBeanByActionVpIdAndItemId(rel.getRelationType(), vpId, rel.getListItemId());
+			PeerBean peerBean = null;
+			if(rel!=null) peerBean = peerCont.getPeerBeanByActionVpIdAndItemId(rel.getRelationType(), vpId, rel.getListItemId());
 			if(peerBean==null){
 				//createNewPeerBean(int action, String vpId, long itemId, float score, int stage, float expScore, float orgExpScore){
 

@@ -198,6 +198,7 @@ public class ScriptCopyController {
 		newRel.setX(orgRel.getX());
 		newRel.setY(orgRel.getY());
 		newRel.setStage(orgRel.getStage());
+		newRel.setOrder(orgRel.getOrder());
 		//CAVE prefixes need to be translated, too
 		return newRel;
 	}

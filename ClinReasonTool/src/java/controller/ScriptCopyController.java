@@ -73,6 +73,7 @@ public class ScriptCopyController {
 			}
 		}						
 			copyConnections();	
+			copySummStatement();
 		}
 	}
 	
@@ -203,15 +204,37 @@ public class ScriptCopyController {
 		return newRel;
 	}
 	
+	/**
+	 * select the ListItem with the given code in the language of the new map
+	 * @param code
+	 * @return
+	 */
 	private static ListItem getListItem(String code){	
 		ListItem li = new DBList().selectListItemByCode(code, newScript.getLocale());
 		if(li==null){
 			CRTLogger.out("No ListItem found for code " + code, CRTLogger.LEVEL_PROD);
 			return null;
-		}
-		 
+		}		 
 		return li;
 	}
 	
-	
+	/**
+	 * We cannot translate the summary statement, but we copy it, so that a translation in the user interface is easier. 
+	 */
+	private static void copySummStatement(){
+		if(orgScript.getSummStId()>0){
+			SummaryStatement summSt = orgScript.getSummSt(); //could that be null? lazy loading?
+			
+			if(summSt!=null){
+				SummaryStatement newStatement = new SummaryStatement();
+				newStatement.setText(summSt.getText());
+				newStatement.setLang(newScript.getLocale().getLanguage());
+				newStatement.setPatillscriptId(newScript.getId());
+				newStatement.setType(PatientIllnessScript.TYPE_EXPERT_CREATED);
+				new DBClinReason().saveAndCommit(newStatement);
+				newScript.setSummStId(newStatement.getId());
+				new DBClinReason().saveAndCommit(newScript);
+			}
+		}
+	}
 }

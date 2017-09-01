@@ -21,10 +21,16 @@ public class SummaryStatement extends Beans implements Serializable{
 	private int stage = -1;
 	private String lang;
 	/**
-	 * not yet needed, but we stpre it already for changing later on to multiple statements/script...
+	 * not yet needed, but we store it already for changing later on to multiple statements/script...
 	 */
 	private long patillscriptId = -1;
+	/**
+	 * expert or learner statement(see definitions in PatientIllnessScript)
+	 */
 	private int type = -1;
+	/**
+	 * has the text been evaluated/analyzed
+	 */
 	private boolean analyzed;
 	/**
 	 * all semantic qualifier ids that have been

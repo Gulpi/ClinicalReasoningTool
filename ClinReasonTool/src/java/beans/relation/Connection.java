@@ -12,7 +12,7 @@ import beans.graph.MultiEdge;
  * @author ingahege
  *
  */
-public class Connection extends Beans implements Serializable, Comparable{
+public class Connection extends Beans implements Serializable, Comparable<Connection>{
 	
 	public static final int WEIGHT_NONE = MultiEdge.WEIGHT_NONE;	
 	public static final int WEIGHT_SLIGHTLY_RELATED = MultiEdge.WEIGHT_SLIGHTLY_RELATED;
@@ -105,7 +105,7 @@ public class Connection extends Beans implements Serializable, Comparable{
 	/* (non-Javadoc)
 	 * @see java.lang.Comparable#compareTo(java.lang.Object)
 	 */
-	public int compareTo(Object o) {
+	public int compareTo(Connection o) {
 		if(o instanceof Connection){
 			Connection cnx = (Connection) o;
 			if(this.getId() < cnx.getId()) return -1;

@@ -5,16 +5,15 @@ import java.util.*;
 import org.hibernate.*;
 import org.hibernate.criterion.*;
 
-import beans.scripts.*;
-import beans.relation.RelationProblem;
+import beans.scripts.PatientIllnessScript;
+import beans.scripts.VPScriptRef;
+import beans.relation.*;
 import beans.relation.SummaryStatement;
 import beans.relation.SummaryStatementSQ;
-import controller.IllnessScriptController;
-import util.StringUtilities;
+import util.*;
 
 public class DBClinReason /*extends HibernateUtil*/{
 	static HibernateSession instance = new HibernateSession();
-	//static SessionFactory sessionFactory = new SessionFactory();//new Configuration().configure().buildSessionFactory();
 	
     /**
      * saves an object into the database. Object has to have a hibernate mapping!
@@ -22,7 +21,6 @@ public class DBClinReason /*extends HibernateUtil*/{
      */
     public void saveAndCommit(Object o){
     	Session s = instance.getInternalSession(Thread.currentThread(), false);
-    	//PatientIllnessScript ps = (PatientIllnessScript) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get(CRTFacesContext.PATILLSCRIPT_KEY);
         try {
         	instance.beginTransaction();
             s.setFlushMode(FlushMode.COMMIT);     
@@ -116,67 +114,6 @@ public class DBClinReason /*extends HibernateUtil*/{
         }
     }
     
-    /**
-     * Select the PatientIllnessScript for the parentId from the database. 
-     * @param parentId
-     * @return IllnessScript or null
-     */
-   /* public List<IllnessScript> selectIllScriptByParentId(long parentId){
-    	return selectIllScripts(parentId, "parentId");
-    }*/
-    
-    /**
-     * Select the PatientIllnessScript for the parentId (e.g. vpId) from the database. 
-     * @param sessionId
-     * @return PatientIllnessScript or null
-     */
-    public List<IllnessScript> selectIllScriptByDiagnosisId(long diagnosisId){
-    	return selectIllScripts(diagnosisId, "diagnosisId");
-    }
- 
-    /**
-     * Select the IllnessScript for a given list of problems   
-     * @param sessionId
-     * @return PatientIllnessScript or null
-     * TODO
-     */
-    public List<IllnessScript> selectIllScriptByProblems(List<RelationProblem> probs){
-    	return null; //we need a matching algorithm here....
-    }
-    
-    public List<IllnessScript> selectIllScriptByDiagnoses(List ddx){
-    	if(ddx==null) return null; 
-    	Session s = instance.getInternalSession(Thread.currentThread(), false);
-    	Criteria criteria = s.createCriteria(IllnessScript.class,"IllnessScript");
-    	Long[] ids = new IllnessScriptController().getListItemsFromRelationList(ddx);
-    	if(ids!=null){
-    		criteria.add(Restrictions.in("diagnosisId", ids));
-    		return criteria.list();
-    	}
-    	else return null;
-    }
-    /**
-     * Select the IllnessScript
-     * @param sessionId
-     * @return PatientIllnessScript or null
-     */
-    private List<IllnessScript> selectIllScripts(long id, String identifier){
-    	Session s = instance.getInternalSession(Thread.currentThread(), false);
-    	Criteria criteria = s.createCriteria(IllnessScript.class,"IllnessScript");
-    	criteria.add(Restrictions.eq(identifier, new Long(identifier)));
-    	List<IllnessScript> l =  (List<IllnessScript>) criteria.list();
-    	s.close();
-    	return l;
-    }
-    
-    /**
-     * Select the PatientIllnessScript for the sessionId from the database. 
-     * @param sessionId
-     * @return PatientIllnessScript or null
-     */
-    /*public PatientIllnessScript selectPatIllScriptBySessionId(long sessionId){
-    	return selectLearnerPatIllScript(sessionId, "sessionId");
-    }*/
     
     /**
      * Select the PatientIllnessScript of the expert, which is identified by the parentId and type from the database. 
@@ -189,16 +126,18 @@ public class DBClinReason /*extends HibernateUtil*/{
     	criteria.add(Restrictions.eq("vpId", vpId));
     	criteria.add(Restrictions.eq("type", new Integer(PatientIllnessScript.TYPE_EXPERT_CREATED)));
     	PatientIllnessScript patIllScript =  (PatientIllnessScript) criteria.uniqueResult();
-    	s.close();
+    	
     	if(patIllScript!=null){
-    		patIllScript.setSummSt(loadSummSt(patIllScript.getSummStId()));
+    		patIllScript.setSummSt(loadSummSt(patIllScript.getSummStId(), s));
+    		selectNodesAndConns(patIllScript, s);
     	}
+    	s.close();
     	return patIllScript;  	
     }
     
     /**
      * loads all learner scripts for a given vpId, called from the reports section....
-     * Doe NOT load the summary statements!!!
+     * Do NOT load the summary statements!!!
      * @param vpId
      * @return
      */
@@ -207,13 +146,16 @@ public class DBClinReason /*extends HibernateUtil*/{
     	Criteria criteria = s.createCriteria(PatientIllnessScript.class,"PatientIllnessScript");
     	criteria.add(Restrictions.eq("vpId", vpId));
     	criteria.add(Restrictions.eq("type", new Integer(PatientIllnessScript.TYPE_LEARNER_CREATED)));
-    	List patIllScripts =  criteria.list();
+    	List<PatientIllnessScript> patIllScripts =  criteria.list();
+    	if(patIllScripts!=null){   		
+    		for(int i=0; i<patIllScripts.size(); i++){
+    			selectNodesAndConns(patIllScripts.get(i), s);
+    		}
+    	}
     	s.close();
-    	//if(patIllScripts==null) return null;
+    	
     	return patIllScripts;
-    	/*if(patIllScript!=null)
-    		patIllScript.setSummSt(loadSummSt(patIllScript.getSummStId()));
-    	return patIllScript;  */	
+
     }
    
     
@@ -232,9 +174,12 @@ public class DBClinReason /*extends HibernateUtil*/{
     	criteria.add(Restrictions.eq(identifier, new Long(id)));
     	criteria.add(Restrictions.eq("type", new Integer(PatientIllnessScript.TYPE_LEARNER_CREATED)));
     	PatientIllnessScript patIllScript =  (PatientIllnessScript) criteria.uniqueResult();
+    	
+    	if(patIllScript!=null){
+    		patIllScript.setSummSt(loadSummSt(patIllScript.getSummStId(), s));
+    		selectNodesAndConns(patIllScript, s);
+    	}
     	s.close();
-    	if(patIllScript!=null)
-    		patIllScript.setSummSt(loadSummSt(patIllScript.getSummStId()));
     	return patIllScript;
     }
 
@@ -251,7 +196,13 @@ public class DBClinReason /*extends HibernateUtil*/{
     	criteria.add(Restrictions.eq("userId", new Long(userId)));
     	criteria.add(Restrictions.eq("deleteFlag", new Boolean(false)));
     	criteria.addOrder(Order.desc("lastAccessDate"));
-    	return  criteria.list();
+    	List<PatientIllnessScript> scripts =   criteria.list();
+    	if(scripts==null) return null;
+    	for(int i=0;i<scripts.size(); i++){
+    		selectNodesAndConns(scripts.get(i), s);
+    	}
+    	s.close();
+    	return scripts;
     }
     
     /**
@@ -269,8 +220,11 @@ public class DBClinReason /*extends HibernateUtil*/{
     	if(extUId!=null && !extUId.trim().equals("")) criteria.add(Restrictions.eq("extUId", extUId));
     	criteria.add(Restrictions.eq("type", PatientIllnessScript.TYPE_LEARNER_CREATED));
     	PatientIllnessScript patIllScript =  (PatientIllnessScript) criteria.uniqueResult();
-    	if(patIllScript!=null)
-    		patIllScript.setSummSt(loadSummSt(patIllScript.getSummStId()));
+    	if(patIllScript!=null){
+    		patIllScript.setSummSt(loadSummSt(patIllScript.getSummStId(), s));
+    		selectNodesAndConns(patIllScript, s);
+    	}
+    	s.close();
     	return patIllScript;
     }
     
@@ -287,6 +241,8 @@ public class DBClinReason /*extends HibernateUtil*/{
     	criteria.add(Restrictions.eq("userId", new Long(userId)));
     	criteria.add(Restrictions.eq("vpId", vpId));
     	criteria.add(Restrictions.eq("type", PatientIllnessScript.TYPE_LEARNER_CREATED));
+    	
+    	//We do not need to load nodes here...
     	return criteria.list();
     }
     
@@ -303,35 +259,28 @@ public class DBClinReason /*extends HibernateUtil*/{
     	criteria.add(Restrictions.eq("peerSync", new Boolean(false)));
     	criteria.add(Restrictions.gt("submittedStage", 0));
     	criteria.add(Restrictions.eq("type", new Integer(PatientIllnessScript.TYPE_LEARNER_CREATED)));
-    	return criteria.list();
+    	List<PatientIllnessScript> scripts = criteria.list();
+    	if(scripts!=null){
+    		for(int i=0;i<scripts.size();i++){
+    			selectNodesAndConns(scripts.get(i), s);
+    		}
+    	}
+    	s.close();
+    	return scripts;    	
     }
     
-    /**
-     * Select the PatientIllnessScripts for the userId and parentId from the database. 
-     * @param sessionId
-     * @return PatientIllnessScript or null
-     */
-    /*public List<PatientIllnessScript> selectLearnerPatIllScriptsByDate(){
-    	Session s = instance.getInternalSession(Thread.currentThread(), false);
-    	Criteria criteria = s.createCriteria(PatientIllnessScript.class,"PatientIllnessScript");
-    	//criteria.add(Restrictions.eq("peerSync", new Boolean(false)));
-    	criteria.add(Restrictions.eq("type", new Integer(PatientIllnessScript.TYPE_LEARNER_CREATED)));
-    	//TODO for peer calculation, we have to add a date range otherwise this is too much....
-    	return criteria.list();
-    }*/
-    
-	public SummaryStatement loadSummSt(long id){
+	public SummaryStatement loadSummSt(long id, Session s){
 		if(id<=0) return null;
-		Session s = instance.getInternalSession(Thread.currentThread(), false);
+		if(s==null) s = instance.getInternalSession(Thread.currentThread(), false);
 		Criteria criteria = s.createCriteria(SummaryStatement.class,"SummaryStatement");
 		criteria.add(Restrictions.eq("id", new Long(id)));
 		SummaryStatement st = (SummaryStatement) criteria.uniqueResult();
-		st.setSqHits(selectSummaryStatementSQsBySumId(st.getId()));
+		st.setSqHits(selectSummaryStatementSQsBySumId(st.getId(), s));
 		return st;
 	}
 	
-	private List selectSummaryStatementSQsBySumId(long summStId){
-		Session s = instance.getInternalSession(Thread.currentThread(), false);
+	private List selectSummaryStatementSQsBySumId(long summStId, Session s){
+		//Session s = instance.getInternalSession(Thread.currentThread(), false);
 		Criteria criteria = s.createCriteria(SummaryStatementSQ.class,"SummaryStatementSQ");
 		criteria.add(Restrictions.eq("summStId", new Long(summStId)));
 		return criteria.list();
@@ -347,7 +296,6 @@ public class DBClinReason /*extends HibernateUtil*/{
 	public List<SummaryStatement> getSummaryStatementsByAnalyzed(boolean analyzed){
 		Session s = instance.getInternalSession(Thread.currentThread(), false);
 		Criteria criteria = s.createCriteria(SummaryStatement.class,"SummaryStatement");
-		//criteria.add(Restrictions.eq("type", new Integer(type)));
 		criteria.add(Restrictions.eq("analyzed", new Boolean(analyzed)));
 		return criteria.list();
 	}
@@ -356,5 +304,55 @@ public class DBClinReason /*extends HibernateUtil*/{
 		Session s = instance.getInternalSession(Thread.currentThread(), false);
 		Criteria criteria = s.createCriteria(VPScriptRef.class,"VPScriptRef");
 		return criteria.list();		
+	}
+	
+	protected void selectNodesAndConns(PatientIllnessScript patIllScript, Session s){
+		patIllScript.setProblems(selectProblemsForScript(s, patIllScript.getId()));
+		patIllScript.setDiagnoses(selectDiagnosesForScript(s, patIllScript.getId()));
+		patIllScript.setTests(selectTestsForScript(s, patIllScript.getId()));
+		patIllScript.setMngs(selectMngsForScript(s, patIllScript.getId()));
+		patIllScript.setConns(selectConnsForScript(s, patIllScript.getId()));
+		
+	}
+	
+	private List<RelationProblem> selectProblemsForScript(Session s, long patIllscriptId){
+		Criteria criteria = s.createCriteria(RelationProblem.class,"RelationProblem");
+		criteria.add(Restrictions.eq("destId", new Long(patIllscriptId)));
+		criteria.addOrder(Order.asc("order"));
+		return criteria.list();	
+	}
+	
+	private List<RelationDiagnosis> selectDiagnosesForScript(Session s, long patIllscriptId){
+		Criteria criteria = s.createCriteria(RelationDiagnosis.class,"RelationDiagnosis");
+		criteria.add(Restrictions.eq("destId", new Long(patIllscriptId)));
+		criteria.addOrder(Order.asc("order"));
+		return criteria.list();	
+	}
+	
+	private List<RelationTest> selectTestsForScript(Session s, long patIllscriptId){
+		Criteria criteria = s.createCriteria(RelationTest.class,"RelationTest");
+		criteria.add(Restrictions.eq("destId", new Long(patIllscriptId)));
+		criteria.addOrder(Order.asc("order"));
+		return criteria.list();	
+	}
+	
+	private List<RelationManagement> selectMngsForScript(Session s, long patIllscriptId){
+		Criteria criteria = s.createCriteria(RelationManagement.class,"RelationManagement");
+		criteria.add(Restrictions.eq("destId", new Long(patIllscriptId)));
+		criteria.addOrder(Order.asc("order"));
+		return criteria.list();	
+	}
+	
+	private Map<Long, Connection> selectConnsForScript(Session s, long patIllscriptId){
+		Criteria criteria = s.createCriteria(Connection.class, "Connection");
+		criteria.add(Restrictions.eq("illScriptId", new Long(patIllscriptId)));
+		criteria.addOrder(Order.asc("id"));
+		List<Connection> conns = criteria.list();
+		if(conns==null) return null;
+		Map<Long, Connection> connMap = new TreeMap<Long, Connection>();
+		for(int i=0;i<conns.size(); i++){
+			connMap.put(new Long(conns.get(i).getId()), conns.get(i));
+		}
+		return connMap;
 	}
 }

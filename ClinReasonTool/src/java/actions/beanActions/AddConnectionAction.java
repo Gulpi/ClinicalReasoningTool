@@ -90,7 +90,7 @@ public class AddConnectionAction implements Scoreable{
 		patIllScript.getConns().put(new Long(cnx.getId()), cnx);
 		updateGraph(cnx);
 		notifyLog(cnx);
-		((HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest()).setAttribute("id2", GraphController.PREFIX_CNX + cnx.getId());
+		//((HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest()).setAttribute("id2", GraphController.PREFIX_CNX + cnx.getId());
 
 		//initScoreCalc(relProb);		
 	}

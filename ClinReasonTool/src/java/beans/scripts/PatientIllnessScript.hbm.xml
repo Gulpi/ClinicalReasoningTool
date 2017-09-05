@@ -33,41 +33,38 @@
 	      <property name="finalDDXType" column="final_ddx_type" type="int"/>
 	     
 	
-		<list name="problems" table="crt.relation_problem" lazy="false"> 
-    		<key column="dest_id"/> <!-- dest_id = patientIllnessScript id -->
+		<!-- <list name="problems" table="crt.relation_problem" lazy="false"> 
+    		<key column="dest_id"/> 
     		<list-index column="idx" base="0"/>
     		<one-to-many class="beans.relation.RelationProblem"/>   		
 		</list>	
 		<list name="diagnoses" table="crt.relation_diagnosis" lazy="false"> 
-    		<key column="dest_id"/> <!-- dest_id = patientIllnessScript id -->
+    		<key column="dest_id"/> 
     		<list-index column="idx" base="0"/>
     		<one-to-many class="beans.relation.RelationDiagnosis"/>   		
 		</list>	
 		<list name="tests" table="crt.relation_test" lazy="false"> 
-    		<key column="dest_id"/> <!-- dest_id = patientIllnessScript id -->
+    		<key column="dest_id"/> 
     		<list-index column="idx" base="0"/>
     		<one-to-many class="beans.relation.RelationTest"/>   		
 		</list>	
-		<!-- <list name="epis" table="crt.relation_epi" lazy="false"> 
-    		<key column="dest_id"/> 
-    		<list-index column="idx" base="0"/>
-    		<one-to-many class="beans.relation.RelationEpi"/>   		
-		</list>	-->
+	
 		<list name="mngs" table="crt.relation_management" lazy="false"> 
-    		<key column="dest_id"/> <!-- dest_id = patientIllnessScript id -->
+    		<key column="dest_id"/> 
     		<list-index column="idx" base="0"/>
     		<one-to-many class="beans.relation.RelationManagement"/>   		
 		</list>	
-		<list name="errors" table="crt.error" lazy="false"> <!-- table="crt.relation_problem"-->
-    		<key column="dest_id"/> <!-- dest_id = patientIllnessScript id -->
-    		<list-index column="idx" base="0"/>
-    		<one-to-many class="beans.error.MyError"/>   		
-		</list>			
+
 		<map name="conns" table="crt.connection" lazy="false" order-by="id" >
 	   		<key column="illscript_id" />
 	   		<map-key column="id" type="long"/>	   		
 	    	<one-to-many class="beans.relation.Connection" />
-	    </map>		
+	    </map>	-->
+	    <list name="errors" table="crt.error" lazy="false"> <!-- table="crt.relation_problem"-->
+    		<key column="dest_id"/> <!-- dest_id = patientIllnessScript id -->
+    		<list-index column="idx" base="0"/>
+    		<one-to-many class="beans.error.MyError"/>   		
+		</list>			
 	    <sql-query name="script.selByRelDDX">select pis.id, pis.vp_id, pis.type, rd.source_id from patient_illnessscript pis where (pis.user_id=:userId or pis.type=2) and pis.id in(select rd.dest_id from relation_diagnosis rd where source_id in(:ids)) and pis.id = rd.dest_id</sql-query>
 	    <sql-query name="script.selByRelProb">select pis.id, pis.vp_id, pis.type, rd.source_id from patient_illnessscript pis where (pis.user_id=:userId or pis.type=2) and pis.id in(select rd.dest_id from relation_problem rd where source_id in(:ids)) and pis.id = rd.dest_id</sql-query>
 	    <sql-query name="script.selByRelTest">select pis.id, pis.vp_id, pis.type, rd.source_id from patient_illnessscript pis where (pis.user_id=:userId or pis.type=2) and pis.id in(select rd.dest_id from relation_test rd where source_id in(:ids)) and pis.id = rd.dest_id</sql-query>

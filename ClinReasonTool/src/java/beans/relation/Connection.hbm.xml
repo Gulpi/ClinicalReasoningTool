@@ -13,7 +13,7 @@
 		</id>	
 		<property name="targetId" column="target_id" type="long" />
 		<property name="startId" column="start_id" type="long"/>	
-		<property name="illScriptId" column="illscript_id" type="long"/>
+		<property name="illScriptId" column="illscript_id" type="long" update="false"/>
 		<property name="startType" column="start_type" type="int"/>
 		<property name="targetType" column="target_type" type="int"/>
 		<property name="weight" column="weight" type="int"/>

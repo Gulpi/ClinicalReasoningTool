@@ -235,7 +235,7 @@ public class PatientIllnessScript extends Beans implements Comparable, IllnessSc
 		if(summSt==null && summStId<=0) return null;
 		if(summSt==null && summStId>0){ //for some reason summSt not yet loaded, so load it now:
 			try{
-				summSt = new DBClinReason().loadSummSt(summStId);
+				summSt = new DBClinReason().loadSummSt(summStId, null);
 			}
 			catch(Exception e){
 				CRTLogger.out(StringUtilities.stackTraceToString(e), CRTLogger.LEVEL_ERROR);

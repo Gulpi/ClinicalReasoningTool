@@ -26,7 +26,8 @@ public class DBEditing extends DBClinReason{
     	if(patIllScripts!=null){
     		for(int i=0; i<patIllScripts.size(); i++){
     			PatientIllnessScript patIllScript = patIllScripts.get(i);
-    			patIllScript.setSummSt(loadSummSt(patIllScript.getSummStId()));
+    			selectNodesAndConns(patIllScript, s);
+    			patIllScript.setSummSt(loadSummSt(patIllScript.getSummStId(), s));
     		}
     	}
     	s.close();
@@ -39,9 +40,12 @@ public class DBEditing extends DBClinReason{
     	criteria.add(Restrictions.eq("id", new Long(id)));
     	criteria.add(Restrictions.eq("type", new Integer(PatientIllnessScript.TYPE_EXPERT_CREATED)));
     	PatientIllnessScript patIllScript = (PatientIllnessScript) criteria.uniqueResult();
+    	
+    	if(patIllScript!=null){
+    		selectNodesAndConns(patIllScript, s);
+    		patIllScript.setSummSt(loadSummSt(patIllScript.getSummStId(), s));
+    	}
     	s.close();
-    	if(patIllScript!=null)
-    		patIllScript.setSummSt(loadSummSt(patIllScript.getSummStId()));
     	return patIllScript;  	
     }
 }

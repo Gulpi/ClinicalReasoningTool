@@ -130,7 +130,7 @@ public class ScriptCopyController {
 			idTable.put(new Long(rel.getId()), newRel.getId());
 			return newRel;
 		}
-		idTable.put(new Long(rel.getId()), null);
+		idTable.put(new Long(rel.getId()), new Long(-1));
 		return null;
 	}
 	
@@ -146,7 +146,7 @@ public class ScriptCopyController {
 			idTable.put(new Long(rel.getId()), newRel.getId());
 			return newRel;
 		}
-		idTable.put(new Long(rel.getId()), null);
+		idTable.put(new Long(rel.getId()), new Long(-1));
 		return null;
 	}
 	
@@ -163,7 +163,7 @@ public class ScriptCopyController {
 			idTable.put(new Long(rel.getId()), newRel.getId());
 			return newRel;
 		}
-		idTable.put(new Long(rel.getId()), null);
+		idTable.put(new Long(rel.getId()), new Long(-1));
 		return null;
 	}
 	

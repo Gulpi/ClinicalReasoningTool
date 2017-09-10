@@ -8,7 +8,7 @@ public class CRTLogger {
 	public static final int LEVEL_ERROR = 3;
 	public static int currentLogLevel = LEVEL_TEST; //TODO get from properties
 	private static final String logfile = "logs/crt.log";
-	private static  Logger logger = null;
+	private static  Logger logger = Logger.getLogger(CRTLogger.class);
 	/**
 	 * Write the string into the console and into a logfile (crt.log)
 	 * @param s
@@ -16,7 +16,7 @@ public class CRTLogger {
 	 */
 	public static void out(String s,int level){
 		try{
-		    Layout layout = new PatternLayout("%-5p [%t]: %m%n");
+		    Layout layout = new PatternLayout("%d{yyyy.MM.dd HH:mm:ss:SSS z} %-5p [%t]: %m%n");
 		   if(logger==null){
 			   logger = Logger.getLogger(logfile);
 			    logger.addAppender(new ConsoleAppender(layout, ConsoleAppender.SYSTEM_OUT));

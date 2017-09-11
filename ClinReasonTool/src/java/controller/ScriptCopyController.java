@@ -231,6 +231,7 @@ public class ScriptCopyController {
 				newStatement.setLang(newScript.getLocale().getLanguage());
 				newStatement.setPatillscriptId(newScript.getId());
 				newStatement.setType(PatientIllnessScript.TYPE_EXPERT_CREATED);
+				newStatement.setStage(summSt.getStage());
 				new DBClinReason().saveAndCommit(newStatement);
 				newScript.setSummStId(newStatement.getId());
 				new DBClinReason().saveAndCommit(newScript);

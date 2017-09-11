@@ -566,7 +566,7 @@ public class PatientIllnessScript extends Beans implements Comparable, IllnessSc
 			//we cannot save if the user is an admin and views a learners script
 			if(stageNum > this.currentStage && !NavigationController.getInstance().getMyFacesContext().isView()){
 				//if user is on first card, do NOT calculate list scores:
-				if(stageNum>=2) new ScoringListAction(this).checkListScoresAtStage();
+				if(stageNum>=2 && !this.isExpScript()) new ScoringListAction(this).checkListScoresAtStage();
 				this.setCurrentStage(stageNum);	
 				save();
 			}

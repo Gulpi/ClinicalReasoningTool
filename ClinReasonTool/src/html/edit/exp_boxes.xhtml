@@ -51,7 +51,8 @@ var msg2="Please connect the hypotheses with the findings";
 var scriptId = "#{adminContext.patillscript.id}";
 var listUrl="../jsonp_#{adminContext.patillscript.locale}.json";
 var scriptlang = "#{adminContext.patillscript.locale}";
-if(scriptlang=="de") listUrl = "../jsonp_de.json";
+//if(scriptlang=="de") listUrl = "../jsonp_de.json";
+//if(scriptlang=="pl") listUrl = "../jsonp_de.json";
 var lang="#{adminContext.locale}";
 var currentStage = currentStage = #{adminContext.patillscript.stage};
 
@@ -67,7 +68,7 @@ var item_arr = new Array();
 var exp_arr = new Array();
 
 $(function() {
-	if(scriptlang=="de") listUrl = "../jsonp_de.json";
+	//if(scriptlang=="de") listUrl = "../jsonp_de.json";
 	$(".listdialog").hide();
 	//$("#jdialogError").hide();
 	$("#connContext").hide();
@@ -227,7 +228,7 @@ Stage: <span id="stageSpan">#{adminContext.patillscript.stage} </span>
 						<h:form id="probform">
 						<h:panelGroup>
 						   <ui:repeat id="repeatprob" value="#{adminContext.patillscript.problemsStage}" var="prob" varStatus="status">
-						   		<ui:include src="../probbox.xhtml" />
+						   		<ui:include src="probbox.xhtml" />
 	    					</ui:repeat>	    						    					
 	    				</h:panelGroup>
     				     <h:commandButton id="hiddenProbButton" value="RenderSomething" style="visibility:hidden">

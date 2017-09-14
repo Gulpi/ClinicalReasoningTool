@@ -65,7 +65,7 @@ function delProbCallBack(probId, selProb){
 	problemCallBack(probId, selProb);
 }
 
-function problemCallBack(testId, selTest){
+function problemCallBack(){
 	$("#problems").val("");	
 	$("#fdg_prefix").val("");
 	$(".fdgs").remove();

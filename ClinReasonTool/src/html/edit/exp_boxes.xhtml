@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml"   
+<html lang="#{adminContext.language}" xmlns="http://www.w3.org/1999/xhtml"   
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:f="http://java.sun.com/jsf/core"
-      xmlns:v="urn:schemas-microsoft-com:vml">
+	 xmlns:v="urn:schemas-microsoft-com:vml"     
+	  >
  <f:view locale="#{adminContext.locale}">     
 
 <head>
@@ -16,6 +17,7 @@
 <title>Patient Illness Script</title>
  <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no"/>
+
 <link rel="stylesheet" type="text/css" href="../../scripts/jquery112/ui-lightness/jquery-ui.css" /> 
 <link rel="stylesheet" type="text/css" href="../../styles/jsPlumbToolkit-defaults.css" />
 <link rel="stylesheet" href="../../styles/clinreason_boxes.css" />
@@ -26,9 +28,10 @@
 <script type="text/javascript" src="../../scripts/jquery112/jquery-ui.js"></script>
 
 <script src="../../scripts/connection.js"></script>
+<script src="../../scripts/crt_box.js"></script>
+
 <script src="../../scripts/list.js"></script>
 
-<script src="../../scripts/crt_box.js"></script>
 <script src="../../scripts/ajax.js"></script>
 <script src="../../scripts/jsplumb/jsPlumb.min.js"></script>
 <script src="../../scripts/myjsplumb.js"></script>
@@ -50,7 +53,8 @@ var listUrl="../jsonp_#{adminContext.patillscript.locale}.json";
 var scriptlang = "#{adminContext.patillscript.locale}";
 if(scriptlang=="de") listUrl = "../jsonp_de.json";
 var lang="#{adminContext.locale}";
-var currentStage = #{adminContext.patillscript.stage};
+var currentStage = currentStage = #{adminContext.patillscript.stage};
+
 var currentStageScript = "#{adminContext.patillscript.currentStageWithUpdate}";
 var saveSumConfirm = "#{prop['summst.saveconfirm']}";
 
@@ -76,6 +80,16 @@ $(function() {
 	$(".chgstage2").on('change',function(){
 		chgStageEdge(this);
 	 });
+	
+    $( ".itembox" ).draggable({
+   	 start: function(event, ui) {             
+           // $(ui.helper).find('.tooltip').hide(); 
+            $('.ui-tooltip').remove();
+        }, 
+        
+       containment:"parent"     
+   
+     });
 
 	$("#jdialog").dialog({
 		autoOpen: false,
@@ -117,6 +131,7 @@ jsPlumb.ready(function () {
         Anchors: ["TopCenter", "TopCenter"],
         Container: "canvas"
     });
+     	
 
     // suspend drawing and initialise.
     instance.batch(function () {
@@ -143,9 +158,9 @@ jsPlumb.ready(function () {
        
     });
     // collapse/expand group button
-    instance.on(canvas, "click", ".node-collapse", function() {
+    /*instance.on(canvas, "click", ".node-collapse", function() {
     	toggleContainerCollapse(this.parentNode);
-    });
+    });*/
     $(".itembox").contextmenu(function(event) {
     	  showDropDown("dd"+this.id);
     	  event.preventDefault();
@@ -194,26 +209,29 @@ Stage: <span id="stageSpan">#{adminContext.patillscript.stage} </span>
         <label for="cnxtoggle"></label>
 </div>
 </div>
-<div class="boxes_container" style="float:left;width:60%;">
+<div class="boxes_container">
 	<div id="canvas" class="canvas jtk-surface drag-drop jtk-surface-nopan" >
 		  <!-- problems -->
-		  <div id="fdg_box"  class="container expcontainer" group="fdg_group">
-		   		<div class="title">#{prop['findings']}  
+		  <div id="fdg_box"  class="container expcontainer fdg_cont" group="fdg_group">
+		  		   		<div id="fdg_title" class="title"  mytooltip="#{prop['findings.search']}">#{prop['findings']} 
+		   		<i class="fa fa-info-circle"></i></div>
+		  
+		   		<!--  <div class="title">#{prop['findings']}  
 		   		</div>
-		   		<div class="node-collapse"></div>
+		   		<div class="node-collapse"></div>-->
 		  			<div class="search boxchild"><span class="icon"><i class="icon-search"></i></span>
 		  			<input type="text" id="fdg_prefix" style="display:none;" />
 		  			
 		  			<!-- <select class="f_select" style="width:40px;" id="fdg_prefix"><option value="0">-</option><option value="1">No</option></select>-->
-		  			<input class="f_text" style="width:155px;" id="problems" placeholder="Search..." title="Please add any problems, findings, exposures, or risk factors you consider as relevant"></input></div>
+		  			<input class="f_text" style="width:155px;" id="problems" placeholder="#{prop['findings.add']} ..." mytooltip="#{prop['findings.search']}"></input></div>
 						<h:form id="probform">
 						<h:panelGroup>
 						   <ui:repeat id="repeatprob" value="#{adminContext.patillscript.problemsStage}" var="prob" varStatus="status">
-						   		<ui:include src="probbox.xhtml" />
+						   		<ui:include src="../probbox.xhtml" />
 	    					</ui:repeat>	    						    					
 	    				</h:panelGroup>
     				     <h:commandButton id="hiddenProbButton" value="RenderSomething" style="visibility:hidden">
-    						<f:ajax render="@form" onevent="updateItemCallback"></f:ajax>
+    						<f:ajax render="@form" onevent="updateProbCallback"></f:ajax>
 						</h:commandButton>
 						
 						<!-- <h:messages errorClass="errorMessage" infoClass="infoMessage" showDetail="true" showSummary="true"/>-->						
@@ -221,11 +239,13 @@ Stage: <span id="stageSpan">#{adminContext.patillscript.stage} </span>
 						<span class="errormsg" id="msg_probform"></span>
 		  </div>
 		  <!--  diagnoses -->
-		  <div id="ddx_box" class="container expcontainer" group="ddx_group">	
-		  		<div class="title">#{prop['ddx']}
+		  <div id="ddx_box" class="container expcontainer ddx_cont" group="ddx_group">	
+		  		  		<div id="ddx_title"  mytooltip="#{prop['ddx.search']}" class="title">#{prop['ddx']} <i class="fa fa-info-circle"></i></div>
+		  
+		  		<!--  <div class="title">#{prop['ddx']}
 		  		</div>	
-		  		<div class="node-collapse"></div>	  		
-		  			<div class="search boxchild"><input class="f_text" id="ddx" title="Please add your differentials"></input></div>
+		  		<div class="node-collapse"></div>-->			  		  		
+		  			<div class="search boxchild"><input class="f_text" id="ddx"  placeholder="#{prop['ddx.add']} ..." mytooltip="#{prop['ddx.search']}"></input></div>
 			  			<h:form id="ddxform">
 						<h:panelGroup >
 							<ui:repeat value="#{adminContext.patillscript.diagnosesStage}" var="ddx" varStatus="status">
@@ -238,11 +258,11 @@ Stage: <span id="stageSpan">#{adminContext.patillscript.stage} </span>
 					<span class="errormsg" id="msg_ddxform"></span>							
 		  </div><br/>
 		  <!-- tests -->
-		  <div id="tst_box" class="container expcontainer" group="tst_group">
-		  		<div class="title">#{prop['tests']}
+		  <div id="tst_box" class="container expcontainer tst_cont" group="tst_group">
+		  		<div id="tst_title" mytooltip="#{prop['tests.search']}" class="title">#{prop['tests']} <i class="fa fa-info-circle"></i>
 		  		</div>
-		 	 	<div class="node-collapse"></div>
-		  		<div class="search boxchild"><input class="f_text" id="tests" title="Please add any tests or examinations you want to order or perform."></input></div>
+		 	 	<!--  <div class="node-collapse"></div>-->
+		  		<div class="search boxchild"><input class="f_text" id="tests" placeholder="#{prop['tests.add']} ..." mytooltip="#{prop['tests.search']}"></input></div>
 		  			<h:form id="testform">
 		  			<h:panelGroup>
 					
@@ -257,11 +277,11 @@ Stage: <span id="stageSpan">#{adminContext.patillscript.stage} </span>
 					<span class="errormsg" id="msg_testform"></span>
 		</div>
 		  <!-- managements -->
-		  <div id="mng_box" class="container expcontainer" group="mng_group">
-		  	<div class="title">#{prop['mng']}
+		  <div id="mng_box" class="container expcontainer mng_cont" group="mng_group">
+		  	<div id="mng_title"  mytooltip="#{prop['mng.search']}" class="title">#{prop['mng']} <i class="fa fa-info-circle"></i>
 		  	</div>
-		 	 <div class="node-collapse"></div>
-		  	<div class="search boxchild"><input class="f_text" id="mng" title="Please add any management decisions for your patient."></input></div>
+		 	 <!-- <div class="node-collapse"></div>-->
+		  	<div class="search boxchild"><input class="f_text" id="mng" placeholder="#{prop['mng.add']} ..." mytooltip="#{prop['mng.search']}"></input></div>
 	  			<h:form id="mngform">
 	  			<h:panelGroup>
 	

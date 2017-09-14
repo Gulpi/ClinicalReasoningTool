@@ -21,6 +21,7 @@ function initGroups(){
 	        el: document.getElementById(boxes[i]),
 	        id:groups[i],
 	        constrain:true,
+	        dropOverride:true,
 	        droppable:false,
 	        draggable:false //remove if boxes shall be draggable again!!!
 	    });

@@ -74,23 +74,6 @@ var isSuccess = false;
 		        });
 	        }
 	      });
-	   /* $.ajax({ //list for epi (list view)
-	        url: listUrl,
-	        dataType: "json",
-	        success: function( data ) {
-	        	item_data = data;
-	          $( "#epi" ).autocomplete({
-	            source: data,
-	            minLength: minLengthTypeAhead,
-	            select: function( event, ui ) {
-	            	addEpi(ui.item.value, ui.item.label);
-	            },
-	  	      close: function(ui) {
-	  	        $("#epi").val("");
-	  	      }
-	          });
-	        }
-	      });	  */  
 	  });
   
   /*

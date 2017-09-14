@@ -46,6 +46,7 @@ var scriptId = "#{crtContext.patillscript.id}";
 var listUrl="jsonp_en.json";
 var scriptlang = "#{crtContext.patillscript.locale}";
 if(scriptlang=="de") listUrl = "jsonp_de.json";
+else if(scriptlang=="pl") listUrl = ""; //We have a Polish list, but we currently do not use it for player
 var lang="#{crtContext.locale}";
 var currentStage = $.getUrlVar('stage');
 var currentStageScript = "#{crtContext.patillscript.currentStageWithUpdate}";
@@ -81,6 +82,7 @@ $(function() {
     postEnforceFinalDDXSubmission(submitted/*, myStage, maxSubmittedStage*/);
 
 	if(scriptlang=="de") listUrl = "jsonp_de.json";
+	if(scriptlang=="pl") listUrl = "";
 	$(".listdialog").hide();
 	$("#jdialogError").hide();
 	$("#connContext").hide();

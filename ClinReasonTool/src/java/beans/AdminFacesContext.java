@@ -2,9 +2,7 @@ package beans;
 
 import java.io.*;
 import java.util.*;
-import java.beans.*;
 
-import javax.faces.application.FacesMessage;
 import javax.faces.bean.*;
 import javax.faces.context.*;
 import javax.servlet.ServletContext;
@@ -16,12 +14,8 @@ import beans.graph.Graph;
 import beans.scoring.*;
 import beans.scripts.*;
 import beans.user.Auth;
-import beans.user.SessionSetting;
 import beans.user.User;
 import controller.*;
-import database.DBEditing;
-import database.DBScoring;
-import database.DBUser;
 import util.CRTLogger;
 import util.StringUtilities;
 
@@ -150,8 +144,10 @@ public class AdminFacesContext extends FacesContextWrapper implements MyFacesCon
 		this.graph = null;
 	}
 	
-	public void initGraph(){	    
-		if(graph!=null) return; //nothing todo, graph already loaded
+	public void initGraph(){	  
+		if(graph!=null && patillscript!=null && graph.isSameGraph(patillscript.getVpId(), patillscript.getId())) return; //nothing todo, graph already loaded
+
+		//if(graph!=null) return; //nothing todo, graph already loaded
 		graph = new Graph(patillscript.getVpId(), true, patillscript.getId());
 		//if(graph!=null) graph.setExpEdit(true);
 

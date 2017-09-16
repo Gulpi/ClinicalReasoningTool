@@ -214,6 +214,7 @@ public class CRTFacesContext extends FacesContextWrapper implements MyFacesConte
 		return sessSetting;}
 
 	public LearningAnalyticsBean getLearningAnalytics() {
+		if(patillscript.isExpScript()) return null;
 		if(analyticsContainer==null) return null;//analyticsContainer = new LearningAnalyticsContainer(userId);
 		return analyticsContainer.getLearningAnalyticsBeanByPatIllScriptId(patillscript.getId(), patillscript.getVpId());
 	}

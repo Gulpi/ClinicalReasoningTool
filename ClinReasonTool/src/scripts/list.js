@@ -74,6 +74,45 @@ var isSuccess = false;
 		        });
 	        }
 	      });
+	    /* alternative handling if we do not have a list: */
+	    $("#problems").bind("enterProb",function(e){
+	    	addProblem(-999, "-999", $("#problems").val());	 
+	    	});
+	    	$("#problems").keyup(function(e){
+	    	    if(e.keyCode == 13 && listUrl=="")
+	    	    {
+	    	        $(this).trigger("enterProb");
+	    	    }
+	    	});
+	    	
+		 $("#ddx").bind("enterDDX",function(e){
+		    	addDiagnosis(-999, "-999", $("#ddx").val());	 
+		    	});
+		    	$("#ddx").keyup(function(e){
+		    	    if(e.keyCode == 13 && listUrl=="")
+		    	    {
+		    	        $(this).trigger("enterDDX");
+		    	    }
+		    });
+			$("#tests").bind("enterTest",function(e){
+			    	addTest(-999, "-999", $("#tests").val());	 
+			    	});
+			    	$("#tests").keyup(function(e){
+			    	    if(e.keyCode == 13 && listUrl=="")
+			    	    {
+			    	        $(this).trigger("enterTest");
+			    	    }
+			    });
+			$("#mng").bind("enterMng",function(e){
+				addManagement(-999, "-999", $("#mng").val());	 
+		    	});
+		    	$("#mng").keyup(function(e){
+		    	    if(e.keyCode == 13 && listUrl=="")
+		    	    {
+		    	        $(this).trigger("enterMng");
+		    	    }
+		    });
+			
 	  });
   
   /*
@@ -212,3 +251,5 @@ function checkStartUserInput(user_input){
 	}
 	return false;
 }
+
+

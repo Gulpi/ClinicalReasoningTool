@@ -6,8 +6,7 @@ import actions.beanActions.AddAction;
 import beans.relation.Relation;
 import beans.user.User;
 import database.DBList;
-import model.ListItem;
-import model.Synonym;
+import beans.list.*;
 
 public class RelationController {
 	
@@ -44,7 +43,7 @@ public class RelationController {
 	}
 	
 	private ListItem getListItemById(long id, Locale loc){
-		if(id==-99){ //then user has selected own entry and we have to save this entry into the database:
+		if(id == -99 || id == -999){ //-99: user has selected own entry and we have to save this entry into the database, -999 no list available
 			String entry = AjaxController.getInstance().getRequestParamByKeyNoDecrypt("orgname");
 			User u = NavigationController.getInstance().getCRTFacesContext().getUser();
 			if(u!=null) u.getUserSetting().setDisplayOwnEntryWarn(false);

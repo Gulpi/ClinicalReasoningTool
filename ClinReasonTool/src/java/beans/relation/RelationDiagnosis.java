@@ -10,8 +10,7 @@ import beans.graph.MultiVertex;
 import controller.GraphController;
 import controller.NavigationController;
 import controller.ScoringController;
-import model.ListItem;
-import model.Synonym;
+import beans.list.*;
 import properties.IntlConfiguration;
 /**
  * connects a Diagnosis object to a (Patient)IllnessScript object with some attributes.

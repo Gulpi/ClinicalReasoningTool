@@ -5,8 +5,7 @@ import java.util.*;
 
 
 import controller.GraphController;
-import model.ListItem;
-import model.Synonym;
+import beans.list.*;
 
 /**
  * Relation between an (Patient-)IllnessScript and a problem. We need this to specify a problem, e.g. whether it is 

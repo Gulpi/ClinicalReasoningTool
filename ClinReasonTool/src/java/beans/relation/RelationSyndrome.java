@@ -1,7 +1,6 @@
 package beans.relation;
 
-import model.ListItem;
-
+import beans.list.*;
 /**
  * @author ingahege
  * ListItems that belong to a syndrome (e.g. ProblemRelation)

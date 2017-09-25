@@ -4,7 +4,7 @@ package model;
  * Level of confidence, e.g. with the DDX, stored as a value between 1-100. 
  * 1-25: not at all confident, 26-50: somewhat confident , 51-75: confident, 76-100:very confident
  * @author ingahege
- *
+ * @deprecated
  */
 public class Confidence {
 	public static final int NOT_CONFIDENT = 1;

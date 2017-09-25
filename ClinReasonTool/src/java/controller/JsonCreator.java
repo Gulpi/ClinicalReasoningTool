@@ -5,9 +5,7 @@ import java.util.*;
 
 import application.AppBean;
 import database.DBList;
-import model.ListInterface;
-import model.ListItem;
-import model.Synonym;
+import beans.list.*;
 import properties.IntlConfiguration;
 import util.CRTLogger;
 import util.StringUtilities;
@@ -35,6 +33,8 @@ public class JsonCreator {
 
 	public static final String fileNameOneListEN = "jsonp_en.json"; //TODO we need the path to the HTML folder!!!
 	public static final String fileNameOneListDE = "jsonp_de.json";
+	public static final String fileNameOneListPL = "jsonp_pl.json";
+
 	//A=Anatomy,B=Organisms, F=Psychiatry/Psychology, G=Phenomena and Processes, H=Disciplines/Occupations
 	
 	//configurations: TODO get from property file
@@ -46,6 +46,7 @@ public class JsonCreator {
 		if(createOneList){
 			exportOneList(new Locale("en"));
 			exportOneList(new Locale("de"));
+			exportOneList(new Locale("pl"));
 		}
 		
 	}
@@ -139,9 +140,6 @@ public class JsonCreator {
 		
 		//now we compare the synonyma
 		else{
-			if(item.getItem_id()==150012){
-				System.out.println("");
-			}
 			Iterator<Synonym> it = item.getSynonyma().iterator();
 			toAddItems.add(item);
 			while(it.hasNext()){	
@@ -185,11 +183,14 @@ public class JsonCreator {
 	
 	public static File getMeshJsonFileByLoc(Locale loc){
 		if (loc.getLanguage().equals(new Locale("de").getLanguage())) return new File(fileNameOneListDE);
+		if (loc.getLanguage().equals(new Locale("pl").getLanguage())) return new File(fileNameOneListPL);
 		/*if (loc.getLanguage().equals(new Locale("en").getLanguage())) */ return new File(fileNameOneListEN);
 	}
 	
 	public static String getMeshJsonFileNameByLoc(Locale loc){
 		if (loc.getLanguage().equals(new Locale("de").getLanguage())) return fileNameOneListDE;
+		if (loc.getLanguage().equals(new Locale("de").getLanguage())) return fileNameOneListPL;
+
 		/*if (loc.getLanguage().equals(new Locale("en").getLanguage())) */ return fileNameOneListEN;
 	}
 

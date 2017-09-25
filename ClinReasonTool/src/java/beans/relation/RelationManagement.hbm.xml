@@ -23,6 +23,6 @@
 		<!--  <property name="creationDate" column="creation_date" update="false" type="timestamp"/>-->
 		
 		<!--  <property name="name" column="name" type="string"/>	-->
-		<many-to-one name="management" class="model.ListItem" column="source_id"  lazy="false" insert="false" update="false"/>
+		<many-to-one name="management" class="beans.list.ListItem" column="source_id"  lazy="false" insert="false" update="false"/>
 </class>
 </hibernate-mapping>

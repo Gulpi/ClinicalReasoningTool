@@ -28,6 +28,6 @@
 
 		
 		<!--  <property name="name" column="name" type="string"/>	-->
-		<many-to-one name="diagnosis" class="model.ListItem" column="source_id"  lazy="false" insert="false" update="false"/>
+		<many-to-one name="diagnosis" class="beans.list.ListItem" column="source_id"  lazy="false" insert="false" update="false"/>
 </class>
 </hibernate-mapping>

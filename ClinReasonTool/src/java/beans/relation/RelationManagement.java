@@ -4,8 +4,7 @@ import java.io.Serializable;
 import java.util.*;
 
 import controller.GraphController;
-import model.ListItem;
-import model.Synonym;
+import beans.list.*;
 
 public class RelationManagement extends Relation implements Serializable{
 	

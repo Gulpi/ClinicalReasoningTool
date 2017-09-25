@@ -4,7 +4,7 @@ import java.beans.Beans;
 import javax.faces.application.FacesMessage.Severity;
 
 import beans.relation.Relation;
-import model.ListItem;
+import beans.list.ListItem;
 
 public interface AddAction{
 	public static final int ADD_TYPE_MAINITEM = 1;

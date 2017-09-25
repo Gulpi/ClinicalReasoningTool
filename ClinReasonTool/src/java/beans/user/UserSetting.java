@@ -1,4 +1,4 @@
-package beans;
+package beans.user;
 
 import java.io.Serializable;
 

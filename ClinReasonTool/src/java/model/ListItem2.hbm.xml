@@ -3,18 +3,18 @@
 	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 <hibernate-mapping package="model">
 
-	<class name="ListItem" table="crt.clinreason_list">
+	<class name="ListItem2" table="crt.clinreason_list_campus">
 		<cache usage="nonstrict-read-write" />
 		<comment>ListItem</comment>	
 	
 		<id name="item_id" type="long" column="item_id">
-			<generator class="sequence">
-				<param name ="sequence">CRT.LIST_SEQ</param>
-			</generator>
+			<generator class="increment"/>
 		</id>
 					
 		<property name="name" column="name" type="string" length="300"/>
-		<property name="mesh_id" column="mesh_ui" type="string" length="50"/>
+		<property name="matched" column="matched" type="boolean"/>
+		<property name="matchedItem" column="matched_item" type="string" length="300"/>
+		<!--  <property name="mesh_id" column="mesh_ui" type="string" length="50"/>
 		<property name="firstCode" column="code" type="string" length="50"/>
 		<property name="category" column="mesh_category" type="string" length="500"/>
 		<property name="level" column="item_level" type="int"/>
@@ -24,8 +24,7 @@
 		<property name="language" column="language" type="locale" length="5"/>
 		<property name="mesh_ec" column="mesh_ec" type="string" length="500"/>
 		<property name="itemType" column="item_type" type="string" length="5"/>
-		<property name="ignored" column="ignore" type="boolean"/>
-		<property name="isSyndrome" column="syndrome" type="int"/>
+		<property name="ignored" column="ignore" type="boolean"/>-->
 	    
 	    <set name="synonyma" table="crt.CLINREASON_LIST_SYN" lazy="false" fetch="join" batch-size="100">
     		<key column="item_id"/>
@@ -33,9 +32,9 @@
     		<!-- <element column="name" type="string"/>-->
 		</set>	
 		<!--  currently not used, but might be used in future for selecting items depending on code -->
-		  <set name="otherCodes" table="crt.CLINREASON_LIST_CODES" lazy="false" fetch="join" batch-size="100">
+		<!--   <set name="otherCodes" table="crt.CLINREASON_LIST_CODES" lazy="false" fetch="join" batch-size="100">
     		<key column="item_id"/>
     		<element column="code" type="string"/>
-		</set>
+		</set>-->
 </class>
 </hibernate-mapping>

@@ -2,8 +2,6 @@ package beans.user;
 
 import javax.faces.bean.SessionScoped;
 
-import beans.UserSetting;
-
 /**
  * A user object. We create it when a user comes from a VP system or when an admin logs in to edit an expert script.
  * @author ingahege

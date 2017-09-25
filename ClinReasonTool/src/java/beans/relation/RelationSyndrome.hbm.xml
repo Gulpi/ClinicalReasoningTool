@@ -13,7 +13,7 @@
 		</id>	
 		<property name="syndromeId" column="syndrome_id" type="long" />
 		<property name="listItemIdChild" column="child_id" type="long"/>
-		<many-to-one name="ListItem" class="model.ListItem" column="child_id"  lazy="false" insert="false" update="false"/>
+		<many-to-one name="ListItem" class="beans.list.ListItem" column="child_id"  lazy="false" insert="false" update="false"/>
 		
 </class>
 </hibernate-mapping>

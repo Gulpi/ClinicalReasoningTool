@@ -7,7 +7,7 @@ import beans.relation.Relation;
 import beans.relation.RelationDiagnosis;
 import beans.scripts.IllnessScriptInterface;
 import controller.NavigationController;
-import model.ListItem;
+import beans.list.ListItem;
 /**
  * This is a vertex container, that can contains from which soure this vertex has been added.
  * @author ingahege

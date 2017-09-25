@@ -24,7 +24,7 @@
 
 		<!--  <property name="creationDate" column="creation_date" update="false" type="timestamp"/>-->
 		
-		<many-to-one name="problem" class="model.ListItem" column="source_id"  lazy="false" insert="false" update="false"/>
+		<many-to-one name="problem" class="beans.list.ListItem" column="source_id"  lazy="false" insert="false" update="false"/>
 		
 		<set name="syndromItems" table="crt.RELATION_SYNDROME" lazy="false" fetch="join" batch-size="100">
     		<key column="syndrome_id"/>

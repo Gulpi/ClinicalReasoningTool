@@ -14,8 +14,7 @@ import controller.FeedbackController;
 import controller.NavigationController;
 import controller.RelationController;
 import controller.ScoringController;
-import model.ListItem;
-import model.Synonym;
+import beans.list.*;
 import properties.IntlConfiguration;
 
 //import org.jgrapht.graph.DefaultWeightedEdge;

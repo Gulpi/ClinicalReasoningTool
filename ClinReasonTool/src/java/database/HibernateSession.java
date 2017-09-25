@@ -80,8 +80,8 @@ public class HibernateSession {
 			
 
 			//load classes here....
-			cfg.addClass(model.ListItem.class);
-			cfg.addClass(model.Synonym.class);
+			cfg.addClass(beans.list.ListItem.class);
+			cfg.addClass(beans.list.Synonym.class);
 			cfg.addClass(beans.scripts.PatientIllnessScript.class);	
 			cfg.addClass(beans.relation.RelationProblem.class);
 			cfg.addClass(beans.relation.RelationSyndrome.class);

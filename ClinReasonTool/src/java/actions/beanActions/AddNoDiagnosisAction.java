@@ -22,7 +22,7 @@ import controller.NavigationController;
 import controller.XAPIController;
 import database.DBClinReason;
 import database.DBList;
-import model.ListItem;
+import beans.list.ListItem;
 import properties.IntlConfiguration;
 import util.CRTLogger;
 

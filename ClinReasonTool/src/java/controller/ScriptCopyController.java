@@ -4,7 +4,7 @@ import java.util.*;
 import beans.relation.*;
 import beans.scripts.PatientIllnessScript;
 import database.*;
-import model.ListItem;
+import beans.list.*;
 import util.CRTLogger;
 
 /**

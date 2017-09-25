@@ -28,8 +28,6 @@ import controller.IllnessScriptController;
 import controller.NavigationController;
 import controller.ScoringController;
 import database.DBClinReason;
-import database.DBList;
-import model.ListItem;
 import properties.IntlConfiguration;
 import util.CRTLogger;
 import util.StringUtilities;

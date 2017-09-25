@@ -12,9 +12,7 @@ import controller.ScoringController;
 import controller.XAPIController;
 import beans.relation.Relation;
 import beans.relation.RelationDiagnosis;
-import beans.scoring.ScoreBean;
 import database.DBClinReason;
-import model.ListItem;
 import util.StringUtilities;
 
 /**

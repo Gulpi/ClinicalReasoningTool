@@ -11,8 +11,7 @@ import beans.scoring.ScoreContainer;
 import controller.NavigationController;
 import controller.ScoringController;
 import database.DBScoring;
-import model.Synonym;
-
+import beans.list.*;
 /**
  * We score any action in which the learner adds an item (problem, ddx, text, mng item) to the list/concept map.
  * @author ingahege

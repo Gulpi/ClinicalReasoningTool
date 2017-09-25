@@ -2,20 +2,12 @@ package actions.beanActions;
 
 import java.beans.Beans;
 
-import actions.scoringActions.Scoreable;
-import actions.scoringActions.ScoringAddAction;
 import beans.LogEntry;
 import beans.scripts.*;
-import beans.graph.Graph;
 import beans.graph.MultiVertex;
 import beans.relation.*;
-import beans.scoring.ScoreBean;
-import controller.GraphController;
-import controller.NavigationController;
-import controller.ScoringController;
 import database.DBClinReason;
-import database.DBList;
-import model.ListItem;
+
 
 /**
  * A ProblemRelation is changed and a different Problem object attached, id remains the same, so, no

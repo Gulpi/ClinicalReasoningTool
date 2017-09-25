@@ -9,9 +9,8 @@ import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.ejb.criteria.expression.function.TrimFunction;
 
-import model.ListItem;
+import beans.list.*;
 import model.SemanticQual;
-import model.Synonym;
 import util.CRTLogger;
 
 /**

@@ -18,7 +18,6 @@ import beans.scripts.*;
 import beans.graph.Graph;
 import beans.helper.TypeAheadBean;
 import beans.relation.Relation;
-import beans.relation.RelationManagement;
 import beans.relation.RelationTest;
 import beans.scoring.ScoreBean;
 import beans.scripts.IllnessScriptInterface;
@@ -26,8 +25,7 @@ import controller.NavigationController;
 import controller.RelationController;
 import controller.XAPIController;
 import database.DBClinReason;
-import database.DBList;
-import model.ListItem;
+import beans.list.ListItem;
 import properties.IntlConfiguration;
 import util.CRTLogger;
 

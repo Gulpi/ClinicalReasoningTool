@@ -27,9 +27,7 @@ import controller.NavigationController;
 import controller.RelationController;
 import controller.XAPIController;
 import database.DBClinReason;
-import database.DBList;
-import model.ListItem;
-import model.Synonym;
+import beans.list.ListItem;
 import properties.IntlConfiguration;
 import util.CRTLogger;
 

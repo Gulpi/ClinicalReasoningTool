@@ -13,7 +13,7 @@ import beans.relation.Relation;
 import beans.scripts.IllnessScriptInterface;
 import controller.*;
 import database.DBList;
-import model.ListItem;
+import beans.list.ListItem;
 import util.CRTLogger;
 import util.StringUtilities;
 

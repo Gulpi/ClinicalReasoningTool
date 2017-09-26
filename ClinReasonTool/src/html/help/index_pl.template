@@ -1,43 +1,40 @@
 <div id="help_idx">
-<!--<a href="https://youtu.be/WgQxinhiw24" onclick="javascript:openVideo('2');" target="new"><i class="fa fa-film" style="width:24px;"></i>Short movie about the tool</a><br/><br/>-->
-This tool helps you to document findings, differentials, tests, management, and a summary statement in a concept
-map. This approach supports the development of clinical reasoning skills. 
+To narzędzie pomoże Ci udokumentować obserwacje, rozpoznania różnicowe, badania, leczenie i podsumowanie przypadku w postaci mapy pojęć. 
+Metoda ta wspiera zdobywanie umiejętności rozumowania klinicznego.
 <br/><br/>
 
-<b>Findings:</b> <br/>
-Please enter relevant findings, symptoms, or risk factors of your patient. <br/><br/>
+<b>Obserwacje:</b> <br/>
+Proszę wprowadź tutaj istotne obserwacje, symptomy i czynniki ryzyka dla Twojego pacjenta. <br/><br/>
  
-<b>Differentials:</b> <br/>
-Please enter as soon as possible probable differentials. With the arrow symbol <i class="fa fa-chevron-circle-down"></i> you can mark your differential 
-as working diagnosis, a must-not-miss (potentially lethal) diagnosis, or as ruled out.<br/>
-Click on <b>Make diagnosis</b> to submit your final diagnosis. 
-Take your chance, even if you are not 100% confident, in contrast to a real patient no harm can be done!
-At a certain stage of the scenario you will have to make a decision about your final diagnosis in order to be able to proceed 
-with your patient. <br/><br/>
+<b>Rozpoznania różnicowe:</b> <br/>
+Proszę wprowadź jak najszybciej to możliwe potencjalne rozpoznania różnicowe. Za pomocą ikonki ze strzałką w dół  <i class="fa fa-chevron-circle-down"></i> 
+możesz oznaczyć swoje rozpoznania jako diagnozę roboczą; rozpoznanie, którego nie-można-pominąć (potencjalne zagrożenie życia) lub 
+wykluczone.  Kliknij na ustal rozpoznanie, żeby przesłać ostateczne rozpoznanie. Próbuj nawet jeżeli nie masz 100% pewności; w 
+przeciwieństwie do prawdziwego pacjenta, nie możesz nikomu wyrządzić krzywdy! Na pewnym etapie scenariusza, aby kontynuować będziesz 
+musiał podjąć decyzję dotyczącą końcowego rozpoznania. <br/><br/>
 
-<b>Examinations/Tests:</b><br/>
-Please document examinations and tests you would like to perform or order to clarify your differentials.
+<b>Badania:</b><br/>
+Proszę udokumentuj badania i testy, które chciałbyś wykonać lub zlecić by wyjaśnić rozpoznanie różnicowe. 
 <br/><br/>
-<b>Therapy/Management:</b><br/>
-Please enter any therapeutic steps for your patient. These can be related to your final diagnoses or general 
-actions (e.g. Oxygen supplementation).
+<b>Leczenie:</b><br/>
+Proszę wprowadź wszelkie czynności terapeutyczne, jakie chcesz podjąć dla Twojego pacjenta. To może dotyczyć zarówno końcowego rozpoznania, jak i 
+ogólnych czynności (np. tlenoterapia).
 <br/><br/>
 
-<b><i class="cmn-toggle cmn-toggle-round"></i> Connections:</b><br/>
-You can connect your items e.g. to visualize a causal relation. By clicking on the connection you can edit
-it and change the weight. <br/><br/>
+<b><i class="cmn-toggle cmn-toggle-round"></i> Połączenia:</b><br/>
+Możesz łączyć elementy mapy pojęć, aby np. przedstawić związki przyczynowe. Klikając na połączenia możesz edytować i zmieniać ich wagę.  <br/><br/>
 
-You can edit or delete all components of you map anytime. <br/><br/>
+W każdej chwili możesz zmieniać lub usuwać wszelkie elementy diagramu. <br/><br/>
 
-<span id="help_expfb_0"><b><i class="fa fa-user-md"></i> Feedback:</b> <br/>
-You can view the author's map at all stages. However, please keep in mind that there are no
-wrong answers in the clinical reasoning process. Pathways to the final diagnosis are very individual and the 
-author's solution represents one possible solution which can be a rough guide. 
+<span id="help_expfb_0"><b><i class="fa fa-user-md"></i> Informacja zwrotna:</b> <br/>
+Na każdym etapie możesz podejrzeć aktualną mapę pojęć autora przypadku. Pamiętaj jednak, iż w procesie rozumowania klinicznego nie ma błędnych odpowiedzi. Drogi 
+prowadzące do końcowego rozpoznania są bardzo indywidualne i rozwiązanie autora jest jedną z nich, co może stanowić dla Ciebie ogólną 
+wskazówkę.  
 </span>
 
-<span id="help_expfb_1"><b><i class="fa fa-user-md"></i> Feedback:</b> <br/>
-You can view the author's map at the end of a case. However, please keep in mind that there are no
-wrong answers in the clinical reasoning process. Pathways to the final diagnosis are very individual and the 
-author's solution represents one possible solution which can be a rough guide. 
+<span id="help_expfb_1"><b><i class="fa fa-user-md"></i> Informacja zwrotna:</b> <br/>
+Mapa pojęć autora przypadku będzie dostępna na koniec rozwiązywania przypadku. Pamiętaj jednak, iż w procesie rozumowania klinicznego nie ma błędnych odpowiedzi. 
+Drogi prowadzące do końcowego rozpoznania są bardzo indywidualne i rozwiązanie autora jest jedną z nich, co może stanowić dla Ciebie 
+ogólną wskazówkę. 
 </span>
 </div>

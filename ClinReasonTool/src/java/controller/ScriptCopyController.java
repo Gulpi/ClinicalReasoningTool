@@ -3,6 +3,7 @@ package controller;
 import java.util.*;
 import beans.relation.*;
 import beans.scripts.PatientIllnessScript;
+import beans.scripts.VPScriptRef;
 import database.*;
 import beans.list.*;
 import util.CRTLogger;
@@ -53,6 +54,7 @@ public class ScriptCopyController {
 	private static void copyAndTranslateScript(String newLang, String vpId){
 		PatientIllnessScript newScript = createNewScript(newLang, vpId);
 		if(newScript==null) return;
+		createVPScriptRef(newScript);
 		if(orgScript.getProblems()!=null){
 			for(int i=0;i<orgScript.getProblems().size();i++){
 				copyAndTranslateProblem(orgScript.getProblems().get(i));
@@ -75,6 +77,18 @@ public class ScriptCopyController {
 			copyConnections();	
 			copySummStatement();
 		}
+	}
+	
+	/**
+	 * We create and save the VPScriptRef object (which contains the VP name and id).
+	 * @param newScript
+	 */
+	private static void createVPScriptRef(PatientIllnessScript newScript){
+		VPScriptRef orgRef = (VPScriptRef) new DBClinReason().getVPScriptRef(orgScript.getVpId());
+		if(orgRef==null) return;
+		VPScriptRef newRef = new VPScriptRef(newScript.getVpId(), orgRef.getVpName(), orgRef.getSystemId(), "-1");
+		new DBClinReason().saveAndCommit(newRef);
+		
 	}
 	
 	/**

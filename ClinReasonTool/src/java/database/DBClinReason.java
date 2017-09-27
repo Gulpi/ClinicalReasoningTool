@@ -306,6 +306,13 @@ public class DBClinReason /*extends HibernateUtil*/{
 		return criteria.list();		
 	}
 	
+	public VPScriptRef getVPScriptRef(String parentId){
+		Session s = instance.getInternalSession(Thread.currentThread(), false);
+		Criteria criteria = s.createCriteria(VPScriptRef.class,"VPScriptRef");
+		criteria.add(Restrictions.eq("parentId", new String(parentId)));
+		return (VPScriptRef) criteria.uniqueResult();		
+	}
+	
 	protected void selectNodesAndConns(PatientIllnessScript patIllScript, Session s){
 		patIllScript.setProblems(selectProblemsForScript(s, patIllScript.getId()));
 		patIllScript.setDiagnoses(selectDiagnosesForScript(s, patIllScript.getId()));

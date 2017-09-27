@@ -154,7 +154,7 @@ select.f_select{
 }
 
 .submitBtn{
-	width:110px;
+	width:120px;
 	height: 100%;
 	float:right;
 	padding-left:5px;
@@ -287,6 +287,10 @@ a#ddx_submit_btn, errorsymbol.a{
 }
 
 .movlinkde_en{
+	display:none;
+}
+
+.movlinkde_pl{
 	display:none;
 }
 

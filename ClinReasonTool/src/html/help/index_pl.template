@@ -1,0 +1,40 @@
+<div id="help_idx">
+To narzędzie pomoże Ci udokumentować obserwacje, rozpoznania różnicowe, badania, leczenie i podsumowanie przypadku w postaci mapy pojęć. 
+Metoda ta wspiera zdobywanie umiejętności rozumowania klinicznego.
+<br/><br/>
+
+<b>Obserwacje:</b> <br/>
+Proszę wprowadź tutaj istotne obserwacje, symptomy i czynniki ryzyka dla Twojego pacjenta. <br/><br/>
+ 
+<b>Rozpoznania różnicowe:</b> <br/>
+Proszę wprowadź jak najszybciej to możliwe potencjalne rozpoznania różnicowe. Za pomocą ikonki ze strzałką w dół  <i class="fa fa-chevron-circle-down"></i> 
+możesz oznaczyć swoje rozpoznania jako diagnozę roboczą; rozpoznanie, którego nie-można-pominąć (potencjalne zagrożenie życia) lub 
+wykluczone.  Kliknij na ustal rozpoznanie, żeby przesłać ostateczne rozpoznanie. Próbuj nawet jeżeli nie masz 100% pewności; w 
+przeciwieństwie do prawdziwego pacjenta, nie możesz nikomu wyrządzić krzywdy! Na pewnym etapie scenariusza, aby kontynuować będziesz 
+musiał podjąć decyzję dotyczącą końcowego rozpoznania. <br/><br/>
+
+<b>Badania:</b><br/>
+Proszę udokumentuj badania i testy, które chciałbyś wykonać lub zlecić by wyjaśnić rozpoznanie różnicowe. 
+<br/><br/>
+<b>Leczenie:</b><br/>
+Proszę wprowadź wszelkie czynności terapeutyczne, jakie chcesz podjąć dla Twojego pacjenta. To może dotyczyć zarówno końcowego rozpoznania, jak i 
+ogólnych czynności (np. tlenoterapia).
+<br/><br/>
+
+<b><i class="cmn-toggle cmn-toggle-round"></i> Połączenia:</b><br/>
+Możesz łączyć elementy mapy pojęć, aby np. przedstawić związki przyczynowe. Klikając na połączenia możesz edytować i zmieniać ich wagę.  <br/><br/>
+
+W każdej chwili możesz zmieniać lub usuwać wszelkie elementy diagramu. <br/><br/>
+
+<span id="help_expfb_0"><b><i class="fa fa-user-md"></i> Informacja zwrotna:</b> <br/>
+Na każdym etapie możesz podejrzeć aktualną mapę pojęć autora przypadku. Pamiętaj jednak, iż w procesie rozumowania klinicznego nie ma błędnych odpowiedzi. Drogi 
+prowadzące do końcowego rozpoznania są bardzo indywidualne i rozwiązanie autora jest jedną z nich, co może stanowić dla Ciebie ogólną 
+wskazówkę.  
+</span>
+
+<span id="help_expfb_1"><b><i class="fa fa-user-md"></i> Informacja zwrotna:</b> <br/>
+Mapa pojęć autora przypadku będzie dostępna na koniec rozwiązywania przypadku. Pamiętaj jednak, iż w procesie rozumowania klinicznego nie ma błędnych odpowiedzi. 
+Drogi prowadzące do końcowego rozpoznania są bardzo indywidualne i rozwiązanie autora jest jedną z nich, co może stanowić dla Ciebie 
+ogólną wskazówkę. 
+</span>
+</div>

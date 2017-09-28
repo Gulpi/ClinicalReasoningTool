@@ -92,7 +92,7 @@ public class ScoringFinalDDXAction /*implements ScoringAction*/{
 			finalListScore.setScoreBasedOnExp(corrScore, isChg);
 			new DBClinReason().saveAndCommit(finalListScore);
 			
-			if(corrScore < ScoringController.FULL_SCORE) 
+			if(corrScore < ScoringController.HALF_SCORE) 
 				patIllScript.addErrors(new ErrorController().checkError(learnerFinals,expFinals));
 
 			return corrScore;

@@ -149,6 +149,7 @@ public class DiagnosisSubmitAction /*implements Scoreable*/{
 	
 	private void notifyLog(){
 		LogEntry log = new LogEntry(LogEntry.SUBMITDDX_ACTION, patIllScript.getId(), -1);
+		log.setSourceId2((long) patIllScript.getConfidence());
 		log.save();
 	}
 	

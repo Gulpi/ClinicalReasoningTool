@@ -88,7 +88,10 @@ public class LogEntry extends Beans{
 	private long sourceId2;
 	
 	private int stage;
-	//private long oldValue;
+	/**
+	 * we can store text elements here, for example the summary statements at different stages...
+	 */
+	private String sourceText;
 	
 	public LogEntry(){}
 	public LogEntry(int action, long patIllscriptId, long sourceId){
@@ -114,6 +117,8 @@ public class LogEntry extends Beans{
 	//public void setOldValue(long oldValue) {this.oldValue = oldValue;}	
 	
 	public long getId() {return id;}
+	public String getSourceText() {return sourceText;}
+	public void setSourceText(String sourceText) {this.sourceText = sourceText;}
 	public long getSessionId() {return sessionId;}
 	public void setSessionId(long sessionId) {this.sessionId = sessionId;}
 	public void setId(long id) {this.id = id;}	

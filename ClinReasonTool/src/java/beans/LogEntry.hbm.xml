@@ -18,6 +18,7 @@
 		<property name="sourceId" column="source_id" type="long"/>
 		<property name="sourceId2" column="source_id2" type="long"/>
 		<property name="stage" column="stage" type="int" />
+		<property name="sourceText" column="SOURCE_TXT" type="string" />
 		
 </class>
 </hibernate-mapping>

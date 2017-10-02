@@ -24,12 +24,20 @@ public class SummaryStatementChgAction /*extends ChgAction*/{
 	 */
 	public void notifyLog(Beans b, long newId) {
 		LogEntry le = new LogEntry(LogEntry.CREATESUMMST_ACTION, patIllScript.getId(), newId);
+		try{
+			if(patIllScript.getSummSt()!=null) le.setSourceText(patIllScript.getSummSt().getText());
+		}
+		catch(Exception e){}
 		le.save();
 		
 	}
 	
 	private void notifyLogUpdate(Beans b, long newId) {
 		LogEntry le = new LogEntry(LogEntry.UPDATESUMMST_ACTION, patIllScript.getId(), newId);
+		try{
+			if(patIllScript.getSummSt()!=null) le.setSourceText(patIllScript.getSummSt().getText());
+		}
+		catch(Exception e){}
 		le.save();		
 	}
 	

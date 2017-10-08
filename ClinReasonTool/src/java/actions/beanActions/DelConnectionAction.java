@@ -13,6 +13,7 @@ import controller.GraphController;
 import controller.NavigationController;
 import database.DBClinReason;
 import util.CRTLogger;
+import util.StringUtilities;
 
 public class DelConnectionAction /*implements DelAction*/{
 	private PatientIllnessScript patIllScript;
@@ -72,17 +73,22 @@ public class DelConnectionAction /*implements DelAction*/{
 	 * @param sourceId
 	 */
 	private void deleteConnsByStartId(long startId){
-		List<Connection> connsToDelete =  getConnsToDelByStartId(startId);
-		List<LogEntry> logs = new ArrayList<LogEntry>();
-		if(connsToDelete==null) return;
-		for(int i=0; i<connsToDelete.size(); i++){
-			Connection conn = connsToDelete.get(i);
-			updateGraph(conn);
-			patIllScript.getConns().remove(conn);		
-			logs.add(new LogEntry(LogEntry.DELCNXAFTERSTARTNODE_ACTION, patIllScript.getId(), conn.getStartId(), conn.getTargetId()));
+		try{
+			List<Connection> connsToDelete =  getConnsToDelByStartId(startId);
+			List<LogEntry> logs = new ArrayList<LogEntry>();
+			if(connsToDelete==null) return;
+			for(int i=0; i<connsToDelete.size(); i++){
+				Connection conn = connsToDelete.get(i);
+				updateGraph(conn);
+				patIllScript.getConns().remove(conn);		
+				logs.add(new LogEntry(LogEntry.DELCNXAFTERSTARTNODE_ACTION, patIllScript.getId(), conn.getStartId(), conn.getTargetId()));
+			}
+			new DBClinReason().deleteAndCommit(connsToDelete);
+			new DBClinReason().saveAndCommit(logs);
 		}
-		new DBClinReason().deleteAndCommit(connsToDelete);
-		new DBClinReason().saveAndCommit(logs);
+		catch(Exception e){
+			CRTLogger.out(StringUtilities.stackTraceToString(e), CRTLogger.LEVEL_ERROR);
+		}
 	}
 	
 	/**

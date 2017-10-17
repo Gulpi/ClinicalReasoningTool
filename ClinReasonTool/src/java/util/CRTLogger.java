@@ -17,18 +17,24 @@ public class CRTLogger {
 	public static void out(String s,int level){
 		try{
 		    Layout layout = new PatternLayout("%d{yyyy.MM.dd HH:mm:ss:SSS z} %-5p [%t]: %m%n");
-		   if(logger==null){
+		   /*if(logger==null){
 			   logger = Logger.getLogger(logfile);
 			    logger.addAppender(new ConsoleAppender(layout, ConsoleAppender.SYSTEM_OUT));
 			    logger.addAppender(new FileAppender(layout, logfile));
 
-		   }
+		   }*/
 			//logger.additivity.org.hibernate=false;
 
-		    if(level == LEVEL_TEST && currentLogLevel==LEVEL_TEST) 
+		    if(level == LEVEL_TEST && currentLogLevel==LEVEL_TEST) {
 		    	logger.debug(s); 
-		    if(level == LEVEL_PROD) logger.info(s);
-		    if(level == LEVEL_ERROR) logger.error(s);
+		    }
+		    if(level == LEVEL_PROD) {
+		    	logger.info(s);
+		    }
+		    if(level == LEVEL_ERROR) {
+		    	logger.error(s);
+		    }
+		    //System.out.println(s);
 		    //logger.info("Hello again...");  
 		}
 		catch(Exception e){

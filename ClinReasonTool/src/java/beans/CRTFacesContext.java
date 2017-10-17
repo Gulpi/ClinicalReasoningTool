@@ -289,20 +289,26 @@ public class CRTFacesContext extends FacesContextWrapper implements MyFacesConte
 	 */
 	public void initSession(){ 
 		long startms = System.currentTimeMillis();
+		int reportsAccess = AjaxController.getInstance().getIntRequestParamByKey(AjaxController.REQPARAM_REPORT_ACCESS, 0);
 
+		
 		/*if(user==null)*/ setUser();
-
+		if(reportsAccess==1){ //then an educator tries to access a learner script e.g. from a reporting or dashboard area - we load the map in a view mode
+			loadScriptForReportAccess();
+			return;
+		}
 		initScriptContainer(); //this loads all scripts, needed for overview page and availability bias determination
 		
 		long id = AjaxController.getInstance().getLongRequestParamByKey(AjaxController.REQPARAM_SCRIPT);
 		String vpId = AjaxController.getInstance().getRequestParamByKey(AjaxController.REQPARAM_VP);
 		int systemId = AjaxController.getInstance().getIntRequestParamByKey(AjaxController.REQPARAM_SYSTEM, -1);
 		String extUId = AjaxController.getInstance().getRequestParamByKeyNoDecrypt(AjaxController.REQPARAM_EXTUID);
+		
 		//current script already loaded....-> then return here....
 		if(this.patillscript!=null && (id<0 || this.patillscript.getId()==id) && this.patillscript.getUserId()==this.user.getUserId() && (extUId==null || this.patillscript.getExtUId().equals(extUId))) return; 
 
 		if(id<=0 && vpId==null)
-			return; //then user has opened the overview page...y
+			return; //then user has opened the overview page...
 
 		if(id>0){ //open an created script
 			this.patillscript = isc.loadPatIllScriptById(id, user.getUserId());
@@ -328,7 +334,9 @@ public class CRTFacesContext extends FacesContextWrapper implements MyFacesConte
 		if(user!=null && this.patillscript!=null && vpId!=null && (sessSetting==null || !sessSetting.getVpId().equals(vpId)))
 				sessSetting = SessionSettingController.getInstance().initSessionSettings(vpId, user.getUserId());
 		
-		if(this.patillscript!=null){initGraph();}
+		if(this.patillscript!=null){
+			initGraph();		
+		}
 		
 		long endms = System.currentTimeMillis();
 	    CRTLogger.out("End Session init:"  + (endms-startms) + " ms", CRTLogger.LEVEL_PROD);
@@ -343,6 +351,24 @@ public class CRTFacesContext extends FacesContextWrapper implements MyFacesConte
 	    		}	    		
 	    	}
 	    }
+	}
+	
+	/**
+	 * If an educator wants to access a learner map/script we load the requested script here, if we have a vpId and learnerId...
+	 */
+	private void loadScriptForReportAccess(){
+		String vpId = AjaxController.getInstance().getRequestParamByKey(AjaxController.REQPARAM_VP);
+		int systemId = AjaxController.getInstance().getIntRequestParamByKey(AjaxController.REQPARAM_SYSTEM, -1);
+		String extUId = AjaxController.getInstance().getRequestParamByKeyNoDecrypt(AjaxController.REQPARAM_EXTUID);
+		long learnerId = AjaxController.getInstance().getLongRequestParamByKey(AjaxController.REQPARAM_REPORT_LEANER_ID);
+		//TODO check for shared secret!
+		if(learnerId>0 && vpId!=null){
+			patillscript = isc.loadIllnessScriptsByVpId(learnerId, vpId, extUId);
+		}
+		if(this.patillscript!=null){
+			loadExpScripts();
+			initGraph();		
+		}
 	}
 	
 	public boolean getInitSession(){
@@ -375,7 +401,11 @@ public class CRTFacesContext extends FacesContextWrapper implements MyFacesConte
 	}
 	
 	public boolean isView(){
-		return false;}
+		int reportsAccess = AjaxController.getInstance().getIntRequestParamByKey(AjaxController.REQPARAM_REPORT_ACCESS, 0);
+		if(reportsAccess==1) return true;
+
+		return false;
+	}
 		
 	public void setPatillscript(PatientIllnessScript patillscript) { this.patillscript = patillscript;}	
 	

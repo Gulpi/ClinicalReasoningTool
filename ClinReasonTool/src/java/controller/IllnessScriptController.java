@@ -46,14 +46,12 @@ public class IllnessScriptController implements Serializable{
 	 */
 	public PatientIllnessScript loadIllnessScriptsByVpId(long userId, String vpId, String extUId){
 		if(vpId!=null && !vpId.equals("") && userId>0){
-			PatientIllnessScript patillscript =new DBClinReason().selectPatIllScriptsByUserIdAndVpId(userId, vpId, extUId);
-			
+			PatientIllnessScript patillscript =new DBClinReason().selectPatIllScriptsByUserIdAndVpId(userId, vpId, extUId);			
 			return patillscript;
 		}
 		return null;
 	}
 	
-
 	
 	/**
 	 * We create a new PatientIllnessScript and save it. 

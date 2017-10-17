@@ -46,16 +46,12 @@ public class GraphController implements Serializable{
 	 * @param parentId
 	 */
 	public void addExpPatIllScript(String vpId){
-	    ServletContext context = (ServletContext) FacesContext.getCurrentInstance().getExternalContext().getContext();
-	   // AppBean app = (AppBean) context.getAttribute(AppBean.APP_KEY);
 	    PatientIllnessScript expIllScript = AppBean.getExpertPatIllScript(vpId);
 	    if(expIllScript!=null){
 	    	graph.setExpertPatIllScriptId(expIllScript.getId());
 	    	addVerticesOfPatientIllnessScript(expIllScript, IllnessScriptInterface.TYPE_EXPERT_CREATED);
 	    	addExplicitEdgesOfPatientIllnessScript(expIllScript, IllnessScriptInterface.TYPE_EXPERT_CREATED); //and connect all implicitly
-		    addImplicitEdgesOfPatientIllnessScript(expIllScript,  IllnessScriptInterface.TYPE_EXPERT_CREATED);
-		    
-	    	//TODO add synonyma in ListItem...
+		    addImplicitEdgesOfPatientIllnessScript(expIllScript,  IllnessScriptInterface.TYPE_EXPERT_CREATED);		    
 	    }
 	}
 	/**

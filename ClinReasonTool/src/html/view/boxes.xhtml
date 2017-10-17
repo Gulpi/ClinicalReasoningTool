@@ -1,0 +1,310 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="#{crtContext.language}" xmlns="http://www.w3.org/1999/xhtml"   
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+	 xmlns:v="urn:schemas-microsoft-com:vml"     
+	  >
+<f:view locale="#{crtContext.locale}">
+
+<head>
+<f:event type="preRenderView" listener="#{facesContext.externalContext.response.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, post-check=0, pre-check=0')}" />
+<f:event type="preRenderView" listener="#{facesContext.externalContext.response.setHeader('Pragma', 'no-cache')}" />
+<f:event type="preRenderView" listener="#{facesContext.externalContext.response.setHeader('Expires', 'Thu, 01 Jan 1970 00:00:00 GMT')}" />
+
+<title>Patient Illness Script</title>
+ <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no"/>
+
+<link rel="stylesheet" type="text/css" href="../../scripts/jquery112/ui-lightness/jquery-ui.css" /> 
+<link rel="stylesheet" type="text/css" href="../../styles/jsPlumbToolkit-defaults.css" />
+<link rel="stylesheet" href="../../styles/clinreason_boxes.css" />
+<link rel="stylesheet" href="../../styles/font-awesome/css/font-awesome.css" />
+
+<script type="text/javascript" src="../../scripts/jquery112/jquery.js"></script>
+<script type="text/javascript" src="../../scripts/jquery112/jquery-ui.min.js"></script>
+<script type="text/javascript" src="../../scripts/jquery112/jquery-ui.js"></script>
+<script src="../../scripts/connection.js"></script>
+<script src="../../scripts/crt_box.js"></script>
+<!--  <script src="../scripts/list.js"></script>-->
+<script src="../../scripts/ajax.js"></script>
+<script src="../../scripts/jsplumb/jsPlumb.min.js"></script>
+<script src="../../scripts/myjsplumb.js"></script>
+<script src="../../scripts/editexp.js"></script>
+
+<script language="JavaScript">
+//<![CDATA[
+var test = "#{crtContext.initSession}";
+var displayOwnEntryWarn = "#{crtContext.user.userSetting.displayOwnEntryWarn}";
+var displayOwnEntryWarnMsg = "#{prop['list.ownentrywarn']}";
+var openHelpOnLoad = "#{crtContext.user.userSetting.openHelpOnLoad}";
+var msg2="Please connect the hypotheses with the findings";
+//if learner has >= this score for final ddx submit, the correct dialog will be displayed (0.5)
+var minScoreCorrect = "#{crtContext.scoreForAllowReSubmit}"; 
+var scriptId = "#{crtContext.patillscript.id}";
+
+var lang="#{crtContext.locale}";
+/*var currentStage = $.getUrlVar('stage');
+var currentStageScript = "#{crtContext.patillscript.currentStageWithUpdate}";
+var currentStageScriptNoUPdate = "#{crtContext.patillscript.currentStage}"; //actual stage*/
+var currentStage = #{crtContext.patillscript.stage};
+var currentStageScript = "#{crtContext.patillscript.currentStageWithUpdate}";
+var maxStage =#{crtContext.patillscript.currentStage};
+var maxSubmittedStage = "#{crtContext.patillscript.maxSubmittedStage}";
+var myStage = "#{crtContext.patillscript.stage}";
+var hideCnxTitle = "#{prop['cnx.hide']}";
+var showCnxTitle = "#{prop['cnx.show']}";
+var showExpTitle = "#{prop['feedback.exp']}";
+var hideExpTitle = "#{prop['feedback.exp.hide']}";
+var active;
+var instance;
+var item_arr = new Array();
+var exp_arr = new Array();
+var ajaxUrl = "/crt/src/html/tabs_ajax.xhtml";
+var fireAddConnection = true; //false during re-init of exp cnxs, otherwise new cnxs are stored!
+
+$(function() {
+	//salert(window.location.href);
+	/*$("#jdialog").dialog({
+		autoOpen: false,
+		modal: true,
+		width: "auto",
+		height: "auto",
+		position: { my: "right-20 top+100", at: "right-20 top+100", of: window },
+		//we have to detect when the user simply closes the jdialog and check whether we have to reset some stuff
+		beforeClose: function( event ) {
+		    if ( event.originalEvent ) {
+		    	return closeSubmitDialog();
+		    }
+		}
+	});*/
+	
+	/*$("#connContext").dialog({
+		autoOpen: false,
+		modal: true,
+		width: "auto",
+		height: "auto"
+	});*/
+	
+
+	/*$("#jdialogHelp").dialog({
+		autoOpen: false,
+		modal: true,
+		width: "auto",
+		height: "auto",
+		close: function (event) { //closing effect to show where help button is
+	        $(this).dialog("widget").effect("transfer", {
+	            to: $("#helpicon"),
+	            className: "ui-effects-transfer"
+	        }, 500);
+	    }
+	});*/
+	
+	/*$("#jdialogFbHint").dialog({
+		autoOpen: false,
+		modal: true,
+		width: "auto",
+		height: "auto",
+		position: { my: "left+70 top+10", at: "left+70 top+10", of: window }
+
+	});
+	checkDisplayExpFbHint(fireExpNowAvailable);*/
+
+	
+	/*if(openHelpOnLoad=="true"){
+		 if(currentStageScript=="1")openHelp();
+		 openHelpOnLoad=="false";
+	}*/
+
+	$( this ).tooltip({
+      	items: "[mytooltip]",
+      	position: { my: "left+5 center", at: "right center" },
+      	content: function() {
+        	var element = $( this );
+        	var parent = $( this ).parent();
+			//only show tooltip if item is currently not dragged
+       		if (!$(parent).is('.ui-draggable-dragging')) {
+       		    return $( this ).attr( "mytooltip" );
+       		}
+
+		}
+    });
+});
+
+
+jsPlumb.ready(function () {
+		initBoxHeights();
+     	instance = jsPlumb.getInstance({
+        DragOptions: { cursor: 'pointer', zIndex: 2000 },
+        PaintStyle: { strokeStyle: '#666' },
+        EndpointHoverStyle: { fillStyle: "orange" },
+        HoverPaintStyle: { strokeStyle: "orange" },
+        EndpointStyle: { width: 25, height: 15, strokeStyle: '#666' },
+        Endpoint: "Rectangle",
+        Anchors: ["TopCenter", "TopCenter"],
+        Container: "canvas"
+    });
+
+    // suspend drawing and initialise.
+    instance.batch(function () {
+        /*instance.bind("click", function (component, originalEvent) {
+        	//todo: ignore expert cnxs....
+        	var id = component.id;
+        	if(!id.startsWith("exp_")) 
+        		openConnContext(component.id);
+        });*/
+
+       /* instance.draggable(jsPlumb.getSelector(".drag-drop .itembox"));        
+    	//item was moved -> trigger ajax call to update position
+        $( ".drag-drop .itembox" ).draggable({
+        	  stop: function( event, ui ) {
+        		  handleRectDrop(ui);
+        	  },	
+	        start: function(event, ui) {             
+	            // $(ui.helper).find('.tooltip').hide(); 
+	             $('.ui-tooltip').remove();
+	         }, 
+        
+        });*/
+       
+        initGroups(instance);
+       
+    });
+    // collapse/expand group button
+    /*instance.on(canvas, "click", ".node-collapse", function() {
+    	toggleContainerCollapse(this.parentNode);
+    });/
+    /*$(".itembox").contextmenu(function(event) {
+    	  showDropDown("dd"+this.id);
+    	  event.preventDefault();
+   	 });*/
+    
+    initConnections();
+    initCnxDisplay();
+   // $(".jsplumb-connector").attr("title","Click to change or delete");
+    //registers a connection that is made: this code needs to be AFTER the init has happened, otherwise each init 
+    //event triggers this. 
+   /* instance.bind("connection", function (info, originalEvent){
+    	//if (!isDuplicateCnx(info, "#{prop['cnx.duplicate']}"))
+    		if(fireAddConnection) addConnection(info);
+    })*/
+    //$(".expbox").addClass("expboxstatus");
+    jsPlumb.fire("jsPlumbDemoLoaded", instance);
+    
+   
+});
+
+item_arr = new Array();
+
+//]]>
+</script>
+</head>
+<h:body class="crtbody" data-demo-id="draggableConnectors" data-library="dom"><!-- test: #{crtContext.test}-->
+<div style="width:300px;top:20px;position:absolute;">Stage:<span id="stageSpan">#{crtContext.patillscript.stage}(#{crtContext.patillscript.currentStage})</span>
+<a href="javascript:chgStage(-1, '../view/boxes.xhtml');">previous stage</a> <a href="javascript:chgStage(1, '../view/boxes.xhtml');">next stage</a></div>
+
+<!-- <div class="options">
+<i id="cnxtogglei" class="fa fa-conn" style="cursor:pointer;" mytooltip="#{prop['cnx.show']}"></i> 
+<div class="switch2" mytooltip="#{prop['cnx.show']}">
+        <input id="cnxtoggle" class="cmn-toggle cmn-toggle-round" checked="checked" onchange="javascript:toggleCnxDisplay();" type="checkbox" />
+        <label for="cnxtoggle"></label>
+</div>
+</div>-->
+<div class="options">
+<div  style="position:absolute;left:15px;top:5px;" ><i id="cnxtogglei" class="fa fa-conn" style="cursor:pointer;" mytooltip="#{prop['cnx.show']}"></i>  </div>
+<div class="switch" style="left:30px;" mytooltip="#{prop['cnx.show']}">
+        <input id="cnxtoggle" class="cmn-toggle cmn-toggle-round" checked="checked" onchange="javascript:toggleCnxDisplay();" type="checkbox" />
+        <label for="cnxtoggle"></label>
+</div>
+<div class="expfb_#{crtContext.displayExpFb}" style="position:absolute;left:85px;top:5px;" mytooltip="#{prop['feedback.exp']}"><i class="fa fa-user-md expfb_#{crtContext.displayExpFb}" style="cursor:pointer;" mytooltip="#{prop['feedback.exp']}"></i></div>
+<div class="switch expfb_#{crtContext.displayExpFb}" style="left:100px;" mytooltip="#{prop['feedback.exp']}">
+        <input id="expFeedback" class="cmn-toggle cmn-toggle-round" onchange="toggleExpFeedback('expFeedback', 'icon-user-md', 'expfb_#{crtContext.displayExpFb}');" type="checkbox" />
+        <label for="expFeedback"></label>
+</div>
+</div><br/><br/>
+<div class="boxes_container">
+	<div id="canvas" class="canvas jtk-surface drag-drop jtk-surface-nopan" >
+
+		  <!-- problems -->
+		  <div id="fdg_box"  class="container fdg_cont" group="fdg_group">
+		   		<div id="fdg_title" class="title"  mytooltip="#{prop['findings.search']}">#{prop['findings']} <i class="fa fa-info-circle"></i></div>		  			
+						<h:form id="probform">
+						<h:panelGroup>
+						   <ui:repeat id="repeatprob" value="#{crtContext.patillscript.problemsStage}" var="prob" varStatus="status">
+						   		<ui:include src="probbox.xhtml" />
+	    					</ui:repeat>	    					
+						   <ui:repeat id="repeatexpprob" value="#{crtContext.expPatIllScript.problems}" var="expprob" varStatus="status">
+						   	<ui:include src="../probexpbox.xhtml" /></ui:repeat>	    					
+	    				</h:panelGroup>									
+						 </h:form>
+		  </div>
+		  <!--  diagnoses -->
+		  <div id="ddx_box" class="container ddx_cont" group="ddx_group">	
+		  		<div id="ddx_title"  mytooltip="#{prop['ddx.search']}" class="title">#{prop['ddx']} <i class="fa fa-info-circle"></i></div>	
+		  			
+			  			<h:form id="ddxform">
+						<h:panelGroup >
+							<ui:repeat value="#{crtContext.patillscript.diagnosesStage}" var="ddx" varStatus="status">
+								<ui:include src="ddxbox.xhtml" />
+	     					</ui:repeat>	
+	     					<!--  <ui:repeat value="#{crtContext.patillscript.finalDiagnoses}" var="ddx" varStatus="status">
+								<ui:include src="ddxfinalbox.xhtml" />
+	     					</ui:repeat>-->
+	     					  <ui:repeat value="#{crtContext.expPatIllScript.diagnoses}" var="expddx" varStatus="status"><ui:include src="../ddxexpbox.xhtml" /></ui:repeat>				
+	    				</h:panelGroup>
+		  		</h:form>
+		  </div>
+		  <!-- tests -->
+		  <div id="tst_box" class="container tst_cont" group="tst_group">
+		  		<div id="tst_title" mytooltip="#{prop['tests.search']}" class="title">#{prop['tests']} <i class="fa fa-info-circle"></i>
+
+		  		</div>		  		
+		  			<h:form id="testform">
+		  			<h:panelGroup>
+						<ui:repeat value="#{crtContext.patillscript.testsStage}" var="test" varStatus="status">
+							<ui:include src="testbox.xhtml" />
+     					</ui:repeat>	
+     					  <ui:repeat value="#{crtContext.expPatIllScript.tests}" var="exptest" varStatus="status"><ui:include src="../testexpbox.xhtml" /></ui:repeat>
+    				</h:panelGroup>
+					</h:form>
+		</div>
+		  <!-- managements -->
+		  <div id="mng_box" class="container mng_cont" group="mng_group">
+		  	<div id="mng_title"  mytooltip="#{prop['mng.search']}" class="title">#{prop['mng']} <i class="fa fa-info-circle"></i></div>
+	  			<h:form id="mngform">
+	  			<h:panelGroup>
+					<ui:repeat value="#{crtContext.patillscript.mngsStage}" var="mng" varStatus="status">
+						<ui:include src="mngbox.xhtml" />
+	   				</ui:repeat>		
+	   				  <ui:repeat value="#{crtContext.expPatIllScript.mngs}" var="expmng" varStatus="status"><ui:include src="../mngexpbox.xhtml" /></ui:repeat>	
+	  				</h:panelGroup>
+				</h:form>
+				
+	  		</div>
+		 <div id="sum_box" class="container sum_container" group="sum_group">	
+		 	<div id="sum_title" mytooltip="#{prop['sumst.hint']}" class="title">#{prop['summst']} <i class="fa fa-info-circle"></i>
+		 		<!--  <span class="icons sumicons">
+		 			<a href="javascript:toggleSumFeedback('expFeedbackSum', 14);" title="#{prop['summst.exp']}" class="expfb_#{crtContext.displayExpFb}"><i mytooltip="#{prop['summst.exp']}" class="fa fa-user-md_off" id="expFeedbackSum"></i></a>		 	
+		 		</span>-->
+		 	</div>
+		 	 <div class="node-collapse"></div>
+		 	 #{crtContext.patillscript.summSt.text}
+			 <!--  	<span id="list_score_sum" class="list_score_sum sum_textarea" style="color:green; display:none;"> #{crtContext.patillscript.summStExp}</span> 		-->  
+	</div>
+	</div>
+</div>
+
+	 <h:form id="cnxsform">
+		 <h:panelGroup><!-- style="display:none;" -->
+		 	<div id="cnxhint" onclick="javascript:hideTooltips();" class="hintdiv cnxhint_#{crtContext.displayCnxHint}"><i class="fa fa-arrow-left2"></i> #{prop['cnx.hint']}</div>
+		 	<div id="jsonConns" style="display:none;">#{crtContext.graph.jsonConns}</div> </h:panelGroup>
+		   <h:commandButton id="hiddenCnxButton" value="RenderSomething" style="visibility:hidden">
+	  		<f:ajax render="@form" onevent="reInitCnxsCallback"></f:ajax>
+		</h:commandButton>		 
+	</h:form>
+
+</h:body>
+</f:view>
+</html>

@@ -128,6 +128,9 @@ public class AdminFacesContext extends FacesContextWrapper implements MyFacesCon
 		adminPortfolio = new ExpPortfolio(user);
 	}
 	
+	/* (non-Javadoc)
+	 * @see beans.MyFacesContext#initSession()
+	 */
 	public void initSession(){ 
 		if(user==null) return;
 		long id = AjaxController.getInstance().getLongRequestParamByKey(AjaxController.REQPARAM_SCRIPT);
@@ -173,7 +176,7 @@ public class AdminFacesContext extends FacesContextWrapper implements MyFacesCon
 	}
 	
 	/**
-	 * If the edit page is opened via an API from a VP authoing system, we get a paramater ("api=true")
+	 * If the edit page is opened via an API from a VP authoring system, we get a paramater ("api=true")
 	 * We then have to log the user in and load the script... 
 	 * @return
 	 */

@@ -5,9 +5,15 @@
 
 function chgStage(chg, loc){
 	if(chg==-1 && currentStage==1) return;
+	if(chg==1 && currentStage==maxStage){
+		alert("last stage");
+		return;
+	}
+	var oldStage = currentStage;
 	currentStage += chg;
-	window.location.href = loc+"?stage="+currentStage;
-	//$("#stageSpan").html(currStage);
+	//window.location.href = loc+"?stage="+currentStage;
+	var s = location.href.replace("stage="+oldStage, "stage="+currentStage);
+	window.location.href = s;
 }
 
 /*

@@ -329,7 +329,7 @@ public class CRTFacesContext extends FacesContextWrapper implements MyFacesConte
 		}
 		//TODO error handling!!!!
 		initLearningAnalyticsContainer();
-		loadExpScripts();
+		loadExpScripts(true);
 		initFeedbackContainer();
 		if(user!=null && this.patillscript!=null && vpId!=null && (sessSetting==null || !sessSetting.getVpId().equals(vpId)))
 				sessSetting = SessionSettingController.getInstance().initSessionSettings(vpId, user.getUserId());
@@ -358,15 +358,22 @@ public class CRTFacesContext extends FacesContextWrapper implements MyFacesConte
 	 */
 	private void loadScriptForReportAccess(){
 		String vpId = AjaxController.getInstance().getRequestParamByKeyNoDecrypt(AjaxController.REQPARAM_VP);
-		int systemId = AjaxController.getInstance().getIntRequestParamByKey(AjaxController.REQPARAM_SYSTEM, -1);
-		String extUId = AjaxController.getInstance().getRequestParamByKeyNoDecrypt(AjaxController.REQPARAM_EXTUID);
-		long learnerId = AjaxController.getInstance().getLongRequestParamByKeyDecrypt(AjaxController.REQPARAM_REPORT_LEANER_ID);
+		int systemId = AjaxController.getInstance().getIntRequestParamByKey(AjaxController.REQPARAM_SYSTEM, -1); 
+		String extUId = AjaxController.getInstance().getRequestParamByKeyNoDecrypt(AjaxController.REQPARAM_EXTUID); //encrypted session id
+		String learnerId = AjaxController.getInstance().getRequestParamByKeyNoDecrypt(AjaxController.REQPARAM_REPORT_LEANER_ID); //encrypted learner id 
+		
+		if(this.user!=null && this.patillscript!=null && this.patillscript.getExtUId().equals(extUId)) return; //then script has already been loaded
+		long crtLearnerId = -1;
+		if(learnerId!=null){
+			User learner = new DBUser().selectUserByExternalId(learnerId, systemId);
+			if(learner!=null) crtLearnerId = learner.getUserId();
+		} 
 		//TODO check for shared secret!
-		if(learnerId>0 && vpId!=null){
-			patillscript = isc.loadIllnessScriptsByVpId(learnerId, vpId, extUId);
+		if(crtLearnerId>0 && vpId!=null){
+			patillscript = isc.loadIllnessScriptsByVpId(crtLearnerId, vpId, extUId);
 		}
 		if(this.patillscript!=null){
-			loadExpScripts();
+			loadExpScripts(false);
 			initGraph();		
 		}
 	}
@@ -376,12 +383,12 @@ public class CRTFacesContext extends FacesContextWrapper implements MyFacesConte
 		return true;
 	}
 	
-	private void loadExpScripts(){
+	private void loadExpScripts(boolean setMaxStage){
 		if(patillscript==null) return;
 		AppBean app = getAppBean();
 		PatientIllnessScript expScript = app.addExpertPatIllnessScriptForVpId(patillscript.getVpId());
 		//we have to overtake the max stage in which the final ddx has to be submitted from the expert's script: 
-		if(patillscript.getMaxSubmittedStage()<=0 && expScript!=null){
+		if(setMaxStage && patillscript.getMaxSubmittedStage()<=0 && expScript!=null){
 			patillscript.setMaxSubmittedStage(expScript.getMaxSubmittedStage());
 			patillscript.save();
 		}

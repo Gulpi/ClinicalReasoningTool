@@ -357,7 +357,7 @@ public class CRTFacesContext extends FacesContextWrapper implements MyFacesConte
 	 * If an educator wants to access a learner map/script we load the requested script here, if we have a vpId and learnerId...
 	 */
 	private void loadScriptForReportAccess(){
-		String vpId = AjaxController.getInstance().getRequestParamByKey(AjaxController.REQPARAM_VP);
+		String vpId = AjaxController.getInstance().getRequestParamByKeyNoDecrypt(AjaxController.REQPARAM_VP);
 		int systemId = AjaxController.getInstance().getIntRequestParamByKey(AjaxController.REQPARAM_SYSTEM, -1);
 		String extUId = AjaxController.getInstance().getRequestParamByKeyNoDecrypt(AjaxController.REQPARAM_EXTUID);
 		long learnerId = AjaxController.getInstance().getLongRequestParamByKeyDecrypt(AjaxController.REQPARAM_REPORT_LEANER_ID);

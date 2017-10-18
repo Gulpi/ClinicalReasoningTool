@@ -38,7 +38,7 @@ public class AjaxController {
 	public static final String REQPARAM_API = "api";
 	public static final String REQPARAM_MAXSTAGE = "maxstage";
 	public static final String REQPARAM_VP_NAME = "vp_name";
-	public static final String REQPARAM_REPORT_LEANER_ID = "learner_id"; //user_id is ALWAYS the person accessing the system, if an educator wants to access a learner script, we have the learner id here...
+	public static final String REQPARAM_REPORT_LEANER_ID = "learnerId"; //user_id is ALWAYS the person accessing the system, if an educator wants to access a learner script, we have the learner id here...
 
 	static private AjaxController instance = new AjaxController();
 	static public AjaxController getInstance() { return instance; }
@@ -301,6 +301,15 @@ public class AjaxController {
 			return param;
 		}
 		return null;
+	}
+	
+	public long getLongRequestParamByKeyDecrypt(String key){
+		String s = getRequestParamByKey(key);
+		if(s==null || s.trim().equals("")) return -1;
+		try{
+			return Long.parseLong(s);
+		}
+		catch(Exception e){ return -1;}
 	}
 	
 	public String getRequestParamByKeyNoDecrypt(String key){

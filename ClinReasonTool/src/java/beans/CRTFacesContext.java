@@ -360,7 +360,7 @@ public class CRTFacesContext extends FacesContextWrapper implements MyFacesConte
 		String vpId = AjaxController.getInstance().getRequestParamByKey(AjaxController.REQPARAM_VP);
 		int systemId = AjaxController.getInstance().getIntRequestParamByKey(AjaxController.REQPARAM_SYSTEM, -1);
 		String extUId = AjaxController.getInstance().getRequestParamByKeyNoDecrypt(AjaxController.REQPARAM_EXTUID);
-		long learnerId = AjaxController.getInstance().getLongRequestParamByKey(AjaxController.REQPARAM_REPORT_LEANER_ID);
+		long learnerId = AjaxController.getInstance().getLongRequestParamByKeyDecrypt(AjaxController.REQPARAM_REPORT_LEANER_ID);
 		//TODO check for shared secret!
 		if(learnerId>0 && vpId!=null){
 			patillscript = isc.loadIllnessScriptsByVpId(learnerId, vpId, extUId);

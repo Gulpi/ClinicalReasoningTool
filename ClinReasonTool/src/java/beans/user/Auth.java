@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import beans.AdminFacesContext;
 import beans.CRTFacesContext;
 import controller.AjaxController;
+import controller.UserController;
 import database.DBUser;
 import util.CRTLogger;
 import util.Encoder;
@@ -89,7 +90,7 @@ public class Auth implements Serializable{
         try {
         	User user = new DBUser().selectUserByExternalId(extUserId, systemId);
         	if(user==null){ //create user:
-        		//UserController
+        		user = new UserController().createAndSaveExpertUser(systemId, extUserId);
         	}
         	AdminFacesContext cnxt =  (AdminFacesContext) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get(AdminFacesContext.CRT_FC_KEY);
         	if(cnxt!=null) cnxt.setUser(user);

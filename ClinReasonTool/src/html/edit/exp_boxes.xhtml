@@ -54,7 +54,8 @@ var scriptlang = "#{adminContext.patillscript.locale}";
 //if(scriptlang=="de") listUrl = "../jsonp_de.json";
 //if(scriptlang=="pl") listUrl = "../jsonp_de.json";
 var lang="#{adminContext.locale}";
-var currentStage = currentStage = #{adminContext.patillscript.stage};
+var currentStage = #{adminContext.patillscript.stage};
+var maxStage =#{adminContext.patillscript.currentStage};
 
 var currentStageScript = "#{adminContext.patillscript.currentStageWithUpdate}";
 var saveSumConfirm = "#{prop['summst.saveconfirm']}";
@@ -197,7 +198,7 @@ var ajaxUrl = "/crt/src/html/edit/tabs_ajax.xhtml";
 <span class="nonapi">ScriptId:  #{adminContext.patillscript.id}
 <br/>VPId: #{adminContext.patillscript.vpId} (Casus)<br/>
 VP Name:  #{adminContext.patillscript.VPName} <br/>
-Stage: <span id="stageSpan">#{adminContext.patillscript.stage} </span>
+Stage: <span id="stageSpan">#{adminContext.patillscript.stage}(#{adminContext.patillscript.currentStage}) </span>
 <a href="javascript:chgStage(-1,'exp_boxes.xhtml');">previous stage</a> <a href="javascript:chgStage(1,'exp_boxes.xhtml');">next stage</a>
 </span>
 </div>

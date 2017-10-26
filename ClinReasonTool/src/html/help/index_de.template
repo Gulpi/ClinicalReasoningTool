@@ -1,6 +1,6 @@
 <div id="help_idx">
 <a href="https://youtu.be/sTml6i0jLkI" onclick="javascript:openVideo('2');" target="new"><i class="fa fa-film" style="width:24px;"></i>Film zur Bedienung</a> <br/><br/>
-Auf dieser Seite kÃ¶nnen Sie Befunde, Differentialdiagnosen, Untersuchungen/Tests, Therapiemassnahmen und eine 
+Auf dieser Seite können Sie Befunde, Differentialdiagnosen, Untersuchungen/Tests, Therapiemassnahmen und eine 
 Fallzusammenfassung in einer Art Concept Map dokumentieren. Dieses Vorgehen hilft ihnen ihr differentialdiagnostisches Denken zu verbessern.
 <br/><br/>
 
@@ -9,36 +9,36 @@ Geben Sie hier Befunde, Symptome oder Risiko- oder begÃ¼nstigende Faktoren Ihres
 relevant erscheinen. <br/><br/>
  
 <b>Differentialdiagnosen:</b> <br/>
-Geben Sie hier so frÃ¼h wie mÃ¶glich im Fall Diagnosen ein, die Sie fÃ¼r mÃ¶glich oder wahrscheinlich halten. Ãœber das 
-Pfeilsymbol <i class="fa fa-chevron-circle-down"></i> kÃ¶nnen Sie eine Verdachtsdiagnose als Arbeitsdignose, als mÃ¶glich lethale Diagnose, die unbedingt abgeklÃ¤rt werden 
+Geben Sie hier so früh wie möglich im Fall Diagnosen ein, die Sie für möglich oder wahrscheinlich halten. Üœber das 
+Pfeilsymbol <i class="fa fa-chevron-circle-down"></i> können Sie eine Verdachtsdiagnose als Arbeitsdignose, als möglich lethale Diagnose, die unbedingt abgeklärt werden 
 muss oder als ausgeschlossen markieren. <br/>
 Klicken Sie jederzeit im Fall auf <b>Diagnose stellen</b> um sich mit einer Diagnose festzulegen. Im Gegensatz 
-zu realen Patienten, kÃ¶nnen Sie hier ruhig mal ein Risiko eingehen! Im Fallverlauf gibt es dann 
-einen Zeitpunkt zu dem Sie sich festlegen mÃ¼ssen, damit Sie den Fall weiter bearbeiten kÃ¶nnen. <br/><br/>
+zu realen Patienten, können Sie hier ruhig mal ein Risiko eingehen! Im Fallverlauf gibt es dann 
+einen Zeitpunkt zu dem Sie sich festlegen mÃ¼ssen, damit Sie den Fall weiter bearbeiten können. <br/><br/>
 
 <b>Untersuchungen/Tests:</b><br/>
-Halten Sie hier fest, welche Untersuchungen sie durchfÃ¼hren wollen, um die Verdachtsdiagnosen abzuklÃ¤ren. 
+Halten Sie hier fest, welche Untersuchungen sie durchführen wollen, um die Verdachtsdiagnosen abzuklÃ¤ren. 
 <br/><br/>
 <b>Therapie:</b><br/>
-Geben Sie hier Massnahmen ein, die Sie fÃ¼r Ihren Patienten veranlassen wollen. Diese kÃ¶nnen sowohl auf die 
+Geben Sie hier Massnahmen ein, die Sie für Ihren Patienten veranlassen wollen. Diese können sowohl auf die 
 finale Diagnose bezogen sein, als auch im Fallverlauf dem Patienten helfen (z.B. Sauserstoffgabe). 
 <br/><br/>
 
 <b><i class="cmn-toggle cmn-toggle-round"></i> Verbindungen:</b><br/>
-Sie kÃ¶nnen beliebig Verbindungen zwischen Elementen ziehen. Durck Klicken auf die Verbindung kÃ¶nnen Sie die Bedeutung
+Sie können beliebig Verbindungen zwischen Elementen ziehen. Durck Klicken auf die Verbindung können Sie die Bedeutung
 der Verbindung bearbeiten. <br/><br/>
 
-Alle Bestandteile der Map kÃ¶nnen Sie jederzeit verÃ¤ndern oder lÃ¶schen.<br/><br/>
+Alle Bestandteile der Map können Sie jederzeit verändern oder löschen.<br/><br/>
 
-<div id="help_expfb_0"><b><i class="fa fa-user-md"></i> RÃ¼ckmeldung:</b> <br/>
-Sie kÃ¶nnen sich jederzeit die LÃ¶sung des Autors zum aktuellen Zeitpunkt ansehen. Bitte beachten Sie, dass es aber 
+<div id="help_expfb_0"><b><i class="fa fa-user-md"></i> Rückmeldung:</b> <br/>
+Sie können sich jederzeit die Lösung des Autors zum aktuellen Zeitpunkt ansehen. Bitte beachten Sie, dass es aber 
 bei der klinischen Entscheidungsfindung keine richtigen/falschen Antworten gibt. Die Wege zur Diagnose sind 
-individuell sehr unterschiedlich und die LÃ¶sung des Autors soll Ihnen lediglich als Anhaltspunkt dienen. 
+individuell sehr unterschiedlich und die Lösung des Autors soll Ihnen lediglich als Anhaltspunkt dienen. 
 </div>
 
 <div id="help_expfb_1"><b><i class="fa fa-user-md"></i> RÃ¼ckmeldung:</b> <br/>
-Sie kÃ¶nnen sich am Ende des Falles die LÃ¶sung des Autors ansehen. Bitte beachten Sie, dass es aber 
+Sie können sich am Ende des Falles die Lösung des Autors ansehen. Bitte beachten Sie, dass es aber 
 bei der klinischen Entscheidungsfindung keine richtigen/falschen Antworten gibt. Die Wege zur Diagnose sind 
-individuell sehr unterschiedlich und die LÃ¶sung des Autors soll Ihnen lediglich als Anhaltspunkt dienen. 
+individuell sehr unterschiedlich und die Lösung des Autors soll Ihnen lediglich als Anhaltspunkt dienen. 
 </div>
 </div>

@@ -4,6 +4,7 @@ import java.util.*;
 
 import application.AppBean;
 import beans.scripts.*;
+import beans.user.SessionSetting;
 import beans.graph.Graph;
 import beans.graph.MultiVertex;
 import beans.relation.*;
@@ -27,25 +28,18 @@ public class ScoringFinalDDXAction /*implements ScoringAction*/{
 	public float scoreAction(long listItem, PatientIllnessScript patIllScript){
 		if(patIllScript.isExpScript()) return -1;
 		NavigationController nav = new NavigationController();
+		//if(nav.getCRTFacesContext().getSessSetting().getListMode()==SessionSetting.LIST_MODE_NONE)
+		//	return ScoringAction.NO_SCORING_POSSIBLE; //no list is used, so, we cannot compare the diagnoses with the experts'
+		
 		Graph g = nav.getCRTFacesContext().getGraph();
 		
 		List<MultiVertex> mvertices = g.getVerticesByType(Relation.TYPE_DDX);
-		ScoreContainer scoreContainer = new NavigationController().getCRTFacesContext().getScoreContainer();
+		ScoreContainer scoreContainer = nav.getCRTFacesContext().getScoreContainer();
 		float overallScore = 0;
 		
-		//List<ScoreBean> scoreBeans = scoreContainer.getScoreBeansByType(ScoreBean.TYPE_FINAL_DDX);
-		//if(scoreBeans==null){ //then this action has not yet been scored: 
-		//	scoreBean = new ScoreBean(patIllScript.getId(), -1, ScoreBean.TYPE_FINAL_DDX);
-			if(g.getExpertPatIllScriptId()>0) //otherwise we do not have an experts' patIllScript to compare with				
-				overallScore = calculateAddActionScoreBasedOnExpert(mvertices, scoreContainer, patIllScript);				
-						
-			//if(g.getPeeums()>MIN_PEERS) //we have enough peers, so we can score based on this as well:
-			//	calculateAddActionScoreBasedOnPeers(mvertex, scoreBean, g.getPeerNums());
-			
-			//scoreContainer.addScore(scoreBean);
-			//TODO calculateOverallScore(scoreBean); 
-			//new DBClinReason().saveAndCommit(scoreBean);			
-		//}
+		if(g.getExpertPatIllScriptId()>0) //otherwise we do not have an experts' patIllScript to compare with				
+			overallScore = calculateAddActionScoreBasedOnExpert(mvertices, scoreContainer, patIllScript);				
+		
 		return overallScore;
 	}
 	
@@ -57,13 +51,14 @@ public class ScoringFinalDDXAction /*implements ScoringAction*/{
 	 */
 	private float calculateAddActionScoreBasedOnExpert(List<MultiVertex>ddxs, ScoreContainer cont, PatientIllnessScript patIllScript){
 		try{
-			
 			PatientIllnessScript expIllScript = AppBean.getExpertPatIllScript(patIllScript.getVpId());
 							
 			List<RelationDiagnosis> expFinals = expIllScript.getFinalDiagnoses();//new ArrayList<Relation>();
 			List<RelationDiagnosis> learnerFinals = patIllScript.getFinalDiagnoses();//new ArrayList<Relation>();
 			float sumScore = 0;
 			boolean isChg = true;
+
+
 			//expert has chosen "No diagnosis" for this VP:
 			if(expIllScript.getFinalDDXType()==PatientIllnessScript.FINAL_DDX_NO || patIllScript.getFinalDDXType()==PatientIllnessScript.FINAL_DDX_NO){
 				return handleNoDiagnosisScoring(patIllScript, expIllScript, cont);		
@@ -89,10 +84,14 @@ public class ScoringFinalDDXAction /*implements ScoringAction*/{
 			else{	//expert has more finals than learner (then these have not yet been considered):
 				corrScore = (sumScore/expFinals.size());
 			}
+			//no scoring possible, because no list was used:
+			if(new NavigationController().getCRTFacesContext().getSessSetting().getListMode()==SessionSetting.LIST_MODE_NONE)
+				corrScore = ScoringAction.NO_SCORING_POSSIBLE;
+			
 			finalListScore.setScoreBasedOnExp(corrScore, isChg);
 			new DBClinReason().saveAndCommit(finalListScore);
 			
-			if(corrScore < ScoringController.HALF_SCORE) 
+			if(corrScore < ScoringController.HALF_SCORE && corrScore>=0) 
 				patIllScript.addErrors(new ErrorController().checkError(learnerFinals,expFinals));
 
 			return corrScore;
@@ -176,10 +175,12 @@ public class ScoringFinalDDXAction /*implements ScoringAction*/{
 			
 			//learner has wrong final diagnosis, but we might have a hierarchy relation, so it might not be 100% wrong!
 			else { 
-				itemScore = caclulateScoreForHierarchyRelation(vert, scoreBean);
-				
+				itemScore = caclulateScoreForHierarchyRelation(vert, scoreBean);	
 			}
-			
+			//if there was no list used, we cannot score anything, thus, we just set a 
+			if(new NavigationController().getCRTFacesContext().getSessSetting().getListMode()==SessionSetting.LIST_MODE_NONE)
+				itemScore = ScoringAction.NO_SCORING_POSSIBLE;
+						
 			scoreBean.setScoreBasedOnExp(itemScore, isChg);
 			new DBClinReason().saveAndCommit(scoreBean);
 			return itemScore;

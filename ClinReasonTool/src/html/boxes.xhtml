@@ -82,7 +82,7 @@ $(function() {
     postEnforceFinalDDXSubmission(submitted/*, myStage, maxSubmittedStage*/);
 
 	if(scriptlang=="de") listUrl = "jsonp_de.json";
-	if(scriptlang=="pl") listUrl = "";
+	if(scriptlang=="pl") listUrl = ""; //currently we do not have a good Polish list, so use freetext entry instead.
 	$(".listdialog").hide();
 	$("#jdialogError").hide();
 	$("#connContext").hide();

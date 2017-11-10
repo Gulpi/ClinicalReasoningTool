@@ -1,5 +1,7 @@
 package beans.user;
 
+import java.util.Locale;
+
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 
@@ -18,6 +20,9 @@ import controller.NavigationController;
 public class SessionSetting {
 	public static final int EXPFEEDBACKMODE_END = 1; //show expert feedback only on last card
 	public static final int EXPFEEDBACKMODE_NEVER = 2; //show no expert feedback at all
+	public static final int LIST_MODE_NONE = 1; //no list is used
+	public static final int LIST_MODE_USE = 0; //list is used
+	
 	
 	private long id;
 	/**
@@ -42,6 +47,12 @@ public class SessionSetting {
 	 */
 	private int ddxMode = 0;
 	
+	/**
+	 * Is a type-ahead list used or not? 0=default/List is used, 1=list is 
+	 */
+	private int listMode = 0;
+	
+	
 	public SessionSetting(){}
 	
 	public SessionSetting(String vpId, long userId){
@@ -62,6 +73,13 @@ public class SessionSetting {
 	private boolean isExpHintDisplayed() {return expHintDisplayed;}
 	public void setExpHintDisplayed(boolean hintDisplayed) {this.expHintDisplayed = hintDisplayed;}
 	public int getDdxMode() {return ddxMode;}
+	public int getListMode() {return listMode;}
+	public void setListMode(int listMode) {this.listMode = listMode;}
+	public void setListMode(Locale loc) {
+		if(loc!=null && loc.getLanguage().equalsIgnoreCase("pl"))
+			this.listMode = LIST_MODE_NONE;
+	}
+
 	/**
 	 * only allow "no diagnosis" option when the learner is at the point where he/she has to submit a daignosis. Otherwise
 	 * this could be misleading....

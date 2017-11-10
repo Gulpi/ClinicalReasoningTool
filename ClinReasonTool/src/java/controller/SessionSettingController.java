@@ -1,5 +1,7 @@
 package controller;
 
+import java.util.Locale;
+
 import beans.user.SessionSetting;
 import database.DBUser;
 
@@ -19,16 +21,21 @@ public class SessionSettingController {
 	 * We try to get the sessionSetting from the database to make sure that if user has started a session, he can continue with 
 	 * the same settings.
 	 */
-	public SessionSetting initSessionSettings(String vpId, long userId){
+	public SessionSetting initSessionSettings(String vpId, long userId, Locale loc){
 		DBUser dbu = new DBUser();
 		SessionSetting sessSetting = dbu.selectSessionSettingByUserAndVPId(userId, vpId);
 		if(sessSetting!=null){
 			sessSetting.setExpHintDisplayed(false); //we set it here to false, to make sure that it is displayed even if learner has stopped the session before
+			//for backward compatibility reasons we do the following two lines here:
+			sessSetting.setListMode(loc);
+			dbu.saveAndCommit(sessSetting);
+			
 			return sessSetting;
 		}
 		
 		sessSetting = new SessionSetting(vpId , userId);
 		initSessSetting(sessSetting);
+		sessSetting.setListMode(loc);
 		dbu.saveAndCommit(sessSetting);
 		return sessSetting;
 	}
@@ -41,7 +48,6 @@ public class SessionSettingController {
 		sessSetting.setExpFeedbackMode(AjaxController.getInstance().getIntRequestParamByKey(AjaxController.REQPARAM_EXP_FB_MODE, 0));
 		sessSetting.setPeerFeedbackMode(AjaxController.getInstance().getIntRequestParamByKey(AjaxController.REQPARAM_PEER_FB_MODE, 0));
 		sessSetting.setDdxMode(AjaxController.getInstance().getIntRequestParamByKey(AjaxController.REQPARAM_DDX_MODE, 0));
-
 		//....
 	}
 }	

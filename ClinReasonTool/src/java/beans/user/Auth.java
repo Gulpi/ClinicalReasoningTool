@@ -110,7 +110,7 @@ public class Auth implements Serializable{
     	FacesContext context = FacesContext.getCurrentInstance();
     	if(user!=null && !compareEncrPwd(password, user.getPassword()))
     		context.addMessage(null, new FacesMessage("Unknown login/Pwd"));
-    	else if (!user.isEditor())
+    	else if (user!=null && !user.isEditor())
     		context.addMessage(null, new FacesMessage("No permission to access admin area"));
     	else 
     		context.addMessage(null, new FacesMessage("Unknow error...Shit happens..."));

@@ -4,6 +4,8 @@ import java.beans.Beans;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.application.FacesMessage.Severity;
+
+import actions.scoringActions.ScoringAction;
 import actions.scoringActions.ScoringFinalDDXAction;
 import application.ErrorMessageContainer;
 import beans.LogEntry;
@@ -65,7 +67,7 @@ public class DiagnosisSubmitAction /*implements Scoreable*/{
 			new AddNoDiagnosisAction(this.patIllScript).add();
 		}
 		//if learner submits the wrong diagnoses we allow him to re-submit 
-		if(score>=ScoringController.scoreForAllowReSubmit){
+		if(score>=ScoringController.scoreForAllowReSubmit || score==ScoringAction.NO_SCORING_POSSIBLE){
 			patIllScript.setSubmittedStage(patIllScript.getCurrentStage());
 			patIllScript.save();
 		}

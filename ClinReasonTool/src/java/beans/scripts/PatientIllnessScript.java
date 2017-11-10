@@ -10,6 +10,7 @@ import javax.faces.bean.*;
 import org.apache.commons.lang.StringUtils;
 
 import actions.beanActions.*;
+import actions.scoringActions.ScoringAction;
 import actions.scoringActions.ScoringListAction;
 import application.AppBean;
 import beans.*;
@@ -603,10 +604,9 @@ public class PatientIllnessScript extends Beans implements Comparable, IllnessSc
 		LearningAnalyticsBean laBean = NavigationController.getInstance().getCRTFacesContext().getLearningAnalytics();
 		if(laBean==null || laBean.getScoreContainer()==null) return false;
 		ScoreBean finalDDXScore = laBean.getScoreContainer().getScoreByType(ScoreBean.TYPE_FINAL_DDX_LIST);
+		if(finalDDXScore!=null && finalDDXScore.getScoreBasedOnExp()==ScoringAction.NO_SCORING_POSSIBLE) return false;
 		if(finalDDXScore==null || finalDDXScore.getScoreBasedOnExp()<ScoringController.scoreForAllowReSubmit) return true;
-		/*for(int i=0; i<scores.size(); i++){
-			if(scores.get(i).getScoreBasedOnExpPerc()<DiagnosisSubmitAction.scoreForAllowReSubmit) return true;
-		}*/
+
 		return false;
 	}
 	
@@ -615,7 +615,6 @@ public class PatientIllnessScript extends Beans implements Comparable, IllnessSc
 	 * @return
 	 */
 	public boolean getOfferContinueCase(){
-		//if(!getOfferTryAgain()) return false; //solution was correct anyway
 		if(AppBean.getExpertPatIllScript(this.getVpId())==null) return true; //we have no expert's script....
 		if(getOfferTryAgain() && this.currentStage < AppBean.getExpertPatIllScript(this.getVpId()).getMaxSubmittedStage()) return true;
 		return false; //end of case and/or 100% score

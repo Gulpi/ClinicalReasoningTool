@@ -331,8 +331,10 @@ public class CRTFacesContext extends FacesContextWrapper implements MyFacesConte
 		initLearningAnalyticsContainer();
 		loadExpScripts(true);
 		initFeedbackContainer();
-		if(user!=null && this.patillscript!=null && vpId!=null && (sessSetting==null || !sessSetting.getVpId().equals(vpId)))
-				sessSetting = SessionSettingController.getInstance().initSessionSettings(vpId, user.getUserId());
+		if(user!=null && this.patillscript!=null && vpId!=null && (sessSetting==null || !sessSetting.getVpId().equals(vpId))){
+				sessSetting = SessionSettingController.getInstance().initSessionSettings(vpId, user.getUserId(), this.patillscript.getLocale());
+				
+		}
 		
 		if(this.patillscript!=null){
 			initGraph();		

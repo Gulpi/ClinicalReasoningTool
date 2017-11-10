@@ -426,7 +426,7 @@ function initSubmittedDialog(){
 		}
 	}
 	//learner has the correct or pretty correct solution:
-	if($("#score").val()>=parseFloat(minScoreCorrect)){ // 50 - 100% correct solution:
+	if($("#score").val()>=parseFloat(minScoreCorrect) || $("#score").val()==-2){ // 50 - 100% correct solution or no scoring possible:
 		submitted = "true";
 		presubmitted = "false";
 		$(".aftersubmit_succ").show();

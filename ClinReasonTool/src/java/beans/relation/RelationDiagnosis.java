@@ -5,9 +5,11 @@ import java.util.*;
 import org.apache.commons.lang3.StringUtils;
 
 import beans.scripts.*;
+import beans.user.SessionSetting;
 import beans.graph.Graph;
 import beans.graph.MultiVertex;
 import controller.GraphController;
+import controller.IllnessScriptController;
 import controller.NavigationController;
 import controller.ScoringController;
 import beans.list.*;
@@ -281,8 +283,15 @@ public class RelationDiagnosis extends Relation implements Serializable {
 		if(mvertex==null || mvertex.getLearnerVertex()==null) return ""; //should not happen
 		//only return something if learner has chosen it as a final ddx:
 		boolean isLearnerFinal = ((RelationDiagnosis)mvertex.getLearnerVertex()).getTier() == RelationDiagnosis.TIER_FINAL;
-		if(isLearnerFinal && mvertex.getExpertVertex()==null) 
-			return IntlConfiguration.getValue("ddx.nodiff");
+		if(isLearnerFinal && mvertex.getExpertVertex()==null){ 
+			//no scoring was done, then we have to return the expert final diagnoses/-is
+			if(NavigationController.getInstance().getCRTFacesContext().getSessSetting().getListMode()==SessionSetting.LIST_MODE_NONE){ 
+				String s = IllnessScriptController.getInstance().getExpFinalsAsString(g.getVpId());
+				return s;
+			}
+			else
+				return IntlConfiguration.getValue("ddx.nodiff");
+		}
 		try{
 			RelationDiagnosis expRel = (RelationDiagnosis) mvertex.getExpertVertex();
 			//if(expRel==null) return IntlConfiguration.getValue("ddx.tierdescr.noexp"); //expert does not have item

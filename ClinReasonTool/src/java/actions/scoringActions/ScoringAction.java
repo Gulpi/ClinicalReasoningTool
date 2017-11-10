@@ -9,6 +9,7 @@ import beans.scoring.ScoreBean;
  *
  */
 public interface ScoringAction {
-	
+	public static final int NO_SCORING_POSSIBLE = -2;
+
 	void scoreAction(long listItemId, PatientIllnessScript learnerPatIllScript, boolean isJoker, int type);
 }

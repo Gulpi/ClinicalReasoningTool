@@ -11,9 +11,13 @@ function chgStage(chg, loc){
 	}
 	var oldStage = currentStage;
 	currentStage += chg;
-	//window.location.href = loc+"?stage="+currentStage;
-	var s = location.href.replace("stage="+oldStage, "stage="+currentStage);
-	window.location.href = s;
+	var winloc = window.location.href;
+	
+	if(winloc.indexOf("stage")<0) winloc = loc+"?stage="+currentStage;
+	else {
+		winloc = location.href.replace("stage="+oldStage, "stage="+currentStage);		
+	}
+	window.location.href = winloc;
 }
 
 /*

@@ -77,6 +77,8 @@ var item_arr = new Array();
 var exp_arr = new Array();
 var ajaxUrl = "/crt/src/html/tabs_ajax.xhtml";
 var fireAddConnection = true; //false during re-init of exp cnxs, otherwise new cnxs are stored!
+var isExp = false;
+var noEntryFound = "#{prop['list.noentry']}";
 
 $(function() {
     postEnforceFinalDDXSubmission(submitted/*, myStage, maxSubmittedStage*/);

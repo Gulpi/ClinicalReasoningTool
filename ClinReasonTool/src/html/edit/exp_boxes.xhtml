@@ -51,6 +51,7 @@ var msg2="Please connect the hypotheses with the findings";
 var scriptId = "#{adminContext.patillscript.id}";
 var listUrl="../jsonp_#{adminContext.patillscript.locale}.json";
 var scriptlang = "#{adminContext.patillscript.locale}";
+var noEntryFound = "#{prop['list.noentry']}";
 //if(scriptlang=="de") listUrl = "../jsonp_de.json";
 //if(scriptlang=="pl") listUrl = "../jsonp_de.json";
 var lang="#{adminContext.locale}";
@@ -67,6 +68,7 @@ var active;
 var instance;
 var item_arr = new Array();
 var exp_arr = new Array();
+var isExp = true;
 
 $(function() {
 	//if(scriptlang=="de") listUrl = "../jsonp_de.json";

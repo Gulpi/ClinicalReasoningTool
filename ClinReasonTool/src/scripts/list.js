@@ -200,7 +200,12 @@ function doMatch(request,response){
 				if (item.value=="-99" || !user_input || arr_match ||  listEntry == user_input) {
 					var tmpLabel = item.label;
 					if(isNegStart) tmpLabel = user_input_arr[0]+ " " +item.label;
+					//display it empty if in edit exp mode:
+					if(item.value=="-99" && isExp){
+						tmpLabel = "";
+					}
 					return {
+						
 						value: item.value,
 						label: tmpLabel
 					};
@@ -213,6 +218,10 @@ function doMatch(request,response){
 			my_map.unshift(del);
 			var obj = {label:exact_item_label, value:exact_item_value};
 			my_map.unshift(obj);
+		}
+		//if the only entry is the "add own entry" we change it in expert mode to "no entries found"
+		if(my_map.length==1 && isExp){ 
+			my_map[0].label = noEntryFound;
 		}
 		response( my_map );
 	}

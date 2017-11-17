@@ -35,7 +35,8 @@ public class RelationController {
 			aa.addRelation(/*syn.getListItemId(), name*/li, (int)x, (int)y, id); //then we add a synonym
 			return;
 		}
-		
+		if(idStr!=null && idStr.startsWith("IGNORE")) //for certain entries in the list, we do not want to trigger an event.
+			return;
 		id = Long.valueOf(idStr.trim());
 		li = getListItemById(id, scriptLoc);
 		aa.addRelation(/*id, name*/li, (int)x, (int)y, -1);

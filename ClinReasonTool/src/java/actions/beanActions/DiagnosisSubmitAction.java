@@ -1,6 +1,7 @@
 package actions.beanActions;
 
 import java.beans.Beans;
+import java.util.*;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.application.FacesMessage.Severity;
@@ -15,6 +16,7 @@ import controller.XAPIController;
 import beans.relation.Relation;
 import beans.relation.RelationDiagnosis;
 import database.DBClinReason;
+import util.CRTLogger;
 import util.StringUtilities;
 
 /**
@@ -130,7 +132,7 @@ public class DiagnosisSubmitAction /*implements Scoreable*/{
 		new DBClinReason().saveAndCommit(rel);
 		//re-score the ddx list.... or re-score the item?
 		//new ScoringListAction(patIllScript).scoreList(ScoreBean.TYPE_DDX_LIST, Relation.TYPE_DDX);
-		notifyLogChgTier(rel.getListItemId(), rel.getTier());		
+		notifyLogChgTier(rel.getListItemId(), tier);		
 	}
 	
 	/**
@@ -149,10 +151,30 @@ public class DiagnosisSubmitAction /*implements Scoreable*/{
 		
 	}
 	
+	/**
+	 * We store the confidence (in source_id2), the relation id of the final diagnosis if there is only one (in
+	 * source_id) and the labels and relation ids (in sourceTxt). 
+	 */
 	private void notifyLog(){
-		LogEntry log = new LogEntry(LogEntry.SUBMITDDX_ACTION, patIllScript.getId(), -1);
-		log.setSourceId2((long) patIllScript.getConfidence());
-		log.save();
+		try{
+			List<RelationDiagnosis> l = patIllScript.getFinalDiagnoses();
+			long sourceId = -1;
+			if(l!=null && l.size()==1)
+				sourceId = l.get(0).getId();
+			LogEntry log = new LogEntry(LogEntry.SUBMITDDX_ACTION, patIllScript.getId(),sourceId);
+			if(l!=null){
+				StringBuffer finals = new StringBuffer();
+				for(int i=0;i<l.size();i++){
+					finals.append(l.get(i).getLabelOrSynLabel() + " ("+l.get(i).getId()+"), ");
+				}
+				log.setSourceText(finals.toString());
+			}
+			log.setSourceId2((long) patIllScript.getConfidence());
+			log.save();
+		}
+		catch(Exception e){
+			CRTLogger.out(StringUtilities.stackTraceToString(e), CRTLogger.LEVEL_ERROR);
+		}
 	}
 	
 	private void notifyLogChgTier(long relId, int tier){

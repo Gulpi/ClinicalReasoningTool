@@ -79,6 +79,64 @@ public class DBList extends DBClinReason {
     }
     
     /**
+     * Searching for ListItems (admin interface)
+     * @param lang
+     * @param term
+     * @param sources
+     * @return List of ListItems or null
+     */
+    private List<ListInterface> selectListItemByLangAndTerm(String lang, String term, String[] sources){
+    	Session s = instance.getInternalSession(Thread.currentThread(), false);
+    	Criteria criteria = s.createCriteria(ListItem.class,"ListItem");
+    	criteria.add(Restrictions.eq("ignored", false)); //we also could include that and reset the "ignore flag"
+    	criteria.add(Restrictions.in("source", sources));
+    	if(lang!=null && !lang.trim().equals("")) criteria.add(Restrictions.eq("language", new Locale(lang)));
+    	criteria.add(Restrictions.ilike("name", term, MatchMode.ANYWHERE));
+
+    	List l =  criteria.list();
+    	return l;
+    	//s.close();
+    }
+    
+    /**
+     * Select all matching items, that have been entered manually by users
+     * @param lang
+     * @param term
+     * @return
+     */
+    public List<ListInterface> selectPrivateListItemsByLangAndTerm(String lang, String term){
+    	return selectListItemByLangAndTerm(lang, term, new String[]{ListItem.TYPE_OWN});
+    }
+    
+    /**
+     * select all matching entries that are part of the list (either a MeSH term or a added term)
+     * @param lang
+     * @param term
+     * @return
+     */
+    public List<ListInterface> selectPublicListItemsByLangAndTerm(String lang, String term){
+    	return selectListItemByLangAndTerm(lang, term, new String[]{ListItem.TYPE_ADDED, ListItem.TYPE_MESH});
+    }
+    
+    /**
+     * Searching for ListItems (admin interface), synonyms are all public, since users can only add their own entries 
+     * as main list items.
+     * @param lang
+     * @param term
+     * @return List of ListItems or null
+     */
+    public List<ListItem> selectSynonymsByLangAndTerm(String lang, String term){
+    	Session s = instance.getInternalSession(Thread.currentThread(), false);
+    	Criteria criteria = s.createCriteria(Synonym.class,"ListItem");
+    	criteria.add(Restrictions.eq("ignored", false));
+    	if(lang!=null && !lang.trim().equals("")) criteria.add(Restrictions.eq("language", new Locale(lang)));
+    	criteria.add(Restrictions.ilike("name", term, MatchMode.ANYWHERE));
+
+    	return criteria.list();
+    	//s.close();
+    }
+    
+    /**
      * Loads ListItems for the given types. CAVE: This returns lots of items, only call during init of application 
      * or for testing!
      * @param types

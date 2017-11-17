@@ -44,7 +44,7 @@ public class DiagnosisSubmissionRevertAction {
 	}
 	
 	private void notifyLog(Relation rel){
-		LogEntry log = new LogEntry(LogEntry.CHGDDXTIER_ACTION, patIllScript.getId(), rel.getListItemId());
+		LogEntry log = new LogEntry(LogEntry.CHGDDXTIER_ACTION, patIllScript.getId(), rel.getId(), -4);
 		log.save();
 	}
 }

@@ -85,6 +85,7 @@ public class AppBean extends ApplicationWrapper implements HttpSessionListener{
 		//setViewHandler(new CRTViewHandler(FacesContext.getCurrentInstance().getApplication().getViewHandler()));
 	    ServletContext context = (ServletContext) FacesContext.getCurrentInstance().getExternalContext().getContext();
 	    context.setAttribute(APP_KEY, this);
+	    
 	    try{
 	    	//load properties for the application(file is in WEB-INF/classes:
 	    	InputStream input =  Thread.currentThread().getContextClassLoader().getResourceAsStream("properties/globalsettings.properties");
@@ -92,7 +93,7 @@ public class AppBean extends ApplicationWrapper implements HttpSessionListener{
 	    }
 	    catch(Exception e){}
 	    //does not have to be done on every restart:
-//	    new JsonCreator().initJsonExport(); 
+	    new JsonCreator().initJsonExport(context); 
 	   
 		//MeshImporter.main("en");
 	   // new TextSimilarityComparing().compareTestData();

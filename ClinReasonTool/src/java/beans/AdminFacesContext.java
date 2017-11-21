@@ -11,6 +11,7 @@ import javax.servlet.http.HttpSession;
 import application.AppBean;
 import application.Monitor;
 import beans.graph.Graph;
+import beans.list.ListInterface;
 import beans.scoring.*;
 import beans.scripts.*;
 import beans.user.Auth;
@@ -199,6 +200,16 @@ public class AdminFacesContext extends FacesContextWrapper implements MyFacesCon
 			}
 		}
 		return isViaAPI;
+	}
+	
+	public List<ListInterface> getSearchedListItems(){
+		ListController lc = new ListController();
+		String mode =  AjaxController.getInstance().getRequestParamByKeyNoDecrypt(AjaxController.REQPARAM_SEARCH_MODE);
+		String lang =  AjaxController.getInstance().getRequestParamByKeyNoDecrypt(AjaxController.REQPARAM_LOC);
+		String searchterm =  AjaxController.getInstance().getRequestParamByKeyNoDecrypt(AjaxController.REQPARAM_SEARCHTERM);
+		
+		List<ListInterface> items = lc.getListItems(lang, searchterm, mode);
+		return items;		 
 	}
 
 }

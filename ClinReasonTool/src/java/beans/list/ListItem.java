@@ -82,7 +82,7 @@ public class ListItem implements Serializable, ListInterface, Comparable{
 	public void setItemType(String itemType) {this.itemType = itemType;}			
 	public int getIsSyndrome() {return isSyndrome;}
 	public void setIsSyndrome(int isSyndrome) {this.isSyndrome = isSyndrome;}
-		
+	public boolean isSynonym(){return false;}
 	public String getShortName(){ 
 		return StringUtils.abbreviate(this.name, MAXLENGTH_NAME);
 		/*if(this.name==null || this.name.length()<=MAXLENGTH_NAME) return name;

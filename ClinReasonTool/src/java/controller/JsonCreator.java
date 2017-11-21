@@ -3,8 +3,11 @@ package controller;
 import java.io.*;
 import java.util.*;
 
+import javax.servlet.ServletContext;
+
 import application.AppBean;
 import database.DBList;
+import beans.CRTFacesContext;
 import beans.list.*;
 import properties.IntlConfiguration;
 import util.CRTLogger;
@@ -31,19 +34,22 @@ public class JsonCreator {
 	public static final String TYPE_B = "B";
 	public static final String TYPE_G = "G";
 
-	public static final String fileNameOneListEN = "jsonp_en.json"; //TODO we need the path to the HTML folder!!!
-	public static final String fileNameOneListDE = "jsonp_de.json";
-	public static final String fileNameOneListPL = "jsonp_pl.json";
+	public static final String fileNameOneListEN = "src/html/jsonp_en.json"; //TODO we need the path to the HTML folder!!!
+	public static final String fileNameOneListDE = "src/html/jsonp_de.json";
+	public static final String fileNameOneListPL = "src/html/jsonp_pl.json";
 
 	//A=Anatomy,B=Organisms, F=Psychiatry/Psychology, G=Phenomena and Processes, H=Disciplines/Occupations
 	
 	//configurations: TODO get from property file
 	private boolean createOneList = true; //if false, we create multiple lists for problems, ddx, etc.
 	private boolean includeSynonyma = true;
+	private static ServletContext context;
 	
 	
-	public synchronized void initJsonExport(){
+	public synchronized void initJsonExport(ServletContext context){
+		this.context = context;
 		if(createOneList){
+			
 			exportOneList(new Locale("en"));
 			exportOneList(new Locale("de"));
 			exportOneList(new Locale("pl"));
@@ -182,16 +188,16 @@ public class JsonCreator {
 	}
 	
 	public static File getMeshJsonFileByLoc(Locale loc){
-		if (loc.getLanguage().equals(new Locale("de").getLanguage())) return new File(fileNameOneListDE);
-		if (loc.getLanguage().equals(new Locale("pl").getLanguage())) return new File(fileNameOneListPL);
-		/*if (loc.getLanguage().equals(new Locale("en").getLanguage())) */ return new File(fileNameOneListEN);
+		if (loc.getLanguage().equals(new Locale("de").getLanguage())) return new File(context.getRealPath(fileNameOneListDE));
+		if (loc.getLanguage().equals(new Locale("pl").getLanguage())) return new File(context.getRealPath(fileNameOneListPL));
+		return new File(context.getRealPath(fileNameOneListEN));
 	}
 	
-	public static String getMeshJsonFileNameByLoc(Locale loc){
+	/*public static String getMeshJsonFileNameByLoc(Locale loc){
 		if (loc.getLanguage().equals(new Locale("de").getLanguage())) return fileNameOneListDE;
 		if (loc.getLanguage().equals(new Locale("de").getLanguage())) return fileNameOneListPL;
 
-		/*if (loc.getLanguage().equals(new Locale("en").getLanguage())) */ return fileNameOneListEN;
-	}
+		return fileNameOneListEN;
+	}*/
 
 }

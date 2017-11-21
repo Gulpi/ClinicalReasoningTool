@@ -46,6 +46,7 @@ function sendAjax(id, callback, type, name){
 function sendAjax(id, callback, type, name, typedinName){
 	clearErrorMsgs();
 	var confirmed = true;
+	if(id=="IGNORE") return;
 	if(id=="-99" && displayOwnEntryWarn=="true"){
 		displayOwnEntryWarn = "false"
 		confirmed = confirm(displayOwnEntryWarnMsg);

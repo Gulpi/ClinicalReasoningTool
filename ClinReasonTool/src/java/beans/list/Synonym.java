@@ -13,7 +13,7 @@ public class Synonym implements Serializable, ListInterface, Comparable{
 	 * the id of the ListItem object the synonym is referring to.fg
 	 */
 	private long listItemId;
-	private Locale locale;
+	private Locale language;
 	private String source; //"MESH" or "ADDED" if manually added, currently just in database, no mapping necessary
 	private boolean ignored = false;
 	/**
@@ -30,16 +30,16 @@ public class Synonym implements Serializable, ListInterface, Comparable{
 	public void setId(long id) {this.id = id;}
 	public long getListItemId() {return listItemId;}
 	public void setListItemId(long listItemId) {this.listItemId = listItemId;}	
-	public Locale getLocale() {return locale;}
-	public void setLocale(Locale locale) {this.locale = locale;}	
+	public Locale getLanguage() {return language;}
+	public void setLanguage(Locale language) {this.language = language;}	
 	public float getRatingWeight() {return ratingWeight;}
 	public void setRatingWeight(float ratingWeight) {this.ratingWeight = ratingWeight;}	
 	public boolean isIgnored() {return ignored;}
 	public void setIgnored(boolean ignored) {this.ignored = ignored;}
-	
+	public boolean isSynonym(){return true;}
 	public Synonym(){}
 	public Synonym(Locale loc, String name){
-		this.locale = loc; 
+		this.language = loc; 
 		this.name = name;
 	}
 	/* (non-Javadoc)

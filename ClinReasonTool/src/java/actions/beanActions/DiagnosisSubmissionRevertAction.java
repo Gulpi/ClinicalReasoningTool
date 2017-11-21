@@ -11,6 +11,11 @@ import controller.NavigationController;
 import controller.ScoringController;
 import database.DBClinReason;
 
+/**
+ * The final diagnosis was "wrong" and the learner can retry or continue with the case and try again later...
+ * @author ingahege
+ *
+ */
 public class DiagnosisSubmissionRevertAction {
 
 	
@@ -44,7 +49,7 @@ public class DiagnosisSubmissionRevertAction {
 	}
 	
 	private void notifyLog(Relation rel){
-		LogEntry log = new LogEntry(LogEntry.CHGDDXTIER_ACTION, patIllScript.getId(), rel.getListItemId());
+		LogEntry log = new LogEntry(LogEntry.CHGDDXTIER_ACTION, patIllScript.getId(), rel.getId(), -4);
 		log.save();
 	}
 }

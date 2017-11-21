@@ -314,7 +314,7 @@ function closeSubmitDialog(){
 }
 
 /* change tier from dropdown menu*/
-function changeTier2(id, tier){
+/*function changeTier2(id, tier){
 	clearErrorMsgs();	
 	var item = $("#ddx_"+id);
 	var color = getRectColor(tier);
@@ -322,7 +322,7 @@ function changeTier2(id, tier){
 	//item.css("background-color", color);
 	item.css("color", color);
 	sendAjax(id, doNothing, "changeTier",  tier);
-}
+}*/
 
 function ruleOut(id){
 	clearErrorMsgs();

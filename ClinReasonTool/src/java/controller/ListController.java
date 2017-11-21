@@ -37,8 +37,8 @@ public class ListController {
 		if(mode==null || mode.equals(ListItem.TYPE_OWN) || mode.equals(""))
 			results = dbl.selectPrivateListItemsByLangAndTerm(lang, searchterm);
 		else if(mode ==null || !mode.equals(ListItem.TYPE_OWN)){ //public list, we select main entries and synonyms
-			List items = dbl.selectPublicListItemsByLangAndTerm(lang, searchterm);
-			List syns = new DBList().selectSynonymsByLangAndTerm(lang, searchterm);
+			List<ListInterface> items = dbl.selectPublicListItemsByLangAndTerm(lang, searchterm);
+			List<ListInterface> syns = new DBList().selectSynonymsByLangAndTerm(lang, searchterm);
 			if(items.size() > MAX_RESULTS || syns.size() > MAX_RESULTS){
 				return null;
 			}
@@ -62,7 +62,7 @@ public class ListController {
 	private List<ListInterface> jointListItemsAndSynonyms(List<ListInterface> items, List<ListInterface> syns){
 		if(syns==null || syns.isEmpty()) return items;
 		if(items==null || items.isEmpty()) return syns;
-		List joinedList = items;
+		List<ListInterface> joinedList = items;
 		for(int i=0; i<syns.size();i++){
 			boolean found = false;
 			ListInterface syn = syns.get(i);
@@ -77,6 +77,7 @@ public class ListController {
 							break;
 						}
 					}
+					if(found) break;
 				}
 			}
 			if(!found) joinedList.add(syn);

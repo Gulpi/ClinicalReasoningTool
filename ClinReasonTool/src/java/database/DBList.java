@@ -125,7 +125,7 @@ public class DBList extends DBClinReason {
      * @param term
      * @return List of ListItems or null
      */
-    public List<ListItem> selectSynonymsByLangAndTerm(String lang, String term){
+    public List<ListInterface> selectSynonymsByLangAndTerm(String lang, String term){
     	Session s = instance.getInternalSession(Thread.currentThread(), false);
     	Criteria criteria = s.createCriteria(Synonym.class,"ListItem");
     	criteria.add(Restrictions.eq("ignored", false));

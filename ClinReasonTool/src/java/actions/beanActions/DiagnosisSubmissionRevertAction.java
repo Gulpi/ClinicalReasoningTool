@@ -11,6 +11,11 @@ import controller.NavigationController;
 import controller.ScoringController;
 import database.DBClinReason;
 
+/**
+ * The final diagnosis was "wrong" and the learner can retry or continue with the case and try again later...
+ * @author ingahege
+ *
+ */
 public class DiagnosisSubmissionRevertAction {
 
 	

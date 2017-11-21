@@ -32,6 +32,7 @@
 <script src="../scripts/ajax.js"></script>
 <script src="../scripts/jsplumb/jsPlumb.min.js"></script>
 <script src="../scripts/myjsplumb.js"></script>
+<script src="../scripts/levenshtein.js"></script>
 
 <script language="JavaScript">
 //<![CDATA[
@@ -79,6 +80,7 @@ var ajaxUrl = "/crt/src/html/tabs_ajax.xhtml";
 var fireAddConnection = true; //false during re-init of exp cnxs, otherwise new cnxs are stored!
 var isExp = false;
 var noEntryFound = "#{prop['list.noentry']}";
+var didYouMean = "#{prop['list.didyoumean']}";
 
 $(function() {
     postEnforceFinalDDXSubmission(submitted/*, myStage, maxSubmittedStage*/);

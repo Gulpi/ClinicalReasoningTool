@@ -4,13 +4,8 @@ import java.io.*;
 import java.util.*;
 
 import org.apache.commons.lang.StringUtils;
-
-//import net.casus.util.*;
 import database.DBClinReason;
-import database.DBList;
-import database.HibernateSession;
 import beans.list.*;
-import model.ListItem2;
 import util.*;
 
 /**
@@ -36,7 +31,7 @@ public class MeshImporter {
 		ScriptCopyController.main(null);
 	}
 	
-	private static void importCampusList(){
+	/*private static void importCampusList(){
 		try{
 			LineNumberReader lbr = new LineNumberReader(new FileReader(file_campus));
 			new HibernateSession().initHibernate();
@@ -110,7 +105,7 @@ public class MeshImporter {
 			CRTLogger.out(StringUtilities.stackTraceToString(e), CRTLogger.LEVEL_ERROR);
 		}
 		
-	}
+	}*/
 	
 	
 	private static void importMeshDE(){

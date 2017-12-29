@@ -68,7 +68,9 @@ function delProbCallBack(probId, selProb){
 function problemCallBack(){
 	$("#problems").val("");	
 	$("#fdg_prefix").val("");
-	$(".fdgs").remove();
+	//var arr = $(".fdgs");
+	removeElems("fdgs");
+	removeElems("expfdgs");
 	//we update the problems list and the json string
 	$("[id='probform:hiddenProbButton']").click();		
 	$("[id='cnxsform:hiddenCnxButton']").click();
@@ -76,10 +78,11 @@ function problemCallBack(){
 
 function updateProbCallback(data){
 	if(isCallbackStatusSuccess(data)){
-		updateItemCallback(data, "fdgs", "fdg_box");
+		updateItemCallback(data, "fdg", "fdg_box");
 		if(isOverallExpertOn()) //re-display expert items:
 			turnOverallExpFeedbackOn('expFeedback', 'icon-user-md');
 	}
+	
 }
 
 
@@ -122,14 +125,17 @@ function delDiagnosis(id){
 
 function delDiagnosisCallBack(ddxId, selDDX){
 	//we have to delete the endpoint separately, otherwise they persist....
-	deleteEndpoints("ddx_"+ddxId);
+	//deleteEndpoints("ddx_"+ddxId);
 	diagnosisCallBack();
 }
 
 
 function diagnosisCallBack(){
 	$("#ddx").val("");		
-	$(".ddxs").remove();	
+	//$(".ddxs").remove();	
+	removeElems("ddxs");
+	removeElems("expddxs");
+
 	//we update the ddx boxes (re-printing all boxes)
 	$("[id='ddxform:hiddenDDXButton']").click();	
 	$("[id='cnxsform:hiddenCnxButton']").click();	
@@ -138,7 +144,7 @@ function diagnosisCallBack(){
 function updateDDXCallback(data){
 	if(isCallbackStatusSuccess(data)){
 		checkSubmitBtn();
-		updateItemCallback(data, "ddxs", "ddx_box");
+		updateItemCallback(data, "ddx", "ddx_box");
 		if(isOverallExpertOn()) //re-display expert items:
 			turnOverallExpFeedbackOn('expFeedback', 'icon-user-md');
 	}
@@ -181,6 +187,7 @@ function togglePeersDDX(){
 
 /* 1. we show the submit ddx dialog and ask for confidence */
 function doSubmitDDXDialog(){
+	clearErrorMsgs();
 	//we check whether there are diagnoses, if so we open a dialog, else we display a hint
 	var ddxNum = $( ".ddxs" ).length;
 	$('.ui-tooltip').remove();
@@ -486,7 +493,7 @@ function chgManagement(id, type){
 
 function delManagementCallBack(mngId, selMng){
 	//if(isCallbackStatusSuccess(data)){
-		deleteEndpoints("mng_"+mngId);
+		//deleteEndpoints("mng_"+mngId);
 		managementCallBack(mngId, selMng);
 	//}
 }
@@ -494,8 +501,9 @@ function delManagementCallBack(mngId, selMng){
 function managementCallBack(mngId, selMng){
 	//if(isCallbackStatusSuccess(data)){
 		$("#mng").val("");	
-		$(".mngs").remove();
-	
+		//$(".mngs").remove();
+		removeElems("mngs");
+		removeElems("expmngs");
 		//we update the problems list and the json string
 		$("[id='mngform:hiddenMngButton']").click();	
 		$("[id='cnxsform:hiddenCnxButton']").click();
@@ -504,7 +512,7 @@ function managementCallBack(mngId, selMng){
 
 function updatMngCallback(data){
 	if(isCallbackStatusSuccess(data)){
-		updateItemCallback(data, "mngs", "mng_box");
+		updateItemCallback(data, "mng", "mng_box");
 		if(isOverallExpertOn()) //re-display expert items:
 			turnOverallExpFeedbackOn('expFeedback', 'icon-user-md');
 	}
@@ -544,13 +552,15 @@ function delTest(id){
 }
 
 function delTestCallBack(testId, selTest){
-	deleteEndpoints("tst_"+testId);
+	//deleteEndpoints("tst_"+testId);
 	testCallBack(testId, selTest);
 }
 
 function testCallBack(testId, selTest){
 	$("#test").val("");	
-	$(".tests").remove();
+	//$(".tests").remove();
+	removeElems("tests");
+	removeElems("exptests");
 	//we update the problems list and the json string
 	$("[id='testform:hiddenTestButton']").click();		
 	$("[id='cnxsform:hiddenCnxButton']").click();
@@ -558,7 +568,7 @@ function testCallBack(testId, selTest){
 
 function updateTestCallback(data){
 	if(isCallbackStatusSuccess(data)){
-		updateItemCallback(data, "tests","tst_box");
+		updateItemCallback(data, "tst","tst_box");
 		if(isOverallExpertOn()) //re-display expert items:
 			turnOverallExpFeedbackOn('expFeedback', 'icon-user-md');
 	}
@@ -753,9 +763,11 @@ function toggleExpFeedback(iconId, itemClass, isAllowed){
 
 
 function turnOverallExpFeedbackOn(iconId, itemClass){
-	$("#"+iconId).removeClass("fa-user-md_off");	
-	$("#"+iconId).addClass("fa-user-md_on");
-	$("#"+iconId).attr("title", hideExpTitle);
+	if(iconId!=""){
+		$("#"+iconId).removeClass("fa-user-md_off");	
+		$("#"+iconId).addClass("fa-user-md_on");
+		$("#"+iconId).attr("title", hideExpTitle);
+	}
 	$(".expbox").addClass("expboxstatus_show");
 	$(".expbox").removeClass("expboxstatus");
 	$(".expbox").removeClass("expboxinvis");
@@ -764,23 +776,25 @@ function turnOverallExpFeedbackOn(iconId, itemClass){
 	turnExpBoxFeedbackOn("expFeedbackTest", "tests");
 	turnExpBoxFeedbackOn("expFeedbackMng", "mngs");
 	if(isOverallCnxOn()){
-		$(".jsplumb-exp-connector").addClass("jsplumb-exp-connector-show");
-		$(".jsplumb-exp-connector").removeClass("jsplumb-exp-connector-hide");
+		$(".jtk-exp-connector").addClass("jtk-exp-connector-show");
+		$(".jtk-exp-connector").removeClass("jtk-exp-connector-hide");
 	}
 }
 
 function turnOverallExpFeedbackOff(iconId, itemClass){
-	$("#"+iconId).removeClass("fa-user-md_on");
-	$("#"+iconId).addClass("fa-user-md_off");	
-	$("#"+iconId).attr("title", showExpTitle);
+	if(iconId!=""){
+		$("#"+iconId).removeClass("fa-user-md_on");
+		$("#"+iconId).addClass("fa-user-md_off");	
+		$("#"+iconId).attr("title", showExpTitle);
+	}
 	$(".expbox").removeClass("expboxstatus_show");
 	$(".expbox").addClass("expboxstatus");
 	turnExpBoxFeedbackOff("expFeedbackFdg", "fdgs");
 	turnExpBoxFeedbackOff("expFeedbackDDX", "ddxs");
 	turnExpBoxFeedbackOff("expFeedbackTest", "tests");
 	turnExpBoxFeedbackOff("expFeedbackMng", "mngs");
-	$(".jsplumb-exp-connector").addClass("jsplumb-exp-connector-hide");
-	$(".jsplumb-exp-connector").removeClass("jsplumb-exp-connector-show");
+	$(".jtk-exp-connector").addClass("jtk-exp-connector-hide");
+	$(".jtk-exp-connector").removeClass("jtk-exp-connector-show");
 }
 
 /**
@@ -892,4 +906,19 @@ function closeHelpDialog(){}
 function openHelpCallback() {
 	$("#jdialogHelp").show();
 	//toggleExpFBHelp(1);
+}
+
+function removeElems(className){
+	turnOverallExpFeedbackOn("", "");
+	var arr = $("."+className);
+	if(arr!=null){
+		for(i=0; i<arr.length;i++){
+			var rmId = $(arr[i]).attr("id");
+			deleteEndpoints(rmId);
+			instance.remove(arr[i],true);
+		}
+	}
+	item_arr = new Array();
+	exp_arr = new Array();
+	turnOverallExpFeedbackOff("", "");
 }

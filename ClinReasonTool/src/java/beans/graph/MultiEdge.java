@@ -40,6 +40,7 @@ public class MultiEdge extends DefaultWeightedEdge implements Comparable{
 	Map<Integer, Integer> types;
 	private Connection learnerCnx;
 	private Connection expertCnx;
+	
 	public MultiEdge(){}
 	public MultiEdge(int type, int weight){
 		addParam(type, weight);
@@ -224,6 +225,18 @@ public class MultiEdge extends DefaultWeightedEdge implements Comparable{
 	public int getTargetEpIdx(){
 		if(learnerCnx!=null) return learnerCnx.getTargetEpIdx();
 		if(expertCnx!=null) return expertCnx.getTargetEpIdx();
+		return -1;
+	}
+	
+	public int getTargetX(){
+		if(learnerCnx!=null) return learnerCnx.getTargetEpX();
+		if(expertCnx!=null) return expertCnx.getTargetEpX();
+		return -1;
+	}
+	
+	public int getTargetY(){
+		if(learnerCnx!=null) return learnerCnx.getTargetEpY();
+		if(expertCnx!=null) return expertCnx.getTargetEpY();
 		return -1;
 	}
 	

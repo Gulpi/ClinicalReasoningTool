@@ -114,14 +114,19 @@ var isSuccess = false;
 		    });
 			
 	  });
-  
-  /*
-   * matches the user input with the list labels. Also considers multiple terms and negations
-   */
-function doMatch(request,response){
-	$('.ui-tooltip').remove();
+
 	var exact_item_label = "";
 	var exact_item_value = "";
+
+  /*
+   * matches the user input with the list labels. Also considers multiple terms, negations, and
+   * a typo tolerance
+   */
+function doMatch(request,response){
+	exact_item_label = "";
+	exact_item_value = "";
+
+	$('.ui-tooltip').remove();
 	
 	if (request.term == "") { //user has entered nothing, so we return here....
 		response( $.map( item_data, function( item ) {
@@ -135,83 +140,7 @@ function doMatch(request,response){
 	}
 	else {
 		
-		var my_map = $.map( item_data, function( item ) {
-			 
-			if(item.label=="") return;
-			if(item.value=="-99"){
-				var myid = item.id;
-			}
-			var matcher;
-			//We replace blanks and commas to improve the comparison mechanisms
-			var user_input = request.term.replace(",","");
-			user_input = user_input.replace("-","");
-			user_input = user_input.trim();
-			user_input = user_input.replace("ß","ss");
-			
-			var listEntry = item.label.replace(",","");
-			listEntry = listEntry.replace("-","");
-			listEntry = listEntry.trim();
-			listEntry = listEntry.replace("ß","ss");
-			
-			if(user_input.toLowerCase()==listEntry.toLowerCase()){
-				exact_item_label = item.label;
-				exact_item_value = item.value;
-			}
-			var isNegStart = checkStartUserInput(user_input); //Then user started with something like "No ..."
-			var user_input_arr = user_input.split(" ");
-			var listentry_arr = listEntry.split(" ");
-
-			var arr_match = false;
-			if(isNegStart && (user_input_arr.length==1 || user_input_arr.length>1 && user_input_arr[1].length<minLengthTypeAhead)){
-				//then we should not display the list, we have to wait until user starts the second search term
-			}
-			else{
-				if(user_input_arr.length>1){ //then we have more than one search term.
-					arr_match = true;
-					for(var i=0; i<user_input_arr.length; i++){
-						if(isNegStart && i==0){
-							$("#fdg_prefix").val(user_input_arr[0]);
-							//no matching
-						}
-						else{
-							matcher = new RegExp( $.ui.autocomplete.escapeRegex(user_input_arr[i]), "i" );	
-							if(!matcher.test(listEntry)){
-								arr_match = false;
-								break;
-							}
-						}
-					}
-				}
-				else{ //only one search term:
-					matcher = new RegExp( $.ui.autocomplete.escapeRegex(user_input), "i" );
-					arr_match = matcher.test(listEntry);
-					if(!arr_match && listentry_arr.length>1){
-						//we check combinations e.g. if user enters "PneumonieAspiration" to match "Pneumonie, -Aspirations"
-						var listEntryOne = listEntry.replace(" ","");
-						arr_match = matcher.test(listEntryOne);
-						if(!arr_match && listentry_arr.length==2){ //now check Aspirationspneumonie vs "Pneumonie, -Aspirations"
-							var listEntryReverse = listentry_arr[1].trim() + listentry_arr[0].trim();
-							listEntryReverse = listEntryReverse.trim();
-							arr_match = matcher.test(listEntryReverse);
-						}
-					}
-				}
-							
-				if (item.value=="-99" || !user_input || arr_match ||  listEntry == user_input) {
-					var tmpLabel = item.label;
-					if(isNegStart) tmpLabel = user_input_arr[0]+ " " +item.label;
-					//display it empty if in edit exp mode:
-					if(item.value=="-99" && isExp){
-						tmpLabel = "";
-					}
-					return {
-						
-						value: item.value,
-						label: tmpLabel
-					};
-				}
-			}
-		});
+		var my_map = createMatchedMap(request,response);
 		//if we have an exact match, we display it at the top with a delimiter:
 		if(exact_item_label!="" && exact_item_value!=""){
 			var del = "-----------";
@@ -220,19 +149,184 @@ function doMatch(request,response){
 			my_map.unshift(obj);
 		}
 		//if the only entry is the "add own entry" we change it in expert mode to "no entries found"
+		//(-> we could also hide it in player mode if there is an exact match -> just set label to "") 
 		if(my_map.length==1 && isExp){ 
 			my_map[0].label = noEntryFound;
+		}
+		//we have found no match, so we are checking for typos (currently not for expert edit, but could be done, too?)
+		if(my_map.length==1 /*&& !isExp*/){
+			my_map = createMatchedMapWithTypos(request,response,2);
+			//if we have a match here, we add something saying "Did you mean..."
+			if(my_map.length>1){
+				var obj = {label: didYouMean, value:"IGNORE", category:"hallo"};
+				my_map.unshift(obj);
+			}
 		}
 		response( my_map );
 	}
 }
 
 
-var inputhistory = "";
+function createMatchedMap(request,response){
+	return $.map( item_data, function( item ) {
+		 
+		if(item.label=="") return;
+		if(item.value=="-99"){
+			var myid = item.id;
+		}
+		var matcher;
+		//We replace blanks and commas to improve the comparison mechanisms
+		var user_input = replaceChars(request.term);
+		var listEntry = replaceChars(item.label); 
+		
+		if(user_input==listEntry){ //then we have an exact match
+			exact_item_label = item.label;
+			exact_item_value = item.value;
+		}
+		var isNegStart = checkStartUserInput(user_input); //Then user started with something like "No ..."
+		var user_input_arr = user_input.split(" ");
+		var listentry_arr = listEntry.split(" ");
 
+		var arr_match = false;
+		if(isNegStart && (user_input_arr.length==1 || user_input_arr.length>1 && user_input_arr[1].length<minLengthTypeAhead)){
+			//then we should not display the list, we have to wait until user starts the second search term
+		}
+		else{
+			if(user_input_arr.length>1){ //then we have more than one search term.
+				arr_match = true;
+				for(var i=0; i<user_input_arr.length; i++){
+					if(isNegStart && i==0){
+						$("#fdg_prefix").val(user_input_arr[0]);
+						//no matching
+					}
+					else{
+						matcher = new RegExp( $.ui.autocomplete.escapeRegex(user_input_arr[i]), "i" );	
+						if(!matcher.test(listEntry)){
+							arr_match = false;
+							break;
+						}
+					}
+				}
+			}
+			else{ //only one search term:
+				matcher = new RegExp( $.ui.autocomplete.escapeRegex(user_input), "i" );
+				arr_match = matcher.test(listEntry);
+
+				if(!arr_match && listentry_arr.length>1){
+					//we check combinations e.g. if user enters "PneumonieAspiration" to match "Pneumonie, -Aspirations"
+					var listEntryOne = listEntry.replace(" ","");
+					arr_match = matcher.test(listEntryOne);
+					if(!arr_match && listentry_arr.length==2){ //now check Aspirationspneumonie vs "Pneumonie, -Aspirations"
+						var listEntryReverse = listentry_arr[1].trim() + listentry_arr[0].trim();
+						listEntryReverse = listEntryReverse.trim();
+						arr_match = matcher.test(listEntryReverse);
+					}
+				}
+			}
+						
+			if (item.value=="-99" || !user_input || arr_match ||  listEntry == user_input) {
+				var tmpLabel = item.label;
+				if(isNegStart) tmpLabel = user_input_arr[0]+ " " +item.label;
+				//display it empty if in edit exp mode:      
+				if(item.value=="-99" && isExp){
+					tmpLabel = "";
+				}
+				return {
+					
+					value: item.value,
+					label: tmpLabel
+				};
+			}
+		}
+	});
+}
+
+/**
+ * return matching entries that have a Levenshtein distance <= maxDist
+ * (currently only calculated if user enters ONE term)
+ * @param request
+ * @param response
+ * @param maxDist
+ * @returns
+ */
+function createMatchedMapWithTypos(request,response, maxDist){
+	return $.map( item_data, function( item ) {
+		 
+		/*if(item.label=="") return;*/
+		if(item.value=="-99"){
+			var myid = item.id;
+		}
+		//var matcher;
+		//We replace blanks and commas to improve the comparison mechanisms
+		var user_input = replaceChars(request.term);
+		var listEntry = replaceChars(item.label); 
+		
+		var isNegStart = checkStartUserInput(user_input); //Then user started with something like "No ..."
+		var user_input_arr = user_input.split(" ");
+		var listentry_arr = listEntry.split(" ");
+		
+		var arr_match = false;
+		/*if(isNegStart && (user_input_arr.length==1 || user_input_arr.length>1 && user_input_arr[1].length<minLengthTypeAhead)){
+			//then we should not display the list, we have to wait until user starts the second search term
+		}
+		else{*/
+			if(user_input_arr.length>1){ //then we have more than one search term.
+				
+				for(var i=0; i<user_input_arr.length; i++){
+					if(isNegStart && i==0){
+						$("#fdg_prefix").val(user_input_arr[0]);
+						//no matching
+					}
+					else{
+						if(getEditDistance(user_input_arr[i], listEntry)>maxDist) break;
+						
+					}
+				}
+			}
+			else{ //only one search term:
+
+				//now look whether there is a typo					
+				var leven = getEditDistance(user_input, listEntry);
+				if(leven<=maxDist){
+					return {						
+						value: item.value,
+						label: item.label
+					};
+				}
+			}
+						
+			if (item.value=="-99") {
+				var tmpLabel = item.label;
+				//if(isNegStart) tmpLabel = user_input_arr[0]+ " " +item.label;
+				//display it empty if in edit exp mode:      
+				if(item.value=="-99" && isExp){
+					tmpLabel = "";
+				}
+				return {
+					
+					value: item.value,
+					label: tmpLabel
+				};
+			//}
+		}
+	});
+}
+
+var inputhistory = "";
+/* we store what the user has typed in */ 
 function storeHistory(inputId){
 	var txt = $("#"+inputId).val();
 	inputhistory +=txt+"#";
+}
+
+/*we remove some ugly stuff from the string before comparing it */
+function replaceChars(str){
+	str = str.replace(",","");
+	str = str.replace("-","");
+	str = str.trim();
+	str = str.replace("ß","ss");
+	str = str.toLowerCase();
+	return str;
 }
 /**
  * closing list - either after something has been selected or the action has been canceled (nothing found
@@ -250,6 +344,7 @@ function handleClose(type){
 
 var start_de_arr=["kei", "kein", "keine"];
 var start_en_arr=["no "];
+
 function checkStartUserInput(user_input){
 	var my_arr = start_en_arr;
 	if(scriptlang=="de") my_arr = start_de_arr;

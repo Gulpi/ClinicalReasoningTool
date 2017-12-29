@@ -19,18 +19,18 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no"/>
 
 <link rel="stylesheet" type="text/css" href="../../scripts/jquery112/ui-lightness/jquery-ui.css" /> 
-<link rel="stylesheet" type="text/css" href="../../styles/jsPlumbToolkit-defaults.css" />
+<link rel="stylesheet" type="text/css" href="../../scripts/jsplumb.css" />
 <link rel="stylesheet" href="../../styles/clinreason_boxes.css" />
 <link rel="stylesheet" href="../../styles/font-awesome/css/font-awesome.css" />
 
 <script type="text/javascript" src="../../scripts/jquery112/jquery.js"></script>
 <script type="text/javascript" src="../../scripts/jquery112/jquery-ui.min.js"></script>
-<script type="text/javascript" src="../../scripts/jquery112/jquery-ui.js"></script>
+<!-- <script type="text/javascript" src="../../scripts/jquery112/jquery-ui.js"></script>-->
 <script src="../../scripts/connection.js"></script>
 <script src="../../scripts/crt_box.js"></script>
 <!--  <script src="../scripts/list.js"></script>-->
 <script src="../../scripts/ajax.js"></script>
-<script src="../../scripts/jsplumb/jsPlumb.min.js"></script>
+<script src="../../scripts/jsplumb/jsplumb.js"></script>
 <script src="../../scripts/myjsplumb.js"></script>
 <script src="../../scripts/editexp.js"></script>
 
@@ -137,14 +137,15 @@ $(function() {
 jsPlumb.ready(function () {
 		initBoxHeights();
      	instance = jsPlumb.getInstance({
-        DragOptions: { cursor: 'pointer', zIndex: 2000 },
-        PaintStyle: { strokeStyle: '#666' },
-        EndpointHoverStyle: { fillStyle: "orange" },
-        HoverPaintStyle: { strokeStyle: "orange" },
-        EndpointStyle: { width: 25, height: 15, strokeStyle: '#666' },
-        Endpoint: "Rectangle",
-        Anchors: ["TopCenter", "TopCenter"],
-        Container: "canvas"
+        	DragOptions: { cursor: 'move' }, //cursor style is not working
+        	PaintStyle: { strokeStyle: '#666', stroke: "#006699", strokeWidth:2, outlineStroke: "transparent", outlineWidth: 5 },
+        	//HoverPaintStyle: { strokeStyle: "orange", stroke:"orange" }, //fill:"orange" for 2.2.0
+        	EndpointStyle: { width: 20, height: 10, strokeStyle: '#666' },
+        	Endpoint: "Rectangle",
+        	Anchors: ["TopCenter", "TopCenter"],
+       		Container: "canvas",
+       		MaxConnections: 10,
+       		ReattachConnections : true
     });
 
     // suspend drawing and initialise.
@@ -172,25 +173,8 @@ jsPlumb.ready(function () {
         initGroups(instance);
        
     });
-    // collapse/expand group button
-    /*instance.on(canvas, "click", ".node-collapse", function() {
-    	toggleContainerCollapse(this.parentNode);
-    });/
-    /*$(".itembox").contextmenu(function(event) {
-    	  showDropDown("dd"+this.id);
-    	  event.preventDefault();
-   	 });*/
-    
     initConnections();
     initCnxDisplay();
-   // $(".jsplumb-connector").attr("title","Click to change or delete");
-    //registers a connection that is made: this code needs to be AFTER the init has happened, otherwise each init 
-    //event triggers this. 
-   /* instance.bind("connection", function (info, originalEvent){
-    	//if (!isDuplicateCnx(info, "#{prop['cnx.duplicate']}"))
-    		if(fireAddConnection) addConnection(info);
-    })*/
-    //$(".expbox").addClass("expboxstatus");
     jsPlumb.fire("jsPlumbDemoLoaded", instance);
     
    

@@ -1,7 +1,6 @@
 /* 
     Default styles for jsPlumb Toolkit
-
-    Copyright 2015 https://jsplumbtoolkit.com
+    Copyright 2017 https://jsplumbtoolkit.com
 */
 
 /* --------------------------------------------------------------------------------------------- */
@@ -9,7 +8,7 @@
 /* --------------------------------------------------------------------------------------------- */
 
 /*
-    Assigned to every node managed by an instance of the Toolkit. They are required to be positioned absolute, to
+    Assigned to every Node managed by an instance of the Toolkit. They are required to be positioned absolute, to
     enable dragging to work properly.
 */
 .jtk-node {
@@ -17,14 +16,32 @@
 }
 
 /*
+    Assigned to every Group managed by an instance of the Toolkit. They are required to be positioned absolute, to
+    enable dragging to work properly. We set overflow:visible on Group elements too, as a drag outside of the bounds
+    is automatically reverted anyway, and without overflow:visible you cannot drag a node to some other element. You can
+    also drag a node out of the element's viewport and if you drop it you can never get it back.
+*/
+.jtk-group {
+    position: absolute;
+    overflow: visible;
+}
+
+/*
+    This is the attribute used to mark which part of a Group DOM element should contain the child Nodes. We mark it
+    as having `position:relative` so that the absolute positioned Nodes are drawn correctly.
+*/
+[jtk-group-content] {
+    position:relative;
+}
+
+/*
     This style was created in response to this Chrome bug:
     http://stackoverflow.com/questions/13758215/artifacts-when-css-scaled-in-chrome
-
     Basically it's about how sometimes there can be artefacts left on screen when the user drags an element. It seems
     the issue has been fixed in more recent versions of Chrome, but the style is left here in case you come across
     the problem.
 */
-.jtk-node.jsplumb-drag {
+.jtk-node.jtk-drag {
     /*-webkit-backface-visibility: hidden;*/
 }
 
@@ -45,9 +62,7 @@
 
     /*
         For IE10+. As discussed on this page:
-
         https://msdn.microsoft.com/en-us/library/ie/jj583807(v=vs.85).aspx
-
         Microsoft have very helpfully implemented default behaviours for a bunch of touch events and
         then consumed the events so you don't have to be bothered by them. They've "done a lot of research"
         about this stuff and put together a really great default experience for everyone in the entire world.
@@ -66,7 +81,7 @@
 
 /*
     Assigned to the surface when it is being panned. The default is to change the cursor (in browsers that support
-    a `grabbing` cursor), and to disable tex selection.
+    a `grabbing` cursor), and to disable text selection.
 */
 .jtk-surface-panning {
     cursor: -moz-grabbing;
@@ -98,7 +113,7 @@
     Assigned to a Surface widget when panning is disabled (and therefore the app is relying on scrollbars when the content overflows).
 */
 .jtk-surface-nopan {
-    /*overflow: hidde !important;*/
+    overflow: scroll !important;
     cursor:default;
 }
 
@@ -123,7 +138,6 @@ Assigned to tile images in a tiled background
     border: 2px solid rgb(49, 119, 184);
     background-color: WhiteSmoke;
     opacity: 0.5;
-    filter: alpha(opacity=50);
     display: none;
     z-index: 20000;
     position: absolute;
@@ -142,6 +156,22 @@ Assigned to tile images in a tiled background
     user-select: none;
 }
 
+/**
+    Added to the lasso mask when it is operating in 'inverted' mode, ie. the excluded parts of the UI are covered, rather
+    than the normal mode in which the selected parts of the UI are covered.
+*/
+.jtk-lasso-mask {
+    position:fixed;
+    z-index:20000;
+    display:none;
+    opacity:0.5;
+    background-color: #07234E;
+    top:0;
+    bottom:0;
+    left:0;
+    right:0;
+}
+
 /*
     Assigned to some element that has been selected (either via lasso or programmatically).
 */
@@ -155,7 +185,6 @@ Assigned to tile images in a tiled background
 .jtk-surface-pan {
     background-color: Azure;
     opacity: 0.4;
-    filter: alpha(opacity=40);
     text-align: center;
     cursor: pointer;
     z-index: 2;
@@ -180,7 +209,6 @@ Assigned to tile images in a tiled background
 */
 .jtk-surface-pan-top:hover, .jtk-surface-pan-bottom:hover, .jtk-surface-pan-left:hover, .jtk-surface-pan-right:hover {
     opacity: 0.6;
-    filter: alpha(opacity=60);
     background-color: rgb(49, 119, 184);
     color: white;
     font-weight: bold;
@@ -232,7 +260,6 @@ Assigned to tile images in a tiled background
 .jtk-miniview-panner {
     border: 5px dotted WhiteSmoke;
     opacity: 0.4;
-    filter: alpha(opacity=40);
     background-color: rgb(79, 111, 126);
     cursor: move;
     cursor: -moz-grab;
@@ -253,6 +280,14 @@ Assigned to tile images in a tiled background
 .jtk-miniview-element {
     background-color: rgb(96, 122, 134);
     position: absolute;
+}
+
+/*
+    Added to Group elements displayed in a miniview
+*/
+.jtk-miniview-group-element {
+    background: transparent;
+    border: 2px solid rgb(96,122,134);
 }
 
 /*
@@ -543,7 +578,7 @@ Assigned to tile images in a tiled background
     This class is added to the document body on drag resize start and removed at the end of resizing. Its purpose
     is to switch off text selection on all elements while the user is resizing an element.
 */
-.jtk-draw-select-defeat * {
+.jtk-drag-select-defeat * {
     -webkit-touch-callout: none;
     -webkit-user-select: none;
     -khtml-user-select: none;
@@ -552,7 +587,7 @@ Assigned to tile images in a tiled background
     user-select: none;
 }
 
-.jsplumb-bezier-handle {
+.jtk-bezier-handle {
     width:15px;
     height:15px;
     border-radius:50%;
@@ -561,24 +596,125 @@ Assigned to tile images in a tiled background
     z-index:10;
 }
 
-.jsplumb-bezier-handle-secondary {
+.jtk-bezier-handle-secondary {
     cursor:default;
     background-color:lightgreen;
 }
 
-.jsplumb-bezier-handle-secondary-source {
+.jtk-bezier-handle-secondary-source {
     background-color: lavenderblush;
 }
 
-.jsplumb-bezier-guideline {
+.jtk-bezier-guideline {
     position:absolute;
 }
 
-.jsplumb-bezier-guideline path {
+.jtk-bezier-guideline path {
     stroke:darkcyan;
     stroke-linewidth:3;
 }
 
-.jsplumb-connection-edit path {
+.jtk-connection-edit path {
     stroke-dasharray:2 2;
 }
+
+.jtk-connector { z-index:8; }
+.jtk-endpoint { z-index:9; }
+/*.jtk-overlay { z-index:16; }*/
+
+.jtk-dragging{
+	/* connectorOverlays: [ [ "Arrow", { location:0.5 } ] ];*/
+	/*background-image: url("../../styles/rec.png") !important;*/
+}
+
+/* class for the floating endpoint when dragging a connection*/
+.float{
+	background-image: url("../../styles/rec.png") !important;
+	width:10px !important;
+	height:10px !important;
+	margin-left:0px;
+	/*font-family: FontAwesome !important;
+    content: "\f0b2" !important;*/
+    color:#006699;
+    font-size:80%;
+}
+
+.float:before{
+	/*background-image: url("../../styles/rec.png") !important;
+	width:10px !important;
+	height:10px !important;
+	margin-left:0px;*/
+	font-family: FontAwesome !important;
+    content: "\f047" !important;
+   /* color:white !important;
+    font-size:80% !important;*/
+
+}
+
+/*.endpointArrowR:hover{
+	background-image: url("../../styles/arrow_h.png");
+	z-index:120;
+}*/
+.endpointArrowR{
+	background-image: url("../../styles/arrow.png");
+	width:20px;
+	height:10px;
+	margin-left:2px;
+}
+.endpointArrowR:hover{
+	background-image: url("../../styles/arrowR_h.png");
+	z-index:120;
+}
+
+/*.endpointDef{
+	background-image: url("../../styles/rec.png") !important;
+}
+.endpointDef:before{
+	background-image: url("../../styles/rec.png") !important;
+}
+
+.endpointDef:hover{
+	background-image: url("../../styles/rec.png") !important;
+}*/
+
+.endpointArrowL:hover{
+	background-image: url("../../styles/arrowL_h.png");
+	z-index:120;
+}
+
+.endpointArrowL{
+	background-image: url("../../styles/arrowL.png");
+	width:20px;
+	height:10px;
+	margin-left:-2px;
+}
+.endpointArrow:before{
+	/*padding-right:20px !important;
+	display: inline-block;
+    vertical-align: middle;*/
+}
+/*.endpointL:before{
+    font-family: FontAwesome;
+    content: "\f061";
+    display: inline-block;
+    vertical-align: middle;
+    padding-left:10px;
+    font-size:80%;
+    color: #006699;
+}*/
+/* arrow symbol for endpoints on the right */
+/*.endpointL:hover:before{
+    color: orange;
+}*/
+
+/*.endpointR:before{
+    font-family: FontAwesome;
+    content: "\f060";
+    display: inline-block;
+    vertical-align: middle;
+    font-size:80%;
+}*/
+/* arrow symbol for endpoints on the right */
+/*.endpointR:hover:before{
+    color: orange;
+}*/

@@ -1,5 +1,6 @@
 package beans.relation;
 
+import java.awt.Point;
 import java.beans.Beans;
 import java.io.Serializable;
 import java.sql.Timestamp;
@@ -57,6 +58,9 @@ public class Connection extends Beans implements Serializable, Comparable<Connec
 	 * if we have multiple endpoints for item boxes we have to store the idx of the target point used for this connection
 	 */
 	private int targetEpIdx = 0;
+	/** exact positioning of the target ep (now the whole node can be a target) **/
+	private int targetEpX = -1;
+	private int targetEpY = -1;
 	
 	public Connection(){}
 	public Connection(long startId, long targetId, long illScriptId, int startType, int targetType, int stage){
@@ -89,8 +93,16 @@ public class Connection extends Beans implements Serializable, Comparable<Connec
 	public int getStartEpIdx() {return startEpIdx;}
 	public void setStartEpIdx(int startEpIdx) {this.startEpIdx = startEpIdx;}
 	public int getTargetEpIdx() {return targetEpIdx;}
-	public void setTargetEpIdx(int targetEpIdx) {this.targetEpIdx = targetEpIdx;}
-	
+	public void setTargetEpIdx(int targetEpIdx) {this.targetEpIdx = targetEpIdx;}	
+	public int getTargetEpX() {return targetEpX;}
+	public void setTargetEpX(int targetEpX) {this.targetEpX = targetEpX;}
+	public int getTargetEpY() {return targetEpY;}
+	public void setTargetEpY(int targetEpY) {this.targetEpY = targetEpY;}
+	public void setTargetEndpoint(Point p){
+		if(p==null) return;
+		setTargetEpX(p.x);
+		setTargetEpY(p.y);
+	}
 	/* (non-Javadoc)
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */

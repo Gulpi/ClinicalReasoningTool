@@ -26,89 +26,144 @@ function initGroups(){
 	        draggable:false //remove if boxes shall be draggable again!!!
 	    });
 	}
-	for(var i=0; i<item_arr.length;i++){
+	initElems("");
+	/*for(var i=0; i<item_arr.length;i++){
 		var itemId = item_arr[i];
-		var item = $("#"+itemId)
+		var item = $("#"+itemId)[0];
 		addToGroup(itemId, item);
-		createEndpointsForItems(itemId, endpoint);
-
+		//this makes each node a target for connections, independent from the endpoint:
+		instance.makeTarget(item,{
+			isTarget:true,
+			maxConnections:10,			
+			anchor: ["Perimeter", { shape:"Rectangle" }]
+			//paintStyle:{ fill:"red" },
+		});
+		createEndpointsForItems(itemId);
 	}
 	for(var i=0; i<exp_arr.length;i++){
 		var itemId = exp_arr[i];
-		var item = $("#"+itemId)
+		var item = $("#"+itemId)[0];
 		addToGroup(itemId, item);
-	}
-	instance.addToGroup("sum_group", $("#summStText"));
-}
-
-/*all boxes have 2 endpoints (left and right) */
-function createEndpointsForItems(itemId, endpointtmp){
-	var eps = instance.getEndpoints(itemId);
-	if(eps!=undefined) return; ///do not create endpoints again if they are already there, e.g. for boxes added by learner & expert
-	
-	/*if(itemId.startsWith("fdg") || itemId.startsWith("tst")){
-		//endpoint.id="hallo_"+itemId;
-		var ep = instance.addEndpoint(itemId, { anchor:"RightMiddle" }, endpointtmp);
-		ep.id = ep_right_prefix + itemId;
-	}
-	else if(itemId.startsWith("ddx")){*/
-		var ep = instance.addEndpoint(itemId, { anchor:"LeftMiddle" }, endpointtmp);
-		ep.id = ep_left_prefix + itemId;
-		var ep2 = instance.addEndpoint(itemId, { anchor:"RightMiddle" }, endpointtmp);
-		ep2.id = ep_right_prefix + itemId;
-	/*}
-	else{
-		var ep = instance.addEndpoint(itemId, { anchor:"LeftMiddle" }, endpointtmp);
-		ep.id = ep_left_prefix + itemId;
 	}*/
 }
 
+function initElems(selector){
+	for(var i=0; i<item_arr.length;i++){
+		var itemId = item_arr[i];
+		if(selector==""|| itemId.startsWith(selector)){
+			var item = $("#"+itemId)[0];
+			addToGroup(itemId, item);
+			//this makes each node a target for connections, independent from the endpoint:
+			instance.makeTarget(item,{
+				isTarget:true,
+				maxConnections:10,			
+				anchor: ["Perimeter", { shape:"Rectangle" }]
+				//paintStyle:{ fill:"red" },
+			});
+			createEndpointsForItems(itemId);
+		}
+	}
+	for(var i=0; i<exp_arr.length;i++){
+		var itemId = exp_arr[i];
+		if(selector==""|| itemId.startsWith(selector)){
+			var item = $("#"+itemId)[0];
+			addToGroup(itemId, item);
+		}
+		//createExpEndpointsForItems(itemId);
+	}
+	initDraggables();
+} 
+
+
+/*all boxes have 2 endpoints (left and right) */
+function createEndpointsForItems(itemId){	
+	var eps = instance.getEndpoints(itemId);
+	if(eps!=undefined && eps.length>0) return; //do not create endpoints again if they are already there, e.g. for boxes added by learner & expert	
+	//var source = $("#"+itemId)[0];
+	//var ep1Connected = isEPConnected(itemId);
+	//if(ep1Connected){
+		var ep = instance.addEndpoint(itemId, { anchor:"LeftMiddle" }, endpointCL);
+		ep.id = ep_left_prefix + itemId;
+		ep.maxConnections = 10;
+
+		var ep2 = instance.addEndpoint(itemId, { anchor:"RightMiddle" }, endpointCR);
+		ep2.id = ep_right_prefix + itemId;
+	    ep2.maxConnections = 10;
+
+	/*}
+	else{	
+		var ep = instance.addEndpoint(itemId, { anchor:"LeftMiddle" }, endpointR);
+		ep.id = ep_left_prefix + itemId;
+		var ep2 = instance.addEndpoint(itemId, { anchor:"RightMiddle" }, endpointL);
+		ep2.id = ep_right_prefix + itemId;
+	}*/
+}
+
+
+function createExpEndpointsForItems(itemId){	
+	var eps = instance.getEndpoints(itemId);
+	if(eps!=undefined && eps.length>0) return; ///do not create endpoints again if they are already there, e.g. for boxes added by learner & expert	
+	var ep = instance.addEndpoint(itemId, { anchor:"LeftMiddle" }, expendpoint);
+	ep.id = ep_left_prefix + itemId;
+	var ep2 = instance.addEndpoint(itemId, { anchor:"RightMiddle" }, expendpoint);
+	ep2.id = ep_right_prefix + itemId;
+}
 /*
  * called after an item has been added (and after clicking the hidden button)
  */
 function updateItemCallback(data, items, boxId){ 
 	 var status = data.status; // Can be "begin", "complete" or "success".
-	 //var boxes = new Array(fdg_box, ddx_box, tst_box, mng_box, sum_box/*, pat_box*/ );
 	if(isCallbackStatusSuccess(data)){
-    	 var arr = $("."+items);
+		initElems(items);
+    	/* var arr = $("."+items);
     	 if(arr!=null){
     		 for(var i=0; i<arr.length;i++){
-    			// var o = arr[i];
     			var id = arr[i].id;
-				var item = $("#"+id);
-				 
-				instance.draggable(jsPlumb.getSelector("#"+id));
-				 $( "#"+id).draggable({
-				        containment:"parent",
-			        	start: function(event, ui) {             
-			                // $(ui.helper).find('.tooltip').hide(); 
+				var item = $("#"+id)[0]; //jsPlumb.getSelector("#"+id); //$("#"+id)[0];
+				//var item = jsPlumb.getSelector("#"+id);
+				
+				//var sel = jsPlumb.getSelector("#"+id); //for new items there is only one element which has no class "jtk-draggable".
+				//if(sel!=null && sel.length==2) $("#"+id).remove(); //these are the duplicates
+				
+				//else if(!instance.hasClass(sel[0], "jtk-draggable")){
+					instance.draggable(jsPlumb.getSelector("#"+id));
+					 $( "#"+id).draggable({
+					        containment:"parent",
+				        	start: function(event, ui) {             
+				                 $('.ui-tooltip').remove();
+				             }, 
+					  });
+				     $( "#"+id).draggable({
+			    	 start: function(event, ui) {             
 			                 $('.ui-tooltip').remove();
 			             }, 
-				  });
-			     $( "#"+id).draggable({
-		    	 start: function(event, ui) {             
-		                // $(ui.helper).find('.tooltip').hide(); 
-		                 $('.ui-tooltip').remove();
-		             }, 
-			   	  stop: function( event, ui ) {
-			   		  handleRectDrop(ui);
-			   	  }
-			   });
-				addToGroup(id, item); //4.
-				initBoxHeights();
-				var pos = $(item).position();
-				var ep = instance.getEndpoints(id);
-				createEndpointsForItems(id, endpoint);
-    		 }
-    	 }
+				   	  stop: function( event, ui ) {
+				   		  handleRectDrop(ui);
+				   	  }
+				   });
+					addToGroup(id, item); //4.
+					instance.makeTarget(item,{
+						isTarget:true,
+						maxConnections:10,			
+						anchor: ["Perimeter", { shape:"Rectangle" }]
+						//paintStyle:{ fill:"red" },
+					});
+					createEndpointsForItems(id);
+				//}
+				
+							
+    		 }*/
+    		 //initBoxHeights();	
+    	 //}
+		 initBoxHeights();
 	}   
 }
 
 
 /*
- * attach an item to a group
+ * attach an item to a group and make it a target
  */
-function addToGroup(itemId, item){ //fdg_1571
+function addToGroup(itemId, item){ 
 	if(itemId.indexOf("fdg")>=0){
 		instance.addToGroup("fdg_group", item);
 		return;
@@ -124,6 +179,7 @@ function addToGroup(itemId, item){ //fdg_1571
 	if(itemId.indexOf("mng")>=0){
 		instance.addToGroup("mng_group", item);
 	}
+	
 }
 
 /*
@@ -150,36 +206,45 @@ function toggleContainerCollapse(elem){
     toggleStoredContainerCollapsed(elem.id);
 }
 
+var conns = '';
 
-/*
- * On load we draw the connections between the items.
- * TODO create a javascript object 
- */
-function initConnections(){	
-	var conns = '';
+/** we parse the JSON string of connections and store the connections in the conn variable 
+ * We do this quite at the beginning to be able to access the conn variable when initializing the endpoints
+**/
+function parseConns(){
 	if($("#jsonConns").html()!=null && $("#jsonConns").html()!='' && $("#jsonConns").html()!=undefined)
 		conns = jQuery.parseJSON($("#jsonConns").html());
+}
+/**
+ * On load we draw the connections between the items.
+ **/
+function initConnections(){	
+	
+	/*if($("#jsonConns").html()!=null && $("#jsonConns").html()!='' && $("#jsonConns").html()!=undefined)
+		conns = jQuery.parseJSON($("#jsonConns").html());*/
 	
 	if(conns!=''){
 		for(j=0; j<conns.length;j++){
-			createConnection(conns[j].id, conns[j].sourceid, conns[j].targetid, conns[j].l, conns[j].e,  conns[j].weight_e,  conns[j].weight_l, conns[j].start_ep, conns[j].target_ep);
+			createConnection(conns[j].id, conns[j].sourceid, conns[j].targetid, conns[j].l, conns[j].e,  conns[j].weight_e,  conns[j].weight_l, conns[j].start_ep, conns[j].target_ep, conns[j].target_x, conns[j].target_y);
 		}
 	}
 }
 
-function reInitExpConnections(){
-	var conns = '';
+//function reInitConnections(){
+//	parseConns();
+//	initConnections();
+	/*var expConns = '';
 	if($("#jsonConns").html()!=null && $("#jsonConns").html()!='' && $("#jsonConns").html()!=undefined)
-		conns = jQuery.parseJSON($("#jsonConns").html());
-	if(conns!=''){
-		for(j=0; j<conns.length;j++){
-			if(conns[j].e=="1")
-				createExpConnection(conns[j].id, conns[j].sourceid, conns[j].targetid,  conns[j].weight_e,  conns[j].weight_l, conns[j].start_ep, conns[j].target_ep);
+		expConns = jQuery.parseJSON($("#jsonConns").html());
+	if(expConns!=''){
+		for(j=0; j<expConns.length;j++){
+			if(expConns[j].e=="1" && expConns[j].l=="0")
+				createExpConnection(expConns[j].id, expConns[j].sourceid, expConns[j].targetid,  expConns[j].weight_e,  expConns[j].weight_l, expConns[j].start_ep, expConns[j].target_ep, expConns[j].target_x, expConns[j].target_y);
 		}
-	}
+	}*/
 
 
-}
+//}
 
 
 /*
@@ -293,6 +358,7 @@ function sendNewHeightToHostSystem(){
  * we display the connection hint close to the first element we see. The arrow should point onto the endpoint of 
  * this element. Whether the box shall be displayed or not is handled server-side (only then the display box has the  
  * css class cnxhint_true).
+ * @deprecated
  */
 function checkDisplayCnxHint(){
 	var item = $(".itembox")[0];	
@@ -305,4 +371,18 @@ function checkDisplayCnxHint(){
 	$(".cnxhint_true").toggle("drop", {direction: "right"},1000);
 }
 
+function initDraggables(){
+    instance.draggable(jsPlumb.getSelector(".drag-drop .itembox"));        
+	//item was moved -> trigger ajax call to update position
+    $( ".drag-drop .itembox" ).draggable({
+    	  stop: function( event, ui ) {
+    		  handleRectDrop(ui);
+    	  },	
+        start: function(event, ui) {             
+            // $(ui.helper).find('.tooltip').hide(); 
+             $('.ui-tooltip').remove();
+         }, 
+    
+    });
+}
 

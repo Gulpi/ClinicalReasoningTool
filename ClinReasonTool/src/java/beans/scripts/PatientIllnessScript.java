@@ -360,39 +360,16 @@ public class PatientIllnessScript extends Beans implements Comparable, IllnessSc
 	public void addTest(String idStr, String name, String x, String y){ new AddTestAction(this).add(idStr, name, x,y);}
 	public void addMng(String idStr, String name){ new AddMngAction(this).add(idStr, name);}
 	public void addMng(String idStr, String name, String x, String y){ new AddMngAction(this).add(idStr, name, x,y);}
-	//public void addEpi(String idStr, String name){ new AddEpiAction(this).add(idStr, name);}
-	//public void addEpi(String idStr, String name, String x, String y){ new AddEpiAction(this).add(idStr, name, x,y);}
 	
 	public void delProblem(String idStr){ new DelProblemAction(this).delete(idStr);}
 	public void delDiagnosis(String idStr){ new DelDiagnosisAction(this).delete(idStr);}
 	public void delTest(String idStr){ new DelTestAction(this).delete(idStr);}
 	public void delMng(String idStr){ new DelMngAction(this).delete(idStr);}
-	//public void delEpi(String idStr){ new DelEpiAction(this).delete(idStr);}
 
-	/**
-	 * @param idStr
-	 * @param newOrderStr
-	 * @deprecated
-	 */
-	public void reorderProblems(String idStr, String newOrderStr){ new MoveProblemAction(this).reorder(idStr, newOrderStr);}
-	/**
-	 * @param idStr
-	 * @param newOrderStr
-	 * @deprecated
-	 */
-	public void reorderDiagnoses(String idStr, String newOrderStr){ new MoveDiagnosisAction(this).reorder(idStr, newOrderStr);}
-	/**
-	 * @param idStr
-	 * @param newOrderStr
-	 * @deprecated
-	 */
-	public void reorderTests(String idStr, String newOrderStr){ new MoveTestAction(this).reorder(idStr, newOrderStr);}
-	/**
-	 * @param idStr
-	 * @param newOrderStr
-	 * @deprecated
-	 */
-	public void reorderMngs(String idStr, String newOrderStr){ new MoveMngAction(this).reorder(idStr, newOrderStr);}
+	//public void reorderProblems(String idStr, String newOrderStr){ new MoveProblemAction(this).reorder(idStr, newOrderStr);}
+	//public void reorderDiagnoses(String idStr, String newOrderStr){ new MoveDiagnosisAction(this).reorder(idStr, newOrderStr);}
+	//public void reorderTests(String idStr, String newOrderStr){ new MoveTestAction(this).reorder(idStr, newOrderStr);}
+	//public void reorderMngs(String idStr, String newOrderStr){ new MoveMngAction(this).reorder(idStr, newOrderStr);}
 	public void moveItem(String idStr, String newOrderStr, String x, String y){ new DragDropAction(this).move(idStr, x, y);}
 	public void moveItem(String idStr, String x, String y){ new DragDropAction(this).move(idStr, x, y);}
 
@@ -402,8 +379,8 @@ public class PatientIllnessScript extends Beans implements Comparable, IllnessSc
 	public void changeMng(String idStr,String changeMode){new ChangeMngAction(this).changeMng(idStr, changeMode);}
 	public void changeMnM(String idStr/*, String newValue*/){new ChangeDiagnosisAction(this).toggleMnM(idStr/*, newValue*/);}
 	
-	public void addConnection(String sourceId, String targetId){new AddConnectionAction(this).add(sourceId,targetId);}
-	public void addConnection(String sourceId, String targetId, String startEpId, String targetEpId){new AddConnectionAction(this).add(sourceId,targetId,startEpId,targetEpId);}
+	//public void addConnection(String sourceId, String targetId){new AddConnectionAction(this).add(sourceId,targetId);}
+	public void addConnection(String sourceId, String targetId, String startEpId, String targetEpX, String targetEpY){new AddConnectionAction(this).add(sourceId,targetId,startEpId,targetEpX, targetEpY);}
 	public void delConnection(String idStr){new DelConnectionAction(this).delete(idStr);}
 	public void chgConnection(String idStr, String weightStr){new ChgConnectionAction(this).chgConnection(idStr, weightStr);}
 

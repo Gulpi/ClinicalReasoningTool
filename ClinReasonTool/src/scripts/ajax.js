@@ -159,11 +159,11 @@ function sendAjaxCM(id, callback, type, name, x, y){
  * @param startEpId
  * @param targetEpId
  */
-function sendAjaxCnx(id, callback, type, name, startEpId, targetEpId){
+function sendAjaxCnx(id, callback, type, name, startEpId, targetEpX, targetEpY){
 	$.ajax({
 		  method: "POST",
 		  url: ajaxUrl,
-		  data: { type: type, id: id, name: name, x: startEpId, y: targetEpId, script_id: scriptId, stage:currentStage }
+		  data: { type: type, id: id, name: name, x: startEpId, y: targetEpY, x1: targetEpX, script_id: scriptId, stage:currentStage }
 		})
 	  .done(function( response ) {	
 		  handleResponse(response, callback, name);

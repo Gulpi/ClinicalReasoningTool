@@ -80,7 +80,7 @@ public class DelConnectionAction /*implements DelAction*/{
 			for(int i=0; i<connsToDelete.size(); i++){
 				Connection conn = connsToDelete.get(i);
 				updateGraph(conn);
-				patIllScript.getConns().remove(conn);		
+				patIllScript.getConns().remove(new Long(conn.getId()));		
 				logs.add(new LogEntry(LogEntry.DELCNXAFTERSTARTNODE_ACTION, patIllScript.getId(), conn.getStartId(), conn.getTargetId()));
 			}
 			new DBClinReason().deleteAndCommit(connsToDelete);
@@ -101,7 +101,8 @@ public class DelConnectionAction /*implements DelAction*/{
 		if(connsToDelete==null) return;
 		for(int i=0; i<connsToDelete.size(); i++){
 			Connection conn = connsToDelete.get(i);
-			patIllScript.getConns().remove(conn);		
+			updateGraph(conn);
+			patIllScript.getConns().remove(new Long(conn.getId()));		
 			logs.add(new LogEntry(LogEntry.DELCNXAFTERTARGETNODE_ACTION, patIllScript.getId(), conn.getStartId(), conn.getTargetId()));
 		}
 		new DBClinReason().deleteAndCommit(connsToDelete);

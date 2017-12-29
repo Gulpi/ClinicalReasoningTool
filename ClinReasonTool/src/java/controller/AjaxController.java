@@ -69,13 +69,17 @@ public class AjaxController {
 	    	String idStr = reqParams.get("id");
 	    	String nameStr = reqParams.get("name"); //the list entry
 	    	String orgNameStr = reqParams.get("orgname"); //what the learner has typed in
-	    	String x = reqParams.get("x"); //either x-position of an item or startEpId
-	    	String y = reqParams.get("y"); //either y-position of an item or targetEpId
+	    	String x = reqParams.get("x"); //x-position of an item or startEpId
+	    	String y = reqParams.get("y"); //y-position of an item or targetEp
+	    	String x1 = reqParams.get("x1"); //x-position of targetEp -> needed for more flexible target enpoints
 	    	patillscript.updateStage(reqParams.get(REQPARAM_STAGE));
 
 	    	//String patIllScriptId = reqParams.get(REQPARAM_SCRIPT); //TODO check whether belongs to currently loaded script!
 	    	Statement stmt; 
-	    	if(x!=null && !x.trim().equals("")){
+	    	if(x1!=null && !x1.trim().equals("")){ //connection drawing with 
+	    		stmt = new Statement(patillscript, methodName, new Object[]{idStr, nameStr,x, x1,y});
+	    	}
+	    	else if(x!=null && !x.trim().equals("")){
 	    		stmt = new Statement(patillscript, methodName, new Object[]{idStr, nameStr,x,y});
 	    	}
 	    	else if(nameStr!=null && !nameStr.trim().equals("")) 

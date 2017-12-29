@@ -17,37 +17,24 @@
 <f:event type="preRenderView" listener="#{facesContext.externalContext.response.setHeader('Expires', 'Thu, 01 Jan 1970 00:00:00 GMT')}" />
  <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
  <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no"/>
-<!--          <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet"/>
-        <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet"/>
-        <link href="//fonts.googleapis.com/css?family=Lato:400,700" rel="stylesheet"/>-->
 <link rel="stylesheet" type="text/css" href="../../scripts/jquery112/ui-lightness/jquery-ui.css" /> 
-<link rel="stylesheet" type="text/css" href="../../styles/jsPlumbToolkit-defaults.css" />
+<link rel="stylesheet" type="text/css" href="../../scripts/jsplumb/jsplumb.css" />
 <link rel="stylesheet" href="../../styles/clinreason_boxes.css" />
 <link rel="stylesheet" href="../../styles/portfolio.css" />
 <link rel="stylesheet" href="../../styles/font-awesome/css/font-awesome.css" />
 
 <script type="text/javascript" src="../../scripts/jquery112/jquery.js"></script>
 <script type="text/javascript" src="../../scripts/jquery112/jquery-ui.min.js"></script>
-<script type="text/javascript" src="../../scripts/jquery112/jquery-ui.js"></script>
 
 <script src="../../scripts/connection.js"></script>
 <script src="../../scripts/list.js"></script>
 
 <script src="../../scripts/crt_box.js"></script>
 <script src="../../scripts/ajax.js"></script>
-<script src="../../scripts/jsplumb/jsPlumb.min.js"></script>
+<script src="../../scripts/jsplumb/jsplumb.js"></script>
 <script src="../../scripts/myjsplumb.js"></script>
 <script src="../../scripts/editexp.js"></script>
  
-<style>
-/** ELEMENT POSITIONS **/
-/*#fdg_box { left:15px;top:15px; }
-#ddx_box { left:275px;top:15px; }
-#tst_box { left:15px;top:320px; }
-#mng_box { left:275px;top:320px; }
-#sum_box { left:15px;top:625px; }*/
-
-</style>
 <script language="JavaScript">
 
 var hideCnxTitle = "#{prop['cnx.hide']}";
@@ -61,8 +48,11 @@ var listUrl="";
 var lang = "#{adminContext.patillscript.locale}";
 if(lang=="de") listUrl = "../jsonp_de.json";
 
+
 var currentStage = #{adminContext.patillscript.stage};
 var currentStageScript = "#{adminContext.patillscript.currentStageWithUpdate}";
+var maxStage =#{adminContext.patillscript.currentStage};
+
 var active;
 var instance;
 var item_arr = new Array();
@@ -74,9 +64,9 @@ $(function() {
 	$(".listdialog").hide();
 	//$("#jdialogError").hide();
 	$("#connContext").hide();
-	$("#summStText").on('change',function(){
+	/*$("#summStText").on('change',function(){
 		saveSummSt('#{adminContext.patillscript.summStId}');
-	 });
+	 });*/
 	$(".chgstage").on('change',function(){
 		chgStageItem(this);
 	 });
@@ -102,54 +92,56 @@ $(function() {
 jsPlumb.ready(function () {
 		initBoxHeights();
      	instance = jsPlumb.getInstance({
-        DragOptions: { cursor: 'pointer', zIndex: 2000 },
-        PaintStyle: { strokeStyle: '#666' },
-        EndpointHoverStyle: { fillStyle: "orange" },
-        HoverPaintStyle: { strokeStyle: "orange" },
-        EndpointStyle: { width: 25, height: 15, strokeStyle: '#666' },
-        Endpoint: "Rectangle",
-        Anchors: ["TopCenter", "TopCenter"],
-        Container: "canvas"
+        	DragOptions: { cursor: 'move' }, //cursor style is not working
+        	PaintStyle: { strokeStyle: '#666', stroke: "#006699", strokeWidth:2, outlineStroke: "transparent", outlineWidth: 5 },
+        	//HoverPaintStyle: { strokeStyle: "orange", stroke:"orange" }, //fill:"orange" for 2.2.0
+        	EndpointStyle: { width: 20, height: 10, strokeStyle: '#666' },
+        	Endpoint: "Rectangle",
+        	Anchors: ["TopCenter", "TopCenter"],
+       		Container: "canvas",
+       		MaxConnections: 10,
+       		ReattachConnections : true
+
     });
 
     // suspend drawing and initialise.
     instance.batch(function () {
 
 
-        instance.draggable(jsPlumb.getSelector(".drag-drop .itembox"));        
+        /*instance.draggable(jsPlumb.getSelector(".drag-drop .itembox"));        
     	//item was moved -> trigger ajax call to update position
         $( ".drag-drop .itembox" ).draggable({
         	  stop: function( event, ui ) {
         		  handleRectDrop(ui);
         	  }
-        });
-       
+        });*/
+        parseConns();
         initGroups(instance);
        
     });
     // collapse/expand group button
-    instance.on(canvas, "click", ".node-collapse", function() {
+    /*instance.on(canvas, "click", ".node-collapse", function() {
     	toggleContainerCollapse(this.parentNode);
-    });
-    $(".itembox").contextmenu(function(event) {
+    });*/
+   /* $(".itembox").contextmenu(function(event) {
     	  //alert( "Handler for .contextmenu() called." );
     	  showDropDown("dd"+this.id);
     	  event.preventDefault();
-   	 });
+   	 });*/
     
     initConnections();
     initCnxDisplay();
-    $(".jsplumb-connector").attr("title","Click to change or delete");
+   /* $(".jsplumb-connector").attr("title","Click to change or delete");
     //registers a connection that is made: this code needs to be AFTER the init has happened, otherwise each init 
     //event triggers this. 
     instance.bind("connection", function (info, originalEvent){
     	addConnection(info);
-    });
+    });*/
     $(".expbox").addClass("expboxstatus");
     jsPlumb.fire("jsPlumbDemoLoaded", instance);
     
     
-    initContainerCollapsed();
+   // initContainerCollapsed();
 	
 });
 
@@ -217,8 +209,6 @@ MaxStage: #{adminContext.patillscript.currentStage}, Stage: <span id="stageSpan"
 						<ui:repeat value="#{adminContext.patillscript.testsStage}" var="test" varStatus="status">
 							<ui:include src="testbox.xhtml" />
      					</ui:repeat>				
-						<!-- <li id="selds_1">Chest X-ray <select class="f_select"><option value="-1">scanning</option><option>r/c Pneumonia</option></select></li>-->
-					<!--  <div id="jsonTestsMap" style="visibility:hidden">#{adminContext.patillscript.testsJson}</div>-->
     				</h:panelGroup>
     				     <h:commandButton id="hiddenTestButton" value="RenderSomething" style="visibility:hidden">
     						<f:ajax render="@form" onevent="updateTestCallback"></f:ajax>
@@ -273,20 +263,5 @@ MaxStage: #{adminContext.patillscript.currentStage}, Stage: <span id="stageSpan"
 	  				</h:panelGroup>
 				</h:form>
 </div>
-<!-- <div style="float:right;width:300px;"><br/>
-	<div style="background-color:#cce6ff;width:200px;padding:5px;">#{prop['ddx.workingddx.on']}</div><br/>
-	<div style="background-color:#80bfff;width:200px;padding:5px;">#{prop['ddx.finalddx']}</div><br/>
-	<div style="width:200px;padding:5px;color:#cccccc; border:1px;border-color:#cccccc;">#{prop['ddx.ruledout']}</div><br/>
-	
-	<div style="width:200px;padding:5px;"><i class="fa fa-exclamation-circle1"></i> #{prop['ddx.mnm.hint2']}</div><br/>
-	
-	
-	<div style="width:200px;padding:5px;"><hr style="width:20px;height:5px;float:left;border-color:#004466;background-color:#004466;"/> #{prop['cnx.relation.5']}/#{prop['cnx.relation.4']}</div>
-	<div style="width:200px;padding:5px;"><hr style="width:20px;height:5px;float:left;border-color:#b3e6ff;background-color:#b3e6ff"/> #{prop['cnx.relation.3']}</div>
-	<div style="width:200px;padding:5px;"><hr style="width:20px;height:5px;float:left;border-color:#990000;background-color:#990000"/> #{prop['cnx.relation.6']}</div>
-	<div style="width:200px;padding:5px;"><hr style="width:20px;height:5px;float:left;border-color:#006699;background-color:#006699;"/> #{prop['cnx.relation.8']}</div>
-	
-	
-</div>-->
 </body></f:view>
 </html>

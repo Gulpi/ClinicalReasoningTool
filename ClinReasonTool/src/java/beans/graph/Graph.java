@@ -527,7 +527,9 @@ public class Graph extends DirectedWeightedMultigraph<MultiVertex, MultiEdge> {
 					sb.append("\"sourceid\": \""+startIdWithPrefix+"\",\"targetid\": \""+targetIdWithPrefix+"\",");
 					sb.append("\"weight_l\": \""+edge.getLearnerWeight()+"\", \"weight_e\": \""+edge.getExpertWeight()+"\",");
 					sb.append("\"start_ep\": \""+edge.getStartEpIdx()+"\",");
-					sb.append("\"target_ep\": \""+edge.getTargetEpIdx()+"\"},");	
+					sb.append("\"target_ep\": \""+edge.getTargetEpIdx()+"\",");	
+					sb.append("\"target_x\": \""+edge.getTargetX()+"\",");	
+					sb.append("\"target_y\": \""+edge.getTargetY()+"\"},");	
 				}
 			}	
 		}

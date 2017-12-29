@@ -6,64 +6,112 @@ var myDropOptions = {
         activeClass: "dragActive"
     };
 
-var endpoint = {
-    endpoint: ["Dot", { radius: 5 }],
-    paintStyle: { fillStyle: color2 },
-    isSource: true,
-    //scope: "green",
-    //connectorStyle: { strokeStyle: color2, lineWidth: 6 },
-    connector: ["Bezier", { curviness: 15 } ],
-    maxConnections: 10,
-    //Anchors: ["TopCenter", "TopCenter"],
-    isTarget: true,
-    //dropOptions: myDropOptions,
-    deleteEndpointsOnDetach:true
-};
-var expendpoint = {
-	    endpoint: ["Dot", { radius: 0.1 }],
-	    paintStyle: { fillStyle: color2 },
+
+/*endpoint when connection has been made */
+var endpointCR= {
+	    //endpoint: ["Rectangle", { width: 8, height:8 }],
+		//endpoint: ["Image", {src:"../styles/arrow.png", cssClass:"endpointArrow"}],
+		endpoint: ["Rectangle", {cssClass:"endpointArrowR", maxConnections: 10}],
+	    /*cssClass: 'endpointArrowR',*/
+	    //paintStyle: { fillStyle: color2, fill:color2, stroke:"#006699", strokeWidth:2 }, //fill:color2 needed for 2.2.0
 	    isSource: true,
-	    //scope: "green",
-	    //connectorStyle: { strokeStyle: color2, lineWidth: 6 },
+	    connector: ["Bezier", { curviness: 15 } ],
+	    maxConnections: 10,
+	    isTarget: true,
+	    deleteEndpointsOnDetach:false,
+	    //detachable:false,
+	    //endpointHoverStyle:{ cssClass:"endphover" },
+	    /*overlays:[ //overlay is not clickable!!!
+	              [ "Label", { label:"<i class=\"fa fa-arrow-right\"></i>", id:"label", location:[1.5, 0.0] } ]
+	            ],*/
+	    connectorOverlays: [ [ "Label", { label:"<i class=\"fa overlay\"></i>" } ]]	
+}
+var endpointCL= {
+	   // endpoint: ["Image", {src:"../styles/arrowL.png", cssClass:"endpointArrow"}],
+	    endpoint: ["Rectangle", {cssClass:"endpointArrowL", maxConnections: 10}],
+	    
+	    //cssClass: 'myendpoint',
+	    //paintStyle: { fillStyle: color2, fill:color2, stroke:"#006699", strokeWidth:2 }, //fill:color2 needed for 2.2.0
+	    isSource: true,
+	    connector: ["Bezier", { curviness: 15 } ],
+	    maxConnections: 10,
+	    isTarget: true,
+	    deleteEndpointsOnDetach:false,
+	    //detachable:false,
+	    //endpointHoverStyle:{ cssClass:"endphover" },
+	   /* overlays:[
+	              [ "Label", { label:"<i class=\"fa fa-arrow-left\"></i>", id:"label", location:[0.0, 0.0] } ]
+	            ],*/
+	    connectorOverlays: [ [ "Label", { label:"<i class=\"fa overlay\"></i>" } ]]	
+}
+/* endpoint with arrow pointing to the left */
+/*var endpointL = {
+	    endpoint: ["Rectangle", { width: 20, height:10, cssClass:"endpointL"  }], //enlarged for testing, can be 0.1 again
+	   // paintStyle: { fillStyle: color2, fill:color2 }, //fill:color2 needed for 2.2.0
+	    isSource: true,
+	    connector: ["Bezier", { curviness: 15 } ],
+	    maxConnections: 10,
+	    isTarget: true,
+	    deleteEndpointsOnDetach:true
+	    //connectorOverlays: [ [ "Label", { label:"<i class=\"fa overlay\"></i>" } ]]
+	};*/
+var expendpoint = {
+	    endpoint: ["Dot", { radius: 5 }],
+	    paintStyle: { fillStyle: color2, fill:color2 },//fill:color2 needed for 2.2.0
+	    isSource: true,
 	    cssClass: 'exp-endpoint',
 	    connector: ["Bezier", { curviness: 15 } ],
 	    maxConnections: 10,
-	    //Anchors: ["TopCenter", "TopCenter"],
 	    isTarget: true,
-	    //dropOptions: myDropOptions,
-	    deleteEndpointsOnDetach:false			
+	    deleteEndpointsOnDetach:false
+	    //detachable:false
 }
 
-/*var con=info.connection;
-var arr=jsPlumb.select({source:con.sourceId,target:con.targetId});
-if(arr.length>1){
-   jsPlumb.detach(con);*/
    
-function createConnection(cnxId, sourceId, targetId, learner, exp, expWeight, learnerWeight, startEpIdx, targetEpIdx){
+function createConnection(cnxId, sourceId, targetId, learner, exp, expWeight, learnerWeight, startEpIdx, targetEpIdx, targetX, targetY){
 
 	if(/*!expFeedback &&*/ learner=="0" && exp=="1"){
-		createExpConnection(cnxId, sourceId, targetId, expWeight, learnerWeight, startEpIdx, targetEpIdx)
+		createExpConnection(cnxId, sourceId, targetId, expWeight, learnerWeight, startEpIdx, targetEpIdx,  targetX, targetY)
 		return;
 	}
 	if(instance.getEndpoints==null || instance.getEndpoints(sourceId)==undefined || instance.getEndpoints(targetId)==undefined)
 		return;
 	
-	var epSource = getEndpointForCnx(sourceId, startEpIdx);//instance.getEndpoints(sourceId)[startEpIdx];
-	var epTarget =  getEndpointForCnx(targetId, targetEpIdx); // instance.getEndpoints(targetId)[targetEpIdx];
+	var epSource = getEndpointForCnx(sourceId, startEpIdx);
+	var epTarget =  getEndpointForCnx(targetId, targetEpIdx); 
+	var target  = $("#"+targetId)[0];
 	var color = getWeightToColor(learnerWeight);
 	var lw = getWeightToLineWidth(learnerWeight);
-	//alert(color);
-	var cnx = instance.connect({
-		source:epSource, 
-		target:epTarget,
-		/*deleteEndpointsOnDetach:false,*/
-		paintStyle: { strokeStyle: color, lineWidth: lw }
-		//title: 'Click to change or delete'
-	});
+	var cnx;
+	if(targetX>=0 && targetY>=0){ //with have a dynamic position
+		cnx = instance.connect({
+			source:epSource, 
+			target:target,
+			//endpoint:"Dot",
+		    maxConnections: 10,
+			//anchor:[ "Perimeter", { shape: "Rectangle" }, { position:[10, 0]}],
+			anchor: ["Perimeter", { shape:"Rectangle" }],
+			    	//position:[targetX, targetY]}],
+					
+			id:"exp_"+cnxId,
+			//detachable:false,
+			paintStyle: { strokeStyle: color, strokeWidth: lw, stroke:color, outlineStroke: "transparent", outlineWidth: 5  } //stroke:color needed for 2.2.0
+		});		
+	}
+	else{
+		cnx = instance.connect({
+			source:epSource, 
+			target:epTarget,
+		    maxConnections: 10,
+			/*anchor:[ "Assign", { 
+			    	position:[targetX, targetY]}],*/
+			id:"exp_"+cnxId,
+			//detachable:false,
+			paintStyle: { strokeStyle: color, strokeWidth: lw, stroke:color, outlineStroke: "transparent", outlineWidth: 5 }, //stroke:color needed for 2.2.0
+		});
+	}
+
 	$(cnx).attr('id', cnxId);
-	//$(cnx).attr('title', 'hallo');
-	//cnx.setLabel('Click to change or delete');
-	//cnx.setPaintStyle({strokeStyle:color, lineWidth:lw}); //color depending on the weight!!!
 }
 
 function getEndpointForCnx(itemId, epIdx){
@@ -77,16 +125,16 @@ function getEndpointForCnx(itemId, epIdx){
 	}
 }
 
-function createExpConnection(cnxId, sourceId, targetId, expWeight, learnerWeight, startEpIdx, targetEpIdx){
+function createExpConnection(cnxId, sourceId, targetId, expWeight, learnerWeight, startEpIdx, targetEpIdx, targetEpX, targetEpY){
 	if($("#"+sourceId)[0]==undefined ||$("#"+targetId)[0]==undefined) 
 		return;
 
-	createEndpointsForItems(sourceId, expendpoint);
-	createEndpointsForItems(targetId, expendpoint);
+	createExpEndpointsForItems(sourceId);
+	createExpEndpointsForItems(targetId);
 
-	var epSource = getEndpointForCnx(sourceId, startEpIdx);//instance.getEndpoints(sourceId)[startEpIdx];
-	var epTarget =  getEndpointForCnx(targetId, targetEpIdx); // instance.getEndpoints(targetId)[targetEpIdx];
-
+	var epSource = getEndpointForCnx(sourceId, startEpIdx);
+	var epTarget =  getEndpointForCnx(targetId, targetEpIdx); 
+	//var target  = $("#"+targetId)[0];
 	var color = getWeightToColor(expWeight);
 	var lw = getWeightToLineWidth(expWeight);
 	//alert(color);
@@ -94,27 +142,27 @@ function createExpConnection(cnxId, sourceId, targetId, expWeight, learnerWeight
 		source:epSource, 
 		target:epTarget,
 		id:"exp_"+cnxId,
-		/*deleteEndpointsOnDetach:false,*/
-		connectorStyle: { strokeStyle: color, lineWidth: lw }
+		deleteEndpointsOnDetach:false,
+		paintStyle: { strokeStyle: color, strokeWidth: lw, stroke:color } //stroke:color2 needed for 2.2.0
+	//paintStyle: {strokeWidth: lw}
 	});
+	var cnxs2 = instance.getConnections();
 	if(cnx!=undefined){
 		$(cnx).attr('id', "exp_"+cnxId);
-		cnx.setPaintStyle({strokeStyle:color, lineWidth: lw}); //color depending on the weight!!!
+		cnx.setPaintStyle({strokeStyle:color, strokeWidth: lw, stroke: color}); //color depending on the weight!!!
 		if(!isOverallExpertOn() || !isOverallCnxOn()){
-			//cnx.addClass("jsplumb-exp-connector-show");
-		//}
-		//else{
-			cnx.addClass("jsplumb-exp-connector-hide");
+			cnx.addClass("jtk-exp-connector-hide");
 		}
-		cnx.addClass("jsplumb-exp-connector");
-		cnx.removeClass("jsplumb-connector");
+		cnx.addClass("jtk-exp-connector");
+		cnx.removeClass("jtk-connector");
 	}
 }
 
 function delConnection(){
 	var cnxId = $("#conn_id").html();	
 	var cnx = getConnectionById(cnxId);
-	jsPlumb.detach(cnx);
+	instance.deleteConnection(cnx); //new from version 2.4.0, detach no longer supported
+
 	$("#conn_id").html('');
 	$("#connContext" ).dialog( "close" );
 	sendAjax(cnxId, doNothing, "delConnection", "");
@@ -126,13 +174,25 @@ function addConnection(conn){
 	//var eps = conn.endpoints;
 	var epSource = conn.sourceEndpoint.id;//instance.getEndpoints(conn.id);
 	var epTarget = conn.targetEndpoint.id;
+	var targetEPId =  conn.targetEndpoint.id;
+	//var test = $("#"+targetEPId);
+	//var test2 = test.position();
+	var targetPosX = conn.targetEndpoint.endpoint.x;
+	var targetPosY = conn.targetEndpoint.endpoint.y;
 	if(epSource==epTarget) return;
 	var epSourceIdx = epSource.charAt(0);
-	var epTargetIdx = epTarget.charAt(0);
+	//var epTargetIdx = epTarget.charAt(0);
 	
 	var sourceId = conn.sourceId; 
 	var targetId = conn.targetId;
-	sendAjaxCnx(sourceId, addConnectionCallback, "addConnection", targetId, epSourceIdx, epTargetIdx);
+	var target = $("#"+targetId)[0];
+	var targetLeft = target.offsetParent.offsetLeft;
+	var targetTop = target.offsetParent.offsetTop;
+	targetPosX = targetPosX - targetLeft +12.5;
+	targetPosY = targetPosY - targetTop +7.5;
+	//sendAjaxCnx(sourceId, addConnectionCallback, "addConnection", targetId, epSourceIdx, epTargetIdx);
+	sendAjaxCnx(sourceId, addConnectionCallback, "addConnection", targetId, epSourceIdx, targetPosX, targetPosY);
+
 }
 
 /**
@@ -147,7 +207,7 @@ function addConnectionCallback(sourceId, cnxId, targetId){
 	var color = getWeightToColor(2);
 	var lw = getWeightToLineWidth(2);
 
-	cnx.setPaintStyle({strokeStyle:color, lineWidth:lw});
+	cnx.setPaintStyle({strokeStyle:color, strokeWidth:lw, stroke: color}); //fill:color for 2.2.0
 	//$("[id='cnxsform:hiddenCnxButton']").click();
 }
 
@@ -170,7 +230,7 @@ function chgConnectionWeight(weight){
 	var cnx = getConnectionById(cnxId);
 	var color = getWeightToColor(weight);
 	var lw = getWeightToLineWidth(weight);
-	cnx.setPaintStyle({strokeWidth:lw, strokeStyle:color});
+	cnx.setPaintStyle({strokeWidth:lw, strokeStyle:color, stroke:color}); //stroke: color for 2.2.0
 	$("#conn_id").html('');
 	$("#connContext" ).dialog( "close" );
 	sendAjax(cnxId, doNothing, "chgConnection", weight);	
@@ -202,7 +262,7 @@ function getConnectionBySourceAndTargetId(sourceId, targetId){
 /**
  * looks whether a learner connections is already made between the source and target. If so return 
  * it. We need this as an array, because the cnx the learner currently tries to make is also already
- * registered. So, array length is always >=1! 
+ * registered. So, array length is always >=1!  -> version >2.2.0 - no longer true, so if arr.length=1 we have a duplicate cnx.
  * @param sourceId
  * @param targetId
  * @returns {Array}
@@ -213,8 +273,7 @@ function getAllLearnerConnectionBySourceAndTargetId(sourceId, targetId){
 	var counter = 0;
 	for(var i =0; i<cns.length; i++){
 		cnx = cns[i];
-		if(cnx.sourceId==sourceId && cnx.targetId==targetId && !cnx.id.startsWith("exp") && !cnx.id.startsWith("con_")){
-			//alert(cnx.getParameter("class"));
+		if((cnx.sourceId==sourceId && cnx.targetId==targetId  || cnx.targetId==sourceId && cnx.sourceId==targetId) && !cnx.id.startsWith("exp") && !cnx.id.startsWith("con_")){
 			cnxArr[counter] = cnx;
 			counter ++;
 		}
@@ -224,7 +283,7 @@ function getAllLearnerConnectionBySourceAndTargetId(sourceId, targetId){
 	//return jsPlumb.select({source:sourceId,target:targetId});
 }
 
-/* get color of connection based on the weight */
+/** get color of connection based on the weight **/
 function getWeightToColor(weight){
 	//return "#006699";
 	switch(weight){
@@ -291,6 +350,7 @@ function getWeightToColorExp(weight){
 
 function toggleCnxDisplay(){
 	hideTooltips();
+	clearErrorMsgs();
 	toggleCnxStatus();
 	initCnxDisplay();
 }
@@ -302,9 +362,9 @@ function initCnxDisplay(){
 }
 
 function hideCnx(){
-	$(".jsplumb-connector").addClass("jsplumb-connector-hide");
-	$(".jsplumb-exp-connector").removeClass("jsplumb-exp-connector-show"); //hide expert cnx as well
-	$(".jsplumb-exp-connector").addClass("jsplumb-exp-connector-hide");
+	$(".jtk-connector").addClass("jtk-connector-hide");
+	$(".jtk-exp-connector").removeClass("jtk-exp-connector-show"); //hide expert cnx as well
+	$(".jtk-exp-connector").addClass("jtk-exp-connector-hide");
 	$("#cnxtoggle").attr("title", showCnxTitle);
 	$("#cnxtoggle").removeAttr("checked");
 }
@@ -312,27 +372,36 @@ function hideCnx(){
 function showCnx(){
 	$("#cnxtoggle").attr("title", hideCnxTitle);
 	$("#cnxtoggle").attr("checked", "checked");
-	$(".jsplumb-connector").removeClass("jsplumb-connector-hide");
+	$(".jtk-connector").removeClass("jtk-connector-hide");
 	//if expert on -> display expert cnx: TODO
 	if(isOverallExpertOn()){
-		$(".jsplumb-exp-connector").addClass("jsplumb-exp-connector-show");
-		$(".jsplumb-exp-connector").removeClass("jsplumb-exp-connector-hide");
+		$(".jtk-exp-connector").addClass("jtk-exp-connector-show");
+		$(".jtk-exp-connector").removeClass("jtk-exp-connector-hide");
 	}
-	$(".jsplumb-connector").show();
+	$(".jtk-connector").show();
 }
 
-function isDuplicateCnx(info, errormsg){
+function isInvalidCnx(info, errormsg){
 	//first we check whether there has already been made a connection between the source and target. 
 	//If so display an error msg
 	var con=info.connection;
+	var maxCnx = con.source.maxConnections;
+	var isInvalid = false;
 	var arr = getAllLearnerConnectionBySourceAndTargetId(con.sourceId, con.targetId);
-	if(arr.length>1){
-	    jsPlumb.detach(con);
+	if(arr.length>=1){
 	    var msgSpanId = getErrorMsgSpanByTargetId(con.targetId);
 	    $("#"+msgSpanId).html(errormsg);
-	    return true;
+	    isInvalid =  true;
 	 }
-	return false;
+	if(con.sourceId == con.targetId){ //connection from/to same element
+		isInvalid =  true;
+	}
+	//for some reason the (invisible) expert elements can be connected,so we prevent this here:
+	var cssList =info.target.classList;
+	if(cssList[0].startsWith("exp")) isInvalid =  true;
+	
+	if(isInvalid) instance.deleteConnection(con); 	
+	return isInvalid;
 }
 /**
  * we display the error message for connections in the box of the target item
@@ -359,18 +428,23 @@ function getErrorMsgSpanByTargetId(targetId){
 function reInitCnxsCallback(data){
 	 var status = data.status; 
 	 if(isCallbackStatusSuccess(data)){
-    	fireAddConnection = false;
-    	var cnxs = instance.getConnections();
+    	fireAddConnection = false; //!!! needs to be here, otherwise we fire another addConnection event!!!
+    	var cnxs = instance.getConnections('*');//instance.getConnections();
     	if(cnxs!=null){
         	for(i=0; i<cnxs.length;i++){
         		var tmpCnx = cnxs[i];
-        		if(tmpCnx.id.startsWith("exp_"))
-        			instance.detach(tmpCnx);
+        		//if(tmpCnx.id.startsWith("exp_"))
+        			instance.deleteConnection(tmpCnx);
         	}
     	}
-    	reInitExpConnections();
+    	var arr2 = $(".jtk-connector");
+    	var cnxs2 = instance.getConnections();
+    	parseConns();
+    	initConnections();   	
+    	
+    	//reInitExpConnections();
     	fireAddConnection = true;  
-    	checkDisplayCnxHint();
+    	//checkDisplayCnxHint();
     }
 }
 

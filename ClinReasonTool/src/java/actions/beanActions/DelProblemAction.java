@@ -63,9 +63,9 @@ public class DelProblemAction implements DelAction{
 		if(vertex==null) return; //Should not happen
 		vertex.setLearnerVertex(null);
 		//remove complete edge param for all these edges:
-		if( patIllScript.getDiagnoses()!=null){
-			for(int i=0; i < patIllScript.getDiagnoses().size(); i++){
-				graph.removeEdgeWeight(rel.getListItemId(), patIllScript.getDiagnoses().get(i).getListItemId());
+		if( patIllScript.getProblems()!=null){
+			for(int i=0; i < patIllScript.getProblems().size(); i++){
+				graph.removeEdgeWeight(rel.getListItemId(), patIllScript.getProblems().get(i).getListItemId());
 			}
 		}
 		CRTLogger.out(graph.toString(), CRTLogger.LEVEL_TEST);

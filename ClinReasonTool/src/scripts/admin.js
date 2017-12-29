@@ -5,6 +5,9 @@ function removeExpScriptFromCache(vpId){
 	sendAjaxAdmin(vpId, doNothing, "removeExpScriptFromCache", vpId);
 }
 
+function initSearch(){
+	sendAjaxAdmin(vpId, doNothing, "removeExpScriptFromCache", vpId);
+}
 function doNothing(){}
 
 

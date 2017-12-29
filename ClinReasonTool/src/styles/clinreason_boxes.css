@@ -233,14 +233,6 @@ a#ddx_submit_btn, errorsymbol.a{
 	text-align:center;
 }
 
-/*.navfooter{
-	float:right;
-	position:absolute;
-	bottom:0;
-	right:0;
-	width:200px;
-}*/
-
 .box_1{
 	border-color:#088A29 !important;
 	border: 2px solid #088A29 !important;
@@ -256,19 +248,11 @@ a#ddx_submit_btn, errorsymbol.a{
 }
 
 .options{
-	/*background:#ffffff;*/
 	margin-top:-5px;
 	font-size:12px;
-	/*background-color: #CCC;*/
 	margin-right:35px;
 	padding:5px;
 	padding-bottom: 0px;
-	/*background: rgb(187,187,187); 
-	background: -moz-linear-gradient(top,  rgba(187,187,187,1) 0%, rgba(205,205,205,1) 100%); 
-	background: -webkit-linear-gradient(top,  rgba(187,187,187,1) 0%,rgba(205,205,205,1) 100%); 
-	background: linear-gradient(to bottom,  rgba(187,187,187,1) 0%,rgba(205,205,205,1) 100%); 
-	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#bbbbbb', endColorstr='#cdcdcd',GradientType=0 ); 
-	*/
 }
 
 .switch{
@@ -324,10 +308,8 @@ a#ddx_submit_btn, errorsymbol.a{
     margin-left: 0px;
     margin-right: 0px;
     width: 470px;
-    /*max-width:1500px;*/
     position: relative;
     margin-top:5px;
-    /*overflow: auto !important;*/
 }
 
 .canvas {
@@ -336,14 +318,7 @@ a#ddx_submit_btn, errorsymbol.a{
     padding-left: 15px; /*0px;*/
     height: 100%; /*700px;*/
     width:470px;
-   /* max-height:700px;*/
-    /*position:absolute;*/
-   /* top:0px;
-    left:0px;*/
-   
-    /*border:1px solid #CCC;*/
     background-color:#ffffff;
-    /*overflow: auto !important;*/
 }
 
 .container {
@@ -360,17 +335,10 @@ a#ddx_submit_btn, errorsymbol.a{
 	-webkit-box-shadow: 3px 3px 5px 0px rgba(0,0,0,0.28);
 	-moz-box-shadow: 3px 3px 5px 0px rgba(0,0,0,0.28);
 	box-shadow: 3px 3px 5px 0px rgba(0,0,0,0.28);
-	   /* max-height:600px;*/
-    /*height: auto !important;*/
-   /* overflow-y: auto;
-    overflow-x: hidden;*/
-     /*cursor:move;*/   
+  
 }
 /* changing bg color for boxes if nothing is entered:*/
 .contcol_1{
-	/*background-color:#006699 !important;*/
-	/*background:#006699;*/
-	/*background: rgb(187,187,187); */
 	background: -moz-linear-gradient(top,  rgba(192, 8, 21,1) 0%, rgba(253, 206, 209,1) 100%) !important; /* FF3.6-15 */
 	background: -webkit-linear-gradient(top,  rgba(192, 8, 21,1) 0%,rgba(253, 206, 209,1) 100%) !important; /* Chrome10-25,Safari5.1-6 */
 	background: linear-gradient(to bottom,  rgba(192, 8, 21,1) 0%,rgba(253, 206, 209,1) 100%) !important; /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
@@ -456,19 +424,19 @@ a#ddx_submit_btn, errorsymbol.a{
     content:"+";
 }
 
-.jsplumb-connector path {
+.jtk-connector path {
   /*  stroke-width:3;
     stroke:#006699;*/
 }
 
-.jsplumb-connector-hide{
+.jtk-connector-hide{
 	display:none;
 }
 
-.jsplumb-exp-connector-hide{
+.jtk-exp-connector-hide{
 	display:none;
 }
-.jsplumb-exp-connector-show{
+.jtk-exp-connector-show{
 	display:block;
 }
 
@@ -777,6 +745,7 @@ endpoint creation, so we can use this only at the very end of the page loading..
 	padding-right:5px;
 	width: 90%;
     margin-left: 5%;
+    left: 5px;
 	z-index:9;
 	border-radius: 3px;
     text-align: center;
@@ -1115,7 +1084,6 @@ input.cmn-toggle-round:checked + label:after {
 /*ruled out*/
 .ddxclass_5{
 	color:#cccccc;
-	text-color:#cccccc;
 	border-color:#cccccc;
 	background-color:#ffffff;
 }
@@ -1178,3 +1146,31 @@ input.cmn-toggle-round:checked + label:after {
 .exphintdivvis_false, .exphintdivvis_true, .cnxhint_false{
 	display:none;
 }
+
+.jtk-overlay.jtk-hover .overlay:before {
+	 font-family: FontAwesome;
+	content: "\f044";
+	color:orange;
+}
+
+/*.myendpoint.jtk-hover:before{
+	font-family: FontAwesome;
+	content: "\f061";
+	
+	color:orange;
+}*/
+
+/*.fa-arrow-right:before {
+  color:#006699 !important;
+  font-size:70%;
+}
+
+.fa-arrow-left:before {
+  color:#006699 !important;
+  font-size:70%;
+}*/
+
+
+
+
+

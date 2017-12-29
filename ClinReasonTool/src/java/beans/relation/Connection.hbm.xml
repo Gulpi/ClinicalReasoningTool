@@ -20,6 +20,8 @@
 		<property name="stage" column="stage" type="int"/>
 		<property name="startEpIdx" column="start_ep_idx" type="int"/>
 		<property name="targetEpIdx" column="target_ep_idx" type="int"/>
+		<property name="targetEpX" column="target_ep_x" type="int"/>
+		<property name="targetEpY" column="target_ep_y" type="int"/>
 		
 		<!--  <property name="creationDate" column="creation_date" update="false" type="date"/>-->
 		

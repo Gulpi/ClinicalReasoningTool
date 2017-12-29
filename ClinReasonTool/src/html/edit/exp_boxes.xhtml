@@ -19,13 +19,14 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no"/>
 
 <link rel="stylesheet" type="text/css" href="../../scripts/jquery112/ui-lightness/jquery-ui.css" /> 
-<link rel="stylesheet" type="text/css" href="../../styles/jsPlumbToolkit-defaults.css" />
+<!-- <link rel="stylesheet" type="text/css" href="../../styles/jsPlumbToolkit-defaults.css" />-->
+<link rel="stylesheet" type="text/css" href="../../scripts/jsplumb/jsplumb.css" />
 <link rel="stylesheet" href="../../styles/clinreason_boxes.css" />
 <link rel="stylesheet" href="../../styles/font-awesome/css/font-awesome.css" />
 
 <script type="text/javascript" src="../../scripts/jquery112/jquery.js"></script>
 <script type="text/javascript" src="../../scripts/jquery112/jquery-ui.min.js"></script>
-<script type="text/javascript" src="../../scripts/jquery112/jquery-ui.js"></script>
+<!-- ><script type="text/javascript" src="../../scripts/jquery112/jquery-ui.js"></script>-->
 
 <script src="../../scripts/connection.js"></script>
 <script src="../../scripts/crt_box.js"></script>
@@ -33,13 +34,14 @@
 <script src="../../scripts/list.js"></script>
 
 <script src="../../scripts/ajax.js"></script>
-<script src="../../scripts/jsplumb/jsPlumb.min.js"></script>
 <script src="../../scripts/myjsplumb.js"></script>
+<script src="../../scripts/jsplumb/jsplumb.js"></script>
 <script src="../../scripts/editexp.js"></script>
 <script src="../../scripts/levenshtein.js"></script>
 
  
 <script language="JavaScript">
+//<![CDATA[
 var isViaAPI = "#{adminContext.openedViaAPI}";
 
 var hideCnxTitle = "#{prop['cnx.hide']}";
@@ -64,6 +66,9 @@ var currentStageScript = "#{adminContext.patillscript.currentStageWithUpdate}";
 var saveSumConfirm = "#{prop['summst.saveconfirm']}";
 var noEntryFound = "#{prop['list.noentry']}";
 var didYouMean = "#{prop['list.didyoumean']}";
+var fireAddConnection = true; //false during re-init of exp cnxs, otherwise new cnxs are stored!
+var showExpTitle = "#{prop['feedback.exp']}";
+var hideExpTitle = "#{prop['feedback.exp.hide']}";
 
 var submitted = "true";
 var submittedButonName = "";
@@ -130,14 +135,26 @@ $(function() {
 jsPlumb.ready(function () {
 		initBoxHeights();
      	instance = jsPlumb.getInstance({
-        DragOptions: { cursor: 'pointer', zIndex: 2000 },
-        PaintStyle: { strokeStyle: '#666' },
-        EndpointHoverStyle: { fillStyle: "orange" },
-        HoverPaintStyle: { strokeStyle: "orange" },
-        EndpointStyle: { width: 25, height: 15, strokeStyle: '#666' },
-        Endpoint: "Rectangle",
-        Anchors: ["TopCenter", "TopCenter"],
-        Container: "canvas"
+          	DragOptions: { cursor: 'move' }, //cursor style is not working
+        	PaintStyle: { strokeStyle: '#666', stroke: "#006699", strokeWidth:2, outlineStroke: "transparent", outlineWidth: 5 },
+        	//EndpointHoverStyle: { fillStyle: "orange", fill:"orange" }, //fill:"orange" for 2.2.0
+        	HoverPaintStyle: { strokeStyle: "orange", stroke:"orange" }, //fill:"orange" for 2.2.0
+        	EndpointStyle: { width: 20, height: 10, strokeStyle: '#666' },
+        	//Endpoint: ["Rectangle",{cssClass:"endpointDef", hoverClass:"endpointDef"}],
+        	Endpoint: "Rectangle",
+        	Anchors: ["TopCenter", "TopCenter"],
+       		Container: "canvas",
+       		MaxConnections: 10,
+       		ReattachConnections : true
+
+        	/*DragOptions: { cursor: "pointer", zIndex: 2000 },
+        	PaintStyle: { strokeStyle: '#666', stroke: color2 },
+        	EndpointHoverStyle: { fillStyle: "orange", fill:"orange" },
+        	HoverPaintStyle: { strokeStyle: "orange", stroke:"orange" },
+        	EndpointStyle: { width: 25, height: 15, strokeStyle: '#666' },
+        	Endpoint: "Rectangle",
+        	Anchors: ["TopCenter", "TopCenter"],
+        	Container: "canvas"*/
     });
      	
 
@@ -150,7 +167,7 @@ jsPlumb.ready(function () {
         		openConnContext(component.id);
         });
 
-        instance.draggable(jsPlumb.getSelector(".drag-drop .itembox"));        
+       /* instance.draggable(jsPlumb.getSelector(".drag-drop .itembox"));        
     	//item was moved -> trigger ajax call to update position
         $( ".drag-drop .itembox" ).draggable({
         	  stop: function( event, ui ) {
@@ -159,9 +176,11 @@ jsPlumb.ready(function () {
   	        	start: function(event, ui) {             
 	            // $(ui.helper).find('.tooltip').hide(); 
 	             $('.ui-tooltip').remove();
+	             clearErrorMsgs();
 	         }, 
-        });
-       
+        });*/
+		initDraggables();
+        parseConns();
         initGroups(instance);
        
     });
@@ -180,7 +199,7 @@ jsPlumb.ready(function () {
     //registers a connection that is made: this code needs to be AFTER the init has happened, otherwise each init 
     //event triggers this. 
     instance.bind("connection", function (info, originalEvent){
-    	if (!isDuplicateCnx(info, "#{prop['cnx.duplicate']}"))
+    	if (fireAddConnection && !isInvalidCnx(info, "#{prop['cnx.duplicate']}"))
     		addConnection(info);
     });
     $(".expbox").addClass("expboxstatus");
@@ -196,7 +215,7 @@ jsPlumb.ready(function () {
 
 var item_arr = new Array();
 var ajaxUrl = "/crt/src/html/edit/tabs_ajax.xhtml";
-
+//]]>
 </script>
 </head>
 <body style="font-family:arial;" data-demo-id="draggableConnectors" data-library="dom">
@@ -244,7 +263,7 @@ Stage: <span id="stageSpan">#{adminContext.patillscript.stage}(#{adminContext.pa
 						
 						<!-- <h:messages errorClass="errorMessage" infoClass="infoMessage" showDetail="true" showSummary="true"/>-->						
 						</h:form>
-						<span class="errormsg" id="msg_probform"></span>
+						<span class="errormsg" id="msg_probform" onClick="javascript:clearErrorMsgs();"></span>
 		  </div>
 		  <!--  diagnoses -->
 		  <div id="ddx_box" class="container expcontainer ddx_cont" group="ddx_group">	
@@ -263,7 +282,7 @@ Stage: <span id="stageSpan">#{adminContext.patillscript.stage}(#{adminContext.pa
 	    				     <h:commandButton id="hiddenDDXButton" value="RenderSomething" style="visibility:hidden">
 	    						<f:ajax render="@form" onevent="updateDDXCallback"></f:ajax>
 							</h:commandButton></h:form>
-					<span class="errormsg" id="msg_ddxform"></span>							
+					<span class="errormsg" id="msg_ddxform" onClick="javascript:clearErrorMsgs();"></span>							
 		  </div><br/>
 		  <!-- tests -->
 		  <div id="tst_box" class="container expcontainer tst_cont" group="tst_group">
@@ -282,7 +301,7 @@ Stage: <span id="stageSpan">#{adminContext.patillscript.stage}(#{adminContext.pa
     						<f:ajax render="@form" onevent="updateTestCallback"></f:ajax>
 						</h:commandButton>
 					</h:form>
-					<span class="errormsg" id="msg_testform"></span>
+					<span class="errormsg" id="msg_testform" onClick="javascript:clearErrorMsgs();"></span>
 		</div>
 		  <!-- managements -->
 		  <div id="mng_box" class="container expcontainer mng_cont" group="mng_group">
@@ -301,7 +320,7 @@ Stage: <span id="stageSpan">#{adminContext.patillscript.stage}(#{adminContext.pa
 	  						<f:ajax render="@form" onevent="updatMngCallback"></f:ajax>
 					</h:commandButton>
 				</h:form>
-				<span class="errormsg" id="msg_mngform"></span>
+				<span class="errormsg" id="msg_mngform" onClick="javascript:clearErrorMsgs();"></span>
 				
 	  		</div>
 	  		<div id="sum_box" class="container sum_container" group="sum_group">	

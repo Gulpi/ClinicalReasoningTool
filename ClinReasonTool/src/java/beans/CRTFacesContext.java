@@ -149,7 +149,8 @@ public class CRTFacesContext extends FacesContextWrapper implements MyFacesConte
 		return -1;
 	}
 	public User getUser(){return user;}
-	public Graph getGraph() {return graph;}
+	public Graph getGraph() {
+		return graph;}
 
 	/**
 	 * Depending on the sessionSettings we hide/display the expert feedback. Default is always display....
@@ -185,14 +186,20 @@ public class CRTFacesContext extends FacesContextWrapper implements MyFacesConte
 	}
 	
 	/**
-	 * Hack for study, depending on feedback mode we return the video url... 
-	 * CAVE: only interpreted if language = en.
+	 * We return the video url (from global properties) depending on the current interface language and 
+	 * session settings (different video if feedback only available at the end)
 	 * @return
 	 */
 	public String getToolVideoUrl(){
-		if(sessSetting==null) return"https://youtu.be/WgQxinhiw24"; //default
-		if(sessSetting.getExpFeedbackMode()==SessionSetting.EXPFEEDBACKMODE_END) return "http://crt.casus.net/crt/src/crtool.mp4";
-		return"https://youtu.be/WgQxinhiw24"; //default
+		String lang = LocaleController.getLocale().getLanguage(); //this.getLanguage();
+		String url = null;
+		if(sessSetting==null || sessSetting.getExpFeedbackMode()!=SessionSetting.EXPFEEDBACKMODE_END){
+			if(lang!=null) url = AppBean.getProperty("helpvideo_url_"+lang, null);
+		}
+		else if(sessSetting.getExpFeedbackMode()==SessionSetting.EXPFEEDBACKMODE_END) 
+			url =  AppBean.getProperty("helpvideo_url_"+lang +"endfb", null);
+		if(url==null) url = "https://youtu.be/WgQxinhiw24"; //default
+		return url;
 	}
 	
 	/**

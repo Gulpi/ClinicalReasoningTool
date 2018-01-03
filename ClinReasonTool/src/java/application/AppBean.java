@@ -212,6 +212,14 @@ public class AppBean extends ApplicationWrapper implements HttpSessionListener{
 		catch(Exception e){return defaultVal;}
 	}
 	
+	public static String getProperty(String key, String defaultVal){
+		if(properties==null) return defaultVal; 
+		try{
+			return properties.getProperty(key);
+		}
+		catch(Exception e){return defaultVal;}
+	}
+	
 	public static String getVPNameByVPId(String id){
 		if(vpScriptRefs==null || vpScriptRefs.get(id)==null) return "";
 		return vpScriptRefs.get(id).getVpName();

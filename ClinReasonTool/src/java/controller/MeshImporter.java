@@ -26,87 +26,8 @@ public class MeshImporter {
 	public static void main(String[] lang){
 		//if(lang.equals("en")) createRecord();
 		//if(lang.equals("de")) importMeshDE();
-		//importCampusList();
-		//XAPIController.testXAPI();
-		ScriptCopyController.main(null);
+		//ScriptCopyController.main(null);
 	}
-	
-	/*private static void importCampusList(){
-		try{
-			LineNumberReader lbr = new LineNumberReader(new FileReader(file_campus));
-			new HibernateSession().initHibernate();
-			List<ListItem> meshList = new DBList().selectListItemByLang("de");
-			String line;
-			String matchStr ="";
-			List<String> l = new ArrayList<String>();
-			while((line=lbr.readLine())!=null){
-				l.add(line.trim());
-			}
-			String line2;
-			List<String> jsonList = new ArrayList<String>();
-			while((line2=lbr.readLine())!=null){
-				jsonList.add(line2.trim());
-			}
-			//if(l==null) return;
-			List<String> entriesFound = new ArrayList<String>();
-			for(int i=0; i<l.size(); i++){
-				String s = l.get(i);
-				boolean isSimilar = false;
-				innerLoop:
-				for(int j=0; j<meshList.size();j++){
-					
-					isSimilar = StringUtilities.similarStrings(s, meshList.get(j).getName(), new Locale("de"));
-					if(isSimilar){
-						entriesFound.add(s + " , " + meshList.get(j).getName() );
-						matchStr = meshList.get(j).getName();
-						//CRTLogger.out(s + " , " + meshList.get(j).getName() + " = "+ isSimilar,  CRTLogger.LEVEL_TEST);
-						break innerLoop;
-					}
-					else{
-						if(meshList.get(j).getSynonyma()!=null){
-							Iterator it =  meshList.get(j).getSynonyma().iterator();
-							while(it.hasNext()){
-								Synonym syn = (Synonym) it.next();
-								if(syn.getName().equals("Rose Natal Grass") && s.equals("Blutungsneigung-Nase"))
-									System.out.println("");
-								isSimilar = StringUtilities.similarStrings(s, syn.getName(), new Locale("de"));
-								if(isSimilar){
-									entriesFound.add(s + " , " + syn.getName() );
-									matchStr = syn.getName();
-									//CRTLogger.out(s + " , " + meshList.get(j).getName() + " = "+ isSimilar,  CRTLogger.LEVEL_TEST);
-									break innerLoop;
-								}
-							}
-						}
-					}
-				}
-				ListItem2 li2= new ListItem2();
-				li2.setName(s);
-				li2.setMatched(isSimilar);
-				if(isSimilar && matchStr!=null)
-					li2.setMatchedItem(matchStr);
-				new DBList().saveAndCommit(li2);
-				if(!isSimilar){
-					CRTLogger.out(s + " no match found",  CRTLogger.LEVEL_TEST);
-				}
-				else isSimilar = false;
-
-			}
-			if(entriesFound!=null){
-				
-				for(int k =0; k<entriesFound.size(); k++){
-					CRTLogger.out("matches: ", CRTLogger.LEVEL_TEST );
-					CRTLogger.out(entriesFound.get(k), CRTLogger.LEVEL_TEST);
-				}
-			}
-			lbr.close();
-		}
-		catch (Exception e){
-			CRTLogger.out(StringUtilities.stackTraceToString(e), CRTLogger.LEVEL_ERROR);
-		}
-		
-	}*/
-	
 	
 	private static void importMeshDE(){
 		
@@ -177,27 +98,7 @@ public class MeshImporter {
 			}
 		}
 	}
-	
-	/*private static void createRecord(){
-		Map<String, List<String>> m = new TreeMap<String, List<String>>();
-		String line;
-		try{
-			LineNumberReader lbr = new LineNumberReader(new FileReader(file));
-			while((line=lbr.readLine())!=null){
-				if(line.equals("*NEWRECORD")){ 
-					ListItem li = createListItem(m);
-					saveListItem(li);
-					m = new TreeMap<String, List<String>>();
-				}
-				importLine(line, m);
-	
-			}
-			lbr.close();
-		}
-		catch(Exception e){
-			System.out.println("MeshImporter: Exception= " + StringUtilities.stackTraceToString(e));
-		}
-	}*/
+
 	
 	private static void importLine(String line, Map m){			
 		if(line!=null && !line.equals("") && line.contains("=")){
@@ -206,12 +107,12 @@ public class MeshImporter {
 			String value = line.substring(idx+1).trim();
 			//if(m==null) m = new TreeMap<String, List<String>>();
 			if(m.get(key)==null){
-				List valList = new ArrayList<String>();
+				List<String> valList = new ArrayList<String>();
 				valList.add(value);
 				m.put(key, valList);
 			}
 			else{
-				List valList = (List<String>)m.get(key);
+				List<String> valList = (List<String>)m.get(key);
 				valList.add(value);
 				m.put(key, valList);			
 			}

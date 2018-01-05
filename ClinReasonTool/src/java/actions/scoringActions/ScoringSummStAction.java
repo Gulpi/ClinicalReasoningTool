@@ -29,6 +29,7 @@ public class ScoringSummStAction {
 	public static final int RUBRIC_NARROWDDX = 3;
 	public static final int RUBRIC_INFOTRAMSFORM = 4;
 	public static final int RUBRIC_GLOBALRATE = 5;
+	public static final int RUBRIC_PATNAME = 6;
 	
 	/**
 	 * scoring triggered from chart page, if no summary statement has been created so far, it will 

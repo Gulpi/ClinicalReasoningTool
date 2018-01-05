@@ -61,7 +61,8 @@ public class AdminFacesContext extends FacesContextWrapper implements MyFacesCon
 	
 	public void setUser(User u){this.user = u;}
 	public User getUser(){return user;}
-	public Graph getGraph(){return graph;}
+	public Graph getGraph(){
+		return graph;}
 	public long getUserId() {
 		if(user!=null) return user.getUserId();
 		NavigationController.getInstance().redirect("/crt/src/html/admin/login.xhtml");

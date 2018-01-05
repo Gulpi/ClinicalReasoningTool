@@ -1,6 +1,10 @@
 package controller;
 
 import java.util.*;
+
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.RequestScoped;
+
 import beans.relation.*;
 import beans.scripts.PatientIllnessScript;
 import beans.scripts.VPScriptRef;
@@ -13,35 +17,47 @@ import util.CRTLogger;
  * @author ingahege
  *
  */
+@ManagedBean(name = "copyctrl", eager = true)
+@RequestScoped
 public class ScriptCopyController {
 	
 	private static PatientIllnessScript newScript;
 	private static PatientIllnessScript orgScript;
 	private static Properties idTable = new Properties();
 	
+	
 	/**
-	 * for testing purposes only!
-	 * @param args
+	 * We copy/duplicate a map into the same language
+	 * @param orgVPId
+	 * @param newVPId
 	 */
-	public static void main(String[] args ){
-		String lang;
-		String newVPId;
-		String orgVPId;
-		
-		if(args!=null && args.length>=2){
-			orgVPId = args[0];
-			lang = args[1].trim();
-			newVPId = args[2].trim();
-		}
-		else{
-			lang = "en";
-			orgVPId = "169509_2";
-			newVPId = "169514";
-		}
-		new HibernateSession().initHibernate();		
-		initCopyAndTranslate(orgVPId, newVPId, lang);
+	public static void initCopy(String orgVPId, String newVPId){
+		if(orgVPId==null) return;
+		if(orgVPId.indexOf("_")<=0) orgVPId = orgVPId+"_2";
+		orgScript = new DBClinReason().selectExpertPatIllScriptByVPId(orgVPId);
+		if(orgScript == null|| orgScript.getType()!=PatientIllnessScript.TYPE_EXPERT_CREATED) return;
+		copyScript(newVPId);
 	}
 	
+	/**
+	 * Triggering of map copying via an API (edit/copyscript.xhtml is called)
+	 */
+	public boolean getCopyExpScriptViaAPI(){
+		CRTLogger.out("Copy script", CRTLogger.LEVEL_PROD);
+		String orgVpId = AjaxController.getInstance().getRequestParamByKey("org_vp_id");
+		String newVPId = AjaxController.getInstance().getRequestParamByKey("new_vp_id");
+		boolean validSharedSecret = AjaxController.getInstance().isValidSharedSecret();
+		if(!validSharedSecret || orgVpId==null || newVPId==null) return false;
+		ScriptCopyController.initCopy(orgVpId, newVPId);
+		return true;
+	}
+	
+	/**
+	 * We duplicate the map with the org id and translate it into a different language 
+	 * @param orgVPId
+	 * @param newVPId
+	 * @param lang language to translate into
+	 */
 	public static void initCopyAndTranslate(String orgVPId, String newVPId, String lang){
 		if(orgVPId==null) return;
 		if(orgVPId.indexOf("_")<=0) orgVPId = orgVPId+"_2";
@@ -49,6 +65,34 @@ public class ScriptCopyController {
 		if(orgScript == null|| orgScript.getType()!=PatientIllnessScript.TYPE_EXPERT_CREATED) return;
 		if(!orgScript.getLocale().getLanguage().equalsIgnoreCase(lang))
 			copyAndTranslateScript(lang, newVPId);
+	}
+	
+	private static void copyScript(String vpId){
+		PatientIllnessScript newScript = createNewScript(orgScript.getLocale().getLanguage(), vpId);
+		if(newScript==null) return;
+		createVPScriptRef(newScript);
+		if(orgScript.getProblems()!=null){
+			for(int i=0;i<orgScript.getProblems().size();i++){
+				copyProblem(orgScript.getProblems().get(i));
+			}
+		if(orgScript.getDiagnoses()!=null){
+			for(int i=0;i<orgScript.getDiagnoses().size();i++){
+				copyDDX(orgScript.getDiagnoses().get(i));
+			}
+			}
+		if(orgScript.getTests()!=null){
+			for(int i=0;i<orgScript.getTests().size();i++){
+				copyTest(orgScript.getTests().get(i));
+			}
+		}
+		if(orgScript.getMngs()!=null){
+			for(int i=0;i<orgScript.getMngs().size();i++){
+				copyManagement(orgScript.getMngs().get(i));
+			}
+		}						
+			copyConnections();	
+			copySummStatement();
+		}
 	}
 	
 	private static void copyAndTranslateScript(String newLang, String vpId){
@@ -125,6 +169,43 @@ public class ScriptCopyController {
 		}
 		idTable.put(new Long(rel.getId()), new Long(-1));
 		return null;
+	}
+	
+	private static Relation copyProblem(RelationProblem rel){
+		RelationProblem newRel = (RelationProblem) copyBasicData(new RelationProblem(), rel);
+		newRel.setListItemId(rel.getListItemId());
+		new DBClinReason().saveAndCommit(newRel);
+		idTable.put(new Long(rel.getId()), newRel.getId());
+		return newRel;
+	}
+	
+	private static Relation copyDDX(RelationDiagnosis rel){
+		RelationDiagnosis newRel = (RelationDiagnosis) copyBasicData(new RelationDiagnosis(), rel);
+		newRel.setListItemId(rel.getListItemId());
+		newRel.setFinalDiagnosis(rel.getFinalDiagnosis());
+		newRel.setMnm(rel.getMnm());
+		newRel.setWorkingDDX(rel.getWorkingDDX());
+		newRel.setRuledOut(rel.getRuledOut());
+		newRel.setPrevalence(rel.getPrevalence());
+		new DBClinReason().saveAndCommit(newRel);
+		idTable.put(new Long(rel.getId()), newRel.getId());
+		return newRel;
+	}
+	
+	private static Relation copyTest(RelationTest rel){
+		RelationTest newRel = (RelationTest) copyBasicData(new RelationTest(), rel);
+		newRel.setListItemId(rel.getListItemId());
+		new DBClinReason().saveAndCommit(newRel);
+		idTable.put(new Long(rel.getId()), newRel.getId());
+		return newRel;
+	}
+	
+	private static Relation copyManagement(RelationManagement rel){
+		RelationManagement newRel = (RelationManagement) copyBasicData(new RelationManagement(), rel);
+		newRel.setListItemId(rel.getListItemId());
+		new DBClinReason().saveAndCommit(newRel);
+		idTable.put(new Long(rel.getId()), newRel.getId());
+		return newRel;
 	}
 	
 	private static Relation copyAndTranslateDDX(RelationDiagnosis rel){

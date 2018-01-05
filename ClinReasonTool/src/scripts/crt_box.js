@@ -226,7 +226,7 @@ function continueCase(){
 function submitDDXConfirmed(){
 	var checks = $(".chb_ddx:checked");
 	if(checks.length<=0){
-		alert("Please select your final diagnosis/-es.");
+		alert(subcheck);
 		return;
 	}
 	var ids="";
@@ -241,6 +241,13 @@ function submitDDXConfirmed(){
 /* 3. we come back after the submission and have to reload ddxs once again show feedback for submitted diagnoses */
 function submitDDXConfirmedCallBack(data){
 	$("#jdialog").load("submitteddialog.xhtml");
+	removeElems("ddxs");
+	removeElems("expddxs");
+
+	//we update the ddx boxes (re-printing all boxes)
+	$("[id='ddxform:hiddenDDXButton']").click();	
+	$("[id='cnxsform:hiddenCnxButton']").click();
+	
 	
 }
 
@@ -260,11 +267,18 @@ function backToCase(){
 
 function revertSubmissionCallback(data){
 	//if(isCallbackStatusSuccess(data)){
-		$(".ddxs").remove();
+		//$(".ddxs").remove();
+		removeElems("ddxs");
+		removeElems("expddxs");
+
+	//we update the ddx boxes (re-printing all boxes)
 		presubmitted = "false";
 		checkSubmitBtn();
 		postEnforceFinalDDXSubmission("false");
-		$("[id='ddxform:hiddenDDXButton']").click();
+		$("[id='ddxform:hiddenDDXButton']").click();	
+		$("[id='cnxsform:hiddenCnxButton']").click();	
+
+		//$("[id='ddxform:hiddenDDXButton']").click();
 	//}
 }
 
@@ -277,11 +291,9 @@ function tryAgain(){
 
 function tryAgainCallback(data){
 	//if(isCallbackStatusSuccess(data)){
-		//$(".ddxs").remove();
 		presubmitted = "false";
 		postEnforceFinalDDXSubmission("false");
 		$("#jdialog").load("submitdialog.xhtml");
-		//$("[id='ddxform:hiddenDDXButton']").click();
 	//}
 }
 
@@ -298,8 +310,10 @@ function showSolutionCallBack(data){
 		submitted = "true";
 		postEnforceFinalDDXSubmission("true");
 		//make changes visible in the ddx box:
-		$(".ddxs").remove();
-		$("[id='ddxform:hiddenDDXButton']").click();
+		removeElems("ddxs");
+		removeElems("expddxs");
+		$("[id='ddxform:hiddenDDXButton']").click();	
+		$("[id='cnxsform:hiddenCnxButton']").click();
 	//}
 }
 
@@ -319,17 +333,6 @@ function closeSubmitDialog(){
 		return false;
 	}
 }
-
-/* change tier from dropdown menu*/
-/*function changeTier2(id, tier){
-	clearErrorMsgs();	
-	var item = $("#ddx_"+id);
-	var color = getRectColor(tier);
-	item.css("border-color", color);
-	//item.css("background-color", color);
-	item.css("color", color);
-	sendAjax(id, doNothing, "changeTier",  tier);
-}*/
 
 function ruleOut(id){
 	clearErrorMsgs();

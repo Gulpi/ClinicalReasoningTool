@@ -105,9 +105,9 @@ function togglePeersFdg(){
 
 /******************** diagnoses *******************************/
 
-/*
+/**
  * a diagnosis is added to the list of the already added diagnoses:
- */
+ **/
 function addDiagnosis(diagnId, name, typedinName){
 	clearErrorMsgs();
 	if(name!=""){
@@ -122,14 +122,16 @@ function delDiagnosis(id){
 	sendAjax(id, delDiagnosisCallBack, "delDiagnosis", "");
 }
 
-
+/** we come back from deleting a diagnosis **/
 function delDiagnosisCallBack(ddxId, selDDX){
 	//we have to delete the endpoint separately, otherwise they persist....
 	//deleteEndpoints("ddx_"+ddxId);
 	diagnosisCallBack();
 }
 
-
+/**
+ * we come back from adding a diagnosis (either manually or with a joker)
+ */
 function diagnosisCallBack(){
 	$("#ddx").val("");		
 	//$(".ddxs").remove();	
@@ -141,6 +143,10 @@ function diagnosisCallBack(){
 	$("[id='cnxsform:hiddenCnxButton']").click();	
 }
 
+/**
+ * click on the hidden ddx button calls this function
+ * @param data
+ */
 function updateDDXCallback(data){
 	if(isCallbackStatusSuccess(data)){
 		checkSubmitBtn();
@@ -185,7 +191,7 @@ function togglePeersDDX(){
 }
 
 
-/* 1. we show the submit ddx dialog and ask for confidence */
+/** 1. we show the submit ddx dialog and ask for confidence **/
 function doSubmitDDXDialog(){
 	clearErrorMsgs();
 	//we check whether there are diagnoses, if so we open a dialog, else we display a hint
@@ -220,9 +226,13 @@ function doSubmitDDXDialog(){
  */
 function continueCase(){
 	$("#jdialog" ).dialog( "close" );
+	removeElems("ddxs");
+	removeElems("expddxs");
+	$("[id='ddxform:hiddenDDXButton']").click();	
+	$("[id='cnxsform:hiddenCnxButton']").click();
 }
 
-/* 2. user has selected ddxs and submits final ddxs */
+/** 2. user has selected ddxs and submits final ddxs */
 function submitDDXConfirmed(){
 	var checks = $(".chb_ddx:checked");
 	if(checks.length<=0){
@@ -238,15 +248,21 @@ function submitDDXConfirmed(){
 	sendAjax(ids, submitDDXConfirmedCallBack, "submitDDXAndConf",  confVal);
 }
 
-/* 3. we come back after the submission and have to reload ddxs once again show feedback for submitted diagnoses */
+/** 3. we come back after the submission and have to reload ddxs once again show feedback for submitted diagnoses */
 function submitDDXConfirmedCallBack(data){
+	//if(isCallbackStatusSuccess(data)){
 	$("#jdialog").load("submitteddialog.xhtml");
-	removeElems("ddxs");
-	removeElems("expddxs");
+	//removeElems("ddxs");
+	//removeElems("expddxs");
+	//window.setTimeout(function() { 
+	//	$("[id='ddxform:hiddenDDXButton']").click();
+	//	$("[id='cnxsform:hiddenCnxButton']").click();
+
+	//},500);
+
 
 	//we update the ddx boxes (re-printing all boxes)
-	$("[id='ddxform:hiddenDDXButton']").click();	
-	$("[id='cnxsform:hiddenCnxButton']").click();
+	
 	
 	
 }
@@ -265,20 +281,22 @@ function backToCase(){
 	sendAjax("", revertSubmissionCallback, "resetFinalDDX","");
 }
 
+/** called when the submitting dialog is closed or backToCase is clicked**/
 function revertSubmissionCallback(data){
 	//if(isCallbackStatusSuccess(data)){
 		//$(".ddxs").remove();
-		removeElems("ddxs");
-		removeElems("expddxs");
+		//removeElems("ddxs");
+		//removeElems("expddxs");
 
 	//we update the ddx boxes (re-printing all boxes)
 		presubmitted = "false";
 		checkSubmitBtn();
 		postEnforceFinalDDXSubmission("false");
+		/*removeElems("ddxs");
+		removeElems("expddxs");
 		$("[id='ddxform:hiddenDDXButton']").click();	
-		$("[id='cnxsform:hiddenCnxButton']").click();	
+		$("[id='cnxsform:hiddenCnxButton']").click();	*/
 
-		//$("[id='ddxform:hiddenDDXButton']").click();
 	//}
 }
 
@@ -322,7 +340,13 @@ function showSolutionCallBack(data){
  */
 function closeSubmitDialog(){
 	//just close jdialog if diagnosis already submitted OR only submitdialog is opened.
-	if(submitted=="true" || presubmitted=="false") return true; 
+	if(submitted=="true" || presubmitted=="false"){
+		removeElems("ddxs");
+		removeElems("expddxs");
+		$("[id='ddxform:hiddenDDXButton']").click();	
+		$("[id='cnxsform:hiddenCnxButton']").click();
+		return true; 
+	}
 	if(parseInt(currentStage) < parseInt(maxSubmittedStage)){ //user can continue the case:
 		sendAjax("", revertSubmissionCallback, "resetFinalDDX","");
 		return true;
@@ -444,8 +468,13 @@ function initSubmittedDialog(){
 		$(".errors").hide();
 		postEnforceFinalDDXSubmission(submitted/*, myStage, maxSubmittedStage*/);
 		//update ddx box:
-		$(".ddxs").remove();
-		$("[id='ddxform:hiddenDDXButton']").click();
+		//$(".ddxs").remove();
+		//$("[id='ddxform:hiddenDDXButton']").click();
+		/*removeElems("ddxs");
+		removeElems("expddxs");
+		$("[id='ddxform:hiddenDDXButton']").click();	
+		$("[id='cnxsform:hiddenCnxButton']").click();*/
+
 
 		return;
 	}
@@ -456,8 +485,13 @@ function initSubmittedDialog(){
 		$(".aftersubmit_fail").hide();
 		postEnforceFinalDDXSubmission(submitted/*, myStage, maxSubmittedStage*/);
 		//update ddx box:
-		$(".ddxs").remove();
-		$("[id='ddxform:hiddenDDXButton']").click();
+		//$(".ddxs").remove();
+		//$("[id='ddxform:hiddenDDXButton']").click();
+		/*removeElems("ddxs");
+		removeElems("expddxs");
+		$("[id='ddxform:hiddenDDXButton']").click();	
+		$("[id='cnxsform:hiddenCnxButton']").click();*/
+
 
 		return;
 	}

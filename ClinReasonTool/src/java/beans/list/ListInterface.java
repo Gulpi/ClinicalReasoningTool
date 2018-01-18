@@ -8,4 +8,6 @@ public interface ListInterface {
 	public String getName();
 	public Locale getLanguage();
 	public boolean isSynonym();
+	public String getItemType();
+	public long getListItemId();
 }

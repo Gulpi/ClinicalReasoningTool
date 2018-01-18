@@ -73,4 +73,6 @@ public class Synonym implements Serializable, ListInterface, Comparable{
 		return 0;
 	}
 	
+	public String getItemType(){return "Syn";}
+	
 }

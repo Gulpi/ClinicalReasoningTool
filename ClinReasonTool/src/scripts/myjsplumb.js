@@ -52,7 +52,7 @@ function initElems(selector){
 		var itemId = item_arr[i];
 		if(selector==""|| itemId.startsWith(selector)){
 			var item = $("#"+itemId)[0];
-			addToGroup(itemId, item);
+			if (!isView) addToGroup(itemId, item);
 			//this makes each node a target for connections, independent from the endpoint:
 			instance.makeTarget(item,{
 				isTarget:true,
@@ -60,7 +60,8 @@ function initElems(selector){
 				anchor: ["Perimeter", { shape:"Rectangle" }]
 				//paintStyle:{ fill:"red" },
 			});
-			createEndpointsForItems(itemId);
+			/*if(isView) createExpEndpointsForItems
+			else*/ createEndpointsForItems(itemId);
 		}
 	}
 	for(var i=0; i<exp_arr.length;i++){
@@ -75,28 +76,21 @@ function initElems(selector){
 } 
 
 
-/*all boxes have 2 endpoints (left and right) */
+/*all boxes have 2 endpoints (left and right) if we are on the view mode we use the expEndpoints to avoid any connection making*/
 function createEndpointsForItems(itemId){	
 	var eps = instance.getEndpoints(itemId);
 	if(eps!=undefined && eps.length>0) return; //do not create endpoints again if they are already there, e.g. for boxes added by learner & expert	
-	//var source = $("#"+itemId)[0];
-	//var ep1Connected = isEPConnected(itemId);
-	//if(ep1Connected){
-		var ep = instance.addEndpoint(itemId, { anchor:"LeftMiddle" }, endpointCL);
+		var ep;
+		if(isView) ep  = instance.addEndpoint(itemId, { anchor:"LeftMiddle" }, expendpoint);
+		else  ep = instance.addEndpoint(itemId, { anchor:"LeftMiddle" }, endpointCL);
 		ep.id = ep_left_prefix + itemId;
 		ep.maxConnections = 10;
 
-		var ep2 = instance.addEndpoint(itemId, { anchor:"RightMiddle" }, endpointCR);
+		var ep2;
+		if(isView) ep2 = instance.addEndpoint(itemId, { anchor:"RightMiddle" }, expendpoint);
+		else ep2 = instance.addEndpoint(itemId, { anchor:"RightMiddle" }, endpointCR);
 		ep2.id = ep_right_prefix + itemId;
 	    ep2.maxConnections = 10;
-
-	/*}
-	else{	
-		var ep = instance.addEndpoint(itemId, { anchor:"LeftMiddle" }, endpointR);
-		ep.id = ep_left_prefix + itemId;
-		var ep2 = instance.addEndpoint(itemId, { anchor:"RightMiddle" }, endpointL);
-		ep2.id = ep_right_prefix + itemId;
-	}*/
 }
 
 
@@ -115,46 +109,6 @@ function updateItemCallback(data, items, boxId){
 	 var status = data.status; // Can be "begin", "complete" or "success".
 	if(isCallbackStatusSuccess(data)){
 		initElems(items);
-    	/* var arr = $("."+items);
-    	 if(arr!=null){
-    		 for(var i=0; i<arr.length;i++){
-    			var id = arr[i].id;
-				var item = $("#"+id)[0]; //jsPlumb.getSelector("#"+id); //$("#"+id)[0];
-				//var item = jsPlumb.getSelector("#"+id);
-				
-				//var sel = jsPlumb.getSelector("#"+id); //for new items there is only one element which has no class "jtk-draggable".
-				//if(sel!=null && sel.length==2) $("#"+id).remove(); //these are the duplicates
-				
-				//else if(!instance.hasClass(sel[0], "jtk-draggable")){
-					instance.draggable(jsPlumb.getSelector("#"+id));
-					 $( "#"+id).draggable({
-					        containment:"parent",
-				        	start: function(event, ui) {             
-				                 $('.ui-tooltip').remove();
-				             }, 
-					  });
-				     $( "#"+id).draggable({
-			    	 start: function(event, ui) {             
-			                 $('.ui-tooltip').remove();
-			             }, 
-				   	  stop: function( event, ui ) {
-				   		  handleRectDrop(ui);
-				   	  }
-				   });
-					addToGroup(id, item); //4.
-					instance.makeTarget(item,{
-						isTarget:true,
-						maxConnections:10,			
-						anchor: ["Perimeter", { shape:"Rectangle" }]
-						//paintStyle:{ fill:"red" },
-					});
-					createEndpointsForItems(id);
-				//}
-				
-							
-    		 }*/
-    		 //initBoxHeights();	
-    	 //}
 		 initBoxHeights();
 	}   
 }
@@ -229,22 +183,6 @@ function initConnections(){
 		}
 	}
 }
-
-//function reInitConnections(){
-//	parseConns();
-//	initConnections();
-	/*var expConns = '';
-	if($("#jsonConns").html()!=null && $("#jsonConns").html()!='' && $("#jsonConns").html()!=undefined)
-		expConns = jQuery.parseJSON($("#jsonConns").html());
-	if(expConns!=''){
-		for(j=0; j<expConns.length;j++){
-			if(expConns[j].e=="1" && expConns[j].l=="0")
-				createExpConnection(expConns[j].id, expConns[j].sourceid, expConns[j].targetid,  expConns[j].weight_e,  expConns[j].weight_l, expConns[j].start_ep, expConns[j].target_ep, expConns[j].target_x, expConns[j].target_y);
-		}
-	}*/
-
-
-//}
 
 
 /*
@@ -372,7 +310,9 @@ function checkDisplayCnxHint(){
 }
 
 function initDraggables(){
-    instance.draggable(jsPlumb.getSelector(".drag-drop .itembox"));        
+	if(isView) return;
+    instance.draggable(jsPlumb.getSelector(".drag-drop .itembox"));   
+    
 	//item was moved -> trigger ajax call to update position
     $( ".drag-drop .itembox" ).draggable({
     	  stop: function( event, ui ) {

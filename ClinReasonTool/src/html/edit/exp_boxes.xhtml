@@ -78,6 +78,7 @@ var instance;
 var item_arr = new Array();
 var exp_arr = new Array();
 var isExp = true;
+var isView = false;
 
 $(function() {
 	//if(scriptlang=="de") listUrl = "../jsonp_de.json";
@@ -146,15 +147,6 @@ jsPlumb.ready(function () {
        		Container: "canvas",
        		MaxConnections: 10,
        		ReattachConnections : true
-
-        	/*DragOptions: { cursor: "pointer", zIndex: 2000 },
-        	PaintStyle: { strokeStyle: '#666', stroke: color2 },
-        	EndpointHoverStyle: { fillStyle: "orange", fill:"orange" },
-        	HoverPaintStyle: { strokeStyle: "orange", stroke:"orange" },
-        	EndpointStyle: { width: 25, height: 15, strokeStyle: '#666' },
-        	Endpoint: "Rectangle",
-        	Anchors: ["TopCenter", "TopCenter"],
-        	Container: "canvas"*/
     });
      	
 

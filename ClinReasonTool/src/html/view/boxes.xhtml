@@ -19,7 +19,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no"/>
 
 <link rel="stylesheet" type="text/css" href="../../scripts/jquery112/ui-lightness/jquery-ui.css" /> 
-<link rel="stylesheet" type="text/css" href="../../scripts/jsplumb.css" />
+<link rel="stylesheet" type="text/css" href="../../scripts/jsplumb/jsplumb.css" />
 <link rel="stylesheet" href="../../styles/clinreason_boxes.css" />
 <link rel="stylesheet" href="../../styles/font-awesome/css/font-awesome.css" />
 
@@ -64,7 +64,8 @@ var item_arr = new Array();
 var exp_arr = new Array();
 var ajaxUrl = "/crt/src/html/tabs_ajax.xhtml";
 var fireAddConnection = true; //false during re-init of exp cnxs, otherwise new cnxs are stored!
-
+var inputhistory = ""; //not needed, just to avoid js errors for ajax.
+var isView = true;
 $(function() {
 	//salert(window.location.href);
 	/*$("#jdialog").dialog({
@@ -125,9 +126,9 @@ $(function() {
         	var element = $( this );
         	var parent = $( this ).parent();
 			//only show tooltip if item is currently not dragged
-       		if (!$(parent).is('.ui-draggable-dragging')) {
+       		/*if (!$(parent).is('.ui-draggable-dragging')) {
        		    return $( this ).attr( "mytooltip" );
-       		}
+       		}*/
 
 		}
     });
@@ -137,27 +138,27 @@ $(function() {
 jsPlumb.ready(function () {
 		initBoxHeights();
      	instance = jsPlumb.getInstance({
-        	DragOptions: { cursor: 'move' }, //cursor style is not working
+        	//DragOptions: { cursor: 'move' }, //cursor style is not working
         	PaintStyle: { strokeStyle: '#666', stroke: "#006699", strokeWidth:2, outlineStroke: "transparent", outlineWidth: 5 },
         	//HoverPaintStyle: { strokeStyle: "orange", stroke:"orange" }, //fill:"orange" for 2.2.0
         	EndpointStyle: { width: 20, height: 10, strokeStyle: '#666' },
         	Endpoint: "Rectangle",
         	Anchors: ["TopCenter", "TopCenter"],
        		Container: "canvas",
-       		MaxConnections: 10,
-       		ReattachConnections : true
+       		MaxConnections: 10
+       		//ReattachConnections : true
     });
 
     // suspend drawing and initialise.
     instance.batch(function () {
-        /*instance.bind("click", function (component, originalEvent) {
+        instance.bind("click", function (component, originalEvent) {
         	//todo: ignore expert cnxs....
         	var id = component.id;
         	if(!id.startsWith("exp_")) 
         		openConnContext(component.id);
-        });*/
+        });
 
-       /* instance.draggable(jsPlumb.getSelector(".drag-drop .itembox"));        
+        /*instance.draggable(jsPlumb.getSelector(".drag-drop .itembox"));        
     	//item was moved -> trigger ajax call to update position
         $( ".drag-drop .itembox" ).draggable({
         	  stop: function( event, ui ) {
@@ -166,11 +167,13 @@ jsPlumb.ready(function () {
 	        start: function(event, ui) {             
 	            // $(ui.helper).find('.tooltip').hide(); 
 	             $('.ui-tooltip').remove();
-	         }, 
+	         }
         
         });*/
-       
-        initGroups(instance);
+        
+        initDraggables();
+        parseConns();
+        initGroups();
        
     });
     initConnections();
@@ -186,14 +189,19 @@ item_arr = new Array();
 </script>
 </head>
 <h:body class="crtbody" data-demo-id="draggableConnectors" data-library="dom"><!-- test: #{crtContext.test}-->
-<div style="width:300px;top:20px;position:absolute;">Stage:<span id="stageSpan">#{crtContext.patillscript.stage}(#{crtContext.patillscript.currentStage})</span>
+<!--  <div style="width:300px;top:20px;position:absolute;">Stage:<span id="stageSpan">#{crtContext.patillscript.stage}(#{crtContext.patillscript.currentStage})</span>
 <a href="javascript:chgStage(-1, '../view/boxes.xhtml');">previous stage</a> <a href="javascript:chgStage(1, '../view/boxes.xhtml');">next stage</a></div>
 
-<!-- <div class="options">
-<i id="cnxtogglei" class="fa fa-conn" style="cursor:pointer;" mytooltip="#{prop['cnx.show']}"></i> 
-<div class="switch2" mytooltip="#{prop['cnx.show']}">
+<div class="options">
+<div  style="position:absolute;left:15px;top:5px;" ><i id="cnxtogglei" class="fa fa-conn" style="cursor:pointer;" mytooltip="#{prop['cnx.show']}"></i>  </div>
+<div class="switch" style="left:30px;" mytooltip="#{prop['cnx.show']}">
         <input id="cnxtoggle" class="cmn-toggle cmn-toggle-round" checked="checked" onchange="javascript:toggleCnxDisplay();" type="checkbox" />
         <label for="cnxtoggle"></label>
+</div>
+<div class="expfb_#{crtContext.displayExpFb}" style="position:absolute;left:85px;top:5px;" mytooltip="#{prop['feedback.exp']}"><i class="fa fa-user-md expfb_#{crtContext.displayExpFb}" style="cursor:pointer;" mytooltip="#{prop['feedback.exp']}"></i></div>
+<div class="switch expfb_#{crtContext.displayExpFb}" style="left:100px;" mytooltip="#{prop['feedback.exp']}">
+        <input id="expFeedback" class="cmn-toggle cmn-toggle-round" onchange="toggleExpFeedback('expFeedback', 'icon-user-md', 'expfb_#{crtContext.displayExpFb}');" type="checkbox" />
+        <label for="expFeedback"></label>
 </div>
 </div>-->
 <div class="options">
@@ -207,13 +215,20 @@ item_arr = new Array();
         <input id="expFeedback" class="cmn-toggle cmn-toggle-round" onchange="toggleExpFeedback('expFeedback', 'icon-user-md', 'expfb_#{crtContext.displayExpFb}');" type="checkbox" />
         <label for="expFeedback"></label>
 </div>
-</div><br/><br/>
+	<span class="help" style="float:right;top:5px;">
+Stage:<span id="stageSpan">#{crtContext.patillscript.stage}(#{crtContext.patillscript.currentStage})</span>
+<a href="javascript:chgStage(-1, '../view/boxes.xhtml');">previous stage</a> <a href="javascript:chgStage(1, '../view/boxes.xhtml');">next stage</a>
+		<!-- <a href="javascript:openHelp('#{crtContext.sessSetting.expFeedbackMode}');" style="float:right;top:5px;" id="helpicon"><i class="fa fa-question-circle " mytooltip="#{prop['help']}"></i></a>--></span>
+	
+</div>
+<div class="hintdiv exphintdivvis_#{crtContext.chgDisplayExpFb}" onclick="javascript:hideTooltips();"><i class="fa fa-arrow-left2 exphintarrow"></i> #{prop['feedback.exp.hint']}</div>
 <div class="boxes_container">
 	<div id="canvas" class="canvas jtk-surface drag-drop jtk-surface-nopan" >
 
 		  <!-- problems -->
 		  <div id="fdg_box"  class="container fdg_cont" group="fdg_group">
-		   		<div id="fdg_title" class="title"  mytooltip="#{prop['findings.search']}">#{prop['findings']} <i class="fa fa-info-circle"></i></div>		  			
+		   		<div id="fdg_title" class="title"  mytooltip="#{prop['findings.search']}">#{prop['findings']} <i class="fa fa-info-circle"></i></div>	
+		   			  			
 						<h:form id="probform">
 						<h:panelGroup>
 						   <ui:repeat id="repeatprob" value="#{crtContext.patillscript.problemsStage}" var="prob" varStatus="status">

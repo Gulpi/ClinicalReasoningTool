@@ -57,6 +57,7 @@ public class ListItem implements Serializable, ListInterface, Comparable{
 	public String getMesh_id() {return mesh_id;}
 	public void setMesh_id(String mesh_id) {this.mesh_id = mesh_id;}
 	public long getItem_id() {return item_id;}
+	public long getListItemId() {return item_id;}
 	public void setItem_id(long item_id) {this.item_id = item_id;}
 	public String getFirstCode() {return firstCode;}
 	public void setFirstCode(String firstCode) {this.firstCode = firstCode;}

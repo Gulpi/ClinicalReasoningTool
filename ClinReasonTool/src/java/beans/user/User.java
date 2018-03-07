@@ -2,6 +2,10 @@ package beans.user;
 
 import javax.faces.bean.SessionScoped;
 
+import util.CRTLogger;
+import util.Encoder;
+import util.StringUtilities;
+
 /**
  * A user object. We create it when a user comes from a VP system or when an admin logs in to edit an expert script.
  * @author ingahege
@@ -15,6 +19,8 @@ public class User {
 	 * id a user has in an external system
 	 */
 	private String extUserId;
+	
+	private String extUserId2; //decrypted external userId
 	
 	/**
 	 * system the externalId is from (TODO could be more than one)
@@ -40,7 +46,8 @@ public class User {
 	public User(){}
 	public User(int systemId, String extUserId){
 		this.systemId = systemId;
-		this.extUserId = extUserId;
+		this.extUserId =extUserId;
+		this.extUserId2 = decodeUserId(extUserId);
 	}
 	
 	public long getUserId() {return userId;}
@@ -56,8 +63,19 @@ public class User {
 	public String getPassword() {return password;}
 	public void setPassword(String password) {this.password = password;}
 	public UserSetting getUserSetting() {return userSetting;}
-	public void setUserSetting(UserSetting userSetting) {this.userSetting = userSetting;}
-
+	public void setUserSetting(UserSetting userSetting) {this.userSetting = userSetting;}	
+	public String getExtUserId2() {return extUserId2;}
+	public void setExtUserId2(String extUserId2) {this.extUserId2 = extUserId2;}
+	
+	private String decodeUserId(String extUserId){
+		try{
+			return new Encoder().decodeQueryParam(extUserId);
+		}
+		catch(Exception e){
+			CRTLogger.out(StringUtilities.stackTraceToString(e) , CRTLogger.LEVEL_ERROR);
+			return extUserId;
+		}
+	}
 	/* (non-Javadoc)
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */

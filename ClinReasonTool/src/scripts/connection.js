@@ -9,52 +9,24 @@ var myDropOptions = {
 
 /*endpoint when connection has been made */
 var endpointCR= {
-	    //endpoint: ["Rectangle", { width: 8, height:8 }],
-		//endpoint: ["Image", {src:"../styles/arrow.png", cssClass:"endpointArrow"}],
 		endpoint: ["Rectangle", {cssClass:"endpointArrowR", maxConnections: 10}],
-	    /*cssClass: 'endpointArrowR',*/
-	    //paintStyle: { fillStyle: color2, fill:color2, stroke:"#006699", strokeWidth:2 }, //fill:color2 needed for 2.2.0
 	    isSource: true,
 	    connector: ["Bezier", { curviness: 15 } ],
 	    maxConnections: 10,
 	    isTarget: true,
 	    deleteEndpointsOnDetach:false,
-	    //detachable:false,
-	    //endpointHoverStyle:{ cssClass:"endphover" },
-	    /*overlays:[ //overlay is not clickable!!!
-	              [ "Label", { label:"<i class=\"fa fa-arrow-right\"></i>", id:"label", location:[1.5, 0.0] } ]
-	            ],*/
 	    connectorOverlays: [ [ "Label", { label:"<i class=\"fa overlay\"></i>" } ]]	
 }
 var endpointCL= {
-	   // endpoint: ["Image", {src:"../styles/arrowL.png", cssClass:"endpointArrow"}],
 	    endpoint: ["Rectangle", {cssClass:"endpointArrowL", maxConnections: 10}],
-	    
-	    //cssClass: 'myendpoint',
-	    //paintStyle: { fillStyle: color2, fill:color2, stroke:"#006699", strokeWidth:2 }, //fill:color2 needed for 2.2.0
 	    isSource: true,
 	    connector: ["Bezier", { curviness: 15 } ],
 	    maxConnections: 10,
 	    isTarget: true,
 	    deleteEndpointsOnDetach:false,
-	    //detachable:false,
-	    //endpointHoverStyle:{ cssClass:"endphover" },
-	   /* overlays:[
-	              [ "Label", { label:"<i class=\"fa fa-arrow-left\"></i>", id:"label", location:[0.0, 0.0] } ]
-	            ],*/
 	    connectorOverlays: [ [ "Label", { label:"<i class=\"fa overlay\"></i>" } ]]	
 }
-/* endpoint with arrow pointing to the left */
-/*var endpointL = {
-	    endpoint: ["Rectangle", { width: 20, height:10, cssClass:"endpointL"  }], //enlarged for testing, can be 0.1 again
-	   // paintStyle: { fillStyle: color2, fill:color2 }, //fill:color2 needed for 2.2.0
-	    isSource: true,
-	    connector: ["Bezier", { curviness: 15 } ],
-	    maxConnections: 10,
-	    isTarget: true,
-	    deleteEndpointsOnDetach:true
-	    //connectorOverlays: [ [ "Label", { label:"<i class=\"fa overlay\"></i>" } ]]
-	};*/
+
 var expendpoint = {
 	    endpoint: ["Dot", { radius: 5 }],
 	    paintStyle: { fillStyle: color2, fill:color2 },//fill:color2 needed for 2.2.0
@@ -159,6 +131,7 @@ function createExpConnection(cnxId, sourceId, targetId, expWeight, learnerWeight
 }
 
 function delConnection(){
+	if(isView) return;
 	var cnxId = $("#conn_id").html();	
 	var cnx = getConnectionById(cnxId);
 	instance.deleteConnection(cnx); //new from version 2.4.0, detach no longer supported
@@ -171,17 +144,14 @@ function delConnection(){
  * a connection is added to the canvas, we save the start- and endpoint and label.
  */
 function addConnection(conn){
-	//var eps = conn.endpoints;
+	if(isView) return;
 	var epSource = conn.sourceEndpoint.id;//instance.getEndpoints(conn.id);
 	var epTarget = conn.targetEndpoint.id;
 	var targetEPId =  conn.targetEndpoint.id;
-	//var test = $("#"+targetEPId);
-	//var test2 = test.position();
 	var targetPosX = conn.targetEndpoint.endpoint.x;
 	var targetPosY = conn.targetEndpoint.endpoint.y;
 	if(epSource==epTarget) return;
 	var epSourceIdx = epSource.charAt(0);
-	//var epTargetIdx = epTarget.charAt(0);
 	
 	var sourceId = conn.sourceId; 
 	var targetId = conn.targetId;
@@ -208,10 +178,10 @@ function addConnectionCallback(sourceId, cnxId, targetId){
 	var lw = getWeightToLineWidth(2);
 
 	cnx.setPaintStyle({strokeStyle:color, strokeWidth:lw, stroke: color}); //fill:color for 2.2.0
-	//$("[id='cnxsform:hiddenCnxButton']").click();
 }
 
 function openConnContext(cnxId){
+	if(isView) return;
 	if(!cnxId.startsWith("cnx_")) return; //click on endpoint/anchor
 	clearErrorMsgs();
 	$("#connContext").dialog( "option", "width", ['200'] );
@@ -223,9 +193,8 @@ function openConnContext(cnxId){
 	$("#connContext").show();
 }
 
-
-
 function chgConnectionWeight(weight){
+	if(isView) return;
 	var cnxId = $("#conn_id").html();	
 	var cnx = getConnectionById(cnxId);
 	var color = getWeightToColor(weight);

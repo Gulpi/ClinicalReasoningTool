@@ -34,7 +34,7 @@ import util.Encoder;
 import util.StringUtilities;
 import properties.IntlConfiguration;
 //import test.TextSimilarityComparing;
-import test.LMMeshMapping;
+//import test.LMMeshMapping;
 
 /**
  * We init here some application stuff, like hibernate,....

@@ -165,11 +165,12 @@ public class DBClinReason /*extends HibernateUtil*/{
      * @return PatientIllnessScript or null
      */
     public PatientIllnessScript selectPatIllScriptById(long id){
-    	return selectLearnerPatIllScript(id, "id");
+    	return selectAllIllScriptById(id, "id", false);
     }
     
-    private PatientIllnessScript selectLearnerPatIllScript(long id, String identifier){
-    	Session s = instance.getInternalSession(Thread.currentThread(), false);
+    public PatientIllnessScript selectLearnerPatIllScript(long id, String identifier){
+    	return selectAllIllScriptById(id, "id", true);
+    	/*Session s = instance.getInternalSession(Thread.currentThread(), false);
     	Criteria criteria = s.createCriteria(PatientIllnessScript.class,"PatientIllnessScript");
     	criteria.add(Restrictions.eq(identifier, new Long(id)));
     	criteria.add(Restrictions.eq("type", new Integer(PatientIllnessScript.TYPE_LEARNER_CREATED)));
@@ -180,7 +181,23 @@ public class DBClinReason /*extends HibernateUtil*/{
     		selectNodesAndConns(patIllScript, s);
     	}
     	s.close();
+    	return patIllScript;*/
+    }
+    
+    private PatientIllnessScript selectAllIllScriptById(long id, String identifier, boolean considerType){
+    	Session s = instance.getInternalSession(Thread.currentThread(), false);
+    	Criteria criteria = s.createCriteria(PatientIllnessScript.class,"PatientIllnessScript");
+    	criteria.add(Restrictions.eq(identifier, new Long(id)));
+    	if(considerType) criteria.add(Restrictions.eq("type", new Integer(PatientIllnessScript.TYPE_LEARNER_CREATED)));
+    	PatientIllnessScript patIllScript =  (PatientIllnessScript) criteria.uniqueResult();
+    	
+    	if(patIllScript!=null){
+    		patIllScript.setSummSt(loadSummSt(patIllScript.getSummStId(), s));
+    		selectNodesAndConns(patIllScript, s);
+    	}
+    	s.close();
     	return patIllScript;
+   	
     }
 
     /**

@@ -104,6 +104,7 @@ public class HibernateSession {
 			cfg.addClass(beans.relation.SummaryStatementSQ.class);
 			cfg.addClass(beans.search.SearchResult.class);
 			cfg.addClass(beans.user.SessionSetting.class);
+			//cfg.addClass(test.LMMeshMapping.class);
 			
 			if (factory==null) {
 				//init_setHibernateDialect();

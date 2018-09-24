@@ -24,7 +24,7 @@ public class TextSimilarityComparing {
 			lineReader = new LineNumberReader(fileReader);
 			String line = null;
 			while((line=lineReader.readLine()) != null) {
-				scsa.calculateSimilarityADW(line, expText);
+				//scsa.calculateSimilarityADW(line, expText);
 			}
 		}
 		catch(Exception e){

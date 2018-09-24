@@ -10,8 +10,14 @@ import javax.servlet.ServletContext;
 import javax.servlet.http.HttpSessionEvent;
 import javax.servlet.http.HttpSessionListener;
 
+import actions.scoringActions.ScoringSummStAction;
 import beans.scripts.*;
+import beans.user.User;
 import beans.graph.Graph;
+import beans.list.ListInterface;
+import beans.list.ListItem;
+import beans.list.Synonym;
+import beans.relation.SummaryStatement;
 import beans.scoring.PeerContainer;
 import controller.IllnessScriptController;
 import controller.JsonCreator;
@@ -19,12 +25,16 @@ import controller.MeshImporter;
 import controller.PeerSyncController;
 import controller.SummaryStatementController;
 import database.DBClinReason;
+import database.DBList;
+import database.DBUser;
 import database.HibernateUtil;
 import model.SemanticQual;
 import util.CRTLogger;
+import util.Encoder;
 import util.StringUtilities;
 import properties.IntlConfiguration;
 //import test.TextSimilarityComparing;
+import test.LMMeshMapping;
 
 /**
  * We init here some application stuff, like hibernate,....
@@ -94,12 +104,12 @@ public class AppBean extends ApplicationWrapper implements HttpSessionListener{
 	    catch(Exception e){}
 	    //does not have to be done on every restart:
 	    //new JsonCreator().initJsonExport(context); 
-	   
-		//MeshImporter.main("en");
-	   // new TextSimilarityComparing().compareTestData();
+	    //recodeUsrIds();
+
+	   //doTestStuff(context);
 	    startms = System.currentTimeMillis();
 	    CRTLogger.out("Start Peer Container init:"  + startms + "ms", CRTLogger.LEVEL_PROD);
-	    peers.initPeerContainer();
+	    //peers.initPeerContainer();
 	    CRTLogger.out("End Peer Container init:"  + (System.currentTimeMillis()-startms) + "ms", CRTLogger.LEVEL_PROD);
 
 	    vpScriptRefs =  IllnessScriptController.getInstance().initVpScriptRefs();
@@ -122,6 +132,116 @@ public class AppBean extends ApplicationWrapper implements HttpSessionListener{
 	    }
 	    CRTLogger.out("End AppBean init:"  + (System.currentTimeMillis()-startms) + "ms", CRTLogger.LEVEL_PROD);
 	}
+	
+	private void recodeUsrIds(){
+		DBUser dbu = new DBUser();
+		List<User> users = dbu.selectUsers();
+		if(users==null) return; 
+		for(int i=0; i<users.size(); i++){
+			User u = users.get(i);
+			if(u.getExtUserId2().equals("-1")){
+				String userId = Encoder.getInstance().decodeQueryParam(u.getExtUserId());
+				u.setExtUserId2(userId);
+				dbu.saveAndCommit(u);
+			}
+		}
+	}
+	/**
+	 * mapping of longmenu lists with the mesh list
+	 * @param context
+	 */
+	/*private void doTestStuff2(ServletContext context){
+		JsonCreator jc = new JsonCreator();
+	    jc.setContext(context);
+		String[] strarr = jc.s.split(",");
+		List<String> matchList = new ArrayList();
+		List<String> nomatchList = new ArrayList();
+		List<ListItem> list = new DBList().selectListItemByLang("de"); //SummaryStatementController.getListItemsByLang("de");
+		for(int i=0; i<strarr.length; i++) {
+			boolean isMatch = false;
+			for(int j=0; j<list.size();j++){
+				if(isMatch) break;
+				isMatch = StringUtilities.similarStrings(strarr[i], list.get(j).getName(), new Locale("de"));
+				if(isMatch) {
+					CRTLogger.out("st liste:" + strarr[i] + ",  mesh " + list.get(j).getName(), CRTLogger.LEVEL_TEST);
+					matchList.add(strarr[i]);
+					saveMatch(list.get(j), strarr[i]);
+					break;
+				}
+				if(list.get(j).getSynonyma()!=null){
+					 Iterator it = list.get(j).getSynonyma().iterator();
+					 while(it.hasNext()){
+						 Synonym syn = (Synonym) it.next();
+						isMatch = StringUtilities.similarStrings(strarr[i], syn.getName() , new Locale("de"));
+						if(isMatch) {
+							CRTLogger.out("st liste:" + strarr[i] + ",  mesh " + syn.getName(), CRTLogger.LEVEL_TEST);
+							matchList.add(strarr[i]);
+							saveMatch(syn, strarr[i]);
+							break;
+						}
+					}
+				}
+			}
+			if(!isMatch) {
+				CRTLogger.out("st liste:" + strarr[i] + " no match", CRTLogger.LEVEL_TEST);
+				nomatchList.add( strarr[i]);
+				saveMatch(null, strarr[i]);
+			}
+			isMatch = false;
+
+		}
+		CRTLogger.out("done", CRTLogger.LEVEL_TEST);
+	
+	}*/
+	
+	/*private void saveMatch(ListInterface mesh, String lmStr){
+			LMMeshMapping lmm = new LMMeshMapping();
+			lmm.setLmName(lmStr);
+			if(mesh!=null){
+				lmm.setMeshId(mesh.getListItemId());
+				lmm.setMeshName(mesh.getName());
+			}
+			new DBList().saveAndCommit(lmm);
+		
+	}*/
+	
+	/*private void doTestStuff(ServletContext context){
+    	if(semanticQuals==null) semanticQuals = SummaryStatementController.loadSemanticQuals();
+
+	    JsonCreator jc = new JsonCreator();
+	    jc.setContext(context);
+
+		List<SummaryStatement> statements = new DBClinReason().getSummaryStatementsByAnalyzed(true);
+		if(statements==null || statements.isEmpty()) return;
+		Map<Long, String> sumStVpIdLookup = new TreeMap(); //key = sumst id, value = vp_id
+		
+		Map<String, SummaryStatement> expStatements = new TreeMap(); //key=vp_id, value=expert statement
+		Iterator it = statements.iterator();
+		try{
+			while(it.hasNext()){
+				SummaryStatement sumst = (SummaryStatement) it.next();
+				PatientIllnessScript pis = new DBClinReason().selectPatIllScriptById(sumst.getPatillscriptId());
+				if(pis!=null){
+					sumStVpIdLookup.put(new Long(sumst.getId()), pis.getVpId());
+					if(sumst.getType()==2) expStatements.put(pis.getVpId(), sumst);		
+				}
+			}
+		}
+		catch(Exception e){
+			CRTLogger.out(StringUtilities.stackTraceToString(e), CRTLogger.LEVEL_ERROR);
+		}
+		
+		for(int i=0;i<statements.size();i++){
+			SummaryStatement sumst = statements.get(i);
+			String vpId = sumStVpIdLookup.get(new Long(sumst.getId()));
+			SummaryStatement expSt = null;
+			if(vpId!=null && expStatements!=null) expSt = expStatements.get(vpId);
+			new ScoringSummStAction().calculateTransformation(expSt, statements.get(i), jc);
+			
+		}
+		//new ScoringSummStAction().calculateTransformation(null, learnerSt, jc);
+		System.out.println("done");
+	}*/
 	
 
 	

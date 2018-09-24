@@ -30,7 +30,7 @@ public class IllnessScriptController implements Serializable{
 	//TODO: we could also get the current script from the already loaded list -> reduces DB calls!
 	public PatientIllnessScript loadPatIllScriptById(long id, long userId){
 		if(id>0){
-			PatientIllnessScript patillscript = new DBClinReason().selectPatIllScriptById(id);
+			PatientIllnessScript patillscript = new DBClinReason().selectLearnerPatIllScript(id, "id");
 			return patillscript;
 		}
 		else{
@@ -182,5 +182,11 @@ public class IllnessScriptController implements Serializable{
 		if(counter==1) return IntlConfiguration.getValue("submit.expfinal") + expFinal.toString();
 		if(counter>1) return IntlConfiguration.getValue("submit.expfinals") + expFinal.toString();
 		return "";
+	}
+	
+	public void updateOrderNrSubmitted(PatientIllnessScript patillscript){
+		if(patillscript==null) return;
+		if(patillscript.getOrderNrSubmitted()>0) return; 
+		
 	}
 }

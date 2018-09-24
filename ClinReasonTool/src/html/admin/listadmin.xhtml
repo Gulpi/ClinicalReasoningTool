@@ -21,20 +21,31 @@
 <link rel="stylesheet" href="../../styles/portfolio.css" />
 
 <link rel="stylesheet" href="../../styles/font-awesome/css/font-awesome.css" />
+<script language="JavaScript">
+
+var test = "#{adminContext.userId}";
+</script>
 </head>
 <body>
 Administration of lists:<br/>
+
+  
+<h:form id="recreate_form">
+Recreate list: <select name="locale" id="locale2"><option value="de">de</option><option value="en">en</option><option value="pl">pl</option></select><br/>
+		<h:commandButton value="Login" action="#{auth.login}" />
+		
+		<h:commandButton id="createButton" value="#{prop['submit']}" action="#{adminContext.getRecreateList}" />
+</h:form>
+
+ 
 <h:form id="search_form">
 #{prop['search']}: <input type="text" name="search" id="search"></input> 
 <select name="locale" id="locale"><option value="">all</option><option value="de">de</option><option value="en">en</option><option value="pl">pl</option></select><br/>
 Search in: <select name="mode" id="mode"><option value="PRIVATE">Private learner entries</option><option value="MESH">Public list entries</option><option value="3">Both</option></select>
-
 		<h:commandButton id="searchButton" value="#{prop['search']}" >
 		    <f:ajax render="@form" action="#{adminContext.getSearchedListItems}"></f:ajax>
 		 </h:commandButton>
-<!-- <span id="searchBtn" class="submitBtn">
-	<a href="javascript:initSearch();" style="color:#ffffff" id="submitBtnA">#{prop['search']}</a>
-</span>-->
+
 
 <br/><br/>
 Results:<br/>
@@ -47,6 +58,6 @@ Results:<br/>
 </ui:repeat>
 </table>
 </h:form>
-
+ 
 </body>
 </html>

@@ -3,7 +3,7 @@ package util;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.*;
-import java.util.Locale;
+import java.util.*;
 
 /**
  * Any kind of utilities we need for string handling
@@ -86,6 +86,9 @@ public class StringUtilities {
 		return s;		
 	}
 	
+	public static boolean similarStrings(String item1, String item2, Locale loc){
+		return similarStrings(item1, item2, loc, MIN_LEVEN_DISTANCE, MAX_FUZZY_DISTANCE);
+	}
 	/**
 	 * We compare two strings and calculate the levensthein disctance. If it is lower than the accepted distance 
 	 * and starts with the same letter, we return the levensthein distance. 
@@ -93,13 +96,15 @@ public class StringUtilities {
 	 * @param item2
 	 * @return
 	 */
-	public static boolean similarStrings(String item1, String item2, Locale loc){
+	public static boolean similarStrings(String item1, String item2, Locale loc, int leven, int fuzzy){
 		item1 = item1.replace("-", " ");
 		item2 = item2.replace("-", " ");
 		item1 = item1.replace(",", "");
 		item2 = item2.replace(",", "");
 		item1 = item1.replace("'", "");
 		item2 = item2.replace("'", "");
+		item2 = item2.replace(".", "");
+		item1 = item1.replace(".", "");
 		item1 = item1.replace("ö", "oe");
 		item2 = item2.replace("ö", "oe");
 		item1 = item1.replace("ä", "ae");
@@ -108,13 +113,16 @@ public class StringUtilities {
 		item1 = item1.replace("ß", "ss");
 		item1 = item1.replace("ü", "ue");
 		item2 = item2.replace("ü", "ue");
+		item1 = item1.trim();
+		item2 = item2.trim();
+		if(item1.equalsIgnoreCase(item2)) return true;
 		//unilateral/bilateral is too similar, but needs to be both in the list:
 		if(item1.startsWith("Unilat") && item2.startsWith("Bilat") || item2.startsWith("Unilat") && item1.startsWith("Bilat"))
 			return false;
 		if(item1.startsWith("Type I") && item2.startsWith("Type II") || item2.startsWith("Type I") && item1.startsWith("Type II"))
 			return false;
 
-		if(isMatchBasedOnLevelAndFuzzy(item1, item2, loc)) return true;
+		if(isMatchBasedOnLevelAndFuzzy(item1, item2, loc, leven, fuzzy)) return true;
 		
 		//if we have multiple words we split them and compare them separately
 		String[] item1Arr = item1.trim().split(" ");
@@ -137,15 +145,15 @@ public class StringUtilities {
 			//check for something like: "Streptokokkenpneumonie" / "Penumonie, Streptokokken"
 			if((item1Arr.length==1 && item2Arr.length==2)){
 				String item2_1Str = item2Arr[0].trim() +  item2Arr[1].trim();
-				if(isMatchBasedOnLevelAndFuzzy(item1, item2_1Str, loc)) return true;
+				if(isMatchBasedOnLevelAndFuzzy(item1, item2_1Str, loc, leven, fuzzy)) return true;
 				String item2_2Str = item2Arr[1].trim() +  item2Arr[0].trim();
-				if(isMatchBasedOnLevelAndFuzzy(item1, item2_2Str, loc)) return true;				
+				if(isMatchBasedOnLevelAndFuzzy(item1, item2_2Str, loc, leven, fuzzy)) return true;				
 			}
 			if((item2Arr.length==1 && item1Arr.length==2)){
 				String item1_1Str = item1Arr[0].trim() +  item1Arr[1].trim();
-				if(isMatchBasedOnLevelAndFuzzy(item2, item1_1Str, loc)) return true;
+				if(isMatchBasedOnLevelAndFuzzy(item2, item1_1Str, loc, leven, fuzzy)) return true;
 				String item1_2Str = item1Arr[1].trim() +  item1Arr[0].trim();
-				if(isMatchBasedOnLevelAndFuzzy(item2, item1_2Str, loc)) return true;				
+				if(isMatchBasedOnLevelAndFuzzy(item2, item1_2Str, loc, leven, fuzzy)) return true;				
 			}
 			return false;
 			
@@ -181,20 +189,20 @@ public class StringUtilities {
 		return isMatch;
 	}
 	
-	private static boolean isMatchBasedOnLevelAndFuzzy(String s1, String s2, Locale loc){
+	private static boolean isMatchBasedOnLevelAndFuzzy(String s1, String s2, Locale loc, int inLeven, int inFuzzy){
 		int leven = StringUtils.getLevenshteinDistance(s1, s2);
 		int fuzzy = StringUtils.getFuzzyDistance(s1.toLowerCase(), s2.toLowerCase(), loc);
 		
 		//compare Strings as they are:
 		//if(s1.equals("Abdomen, Acute") || item2.equals("Abdomen, Acute"))
 		//	System.out.println("Leven: " + leven + ", fuzzy: " + fuzzy + " Item1: " + item1 + " Item2: " + item2);
-		if(leven ==2 && fuzzy>20 && fuzzy<MAX_FUZZY_DISTANCE)
+		if(leven ==2 && fuzzy>20 && fuzzy < inFuzzy)
 			System.out.println(s1 + ", " + s2 + ", leven " + leven + ", fuzzy: " + fuzzy);
 
 		if(s1.length()>3 && leven == 1 && fuzzy > 1) return true; 
 		if(leven == 2 && fuzzy > 30) return true; 
 		
-		if(leven < MIN_LEVEN_DISTANCE && fuzzy>=MAX_FUZZY_DISTANCE/*&& firstLetterItem1.equalsIgnoreCase(firstLetterItem2)*/){
+		if(leven < inLeven && fuzzy >= inFuzzy/*&& firstLetterItem1.equalsIgnoreCase(firstLetterItem2)*/){
 			return true; //these items are not added
 		}
 		/*if(fuzzy>=MAX_FUZZY_DISTANCE){
@@ -235,5 +243,17 @@ public class StringUtilities {
 		    //sb.append(' ');
 		}
 		return sb.toString();
+	}
+	
+	public static String toString(List<String> strList, String del){
+		if(strList==null || strList.isEmpty()) 
+			return "";
+		StringBuffer sb = new StringBuffer(500);
+		for(int i=0;i<strList.size();i++){
+			if(i<strList.size()-1) sb.append(strList.get(i)+del);
+			else sb.append(strList.get(i));
+		}
+		return sb.toString();
+		
 	}
 }

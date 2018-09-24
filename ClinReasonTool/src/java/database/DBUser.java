@@ -26,6 +26,17 @@ public class DBUser extends DBClinReason{
     	return (User) criteria.uniqueResult();
     }
     
+    public List<User> selectUsers(){
+    	//if(extUserId==null || extUserId.trim().equals("")) return null;
+    	Session s = instance.getInternalSession(Thread.currentThread(), false);
+    	Criteria criteria = s.createCriteria(User.class,"User");
+    	criteria.add(Restrictions.ilike("extUserId2", "-1"));
+    	//criteria.add(Restrictions.eq("systemId", new Integer(systemId)));
+
+    	return criteria.list();
+    }
+    
+    
     public User selectUserById(long userId){
     	if(userId<0) return null;
     	Session s = instance.getInternalSession(Thread.currentThread(), false);

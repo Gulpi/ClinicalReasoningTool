@@ -1,6 +1,7 @@
 package beans;
 
 import java.io.Serializable;
+import java.sql.Timestamp;
 import java.util.*;
 
 import javax.faces.bean.ManagedBean;
@@ -107,10 +108,17 @@ public class ExpPortfolio implements Serializable{
 	 */
 	public PatientIllnessScript getOrCreateExpScriptFromVPSystem(){
 		CRTLogger.out("Create new script", CRTLogger.LEVEL_PROD);
-		String vpId = AjaxController.getInstance().getRequestParamByKey("vp_id");
-		String systemId = AjaxController.getInstance().getRequestParamByKey("system_id");
+		String vpId = AjaxController.getInstance().getRequestParamByKey(AjaxController.REQPARAM_VP);
+		String systemId = AjaxController.getInstance().getRequestParamByKey(AjaxController.REQPARAM_SYSTEM);
+		int maxstage = AjaxController.getInstance().getIntRequestParamByKey(AjaxController.REQPARAM_MAXSTAGE, -1);
+
 		PatientIllnessScript patillscript = new DBClinReason().selectExpertPatIllScriptByVPId(vpId+"_"+systemId);
 		if(patillscript!=null){
+			if(maxstage>0 && patillscript.getStage()!=maxstage) patillscript.setCurrentStage(maxstage);
+			
+			patillscript.setLastAccessDate(new Timestamp(System.currentTimeMillis()));
+			new DBClinReason().saveAndCommit(patillscript);
+			
 			return patillscript;
 		}
 		//not yet created

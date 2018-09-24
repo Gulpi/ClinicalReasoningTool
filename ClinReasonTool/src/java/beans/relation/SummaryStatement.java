@@ -32,6 +32,14 @@ public class SummaryStatement extends Beans implements Serializable{
 	 * has the text been evaluated/analyzed
 	 */
 	private boolean analyzed;
+	private String test;
+	private int testNum = -1;
+	private int testTransf = -1;
+	private int testNumExpMatches = -1;
+	private int testSQNum = -1;
+	private String testSQ;
+	private int testExpSQNum = -1;
+	private String testExpSQ;
 	/**
 	 * all semantic qualifier ids that have been
 	 */
@@ -60,10 +68,24 @@ public class SummaryStatement extends Beans implements Serializable{
 	public void setAnalyzed(boolean analyzed) {this.analyzed = analyzed;}	
 	public String getLang() {return lang;}
 	public void setLang(String lang) {this.lang = lang;}
-	//public Map<Long, SummaryStatementSQ> getSqHits() {return sqHits;}
-	//public void setSqHits(Map sqHits) {this.sqHits = sqHits;}
 	public List getSqHits(){return sqHits;}
 	
+	public String getTest() {return test;}
+	public void setTest(String test) {this.test = test;}
+	public int getTestNum() {return testNum;}
+	public void setTestNum(int testNum) {this.testNum = testNum;}
+	public int getTestTransf() {return testTransf;}
+	public void setTestTransf(int testTransf) {this.testTransf = testTransf;}	
+	public int getTestNumExpMatches() {return testNumExpMatches;}
+	public void setTestNumExpMatches(int testNumExpMatches) {this.testNumExpMatches = testNumExpMatches;}
+	public int getTestSQNum() {return testSQNum;}
+	public void setTestSQNum(int testSQNum) {this.testSQNum = testSQNum;}
+	public String getTestSQ() {return testSQ;}
+	public void setTestSQ(String testSQ) {this.testSQ = testSQ;}
+	public int getTestExpSQNum() {return testExpSQNum;}
+	public void setTestExpSQNum(int testExpSQNum) {this.testExpSQNum = testExpSQNum;}
+	public String getTestExpSQ() {return testExpSQ;}
+	public void setTestExpSQ(String testExpSQ) {this.testExpSQ = testExpSQ;}
 	/* (non-Javadoc)
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
@@ -76,12 +98,6 @@ public class SummaryStatement extends Beans implements Serializable{
 	
 	public void setSqHits(List<SummaryStatementSQ> hits){
 		this.sqHits = hits;
-	/*	if(hits==null || hits.isEmpty()) return;
-		sqHits = new HashMap();
-		for(int i=0; i<hits.size(); i++ ){
-			sqHits.put(hits.get(i).getId(), hits.get(i));
-		}*/
-		
 	}
 	
 	/**
@@ -106,8 +122,13 @@ public class SummaryStatement extends Beans implements Serializable{
 		   strBuilder.append(splitText[i]+ " ");
 		}
 		return strBuilder.toString();
-		
-		//return "&#60;b&#62;"+text+"&#60;/b&#62;";
-		//return "<b>"+text+"</b>;";
 	}
+	
+/*	public String getSqHitsoString(){
+		if(sqHits==null || sqHits.isEmpty()) return "";
+		StringBuffer sb = new StringBuffer(500);
+		for(int i=0;i<sqHits.size(); i++){
+			sb.append(sqHits.get)
+		}
+	}*/
 }

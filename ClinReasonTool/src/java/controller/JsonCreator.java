@@ -37,19 +37,19 @@ public class JsonCreator {
 	public static final String fileNameOneListEN = "src/html/jsonp_en.json"; //TODO we need the path to the HTML folder!!!
 	public static final String fileNameOneListDE = "src/html/jsonp_de.json";
 	public static final String fileNameOneListPL = "src/html/jsonp_pl.json";
-
-	//A=Anatomy,B=Organisms, F=Psychiatry/Psychology, G=Phenomena and Processes, H=Disciplines/Occupations
 	
-	//configurations: TODO get from property file
 	private boolean createOneList = true; //if false, we create multiple lists for problems, ddx, etc.
-	private boolean includeSynonyma = true;
-	private static ServletContext context;
-	
+	private static ServletContext context;	
+
 	
 	public synchronized void initJsonExport(ServletContext context){
 		this.context = context;
-		if(createOneList){
-			
+		//language can be set with a query parameter
+		String lang = AjaxController.getInstance().getRequestParamByKey("lang");
+		if(lang!=null && (lang.equalsIgnoreCase("de") || lang.equalsIgnoreCase("en"))){
+			exportOneList(new Locale(lang));
+		}
+		else if(createOneList){			
 			exportOneList(new Locale("en"));
 			exportOneList(new Locale("de"));
 			exportOneList(new Locale("pl"));
@@ -57,7 +57,15 @@ public class JsonCreator {
 		
 	}
 	
-	//TODO also load item which have a corresponding (secondary code)
+	public void setContext(ServletContext context){
+		this.context = context;
+	}
+	
+	/**
+	 * We export the list of the given language from the database into a JSON file for use in the user interface 
+	 * We also store the list items in the SummaryController for using it for the statement analysis and assessment.
+	 * @param loc
+	 */
 	private void exportOneList(Locale loc){
 		//setIdsForSyn();
 		List<ListItem> items = new DBList().selectListItemsByTypesAndLang(loc, new String[]{TYPE_PROBLEM, TYPE_TEST,TYPE_DRUGS, TYPE_EPI, TYPE_MANUALLY_ADDED, TYPE_PERSONS, TYPE_HEALTHCARE, TYPE_CONTEXT, TYPE_B, TYPE_G});
@@ -77,8 +85,9 @@ public class JsonCreator {
 				}
 			}
 			Collections.sort(itemsAndSyns);
+			SummaryStatementController.addListItems(itemsAndSyns, loc.getLanguage());
 			for(int i=0; i<itemsAndSyns.size();i++){
-				ListInterface li = (ListInterface) itemsAndSyns.get(i);
+				ListInterface li = (ListInterface) itemsAndSyns.get(i);				
 				sb.append("{\"label\": \""+li.getName()+"\", \"value\": \""+li.getIdForJsonList()+"\"},\n");
 			}
 			boolean allowOwnEntries = AppBean.getProperty("AllowOwnEntries", false);
@@ -187,10 +196,17 @@ public class JsonCreator {
 		return currBestTerm;
 	}
 	
-	public static File getMeshJsonFileByLoc(Locale loc){
-		if (loc.getLanguage().equals(new Locale("de").getLanguage())) return new File(context.getRealPath(fileNameOneListDE));
-		if (loc.getLanguage().equals(new Locale("pl").getLanguage())) return new File(context.getRealPath(fileNameOneListPL));
+	public static File getMeshJsonFileByLang(String lang){
+		if (lang.equals("de")) return new File(context.getRealPath(fileNameOneListDE));
+		if (lang.equals("pl")) return new File(context.getRealPath(fileNameOneListPL));
 		return new File(context.getRealPath(fileNameOneListEN));
+	
+	}
+	public static File getMeshJsonFileByLoc(Locale loc){
+		return getMeshJsonFileByLang(loc.getLanguage());
+		/*if (loc.getLanguage().equals(new Locale("de").getLanguage())) return new File(context.getRealPath(fileNameOneListDE));
+		if (loc.getLanguage().equals(new Locale("pl").getLanguage())) return new File(context.getRealPath(fileNameOneListPL));
+		return new File(context.getRealPath(fileNameOneListEN));*/
 	}
 	
 	/*public static String getMeshJsonFileNameByLoc(Locale loc){

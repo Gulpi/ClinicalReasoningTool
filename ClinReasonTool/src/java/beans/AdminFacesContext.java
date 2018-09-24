@@ -203,6 +203,16 @@ public class AdminFacesContext extends FacesContextWrapper implements MyFacesCon
 		return isViaAPI;
 	}
 	
+	/**
+	 * the MesH list is recreated from the database
+	 */
+	public List<ListInterface> getRecreateList(){
+		ServletContext context = (ServletContext) FacesContext.getCurrentInstance().getExternalContext().getContext();
+		new JsonCreator().initJsonExport(context);
+		
+		return null;
+	}
+	
 	public List<ListInterface> getSearchedListItems(){
 		ListController lc = new ListController();
 		String mode =  AjaxController.getInstance().getRequestParamByKeyNoDecrypt(AjaxController.REQPARAM_SEARCH_MODE);

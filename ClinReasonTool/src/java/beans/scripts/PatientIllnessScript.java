@@ -166,6 +166,17 @@ public class PatientIllnessScript extends Beans implements Comparable, IllnessSc
 	 */
 	private int finalDDXType = -1;
 	
+	/**
+	 * number of script worked on (1-based), excluding scripts that are created a second time (e.g. after a session reset), 
+	 * so only first attempt counts and only if opened more than one card. This makes data analysis easier!
+	 */
+	private int orderNr = -1;
+	/**
+	 * number of script completed (1-based), excluding scripts that are created a second time (e.g. after a session reset), 
+	 * so only first attempt counts and only if diagnosis has been submitted.This makes data analysis easier!
+	 */	
+	private int orderNrSubmitted = -1;
+
 	public PatientIllnessScript(){}
 	public PatientIllnessScript(long userId, String vpId, Locale loc, int systemId){
 		if(vpId==null) vpId = "";
@@ -279,6 +290,11 @@ public class PatientIllnessScript extends Beans implements Comparable, IllnessSc
 	}	
 	public void setCurrentStage(int currentStage) { this.currentStage = currentStage;}		
 	public List<MyError> getErrors() {return errors;}
+	
+	public int getOrderNr() {return orderNr;}
+	public void setOrderNr(int orderNr) {this.orderNr = orderNr;}
+	public int getOrderNrSubmitted() {return orderNrSubmitted;}
+	public void setOrderNrSubmitted(int orderNrSubmitted) {this.orderNrSubmitted = orderNrSubmitted;}
 	
 	/**
 	 * @return all Errors that have been made at the current stage

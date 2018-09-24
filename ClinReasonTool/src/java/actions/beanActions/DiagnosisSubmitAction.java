@@ -11,6 +11,7 @@ import actions.scoringActions.ScoringFinalDDXAction;
 import application.ErrorMessageContainer;
 import beans.LogEntry;
 import beans.scripts.*;
+import controller.IllnessScriptController;
 import controller.ScoringController;
 import controller.XAPIController;
 import beans.relation.Relation;
@@ -76,6 +77,7 @@ public class DiagnosisSubmitAction /*implements Scoreable*/{
 		if(!patIllScript.isExpScript()) XAPIController.getInstance().addFinalDiagnosisActionStatement(patIllScript);
 
 		notifyLog();
+		//IllnessScriptController.getInstance().updateOrderNrSubmitted(patIllScript);
 	}
 	
 	private boolean changeTierForDDXs(String idStr){

@@ -1,18 +1,15 @@
 package actions.scoringActions;
 
+import java.util.*;
+
 import application.AppBean;
 import beans.scripts.*;
 import beans.relation.SummaryStatement;
-import beans.scoring.LearningAnalyticsBean;
-import beans.scoring.ScoreBean;
-import beans.scoring.ScoreContainer;
-import controller.NavigationController;
-import controller.ScoringController;
-import controller.SummaryStatementController;
+import beans.scoring.*;
+import controller.*;
+import database.DBClinReason;
 import database.DBScoring;
-//import it.uniroma1.lcl.adw.*;
-//import it.uniroma1.lcl.adw.comparison.*;
-import util.CRTLogger;
+import util.StringUtilities;
 
 /**
  * We have multiple summary statement scores (one for each stage)...
@@ -94,6 +91,7 @@ public class ScoringSummStAction {
 			//we have some text to analyze, but currently we only have the check for semantic qualifiers...
 			else{
 				int sqScore = calculateSemanticQualScore(expSt, learnerSt); //0, 1, or 2
+				//int transfScore = calculateTransformation(expSt, learnerSt, null); //0, 1, or 2
 				if(sqScore==2) scoreBean.setScoreBasedOnExp(ScoringController.FULL_SCORE, isChg);
 				//for the moment we give half score if we find a few or no sematic qualifiers:
 				else scoreBean.setScoreBasedOnExp(ScoringController.HALF_SCORE, isChg);
@@ -123,31 +121,53 @@ public class ScoringSummStAction {
 		return 0;
 		
 	}
-
 	
 	/**
-	 * Calculate seperately from any other comparison the appropriate use of semantic qualifiers in the 
-	 * summary statement.
+	 * Score for transformation (e.g. Pulse 180 -> Tachcardia); 0=none, 1=some, 2=frequent/appropriate
+	 * 1. split the text into single words
+	 * 2. run against the 
+	 * @param expSt
+	 * @param learnerSt
+	 * @return
 	 */
-	public double calculateSimilarityADW(String studtext, String exptext){
-		//Durning 2012: 1 point for correctly used term, -1 for a wrong term.
-/*		ADW adw = new ADW();
-		DisambiguationMethod disMethod = DisambiguationMethod.ALIGNMENT_BASED;
-		//ItemType it = ItemType.SURFACE;
-
-		double similarity = adw.getPairSimilarity("text1", "text2", disMethod,  new WeightedOverlap(), LexicalItemType.SURFACE, LexicalItemType.SURFACE); 
-		CRTLogger.out("similarity weightedoverlap: " + similarity, CRTLogger.LEVEL_TEST);
-
-		double similarity2 = adw.getPairSimilarity("text1", "text2", disMethod, new Cosine(), LexicalItemType.SURFACE, LexicalItemType.SURFACE); 
-		CRTLogger.out("similarity Cosine: " + similarity2, CRTLogger.LEVEL_TEST);
+	public int calculateTransformation(SummaryStatement expSt, SummaryStatement learnerSt, JsonCreator jc ){
+		if(learnerSt==null || learnerSt.getText()==null || learnerSt.getText().trim().equals("")) return 0;
+		List<String> matchingWords = SummaryStatementController.getInstance().getMatchingWordsFromMesh(learnerSt.getText(), learnerSt.getLang(), jc);
+		System.out.println(matchingWords);
+		if(matchingWords==null || matchingWords.isEmpty()) learnerSt.setTestNumExpMatches(0);
+		else if(expSt!=null){	
+			int numMatchesExp = calculateMatchesWithExpStatement(matchingWords, expSt.getTest());
+			learnerSt.setTestNumExpMatches(numMatchesExp);
+		}
+		SummaryStatementController.checkForSemanticQualifiers(learnerSt);
+		if(learnerSt.getSqHits()!=null){
+			learnerSt.setTestSQ(learnerSt.getSqHits().toString());
+			learnerSt.setTestSQNum(learnerSt.getSqHits().size());
+		}
+		if(expSt!=null && expSt.getSqHits()!=null){
+			learnerSt.setTestExpSQ(expSt.getSqHits().toString());
+			learnerSt.setTestExpSQNum(expSt.getSqHits().size());			
+		}
+		learnerSt.setTestNum(matchingWords.size());
+		learnerSt.setTest(StringUtilities.toString(matchingWords, "#"));
+		new DBClinReason().saveAndCommit(learnerSt);
+		return 0;
 		
-		double similarity3 = adw.getPairSimilarity("text1", "text2", disMethod, new Jaccard(), LexicalItemType.SURFACE, LexicalItemType.SURFACE); 
-		CRTLogger.out("similarity Jaccard: " + similarity3, CRTLogger.LEVEL_TEST);
-		*/
-		return 0; // similarity;
 	}
 	
-	/*private void calculateSQUse(SummaryStatement stst){
-		SummaryStatementController.checkForSemanticQualifiers(stst);
-	}*/
+	private int calculateMatchesWithExpStatement(List<String> matchingWords, String expMatches){
+		int matchCounter = 0;
+		String[] expMatchesArr = expMatches.split("#");
+		if(expMatchesArr==null || expMatchesArr.length==0) return 0;
+		for(int i=0;i<expMatchesArr.length;i++){
+			for(int j=0; j<matchingWords.size(); j++){
+				if(expMatchesArr[i].equalsIgnoreCase(matchingWords.get(j))){
+					matchCounter++;
+					break;
+				}
+			}
+		}
+		return matchCounter;
+	}
+
 }

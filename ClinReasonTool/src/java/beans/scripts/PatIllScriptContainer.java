@@ -49,7 +49,7 @@ public class PatIllScriptContainer implements Serializable{
 		while(it.hasNext()){			
 			PatientIllnessScript pi = it.next();	
 			if(counter==num) break;
-			if(cutoff!=null && pi.getLastAccessDate().before(cutoff)) break;
+			if(cutoff!=null && pi.getLastAccessDate()!=null && pi.getLastAccessDate().before(cutoff)) break;
 			
 			if(pi.getSubmitted()){				
 				lastSubmittedScripts.add(pi);

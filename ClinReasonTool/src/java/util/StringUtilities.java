@@ -130,7 +130,7 @@ public class StringUtilities {
 		if(/*item1Arr.length!=item2Arr.length ||*/ (item1Arr.length==1 || item2Arr.length==1)) return false; //TODO: we might still compare them?
 			//we go thru each item and compare it with the items2
 			boolean[] isMatch;
-			System.out.println("");
+			//System.out.println("");
 			if(item1Arr.length>=item2Arr.length)
 				isMatch = runThrugStringArr(item1Arr, item2Arr, loc);			
 			else  isMatch = runThrugStringArr(item2Arr, item1Arr, loc);
@@ -196,8 +196,8 @@ public class StringUtilities {
 		//compare Strings as they are:
 		//if(s1.equals("Abdomen, Acute") || item2.equals("Abdomen, Acute"))
 		//	System.out.println("Leven: " + leven + ", fuzzy: " + fuzzy + " Item1: " + item1 + " Item2: " + item2);
-		if(leven ==2 && fuzzy>20 && fuzzy < inFuzzy)
-			System.out.println(s1 + ", " + s2 + ", leven " + leven + ", fuzzy: " + fuzzy);
+		//if(leven ==2 && fuzzy>20 && fuzzy < inFuzzy)
+		//	System.out.println(s1 + ", " + s2 + ", leven " + leven + ", fuzzy: " + fuzzy);
 
 		if(s1.length()>3 && leven == 1 && fuzzy > 1) return true; 
 		if(leven == 2 && fuzzy > 30) return true; 

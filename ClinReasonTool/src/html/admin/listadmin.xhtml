@@ -31,8 +31,8 @@ Administration of lists:<br/>
 
   
 <h:form id="recreate_form">
-Recreate list: <select name="locale" id="locale2"><option value="de">de</option><option value="en">en</option><option value="pl">pl</option></select><br/>
-		<h:commandButton value="Login" action="#{auth.login}" />
+Recreate list: <select name="lang" id="lang"><option value="de">de</option><option value="en">en</option><option value="pl">pl</option></select><br/>
+		<!-- <h:commandButton value="Login" action="#{auth.login}" /> -->
 		
 		<h:commandButton id="createButton" value="#{prop['submit']}" action="#{adminContext.getRecreateList}" />
 </h:form>

@@ -151,6 +151,7 @@ public class DBList extends DBClinReason {
     	//do NOT include items that have been added by learners:
     	criteria.add(Restrictions.ne("source", ListItem.TYPE_OWN));
     	criteria.addOrder(Order.asc("name"));
+    	criteria.add(Restrictions.eq("ignored", false));
     	List l = criteria.list();
     	//Collections.sort(l);
     	s.close();

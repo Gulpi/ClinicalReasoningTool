@@ -42,8 +42,8 @@ public class JsonCreator {
 	private static ServletContext context;	
 
 	
-	public synchronized void initJsonExport(ServletContext context){
-		this.context = context;
+	public synchronized void initJsonExport(ServletContext contextIn){
+		context = contextIn;
 		//language can be set with a query parameter
 		String lang = AjaxController.getInstance().getRequestParamByKey("lang");
 		if(lang!=null && (lang.equalsIgnoreCase("de") || lang.equalsIgnoreCase("en"))){

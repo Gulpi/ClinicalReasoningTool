@@ -21,7 +21,7 @@ public class PeerContainer {
 	
 	
 	public PeerContainer(){
-		//initPeerContainer();
+		initPeerContainer();
 	}
 	
 	/**

@@ -12,7 +12,7 @@ import java.util.*;
  */
 public class StringUtilities {
 	private static final int MIN_LEVEN_DISTANCE = 4; //if we have a level 1 similarity the item is not included
-	private static final int MAX_FUZZY_DISTANCE = 38; //if we have a level 1 similarity the item is not included
+	public static final int MAX_FUZZY_DISTANCE = 38; //if we have a level 1 similarity the item is not included
 	private static final char[] HEXDIGITS = "0123456789abcdef".toCharArray();
 
 	/**
@@ -89,6 +89,30 @@ public class StringUtilities {
 	public static boolean similarStrings(String item1, String item2, Locale loc){
 		return similarStrings(item1, item2, loc, MIN_LEVEN_DISTANCE, MAX_FUZZY_DISTANCE);
 	}
+	
+	private static String replaceChars(String item1){
+		item1 = item1.replace("-", " ");
+		item1 = item1.replace(",", "");
+		item1 = item1.replace("'", "");
+		item1 = item1.replace(".", "");
+		item1 = item1.replace("ö", "oe");
+		item1 = item1.replace("ä", "ae");
+		item1 = item1.replace("ß", "ss");
+		item1 = item1.replace("ü", "ue");
+		
+		item1 = item1.replace("ą", "a");
+		item1 = item1.replace("ć", "c");
+		item1 = item1.replace("ę", "e");
+		item1 = item1.replace("ł", "l");
+		item1 = item1.replace("ń", "n");
+		item1 = item1.replace("ó", "o");
+		item1 = item1.replace("ś", "s");
+		item1 = item1.replace("ź", "z");
+		item1 = item1.replace("ż", "z");
+		
+		item1 = item1.trim();
+		return item1;
+	}
 	/**
 	 * We compare two strings and calculate the levensthein disctance. If it is lower than the accepted distance 
 	 * and starts with the same letter, we return the levensthein distance. 
@@ -97,24 +121,8 @@ public class StringUtilities {
 	 * @return
 	 */
 	public static boolean similarStrings(String item1, String item2, Locale loc, int leven, int fuzzy){
-		item1 = item1.replace("-", " ");
-		item2 = item2.replace("-", " ");
-		item1 = item1.replace(",", "");
-		item2 = item2.replace(",", "");
-		item1 = item1.replace("'", "");
-		item2 = item2.replace("'", "");
-		item2 = item2.replace(".", "");
-		item1 = item1.replace(".", "");
-		item1 = item1.replace("ö", "oe");
-		item2 = item2.replace("ö", "oe");
-		item1 = item1.replace("ä", "ae");
-		item2 = item2.replace("ä", "ae");
-		item2 = item2.replace("ß", "ss");
-		item1 = item1.replace("ß", "ss");
-		item1 = item1.replace("ü", "ue");
-		item2 = item2.replace("ü", "ue");
-		item1 = item1.trim();
-		item2 = item2.trim();
+		item1 = replaceChars(item1);
+		item2 = replaceChars(item2);
 		if(item1.equalsIgnoreCase(item2)) return true;
 		//unilateral/bilateral is too similar, but needs to be both in the list:
 		if(item1.startsWith("Unilat") && item2.startsWith("Bilat") || item2.startsWith("Unilat") && item1.startsWith("Bilat"))

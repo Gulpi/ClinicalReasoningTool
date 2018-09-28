@@ -425,7 +425,7 @@ item_arr = new Array();
 		 	<div id="sum_title" mytooltip="#{prop['sumst.hint']}" class="title contcol_#{crtContext.patillscript.sumDiff}">#{prop['summst']} <i class="fa fa-info-circle"></i>
 		 		<span class="icons sumicons">
 		 			<a href="javascript:toggleSumFeedback('expFeedbackSum', 14);" title="#{prop['summst.exp']}" class="expfb_#{crtContext.displayExpFb}"><i mytooltip="#{prop['summst.exp']}" class="fa fa-user-md_off" id="expFeedbackSum"></i></a>
-		 			<a href="https://youtu.be/zvlNSU2ys7k" onclick="javascript:openVideo('3');" target="new" title="#{prop['summst.help']}"><i mytooltip="#{prop['summst.help']}" class="fa fa-film" id="sumStHelp"></i></a>
+		 			<a href="#{crtContext.sumstVideoUrl}" onclick="javascript:openVideo('3');" target="new" title="#{prop['summst.help']}"><i mytooltip="#{prop['summst.help']}" class="fa fa-film" id="sumStHelp"></i></a>
 		 		</span>
 		 	</div>
 		 	 <div class="node-collapse"></div>

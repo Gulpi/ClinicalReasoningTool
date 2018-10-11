@@ -7,6 +7,7 @@ import beans.scripts.*;
 import beans.user.SessionSetting;
 import beans.graph.Graph;
 import beans.graph.MultiVertex;
+import beans.list.ListInterface;
 import beans.relation.*;
 import beans.scoring.*;
 import controller.*;
@@ -84,8 +85,8 @@ public class ScoringFinalDDXAction /*implements ScoringAction*/{
 			else{	//expert has more finals than learner (then these have not yet been considered):
 				corrScore = (sumScore/expFinals.size());
 			}
-			//no scoring possible, because no list was used:
-			if(new NavigationController().getCRTFacesContext().getSessSetting().getListMode()==SessionSetting.LIST_MODE_NONE)
+			//no wrong scoring possible, because no list was used:
+			if(corrScore<1.0 && new NavigationController().getCRTFacesContext().getSessSetting().getListMode()==SessionSetting.LIST_MODE_NONE)
 				corrScore = ScoringAction.NO_SCORING_POSSIBLE;
 			
 			finalListScore.setScoreBasedOnExp(corrScore, isChg);
@@ -177,15 +178,53 @@ public class ScoringFinalDDXAction /*implements ScoringAction*/{
 			else { 
 				itemScore = caclulateScoreForHierarchyRelation(vert, scoreBean);	
 			}
-			//if there was no list used, we cannot score anything, thus, we just set a 
-			if(new NavigationController().getCRTFacesContext().getSessSetting().getListMode()==SessionSetting.LIST_MODE_NONE)
-				itemScore = ScoringAction.NO_SCORING_POSSIBLE;
+			//if there was no list used, we try to compare the similarity of the diagnosis with the expert's diagnosis (and synonyms)
+			//if no match, we display that scoring is not possible (NOT that it is wrong!)
+			if(new NavigationController().getCRTFacesContext().getSessSetting().getListMode()==SessionSetting.LIST_MODE_NONE){
+				itemScore = calculateScoreWithoutList(learnerRel, expIllScript.getFinalDiagnoses(), patIllScript.getLocale());
+			}
 						
 			scoreBean.setScoreBasedOnExp(itemScore, isChg);
 			new DBClinReason().saveAndCommit(scoreBean);
 			return itemScore;
 		}
 		return 0;
+	}
+	
+	/**
+	 * This is for implementations without MeSH lists (e.g. Polish version). Here we try to calculate the similarity of the 
+	 * learner final diagnosis with the expert's (or synonyms entered). If it is similar enough, we return score = 1, else 
+	 * we return that no scoring is possible. 
+	 * @param learnerRel
+	 * @param expFinals
+	 * @return
+	 */
+	private float calculateScoreWithoutList(RelationDiagnosis learnerRel, List<RelationDiagnosis> expFinals, Locale loc){
+		float score = ScoringAction.NO_SCORING_POSSIBLE;
+		try{
+			
+			if(learnerRel==null || expFinals==null || expFinals.isEmpty()) return score; 
+			
+			boolean isSimilar = false; 
+			for(int i=0; i<expFinals.size();i++){
+				RelationDiagnosis expFinal = expFinals.get(i);
+				//compare main entries:
+				isSimilar = StringUtilities.similarStrings(learnerRel.getListItem().getName(), expFinal.getListItem().getName(), loc, 3, StringUtilities.MAX_FUZZY_DISTANCE);
+				if(isSimilar) return ScoringController.FULL_SCORE;
+				if(expFinal.getSynonyma()!=null && !expFinal.getSynonyma().isEmpty()){ //compare synonyms:
+					Iterator it = expFinal.getSynonyma().iterator();
+						while(it.hasNext()){
+							isSimilar = StringUtilities.similarStrings(learnerRel.getListItem().getName(), ((ListInterface) it.next()).getName(), loc, 3, StringUtilities.MAX_FUZZY_DISTANCE);
+							if(isSimilar) return ScoringController.FULL_SCORE;
+					}
+				}
+			}
+			return score;
+		}
+		catch(Exception e){ //if any exception occurs we return that scoring is not possible
+			CRTLogger.out(StringUtilities.stackTraceToString(e), CRTLogger.LEVEL_PROD);
+			return score;
+		}
 	}
 	
 	/**

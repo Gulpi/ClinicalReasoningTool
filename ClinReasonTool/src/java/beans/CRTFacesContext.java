@@ -191,7 +191,7 @@ public class CRTFacesContext extends FacesContextWrapper implements MyFacesConte
 	 * @return
 	 */
 	public String getToolVideoUrl(){
-		String lang = LocaleController.getLocale().getLanguage(); //this.getLanguage();
+		String lang = LocaleController.getLocale().getLanguage(); 
 		String url = null;
 		if(sessSetting==null || sessSetting.getExpFeedbackMode()!=SessionSetting.EXPFEEDBACKMODE_END){
 			if(lang!=null) url = AppBean.getProperty("helpvideo_url_"+lang, null);
@@ -200,6 +200,12 @@ public class CRTFacesContext extends FacesContextWrapper implements MyFacesConte
 			url =  AppBean.getProperty("helpvideo_url_"+lang +"endfb", null);
 		if(url==null) url = "https://youtu.be/WgQxinhiw24"; //default
 		return url;
+	}
+	
+	public String getSumstVideoUrl(){
+		String lang = LocaleController.getLocale().getLanguage();
+		if(lang!=null) return AppBean.getProperty("sumstvideo_url_"+lang, null);
+		return "https://youtu.be/zvlNSU2ys7k";
 	}
 	
 	/**

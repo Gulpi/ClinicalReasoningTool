@@ -86,7 +86,7 @@ public class ScoringFinalDDXAction /*implements ScoringAction*/{
 				corrScore = (sumScore/expFinals.size());
 			}
 			//no wrong scoring possible, because no list was used:
-			if(corrScore<1.0 && new NavigationController().getCRTFacesContext().getSessSetting().getListMode()==SessionSetting.LIST_MODE_NONE)
+			if(corrScore==0.0 && new NavigationController().getCRTFacesContext().getSessSetting().getListMode()==SessionSetting.LIST_MODE_NONE)
 				corrScore = ScoringAction.NO_SCORING_POSSIBLE;
 			
 			finalListScore.setScoreBasedOnExp(corrScore, isChg);

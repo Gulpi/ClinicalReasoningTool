@@ -12,16 +12,19 @@ public class IntlConfiguration
 	private static Properties p_de = new Properties();
 	private static Properties p_en = new Properties();
 	private static Properties p_pl = new Properties();
+	private static Properties p_sv = new Properties();
 
 	private String propFilenameDE = "properties/intlproperties_de.properties";
 	private String propFilenameEN = "properties/intlproperties.properties";
 	private String propFilenamePL = "properties/intlproperties_pl.properties";
+	private String propFilenameSV = "properties/intlproperties_sv.properties";
 
 
 	public IntlConfiguration(){
 		loadProperties("en"); //default
 		loadProperties("de");
 		loadProperties("pl");
+		loadProperties("sv");
 	}
 	
 	private void loadProperties(String lang){
@@ -41,6 +44,11 @@ public class IntlConfiguration
 				if(inputStream!=null)
 					p_pl.load(inputStream);
 			}
+			if(lang=="sv"){
+				InputStream inputStream = getClass().getClassLoader().getResourceAsStream(propFilenameSV);
+				if(inputStream!=null)
+					p_sv.load(inputStream);
+			}
 		}
 		catch(Exception e){
 			CRTLogger.out("Exception", CRTLogger.LEVEL_ERROR);
@@ -50,6 +58,7 @@ public class IntlConfiguration
 	public static String getValue(String key, Locale loc){		 
 		if(loc.getLanguage().equalsIgnoreCase("de")) return p_de.getProperty(key);
 		if(loc.getLanguage().equalsIgnoreCase("pl")) return p_pl.getProperty(key);
+		if(loc.getLanguage().equalsIgnoreCase("sv")) return p_sv.getProperty(key);
 		return p_en.getProperty(key);
 	}
 	

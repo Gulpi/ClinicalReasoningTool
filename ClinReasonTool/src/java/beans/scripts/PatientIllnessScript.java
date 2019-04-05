@@ -98,6 +98,7 @@ public class PatientIllnessScript extends Beans implements Comparable, IllnessSc
 	private int stage = 1;
 	/**
 	 * How confident is the learner with his ddxs. (1-100)
+	 * @deprecated -> this needs to be stored with the final diagnoses / errors
 	 */
 	private int confidence;
 	/**

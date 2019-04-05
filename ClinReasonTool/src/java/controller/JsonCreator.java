@@ -37,6 +37,7 @@ public class JsonCreator {
 	public static final String fileNameOneListEN = "src/html/jsonp_en.json"; //TODO we need the path to the HTML folder!!!
 	public static final String fileNameOneListDE = "src/html/jsonp_de.json";
 	public static final String fileNameOneListPL = "src/html/jsonp_pl.json";
+	public static final String fileNameOneListSV = "src/html/jsonp_sv.json";
 	
 	private boolean createOneList = true; //if false, we create multiple lists for problems, ddx, etc.
 	private static ServletContext context;	
@@ -57,6 +58,7 @@ public class JsonCreator {
 			exportOneList(new Locale("en"));
 			exportOneList(new Locale("de"));
 			exportOneList(new Locale("pl"));
+			exportOneList(new Locale("sv"));
 		}
 		
 	}
@@ -127,21 +129,8 @@ public class JsonCreator {
 		if(item.getFirstCode().startsWith("D20.3") || item.getFirstCode().startsWith("D20.4")) return false;
 		if(item.getFirstCode().startsWith("D20.7") || item.getFirstCode().startsWith("D20.8")) return false;
 		if(item.getFirstCode().startsWith("D20.9")) return false;
-		//if(item.getFirstCode().startsWith("D27.")) return false;
 		if(item.getFirstCode().startsWith("D26.2")) return false;
-		//F
-		//if(item.getFirstCode().startsWith("F") && !item.getFirstCode().startsWith("F01.145")) return false;
-		//C
-		if(item.getFirstCode().startsWith("C22")) return false; //Animal diseases
-		//if(item.getFirstCode().startsWith("C02.782.147.")) return false; 
-		//if(item.getFirstCode().startsWith("C02.782.791")) return false;
-		//if(item.getFirstCode().startsWith("C02.782.310.") ||item.getFirstCode().startsWith("C02.782.600.")) return false; 
-		//if(item.getFirstCode().startsWith("C02.782.815")) return false;
-		//if(item.getFirstCode().startsWith("C02.782.930")) return false;
-
-
-
-		
+		if(item.getFirstCode().startsWith("C22")) return false; //Animal diseases		
 		if(item.getName().startsWith("1") || item.getName().startsWith("2") || item.getName().startsWith("3")) return false;
 		if(item.getName().startsWith("4-") || item.getName().startsWith("4,")) return false;
 		if(item.getName().startsWith("5") || item.getName().startsWith("6") || item.getName().startsWith("7")) return false;
@@ -183,13 +172,8 @@ public class JsonCreator {
 								
 		}
 		itemsAndSyns.addAll(toAddItems);
-		/*for(int i=0; i<toAddItems.size();i++){
-			sb.append("{\"label\": \""+toAddItems.get(i).getName()+"\", \"value\": \""+toAddItems.get(i).getIdForJsonList()+"\"},\n");
-		}*/
-
 		return toAddItems.size();
-	}					
-					
+	}										
 			
 	
 	private ListInterface bestTerm(ListInterface currBestTerm, ListInterface newTerm){
@@ -203,21 +187,11 @@ public class JsonCreator {
 	public static File getMeshJsonFileByLang(String lang){
 		if (lang.equals("de")) return new File(context.getRealPath(fileNameOneListDE));
 		if (lang.equals("pl")) return new File(context.getRealPath(fileNameOneListPL));
+		if (lang.equals("sv")) return new File(context.getRealPath(fileNameOneListSV));
 		return new File(context.getRealPath(fileNameOneListEN));
 	
 	}
 	public static File getMeshJsonFileByLoc(Locale loc){
 		return getMeshJsonFileByLang(loc.getLanguage());
-		/*if (loc.getLanguage().equals(new Locale("de").getLanguage())) return new File(context.getRealPath(fileNameOneListDE));
-		if (loc.getLanguage().equals(new Locale("pl").getLanguage())) return new File(context.getRealPath(fileNameOneListPL));
-		return new File(context.getRealPath(fileNameOneListEN));*/
 	}
-	
-	/*public static String getMeshJsonFileNameByLoc(Locale loc){
-		if (loc.getLanguage().equals(new Locale("de").getLanguage())) return fileNameOneListDE;
-		if (loc.getLanguage().equals(new Locale("de").getLanguage())) return fileNameOneListPL;
-
-		return fileNameOneListEN;
-	}*/
-
 }

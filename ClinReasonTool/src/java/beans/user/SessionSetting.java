@@ -7,6 +7,7 @@ import javax.faces.bean.SessionScoped;
 
 import beans.scripts.PatientIllnessScript;
 import controller.NavigationController;
+import util.*;
 
 /**
  * Special settings for a VP session, e.g. different modes for feedback or scaffolding,...
@@ -52,6 +53,12 @@ public class SessionSetting {
 	 */
 	private int listMode = 0;
 	
+	/**
+	 * each position stands for a box (0=problems, 1=ddx, 2=tests, 3=therapies, 4=summary statement), per default all 
+	 * boxes are used. If boxes shall not be used/displayed, there needs to be a 0 at the position. 
+	 */
+	private int[] boxesUsed = {1,1,1,1,1}; 
+	
 	
 	public SessionSetting(){}
 	
@@ -76,7 +83,8 @@ public class SessionSetting {
 	public int getListMode() {return listMode;}
 	public void setListMode(int listMode) {this.listMode = listMode;}
 	public void setListMode(Locale loc) {
-		if(loc!=null && loc.getLanguage().equalsIgnoreCase("pl"))
+		//not very nice, should be configurable which languages use lists and which not. 
+		if(loc!=null && (loc.getLanguage().equalsIgnoreCase("pl") || loc.getLanguage().equalsIgnoreCase("sv")))
 			this.listMode = LIST_MODE_NONE;
 	}
 
@@ -143,5 +151,31 @@ public class SessionSetting {
 			return false;
 		}
 		return false;
+	}
+	
+	/**
+	 * returns whether a box shall be displayed or not. Default is that it is displayed. 
+	 * @param pos
+	 * @return
+	 */
+	public boolean displayBoxatPos(int pos){
+		try{
+			if (boxesUsed==null) return true; 
+			if (pos>boxesUsed.length) return true; 
+			if (boxesUsed[pos]==0) return false; 
+			return true;
+		}
+		catch (Exception e){
+		CRTLogger.out("Exception" + StringUtilities.stackTraceToString(e), CRTLogger.LEVEL_ERROR);
+			return true;
+		}
+	}
+	
+	public void setBoxesUsed(int probsOnly){
+		if(probsOnly == 1){
+			boxesUsed[1]=0; //hide ddx
+			boxesUsed[2]=0; //hide tests
+			boxesUsed[3]=0; //hide therapies
+		}
 	}
 }

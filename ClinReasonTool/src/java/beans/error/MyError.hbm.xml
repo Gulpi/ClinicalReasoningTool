@@ -17,7 +17,8 @@
 		<property name="patIllScriptId" column="dest_id" type="long" />
 		<property name="stage" column="stage" type="int" />
 		<property name="idx" column="idx" type="int" />
-		
+		<property name="sourceId" column="source_id" type="long"/>
+		<property name="confidence" column="confidence" type="int"/>
 		<property name="type" column="type" type="int"/>
 	 	<subclass name="PrematureClosure" discriminator-value="1"></subclass>
 	 	<subclass name="AvailabilityBias" discriminator-value="2"></subclass>

@@ -4,6 +4,9 @@ import java.util.*;
 
 import javax.faces.bean.SessionScoped;
 
+import beans.graph.MultiVertex;
+import beans.relation.RelationDiagnosis;
+
 /**
  * wrong diagnoses submitted before case has ended
  * Criteria: 
@@ -22,11 +25,14 @@ public class PrematureClosure extends MyError{
 		setDiscr(String.valueOf(MyError.TYPE_PREMATURE_CLOUSRE));
 	}
 	
-	public PrematureClosure(long parentId, int stage){
+	public PrematureClosure(long parentId, int stage, int confidence, List<RelationDiagnosis> finals){
 		setType(MyError.TYPE_PREMATURE_CLOUSRE);
 		setDiscr(String.valueOf(MyError.TYPE_PREMATURE_CLOUSRE));
 		setPatIllScriptId(parentId);
+		if(finals!=null && finals.get(0)!=null)
+			setSourceId(finals.get(0).getId());
 		setStage(stage);
+		setConfidence(confidence);
 	}
 	
 	/* (non-Javadoc)

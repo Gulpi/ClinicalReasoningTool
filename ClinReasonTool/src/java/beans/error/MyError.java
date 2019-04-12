@@ -41,14 +41,25 @@ public  abstract class MyError implements Serializable{
 	private Timestamp creationDate;
 	private long patIllScriptId;
 	/**
+	 * How confident is the learner with his ddxs. (1-100) -> moved from patientIllnessScript
+	 */
+	private int confidence; 
+	/**
+	 * id (not item_id) of diagnosis this error is related to. 
+	 */
+	private long sourceId; 
+	/**
 	 * At which stage did the error occur? We need this for displaying errors when ddx submission occurs multiple times.
 	 */
 	private int stage;
 	
+		
+	public int getConfidence() {return confidence;}
+	public void setConfidence(int confidence) {this.confidence = confidence;}
+	public long getSourceId() {return sourceId;}
+	public void setSourceId(long sourceId) {this.sourceId = sourceId;}
 	public long getId() {return id;}
 	public void setId(long id) {this.id = id;}
-	//public abstract String getDescription();
-	//public abstract String getName();// {return description;} //needs to be in subclasses? 
 	public void setDescription(String description) {this.description = description;}
 	public abstract int getType();
 	public long getPatIllScriptId() {return patIllScriptId;}

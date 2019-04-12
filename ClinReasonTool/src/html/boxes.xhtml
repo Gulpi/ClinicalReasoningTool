@@ -35,7 +35,7 @@
 
 <script language="JavaScript">
 //<![CDATA[
-var test = "#{crtContext.initSession}";
+var test = "#{crtContext.initSession}"; //this call is crucial for the initialization of the session - do NOT remove!
 var displayOwnEntryWarn = "#{crtContext.user.userSetting.displayOwnEntryWarn}";
 var displayOwnEntryWarnMsg = "#{prop['list.ownentrywarn']}";
 var openHelpOnLoad = "#{crtContext.user.userSetting.openHelpOnLoad}";
@@ -82,6 +82,7 @@ var isExp = false;
 var noEntryFound = "#{prop['list.noentry']}";
 var didYouMean = "#{prop['list.didyoumean']}";
 var isView = false;
+var boxesToDisplay = "#{crtContext.sessSetting.boxesUsedStr}";
 
 $(function() {
     postEnforceFinalDDXSubmission(submitted/*, myStage, maxSubmittedStage*/);
@@ -323,7 +324,7 @@ item_arr = new Array();
 						<span class="errormsg" id="msg_probform" onClick="javascript:clearErrorMsgs();"></span>
 		  </div>
 		  <!--  diagnoses -->
-		  <div id="ddx_box" class="container ddx_cont" group="ddx_group">	
+		  <div id="ddx_box" class="container ddx_cont hide_#{crtContext.sessSetting.ddxBoxUsed}" group="ddx_group">	
 		  		<div id="ddx_title"  mytooltip="#{prop['ddx.search']}" class="title contcol_#{crtContext.patillscript.DDXDiff}">#{prop['ddx']} <i class="fa fa-info-circle"></i>
 		  			<!--  <span class="icons">
 		  				<a href="javascript:addJokerDDX();" title="#{prop['ddx.joker']}"><i mytooltip="#{prop['ddx.joker']}" class="fa fa-puzzle-piece"></i></a> 
@@ -363,7 +364,7 @@ item_arr = new Array();
 		  		</div></h:form>
 		  </div>
 		  <!-- tests -->
-		  <div id="tst_box" class="container tst_cont" group="tst_group">
+		  <div id="tst_box" class="container tst_cont hide_#{crtContext.sessSetting.testBoxUsed}" group="tst_group">
 		  		<div id="tst_title" mytooltip="#{prop['tests.search']}" class="title  contcol_#{crtContext.patillscript.testsDiff}">#{prop['tests']} <i class="fa fa-info-circle"></i>
 		  			<!--  <span class="icons">
 		  				<a href="javascript:addJokerTest();" title="#{prop['tests.joker']}"><i mytooltip="#{prop['tests.joker']}" class="fa fa-puzzle-piece"></i></a> 
@@ -392,7 +393,7 @@ item_arr = new Array();
 					<span class="errormsg" id="msg_testform" onClick="javascript:clearErrorMsgs();"></span>
 		</div>
 		  <!-- managements -->
-		  <div id="mng_box" class="container mng_cont" group="mng_group">
+		  <div id="mng_box" class="container mng_cont hide_#{crtContext.sessSetting.mngBoxUsed}" group="mng_group">
 		  	<div id="mng_title"  mytooltip="#{prop['mng.search']}" class="title contcol_#{crtContext.patillscript.mngsDiff}">#{prop['mng']} <i class="fa fa-info-circle"></i>
 		  		<!-- <span class="icons">
 		  			<a href="javascript:addJokerMng();" title="#{prop['mng.joker']}"><i mytooltip="#{prop['mng.joker']}" class="fa fa-puzzle-piece"></i></a> 

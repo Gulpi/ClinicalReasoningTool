@@ -50,7 +50,7 @@ public class ScoringFinalDDXAction /*implements ScoringAction*/{
 	 * @param ddxs
 	 * @param scoreBean
 	 */
-	private float calculateAddActionScoreBasedOnExpert(List<MultiVertex>ddxs, ScoreContainer cont, PatientIllnessScript patIllScript){
+	private float calculateAddActionScoreBasedOnExpert(List<MultiVertex>finals, ScoreContainer cont, PatientIllnessScript patIllScript){
 		try{
 			PatientIllnessScript expIllScript = AppBean.getExpertPatIllScript(patIllScript.getVpId());
 							
@@ -65,8 +65,8 @@ public class ScoringFinalDDXAction /*implements ScoringAction*/{
 				return handleNoDiagnosisScoring(patIllScript, expIllScript, cont);		
 			}
 			//calculate individual score for each of the learner's final diagnosis:s
-			for(int i=0; i<ddxs.size(); i++){
-				MultiVertex vert = ddxs.get(i);
+			for(int i=0; i<finals.size(); i++){
+				MultiVertex vert = finals.get(i);
 				sumScore +=scoreFinalDDXItem(vert, cont, patIllScript, expIllScript);
 			}
 			//now score the final ddx list score

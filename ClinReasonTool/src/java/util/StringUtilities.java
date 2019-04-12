@@ -52,6 +52,17 @@ public class StringUtilities {
 		return longarr;
 	}
 	
+	public static int[] getIntArrFromString(String str, String del){
+		if(str==null || str.isEmpty()) return null;
+		String[] strarr = StringUtils.splitByWholeSeparator(str, del);
+		if(strarr==null || strarr.length==0) return null;
+		int[] intarr = new int[strarr.length];
+		for(int i=0; i<strarr.length; i++){
+			intarr[i] = Integer.valueOf(strarr[i]).intValue();
+		}
+		return intarr;
+	}
+	
 	/** Returns the stack trace for the given Thowable as string.
      * if there's a TRACE_LIMIT, the stacktrace will be cut after this line!!
 	 *
@@ -262,6 +273,22 @@ public class StringUtilities {
 			else sb.append(strList.get(i));
 		}
 		return sb.toString();
-		
+	}
+	
+	/**
+	 * Returns a int array as a String with the given delimiter. If null or empty an empty string is returned.
+	 * @param strList
+	 * @param del
+	 * @return
+	 */
+	public static String toString(int[] strList, String del){
+		if(strList==null || strList.length==0) 
+			return "";
+		StringBuffer sb = new StringBuffer(500);
+		for(int i=0;i<strList.length;i++){
+			if(i<strList.length-1) sb.append(strList[i]+del);
+			else sb.append(strList[i]);
+		}
+		return sb.toString();
 	}
 }

@@ -16,6 +16,7 @@
 		<property name="expFeedbackMode" column="exp_feedback_mode" type="int" />
 		<property name="ddxMode" column="ddx_mode" type="int" />
 		<property name="listMode" column="list_mode" type="int" />
+		<property name="boxesUsedStr" column="boxesusedstr" type="string" />
 		
 		
 </class>

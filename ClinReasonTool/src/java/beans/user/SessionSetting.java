@@ -55,7 +55,8 @@ public class SessionSetting {
 	
 	/**
 	 * each position stands for a box (0=problems, 1=ddx, 2=tests, 3=therapies, 4=summary statement), per default all 
-	 * boxes are used. If boxes shall not be used/displayed, there needs to be a 0 at the position. 
+	 * boxes are used. If boxes shall not be used/displayed, there needs to be a 0 at the position.
+	 * Is stores as a String in the database! 
 	 */
 	private int[] boxesUsed = {1,1,1,1,1}; 
 	
@@ -171,6 +172,14 @@ public class SessionSetting {
 		}
 	}
 	
+	public int[] getBoxesUsed(){ return boxesUsed;}
+	public String getBoxesUsedStr(){ return StringUtilities.toString(boxesUsed,",");}
+	
+	public void setBoxesUsedStr(String boxesUsedStr){
+		if(boxesUsedStr==null || boxesUsedStr.equals("") || !boxesUsedStr.contains(",")) return;
+		boxesUsed = StringUtilities.getIntArrFromString(boxesUsedStr, ",");
+	}
+	
 	public void setBoxesUsed(int probsOnly){
 		if(probsOnly == 1){
 			boxesUsed[1]=0; //hide ddx
@@ -178,4 +187,10 @@ public class SessionSetting {
 			boxesUsed[3]=0; //hide therapies
 		}
 	}
+	
+	public int getProbBoxUsed(){ return boxesUsed[0];}
+	public int getDdxBoxUsed(){ return boxesUsed[1];}	
+	public int getTestBoxUsed(){ return boxesUsed[2];}
+	public int getMngBoxUsed(){ return boxesUsed[3];}
+	
 }

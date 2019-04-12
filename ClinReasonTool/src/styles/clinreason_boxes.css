@@ -1140,9 +1140,6 @@ input.cmn-toggle-round:checked + label:after {
     transform: rotate(12deg);
 }
 
-/*.exphintdivvis_true{
-	display:block;
-}*/
 .exphintdivvis_false, .exphintdivvis_true, .cnxhint_false{
 	display:none;
 }
@@ -1153,23 +1150,9 @@ input.cmn-toggle-round:checked + label:after {
 	color:orange;
 }
 
-/*.myendpoint.jtk-hover:before{
-	font-family: FontAwesome;
-	content: "\f061";
-	
-	color:orange;
-}*/
-
-/*.fa-arrow-right:before {
-  color:#006699 !important;
-  font-size:70%;
+.hide_0{
+	display:none;
 }
-
-.fa-arrow-left:before {
-  color:#006699 !important;
-  font-size:70%;
-}*/
-
 
 
 

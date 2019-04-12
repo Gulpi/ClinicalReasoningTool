@@ -4,6 +4,7 @@ import java.util.Locale;
 
 import beans.user.SessionSetting;
 import database.DBUser;
+import util.CRTLogger;
 
 /**
  * Handles everything around loading and applying SessionSetting objects. Each userId - vpId combination has a 
@@ -48,6 +49,7 @@ public class SessionSettingController {
 		sessSetting.setExpFeedbackMode(AjaxController.getInstance().getIntRequestParamByKey(AjaxController.REQPARAM_EXP_FB_MODE, 0));
 		sessSetting.setPeerFeedbackMode(AjaxController.getInstance().getIntRequestParamByKey(AjaxController.REQPARAM_PEER_FB_MODE, 0));
 		sessSetting.setDdxMode(AjaxController.getInstance().getIntRequestParamByKey(AjaxController.REQPARAM_DDX_MODE, 0));
+		sessSetting.setBoxesUsed(AjaxController.getInstance().getIntRequestParamByKey(AjaxController.REQPARAM_BOXES_MODE,0));
 		//....
 	}
 }	

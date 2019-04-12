@@ -50,7 +50,7 @@ public class ErrorController {
 				//we get any additional problems the expert might have collected AFTER the current stage:
 				List<MultiVertex> expAddRels = g.getVerticesByTypeAndStageRangeExpOnly(Relation.TYPE_PROBLEM, patIllScript.getCurrentStage() + 1, expIllScript.getSubmittedStage());
 				if(expAddRels!=null && !expAddRels.isEmpty()){
-					PrematureClosure pcl =  new PrematureClosure(patIllScript.getId(), patIllScript.getCurrentStage());
+					PrematureClosure pcl =  new PrematureClosure(patIllScript.getId(), patIllScript.getCurrentStage(), patIllScript.getConfidence(), patIllScript.getFinalDiagnoses());
 					if(patIllScript.addError(pcl)) //we save only if this is a new error that has not previously occured at this stage
 						new DBClinReason().saveAndCommit(pcl);	
 					notifyLog(pcl, patIllScript.getId());
@@ -83,7 +83,7 @@ public class ErrorController {
 							long id = finals.get(k).getDiagnosis().getItem_id();
 							for(int l=0; l< currFinalDiagn.size(); l++){
 								if(currFinalDiagn.get(l).getListItem().getItem_id()==id){
-									AvailabilityBias ab = new AvailabilityBias(patIllScript.getId(), patIllScript.getCurrentStage());
+									AvailabilityBias ab = new AvailabilityBias(patIllScript.getId(), patIllScript.getCurrentStage(), patIllScript.getConfidence(), patIllScript.getDiagnoses());
 									
 									if(patIllScript.addError(ab)) //we save only if this is a new error that has not previously occured at this stage
 										new DBClinReason().saveAndCommit(ab);	
@@ -124,7 +124,7 @@ public class ErrorController {
 							while (it.hasNext()){
 								MultiEdge me = it.next();
 								if(me.isExplicitExpertEdge() && me.getExpertWeight()==Connection.WEIGHT_SPEAKS_AGAINST && me.getLearnerWeight()!=Connection.WEIGHT_SPEAKS_AGAINST){
-									ConfirmationBias cb = new ConfirmationBias(patIllScript.getId(), patIllScript.getCurrentStage());
+									ConfirmationBias cb = new ConfirmationBias(patIllScript.getId(), patIllScript.getCurrentStage(), patIllScript.getConfidence(), patIllScript.getDiagnoses());
 									if(patIllScript.addError(cb)) //we save only if this is a new error that has not previously occured at this stage
 										new DBClinReason().saveAndCommit(cb);	
 									notifyLog(cb, patIllScript.getId());
@@ -156,7 +156,7 @@ public class ErrorController {
 				RelationDiagnosis rd = finalDiagnoses.get(i);
 				RelationDiagnosis expRel = (RelationDiagnosis) expIllScript.getRelationByListItemIdAndType(rd.getListItemId(), Relation.TYPE_DDX);
 				if(expRel!=null && !expRel.isFinalDDX() && expRel.getPrevalence()==RelationDiagnosis.PREVALENCE_RARE){
-					BaseRateNeglect brn = new BaseRateNeglect(patIllScript.getId(), patIllScript.getCurrentStage());
+					BaseRateNeglect brn = new BaseRateNeglect(patIllScript.getId(), patIllScript.getCurrentStage(), patIllScript.getConfidence(), patIllScript.getDiagnoses());
 					if(patIllScript.addError(brn)) //we save only if this is a new error that has not previously occured at this stage
 						new DBClinReason().saveAndCommit(brn);	
 					notifyLog(brn, patIllScript.getId());
@@ -197,7 +197,7 @@ public class ErrorController {
 								if(finding!=null && finding.getExpertVertex()!=null){
 									RelationProblem expFind= (RelationProblem) finding.getExpertVertex();
 									if(expFind!=null && expFind.getPrototypical()==RelationProblem.FIND_NONPROTOTYPICAL){
-										Representativeness rep = new Representativeness(patIllScript.getId(), patIllScript.getCurrentStage());
+										Representativeness rep = new Representativeness(patIllScript.getId(), patIllScript.getCurrentStage(), patIllScript.getConfidence(), patIllScript.getDiagnoses());
 										if(patIllScript.addError(rep)) //we save only if this is a new error that has not previously occured at this stage
 											new DBClinReason().saveAndCommit(rep);	
 										notifyLog(rep, patIllScript.getId());

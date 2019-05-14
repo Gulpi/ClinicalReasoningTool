@@ -465,8 +465,11 @@ function toggleStoredContainerCollapsed(type){
  */
 function postEnforceFinalDDXSubmission(isSubmitted/*, currentStage, maxStageForSubmission*/){
 	var message = "p1,s1"; //default proceed allowed, scaffolding on
+	if(maxSubmittedStage=="-1" || maxSubmittedStage=="0" || maxSubmittedStage==""){ //no diagnosis submission forced
+		message  = "p1,s1";
+	}
 	//diagnosis not yet submitted, but enforced now
-	if(isSubmitted!="true" && parseInt(currentStage)>=parseInt(maxSubmittedStage)) 
+	else if(isSubmitted!="true" && parseInt(currentStage)>=parseInt(maxSubmittedStage)) 
 		message  = "p0,s1"; 
 	//diagnosis submitted at this stage, so proceeding ok and scaffolding not necessary:
 	else if(isSubmitted=="true" && parseInt(currentStage)>=parseInt(maxSubmittedStage)){

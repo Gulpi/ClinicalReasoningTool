@@ -78,6 +78,35 @@ public class LearningAnalyticsBean extends Beans implements Serializable, Compar
 	public ScoreBean getOverallProblemScore(){
 		return getOverallListScores(getProblemScoreStages());
 	}
+
+	/**
+	 * Returns -1 if no score has been calculated, 
+	 * 0 = score is very low
+	 * 1 = score is low
+	 * 2 = score is medium
+	 * 3 = score is high 
+	 * 4 = score is very high 
+	 * @TODO get thresholds from existing data in database  
+	 * @return
+	 */
+	public int getOverallProblemScoreCat(){
+		ScoreBean sb = getOverallListScores(getProblemScoreStages());
+		if(sb==null) return -1;
+		if(sb.getOrgScoreBasedOnExp()<=0.1) return 0;
+		if(sb.getOrgScoreBasedOnExp()<=0.2) return 1;
+		if(sb.getOrgScoreBasedOnExp()<=0.3) return 2;
+		if(sb.getOrgScoreBasedOnExp()<=0.4) return 3;
+		return 4;		
+	}
+	
+	/**
+	 * @return the overall problem score (all cards without expert consultation)
+	 */
+	public float getProblemScore(){
+		ScoreBean sb = getOverallListScores(getProblemScoreStages());
+		if(sb==null) return -1;
+		return sb.getOrgScoreBasedOnExp();
+	}
 	
 	public ScoreBean getOverallDDXScore(){
 		return getOverallListScores(getDDXScoreStages());
@@ -85,14 +114,101 @@ public class LearningAnalyticsBean extends Beans implements Serializable, Compar
 		if(listScores==null || listScores.isEmpty()) return null;
 		return listScores.get(listScores.size()-1);*/
 	}
+	
+	/**
+	 * @return the overall ddx score (all cards without expert consultation)
+	 */
+	public float getDDXScore(){
+		ScoreBean sb = getOverallListScores(getDDXScoreStages());
+		if(sb==null) return -1;
+		return sb.getOrgScoreBasedOnExp();
+	}
+	
+	/**
+	 * Returns -1 if no score has been calculated, 
+	 * 0 = score is very low
+	 * 1 = score is low
+	 * 2 = score is medium
+	 * 3 = score is high 
+	 * 4 = score is very high 
+	 * @TODO get thresholds from existing data in database  
+	 * @return
+	 */
+	public int getOverallDDXScoreCat(){
+		ScoreBean sb = getOverallListScores(getDDXScoreStages());
+		if(sb==null) return -1;
+		if(sb.getOrgScoreBasedOnExp()<=0.1) return 0;
+		if(sb.getOrgScoreBasedOnExp()<=0.2) return 1;
+		if(sb.getOrgScoreBasedOnExp()<=0.3) return 2;
+		if(sb.getOrgScoreBasedOnExp()<=0.4) return 3;
+		return 4;		
+	}
 
 	public ScoreBean getOverallTestScore(){
 		return getOverallListScores(getTestScoreStages());
 	}
 
+	/**
+	 * @return the overall test score (all cards without expert consultation)
+	 */
+	public float getTestScore(){
+		ScoreBean sb = getOverallListScores(getTestScoreStages());
+		if(sb==null) return -1;
+		return sb.getOrgScoreBasedOnExp();
+	}
+	
+	/**
+	 * Returns -1 if no score has been calculated, 
+	 * 0 = score is very low
+	 * 1 = score is low
+	 * 2 = score is medium
+	 * 3 = score is high 
+	 * 4 = score is very high 
+	 * @TODO get thresholds from existing data in database  
+	 * @return
+	 */
+	public int getOverallTestScoreCat(){
+		ScoreBean sb = getOverallListScores(getTestScoreStages());
+		if(sb==null) return -1;
+		if(sb.getOrgScoreBasedOnExp()<=0.1) return 0;
+		if(sb.getOrgScoreBasedOnExp()<=0.2) return 1;
+		if(sb.getOrgScoreBasedOnExp()<=0.3) return 2;
+		if(sb.getOrgScoreBasedOnExp()<=0.4) return 3;
+		return 4;		
+	}
 	public ScoreBean getOverallMngScore(){
 		return getOverallListScores(getMngScoreStages());
 	}
+	
+	/**
+	 * @return the overall test score (all cards without expert consultation)
+	 */
+	public float getMngScore(){
+		ScoreBean sb = getOverallListScores(getMngScoreStages());
+		if(sb==null) return -1;
+		return sb.getOrgScoreBasedOnExp();
+	}
+
+	/**
+	 * Returns -1 if no score has been calculated, 
+	 * 0 = score is very low
+	 * 1 = score is low
+	 * 2 = score is medium
+	 * 3 = score is high 
+	 * 4 = score is very high 
+	 * @TODO get thresholds from existing data in database  
+	 * @return
+	 */
+	public int getOverallMngScoreCat(){
+		ScoreBean sb = getOverallListScores(getMngScoreStages());
+		if(sb==null) return -1;
+		if(sb.getOrgScoreBasedOnExp()<=0.1) return 0;
+		if(sb.getOrgScoreBasedOnExp()<=0.2) return 1;
+		if(sb.getOrgScoreBasedOnExp()<=0.3) return 2;
+		if(sb.getOrgScoreBasedOnExp()<=0.4) return 3;
+		return 4;		
+	}
+	
 	
 	/**
 	 * We go through the given list and calculate the overall score and orgscore by summing up all scores and dividing 

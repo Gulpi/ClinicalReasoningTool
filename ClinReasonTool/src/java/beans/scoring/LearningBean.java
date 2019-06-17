@@ -38,6 +38,7 @@ public class LearningBean {
 	 * This is a value we calculate based on how many of the items the learner added by himself (without 
 	 * checking the experts answer before.
 	 * Later on we could also include the use of peer feedback instead of expert feedback
+	 * 1=learner had feedback on for every item, 0= feedback on for no items 
 	 */
 	private float activeLearning = -1;
 	/**
@@ -108,7 +109,7 @@ public class LearningBean {
 		//TODO get last tips...
 		determineTip();
 		new DBScoring().saveAndCommit(this);
-		new DBScoring().saveAndCommit(this);
+		//new DBScoring().saveAndCommit(this);
 	}
 	
 	/**
@@ -121,7 +122,7 @@ public class LearningBean {
 		//for the moment we choose by random....
 		List<Integer> potentialTips = new ArrayList<Integer>();
 		//ok
-		if(activeLearning>=0 && activeLearning<ScoreBean.SCORE_RANGE_LOW){
+		if(activeLearning >=ScoreBean.SCORE_RANGE_MEDIUM_PERC /*>=0 && activeLearning<ScoreBean.SCORE_RANGE_LOW*/){
 			potentialTips.add(new Integer(TIP_ACTIVE));
 		}
 		//ok
@@ -197,10 +198,10 @@ public class LearningBean {
 				if(sb.getFeedbackOn()>0 && sb.isAddItemScoreBean()) numWithFeedbackOn++;
 				if (sb.isAddItemScoreBean()) itemsNum++;
 			}
-			if(numWithFeedbackOn==0){
+			/*if(numWithFeedbackOn==0){
 				this.activeLearning = 1;
 				return;
-			}
+			}*/
 			this.activeLearning = (float) numWithFeedbackOn/itemsNum;
 		}
 		catch(Exception e){
@@ -231,6 +232,17 @@ public class LearningBean {
 			CRTLogger.out(StringUtilities.stackTraceToString(e), CRTLogger.LEVEL_ERROR);
 
 		}
+	}
+	
+	/**
+	 * We check the differences of user items with expert items and if the difference is too big we
+	 * display a hint for more continuously working on the case.
+	 * TODO: Better would be to check each card and check when the learner added items (to identify sessions in which 
+	 * the learner has added most items on the last card).
+	 * @param labean
+	 */
+	private void calculateScaffolding(LearningAnalyticsBean labean){
+		
 	}
 	
 	/**

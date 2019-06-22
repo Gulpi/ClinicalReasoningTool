@@ -266,7 +266,7 @@ public class Graph extends DirectedWeightedMultigraph<MultiVertex, MultiEdge> {
 	 * @param vertexId
 	 * @return
 	 * @deprecated -> we need id AND type, since a vertex can be added for more than one group (e.g. as fdg AND ddx)
-	 * use getVertexByIdAndType isntead!!!
+	 * use getVertexByIdAndType instead!!!
 	 */
 	public MultiVertex getVertexById(long vertexId){
 		Iterator<MultiVertex> it = this.vertexSet().iterator();

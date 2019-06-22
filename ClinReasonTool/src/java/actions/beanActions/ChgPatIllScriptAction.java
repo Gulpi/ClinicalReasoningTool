@@ -1,8 +1,12 @@
 package actions.beanActions;
 
+import java.util.*;
+
 import actions.scoringActions.ScoringCourseOfTimeAction;
 import beans.LogEntry;
+import beans.relation.RelationDiagnosis;
 import beans.scripts.*;
+import database.DBClinReason;
 
 /**
  * Changes to properties of the patientIllnessScript, currently courseOfTime and confidence.
@@ -38,6 +42,30 @@ public class ChgPatIllScriptAction {
 		patIllScript.save();
 	}
 	
+	/**
+	 * We change the stage at which the final diagnosis shall be made.
+	 * @param itemId
+	 * @param stageStr
+	 */
+	public void chgFinalStage(String itemId, String stageStr){
+		int newstage = Integer.valueOf(stageStr);
+		long diagnosisId = Long.valueOf(itemId);
+		patIllScript.setSubmittedStage(newstage);
+		patIllScript.setMaxSubmittedStage(newstage);
+		List<RelationDiagnosis> finals = patIllScript.getFinalDiagnoses();
+		if(finals!=null && !finals.isEmpty()){
+			for(int i=0; i<finals.size(); i++){
+				RelationDiagnosis rd = finals.get(i);
+				if(rd!=null && rd.getListItemId()==diagnosisId){
+					rd.setFinalDiagnosis(newstage);
+					new DBClinReason().saveAndCommit(rd);
+					new DBClinReason().saveAndCommit(patIllScript);
+					break;
+				}
+			}
+		}
+		//patIllScript.save();	
+	}
 	/**
 	 * Learner changes the courseOfTime (acute, subactue, chronic)
 	 * @param courseOfTimeStr

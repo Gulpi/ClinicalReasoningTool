@@ -44,13 +44,34 @@ public class DiagnosisSubmitAction /*implements Scoreable*/{
 	 */
 	public void submitExpFinalDiagnosis(String idStr){
 		long id = Long.valueOf(idStr).longValue();
-		setAndSaveFinal(id);
+		setFinal(id);
 		//only change submittedStage if it has not yet been set or if the new submittedStage is lower than the current one.
 		//@deprecated because we have the submitted stage in the relation now.
 		if(patIllScript.getSubmittedStage()<=0 || patIllScript.getSubmittedStage()>patIllScript.getStage()){
 			patIllScript.setSubmittedStage(patIllScript.getStage());
+			patIllScript.setMaxSubmittedStage(patIllScript.getStage());
 			new DBClinReason().saveAndCommit(patIllScript);
 		}
+	}
+	
+	/**
+	 * Expert reverts a final diagnosis
+	 * @param idStr
+	 */
+	public void submitExpNoFinalDiagnosis(String idStr){
+		long id = Long.valueOf(idStr).longValue();
+		removeAndSaveFinal(id);
+		if(patIllScript.getFinalDiagnoses()==null || patIllScript.getFinalDiagnoses().isEmpty()){
+			patIllScript.setSubmittedStage(-1);
+			patIllScript.setMaxSubmittedStage(-1);
+		}
+		//only change submittedStage if it has not yet been set or if the new submittedStage is lower than the current one.
+		//@deprecated because we have the submitted stage in the relation now.
+		/*if(patIllScript.getSubmittedStage()<=0 || patIllScript.getSubmittedStage()>patIllScript.getStage()){
+			patIllScript.setSubmittedStage(patIllScript.getStage());
+			new DBClinReason().saveAndCommit(patIllScript);
+		}*/
+		new DBClinReason().saveAndCommit(patIllScript);
 	}
 		
 	/**
@@ -109,14 +130,33 @@ public class DiagnosisSubmitAction /*implements Scoreable*/{
 		RelationDiagnosis rel = patIllScript.getDiagnosisById(id);
 		if(rel==null || rel.isFinalDDX()) return null;
 		int stage = patIllScript.getCurrentStage();
-		if(patIllScript.isExpScript()) stage = patIllScript.getStage();
+		if(patIllScript.isExpScript()){
+			stage = patIllScript.getStage();
+			//patIllScript.setMaxSubmittedStage(stage);
+			//patIllScript.setSubmittedStage(stage);
+		}
 		rel.setFinalDiagnosis(stage);
 		new DBClinReason().saveAndCommit(rel);
 		return rel;
 	}
 	
-	private void setAndSaveFinal(long id){
+	/*private void setAndSaveFinal(long id){
 		RelationDiagnosis rel = setFinal(id);
+		if(rel!=null) new DBClinReason().saveAndCommit(rel);
+	}*/
+	
+	/**
+	 * We remove the final diagnosis stage (set to -1) and the tier. 
+	 * 
+	 * @param id
+	 */
+	private void removeAndSaveFinal(long id){
+		RelationDiagnosis rel = patIllScript.getDiagnosisById(id);
+		if(rel==null || !rel.isFinalDDX()) return;
+		rel.setFinalDiagnosis(0);
+		if(rel.getTier()==RelationDiagnosis.TIER_FINAL) rel.setTier(RelationDiagnosis.TIER_NONE);
+		//if(patIllScript.getFinalDiagnoses()!=null && !patIllScript.getFinalDiagnoses().isEmpty())
+		//	patIllScript.getFinalDiagnoses().remove(rel);
 		if(rel!=null) new DBClinReason().saveAndCommit(rel);
 	}
 	

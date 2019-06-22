@@ -6,6 +6,7 @@ import org.jgrapht.graph.DefaultWeightedEdge;
 
 import beans.relation.Connection;
 import beans.scripts.IllnessScriptInterface;
+import properties.IntlConfiguration;
 
 
 /**
@@ -139,6 +140,10 @@ public class MultiEdge extends DefaultWeightedEdge implements Comparable{
 	public int getLearnerWeight(){
 		return getParamByType(IllnessScriptInterface.TYPE_LEARNER_CREATED);
 	}
+	public String getLearnerWeightStr(){
+		int weight=getLearnerWeight();
+		return IntlConfiguration.getValue("cnx.relation."+weight);
+	}
 
 	public int getExpertWeight(){
 		return getParamByType(IllnessScriptInterface.TYPE_EXPERT_CREATED);
@@ -151,10 +156,7 @@ public class MultiEdge extends DefaultWeightedEdge implements Comparable{
 		return param.intValue();
 	}
 	public Map getParams(){ return types;}
-	/*public long getSourceId() {return sourceId;}
-	public void setSourceId(long sourceId) {this.sourceId = sourceId;}
-	public long getTargetId() {return targetId;}
-	public void setTargetId(long targetId) {this.targetId = targetId;}*/
+
 	/* (non-Javadoc)
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */

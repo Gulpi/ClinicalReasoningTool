@@ -41,8 +41,7 @@ public class LearningAnalyticsContainer implements Serializable{
 	public static final int CATEGORY_ERRORS = 13;
 	public static final int CATEGORY_ENGAGEMENT = 14; 			//e.g. number of actions, time on task,...at which stage have actions been performed?
 	public static final int CATEGORY_EMOTIONS = 15;				//fatigue, boredom, anxiety, frustration
-	public static final int CATEGORY_OVERALL = 16;
-	
+	public static final int CATEGORY_OVERALL = 16;	
 	private static final long serialVersionUID = 1L;
 	/**
 	 * key = patIllScriptId

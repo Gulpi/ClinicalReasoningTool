@@ -91,6 +91,11 @@ $(function() {
 	$(".chgstage").on('change',function(){
 		chgStageItem(this);
 	 });
+	
+	$(".chgfinal").on('change',function(){
+		chgStageFinal(this);
+	 });
+	
 	$(".chgstage2").on('change',function(){
 		chgStageEdge(this);
 	 });
@@ -331,13 +336,41 @@ Stage: <span id="stageSpan">#{adminContext.patillscript.stage}(#{adminContext.pa
 	<ui:include src="expcnxchange.xhtml" />
 </div>
 <br clear="all"/>
+
 <div id="allitems">
-	<ui:repeat value="#{adminContext.graph.allVertices}" var="nodes" varStatus="status">
+<table>
+<tr><td><b>#{prop['authoring.node.name']}</b></td><td><b>#{prop['authoring.node.stage']}</b></td><td></td></tr>
+	<!--  <ui:repeat value="#{adminContext.graph.allVertices}" var="nodes" varStatus="status">
 		<ui:include src="items_exp.xhtml" />
-	</ui:repeat>	<hr/>
+	</ui:repeat>-->
+	<ui:repeat value="#{adminContext.patillscript.problems}" var="nodes" varStatus="status">
+		<tr><td>#{nodes.label}</td>
+		<td><input id="chgstage_#{nodes.listItemId}" class="chgstage" value="#{nodes.stage}" style="width:20px;"/></td>
+		<td></td></tr>
+	</ui:repeat>	
+		<ui:repeat value="#{adminContext.patillscript.diagnoses}" var="nodes" varStatus="status">
+		<tr><td>#{nodes.label}</td>
+		<td><input id="chgstage_#{nodes.listItemId}" class="chgstage" value="#{nodes.stage}" style="width:20px;"/></td>
+		<td><span class="finalchg_#{nodes.finalDiagnosis}">final diagnosis on card <input id="chgfinalstage_#{nodes.listItemId}" class="chgfinal" value="#{nodes.finalDiagnosis}" style="width:20px;"/></span></td></tr>
+	</ui:repeat>	
+	<ui:repeat value="#{adminContext.patillscript.tests}" var="nodes" varStatus="status">
+		<tr><td>#{nodes.label}</td>
+		<td><input id="chgstage_#{nodes.listItemId}" class="chgstage" value="#{nodes.stage}" style="width:20px;"/></td>
+		<td></td></tr>
+	</ui:repeat>	
+	<ui:repeat value="#{adminContext.patillscript.mngs}" var="nodes" varStatus="status">
+		<tr><td>#{nodes.label}</td>
+		<td><input id="chgstage_#{nodes.listItemId}" class="chgstage" value="#{nodes.stage}" style="width:20px;"/></td>
+		<td></td></tr>
+	</ui:repeat>		
+	</table>
+	<table>
+	<tr><td><b>#{prop['authoring.node.cnx']}</b></td><td><b>#{prop['authoring.node.stage']}</b></td>
+	<td><b>#{prop['authoring.node.weight']}</b></td></tr>	
 		<ui:repeat value="#{adminContext.graph.allEdges}" var="edges" varStatus="status">
 		<ui:include src="edges_exp.xhtml" />
-	</ui:repeat>				
+	</ui:repeat>	
+	</table>			
 </div>
 </body>
 </f:view>

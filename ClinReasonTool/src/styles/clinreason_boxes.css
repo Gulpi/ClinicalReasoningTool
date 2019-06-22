@@ -977,6 +977,25 @@ ul#errors{
 	display:none !important;
 }
 
+.f_on_true{
+	display:none !important;
+}
+
+.f_on_false{
+	display:block !important;
+}
+
+.f_off_true{
+	display:block !important;
+	
+	
+}
+
+.f_off_false{
+	display:none !important;
+	
+}
+
 .wdon_true{
 	display:none !important;
 }
@@ -1155,5 +1174,7 @@ input.cmn-toggle-round:checked + label:after {
 }
 
 
-
-
+/*hide final diagnosis stage change for non-final diagnoses*/ 
+.finalchg_-1{
+	display:none;
+}

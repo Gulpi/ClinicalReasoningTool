@@ -406,10 +406,12 @@ public class PatientIllnessScript extends Beans implements Comparable, IllnessSc
 	public void submitDDX(String idStr){new DiagnosisSubmitAction(this).submitDDX(idStr);}
 	public void submitDDXAndConf(String idStr, String confStr){new DiagnosisSubmitAction(this).submitDDXAndConf(idStr, confStr);}
 	public void expSetFinalDiagnosis(String idStr){new DiagnosisSubmitAction(this).submitExpFinalDiagnosis(idStr);}
+	public void expSetNoFinalDiagnosis(String idStr){new DiagnosisSubmitAction(this).submitExpNoFinalDiagnosis(idStr);}
+
 	public void resetFinalDDX(String idStr){new DiagnosisSubmissionRevertAction(this).revertSubmission();}
 	public void chgStateOfItem(String itemId, String newStage){ new ExpChgAction().chgStage(itemId, newStage);}
 	public void chgStateOfEdge(String itemId, String newStage){ new ExpChgAction().chgEdgeStage(itemId, newStage);}
-
+	public void chgFinalState(String itemId, String newStage){new ChgPatIllScriptAction(this).chgFinalStage(itemId, newStage);}
 	//public void submitDDX(){new DiagnosisSubmitAction(this).submitDDX();}
 	public void changeTier(String idStr, String tierStr){new DiagnosisSubmitAction(this).changeTier(idStr, tierStr);}
 	public void changeConfidence(String idStr, String confVal){new ChgPatIllScriptAction(this).changeConfidence(idStr, confVal);}
@@ -502,15 +504,6 @@ public class PatientIllnessScript extends Beans implements Comparable, IllnessSc
 		return finals;
 	}
 	
-	/**
-	 * @return the final diagnoses of this script OR if "no diagnosis" has been chosen, a dummy RelationDiagnosis for display purposes
-	 */
-	/*public List<RelationDiagnosis> getFinalDiagnosesOrNoDiagnosis(){
-		if(this.finalDDXType == FINAL_DDX_NO){ //then no final diagnosis has been made
-			
-		}
-		return getFinalDiagnoses();
-	}*/
 	
 	/**
 	 * return all diagnoses entered by the learner that are NOT final diagnoses. We do this in order to 

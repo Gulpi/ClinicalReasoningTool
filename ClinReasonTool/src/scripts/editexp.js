@@ -27,6 +27,13 @@ function expFinalDiagnosis(id){
 	sendAjax(id, expFinalDiagnosisCallback, "expSetFinalDiagnosis", "");
 }
 
+/*
+ * expert has chosen a diagnosis to be a final one...
+ */
+function expNoFinalDiagnosis(id){
+	sendAjax(id, expFinalDiagnosisCallback, "expSetNoFinalDiagnosis", "");
+}
+
 function expFinalDiagnosisCallback(){
 	diagnosisCallBack();
 }
@@ -37,6 +44,14 @@ function chgStageItem(obj){
 	var realId = id.substring(9);
 	var newStage = $("#"+id).val();
 	sendAjax(realId, chgStageCallback, "chgStateOfItem", newStage);
+}
+
+/* changes the stage when the final diagnosis is made */
+function chgStageFinal(obj){
+	var id = obj.id;
+	var realId = id.substring(14);
+	var newStage = $("#"+id).val();
+	sendAjax(realId, chgStageCallback, "chgFinalState", newStage);
 }
 
 function chgStageEdge(obj){

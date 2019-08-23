@@ -1178,3 +1178,8 @@ input.cmn-toggle-round:checked + label:after {
 .finalchg_-1{
 	display:none;
 }
+/* show expert solution as default if session settings (easy mode) allows:
+.showExpBox_2{
+	display: block !important;
+}
+

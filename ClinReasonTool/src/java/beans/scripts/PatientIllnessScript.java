@@ -225,7 +225,9 @@ public class PatientIllnessScript extends Beans implements Comparable, IllnessSc
 	
 	public boolean isDeleteFlag() {return deleteFlag;}
 	public void setDeleteFlag(boolean deleteFlag) {this.deleteFlag = deleteFlag;}
-	public List<RelationDiagnosis> getDiagnoses() {return diagnoses;}
+	public List<RelationDiagnosis> getDiagnoses() 
+	{
+		return diagnoses;}
 	public List<RelationDiagnosis> getDiagnosesStage() { return getRelationsByStage(diagnoses);}
 	public void setDiagnoses(List<RelationDiagnosis> diagnoses) {this.diagnoses = diagnoses;}
 	public List<RelationManagement> getMngs() {return mngs;}
@@ -667,21 +669,51 @@ public class PatientIllnessScript extends Beans implements Comparable, IllnessSc
 		return 0;
 	}
 	
+	/**
+	 * difference between problems entered by expert and student at current stage. If view mode is on we return 0.
+	 * @return
+	 */
 	public int getProblemsDiff(){
 		if(this.isExpScript()) return 0;
+		CRTFacesContext crtContext = new NavigationController().getCRTFacesContext();
+		//if we have view mode only, we do not change color of box:
+		if(crtContext.getSessSetting()!=null && crtContext.getSessSetting().getProbBoxUsed()==2) return 0;
 		return FeedbackController.getInstance().getItemsDiffExpForStage(currentStage, getProblems(), Relation.TYPE_PROBLEM);
 	}
+
+	/**
+	 * difference between differentials entered by expert and student at current stage. If view mode is on we return 0.
+	 * @return
+	 */
 	public int getDDXDiff(){
 		if(this.isExpScript()) return 0;
 		if(this.getSubmitted()) return 0; //if diagnosis has been made, we do not have to make the box red any longer...
+		CRTFacesContext crtContext = new NavigationController().getCRTFacesContext();
+		//if we have view mode only, we do not change color of box:
+		if(crtContext.getSessSetting()!=null && crtContext.getSessSetting().getDdxBoxUsed()==2) return 0;
 		return FeedbackController.getInstance().getItemsDiffExpForStage(currentStage, getDiagnoses(), Relation.TYPE_DDX);
 	}
+	/**
+	 * difference between tests entered by expert and student at current stage. If view mode is on we return 0.
+	 * @return
+	 */
 	public int getTestsDiff(){
 		if(this.isExpScript()) return 0;
+		CRTFacesContext crtContext = new NavigationController().getCRTFacesContext();
+		//if we have view mode only, we do not change color of box:
+		if(crtContext.getSessSetting()!=null && crtContext.getSessSetting().getTestBoxUsed()==2) return 0;
 		return FeedbackController.getInstance().getItemsDiffExpForStage(currentStage, getTests(), Relation.TYPE_TEST);
 	}
+	/**
+	 * difference between management options entered by expert and student at current stage. If view mode is on we return 0.
+	 * @return
+	 */
 	public int getMngsDiff(){
 		if(this.isExpScript()) return 0;
+		CRTFacesContext crtContext = new NavigationController().getCRTFacesContext();
+		//if we have view mode only, we do not change color of box:
+		if(crtContext.getSessSetting()!=null && crtContext.getSessSetting().getMngBoxUsed()==2) return 0;
+
 		return FeedbackController.getInstance().getItemsDiffExpForStage(currentStage, getMngs(), Relation.TYPE_MNG);
 	}
 	

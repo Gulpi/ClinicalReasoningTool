@@ -66,6 +66,12 @@ var ajaxUrl = "/crt/src/html/tabs_ajax.xhtml";
 var fireAddConnection = true; //false during re-init of exp cnxs, otherwise new cnxs are stored!
 var inputhistory = ""; //not needed, just to avoid js errors for ajax.
 var isView = true;
+//which boxes are displayed in active mode (0), hidden (1) or displayed in view mode (2)
+var probBoxUsed = "#{crtContext.sessSetting.probBoxUsed}"; 
+var ddxBoxUsed = "#{crtContext.sessSetting.ddxBoxUsed}";
+var testBoxUsed = "#{crtContext.sessSetting.testBoxUsed}";
+var mngBoxUsed = "#{crtContext.sessSetting.mngBoxUsed}";
+
 $(function() {
 	//salert(window.location.href);
 	/*$("#jdialog").dialog({

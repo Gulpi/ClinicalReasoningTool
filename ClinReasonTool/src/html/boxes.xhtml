@@ -82,7 +82,11 @@ var isExp = false;
 var noEntryFound = "#{prop['list.noentry']}";
 var didYouMean = "#{prop['list.didyoumean']}";
 var isView = false;
-var boxesToDisplay = "#{crtContext.sessSetting.boxesUsedStr}";
+//which boxes are displayed in active mode (0), hidden (1) or displayed in view mode (2)
+var probBoxUsed = "#{crtContext.sessSetting.probBoxUsed}"; 
+var ddxBoxUsed = "#{crtContext.sessSetting.ddxBoxUsed}";
+var testBoxUsed = "#{crtContext.sessSetting.testBoxUsed}";
+var mngBoxUsed = "#{crtContext.sessSetting.mngBoxUsed}"; 
 
 $(function() {
     postEnforceFinalDDXSubmission(submitted/*, myStage, maxSubmittedStage*/);
@@ -241,6 +245,7 @@ jsPlumb.ready(function () {
 
 
     $(".expbox").addClass("expboxstatus");
+    turnViewModeOn();
     jsPlumb.fire("jsPlumbDemoLoaded", instance);
     
     //initContainerCollapsed(); //put back in if collapsing works again
@@ -248,6 +253,7 @@ jsPlumb.ready(function () {
 });
 
 item_arr = new Array();
+
 
 //]]>
 </script>
@@ -292,7 +298,7 @@ item_arr = new Array();
 			</div>
 		  </div>-->
 		  <!-- problems -->
-		  <div id="fdg_box" class="container fdg_cont" group="fdg_group">
+		  <div id="fdg_box" class="container fdg_cont hide_#{crtContext.sessSetting.probBoxUsed}" group="fdg_group">
 		   		<div id="fdg_title" class="title contcol_#{crtContext.patillscript.problemsDiff}"  mytooltip="#{prop['findings.search']}">#{prop['findings']} 
 		   		<i class="fa fa-info-circle"></i>
 		   			<!--  <span class="icons">
@@ -302,7 +308,7 @@ item_arr = new Array();
 		   			</span>-->
 		   		</div>
 		   		<!-- <div  class="node-collapse"></div> put back in when collapsing is working-->
-		  			<div class="search boxchild">
+		  			<div class="search boxchild probsearch">
 		  			<input type="text" id="fdg_prefix" style="display:none;" />
 					<i class="fa fa-search ininput"></i>
 		  			<input class="f_text" onkeyup="javascript:storeHistory('problems');" onFocus="javascript:hideTooltips();" id="problems" placeholder="#{prop['findings.add']} ..." mytooltip="#{prop['findings.search']}"></input></div>
@@ -333,9 +339,10 @@ item_arr = new Array();
 		  			</span>-->
 		  		</div>	
 		  		<!-- <div class="node-collapse"></div>	  -->		
-		  			<div class="search boxchild">
+		  			<div class="search boxchild ddxsearch">
 		  				<i class="fa fa-search ininput"></i>
-		  				<input class="f_text" onkeyup="javascript:storeHistory('ddx');" onFocus="javascript:hideTooltips();"  placeholder="#{prop['ddx.add']} ..." id="ddx" mytooltip="#{prop['ddx.search']}"></input></div>
+		  				<input class="f_text" onkeyup="javascript:storeHistory('ddx');" onFocus="javascript:hideTooltips();"  placeholder="#{prop['ddx.add']} ..." id="ddx" mytooltip="#{prop['ddx.search']}"></input>
+		  			</div>
 			  			<h:form id="ddxform">
 						<h:panelGroup >
 							<ui:repeat value="#{crtContext.patillscript.diagnosesWithoutFinals}" var="ddx" varStatus="status">
@@ -373,7 +380,7 @@ item_arr = new Array();
 		  			</span>-->
 		  		</div>
 		 	 	<!-- <div class="node-collapse"></div>-->
-		  		<div class="search boxchild">
+		  		<div class="search testsearch boxchild">
 		  			<i class="fa fa-search ininput"></i>
 		  			<input class="f_text" onkeyup="javascript:storeHistory('tests');" onFocus="javascript:hideTooltips();"  placeholder="#{prop['tests.add']} ..." id="tests" mytooltip="#{prop['tests.search']}"></input></div>
 		  			<h:form id="testform">
@@ -402,7 +409,7 @@ item_arr = new Array();
 		  		</span>-->
 		  	</div>
 		 	
-		  	<div class="search boxchild">
+		  	<div class="search boxchild mngsearch">
 		  		<i class="fa fa-search ininput"></i>
 		  		<input class="f_text" id="mng" onkeyup="javascript:storeHistory('mng');" onFocus="javascript:hideTooltips();"  placeholder="#{prop['mng.add']} ..." mytooltip="#{prop['mng.search']}"></input></div>
 	  			<h:form id="mngform">

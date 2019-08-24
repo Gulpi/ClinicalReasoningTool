@@ -56,6 +56,7 @@ public class SessionSetting {
 	/**
 	 * each position stands for a box (0=problems, 1=ddx, 2=tests, 3=therapies, 4=summary statement), per default all 
 	 * boxes are used. If boxes shall not be used/displayed, there needs to be a 0 at the position.
+	 * If boxes shall be displayed but in a passive mode, there needs to be a 2 at the position.
 	 * Is stores as a String in the database! 
 	 */
 	private int[] boxesUsed = {1,1,1,1,1}; 

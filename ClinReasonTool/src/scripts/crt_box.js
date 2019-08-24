@@ -817,6 +817,50 @@ function turnOverallExpFeedbackOn(iconId, itemClass){
 		$(".jtk-exp-connector").removeClass("jtk-exp-connector-hide");
 	}
 }
+/*
+ * if boxes are displayed in view mode we show the expert items and hide the search box.
+ */
+function turnViewModeOn(){
+	if(probBoxUsed=="2"){ //view mode
+		$(".expfdgs").removeClass("expboxinvis");
+		$(".expfdgs").removeClass("expboxstatus");
+		$(".expfdgs").addClass("expboxstatus_show");
+		turnExpBoxFeedbackOn("expFeedbackFdg", "fdgs");
+		$(".probsearch").hide(); //hide search box
+	}
+	if(ddxBoxUsed=="2"){
+		$(".expddxs").removeClass("expboxinvis");
+		$(".expddxs").removeClass("expboxstatus");
+		$(".expddxs").addClass("expboxstatus_show");
+		$(".footer").hide(); //hide final diagnosis button because we are in readonly mode
+		$(".ddxsearch").hide(); //hide search box
+		turnExpBoxFeedbackOn("expFeedbackDDX", "ddxs");
+	}
+	if(testBoxUsed=="2"){
+		$(".exptests").removeClass("expboxinvis");
+		$(".exptests").removeClass("expboxstatus");
+		$(".exptests").addClass("expboxstatus_show");
+		$(".testsearch").hide(); //hide search box
+		turnExpBoxFeedbackOn("expFeedbackTest", "ddxs");
+	}
+	
+	if(mngBoxUsed=="2"){
+		$(".expmngs").removeClass("expboxinvis");
+		$(".expmngs").removeClass("expboxstatus");
+		$(".expmngs").addClass("expboxstatus_show");
+		turnExpBoxFeedbackOn("expFeedbackMng", "ddxs");
+		$(".mngsearch").hide(); //hide search box
+	}
+	
+	//hide search boxes and ddx footer
+	//turnExpBoxFeedbackOn("expFeedbackTest", "tests");
+	//turnExpBoxFeedbackOn("expFeedbackMng", "mngs");
+	if(isOverallCnxOn()){
+		$(".jtk-exp-connector").addClass("jtk-exp-connector-show");
+		$(".jtk-exp-connector").removeClass("jtk-exp-connector-hide");
+	}
+
+}
 
 function turnOverallExpFeedbackOff(iconId, itemClass){
 	if(iconId!=""){
@@ -832,6 +876,7 @@ function turnOverallExpFeedbackOff(iconId, itemClass){
 	turnExpBoxFeedbackOff("expFeedbackMng", "mngs");
 	$(".jtk-exp-connector").addClass("jtk-exp-connector-hide");
 	$(".jtk-exp-connector").removeClass("jtk-exp-connector-show");
+	turnViewModeOn();
 }
 
 /**

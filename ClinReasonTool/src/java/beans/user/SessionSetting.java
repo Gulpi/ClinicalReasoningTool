@@ -183,10 +183,15 @@ public class SessionSetting {
 	
 	public void setBoxesUsed(int probsOnly){
 		if(probsOnly == 1){
+			boxesUsed[1]=2; //passive ddx
+			boxesUsed[2]=2; //passive tests
+			boxesUsed[3]=2; //passive therapies
+		}
+		/*if(probsOnly == 1){
 			boxesUsed[1]=0; //hide ddx
 			boxesUsed[2]=0; //hide tests
 			boxesUsed[3]=0; //hide therapies
-		}
+		}*/
 	}
 	
 	public int getProbBoxUsed(){ return boxesUsed[0];}

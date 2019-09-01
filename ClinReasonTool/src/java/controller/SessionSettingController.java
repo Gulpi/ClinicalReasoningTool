@@ -49,8 +49,11 @@ public class SessionSettingController {
 		sessSetting.setExpFeedbackMode(AjaxController.getInstance().getIntRequestParamByKey(AjaxController.REQPARAM_EXP_FB_MODE, 0));
 		sessSetting.setPeerFeedbackMode(AjaxController.getInstance().getIntRequestParamByKey(AjaxController.REQPARAM_PEER_FB_MODE, 0));
 		sessSetting.setDdxMode(AjaxController.getInstance().getIntRequestParamByKey(AjaxController.REQPARAM_DDX_MODE, 0));
-		sessSetting.setBoxesUsed(AjaxController.getInstance().getIntRequestParamByKey(AjaxController.REQPARAM_BOXES_MODE,0));
-		//....
+		//hide, show, inactivate the four boxes:
+		sessSetting.setBoxesUsed(0,AjaxController.getInstance().getIntRequestParamByKey(AjaxController.REQPARAM_BOXES_P_MODE,1));
+		sessSetting.setBoxesUsed(1,AjaxController.getInstance().getIntRequestParamByKey(AjaxController.REQPARAM_BOXES_D_MODE,1));
+		sessSetting.setBoxesUsed(2,AjaxController.getInstance().getIntRequestParamByKey(AjaxController.REQPARAM_BOXES_T_MODE,1));
+		sessSetting.setBoxesUsed(3,AjaxController.getInstance().getIntRequestParamByKey(AjaxController.REQPARAM_BOXES_M_MODE,1));
 	}
 }	
 

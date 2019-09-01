@@ -34,7 +34,10 @@ public class AjaxController {
 	public static final String REQPARAM_EXP_FB_MODE = "expfbmode";
 	public static final String REQPARAM_PEER_FB_MODE = "peerfbmode";
 	public static final String REQPARAM_DDX_MODE = "ddx_mode";
-	public static final String REQPARAM_BOXES_MODE = "probOnly";
+	public static final String REQPARAM_BOXES_P_MODE = "pm";
+	public static final String REQPARAM_BOXES_D_MODE = "dm";
+	public static final String REQPARAM_BOXES_T_MODE = "tm";
+	public static final String REQPARAM_BOXES_M_MODE = "mm";
 	public static final String REQPARAM_REPORT_ACCESS ="rep_acc"; //parameter indocating access from an educator to a specific learner map
 	public static final String REQPARAM_API = "api";
 	public static final String REQPARAM_MAXSTAGE = "maxstage";

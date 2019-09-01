@@ -181,17 +181,13 @@ public class SessionSetting {
 		boxesUsed = StringUtilities.getIntArrFromString(boxesUsedStr, ",");
 	}
 	
-	public void setBoxesUsed(int probsOnly){
-		if(probsOnly == 1){
-			boxesUsed[1]=2; //passive ddx
-			boxesUsed[2]=2; //passive tests
-			boxesUsed[3]=2; //passive therapies
+	public void setBoxesUsed(int i, int value){	
+		try{
+			if(value>=0)
+				boxesUsed[i]=value;
+			else boxesUsed[i]=1;
 		}
-		/*if(probsOnly == 1){
-			boxesUsed[1]=0; //hide ddx
-			boxesUsed[2]=0; //hide tests
-			boxesUsed[3]=0; //hide therapies
-		}*/
+		catch (Exception e){};
 	}
 	
 	public int getProbBoxUsed(){ return boxesUsed[0];}

@@ -855,10 +855,10 @@ function turnViewModeOn(){
 	//hide search boxes and ddx footer
 	//turnExpBoxFeedbackOn("expFeedbackTest", "tests");
 	//turnExpBoxFeedbackOn("expFeedbackMng", "mngs");
-	if(isOverallCnxOn()){
+	/*if(isOverallCnxOn()){
 		$(".jtk-exp-connector").addClass("jtk-exp-connector-show");
 		$(".jtk-exp-connector").removeClass("jtk-exp-connector-hide");
-	}
+	}*/
 
 }
 

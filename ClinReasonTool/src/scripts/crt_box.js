@@ -827,6 +827,10 @@ function turnViewModeOn(){
 		$(".expfdgs").addClass("expboxstatus_show");
 		turnExpBoxFeedbackOn("expFeedbackFdg", "fdgs");
 		$(".probsearch").hide(); //hide search box
+		//THIS IS AN UGLY HACK - without it, the box is 30px downwards.
+		$("#fdg_box .search").removeClass("boxchild");
+		$("#fdg_box .search").height(30);
+
 	}
 	if(ddxBoxUsed=="2"){
 		$(".expddxs").removeClass("expboxinvis");
@@ -834,6 +838,8 @@ function turnViewModeOn(){
 		$(".expddxs").addClass("expboxstatus_show");
 		$(".footer").hide(); //hide final diagnosis button because we are in readonly mode
 		$(".ddxsearch").hide(); //hide search box
+		$("#ddx_box .search").removeClass("boxchild");
+		$("#ddx_box .search").height(30);
 		turnExpBoxFeedbackOn("expFeedbackDDX", "ddxs");
 	}
 	if(testBoxUsed=="2"){
@@ -841,6 +847,8 @@ function turnViewModeOn(){
 		$(".exptests").removeClass("expboxstatus");
 		$(".exptests").addClass("expboxstatus_show");
 		$(".testsearch").hide(); //hide search box
+		$("#tst_box .search").removeClass("boxchild");
+		$("#tst_box .search").height(30);
 		turnExpBoxFeedbackOn("expFeedbackTest", "ddxs");
 	}
 	
@@ -850,6 +858,9 @@ function turnViewModeOn(){
 		$(".expmngs").addClass("expboxstatus_show");
 		turnExpBoxFeedbackOn("expFeedbackMng", "ddxs");
 		$(".mngsearch").hide(); //hide search box
+		$("#mng_box .search").removeClass("boxchild");
+		$("#mng_box .search").height(30);
+
 	}
 	
 	//hide search boxes and ddx footer

@@ -102,6 +102,7 @@ select.f_select{
   z-index: 1;
   color: #4f5b66;
 }
+
 /* list of diagnoses container*/
 .ddx_left{
 	float:left;

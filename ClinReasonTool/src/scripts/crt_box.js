@@ -830,6 +830,7 @@ function turnViewModeOn(){
 		//THIS IS AN UGLY HACK - without it, the box is 30px downwards.
 		$("#fdg_box .search").removeClass("boxchild");
 		$("#fdg_box .search").height(30);
+		$(".fdgpassive").show();
 
 	}
 	if(ddxBoxUsed=="2"){
@@ -840,6 +841,7 @@ function turnViewModeOn(){
 		$(".ddxsearch").hide(); //hide search box
 		$("#ddx_box .search").removeClass("boxchild");
 		$("#ddx_box .search").height(30);
+		$(".ddxpassive").show();
 		turnExpBoxFeedbackOn("expFeedbackDDX", "ddxs");
 	}
 	if(testBoxUsed=="2"){
@@ -849,6 +851,7 @@ function turnViewModeOn(){
 		$(".testsearch").hide(); //hide search box
 		$("#tst_box .search").removeClass("boxchild");
 		$("#tst_box .search").height(30);
+		$(".tstpassive").show();
 		turnExpBoxFeedbackOn("expFeedbackTest", "ddxs");
 	}
 	
@@ -860,6 +863,7 @@ function turnViewModeOn(){
 		$(".mngsearch").hide(); //hide search box
 		$("#mng_box .search").removeClass("boxchild");
 		$("#mng_box .search").height(30);
+		$(".mngpassive").show();
 
 	}
 	

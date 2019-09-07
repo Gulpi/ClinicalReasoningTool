@@ -92,7 +92,7 @@ $(function() {
     postEnforceFinalDDXSubmission(submitted/*, myStage, maxSubmittedStage*/);
 
 	if(scriptlang=="de") listUrl = "jsonp_de.json";
-	if(scriptlang=="pl") listUrl = ""; //currently we do not have a good Polish list, so use freetext entry instead.
+	if(scriptlang=="pl" || scriptlang=="sv") listUrl = ""; //currently we do not have a good Polish/Swedish list, so use freetext entry instead.
 	$(".listdialog").hide();
 	$("#jdialogError").hide();
 	$("#connContext").hide();
@@ -247,6 +247,7 @@ jsPlumb.ready(function () {
     $(".expbox").addClass("expboxstatus");
     
     jsPlumb.fire("jsPlumbDemoLoaded", instance);
+    $(".passive").hide();
     turnViewModeOn();
     //turnViewModeOn();
     //initContainerCollapsed(); //put back in if collapsing works again
@@ -310,9 +311,10 @@ item_arr = new Array();
 		   		</div>
 		   		<!-- <div  class="node-collapse"></div> put back in when collapsing is working-->
 		  			<div class="search boxchild ">
-		  			<input type="text" id="fdg_prefix" style="display:none;" />
-					<i class="fa fa-search ininput probsearch"></i>
-		  			<input class="f_text probsearch" onkeyup="javascript:storeHistory('problems');" onFocus="javascript:hideTooltips();" id="problems" placeholder="#{prop['findings.add']} ..." mytooltip="#{prop['findings.search']}"></input></div>
+		  				<input type="text" id="fdg_prefix" style="display:none;" />
+						<i class="fa fa-search ininput probsearch"></i>
+		  				<input class="f_text probsearch" onkeyup="javascript:storeHistory('problems');" onFocus="javascript:hideTooltips();" id="problems" placeholder="#{prop['findings.add']} ..." mytooltip="#{prop['findings.search']}"></input>
+					</div>
 						<h:form id="probform">
 						<h:panelGroup>
 						   <ui:repeat id="repeatprob" value="#{crtContext.patillscript.problems}" var="prob" varStatus="status">
@@ -329,6 +331,12 @@ item_arr = new Array();
 						<!-- <h:messages errorClass="errorMessage" infoClass="infoMessage" showDetail="true" showSummary="true"/>-->						
 						 </h:form>
 						<span class="errormsg" id="msg_probform" onClick="javascript:clearErrorMsgs();"></span>
+		  		<div class="fdgpassive passive" style="position:absolute;top:10%;left:0px;width:100%;z-index:9;">
+		  			<div style="text-align:left;margin:5px;">#{prop['findings.passive']}</div>
+					<div style="text-align:left;margin:10px;padding:0px;margin-top:20px;color:white; font-size:110px">
+						<i class="fa fa-lock"></i>
+					</div>
+				</div>
 		  </div>
 		  <!--  diagnoses -->
 		  <div id="ddx_box" class="container ddx_cont hide_#{crtContext.sessSetting.ddxBoxUsed}" group="ddx_group">	
@@ -343,6 +351,7 @@ item_arr = new Array();
 		  			<div class="search boxchild">
 		  				<i class="fa fa-search ininput ddxsearch"></i>
 		  				<input class="f_text ddxsearch" onkeyup="javascript:storeHistory('ddx');" onFocus="javascript:hideTooltips();"  placeholder="#{prop['ddx.add']} ..." id="ddx" mytooltip="#{prop['ddx.search']}"></input>
+		  				<!--  <span class="ddxpassive passive">#{prop['ddx.passive']}</span>-->
 		  			</div>
 			  			<h:form id="ddxform">
 						<h:panelGroup >
@@ -370,6 +379,12 @@ item_arr = new Array();
 						<a href="javascript:openErrorDialog();" style="color:#ffffff;"><i style="color:#ffffff;" mytooltip="#{prop['ddx.errors']} (#{crtContext.patillscript.errorNum})" class="fa fa-exclamation-circle"></i></a>		
     				</h:panelGroup></span>
 		  		</div></h:form>
+		  		<div class="ddxpassive passive" style="position:absolute;top:10%;left:0px;width:100%;z-index:9;">
+		  			<div style="text-align:left;margin:5px;">#{prop['ddx.passive']}</div>
+					<div style="text-align:left;margin:10px;padding:0px;margin-top:20px;color:white; font-size:110px">
+						<i class="fa fa-lock"></i>
+					</div>
+				</div>
 		  </div>
 		  <!-- tests -->
 		  <div id="tst_box" class="container tst_cont hide_#{crtContext.sessSetting.testBoxUsed}" group="tst_group">
@@ -383,7 +398,8 @@ item_arr = new Array();
 		 	 	<!-- <div class="node-collapse"></div>-->
 		  		<div class="search  boxchild">
 		  			<i class="fa fa-search ininput testsearch"></i>
-		  			<input class="f_text testsearch" onkeyup="javascript:storeHistory('tests');" onFocus="javascript:hideTooltips();"  placeholder="#{prop['tests.add']} ..." id="tests" mytooltip="#{prop['tests.search']}"></input></div>
+		  			<input class="f_text testsearch" onkeyup="javascript:storeHistory('tests');" onFocus="javascript:hideTooltips();"  placeholder="#{prop['tests.add']} ..." id="tests" mytooltip="#{prop['tests.search']}"></input>
+		  		</div>
 		  			<h:form id="testform">
 		  			<h:panelGroup>
 					
@@ -399,6 +415,12 @@ item_arr = new Array();
 						</h:commandButton>
 					</h:form>
 					<span class="errormsg" id="msg_testform" onClick="javascript:clearErrorMsgs();"></span>
+				<div class="tstpassive passive" style="position:absolute;top:10%;left:0px;width:100%;z-index:9;">
+		  			<div style="text-align:left;margin:5px;">#{prop['tests.passive']}</div>
+					<div style="text-align:left;margin:10px;padding:0px;margin-top:20px;color:white; font-size:110px">
+						<i class="fa fa-lock"></i>
+					</div>
+				</div>
 		</div>
 		  <!-- managements -->
 		  <div id="mng_box" class="container mng_cont hide_#{crtContext.sessSetting.mngBoxUsed}" group="mng_group">
@@ -412,7 +434,8 @@ item_arr = new Array();
 		 	
 		  	<div class="search boxchild ">
 		  		<i class="fa fa-search ininput mngsearch"></i>
-		  		<input class="f_text mngsearch" id="mng" onkeyup="javascript:storeHistory('mng');" onFocus="javascript:hideTooltips();"  placeholder="#{prop['mng.add']} ..." mytooltip="#{prop['mng.search']}"></input></div>
+		  		<input class="f_text mngsearch" id="mng" onkeyup="javascript:storeHistory('mng');" onFocus="javascript:hideTooltips();"  placeholder="#{prop['mng.add']} ..." mytooltip="#{prop['mng.search']}"></input>
+		  	</div>
 	  			<h:form id="mngform">
 	  			<h:panelGroup>
 	
@@ -428,7 +451,12 @@ item_arr = new Array();
 					</h:commandButton>
 				</h:form>
 				<span class="errormsg" id="msg_mngform" onClick="javascript:clearErrorMsgs();"></span>
-				
+				<div class="mngpassive passive" style="position:absolute;top:10%;left:0px;width:100%;z-index:9;">
+		  			<div style="text-align:left;margin:5px;">#{prop['mng.passive']}</div>
+					<div style="text-align:left;margin:10px;padding:0px;margin-top:20px;color:white; font-size:110px">
+						<i class="fa fa-lock"></i>
+					</div>
+				</div>				
 	  		</div>
 		 <div id="sum_box" class="container sum_container" group="sum_group">	
 		 	<div id="sum_title" mytooltip="#{prop['sumst.hint']}" class="title contcol_#{crtContext.patillscript.sumDiff}">#{prop['summst']} <i class="fa fa-info-circle"></i>

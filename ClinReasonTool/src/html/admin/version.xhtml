@@ -1,5 +1,16 @@
-<ui:composition
-    xmlns:f="http://java.sun.com/jsf/core"
-    xmlns:ui="http://java.sun.com/jsf/facelets">
-    <f:event type="preRenderView" listener="#{version.renderText}" />
-</ui:composition>
+<f:view xmlns:ui="http://xmlns.jcp.org/jsf/facelets" xmlns:f="http://xmlns.jcp.org/jsf/core" contentType="text/plain" encoding="UTF-8">Build: (commit) #{version.version},#{version.versionDate}
+longcommit: #{version.longcommit}
+Java Info: #{version.javaVersion},#{version.runtimeName},#{version.osName},#{version.osVersion}
+Servlet Container:  #{version.container}, ServletAPI: #{version.containerVersion} 
+ServerStartTime: #{version.serverStartTime}
+FreeMemory: #{version.freeMemory} (#{version.freeMemoryPercent}%)
+TotalMemory: #{version.totalMemory}
+ActMillis: #{version.systemMillis} 
+
+container: #{version.container}
+containerVersion: #{version.containerVersion}
+javaVersion: #{version.javaVersion}
+runtimeName: #{version.runtimeName}
+osName: #{version.osName}
+osVersion: #{version.osVersion}
+</f:view>

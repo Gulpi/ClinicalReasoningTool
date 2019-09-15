@@ -109,7 +109,7 @@ public class PeerContainer {
 	}
 	
 	/**
-	 * returns the PeerBean for the action of creation of an patientIllnessScript for the given 
+	 * returns the PeerBean for the given action and  
 	 * parentId or null if no script has been created so far. 
 	 * We use this to store the overall number of peers who have created a script.
 	 *  

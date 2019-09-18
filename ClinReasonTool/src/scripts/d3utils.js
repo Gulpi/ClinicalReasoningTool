@@ -445,6 +445,10 @@ function drawSimpleMultipleDonutChart(element, percent, percent2, width, height,
 
 function validateAnd2PercentScore(in_score) {
 	var result = 0;
+	if (!in_score || in_score == "") {
+		return 0;
+	}
+	
 	try {
 		result = parseFloat(in_score);
 		if (result<0) {
@@ -462,6 +466,10 @@ function validateAnd2PercentScore(in_score) {
 
 function validateAnd2PercentScore100(in_score) {
 	var result = 0;
+	if (!in_score || in_score == "") {
+		return 0;
+	}
+	
 	try {
 		result = parseFloat(in_score);
 		
@@ -492,5 +500,5 @@ function simpleDonutHelper(in_id,in_my,in_peers) {
 		validateAnd2PercentScore(in_my),validateAnd2PercentScore(in_peers),
 		null,
 		null,
-		".7em",100,100,1,-1,"02d");
+		".7em",100,100,1,-1,"01d");
 }

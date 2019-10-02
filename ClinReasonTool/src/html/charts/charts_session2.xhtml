@@ -27,8 +27,8 @@
 <link rel="stylesheet" href="../../styles/clinreason_boxes.css" />
 <link rel="stylesheet" href="../../styles/font-awesome/css/font-awesome.css" />
 <link rel="stylesheet" href="../../scripts/nvd3/nvd3.css" />
-
-<script language="JavaScript">
+<link rel="stylesheet" href="../../styles/portfolio2.css" />
+<script type="text/javascript" language="JavaScript" >
 var test = "#{crtContext.initSession}";
 var currentChartNum = 1; //default is overall performance
 var chartLabelMe = "#{prop['charts.me']}";
@@ -68,17 +68,39 @@ $(function() {
 
 		}
     });
+    
+    $(function() {
+    	var totalScore = "#{crtContext.learningAnalyticsContainer.overallScore.scoreBasedOnExpPerc}";
+     	var totalScorePeers = "#{crtContext.learningAnalyticsContainer.overallPeerScore.expPeerPercentagePerc}";
+     	var fdgScore = "#{crtContext.learningAnalyticsContainer.learningAnalyticsBean.overallProblemScoreCat}";
+  		var fdgScorePeers = "#{crtContext.learningAnalyticsContainer.learningAnalyticsBean.problemScore}";
+    	var ddxScore = "#{crtContext.learningAnalyticsContainer.learningAnalyticsBean.overallDDXScoreCat}";
+  		var ddxScorePeers = "#{crtContext.learningAnalyticsContainer.learningAnalyticsBean.DDXScore}";
+    	var tstScore = "#{crtContext.learningAnalyticsContainer.learningAnalyticsBean.overallTestScoreCat}";
+  		var tstScorePeers = "#{crtContext.learningAnalyticsContainer.learningAnalyticsBean.testScore}";
+    	var mngScore = "#{crtContext.learningAnalyticsContainer.learningAnalyticsBean.overallMngScoreCat}";
+  		var mngScorePeers = "#{crtContext.learningAnalyticsContainer.learningAnalyticsBean.mngScore}";
+  		
+    	$("#my_total_score").html(validateAnd2PercentScore100(totalScore))
+     	$("#peer_total_score").html(validateAnd2PercentScore100(totalScorePeers))
+   		$(".perfstatus .success").animate({width: validateAnd2PercentScore100(totalScore) + "%"}, 250)
+    	
+    	simpleDonutHelper("#vis_cont1",fdgScore,fdgScorePeers);
+		simpleDonutHelper("#vis_cont2",ddxScore,ddxScorePeers);
+		simpleDonutHelper("#vis_cont3",tstScore,tstScorePeers);
+    	simpleDonutHelper("#vis_cont4",mngScore,mngScorePeers);
+	});
 	//printLargeOverall();
 });
 
-var chartTypeDisplay = "#{chartConf.typeOfChart}";
-
+var chartTypeDisplay = "0";
 </script>
+
  </head>
  <body class="chartbody">
  
-<div id="chart-summary" class="chartsummary">
-		#{prop['chart.all.overall']}: <!-- <i class="fa overallscore_#{crtContext.learningAnalyticsContainer.overallScore.scoreRange}" mytooltip="#{crtContext.learningAnalyticsContainer.overallScore.scoreBasedOnExp}"></i><br/>-->
+ 	<div id="chart-summary" class="chartsummary">
+		<h3 style="margin-bottom:1em;">Overall Performance:</h3>
 		
 		<div class="perfstatus" mytooltip="#{crtContext.learningAnalyticsContainer.overallScore.scoreBasedOnExpPerc}% (#{crtContext.learningAnalyticsContainer.overallPeerScore.expPeerPercentagePerc}%)">
 			<div class="success" style="width:#{crtContext.learningAnalyticsContainer.overallScore.scoreBasedOnExpPerc}%"></div>
@@ -123,25 +145,113 @@ mng peer score: #{crtContext.learningAnalyticsContainer.learningAnalyticsBean.mn
 		  <div id="tst_box" class="container tst_cont" group="tst_group">
 		  		<div id="tst_title" mytooltip="#{prop['tests.search']}" class="title">#{prop['tests']} <i class="fa fa-info-circle"></i></div>		  		
 
+
+ 	<div class="charts_tip tip_1 sticker"> 
+		<span class="text"> 
+			<h4><i class="fa fa-lightbulb-o"></i> #{prop['charts.tips']}:</h4>
+			<lu>
+				#{crtContext.learningAnalyticsContainer.learningAnalyticsBean.learningBean.printTip}			
+			</lu>
+		</span>
+	</div>
+	
+	<br clear="all" />
+
+	<div class="boxes_container">
+		<div id="canvas" class="canvas jtk-surface drag-drop jtk-surface-nopan">
+		  
+			<div id="fdg_box" class="container fdg_cont" group="fdg_group">
+			   		<div id="fdg_title" class="title" mytooltip="Please enter any findings, symptoms, or risk factors of the patient you consider relevant.">Relevant Findings <i class="fa fa-info-circle"></i></div>	
+					
+					<div id="vis_cont1" class="vis_cont">
+						<div class="you_container">
+							<span id="you_legend" class="you_legend">Score:</span><br></br><span class="you">&nbsp;</span>
+						</div>
+						<div id="donut" class="donut" data="80" data2="54" radius="60" radius2="40" arc_width="15" legend="Your peers">
+						</div>
+					</div>
+			  	</div>
+			  
+			<div id="ddx_box" class="container ddx_cont" group="ddx_group">	
+			  		<div id="ddx_title" mytooltip="Please add your differentials" class="title">Differentials <i class="fa fa-info-circle"></i></div>	
+	
+					<div id="vis_cont2" class="vis_cont">
+						<div class="you_container">
+							<span id="you_legend" class="you_legend">Score:</span><br></br><span class="you">&nbsp;</span>
+						</div>
+						<div id="donut" class="donut" data="80" data2="54" radius="60" radius2="40" arc_width="15" legend="Your peers">
+						</div>
+					</div>
+			  	</div>
+			  
+			<div id="tst_box" class="container tst_cont" group="tst_group">
+			  		<div id="tst_title" mytooltip="Please add any tests/examinations you consider relevant to rule out or confirm your differentials" class="title">Test/Examination <i class="fa fa-info-circle"></i></div>		  		
+					
+					<div id="vis_cont3" class="vis_cont">
+						<div class="you_container">
+							<span id="you_legend" class="you_legend">Score:</span><br></br><span class="you">&nbsp;</span>
+						</div>
+						<div id="donut" class="donut" data="80" data2="54" radius="60" radius2="40" arc_width="15" legend="Your peers">
+						</div>
+					</div>
+				</div>
+			  
+			<div id="mng_box" class="container mng_cont" group="mng_group">
+			  		<div id="mng_title" mytooltip="Please add any treatment options you suggest for the patient." class="title">Treatment <i class="fa fa-info-circle"></i></div>
+					
+					<div id="vis_cont4" class="vis_cont">
+						<div class="you_container">
+							<span id="you_legend" class="you_legend">Score:</span><br></br><span class="you">&nbsp;</span>
+						</div>
+						<div id="donut" class="donut" data="80" data2="54" radius="60" radius2="40" arc_width="15" legend="Your peers">
+						</div>
+					</div>
+		  		</div>
+	  	
+	  
+	  	
+		  	<br clear="all" />
+			 
+			<div id="sum_box" class="container sum_container" group="sum_group">	
+			 	<div id="sum_title" mytooltip="Compose a short summary statement about the patient." class="title">Summary Statement <i class="fa fa-info-circle"></i>
+	
+			 	</div>
+			 	
+			 	<div class="box_content">
+			 	
+				 	<h4>My Summary Statement:</h4>
+				 	
+				 	<div class="text_box">
+				 		<h:outputText id="summSt" escape="false" styleClass="" value="#{crtContext.patillscript.summSt.textSQ}"></h:outputText>
+					</div>
+					<div class="text_box_legend">
+			 			Please note: Detected <span class='sqhit'><h:outputText id="summSt" escape="false" styleClass="" value="#{prop['sumst.sq']}"></h:outputText></span>
+			 		</div>
+			 		
+			 		<h4>Experts Summary Statement:</h4>
+					<div class="text_box">
+						<h:outputText id="summStExp" escape="false" styleClass="" value="#{crtContext.expertPatIllScript.summSt.textSQ}"></h:outputText>
+					</div>
+				</div>
+			</div>
 		</div>
-		  <!-- managements -->
-		  <div id="mng_box" class="container mng_cont" group="mng_group">
-		  	<div id="mng_title"  mytooltip="#{prop['mng.search']}" class="title">#{prop['mng']} <i class="fa fa-info-circle"></i></div>
-				
-	  		</div>
-		 <div id="sum_box" class="container sum_container" group="sum_group">	
-		 	<div id="sum_title" mytooltip="#{prop['sumst.hint']}" class="title">#{prop['summst']} <i class="fa fa-info-circle"></i>
-
-		 	</div>
-		 	 <div class="node-collapse"></div>
-		 	 #{crtContext.patillscript.summSt.textSQ}<br/>
-		 	 #{crtContext.expertPatIllScript.summSt.textSQ}<br/>
-		 	 #{prop['sumst.sq']}
 	</div>
+	
+	<div id="jdialog"></div>
+	
+	<div style="display:none;">
+#{crtContext.learningAnalyticsContainer.overallScore.scoreBasedOnExpPerc}<br />
+#{crtContext.learningAnalyticsContainer.overallPeerScore.expPeerPercentagePerc}<br />
+#{crtContext.learningAnalyticsContainer.learningAnalyticsBean.overallProblemScoreCat}<br />
+#{crtContext.learningAnalyticsContainer.learningAnalyticsBean.problemScore}<br />
+#{crtContext.learningAnalyticsContainer.learningAnalyticsBean.overallDDXScoreCat}<br />
+#{crtContext.learningAnalyticsContainer.learningAnalyticsBean.DDXScore}<br />
+#{crtContext.learningAnalyticsContainer.learningAnalyticsBean.overallTestScoreCat}<br />
+#{crtContext.learningAnalyticsContainer.learningAnalyticsBean.testScore}<br />
+#{crtContext.learningAnalyticsContainer.learningAnalyticsBean.overallMngScoreCat}<br />
+#{crtContext.learningAnalyticsContainer.learningAnalyticsBean.mngScore}<br />
 	</div>
-</div>
 
-<div id="jdialog"></div>
 
  </body>
  </f:view>

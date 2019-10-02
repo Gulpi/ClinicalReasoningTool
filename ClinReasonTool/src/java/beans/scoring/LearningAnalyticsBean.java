@@ -273,6 +273,14 @@ public class LearningAnalyticsBean extends Beans implements Serializable, Compar
 		//passive vs active user, non-user, regular users, glancers (<2min), interrupter 
 		
 	}
+	/*** following four methods return the last peer score calculated for the given types ****/
+	public PeerBean getProblemlistPeerScore()
+	{
+		return AppBean.getPeers().getPeerBeanOfLastStage(ScoreBean.TYPE_PROBLEM_LIST, getProblemPeerStages());
+	}
+	public PeerBean getDDXlistPeerScore(){return AppBean.getPeers().getPeerBeanOfLastStage(ScoreBean.TYPE_DDX_LIST, getDDXPeerStages());}
+	public PeerBean getTestlistPeerScore(){return AppBean.getPeers().getPeerBeanOfLastStage(ScoreBean.TYPE_TEST_LIST, getTestPeerStages());}
+	public PeerBean getMnglistPeerScore(){return AppBean.getPeers().getPeerBeanOfLastStage(ScoreBean.TYPE_MNG_LIST, getMngPeerStages());}
 	
 	public ScoreContainer getScoreContainer() {
 		if(scoreContainer==null) scoreContainer = new ScoreContainer(patIllScriptId);

@@ -31,7 +31,7 @@ public class PeerBean extends Beans{
 	 * (for average score divide by the peerNum!)
 	 * @deprecated
 	 */
-	private float overallScoreSum;
+	//private float overallScoreSum;
 	
 	/**
 	 * average of org scores (without seeing feedback)
@@ -72,8 +72,8 @@ public class PeerBean extends Beans{
 	public void setPeerNum(int peerNum) {this.peerNum = peerNum;}		
 	public long getId() {return id;}
 	public void setId(long id) {this.id = id;}	
-	public float getOverallScoreSum() {return overallScoreSum;}
-	public void setOverallScoreSum(float overallScoreSum) {this.overallScoreSum = overallScoreSum;}	
+	//public float getOverallScoreSum() {return overallScoreSum;}
+	//public void setOverallScoreSum(float overallScoreSum) {this.overallScoreSum = overallScoreSum;}	
 	public float getOrgScoreBasedOnExp() {return orgScoreBasedOnExp;}
 	public void setOrgScoreBasedOnExp(float orgScoreBasedOnExp) {this.orgScoreBasedOnExp = orgScoreBasedOnExp;}
 	public float getScoreBasedOnExp() {return scoreBasedOnExp;}
@@ -113,7 +113,7 @@ public class PeerBean extends Beans{
 		this.stage = stage;
 		scoreBasedOnExp = 0;
 		orgScoreBasedOnExp = 0;
-		overallScoreSum = 0;
+		//overallScoreSum = 0;
 	}
 	/* (non-Javadoc)
 	 * @see java.lang.Object#equals(java.lang.Object)
@@ -132,15 +132,15 @@ public class PeerBean extends Beans{
 	}
 	
 	public void incrScoreSums(float overallscore, float expScore, float orgExpScore){
-		incrScoreSum(overallscore);
+		//incrScoreSum(overallscore);
 		incrExpScoreSum(expScore);
 		incrOrgExpScoreSum(orgExpScore);
 	}
 	
-	private void incrScoreSum(float score){
+	/*private void incrScoreSum(float score){
 		if(score>=0) this.overallScoreSum += score;
 		if(this.overallScoreSum<0) this.overallScoreSum = 0;
-	}
+	}*/
 	
 	private void incrExpScoreSum(float score){
 		if(score>=0) this.scoreBasedOnExp += score;
@@ -158,7 +158,7 @@ public class PeerBean extends Beans{
 	 */
 	public float getPeerPercentage(){
 		if(peerNum<=0) return 0;
-		return (float) overallScoreSum/peerNum;
+		return (float) orgScoreBasedOnExp/peerNum;
 	}
 
 	/**
@@ -167,12 +167,12 @@ public class PeerBean extends Beans{
 	 */
 	public int getPeerPercentagePerc(){
 		if(peerNum<=0) return 0;
-		return (int) (overallScoreSum/peerNum * 100);
+		return (int) (orgScoreBasedOnExp/peerNum * 100);
 	}
 	
 	public int getExpPeerPercentagePerc(){
 		if(peerNum<=0) return 0;
-		int sum = (int) (this.scoreBasedOnExp/peerNum * 100);
+		//int sum = (int) (this.scoreBasedOnExp/peerNum * 100);
 		return (int) (this.scoreBasedOnExp/peerNum * 100);
 	}
 	

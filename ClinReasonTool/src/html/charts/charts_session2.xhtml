@@ -39,6 +39,12 @@ var sumstDialogTitle = "#{prop['sumst.details']}";
 //var sumstExpSQ = "#{prop['sumst.chart.exp']} <br/>  #{crtContext.expertPatIllScript.summSt.textSQ}";
 //var sumstLegend = "#{prop['sumst.sq']}";
 
+//which boxes are displayed in active mode (0), hidden (1) or displayed in view mode (2)
+var probBoxUsed = "#{crtContext.sessSetting.probBoxUsed}"; 
+var ddxBoxUsed = "#{crtContext.sessSetting.ddxBoxUsed}";
+var testBoxUsed = "#{crtContext.sessSetting.testBoxUsed}";
+var mngBoxUsed = "#{crtContext.sessSetting.mngBoxUsed}"; 
+
 $(function() {
 	resetSessionStorage();
 	$("#jdialog").dialog({ //dialog to display sumary statement details:
@@ -68,6 +74,58 @@ $(function() {
 
 		}
     });
+	
+	function correctFdgScore(in_score) {
+		var result = in_score;
+		
+		if (result <= 40) {
+			result = result * 2;
+		}
+		else {
+			result = 80 + (result-40)/3;
+		}
+		
+		return result
+	}
+	
+	function correctDDxScore(in_score) {
+		var result = in_score;
+		
+		if (result <= 40) {
+			result = result * 2;
+		}
+		else {
+			result = 80 + (result-40)/3;
+		}
+		
+		return result
+	}
+	
+	function correctTstScore(in_score) {
+		var result = in_score;
+		
+		if (result <= 40) {
+			result = result * 2;
+		}
+		else {
+			result = 80 + (result-40)/3;
+		}
+		
+		return result
+	}
+	
+	function correctMngScore(in_score) {
+		var result = in_score;
+		
+		if (result <= 40) {
+			result = result * 2;
+		}
+		else {
+			result = 80 + (result-40)/3;
+		}
+		
+		return result
+	}
     
     $(function() {
     	var totalScore = "#{crtContext.learningAnalyticsContainer.overallScore.scoreBasedOnExpPerc}";
@@ -85,10 +143,10 @@ $(function() {
      	$("#peer_total_score").html(validateAnd2PercentScore100(totalScorePeers))
    		$(".perfstatus .success").animate({width: validateAnd2PercentScore100(totalScore) + "%"}, 250)
     	
-    	simpleDonutHelper("#vis_cont1",fdgScore,fdgScorePeers);
-		simpleDonutHelper("#vis_cont2",ddxScore,ddxScorePeers);
-		simpleDonutHelper("#vis_cont3",tstScore,tstScorePeers);
-    	simpleDonutHelper("#vis_cont4",mngScore,mngScorePeers);
+    	simpleDonutHelper("#vis_cont1",fdgScore,fdgScorePeers,correctFdgScore);
+		simpleDonutHelper("#vis_cont2",ddxScore,ddxScorePeers,correctDDxScore);
+		simpleDonutHelper("#vis_cont3",tstScore,tstScorePeers,correctTstScore);
+    	simpleDonutHelper("#vis_cont4",mngScore,mngScorePeers,correctMngScore);
 	});
 	//printLargeOverall();
 });
@@ -122,7 +180,7 @@ var chartTypeDisplay = "0";
 	<div class="boxes_container">
 		<div id="canvas" class="canvas jtk-surface drag-drop jtk-surface-nopan">
 		  
-			<div id="fdg_box" class="container fdg_cont" group="fdg_group">
+			<div id="fdg_box" class="container fdg_cont chart_#{crtContext.sessSetting.probBoxUsed}" group="fdg_group">
 			   		<div id="fdg_title" class="title" mytooltip="Please enter any findings, symptoms, or risk factors of the patient you consider relevant.">Relevant Findings <i class="fa fa-info-circle"></i></div>	
 					
 					<div id="vis_cont1" class="vis_cont">
@@ -134,7 +192,7 @@ var chartTypeDisplay = "0";
 					</div>
 			  	</div>
 			  
-			<div id="ddx_box" class="container ddx_cont" group="ddx_group">	
+			<div id="ddx_box" class="container ddx_cont chart_#{crtContext.sessSetting.ddxBoxUsed}" group="ddx_group">	
 			  		<div id="ddx_title" mytooltip="Please add your differentials" class="title">Differentials <i class="fa fa-info-circle"></i></div>	
 	
 					<div id="vis_cont2" class="vis_cont">
@@ -146,7 +204,7 @@ var chartTypeDisplay = "0";
 					</div>
 			  	</div>
 			  
-			<div id="tst_box" class="container tst_cont" group="tst_group">
+			<div id="tst_box" class="container tst_cont #{crtContext.sessSetting.testBoxUsed}" group="tst_group">
 			  		<div id="tst_title" mytooltip="Please add any tests/examinations you consider relevant to rule out or confirm your differentials" class="title">Test/Examination <i class="fa fa-info-circle"></i></div>		  		
 					
 					<div id="vis_cont3" class="vis_cont">
@@ -158,7 +216,7 @@ var chartTypeDisplay = "0";
 					</div>
 				</div>
 			  
-			<div id="mng_box" class="container mng_cont" group="mng_group">
+			<div id="mng_box" class="container mng_cont #{crtContext.sessSetting.mngBoxUsed}" group="mng_group">
 			  		<div id="mng_title" mytooltip="Please add any treatment options you suggest for the patient." class="title">Treatment <i class="fa fa-info-circle"></i></div>
 					
 					<div id="vis_cont4" class="vis_cont">
@@ -169,9 +227,7 @@ var chartTypeDisplay = "0";
 						</div>
 					</div>
 		  		</div>
-	  	
-	  
-	  	
+	  		  	
 		  	<br clear="all" />
 			 
 			<div id="sum_box" class="container sum_container" group="sum_group">	

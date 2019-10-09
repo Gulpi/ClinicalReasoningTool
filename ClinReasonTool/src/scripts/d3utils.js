@@ -491,13 +491,20 @@ function d3utils_calcPercent(percent) {
 	};
 
 
-function simpleDonutHelper(in_id,in_my,in_peers) {
+function simpleDonutHelper(in_id,in_my,in_peers, func_correct) {
 	// alert(in_id + ":" + in_my + ","+in_peers)
-	$(in_id + ' .donut').attr('data',validateAnd2PercentScore(in_my));
-	$(in_id + ' .donut').attr('data2',validateAnd2PercentScore(in_peers));
+	var my_val = validateAnd2PercentScore(in_my);
+	var peers_val = validateAnd2PercentScore(in_peers);
+	if (func_correct) {
+		my_val = func_correct(my_val);
+		peers_val = func_correct(peers_val);
+	}
+	
+	$(in_id + ' .donut').attr('data',my_val);
+	$(in_id + ' .donut').attr('data2',peers_val);
 	drawSimpleMultipleDonutChart(
 		in_id + ' .donut',
-		validateAnd2PercentScore(in_my),validateAnd2PercentScore(in_peers),
+		my_val,peers_val,
 		null,
 		null,
 		".7em",100,100,1,-1,"01d");

@@ -76,55 +76,19 @@ $(function() {
     });
 	
 	function correctFdgScore(in_score) {
-		var result = in_score;
-		
-		if (result <= 40) {
-			result = result * 2;
-		}
-		else {
-			result = 80 + (result-40)/3;
-		}
-		
-		return result
+		return correctSpecialScore (in_score, 40, 2, 80, 40, 3);
 	}
 	
 	function correctDDxScore(in_score) {
-		var result = in_score;
-		
-		if (result <= 40) {
-			result = result * 2;
-		}
-		else {
-			result = 80 + (result-40)/3;
-		}
-		
-		return result
+		return correctSpecialScore (in_score, 40, 2, 80, 40, 3);
 	}
 	
 	function correctTstScore(in_score) {
-		var result = in_score;
-		
-		if (result <= 40) {
-			result = result * 2;
-		}
-		else {
-			result = 80 + (result-40)/3;
-		}
-		
-		return result
+		return correctSpecialScore (in_score, 40, 2, 80, 40, 3);
 	}
 	
 	function correctMngScore(in_score) {
-		var result = in_score;
-		
-		if (result <= 40) {
-			result = result * 2;
-		}
-		else {
-			result = 80 + (result-40)/3;
-		}
-		
-		return result
+		return correctSpecialScore (in_score, 40, 2, 80, 40, 3);
 	}
     
     $(function() {

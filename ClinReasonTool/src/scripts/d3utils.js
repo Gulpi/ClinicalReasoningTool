@@ -490,6 +490,26 @@ function d3utils_calcPercent(percent) {
 	return [percent, 100-percent];
 	};
 
+	
+function correctSpecialScore(in_score, threshold1, factor1, base2, base2a, quot3 ) {
+		var result = in_score;
+		
+		if (result <= threshold1) {
+			result = result * factor1;
+		}
+		else {
+			result = base2 + (result-base2a)/quot3;
+		}
+		
+		if (result<0) {
+			result = 0;
+		}
+		elseif (result>100) {
+			result = 100;
+		}
+		
+		return result
+}
 
 function simpleDonutHelper(in_id,in_my,in_peers, func_correct) {
 	// alert(in_id + ":" + in_my + ","+in_peers)

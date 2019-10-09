@@ -494,6 +494,7 @@ function d3utils_calcPercent(percent) {
 function correctSpecialScore(in_score, threshold1, factor1, base2, base2a, quot3 ) {
 		var result = in_score;
 		
+		
 		if (result <= threshold1) {
 			result = result * factor1;
 		}
@@ -504,9 +505,11 @@ function correctSpecialScore(in_score, threshold1, factor1, base2, base2a, quot3
 		if (result<0) {
 			result = 0;
 		}
-		elseif (result>100) {
+		else if (result>100) {
 			result = 100;
 		}
+		
+		try { console.log("correctSpecialScore <- " + in_score + " -> " + result); } catch(x) {};
 		
 		return result
 }

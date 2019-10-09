@@ -103,9 +103,14 @@ $(function() {
     	var mngScore = "#{crtContext.learningAnalyticsContainer.learningAnalyticsBean.overallMngScoreCat}";
   		var mngScorePeers = "#{crtContext.learningAnalyticsContainer.learningAnalyticsBean.mngScore}";
   		
-    	$("#my_total_score").html(validateAnd2PercentScore100(totalScore))
-     	$("#peer_total_score").html(validateAnd2PercentScore100(totalScorePeers))
-   		$(".perfstatus .success").animate({width: validateAnd2PercentScore100(totalScore) + "%"}, 250)
+  		my_totalScore = validateAnd2PercentScore100(totalScore);
+  		my_totalScorePeers = validateAnd2PercentScore100(totalScorePeers);
+  		my_totalScore = correctSpecialScore (my_totalScore, 40, 2, 80, 40, 3);
+  		my_totalScorePeers = correctSpecialScore (my_totalScorePeers, 40, 2, 80, 40, 3);
+		
+    	$("#my_total_score").html(my_totalScore)
+     	$("#peer_total_score").html(my_totalScorePeers)
+   		$(".perfstatus .success").animate({width: my_totalScore + "%"}, 250)
     	
     	simpleDonutHelper("#vis_cont1",fdgScore,fdgScorePeers,correctFdgScore);
 		simpleDonutHelper("#vis_cont2",ddxScore,ddxScorePeers,correctDDxScore);

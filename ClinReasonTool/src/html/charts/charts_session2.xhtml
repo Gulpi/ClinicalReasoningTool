@@ -131,13 +131,9 @@ var chartTypeDisplay = "0";
 		<a href="javascript:openSumStDetails();" mytooltip="#{prop['sumst.details.hint']}"><i class="fa fa-info-circle"></i></a>
 		<br/><br/>	
 
-</div>
-<!--  TIP: -->
- <div class="charts_tip tip_#{crtContext.learningAnalyticsContainer.learningAnalyticsBean.learningBean.tip}"><i class="fa fa-lightbulb-o"></i> 
-	#{prop['charts.tips']}:<br/>
-	#{crtContext.learningAnalyticsContainer.learningAnalyticsBean.learningBean.printTip}
-</div><br clear="all"/><br/>
+	</div>
 
+<div style="display:none;">
 scores:<br/>
 problems score : #{crtContext.learningAnalyticsContainer.learningAnalyticsBean.overallProblemScoreCat} (#{crtContext.learningAnalyticsContainer.learningAnalyticsBean.problemScore})<br/>
 ddx score: #{crtContext.learningAnalyticsContainer.learningAnalyticsBean.overallDDXScoreCat} (#{crtContext.learningAnalyticsContainer.learningAnalyticsBean.DDXScore})<br/>
@@ -149,24 +145,7 @@ problem peer score: #{crtContext.learningAnalyticsContainer.learningAnalyticsBea
 ddx peer score: #{crtContext.learningAnalyticsContainer.learningAnalyticsBean.DDXlistPeerScore.peerPercentage}<br/>
 test peer score: #{crtContext.learningAnalyticsContainer.learningAnalyticsBean.testlistPeerScore.peerPercentage}<br/>
 mng peer score: #{crtContext.learningAnalyticsContainer.learningAnalyticsBean.mnglistPeerScore.peerPercentage}<br/>
-
-<div class="boxes_container">
-	<div id="canvas" class="canvas jtk-surface drag-drop jtk-surface-nopan" >
-
-		  <!-- problems -->
-		  <div id="fdg_box"  class="container fdg_cont" group="fdg_group">
-		   		<div id="fdg_title" class="title"  mytooltip="#{prop['findings.search']}">#{prop['findings']} <i class="fa fa-info-circle"></i></div>	
-
-		  </div>
-		  <!--  diagnoses -->
-		  <div id="ddx_box" class="container ddx_cont" group="ddx_group">	
-		  		<div id="ddx_title"  mytooltip="#{prop['ddx.search']}" class="title">#{prop['ddx']} <i class="fa fa-info-circle"></i></div>	
-
-		  </div>
-		  <!-- tests -->
-		  <div id="tst_box" class="container tst_cont" group="tst_group">
-		  		<div id="tst_title" mytooltip="#{prop['tests.search']}" class="title">#{prop['tests']} <i class="fa fa-info-circle"></i></div>		  		
-
+</div>
 
  	<div class="charts_tip tip_1 sticker"> 
 		<span class="text"> 

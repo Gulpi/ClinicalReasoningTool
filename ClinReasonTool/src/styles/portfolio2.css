@@ -439,3 +439,15 @@ list-style:none;
   -webkit-transform: skew(-55deg,10deg);
   transform: skew(-55deg,10deg);
 }*/
+
+.chart_0{
+    display:none;
+}
+
+.chart_1{
+    display:block;
+}
+
+.chart_2{
+    display:none;
+}

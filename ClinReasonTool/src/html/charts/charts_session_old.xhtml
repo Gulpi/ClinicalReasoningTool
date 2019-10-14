@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"   
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:v="urn:schemas-microsoft-com:vml">
+ <f:view locale="#{crtContext.locale}">     
+ <head>
+<f:event type="preRenderView" listener="#{facesContext.externalContext.response.setHeader('Cache-Control', 'no-cache, no-store')}" />
+
+<title>Illness Script Portfolio</title>
+ <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+
+<script src="../../scripts/jquery112/jquery.js" type="text/javascript"></script>
+<script src="../../scripts/jquery112/jquery-ui.min.js" type="text/javascript"></script>
+<script src="../../scripts/portfolio.js" type="text/javascript"></script>
+<script src="../../scripts/d3/d3.js" type="text/javascript"></script>
+<script src="../../scripts/nvd3/nv.d3.js" type="text/javascript"></script>
+<script src="../../scripts/d3utils.js" type="text/javascript"></script>
+<script src="../../scripts/ajax.js"></script>
+
+<link rel="stylesheet" type="text/css" href="../../scripts/jquery112/ui-lightness/jquery-ui.css" /> 
+<link rel="stylesheet" href="../../styles/portfolio.css" />
+<link rel="stylesheet" href="../../styles/clinreason_boxes.css" />
+<link rel="stylesheet" href="../../styles/font-awesome/css/font-awesome.css" />
+<link rel="stylesheet" href="../../scripts/nvd3/nvd3.css" />
+
+<script language="JavaScript">
+var currentChartNum = 1; //default is overall performance
+var chartLabelMe = "#{prop['charts.me']}";
+var chartLabelPeer = "#{prop['charts.peer']}";
+var peerStatus = 1;
+var sumstDialogTitle = "#{prop['sumst.details']}";
+var sumstSQ = "#{prop['sumst.chart.my']} <br/> #{crtContext.patillscript.summSt.textSQ}";
+var sumstExpSQ = "#{prop['sumst.chart.exp']} <br/>  #{crtContext.expertPatIllScript.summSt.textSQ}";
+var sumstLegend = "#{prop['sumst.sq']}";
+
+$(function() {
+	resetSessionStorage();
+	$("#jdialog").dialog({ //dialog to display sumary statement details:
+		autoOpen: false,
+		modal: true,
+		width: "auto",
+		height: "auto",
+		position: { my: "left+20 top+20", at: "left-0 top+0", of: window },
+		//we have to detect when the user simply closes the jdialog and check whether we have to reset some stuff
+		/*beforeClose: function( event ) {
+		    if ( event.originalEvent ) {
+		    	return closeSubmitDialog();
+		    }
+		}*/
+	});
+	
+	$( this ).tooltip({
+      	items: "[mytooltip]",
+      	position: { my: "left+5 center", at: "right center" },
+      	content: function() {
+        	var element = $( this );
+        	var parent = $( this ).parent();
+			//only show tooltip if item is currently not dragged
+       		if (!$(parent).is('.ui-draggable-dragging')) {
+       		    return $( this ).attr( "mytooltip" );
+       		}
+
+		}
+    });
+	//printLargeOverall();
+	//hide results if boxes are view only or hidden in player
+	if(probBoxUsed=="2" || probBoxUsed=="0") $(".probchart").hide(); 
+	if(ddxBoxUsed=="2" || ddxBoxUsed=="0") $(".ddxchart").hide(); 
+	if(testBoxUsed=="2" || testBoxUsed=="0") $(".testchart").hide(); 
+	if(mngBoxUsed=="2" || mngBoxUsed=="0") $(".mngchart").hide(); 
+});
+
+var chartTypeDisplay = "#{chartConf.typeOfChart}";
+
+</script>
+ </head>
+ <body class="chartbody">
+ 
+<!-- <div class="chart_lg"> #{prop['charts.lg.intro']}</div>-->
+<div id="chart-summary" class="chartsummary">
+		#{prop['chart.all.overall']}: <!-- <i class="fa overallscore_#{crtContext.learningAnalyticsContainer.overallScore.scoreRange}" mytooltip="#{crtContext.learningAnalyticsContainer.overallScore.scoreBasedOnExp}"></i><br/>-->
+		
+		<div class="perfstatus" mytooltip="#{crtContext.learningAnalyticsContainer.overallScore.scoreBasedOnExpPerc}% (#{crtContext.learningAnalyticsContainer.overallPeerScore.expPeerPercentagePerc}%)">
+			<div class="success" style="width:#{crtContext.learningAnalyticsContainer.overallScore.scoreBasedOnExpPerc}%"></div>
+		</div><br/>		
+		#{prop['chart.all.summst']}: <i class="fa score_#{crtContext.learningAnalyticsContainer.sumScore.scoreRange}"></i>
+		<a href="javascript:openSumStDetails();" mytooltip="#{prop['sumst.details.hint']}"><i class="fa fa-info-circle"></i></a>
+		<br/><br/>	
+<i class="fa legend_my"></i> #{prop['charts.legend.me']} 
+<span mytooltip="#{prop['charts.legend.meorg.expl']}" style="cursor:help;"><i class="fa legend_myorg" style="margin-left:10px" ></i> #{prop['charts.legend.meorg']} </span>
+<i class="fa legend_peer" style="margin-left:10px"></i> #{prop['charts.legend.peers']}
+</div>
+ <div class="charts_tip tip_#{crtContext.learningAnalyticsContainer.learningAnalyticsBean.learningBean.tip}"><i class="fa fa-lightbulb-o"></i> 
+	#{prop['charts.tips']}:<br/>
+	#{crtContext.learningAnalyticsContainer.learningAnalyticsBean.learningBean.printTip}
+</div><br clear="all"/><br/>
+<div id="chart-container">
+		<!-- self directed learning: TODO-->
+		<div class="chartbox_cont chart_#{crtContext.sessSetting.probBoxUsed}">
+			<div class="chartbox chartbox_indiv" >
+				<!-- <a href="javascript:printLargeFdg();">--><ui:include src="vp_prob.xhtml" /><!--</a>-->
+			</div>
+			<div class="chart_footer">#{prop['chart.vp.findings']}</div>
+		</div>
+		<div class="chartbox_cont chart_#{crtContext.sessSetting.ddxBoxUsed}">
+			<div class="chartbox chartbox_indiv" >
+				<!--<a href="javascript:printLargeDDX();">--><ui:include src="vp_ddx.xhtml" /><!--</a>-->
+			</div>
+			<div class="chart_footer">#{prop['chart.vp.ddx']}</div>
+		</div>
+		<div class="chartbox_cont chart_#{crtContext.sessSetting.testBoxUsed}">
+			<div class="chartbox chartbox_indiv">
+				<!--<a href="javascript:printLargeTst();">--><ui:include src="vp_test.xhtml" /><!--</a>-->
+			</div>
+			<div class="chart_footer">#{prop['chart.vp.tests']}</div>
+		</div>
+		<div class="chartbox_cont chart_#{crtContext.sessSetting.mngBoxUsed}">
+			<div class="chartbox chartbox_indiv">
+				<!--<a href="javascript:printLargeMng();">--><ui:include src="vp_mng.xhtml" /><!--</a>-->
+			</div>
+			<div class="chart_footer">#{prop['chart.vp.mng']}</div>
+		</div>
+</div>
+<!--  <div style="float:left;position:relative" class="chart_lg">
+	<div style="left:15px;top:5px;"><i mytooltip="#{prop['charts.peers']}" class="fa fa-users"></i> <br/> </div>
+
+	<div class="switch" style="left:30px;">
+	        <input id="peertoggle" class="cmn-toggle cmn-toggle-round" checked="checked" onchange="javascript:togglePeers();" type="checkbox" />
+	        <label for="peertoggle"></label>
+	</div>
+	<div class="chart_lg" style="border:1px;width:400px;height:320px;">
+		<svg id="chartlarge" class="chart" style="width:380px;height:280px;"></svg>
+	</div>
+</div>-->
+
+<div id="jdialog">
+	<!-- #{crtContext.patillscript.summSt.textSQ}-->
+	
+</div>
+
+ </body>
+ </f:view>
+ </html>

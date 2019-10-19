@@ -1,262 +1,444 @@
  
 .chartbody{
-	margin-left:15px;
-	margin-top:15px;
-	font-family:Arial;
-	font-size:0.9em;
+margin-left:15px;
+margin-top:15px;
+font-family:Arial;
+font-size:0.9em;
 }
 
 .chartbody_sm{
-	margin-left:5px;
-	margin-top:5px;
-	font-family:Arial;
-	font-size:0.9em;
+margin-left:5px;
+margin-top:5px;
+font-family:Arial;
+font-size:0.9em;
 }
 
 .resourcesBody{
-	margin-left:0px;
-	margin-top:0px;
-	font-family:Arial;
-	font-size:0.9em;	
+margin-left:0px;
+margin-top:0px;
+font-family:Arial;
+font-size:0.9em;	
 }
 
 a{
-	text-decoration:none;
-	color:#006699 !important;
+text-decoration:none;
+color:#006699 !important;
 }
 a:focus{outline:none !important;}
 
 .portfoliodiv{
-  width: 200px; 
-  height: 200px; 
-   font-size:0.8em;  
-  position:relative;
-  float:left;
-  margin:10px;
-  background-color:#ffffff;
-  border: 1px solid #b0cbdc;
-  /*cursor:move;*/	
+width: 200px; 
+height: 200px; 
+font-size:0.8em;  
+position:relative;
+float:left;
+margin:10px;
+background-color:#ffffff;
+border: 1px solid #b0cbdc;
+/*cursor:move;*/	
 }
 
 .header{
-	background-color:#cccccc;
-	padding: 5px; 
-	width: 190px;
-	font-size:1.0em; 
-	font-weight:bold; 
-	
+background-color:#cccccc;
+padding: 5px; 
+width: 190px;
+font-size:1.0em; 
+font-weight:bold; 
+
 }
 
 .plainList{
-	padding:5px;
-	list-style-type: none; /*icon could be liststyles? */
+padding:5px;
+list-style-type: none; /*icon could be liststyles? */
 }
 
 .portfsearch{
-	position:absolute;
-	float:right;
-	top:5;
-	right:0;
-	width:200px;
-	overflow:hidden;
-	/*background-color:#cccccc;*/
+position:absolute;
+float:right;
+top:5;
+right:0;
+width:200px;
+overflow:hidden;
+/*background-color:#cccccc;*/
 }
 
 .chart{
-	/*width:280px;*/
-	position:relative;
+/*width:280px;*/
+position:relative;
 }
 .chart_header{
-	font-size:0.8em;
-	/*width:280px;*/
+font-size:0.8em;
+/*width:280px;*/
 }
 .chart_container{
-	width:250px;
-	float:left;
-	/*height:150px;*/
+width:250px;
+float:left;
+/*height:150px;*/
 }
 
 
 .displaychart_0{
-	display:none;
+display:none;
 }
 
 .displaychart_1{
-	display:block;
-	width:280px;
-	position:relative;
-	float:left;
+display:block;
+width:280px;
+position:relative;
+float:left;
 }
 
 .displaychart_2{
-	width:150px;
-	height:75px;
+width:150px;
+height:75px;
 }
 
 .svgsmall{
-	width:220px !important;
-	height:110px !important;
+width:220px !important;
+height:110px !important;
 }
 
 
 .chartbox{
-	margin-bottom:10px;
+margin-bottom:10px;
 }
 
 .chartsummary{
-	float:left;
-	width:80%;
-	margin-left:20px;
-	
+float:left;
+width:100%;
+max-width:440px;
+min-width: 320px;
+margin-left:20px;
+
 }
 .chartbox_indiv{
-	width:300px;
-	height:100px;
+width:300px;
+height:100px;
 }
 
 .chartbox_cont{
-	float: left;
-	min-height:250px;
-	width:300px;
-	position:relative;
-	margin-left:10px;
+float: left;
+min-height:250px;
+width:300px;
+position:relative;
+margin-left:10px;
 }
 .chart_footer{
-	margin-left:10px;
+margin-left:10px;
 }
 
 .chart rect {
-    fill: steelblue;
-  }
+fill: steelblue;
+}
 
-  .axis path,
-  .axis line {
-    fill: none;
-    stroke: #000;
-    shape-rendering: crispEdges;
-  }
+.axis path,
+.axis line {
+fill: none;
+stroke: #000;
+shape-rendering: crispEdges;
+}
 
-  .axis text {
-    font-size: 8px;
-  }
-  
-  text {
-            font-size: 8px !important;
-        }
+.axis text {
+font-size: 8px;
+}
+
+text {
+		font-size: 8px !important;
+	}
 
 
 /*low score */
 /*.score_0{
-	content: "\f00c";
-	color:red;
+content: "\f00c";
+color:red;
 }
 */
 /*no score, because nothing done, red cross*/
 .score_0:before{
-	content: "\f00d";
-	color:red;
+content: "\f00d";
+color:red;
 }
 
 /*medium score, yellow check */
 .score_1:before{
-	content: "\f00c";
-	color:yellow;
+content: "\f00c";
+color:yellow;
 }
 
 /*high score, green check */
 .score_2:before{
-	content: "\f00c";
-	color:green;
+content: "\f00c";
+color:green;
 }
 
 /*score display as circles with different colors*/
 .overallscore_0:before{
-	content: "\f111";
-	color:red;
+content: "\f111";
+color:red;
 }
 
 .overallscore_1:before{
-	content: "\f111";
-	color:yellow;
+content: "\f111";
+color:yellow;
 }
 
 .overallscore_2:before{
-	content: "\f111";
-	color:green;
+content: "\f111";
+color:green;
 }
 
 .nvd3.nv-noData{
-	font-size:10px !important;
+font-size:10px !important;
 }
 
 .nv-bar{
-	fill:#006699 !important;
-	stroke:#006699 !important;
+fill:#006699 !important;
+stroke:#006699 !important;
 }
 
 .chart_sm{
-	height:120px;
+height:120px;
 }
 
 .legend_my:before{
-	content: "\f0c8";
-	/*background-color:#006699;*/
-	color:#006699;
+content: "\f0c8";
+/*background-color:#006699;*/
+color:#006699;
 }
 
 
 .legend_myorg:before{
-	content: "\f0c8";
-	color:#2ca02c;
+content: "\f0c8";
+color:#2ca02c;
 }
 
 .legend_peer:before{
-	content: "\f0c8";
-	color:orange;
+content: "\f0c8";
+color:orange;
 }
 
 .perfstatus {
-	display: inline-block;
-	/*width: 60px;
-	height: 11px;*/
-	width: 4.8em;
-	height: 1.3em;
-	/*border: solid 1px #333333;*/
-	margin-top: 0.3em;
-	margin-right: 0.2em;
-	background-color: none;
-	border:0.10em solid #c2c0c1;
-	-moz-border-radius: 0.1em;
-	border-radius: 0.1em;
-	cursor:help;
-	vertical-align: middle;
+display: inline-block;
+/*width: 60px;
+height: 11px;*/
+width: 4.8em;
+height: 1.3em;
+/*border: solid 1px #333333;*/
+margin-top: 0.3em;
+margin-right: 0.2em;
+background-color: none;
+border:0.10em solid #c2c0c1;
+-moz-border-radius: 0.1em;
+border-radius: 0.1em;
+cursor:help;
+vertical-align: middle;
 }
 
 .charts_tip{
-	float:left;
-	position:relative;
-	margin-left:20px;
+float:left;
+position:relative;
+margin-left:20px;
 }
 
 .tip_-1, .tip_{
-	display:none;
+display:none;
+}
+
+.perfstatus {
+	width:80%;
+	max-width:200px;
+	min-width:100px;
+	height: 1.5em;
 }
 
 
 .perfstatus .success {
-     background-color: #4e8443;
-     height: 100%;
+	background-color: #006699;
+ 	height: 100%;
 }
 
 .sqhit{
-	background-color:yellow;
+background-color:yellow;
 }
 
 .resourceslist{
-	margin-left:0px;
-	padding-left:0px;
-	list-style:none;
+margin-left:0px;
+padding-left:0px;
+list-style:none;
 }
+
+.boxes_container, #canvas {
+	width:100% !important;
+}
+
+#ddx_box {
+	margin-right:10px;
+}
+
+.donut {
+	width:100%;
+	height:200px;
+	margin-left:auto;
+	margin-right:auto;
+	position:relative;
+	padding-top:20px;
+}
+
+.donut path.color1 {
+	fill: #006699;
+}
+
+.donut path.color21 {
+	fill: #8b1b3f;
+}
+
+.donut path.color0 {
+	fill: #006699;
+	opacity:0.10;
+}
+
+.donut path.color20 {
+	fill: #8b1b3f;
+	opacity:0.10;
+}
+
+.donut text.legend {
+	fill: #8b1b3f;
+	font-size:12px;
+}
+
+.donut text {
+	fill: #8b1b3f;
+	font-size:20px;
+	font-weight:700;
+}
+
+.vis_cont {
+	width:100%;
+	height:200px;
+	float:left;
+}
+
+.vis_cont .you_container {
+	position:absolute;
+	margin-top:10px;
+	margin-left:20px;
+	text-align: center;
+}
+
+.vis_cont .you_legend {
+	color: #006699;
+	font-size:12px;
+	font-weight:400;
+}
+
+.vis_cont .you, .you {
+	color: #006699;
+	font-size:20px;
+	font-weight:600;
+}
+
+.container {
+	min-height: 220px;
+}
+
+#sum_box {
+	min-height:150px;
+	width:95% !important;
+	max-width:880px;
+	min-width:320px;
+	font-size:115%;
+}
+
+.sum_container .box_content {
+	margin:10px;
+}
+
+.sum_container h4 {
+	margin-bottom:0.25em;
+}
+
+.sum_container .text_box {
+	border:1px solid #dddddd;
+	padding:0.2em;
+	background:#F8F8F8;
+}
+
+
+.sum_container .text_box_legend {
+	margin-top:0.1em;
+	font-size:90%;
+}
+
+/* Sticker */
+.sticker {
+  //position: relative;
+  width: 100%;
+  max-width: 440px;
+  min-width: 320px;
+  float: left;
+  font-weight: normal;
+  margin: 10px;
+  background-color: #fbfbb0;
+  border-radius: 0px 10px 150px / 0 80px 40px 100px;
+  -webkit-box-shadow: 5px 5px 12px 0 rgba(0,0,0,0.3);
+  -moz-box-shadow: 5px 5px 12px 0 rgba(0,0,0,0.3);
+  box-shadow: 5px 5px 12px 0 rgba(0,0,0,0.3);
+  /*-ms-transform: rotateZ(-4deg);
+  -webkit-transform: rotateZ(-4deg);
+  transform: rotateZ(-4deg);*/
+}
+
+.sticker h4 {
+	margin-top:0px;
+	margin-bottom:5px;
+}
+
+.sticker li {
+	margin-left:20px;
+}
+
+
+/* Text on the sticker*/
+.text {
+  text-align: left;
+  display: block;
+  padding: 25px;
+  font-size: 100%;
+}
+
+/* Shadow under sticker */
+.sticker::before {
+  content: '';
+  display: block;
+  position: absolute;
+  z-index: -1;
+  width: 90%;
+  height: 40px;
+  -webkit-box-shadow: 3px 30px 12px rgba(0,0,0,.2);
+  -moz-box-shadow: 3px 30px 12px rgba(0,0,0,.2);
+  box-shadow: 3px 30px 12px rgba(0,0,0,.2);
+  bottom: 40px;
+  right: 5px;
+  -ms-transform: skew(-10deg,2deg);
+  -webkit-transform: skew(-10deg,2deg);
+  transform: skew(-10deg,2deg);
+}
+
+/* Curl */
+/*.sticker::after {
+  content: '';
+  display: block;
+  position: absolute;
+  width: 0; 
+  height: 0;
+  right: 8px;
+  bottom: 1px;
+  border-top: 10px solid rgb(156, 166, 61); 
+  border-right: 10px solid transparent;
+  -webkit-transform: skew(-55deg,10deg);
+  transform: skew(-55deg,10deg);
+}*/
 
 .chart_0{
     display:none;
@@ -269,3 +451,4 @@ a:focus{outline:none !important;}
 .chart_2{
     display:none;
 }
+ 

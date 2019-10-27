@@ -26,14 +26,20 @@ var currentStage = -1;
 var inputhistory = "";
 
 $(function() {
+	$("#res_pl").hide();
+	$("#res_en").hide();	
+	$("#res_de").hide();
+	
 if(locale=="de"){
 	$("#res_de").show();
-	$("#res_en").hide();
 }
 
-else{ //en and pl
+elsde if(locale=="pl"){
+	$("#res_pl").show();
+}
+
+else{ //en etc
 	$("#res_en").show();
-	$("#res_de").hide();
 }
 });
 	
@@ -53,6 +59,13 @@ else{ //en and pl
 <li><a href="https://youtu.be/LzkmabM_Rxw" onclick="javascript:openVideo('4');" target="new"><i class="fa fa-film"></i> #{prop['resources.err']}</a></li>
 <!-- <li><a href="https://youtu.be/WgQxinhiw24" onclick="javascript:openVideo('2');" target="new"><i class="fa fa-film"></i>  #{prop['resources.tool']}</a></li>-->
 <li><a href="https://youtu.be/zvlNSU2ys7k" onclick="javascript:openVideo('3');" target="new"><i class="fa fa-film"></i>  #{prop['resources.sumst']}</a></li>
+
+</ul>
+
+<ul id="res_pl" class="resourceslist">
+<li><a href="https://youtu.be/lk7c2ScGNiE" onclick="javascript:openVideo('1');" target="new"><i class="fa fa-film"></i> #{prop['resources.whatiscr']}</a></li>
+<li><a href="https://youtu.be/W4j9HZhIdOg" onclick="javascript:openVideo('4');" target="new"><i class="fa fa-film"></i> #{prop['resources.err']}</a></li>
+<li><a href="https://youtu.be/X34wKoh-rfk" onclick="javascript:openVideo('3');" target="new"><i class="fa fa-film"></i>  #{prop['resources.sumst']}</a></li>
 
 </ul>
 

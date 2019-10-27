@@ -8,7 +8,7 @@ Fallzusammenfassung in einer Art Concept Map dokumentieren. Dieses Vorgehen hilf
 Geben Sie hier Befunde, Symptome oder Risiko- oder begünstigende Faktoren Ihres Patienten ein, die Ihnen
 relevant erscheinen. <br/><br/>
  
-<b>Differentialdiagnosen:</b> <br/>
+<b>Differentialdiagnosen (falls freigeschalten):</b> <br/>
 Geben Sie hier so früh wie möglich im Fall Diagnosen ein, die Sie für möglich oder wahrscheinlich halten. Über das 
 Pfeilsymbol <i class="fa fa-chevron-circle-down"></i> können Sie eine Verdachtsdiagnose als Arbeitsdignose, als möglich lethale Diagnose, die unbedingt abgekl�rt werden 
 muss oder als ausgeschlossen markieren. <br/>
@@ -16,10 +16,10 @@ Klicken Sie jederzeit im Fall auf <b>Diagnose stellen</b> um sich mit einer Diag
 zu realen Patienten, können Sie hier ruhig mal ein Risiko eingehen! Im Fallverlauf gibt es dann 
 einen Zeitpunkt zu dem Sie sich festlegen müssen, damit Sie den Fall weiter bearbeiten können. <br/><br/>
 
-<b>Untersuchungen/Tests:</b><br/>
+<b>Untersuchungen/Tests (falls freigeschalten):</b><br/>
 Halten Sie hier fest, welche Untersuchungen sie durchführen wollen, um die Verdachtsdiagnosen abzuklären. 
 <br/><br/>
-<b>Therapie:</b><br/>
+<b>Therapie (falls freigeschalten):</b><br/>
 Geben Sie hier Massnahmen ein, die Sie für Ihren Patienten veranlassen wollen. Diese können sowohl auf die 
 finale Diagnose bezogen sein, als auch im Fallverlauf dem Patienten helfen (z.B. Sauserstoffgabe). 
 <br/><br/>

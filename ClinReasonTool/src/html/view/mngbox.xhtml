@@ -5,7 +5,7 @@
     xmlns:f="http://java.sun.com/jsf/core">
 
    	<div id="mng_#{mng.id}"   score="#{mng.score}" class="itembox row2 mngs viewbox" title="#{mng.labelOrSynLabel}" style="left:#{mng.x}px; top:#{mng.boxY}px;">  
-  	 	#{mng.labelOrSynLabel}
+  	 	#{mng.labelOrSynLabel} <span class="stagedisplay">(#{mng.stage})</span>
   	 	 <script language="Javascript">
  			item_arr.push("mng_#{mng.id}");
  		</script>

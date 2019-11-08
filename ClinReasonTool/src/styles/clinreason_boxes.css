@@ -1,9 +1,14 @@
+.labeltst{
+	 /* background-color:#ffffff !important; */
+	  font-size: 0.8em !important;
+}
+
 .crtbody{
 	font-family:Arial;
 	margin-left:0px;
 	margin-right:0px;
-	margin-botton:0px;
-	margin-top:5px;
+	margin-bottom:0px;
+	padding-top:5px;
 }
 * {box-sizing: border-box;}
 
@@ -322,6 +327,10 @@ a#ddx_submit_btn, errorsymbol.a{
     background-color:#ffffff;
 }
 
+.canvas_view {
+    width:600px;
+}
+
 .container {
 
     position: relative; /*absolute;*/
@@ -337,6 +346,10 @@ a#ddx_submit_btn, errorsymbol.a{
 	-moz-box-shadow: 3px 3px 5px 0px rgba(0,0,0,0.28);
 	box-shadow: 3px 3px 5px 0px rgba(0,0,0,0.28);
   
+}
+
+.container_view{
+	width: 260px;
 }
 /* changing bg color for boxes if nothing is entered:*/
 .contcol_1{
@@ -1170,7 +1183,7 @@ input.cmn-toggle-round:checked + label:after {
 	color:orange;
 }
 
-.hide_0{
+.hide_0, .showSOl_false, .noSOl_true{
 	display:none;
 }
 
@@ -1180,7 +1193,8 @@ input.cmn-toggle-round:checked + label:after {
 	display:none;
 }
 /* show expert solution as default if session settings (easy mode) allows:
-.showExpBox_2{
+.showExpBox_2, .showSOl_true, .noSOl_false{
 	display: block !important;
 }
+
 

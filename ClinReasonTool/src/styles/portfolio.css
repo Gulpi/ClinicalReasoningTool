@@ -267,7 +267,7 @@ padding-left:0px;
 list-style:none;
 }
 
-.boxes_container, #canvas {
+.boxes_container, .canvas_full {
 	width:100% !important;
 }
 

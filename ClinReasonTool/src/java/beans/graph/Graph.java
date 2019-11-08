@@ -529,7 +529,12 @@ public class Graph extends DirectedWeightedMultigraph<MultiVertex, MultiEdge> {
 					sb.append("\"start_ep\": \""+edge.getStartEpIdx()+"\",");
 					sb.append("\"target_ep\": \""+edge.getTargetEpIdx()+"\",");	
 					sb.append("\"target_x\": \""+edge.getTargetX()+"\",");	
-					sb.append("\"target_y\": \""+edge.getTargetY()+"\"},");	
+					sb.append("\"target_y\": \""+edge.getTargetY()+"\",");	
+					//we append the stage for the display in view mode (reports) to show stage as a number
+					if(edge.getLearnerCnx()!=null)
+						sb.append("\"stage\": \""+edge.getLearnerCnx().getStage()+"\"},");
+					else
+						sb.append("\"stage\": \""+"-1"+"\"},");
 				}
 			}	
 		}

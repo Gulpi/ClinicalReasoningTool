@@ -66,7 +66,7 @@ $(function() {
 		}
     });
 	
-	function correctFdgScore(in_score) {
+	/*function correctFdgScore(in_score) {
 		return correctSpecialScore (in_score, 40, 2, 80, 40, 3);
 	}
 	
@@ -80,7 +80,7 @@ $(function() {
 	
 	function correctMngScore(in_score) {
 		return correctSpecialScore (in_score, 40, 2, 80, 40, 3);
-	}
+	}*/
     
     $(function() {
     	var totalScore = "#{crtContext.learningAnalyticsContainer.overallScore.scoreBasedOnExpPerc}";
@@ -142,7 +142,7 @@ var chartTypeDisplay = "0";
 	<br clear="all" />
 
 	<div class="boxes_container">
-		<div id="canvas" class="canvas jtk-surface drag-drop jtk-surface-nopan">
+		<div id="canvas" class="canvas canvas_full jtk-surface drag-drop jtk-surface-nopan">
 		  
 			<div id="fdg_box" class="container fdg_cont chart_#{crtContext.sessSetting.probBoxUsed}" group="fdg_group">
 			   		<div id="fdg_title" class="title">#{prop['findings']} </div>	

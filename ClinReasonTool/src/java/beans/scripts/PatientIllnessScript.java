@@ -17,6 +17,7 @@ import beans.*;
 import beans.error.MyError;
 import beans.graph.Graph;
 import beans.helper.TypeAheadBean;
+import beans.helper.export.BasicPatIllscriptTable;
 import beans.relation.*;
 import beans.scoring.LearningAnalyticsBean;
 import beans.scoring.LearningAnalyticsContainer;
@@ -260,11 +261,21 @@ public class PatientIllnessScript extends Beans implements Comparable, IllnessSc
 	public void setExtUId(String extUId) {this.extUId = extUId;}
 	public void setSummSt(SummaryStatement summSt) {this.summSt = summSt;	}	
 	public int getShowSolution() {return showSolution;}
+	public boolean getIsShowSolution() {
+		if(showSolution>0) return true; 
+		else return false;}
 	public void setShowSolution(int showSolution) {this.showSolution = showSolution;}
 	public boolean isPeerSync() {return peerSync;}
 	public boolean getPeerSync() {return peerSync;}
 	public void setPeerSync(boolean peerSync) {this.peerSync = peerSync;}
+	
+	/**
+	 * @deprecated
+	 */
 	public int getConfidence() {return confidence;}
+	/**
+	 * @deprecated
+	 */
 	public String getConfidenceRange() {
 		if(showSolution>0) return ""; //do not display any previous confidence if learner has chosen to get the solution!
 		if(confidence<25) return IntlConfiguration.getValue("submit.slider.after") + " " + IntlConfiguration.getValue("confidence.verylow") +".";
@@ -273,6 +284,9 @@ public class PatientIllnessScript extends Beans implements Comparable, IllnessSc
 		if(confidence==100) return IntlConfiguration.getValue("submit.slider.after") + " " + IntlConfiguration.getValue("confidence.high") +"."; 
 		else return IntlConfiguration.getValue("submit.slider.after") + " " + IntlConfiguration.getValue("confidence.highest") +".";
 	}
+	/**
+	 * @deprecated
+	 */
 	public void setConfidence(int confidence) {this.confidence = confidence;}
 	public long getSummStId() {return summStId;}
 	public void setSummStId(long summStId) {this.summStId = summStId;}		
@@ -365,6 +379,19 @@ public class PatientIllnessScript extends Beans implements Comparable, IllnessSc
 		}
 		return false;
 	}	
+	
+	/**
+	 * Looks whether in the error list stored for this map, there can be found an error of the given type
+	 * @param error
+	 * @return
+	 */
+	public boolean hasError(int error) {
+		if(errors==null || errors.isEmpty()) return false;
+		for(int i=0; i<errors.size();i++) {
+			if(errors.get(i).getType()==error) return true;
+		}
+		return false;
+	}
 	public boolean getSubmitted() {
 		if(submittedStage>0) return true;
 		return false;
@@ -488,6 +515,10 @@ public class PatientIllnessScript extends Beans implements Comparable, IllnessSc
 	
 	private List getRelationsByStage(List items){
 		if(items==null || items.isEmpty()) return null;
+		//when viewing indiv. maps in the reports and the complete map shall be displayed, we return all items here:
+		if(NavigationController.getInstance().getMyFacesContext().isView() && AjaxController.getInstance().getIntRequestParamByKey(AjaxController.REQPARAM_REPORTS_DISPLAYMODE, 0)==1)
+			return items;
+		
 		List<Relation> stageList = new ArrayList<Relation>();
 		for(int i=0; i< items.size(); i++){
 			Relation rel = (Relation) items.get(i);
@@ -724,5 +755,17 @@ public class PatientIllnessScript extends Beans implements Comparable, IllnessSc
 	public int getSumDiff(){
 		if(this.getSummStId()>0) return 0;
 		return FeedbackController.getInstance().getSumStDiffForStage(currentStage, vpId);
+	}
+	
+	/**
+	 * We initialize the creation of individual reports for download / display in table format
+	 */
+	public int getInitReportExport() {
+		BasicPatIllscriptTable basicTab = new BasicPatIllscriptTable(this);
+		return 1;
+	}
+	
+	public int getNumFinalDiagnosisAttempts() {
+		return new DBClinReason().getNumOfFinalDiagnosisAttempts(this.getId());
 	}
 }

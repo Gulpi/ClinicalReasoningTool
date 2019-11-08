@@ -20,8 +20,10 @@
 
 <link rel="stylesheet" type="text/css" href="../../scripts/jquery112/ui-lightness/jquery-ui.css" /> 
 <link rel="stylesheet" type="text/css" href="../../scripts/jsplumb/jsplumb.css" />
+<link rel="stylesheet" href="../../styles/portfolio.css" />
 <link rel="stylesheet" href="../../styles/clinreason_boxes.css" />
 <link rel="stylesheet" href="../../styles/font-awesome/css/font-awesome.css" />
+<link rel="stylesheet" href="../../scripts/nvd3/nvd3.css" />
 
 <script type="text/javascript" src="../../scripts/jquery112/jquery.js"></script>
 <script type="text/javascript" src="../../scripts/jquery112/jquery-ui.min.js"></script>
@@ -33,6 +35,9 @@
 <script src="../../scripts/jsplumb/jsplumb.js"></script>
 <script src="../../scripts/myjsplumb.js"></script>
 <script src="../../scripts/editexp.js"></script>
+<script src="../../scripts/d3/d3.js" type="text/javascript"></script>
+<script src="../../scripts/nvd3/nv.d3.js" type="text/javascript"></script>
+<script src="../../scripts/d3utils.js" type="text/javascript"></script>
 
 <script language="JavaScript">
 //<![CDATA[
@@ -40,9 +45,9 @@ var test = "#{crtContext.initSession}";
 var displayOwnEntryWarn = "#{crtContext.user.userSetting.displayOwnEntryWarn}";
 var displayOwnEntryWarnMsg = "#{prop['list.ownentrywarn']}";
 var openHelpOnLoad = "#{crtContext.user.userSetting.openHelpOnLoad}";
-var msg2="Please connect the hypotheses with the findings";
+var msg2="";
 //if learner has >= this score for final ddx submit, the correct dialog will be displayed (0.5)
-var minScoreCorrect = "#{crtContext.scoreForAllowReSubmit}"; 
+var minScoreCorrect = ""; 
 var scriptId = "#{crtContext.patillscript.id}";
 
 var lang="#{crtContext.locale}";
@@ -67,63 +72,14 @@ var fireAddConnection = true; //false during re-init of exp cnxs, otherwise new 
 var inputhistory = ""; //not needed, just to avoid js errors for ajax.
 var isView = true;
 //which boxes are displayed in active mode (0), hidden (1) or displayed in view mode (2)
-var probBoxUsed = "#{crtContext.sessSetting.probBoxUsed}"; 
+/*var probBoxUsed = "#{crtContext.sessSetting.probBoxUsed}"; 
 var ddxBoxUsed = "#{crtContext.sessSetting.ddxBoxUsed}";
 var testBoxUsed = "#{crtContext.sessSetting.testBoxUsed}";
-var mngBoxUsed = "#{crtContext.sessSetting.mngBoxUsed}";
+var mngBoxUsed = "#{crtContext.sessSetting.mngBoxUsed}";*/
+var displayMode= #{chartConf.indivReportsDisplayMode}; //1=show complete map!
+var initReport = "#{crtContext.patillscript.initReportExport}";
 
 $(function() {
-	//salert(window.location.href);
-	/*$("#jdialog").dialog({
-		autoOpen: false,
-		modal: true,
-		width: "auto",
-		height: "auto",
-		position: { my: "right-20 top+100", at: "right-20 top+100", of: window },
-		//we have to detect when the user simply closes the jdialog and check whether we have to reset some stuff
-		beforeClose: function( event ) {
-		    if ( event.originalEvent ) {
-		    	return closeSubmitDialog();
-		    }
-		}
-	});*/
-	
-	/*$("#connContext").dialog({
-		autoOpen: false,
-		modal: true,
-		width: "auto",
-		height: "auto"
-	});*/
-	
-
-	/*$("#jdialogHelp").dialog({
-		autoOpen: false,
-		modal: true,
-		width: "auto",
-		height: "auto",
-		close: function (event) { //closing effect to show where help button is
-	        $(this).dialog("widget").effect("transfer", {
-	            to: $("#helpicon"),
-	            className: "ui-effects-transfer"
-	        }, 500);
-	    }
-	});*/
-	
-	/*$("#jdialogFbHint").dialog({
-		autoOpen: false,
-		modal: true,
-		width: "auto",
-		height: "auto",
-		position: { my: "left+70 top+10", at: "left+70 top+10", of: window }
-
-	});
-	checkDisplayExpFbHint(fireExpNowAvailable);*/
-
-	
-	/*if(openHelpOnLoad=="true"){
-		 if(currentStageScript=="1")openHelp();
-		 openHelpOnLoad=="false";
-	}*/
 
 	$( this ).tooltip({
       	items: "[mytooltip]",
@@ -131,10 +87,6 @@ $(function() {
       	content: function() {
         	var element = $( this );
         	var parent = $( this ).parent();
-			//only show tooltip if item is currently not dragged
-       		/*if (!$(parent).is('.ui-draggable-dragging')) {
-       		    return $( this ).attr( "mytooltip" );
-       		}*/
 
 		}
     });
@@ -160,8 +112,9 @@ jsPlumb.ready(function () {
         instance.bind("click", function (component, originalEvent) {
         	//todo: ignore expert cnxs....
         	var id = component.id;
-        	if(!id.startsWith("exp_")) 
-        		openConnContext(component.id);
+        	//if(!id.startsWith("exp_")) 
+        		//displayCnxStage();
+        		//displayStageContext(component.id, component.learnerStage);
         });
 
         /*instance.draggable(jsPlumb.getSelector(".drag-drop .itembox"));        
@@ -185,8 +138,37 @@ jsPlumb.ready(function () {
     initConnections();
     initCnxDisplay();
     jsPlumb.fire("jsPlumbDemoLoaded", instance);
-    
+    $(".labeltst").attr("style","margin-bottom:15px !important;border:1px !important;border-color:red !important;");
    
+	toggleStageDisplay();
+	
+	 
+    $(function() {
+    	var totalScore = "#{crtContext.learningAnalyticsContainer.overallScore.scoreBasedOnExpPerc}";
+     	var totalScorePeers = "#{crtContext.learningAnalyticsContainer.overallPeerScore.expPeerPercentagePerc}";
+     	var fdgScore = "#{crtContext.learningAnalyticsContainer.learningAnalyticsBean.overallProblemScoreCat}";
+  		var fdgScorePeers = "#{crtContext.learningAnalyticsContainer.learningAnalyticsBean.problemScore}";
+    	var ddxScore = "#{crtContext.learningAnalyticsContainer.learningAnalyticsBean.overallDDXScoreCat}";
+  		var ddxScorePeers = "#{crtContext.learningAnalyticsContainer.learningAnalyticsBean.DDXScore}";
+    	var tstScore = "#{crtContext.learningAnalyticsContainer.learningAnalyticsBean.overallTestScoreCat}";
+  		var tstScorePeers = "#{crtContext.learningAnalyticsContainer.learningAnalyticsBean.testScore}";
+    	var mngScore = "#{crtContext.learningAnalyticsContainer.learningAnalyticsBean.overallMngScoreCat}";
+  		var mngScorePeers = "#{crtContext.learningAnalyticsContainer.learningAnalyticsBean.mngScore}";
+  		
+  		my_totalScore = validateAnd2PercentScore100(totalScore);
+  		my_totalScorePeers = validateAnd2PercentScore100(totalScorePeers);
+  		my_totalScore = correctSpecialScore (my_totalScore, 40, 2, 80, 40, 3);
+  		my_totalScorePeers = correctSpecialScore (my_totalScorePeers, 40, 2, 80, 40, 3);
+		
+    	$("#my_total_score").html(my_totalScore)
+     	$("#peer_total_score").html(my_totalScorePeers)
+   		$(".perfstatus .success").animate({width: my_totalScore + "%"}, 250)
+    	
+    	simpleDonutHelper("#vis_cont1",fdgScore,fdgScorePeers,correctFdgScore);
+		simpleDonutHelper("#vis_cont2",ddxScore,ddxScorePeers,correctDDxScore);
+		simpleDonutHelper("#vis_cont3",tstScore,tstScorePeers,correctTstScore);
+    	simpleDonutHelper("#vis_cont4",mngScore,mngScorePeers,correctMngScore);
+	});
 });
 
 item_arr = new Array();
@@ -194,45 +176,35 @@ item_arr = new Array();
 //]]>
 </script>
 </head>
-<h:body class="crtbody" data-demo-id="draggableConnectors" data-library="dom"><!-- test: #{crtContext.test}-->
-<!--  <div style="width:300px;top:20px;position:absolute;">Stage:<span id="stageSpan">#{crtContext.patillscript.stage}(#{crtContext.patillscript.currentStage})</span>
-<a href="javascript:chgStage(-1, '../view/boxes.xhtml');">previous stage</a> <a href="javascript:chgStage(1, '../view/boxes.xhtml');">next stage</a></div>
+<h:body class="crtbody" data-demo-id="draggableConnectors" data-library="dom">
 
-<div class="options">
-<div  style="position:absolute;left:15px;top:5px;" ><i id="cnxtogglei" class="fa fa-conn" style="cursor:pointer;" mytooltip="#{prop['cnx.show']}"></i>  </div>
-<div class="switch" style="left:30px;" mytooltip="#{prop['cnx.show']}">
+<div class="options" style="width:560px;">
+#{crtContext.patillscript.VPName}<br/>
+<div  style="position:absolute;left:15px;top:35px;" ><i id="cnxtogglei" class="fa fa-conn" style="cursor:pointer;" mytooltip="#{prop['cnx.show']}"></i>  </div>
+<div class="switch" style="left:30px;top:35px;" mytooltip="#{prop['cnx.show']}">
         <input id="cnxtoggle" class="cmn-toggle cmn-toggle-round" checked="checked" onchange="javascript:toggleCnxDisplay();" type="checkbox" />
         <label for="cnxtoggle"></label>
 </div>
-<div class="expfb_#{crtContext.displayExpFb}" style="position:absolute;left:85px;top:5px;" mytooltip="#{prop['feedback.exp']}"><i class="fa fa-user-md expfb_#{crtContext.displayExpFb}" style="cursor:pointer;" mytooltip="#{prop['feedback.exp']}"></i></div>
-<div class="switch expfb_#{crtContext.displayExpFb}" style="left:100px;" mytooltip="#{prop['feedback.exp']}">
-        <input id="expFeedback" class="cmn-toggle cmn-toggle-round" onchange="toggleExpFeedback('expFeedback', 'icon-user-md', 'expfb_#{crtContext.displayExpFb}');" type="checkbox" />
+<div class="" style="position:absolute;left:85px;top:35px;" mytooltip="#{prop['feedback.exp']}"><i class="fa fa-user-md" style="cursor:pointer;" mytooltip="#{prop['feedback.exp']}"></i></div>
+<div class="switch" style="left:100px;top:35px" mytooltip="#{prop['feedback.exp']}">
+        <input id="expFeedback" class="cmn-toggle cmn-toggle-round" onchange="toggleExpFeedback('expFeedback', 'icon-user-md', 'expfb_true');" type="checkbox" />
         <label for="expFeedback"></label>
+</div><br/>
+	<span class="help" style="float:right;top:45px;">
+<span id="stageSpan" class="stagestepon">#{crtContext.patillscript.stage}(#{crtContext.patillscript.currentStage})
+<a href="javascript:chgStage(-1, '../view/boxes.xhtml');">#{prop['reports.back']}</a> <a href="javascript:chgStage(1, '../view/boxes.xhtml');">#{prop['reports.forward']}</a></span>
+</span>
+<br/><span class="stagestepon"><a href="javascript:toggleShowAll();">#{prop['reports.showcomplete']}</a></span>
+<span class="stagestepoff"><a href="javascript:toggleShowAll();">#{prop['reports.hidecomplete']}</a></span>
+<br/>
+Download basic data (Excel), Download map (Excel)
 </div>
-</div>-->
-<div class="options">
-<div  style="position:absolute;left:15px;top:5px;" ><i id="cnxtogglei" class="fa fa-conn" style="cursor:pointer;" mytooltip="#{prop['cnx.show']}"></i>  </div>
-<div class="switch" style="left:30px;" mytooltip="#{prop['cnx.show']}">
-        <input id="cnxtoggle" class="cmn-toggle cmn-toggle-round" checked="checked" onchange="javascript:toggleCnxDisplay();" type="checkbox" />
-        <label for="cnxtoggle"></label>
-</div>
-<div class="expfb_#{crtContext.displayExpFb}" style="position:absolute;left:85px;top:5px;" mytooltip="#{prop['feedback.exp']}"><i class="fa fa-user-md expfb_#{crtContext.displayExpFb}" style="cursor:pointer;" mytooltip="#{prop['feedback.exp']}"></i></div>
-<div class="switch expfb_#{crtContext.displayExpFb}" style="left:100px;" mytooltip="#{prop['feedback.exp']}">
-        <input id="expFeedback" class="cmn-toggle cmn-toggle-round" onchange="toggleExpFeedback('expFeedback', 'icon-user-md', 'expfb_#{crtContext.displayExpFb}');" type="checkbox" />
-        <label for="expFeedback"></label>
-</div>
-	<span class="help" style="float:right;top:5px;">
-Stage:<span id="stageSpan">#{crtContext.patillscript.stage}(#{crtContext.patillscript.currentStage})</span>
-<a href="javascript:chgStage(-1, '../view/boxes.xhtml');">previous stage</a> <a href="javascript:chgStage(1, '../view/boxes.xhtml');">next stage</a>
-		<!-- <a href="javascript:openHelp('#{crtContext.sessSetting.expFeedbackMode}');" style="float:right;top:5px;" id="helpicon"><i class="fa fa-question-circle " mytooltip="#{prop['help']}"></i></a>--></span>
-	
-</div>
-<div class="hintdiv exphintdivvis_#{crtContext.chgDisplayExpFb}" onclick="javascript:hideTooltips();"><i class="fa fa-arrow-left2 exphintarrow"></i> #{prop['feedback.exp.hint']}</div>
-<div class="boxes_container">
-	<div id="canvas" class="canvas jtk-surface drag-drop jtk-surface-nopan" >
+
+<div class="boxes_container" style="float:left">
+	<div id="canvas" class="canvas canvas_view jtk-surface drag-drop jtk-surface-nopan" >
 
 		  <!-- problems -->
-		  <div id="fdg_box"  class="container fdg_cont" group="fdg_group">
+		  <div id="fdg_box"  class="container container_view fdg_cont hide_#{crtContext.sessSetting.probBoxUsed}" group="fdg_group">
 		   		<div id="fdg_title" class="title"  mytooltip="#{prop['findings.search']}">#{prop['findings']} <i class="fa fa-info-circle"></i></div>	
 		   			  			
 						<h:form id="probform">
@@ -246,7 +218,7 @@ Stage:<span id="stageSpan">#{crtContext.patillscript.stage}(#{crtContext.patills
 						 </h:form>
 		  </div>
 		  <!--  diagnoses -->
-		  <div id="ddx_box" class="container ddx_cont" group="ddx_group">	
+		  <div id="ddx_box" class="container container_view ddx_cont hide_#{crtContext.sessSetting.ddxBoxUsed}" group="ddx_group">	
 		  		<div id="ddx_title"  mytooltip="#{prop['ddx.search']}" class="title">#{prop['ddx']} <i class="fa fa-info-circle"></i></div>	
 		  			
 			  			<h:form id="ddxform">
@@ -262,7 +234,7 @@ Stage:<span id="stageSpan">#{crtContext.patillscript.stage}(#{crtContext.patills
 		  		</h:form>
 		  </div>
 		  <!-- tests -->
-		  <div id="tst_box" class="container tst_cont" group="tst_group">
+		  <div id="tst_box" class="container container_view tst_cont hide_#{crtContext.sessSetting.testBoxUsed}" group="tst_group">
 		  		<div id="tst_title" mytooltip="#{prop['tests.search']}" class="title">#{prop['tests']} <i class="fa fa-info-circle"></i>
 
 		  		</div>		  		
@@ -276,7 +248,7 @@ Stage:<span id="stageSpan">#{crtContext.patillscript.stage}(#{crtContext.patills
 					</h:form>
 		</div>
 		  <!-- managements -->
-		  <div id="mng_box" class="container mng_cont" group="mng_group">
+		  <div id="mng_box" class="container container_view mng_cont hide_#{crtContext.sessSetting.mngBoxUsed}" group="mng_group">
 		  	<div id="mng_title"  mytooltip="#{prop['mng.search']}" class="title">#{prop['mng']} <i class="fa fa-info-circle"></i></div>
 	  			<h:form id="mngform">
 	  			<h:panelGroup>
@@ -290,14 +262,55 @@ Stage:<span id="stageSpan">#{crtContext.patillscript.stage}(#{crtContext.patills
 	  		</div>
 		 <div id="sum_box" class="container sum_container" group="sum_group">	
 		 	<div id="sum_title" mytooltip="#{prop['sumst.hint']}" class="title">#{prop['summst']} <i class="fa fa-info-circle"></i>
-		 		<!--  <span class="icons sumicons">
-		 			<a href="javascript:toggleSumFeedback('expFeedbackSum', 14);" title="#{prop['summst.exp']}" class="expfb_#{crtContext.displayExpFb}"><i mytooltip="#{prop['summst.exp']}" class="fa fa-user-md_off" id="expFeedbackSum"></i></a>		 	
-		 		</span>-->
+
 		 	</div>
 		 	 <div class="node-collapse"></div>
 		 	 #{crtContext.patillscript.summSt.text}
 			 <!--  	<span id="list_score_sum" class="list_score_sum sum_textarea" style="color:green; display:none;"> #{crtContext.patillscript.summStExp}</span> 		-->  
 	</div>
+	</div>
+</div>
+
+	
+	
+<div style="position:absolute;left:570px;width:400px;margin-top:15px;margin-left:15px">
+Final diagnosis on card #{crtContext.patillscript.submittedStage} (
+<span class="showSOl_#{crtContext.patillscript.isShowSolution}">#{prop['reports.showsol']}</span>
+<span class="noSOl_#{crtContext.patillscript.isShowSolution}">#{prop['reports.ownfinal']}</span>)<br/>
+#{prop['reports.numownfinal']}: #{crtContext.patillscript.numFinalDiagnosisAttempts}<br/>
+#{prop['resources.err']}:  #{crtContext.patillscript.errorNum}<br/>
+
+ <div id="chart-summary" >
+	<h3 style="margin-bottom:1em;">#{prop['chart.all.overall']}:</h3>
+		
+		<div class="perfstatus" mytooltip="#{crtContext.learningAnalyticsContainer.overallScore.scoreBasedOnExpPerc}% (#{crtContext.learningAnalyticsContainer.overallPeerScore.expPeerPercentagePerc}%)">
+			<div class="success" style="width:#{crtContext.learningAnalyticsContainer.overallScore.scoreBasedOnExpPerc}%"></div>
+		</div><br/>	
+
+	</div>
+	<div id="vis_cont1" class="vis_cont">
+	<div class="you_container">
+			<span id="you_legend" class="you_legend">#{prop['reports.header.probscore']}:</span><br></br><span class="you">&nbsp;</span>
+		</div>
+		<div id="donut" class="donut" data="80" data2="54" radius="60" radius2="40" arc_width="15" legend="Peers"></div>
+	</div>
+	<div id="vis_cont2" class="vis_cont">
+			<div class="you_container">
+				<span id="you_legend" class="you_legend">#{prop['reports.header.ddxscore']}:</span><br></br><span class="you">&nbsp;</span>
+			</div>
+			<div id="donut" class="donut" data="80" data2="54" radius="60" radius2="40" arc_width="15" legend="Peers"></div>
+	</div>
+	<div id="vis_cont3" class="vis_cont">
+			<div class="you_container">
+				<span id="you_legend" class="you_legend">#{prop['reports.header.tstscore']}:</span><br></br><span class="you">&nbsp;</span>
+			</div>
+			<div id="donut" class="donut" data="80" data2="54" radius="60" radius2="40" arc_width="15" legend="Peers"></div>
+	</div>
+	<div id="vis_cont4" class="vis_cont">
+			<div class="you_container">
+				<span id="you_legend" class="you_legend">#{prop['reports.header.mngscore']}:</span><br></br><span class="you">&nbsp;</span>
+			</div>
+			<div id="donut" class="donut" data="80" data2="54" radius="60" radius2="40" arc_width="15" legend="Your peers"></div>
 	</div>
 </div>
 

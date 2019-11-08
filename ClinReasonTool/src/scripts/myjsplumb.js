@@ -179,7 +179,7 @@ function initConnections(){
 	
 	if(conns!=''){
 		for(j=0; j<conns.length;j++){
-			createConnection(conns[j].id, conns[j].sourceid, conns[j].targetid, conns[j].l, conns[j].e,  conns[j].weight_e,  conns[j].weight_l, conns[j].start_ep, conns[j].target_ep, conns[j].target_x, conns[j].target_y);
+			createConnection(conns[j].id, conns[j].sourceid, conns[j].targetid, conns[j].l, conns[j].e,  conns[j].weight_e,  conns[j].weight_l, conns[j].start_ep, conns[j].target_ep, conns[j].target_x, conns[j].target_y, conns[j].stage);
 		}
 	}
 }

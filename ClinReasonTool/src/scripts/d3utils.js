@@ -509,7 +509,7 @@ function correctSpecialScore(in_score, threshold1, factor1, base2, base2a, quot3
 			result = 100;
 		}
 		
-		try { console.log("correctSpecialScore <- " + in_score + " -> " + result); } catch(x) {};
+		//try { console.log("correctSpecialScore <- " + in_score + " -> " + result); } catch(x) {};
 		
 		return result
 }

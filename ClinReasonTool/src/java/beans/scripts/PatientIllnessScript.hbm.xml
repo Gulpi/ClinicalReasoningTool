@@ -13,7 +13,9 @@
 			</generator>
 		</id>
 		<property name="userId" column="user_id" type="long" />			
-		<property name="courseOfTime" column="courseoftime" type="int"/>	
+		<property name="courseOfTime" column="courseoftime" type="int"/>
+		<property name="creationDate" column="creation_date" type="timestamp"/>
+			
 		<!--  <property name="parentId" column="parent_id" type="long"/>-->	
 		<property name="submittedStage" column="ddx_submitted" type="int"/>
 		<property name="type" column="type" type="int"/>

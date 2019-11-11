@@ -147,6 +147,7 @@ public class CRTFacesContext extends FacesContextWrapper implements MyFacesConte
 		return -1;
 	}
 	public User getUser(){return user;}
+	public User getLearner() {return learner;}
 	public Graph getGraph() {
 		return graph;}
 

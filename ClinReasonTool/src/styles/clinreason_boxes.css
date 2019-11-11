@@ -329,6 +329,7 @@ a#ddx_submit_btn, errorsymbol.a{
 
 .canvas_view {
     width:600px;
+    margin-top: 10px; 
 }
 
 .container {
@@ -1196,5 +1197,15 @@ input.cmn-toggle-round:checked + label:after {
 .showExpBox_2, .showSOl_true, .noSOl_false{
 	display: block !important;
 }
+/* export button for downloading excel*/
+.reportBtn{
+		margin: 5px;
+    padding: 5px 5px 5px 5px; /* 20px makes room for your background image */
+    border: 1px solid #aaa;
+    background-color:#ffffff;
+    color:#006699;
+    cursor:pointer;
+}
+
 
 

@@ -37,7 +37,8 @@ public class ScoreContainer implements Serializable{
 		Iterator<ScoreBean> it = scores.iterator();
 		while(it.hasNext()){
 			ScoreBean sb = it.next(); 
-			if(sb.getType()==type && sb.getScoredItem()==itemId) return sb;
+			if(sb.getType()==type && sb.getScoredItem()==itemId) 
+				return sb;
 		}
 		return null;
 	}

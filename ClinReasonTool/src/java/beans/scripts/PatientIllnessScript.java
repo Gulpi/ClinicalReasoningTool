@@ -17,18 +17,11 @@ import beans.*;
 import beans.error.MyError;
 import beans.graph.Graph;
 import beans.helper.TypeAheadBean;
-import beans.helper.export.BasicPatIllscriptTable;
 import beans.relation.*;
-import beans.scoring.LearningAnalyticsBean;
-import beans.scoring.LearningAnalyticsContainer;
-import beans.scoring.ScoreBean;
+import beans.scoring.*;
 import beans.user.User;
 import beans.xAPI.StatementContainer;
-import controller.AjaxController;
-import controller.FeedbackController;
-import controller.IllnessScriptController;
-import controller.NavigationController;
-import controller.ScoringController;
+import controller.*;
 import database.DBClinReason;
 import properties.IntlConfiguration;
 import util.CRTLogger;
@@ -757,15 +750,15 @@ public class PatientIllnessScript extends Beans implements Comparable, IllnessSc
 		return FeedbackController.getInstance().getSumStDiffForStage(currentStage, vpId);
 	}
 	
-	/**
-	 * We initialize the creation of individual reports for download / display in table format
-	 */
-	public int getInitReportExport() {
-		BasicPatIllscriptTable basicTab = new BasicPatIllscriptTable(this);
-		return 1;
-	}
-	
 	public int getNumFinalDiagnosisAttempts() {
 		return new DBClinReason().getNumOfFinalDiagnosisAttempts(this.getId());
+	}
+	
+	/**
+	 * Exports all map related data into Excel sheets (called from reports area)
+	 */
+	public void getMapAsExcel() {
+		new ExportController().createAndWriteBasicTable(this);
+	
 	}
 }

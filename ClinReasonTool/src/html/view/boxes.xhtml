@@ -77,7 +77,6 @@ var ddxBoxUsed = "#{crtContext.sessSetting.ddxBoxUsed}";
 var testBoxUsed = "#{crtContext.sessSetting.testBoxUsed}";
 var mngBoxUsed = "#{crtContext.sessSetting.mngBoxUsed}";*/
 var displayMode= #{chartConf.indivReportsDisplayMode}; //1=show complete map!
-var initReport = "#{crtContext.patillscript.initReportExport}";
 
 $(function() {
 
@@ -190,16 +189,25 @@ item_arr = new Array();
         <input id="expFeedback" class="cmn-toggle cmn-toggle-round" onchange="toggleExpFeedback('expFeedback', 'icon-user-md', 'expfb_true');" type="checkbox" />
         <label for="expFeedback"></label>
 </div><br/>
-	<span class="help" style="float:right;top:45px;">
-<span id="stageSpan" class="stagestepon">#{crtContext.patillscript.stage}(#{crtContext.patillscript.currentStage})
-<a href="javascript:chgStage(-1, '../view/boxes.xhtml');">#{prop['reports.back']}</a> <a href="javascript:chgStage(1, '../view/boxes.xhtml');">#{prop['reports.forward']}</a></span>
-</span>
-<br/><span class="stagestepon"><a href="javascript:toggleShowAll();">#{prop['reports.showcomplete']}</a></span>
-<span class="stagestepoff"><a href="javascript:toggleShowAll();">#{prop['reports.hidecomplete']}</a></span>
-<br/>
-Download basic data (Excel), Download map (Excel)
-</div>
+	<h:form id="reportsForm">
+<div class="help" style="position:absolut;margin-top:20px;'width:560px;">
+	<h:commandButton value="Download (Excel)" styleClass="reportBtn" action="#{crtContext.patillscript.getMapAsExcel}" />
 
+
+	
+	<span class="stagestepon reportBtn"><a href="javascript:toggleShowAll();">#{prop['reports.showcomplete']}</a></span>
+	<span class="stagestepoff reportBtn"><a href="javascript:toggleShowAll();">#{prop['reports.hidecomplete']}</a></span>
+	
+
+	<span id="stageSpan" class="stagestepon reportBtn"><a href="javascript:chgStage(-1, '../view/boxes.xhtml');"><i style="border:0px;" class="fa fa-arrow-left2"></i></a></span> 
+	<span id="stageSpan" class="stagestepon ">#{crtContext.patillscript.stage}(#{crtContext.patillscript.currentStage})</span>
+	<span id="stageSpan" class="stagestepon reportBtn"><a href="javascript:chgStage(1, '../view/boxes.xhtml');"><i style="border:0px;" class="fa fa-arrow-right2"></i></a></span>
+
+	
+</div></h:form>
+
+
+</div>
 <div class="boxes_container" style="float:left">
 	<div id="canvas" class="canvas canvas_view jtk-surface drag-drop jtk-surface-nopan" >
 
@@ -274,11 +282,11 @@ Download basic data (Excel), Download map (Excel)
 	
 	
 <div style="position:absolute;left:570px;width:400px;margin-top:15px;margin-left:15px">
-Final diagnosis on card #{crtContext.patillscript.submittedStage} (
+<!--  Final diagnosis on card #{crtContext.patillscript.submittedStage} (
 <span class="showSOl_#{crtContext.patillscript.isShowSolution}">#{prop['reports.showsol']}</span>
 <span class="noSOl_#{crtContext.patillscript.isShowSolution}">#{prop['reports.ownfinal']}</span>)<br/>
 #{prop['reports.numownfinal']}: #{crtContext.patillscript.numFinalDiagnosisAttempts}<br/>
-#{prop['resources.err']}:  #{crtContext.patillscript.errorNum}<br/>
+#{prop['resources.err']}:  #{crtContext.patillscript.errorNum}<br/>-->
 
  <div id="chart-summary" >
 	<h3 style="margin-bottom:1em;">#{prop['chart.all.overall']}:</h3>
@@ -290,25 +298,25 @@ Final diagnosis on card #{crtContext.patillscript.submittedStage} (
 	</div>
 	<div id="vis_cont1" class="vis_cont">
 	<div class="you_container">
-			<span id="you_legend" class="you_legend">#{prop['reports.header.probscore']}:</span><br></br><span class="you">&nbsp;</span>
+			<span id="you_legend" class="you_legend">#{prop['donut.header.fdg']}:</span><br></br><span class="you">&nbsp;</span>
 		</div>
 		<div id="donut" class="donut" data="80" data2="54" radius="60" radius2="40" arc_width="15" legend="Peers"></div>
 	</div>
 	<div id="vis_cont2" class="vis_cont">
 			<div class="you_container">
-				<span id="you_legend" class="you_legend">#{prop['reports.header.ddxscore']}:</span><br></br><span class="you">&nbsp;</span>
+				<span id="you_legend" class="you_legend">#{prop['donut.header.ddx']}:</span><br></br><span class="you">&nbsp;</span>
 			</div>
 			<div id="donut" class="donut" data="80" data2="54" radius="60" radius2="40" arc_width="15" legend="Peers"></div>
 	</div>
 	<div id="vis_cont3" class="vis_cont">
 			<div class="you_container">
-				<span id="you_legend" class="you_legend">#{prop['reports.header.tstscore']}:</span><br></br><span class="you">&nbsp;</span>
+				<span id="you_legend" class="you_legend">#{prop['donut.header.test']}:</span><br></br><span class="you">&nbsp;</span>
 			</div>
 			<div id="donut" class="donut" data="80" data2="54" radius="60" radius2="40" arc_width="15" legend="Peers"></div>
 	</div>
 	<div id="vis_cont4" class="vis_cont">
 			<div class="you_container">
-				<span id="you_legend" class="you_legend">#{prop['reports.header.mngscore']}:</span><br></br><span class="you">&nbsp;</span>
+				<span id="you_legend" class="you_legend">#{prop['donut.header.mng']}:</span><br></br><span class="you">&nbsp;</span>
 			</div>
 			<div id="donut" class="donut" data="80" data2="54" radius="60" radius2="40" arc_width="15" legend="Your peers"></div>
 	</div>

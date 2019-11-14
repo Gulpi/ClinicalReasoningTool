@@ -251,9 +251,11 @@ public class ExportController {
 			if(p.getConns()!=null)  row.createCell(14).setCellValue(p.getConns().size());
 			else  row.createCell(14).setCellValue(0);			
 			
-			row.createCell(15).setCellValue(analyticsBean.getLastSummStScore().getOrgScoreBasedOnExp());
-			
-			 if(p.getSummSt()!=null)  row.createCell(16).setCellValue(p.getSummSt().getText());
+			if(analyticsBean.getLastSummStScore()!=null)
+				row.createCell(15).setCellValue(analyticsBean.getLastSummStScore().getOrgScoreBasedOnExp());
+			else  row.createCell(15).setCellValue("");
+		
+			if(p.getSummSt()!=null)  row.createCell(16).setCellValue(p.getSummSt().getText());
 			else  row.createCell(16).setCellValue("");
 			//super.addTableCell( new TableCell(p.getStage(), 15, row));
 			 if(p.hasError(MyError.TYPE_PREMATURE_CLOUSRE)) row.createCell(17).setCellValue(1);

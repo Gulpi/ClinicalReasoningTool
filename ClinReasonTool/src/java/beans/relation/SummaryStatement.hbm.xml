@@ -17,7 +17,15 @@
 		<property name="analyzed" column="analyzed" type="boolean" />
 		<property name="type" column="type" type="int" />
 		<property name="lang" column="lang" type="string" />
-
+		<!-- <property name="test" column="test" type="string" />
+		<property name="testNum" column="test_num_matches" type="int" />
+		<property name="testTransf" column="test_transf" type="int" />
+		<property name="testNumExpMatches" column="test_exp_matches" type="int" />
+		<property name="testSQNum" column="test_sq_num" type="int" />
+		<property name="testSQ" column="test_sq" type="string" />
+		<property name="testExpSQNum" column="test_exp_sq_num" type="int" />
+		<property name="testExpSQ" column="test_exp_sq" type="string" />-->
+		
 		<!-- <map name="sqHits" table="crt.sumstatement_sq" lazy="false" cascade="delete" fetch="select"  order-by="id" >
 	   		<key column="sumst_id" />
 	   		<map-key column="id" type="long"/>	   		

@@ -209,7 +209,7 @@ public class StringUtilities {
 	}
 	
 	private static boolean isMatchBasedOnLevelAndFuzzy(String s1, String s2, Locale loc, int inLeven, int inFuzzy){
-		int leven = StringUtils.getLevenshteinDistance(s1, s2);
+		int leven = StringUtils.getLevenshteinDistance(s1.toLowerCase(), s2.toLowerCase());
 		int fuzzy = StringUtils.getFuzzyDistance(s1.toLowerCase(), s2.toLowerCase(), loc);
 		
 		//compare Strings as they are:
@@ -290,5 +290,18 @@ public class StringUtilities {
 			else sb.append(strList[i]);
 		}
 		return sb.toString();
+	}
+	
+	public static List<String> createStringListFromString(String s){
+		if(s==null || s.trim().isEmpty()) return null;
+		List<String> sList = new ArrayList<String>(); 
+		s = s.replace(",", " ");
+		s = s.replace(".", " ");
+		StringTokenizer st = new StringTokenizer(s);
+		while (st.hasMoreTokens()) {
+			sList.add(st.nextToken().trim());
+		}
+		return sList;
+		
 	}
 }

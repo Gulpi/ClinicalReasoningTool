@@ -118,8 +118,18 @@ public class ScoringSummStAction {
 		if(expSt.getSqHits()==null || expSt.getSqHits().isEmpty()) return 2; //should not happen, would be a bad statement
 		if(learnerSt.getSqHits().size() / expSt.getSqHits().size() >=0.6 ) return 2;
 		if(learnerSt.getSqHits().size() / expSt.getSqHits().size() >=0.3 ) return 1;
-		return 0;
-		
+		return 0;		
+	}
+	
+	/**
+	 * Strictly counting numbers of semantic qualifiers
+	 * @param learnerSt
+	 * @return
+	 */
+	public int calculateSemanticQualScoreNew(SummaryStatement learnerSt){
+		if(learnerSt.getSqHits()==null || learnerSt.getSqHits().isEmpty() || learnerSt.getSqHits().size()<=2) return 0;
+		if(learnerSt.getSqHits().size() >4) return 2;
+		return 1;
 	}
 	
 	/**
@@ -130,7 +140,7 @@ public class ScoringSummStAction {
 	 * @param learnerSt
 	 * @return
 	 */
-	public int calculateTransformation(SummaryStatement expSt, SummaryStatement learnerSt, JsonCreator jc ){
+	/*public int calculateTransformation(SummaryStatement expSt, SummaryStatement learnerSt, JsonCreator jc ){
 		if(learnerSt==null || learnerSt.getText()==null || learnerSt.getText().trim().equals("")) return 0;
 		List<String> matchingWords = SummaryStatementController.getInstance().getMatchingWordsFromMesh(learnerSt.getText(), learnerSt.getLang(), jc);
 		System.out.println(matchingWords);
@@ -153,21 +163,7 @@ public class ScoringSummStAction {
 		new DBClinReason().saveAndCommit(learnerSt);
 		return 0;
 		
-	}
+	}*/
 	
-	private int calculateMatchesWithExpStatement(List<String> matchingWords, String expMatches){
-		int matchCounter = 0;
-		String[] expMatchesArr = expMatches.split("#");
-		if(expMatchesArr==null || expMatchesArr.length==0) return 0;
-		for(int i=0;i<expMatchesArr.length;i++){
-			for(int j=0; j<matchingWords.size(); j++){
-				if(expMatchesArr[i].equalsIgnoreCase(matchingWords.get(j))){
-					matchCounter++;
-					break;
-				}
-			}
-		}
-		return matchCounter;
-	}
 
 }

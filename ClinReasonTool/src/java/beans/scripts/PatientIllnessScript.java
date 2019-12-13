@@ -483,8 +483,7 @@ public class PatientIllnessScript extends Beans implements Comparable, IllnessSc
 		if(type==Relation.TYPE_PROBLEM) return getRelationByListItemId(this.problems, id);
 		if(type==Relation.TYPE_DDX) return getRelationByListItemId(this.diagnoses, id);
 		if(type==Relation.TYPE_MNG) return getRelationByListItemId(this.mngs, id);
-		if(type==Relation.TYPE_TEST) return getRelationByListItemId(this.tests, id);
-		
+		if(type==Relation.TYPE_TEST) return getRelationByListItemId(this.tests, id);		
 		return null;
 	}
 	

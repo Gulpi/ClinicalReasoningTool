@@ -170,4 +170,61 @@ public class ListItem implements Serializable, ListInterface, Comparable{
 		return 0;
 	}
 	
+	/**
+	 * returns true if the ListItem belongs to the mesh category C23 (Pathological Conditions, Signs and Symptoms) either 
+	 * with the first code or with other codes.
+	 * @return
+	 */
+	public boolean isFinding(){
+		if (firstCode!=null && firstCode.startsWith("C23")) return true;
+		if (otherCodes!=null){
+			Iterator it = otherCodes.iterator();
+			while(it.hasNext()){
+				String code = (String) it.next();
+				if(code.startsWith("C23")) return true;
+			}
+		}
+		return false; 
+	}
+	
+	public boolean isAnatomy(){
+		if (firstCode!=null && firstCode.startsWith("A")) return true;
+		/*if (otherCodes!=null){
+			Iterator it = otherCodes.iterator();
+			while(it.hasNext()){
+				String code = (String) it.next();
+				if(code.startsWith("C23")) return true;
+			}
+		}*/
+		return false; 
+	}
+	
+	public boolean isDiagnosis(){
+		if(!isFinding()){
+			if (firstCode!=null && firstCode.startsWith("C")) return true;
+			//if (firstCode!=null && firstCode.startsWith("C14")) return true;			
+		}
+		return false;
+	}
+	
+	public boolean isTest(){
+		if(!isFinding()){
+			if (firstCode!=null && firstCode.startsWith("E01")) return true;
+			//if (firstCode!=null && firstCode.startsWith("C14")) return true;			
+		}
+		return false;
+	}
+	public boolean isTher(){
+		if(!isFinding()){
+			if (firstCode!=null && firstCode.startsWith("E02")) return true;
+			if (firstCode!=null && firstCode.startsWith("E03")) return true;
+			if (firstCode!=null && firstCode.startsWith("E04")) return true;
+			if (firstCode!=null && firstCode.startsWith("E07")) return true;
+			if (firstCode!=null && firstCode.startsWith("D01")) return true;
+			if (firstCode!=null && firstCode.startsWith("D02")) return true;
+			if (firstCode!=null && firstCode.startsWith("D27")) return true;
+			//if (firstCode!=null && firstCode.startsWith("C14")) return true;			
+		}
+		return false;
+	}
 }

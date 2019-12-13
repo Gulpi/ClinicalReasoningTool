@@ -33,6 +33,7 @@ public class JsonCreator {
 	public static final String TYPE_CONTEXT = "I";
 	public static final String TYPE_B = "B";
 	public static final String TYPE_G = "G";
+	public static final String TYPE_ANATOMY = "A";
 
 	public static final String fileNameOneListEN = "src/html/jsonp_en.json"; //TODO we need the path to the HTML folder!!!
 	public static final String fileNameOneListDE = "src/html/jsonp_de.json";
@@ -72,13 +73,13 @@ public class JsonCreator {
 	 * We also store the list items in the SummaryController for using it for the statement analysis and assessment.
 	 * @param loc
 	 */
-	private void exportOneList(Locale loc){
+	public List exportOneList(Locale loc){
 		//setIdsForSyn();
-		List<ListItem> items = new DBList().selectListItemsByTypesAndLang(loc, new String[]{TYPE_PROBLEM, TYPE_TEST,TYPE_DRUGS, TYPE_EPI, TYPE_MANUALLY_ADDED, TYPE_PERSONS, TYPE_HEALTHCARE, TYPE_CONTEXT, TYPE_B, TYPE_G});
+		List<ListItem> items = new DBList().selectListItemsByTypesAndLang(loc, new String[]{TYPE_ANATOMY, TYPE_PROBLEM, TYPE_TEST,TYPE_DRUGS, TYPE_EPI, TYPE_MANUALLY_ADDED, TYPE_PERSONS, TYPE_HEALTHCARE, TYPE_CONTEXT, TYPE_B, TYPE_G});
 		//we collect all items here, to sort it alphabetically
 		List itemsAndSyns = new ArrayList();
 		
-		if(items==null || items.isEmpty()) return; //then something went really wrong!
+		if(items==null || items.isEmpty()) return null; //then something went really wrong!
 		try{
 			File f = getMeshJsonFileByLoc(loc);
 			PrintWriter pw = new PrintWriter(new FileWriter(f));
@@ -88,10 +89,14 @@ public class JsonCreator {
 				ListItem item = items.get(i);
 				if(doAddItem(item)){
 					lines += addItemAndSynonymaNew(item, sb, itemsAndSyns);
+					SummaryStatementController.addListItem(item, loc.getLanguage());
+				}
+				else if(item.getFirstCode().startsWith("A")){
+					SummaryStatementController.addListItemsA(item, loc.getLanguage());
 				}
 			}
 			Collections.sort(itemsAndSyns);
-			SummaryStatementController.addListItems(itemsAndSyns, loc.getLanguage());
+			//SummaryStatementController.addListItems(itemsAndSyns, loc.getLanguage());
 			for(int i=0; i<itemsAndSyns.size();i++){
 				ListInterface li = (ListInterface) itemsAndSyns.get(i);				
 				sb.append("{\"label\": \""+li.getName()+"\", \"value\": \""+li.getIdForJsonList()+"\"},\n");
@@ -103,9 +108,11 @@ public class JsonCreator {
 			pw.flush();
 		    pw.close();
 		    CRTLogger.out("lines exported: " + lines, CRTLogger.LEVEL_PROD);
+		    return itemsAndSyns;
 		}
 		catch( Exception e){
 			CRTLogger.out(StringUtilities.stackTraceToString(e), CRTLogger.LEVEL_PROD);
+			return null;
 		}
 	}
 	
@@ -124,6 +131,7 @@ public class JsonCreator {
 		if(item.isIgnored()) return false;
 		//D:
 		if(item.getItemType().equals("D") && item.getLevel()>=10) return false;
+		if(item.getItemType().equals("A")) return false;
 		if(item.getFirstCode()==null) return true;
 		if(item.getFirstCode().startsWith("D20.0") || item.getFirstCode().startsWith("D20.1")) return false;
 		if(item.getFirstCode().startsWith("D20.3") || item.getFirstCode().startsWith("D20.4")) return false;

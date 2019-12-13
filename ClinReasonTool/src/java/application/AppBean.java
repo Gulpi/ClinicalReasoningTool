@@ -87,6 +87,8 @@ public class AppBean extends ApplicationWrapper implements HttpSessionListener{
 	 * Loading any 
 	 */
 	public AppBean(){
+
+	    
 		long startms = System.currentTimeMillis();
 		CRTLogger.out("Start AppBean init:"  + startms + "ms", CRTLogger.LEVEL_PROD);
 		HibernateUtil.initHibernate();
@@ -102,6 +104,8 @@ public class AppBean extends ApplicationWrapper implements HttpSessionListener{
 	    	properties.load(input);
 	    }
 	    catch(Exception e){}
+	    
+
 	    //does not have to be done on every restart:
 	    new JsonCreator().initJsonExport(context); 
 	    //recodeUsrIds();
@@ -125,15 +129,18 @@ public class AppBean extends ApplicationWrapper implements HttpSessionListener{
 	    	//we load the semantic qualifiers and analyze any summary statements that have not yet been analyzed.
 	    	if(semanticQuals==null) semanticQuals = SummaryStatementController.loadSemanticQuals();
 	    	if(semanticQuals!=null) SummaryStatementController.analyzeSemanticQualsStatements();
+	    	//testing:
+		    SummaryStatementController.testSummStRating();
 	    }
 	    catch(Exception e){
 	    	CRTLogger.out("AppBean(): " + StringUtilities.stackTraceToString(e), CRTLogger.LEVEL_ERROR);
     	
 	    }
 	    CRTLogger.out("End AppBean init:"  + (System.currentTimeMillis()-startms) + "ms", CRTLogger.LEVEL_PROD);
+	    
 	}
 	
-	private void recodeUsrIds(){
+	/*private void recodeUsrIds(){
 		DBUser dbu = new DBUser();
 		List<User> users = dbu.selectUsers();
 		if(users==null) return; 
@@ -145,7 +152,7 @@ public class AppBean extends ApplicationWrapper implements HttpSessionListener{
 				dbu.saveAndCommit(u);
 			}
 		}
-	}
+	}*/
 	/**
 	 * mapping of longmenu lists with the mesh list
 	 * @param context

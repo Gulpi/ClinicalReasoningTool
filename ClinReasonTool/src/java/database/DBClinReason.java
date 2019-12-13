@@ -295,6 +295,16 @@ public class DBClinReason /*extends HibernateUtil*/{
 		st.setSqHits(selectSummaryStatementSQsBySumId(st.getId(), s));
 		return st;
 	}
+
+	public SummaryStatement selectExpSummStByVPId(long id, Session s){
+		if(id<=0) return null;
+		if(s==null) s = instance.getInternalSession(Thread.currentThread(), false);
+		Criteria criteria = s.createCriteria(SummaryStatement.class,"SummaryStatement");
+		criteria.add(Restrictions.eq("id", new Long(id)));
+		SummaryStatement st = (SummaryStatement) criteria.uniqueResult();
+		st.setSqHits(selectSummaryStatementSQsBySumId(st.getId(), s));
+		return st;
+	}
 	
 	private List selectSummaryStatementSQsBySumId(long summStId, Session s){
 		//Session s = instance.getInternalSession(Thread.currentThread(), false);

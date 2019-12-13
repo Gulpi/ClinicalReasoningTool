@@ -40,21 +40,26 @@ var expendpoint = {
 }
 
    
-function createConnection(cnxId, sourceId, targetId, learner, exp, expWeight, learnerWeight, startEpIdx, targetEpIdx, targetX, targetY){
+function createConnection(cnxId, sourceId, targetId, learner, exp, expWeight, learnerWeight, startEpIdx, targetEpIdx, targetX, targetY, learnerStage){
+
+	if(isView && displayMode==1){ //view in reports
+		createViewConnection(cnxId, sourceId, targetId, learner, exp, expWeight, learnerWeight, startEpIdx, targetEpIdx, targetX, targetY, learnerStage);
+		return;
+	}
 
 	if(/*!expFeedback &&*/ learner=="0" && exp=="1"){
-		createExpConnection(cnxId, sourceId, targetId, expWeight, learnerWeight, startEpIdx, targetEpIdx,  targetX, targetY)
+		createExpConnection(cnxId, sourceId, targetId, expWeight, learnerWeight, startEpIdx, targetEpIdx,  targetX, targetY);
 		return;
 	}
 	if(instance.getEndpoints==null || instance.getEndpoints(sourceId)==undefined || instance.getEndpoints(targetId)==undefined)
 		return;
-	
 	var epSource = getEndpointForCnx(sourceId, startEpIdx);
 	var epTarget =  getEndpointForCnx(targetId, targetEpIdx); 
 	var target  = $("#"+targetId)[0];
 	var color = getWeightToColor(learnerWeight);
 	var lw = getWeightToLineWidth(learnerWeight);
 	var cnx;
+	
 	if(targetX>=0 && targetY>=0){ //with have a dynamic position
 		cnx = instance.connect({
 			source:epSource, 
@@ -79,11 +84,63 @@ function createConnection(cnxId, sourceId, targetId, learner, exp, expWeight, le
 			    	position:[targetX, targetY]}],*/
 			id:"exp_"+cnxId,
 			//detachable:false,
-			paintStyle: { strokeStyle: color, strokeWidth: lw, stroke:color, outlineStroke: "transparent", outlineWidth: 5 }, //stroke:color needed for 2.2.0
+			paintStyle: { strokeStyle: color, strokeWidth: lw, stroke:color, outlineStroke: "transparent", outlineWidth: 5 } //stroke:color needed for 2.2.0
 		});
 	}
 
-	$(cnx).attr('id', cnxId);
+	$(cnx).attr('id', cnxId);	
+}
+
+/**
+ * creates the connections with labels for the view in the reports if a map is displayed completely.
+ * @returns
+ */
+function createViewConnection(cnxId, sourceId, targetId, learner, exp, expWeight, learnerWeight, startEpIdx, targetEpIdx, targetX, targetY, learnerStage){
+	
+	if(/*!expFeedback &&*/ learner=="0" && exp=="1"){
+		createExpConnection(cnxId, sourceId, targetId, expWeight, learnerWeight, startEpIdx, targetEpIdx,  targetX, targetY);
+		return;
+	}
+
+	if(instance.getEndpoints==null || instance.getEndpoints(sourceId)==undefined || instance.getEndpoints(targetId)==undefined)
+		return;
+	var epSource = getEndpointForCnx(sourceId, startEpIdx);
+	var epTarget =  getEndpointForCnx(targetId, targetEpIdx); 
+	var target  = $("#"+targetId)[0];
+	var color = getWeightToColor(learnerWeight);
+	var lw = getWeightToLineWidth(learnerWeight);
+	var cnx;
+	//if(learnerWeight==2 || learnerWeight=="2") return; //implicit connection
+	
+	if(targetX>=0 && targetY>=0){ //with have a dynamic position
+		cnx = instance.connect({
+			source:epSource, 
+			target:target,
+			//endpoint:"Dot",
+		    maxConnections: 10,
+			//anchor:[ "Perimeter", { shape: "Rectangle" }, { position:[10, 0]}],
+			anchor: ["Perimeter", { shape:"Rectangle" }],
+			    	//position:[targetX, targetY]}],
+					
+			id:"exp_"+cnxId,
+			//detachable:false,
+			paintStyle: { strokeStyle: color, strokeWidth: lw, stroke:color, outlineStroke: "transparent", outlineWidth: 5  }, //stroke:color needed for 2.2.0
+			overlays:[["Label", {label:"<span class=\"labeltst\">("+learnerStage+")</span>", location:0.5, id:"label_"+cnxId}]]
+
+		});		
+	}
+	else{
+		cnx = instance.connect({
+			source:epSource, 
+			target:epTarget,
+		    maxConnections: 10,
+			id:"exp_"+cnxId,
+			paintStyle: { strokeStyle: color, strokeWidth: lw, stroke:color, outlineStroke: "transparent", outlineWidth: 5 }, //stroke:color needed for 2.2.0
+			overlays:[["Label", {label:"<span class=\"labeltst\">("+learnerStage+")</span>", location:0.5, id:"label_"+cnxId}]]
+		});
+	}
+
+	$(cnx).attr('id', cnxId);	
 }
 
 function getEndpointForCnx(itemId, epIdx){
@@ -191,6 +248,22 @@ function openConnContext(cnxId){
 	$("#connContext" ).dialog( "open" );
 	$("#conn_id").html(cnxId);
 	$("#connContext").show();
+}
+
+/**
+ * in view mode (reports) we display the stage next to the connection when the complete map 
+ * shall be displayed.
+ * @param cnxId
+ * @returns
+ */
+function displayCnxStage(){
+	
+	var cns = instance.getConnections('*');
+	for(var i =0; i<cns.length; i++){
+		var cnx = cns[i];
+		alert(cnx.learnerStage);
+	}
+		
 }
 
 function chgConnectionWeight(weight){

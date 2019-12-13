@@ -7,6 +7,7 @@ import org.hibernate.criterion.*;
 
 import beans.scripts.PatientIllnessScript;
 import beans.scripts.VPScriptRef;
+import beans.LogEntry;
 import beans.relation.*;
 import beans.relation.SummaryStatement;
 import beans.relation.SummaryStatementSQ;
@@ -388,5 +389,22 @@ public class DBClinReason /*extends HibernateUtil*/{
 			connMap.put(new Long(conns.get(i).getId()), conns.get(i));
 		}
 		return connMap;
+	}
+	
+	/**
+	 * Get the number of attempts for submitting a final diagnosis
+	 * @param s
+	 * @param patIllScriptId
+	 * @return
+	 */
+	public int getNumOfFinalDiagnosisAttempts( long patIllScriptId) {
+		Session s = instance.getInternalSession(Thread.currentThread(), false);
+		Criteria criteria = s.createCriteria(LogEntry.class, "LogEntry");
+		criteria.add(Restrictions.eq("patIllscriptId", new Long(patIllScriptId)));
+		criteria.add(Restrictions.eq("action", new Integer(LogEntry.SUBMITDDX_ACTION)));
+		List<LogEntry> attempts = criteria.list();
+		if(attempts==null) return 0;
+		return attempts.size();
+		
 	}
 }

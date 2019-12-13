@@ -267,4 +267,268 @@ function printBarLineComboChartTwoLines(data, orgdata, peerdata, chartId, title,
 
 }*/
 
+function drawSimpleMultipleDonutChart(element, percent, percent2, width, height, text_y, duration, transition, startAng, endAng, inFormat) {
+	var myWidthCheck  = width!=null; 
+	width = (width!=null && typeof width !== 'undefined') ? width : d3.select(element).attr("width");
+	height = (height!=null && typeof height !== 'undefined') ? height : d3.select(element).attr("height");
+	if (!width) {
+		width = d3.select(element).node().getBoundingClientRect().width;
+	}
+	if (!height) {
+		height = d3.select(element).node().getBoundingClientRect().height;
+	}
+	text_y = typeof text_y !== 'undefined' ? text_y : "-.10em";
+	percent = parseInt(percent);
+	if (percent < 0) {
+		return;
+	}
+	var has_percent2 = (percent2>=0);
+	percent2 = parseInt(percent2);
+	if (percent2 < 0) {
+		percent2 = 0;
+		//return;
+	}
+	
+	
+	
+	var dataset = {
+	    lower: d3utils_calcPercent(100),
+	    upper: d3utils_calcPercent(100-percent)
+	  };
+	var dataset2 = {
+			    lower: d3utils_calcPercent(100),
+			    upper: d3utils_calcPercent(100-percent2)
+			  };
+	
+	var radius = Math.min(width, height) / 2;
+	var radius2 = Math.min(width, height) / 4;
+	var transformX = width / 2;
+	var transformY = height / 2;
+	
+	var my_startAng = 1;
+	var my_endAng = -1;
+	if (startAng) {
+		my_startAng = startAng;
+	}
+	if (endAng) {
+		my_endAng = endAng;
+	}
 
+	var pie = d3.layout.pie().sort(null)
+		.startAngle(my_startAng * Math.PI)
+		.endAngle(my_endAng * Math.PI);
+	
+	var isPercentFormat = false;
+	if (!inFormat) {
+		inFormat = ".0%";
+	}
+	if (inFormat && inFormat.indexOf("%") != -1) {
+		isPercentFormat = true;
+	}
+	var format = d3.format(inFormat);
+	var arc_width = 20;
+	
+	
+	
+	  var tmp = d3.select(element).attr("radius");
+	  if (tmp) {
+		  radius = parseInt(tmp);
+	  }
+	  tmp = d3.select(element).attr("radius2");
+	  if (tmp) {
+		  radius2 = parseInt(tmp);
+	  }
+	  tmp = d3.select(element).attr("arc_width");
+	  if (tmp) {
+		  arc_width = parseInt(tmp);
+	  }
+	  
+	  if (!has_percent2) {
+			arc_width = 25;
+		}
+	  
+	var arc = d3.svg.arc()
+	    .innerRadius(radius - arc_width)
+	    .outerRadius(radius);
+	
+	var arc2 = d3.svg.arc()
+    .innerRadius(radius2 - arc_width)
+    .outerRadius(radius2);
+
+	var svg = d3.select(element).append("svg")
+	    .attr("width", width)
+	    .attr("height", height)
+	    .append("g")
+	    .attr("transform", "translate(" + transformX + "," + transformY + ")");
+
+	var path = svg.selectAll("path")
+	    .data(pie(dataset.lower))
+	    .enter().append("path")
+	    .attr("class", function(d, i) { return "color" + i })
+	    .attr("d", arc)
+	    .each(function(d) { this._current = d; });
+	
+	var path2 = null;
+	if (has_percent2) {
+		path2 = svg.selectAll("g").append("g")
+    	.attr("transform", "translate(" + transformX + "," + transformY + ")")
+		.data(pie(dataset2.lower))
+		.enter().append("path")
+		.attr("class", function(d, i) { return "color2" + i })
+		.attr("d", arc2)
+		.each(function(d) { this._current = d; }); // store the initial values
+	}
+	
+	var text = svg.append("text")
+	    .attr("text-anchor", "middle")
+	    .attr("dy", text_y);
+	
+	var text2 = null;
+	
+	if (has_percent2) {
+		var tmp2 = d3.select(element).attr("legend_dy");
+		tmp = d3.select(element).attr("legend");
+		if (tmp && tmp != "") {
+			if (!tmp2 || tmp2=="") {
+				tmp2 = "-.6em";
+			}
+			text2 = svg.append("text").attr("text-anchor", "middle")
+		    .attr("dy", tmp2)
+			.attr("class", "legend");
+			text2.text( tmp );
+		}
+	}
+	
+	//text.text( format(percent / 100) );
+		
+	
+		var progress = 0;
+		var timeout = setTimeout(function () {
+		  clearTimeout(timeout);
+		  path = path.data(pie(dataset.upper)); // update the data
+		  path.transition().duration(duration).attrTween("d", function (a) {
+		    // Store the displayed angles in _current.
+		    // Then, interpolate from _current to the new angles.
+		    // During the transition, _current is updated in-place by d3.interpolate.
+		    var i  = d3.interpolate(this._current, a);
+		    var i2 = d3.interpolate(progress, percent)
+		    this._current = i(0);
+		    return function(t) {
+		    	 d3.select(element).select(function() { return this.parentNode; }).selectAll(".you").html(format(i2(t) / (isPercentFormat ? 100 : 1)));
+		      //text.text( format(i2(t) / 100) );
+		      return arc(i(t));
+		    };
+		  }); // redraw the arcs
+		}, 200);
+		
+		progress2 = 0;
+		var timeout2 = setTimeout(function () {
+		  clearTimeout(timeout2);
+		  if (path2) {
+			  path2 = path2.data(pie(dataset2.upper)); // update the data
+			  path2.transition().duration(duration).attrTween("d", function (a) {
+				  // Store the displayed angles in _current.
+		    // Then, interpolate from _current to the new angles.
+		    // During the transition, _current is updated in-place by d3.interpolate.
+				  var i2  = d3.interpolate(this._current, a);
+				  var i22 = d3.interpolate(progress2, percent2)
+				  this._current = i2(0);
+				  return function(t) {
+					  text.text( format(i22(t) / (isPercentFormat ? 100 : 1)) );
+					  return arc2(i2(t));
+				  };
+			  }); // redraw the arcs
+		  }
+		}, 200);
+		
+}
+
+function validateAnd2PercentScore(in_score) {
+	var result = 0;
+	if (!in_score || in_score == "") {
+		return 0;
+	}
+	
+	try {
+		result = parseFloat(in_score);
+		if (result<0) {
+			result = 0;
+		}
+		else if (result>1) {
+			result = 1;
+		}
+	}
+	catch(x) {
+	}
+	
+	return result * 100;
+}
+
+function validateAnd2PercentScore100(in_score) {
+	var result = 0;
+	if (!in_score || in_score == "") {
+		return 0;
+	}
+	
+	try {
+		result = parseFloat(in_score);
+		
+		if (result<0) {
+			result = 0;
+		}
+		else if (result>100) {
+			result = 100;
+		}
+	}
+	catch(x) {
+	}
+	
+	return result;
+}
+
+function d3utils_calcPercent(percent) {
+	return [percent, 100-percent];
+	};
+
+	
+function correctSpecialScore(in_score, threshold1, factor1, base2, base2a, quot3 ) {
+		var result = in_score;
+		
+		
+		if (result <= threshold1) {
+			result = result * factor1;
+		}
+		else {
+			result = base2 + (result-base2a)/quot3;
+		}
+		
+		if (result<0) {
+			result = 0;
+		}
+		else if (result>100) {
+			result = 100;
+		}
+		
+		//try { console.log("correctSpecialScore <- " + in_score + " -> " + result); } catch(x) {};
+		
+		return result
+}
+
+function simpleDonutHelper(in_id,in_my,in_peers, func_correct) {
+	// alert(in_id + ":" + in_my + ","+in_peers)
+	var my_val = validateAnd2PercentScore(in_my);
+	var peers_val = validateAnd2PercentScore(in_peers);
+	if (func_correct) {
+		my_val = func_correct(my_val);
+		peers_val = func_correct(peers_val);
+	}
+	
+	$(in_id + ' .donut').attr('data',my_val);
+	$(in_id + ' .donut').attr('data2',peers_val);
+	drawSimpleMultipleDonutChart(
+		in_id + ' .donut',
+		my_val,peers_val,
+		null,
+		null,
+		".7em",100,100,1,-1,"01d");
+}

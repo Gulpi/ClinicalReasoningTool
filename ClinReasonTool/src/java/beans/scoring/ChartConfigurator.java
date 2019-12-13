@@ -75,6 +75,14 @@ public class ChartConfigurator {
 	public int getDisplaySumStChart(){ return displayChart(LearningAnalyticsContainer.CATEGORY_REPRESENTATION);}
 	public int getDisplayOverallChart(){ return displayChart(LearningAnalyticsContainer.CATEGORY_OVERALL);}
 	
+	/**
+	 * 1= show complete individual map; 0 or -1 show in a step-through mode.
+	 * @return
+	 */
+	public int getIndivReportsDisplayMode() {
+		return AjaxController.getInstance().getIntRequestParamByKey(AjaxController.REQPARAM_REPORTS_DISPLAYMODE, -1);
+
+	}
 	private int displayChart(int type){
 		if(typeOfChart==DISPLAY_ALLCHARTS || DISPLAY_ALLCHARTS==type) return 2; 
 		if(typeOfChart==type) return 1;

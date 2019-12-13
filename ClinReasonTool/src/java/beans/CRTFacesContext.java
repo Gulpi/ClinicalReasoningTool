@@ -20,10 +20,8 @@ import beans.scripts.*;
 import beans.user.SessionSetting;
 import beans.user.User;
 import controller.*;
-import database.DBEditing;
 import database.DBUser;
-import util.CRTLogger;
-import util.StringUtilities;
+import util.*;
 
 /**
  * The facesContext for a session....
@@ -37,8 +35,8 @@ import util.StringUtilities;
 public class CRTFacesContext extends FacesContextWrapper implements MyFacesContext/*implements Serializable*/{
 	public static final String CRT_FC_KEY = "crtContext";
 	
-	//private long userId = -1;
 	private User user;
+	private User learner; //if access is from reports we store here the learner user object
 	private IllnessScriptController isc = new IllnessScriptController();
 	private PatientIllnessScript patillscript;
 	private Graph graph;
@@ -149,6 +147,7 @@ public class CRTFacesContext extends FacesContextWrapper implements MyFacesConte
 		return -1;
 	}
 	public User getUser(){return user;}
+	public User getLearner() {return learner;}
 	public Graph getGraph() {
 		return graph;}
 
@@ -224,7 +223,8 @@ public class CRTFacesContext extends FacesContextWrapper implements MyFacesConte
 	}
 	
 	public SessionSetting getSessSetting(){ 
-		return sessSetting;}
+		return sessSetting;
+		}
 
 	public LearningAnalyticsBean getLearningAnalytics() {
 		if(patillscript.isExpScript()) return null;
@@ -380,7 +380,7 @@ public class CRTFacesContext extends FacesContextWrapper implements MyFacesConte
 		if(this.user!=null && this.patillscript!=null && this.patillscript.getExtUId().equals(extUId)) return; //then script has already been loaded
 		long crtLearnerId = -1;
 		if(learnerId!=null){
-			User learner = new DBUser().selectUserByExternalId(learnerId, systemId);
+			 learner = new DBUser().selectUserByExternalId(learnerId, systemId);
 			if(learner!=null) crtLearnerId = learner.getUserId();
 		} 
 		//TODO check for shared secret!
@@ -390,6 +390,8 @@ public class CRTFacesContext extends FacesContextWrapper implements MyFacesConte
 		if(this.patillscript!=null){
 			loadExpScripts(false);
 			initGraph();		
+			analyticsContainer = new LearningAnalyticsContainer(learner.getUserId());
+			analyticsContainer.addLearningAnalyticsBean(patillscript.getId(), patillscript.getVpId());
 		}
 	}
 	

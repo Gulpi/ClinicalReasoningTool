@@ -9,6 +9,7 @@ function chgStage(chg, loc){
 		alert("last stage");
 		return;
 	}
+
 	var oldStage = currentStage;
 	currentStage += chg;
 	var winloc = window.location.href;
@@ -16,7 +17,26 @@ function chgStage(chg, loc){
 	if(winloc.indexOf("stage")<0) winloc = loc+"?stage="+currentStage;
 	else {
 		winloc = location.href.replace("stage="+oldStage, "stage="+currentStage);		
+	}	
+	window.location.href = winloc;
+}
+
+/**
+ * the display of the individual map is either as a step-thru (0) or complete map display (1)
+ * @param url
+ * @returns
+ */
+function toggleShowAll(){
+	var winloc = window.location.href;
+	if(winloc.indexOf("repdm")<0) winloc = winloc+"&repdm=0";
+
+	if (displayMode==1){
+		winloc = winloc.replace("repdm=1", "repdm=0");
 	}
+	else
+		winloc = winloc.replace("repdm=0", "repdm=1");
+	
+	//alert ( winloc);
 	window.location.href = winloc;
 }
 
@@ -76,4 +96,15 @@ function createNewScript(){
 	$("#jdialog").dialog( "option", "position", [0,0] );
 	$("#jdialog").html();
 	$("#jdialog").show();
+}
+
+function toggleStageDisplay(){
+    $(".stagedisplay").hide();
+    $(".stagestepon").show();
+    $(".stagestepoff").hide();
+    if(displayMode==1){
+    	$(".stagedisplay").show(); //display of stages
+    	$(".stagestepon").hide(); //the navigation
+    	$(".stagestepoff").show();
+    }
 }

@@ -1019,3 +1019,19 @@ function removeElems(className){
 	exp_arr = new Array();
 	turnOverallExpFeedbackOff("", "");
 }
+
+function correctFdgScore(in_score) {
+	return correctSpecialScore (in_score, 40, 2, 80, 40, 3);
+}
+
+function correctDDxScore(in_score) {
+	return correctSpecialScore (in_score, 40, 2, 80, 40, 3);
+}
+
+function correctTstScore(in_score) {
+	return correctSpecialScore (in_score, 40, 2, 80, 40, 3);
+}
+
+function correctMngScore(in_score) {
+	return correctSpecialScore (in_score, 40, 2, 80, 40, 3);
+}

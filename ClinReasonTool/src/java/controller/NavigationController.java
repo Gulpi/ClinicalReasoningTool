@@ -2,7 +2,8 @@ package controller;
 
 import java.io.Serializable;
 
-import javax.enterprise.context.RequestScoped;
+//import javax.enterprise.context.RequestScoped;
+import  javax.faces.bean.RequestScoped;
 import javax.faces.bean.ManagedBean;
 import javax.faces.context.*;
 

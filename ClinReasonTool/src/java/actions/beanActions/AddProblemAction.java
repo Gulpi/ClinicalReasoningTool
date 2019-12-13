@@ -9,7 +9,7 @@ import javax.faces.application.FacesMessage.Severity;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpServletRequest;
 
-import org.hibernate.tool.hbm2x.StringUtils;
+//import org.hibernate.tool.hbm2x.StringUtils;
 
 import beans.*;
 import beans.graph.Graph;

@@ -193,10 +193,22 @@ public class JsonCreator {
 	}
 	
 	public static File getMeshJsonFileByLang(String lang){
-		if (lang.equals("de")) return new File(context.getRealPath(fileNameOneListDE));
-		if (lang.equals("pl")) return new File(context.getRealPath(fileNameOneListPL));
-		if (lang.equals("sv")) return new File(context.getRealPath(fileNameOneListSV));
-		return new File(context.getRealPath(fileNameOneListEN));
+		if (context != null) {
+			if (lang.equals("de")) return new File(context.getRealPath(fileNameOneListDE));
+			if (lang.equals("pl")) return new File(context.getRealPath(fileNameOneListPL));
+			if (lang.equals("sv")) return new File(context.getRealPath(fileNameOneListSV));
+			return new File(context.getRealPath(fileNameOneListEN));
+		}
+		else {
+			String name = fileNameOneListEN;
+			if (lang.equals("de"))  name = fileNameOneListDE;
+			if (lang.equals("pl"))  name = fileNameOneListPL;
+			if (lang.equals("sv"))  name = fileNameOneListSV;
+			
+			int idx = name.lastIndexOf('/');
+			name = name.substring(idx+1);
+			return new File(name);
+		}
 	
 	}
 	public static File getMeshJsonFileByLoc(Locale loc){

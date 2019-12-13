@@ -95,8 +95,12 @@ public class AppBean extends ApplicationWrapper implements HttpSessionListener{
 		CRTLogger.out("Hibernate init done:"  + (System.currentTimeMillis() - startms) + "ms", CRTLogger.LEVEL_PROD);
 		intlConf = new IntlConfiguration();
 		//setViewHandler(new CRTViewHandler(FacesContext.getCurrentInstance().getApplication().getViewHandler()));
-	    ServletContext context = (ServletContext) FacesContext.getCurrentInstance().getExternalContext().getContext();
-	    context.setAttribute(APP_KEY, this);
+		
+		ServletContext context = null;
+		if (FacesContext.getCurrentInstance() != null) {
+			context = (ServletContext) FacesContext.getCurrentInstance().getExternalContext().getContext();
+			context.setAttribute(APP_KEY, this);
+		}
 	    
 	    try{
 	    	//load properties for the application(file is in WEB-INF/classes:

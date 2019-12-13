@@ -239,17 +239,17 @@ public class SummaryStatementController {
 		}
 		int sqScore = new ScoringSummStAction().calculateSemanticQualScoreNew(st); //score SQ
 		
-		CRTLogger.out("SQ1: " + st.getSqHits().toString(), CRTLogger.LEVEL_PROD); //coumn SQ1
-		CRTLogger.out("fdgs: " + st.getFindingHits(), CRTLogger.LEVEL_PROD); //coumn findings
-		CRTLogger.out("anatomy " + st.getAnatomyHits(), CRTLogger.LEVEL_PROD); //column anatomy
-		CRTLogger.out("exp: " + st.getExpMatches(), CRTLogger.LEVEL_PROD); //column ExpMatchSumSt
-		CRTLogger.out("diagn: " + st.getDiagnosesHits(), CRTLogger.LEVEL_PROD); //column diagnoses
-		CRTLogger.out("test: " + st.getTestHits(), CRTLogger.LEVEL_PROD); //column tests
-		CRTLogger.out("ther: " + st.getTherHits(), CRTLogger.LEVEL_PROD); //column therapies
-		CRTLogger.out("all: " + st.getItemHits().toString(), CRTLogger.LEVEL_PROD);
-		CRTLogger.out("otger: " + st.getOtherHits().toString(), CRTLogger.LEVEL_PROD); //column other
-		CRTLogger.out("exp script: " + st.getExpScriptMatches(), CRTLogger.LEVEL_PROD); //column ExpMatchScript
-		CRTLogger.out(""+sqScore, CRTLogger.LEVEL_PROD);
+		CRTLogger.out("SQ1: " + st.getSqHits()!=null ? st.getSqHits().toString() : "null", CRTLogger.LEVEL_PROD); //coumn SQ1
+		CRTLogger.out("fdgs: " + st.getFindingHits()!=null ? st.getFindingHits() : "null", CRTLogger.LEVEL_PROD); //coumn findings
+		CRTLogger.out("anatomy " + st.getAnatomyHits()!=null ? st.getAnatomyHits() : "null", CRTLogger.LEVEL_PROD); //column anatomy
+		CRTLogger.out("exp: " + st.getExpMatches()!=null ? st.getExpMatches() : "null", CRTLogger.LEVEL_PROD); //column ExpMatchSumSt
+		CRTLogger.out("diagn: " + st.getDiagnosesHits()!=null ? st.getDiagnosesHits() : "null", CRTLogger.LEVEL_PROD); //column diagnoses
+		CRTLogger.out("test: " + st.getTestHits()!=null ? st.getTestHits() : "null", CRTLogger.LEVEL_PROD); //column tests
+		CRTLogger.out("ther: " + st.getTherHits()!=null ? st.getTherHits() : "null", CRTLogger.LEVEL_PROD); //column therapies
+		CRTLogger.out("all: " + st.getItemHits()!=null ? st.getItemHits().toString() : "null", CRTLogger.LEVEL_PROD);
+		CRTLogger.out("otger: " + st.getOtherHits()!=null ? st.getOtherHits().toString() : "null", CRTLogger.LEVEL_PROD); //column other
+		CRTLogger.out("exp script: " + st.getExpScriptMatches()!=null ? st.getExpScriptMatches() : "null", CRTLogger.LEVEL_PROD); //column ExpMatchScript
+		CRTLogger.out("" + sqScore, CRTLogger.LEVEL_PROD);
 		return st;		
 	}
 	

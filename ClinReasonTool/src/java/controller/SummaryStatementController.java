@@ -249,7 +249,7 @@ public class SummaryStatementController {
 		CRTLogger.out("all: " + st.getItemHits().toString(), CRTLogger.LEVEL_PROD);
 		CRTLogger.out("otger: " + st.getOtherHits().toString(), CRTLogger.LEVEL_PROD); //column other
 		CRTLogger.out("exp script: " + st.getExpScriptMatches(), CRTLogger.LEVEL_PROD); //column ExpMatchScript
-		//CRTLogger.out(""+sqScore, CRTLogger.LEVEL_PROD);
+		CRTLogger.out(""+sqScore, CRTLogger.LEVEL_PROD);
 		return st;		
 	}
 	

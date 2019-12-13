@@ -261,7 +261,26 @@ public class DBClinReason /*extends HibernateUtil*/{
     	criteria.add(Restrictions.eq("type", PatientIllnessScript.TYPE_LEARNER_CREATED));
     	
     	//We do not need to load nodes here...
-    	return criteria.list();
+    	return
+    			criteria.list();
+    }
+    
+    public List<PatientIllnessScript> selectPatIllScriptsByExtUserIdsAndVpId(String[] extUserIds, String vpId){
+    	Session s = instance.getInternalSession(Thread.currentThread(), false);
+    	Criteria criteria = s.createCriteria(PatientIllnessScript.class,"PatientIllnessScript");
+    	criteria.add(Restrictions.in("extUId", extUserIds ));
+    	criteria.add(Restrictions.eq("vpId", vpId));
+    	criteria.add(Restrictions.eq("type", PatientIllnessScript.TYPE_LEARNER_CREATED));
+    	
+    	List<PatientIllnessScript> scripts = criteria.list();
+    	if(scripts!=null){
+    		for(int i=0;i<scripts.size();i++){
+    			selectNodesAndConns(scripts.get(i), s);
+    			scripts.get(i).setSummSt(loadSummSt(scripts.get(i).getId(), s));
+    		}
+    	}
+    	s.close();
+    	return scripts;
     }
     
     

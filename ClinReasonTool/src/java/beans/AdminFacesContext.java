@@ -15,6 +15,7 @@ import beans.list.ListInterface;
 import beans.scoring.*;
 import beans.scripts.*;
 import beans.user.Auth;
+import beans.user.SessionSetting;
 import beans.user.User;
 import controller.*;
 import util.CRTLogger;
@@ -45,6 +46,11 @@ public class AdminFacesContext extends FacesContextWrapper implements MyFacesCon
 	private ReportBean reports;
 	private FeedbackContainer feedbackContainer;
 	private LearningAnalyticsBean labean;
+	/**
+	 * Any specific settings for this session are stored here, e.g. display of expert feedback variants...
+	 * CAVE: is null if no specific settings have been defined.
+	 */
+	private SessionSetting sessSetting = null;
 	
 	public String getTest(){return "hallo";}
 	
@@ -63,6 +69,7 @@ public class AdminFacesContext extends FacesContextWrapper implements MyFacesCon
 	public User getUser(){return user;}
 	public Graph getGraph(){
 		return graph;}
+	
 	public long getUserId() {
 		if(user!=null) return user.getUserId();
 		NavigationController.getInstance().redirect("/crt/src/html/admin/login.xhtml");
@@ -71,7 +78,7 @@ public class AdminFacesContext extends FacesContextWrapper implements MyFacesCon
 	
 	public boolean isView(){
 		String path = FacesContextWrapper.getCurrentInstance().getExternalContext().getRequestServletPath();
-		if(path!=null && path.contains("view/exp_boxes_view")) return true;
+		if(path!=null && path.contains("view")) return true;
 		return false;
 	}
 	
@@ -141,7 +148,17 @@ public class AdminFacesContext extends FacesContextWrapper implements MyFacesCon
 
 		if(id>0) this.patillscript = adminPortfolio.getExpScriptById(id);
 		
-		if(this.patillscript!=null) initGraph();		
+		if(this.patillscript!=null) {
+			initGraph();		
+		}
+		
+		if( this.patillscript!=null  && (sessSetting==null ))
+			sessSetting = SessionSettingController.getInstance().initSessionSettings(patillscript.getVpId(), user.getUserId(), this.patillscript.getLocale());
+	}
+
+	public boolean getInitSession(){
+		initSession();
+		return true;
 	}
 	
 	public void reset(){
@@ -221,6 +238,15 @@ public class AdminFacesContext extends FacesContextWrapper implements MyFacesCon
 		
 		List<ListInterface> items = lc.getListItems(lang, searchterm, mode);
 		return items;		 
+	}
+	
+	public SessionSetting getSessSetting(){ 
+		return sessSetting;
+		}
+	
+	public PatientIllnessScript getExpertPatIllScript(){
+		if(this.patillscript==null) return null;
+		return AppBean.getExpertPatIllScript(patillscript.getVpId());
 	}
 
 }

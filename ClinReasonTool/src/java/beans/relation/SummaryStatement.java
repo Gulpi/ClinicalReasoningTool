@@ -50,6 +50,8 @@ public class SummaryStatement extends Beans implements Serializable{
 	private List<SummaryStatementSQ> sqHits;
 	private List<SummaryStElem> itemHits; //identified findings and diseases
 	
+	private int sqScore;
+	
 	public SummaryStatement(){}
 	public SummaryStatement(String text){
 		this.text = text;
@@ -251,4 +253,17 @@ public class SummaryStatement extends Beans implements Serializable{
 		}
 		return sb.toString();
 	}
+	
+	public int getSqScore() {
+		return sqScore;
+	}
+	
+	public String getSqScoreToString() {
+		return Integer.toString(sqScore);
+	}
+	public void setSqScore(int sqScore) {
+		this.sqScore = sqScore;
+	}
+	
+	
 }

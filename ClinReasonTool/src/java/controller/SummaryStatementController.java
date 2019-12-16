@@ -238,8 +238,9 @@ public class SummaryStatementController {
 			compareWithExpIllScript(st, expPis);
 		}
 		int sqScore = new ScoringSummStAction().calculateSemanticQualScoreNew(st); //score SQ
+		st.setSqScore(sqScore);
 		
-		CRTLogger.out("SQ1: " + st.getSqHits()!=null ? st.getSqHits().toString() : "null", CRTLogger.LEVEL_PROD); //coumn SQ1
+		/*CRTLogger.out("SQ1: " + st.getSqHits()!=null ? st.getSqHits().toString() : "null", CRTLogger.LEVEL_PROD); //coumn SQ1
 		CRTLogger.out("fdgs: " + st.getFindingHits()!=null ? st.getFindingHits() : "null", CRTLogger.LEVEL_PROD); //coumn findings
 		CRTLogger.out("anatomy " + st.getAnatomyHits()!=null ? st.getAnatomyHits() : "null", CRTLogger.LEVEL_PROD); //column anatomy
 		CRTLogger.out("exp: " + st.getExpMatches()!=null ? st.getExpMatches() : "null", CRTLogger.LEVEL_PROD); //column ExpMatchSumSt
@@ -249,7 +250,7 @@ public class SummaryStatementController {
 		CRTLogger.out("all: " + st.getItemHits()!=null ? st.getItemHits().toString() : "null", CRTLogger.LEVEL_PROD);
 		CRTLogger.out("otger: " + st.getOtherHits()!=null ? st.getOtherHits().toString() : "null", CRTLogger.LEVEL_PROD); //column other
 		CRTLogger.out("exp script: " + st.getExpScriptMatches()!=null ? st.getExpScriptMatches() : "null", CRTLogger.LEVEL_PROD); //column ExpMatchScript
-		CRTLogger.out("" + sqScore, CRTLogger.LEVEL_PROD);
+		CRTLogger.out("" + sqScore, CRTLogger.LEVEL_PROD);*/
 		return st;		
 	}
 	

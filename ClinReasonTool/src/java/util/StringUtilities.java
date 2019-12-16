@@ -304,4 +304,26 @@ public class StringUtilities {
 		return sList;
 		
 	}
+	
+	/**
+	 * We go thru the text and look for the match String. If found we return the complete word (the
+	 * match String might be just part of the word)
+	 * @param text
+	 * @param match
+	 * @return
+	 */
+	/*public static String getWordFromText(String text, String match) {
+		if(text==null ||match==null) return null;
+		StringBuffer sb = new StringBuffer();
+		int startIdx = text.toLowerCase().indexOf(match);
+		//sb.append(text.charAt(startIdx));
+		
+		
+		for(int i=startIdx;i<text.length();i++){
+			char c = text.charAt(i);
+			if(c!=',' && c!=' ' && c!='.' && c!=';') sb.append(text.charAt(i));
+			else return sb.toString();
+		}
+		return null;
+	}*/
 }

@@ -9,6 +9,7 @@ import beans.scoring.*;
 import controller.*;
 import database.DBClinReason;
 import database.DBScoring;
+import util.CRTLogger;
 import util.StringUtilities;
 
 /**
@@ -130,6 +131,33 @@ public class ScoringSummStAction {
 		if(learnerSt.getSqHits()==null || learnerSt.getSqHits().isEmpty() || learnerSt.getSqHits().size()<=2) return 0;
 		if(learnerSt.getSqHits().size() >4) return 2;
 		return 1;
+	}
+	
+	/**
+	 * 
+	 * @param learnerSt
+	 */
+	public void calculateNarrowing(SummaryStatement st){
+		try{
+			if(st==null || st.getItemHits()==null || st.getItemHits().isEmpty()){
+				st.setTransformationScore(0);
+				return;
+			}
+			//we have no findings at all, which speaks for no narrowing
+			if(st.getFindingHits()==null || st.getFindingHits().isEmpty()){
+				st.setTransformationScore(0);
+				return;
+			}
+			int narrowingMatches = st.getFindingHitsNum() + st.getDiagnosesHitsNum();
+			//if(st.getDiagnosesHits()!=null ) narrowingMatches += st.getDiagnosesHits().length();
+			int expMatchNarr = st.getExpMatchNarrowing();
+			if(expMatchNarr / narrowingMatches < 0.3) st.setTransformationScore(0);
+			else if (expMatchNarr / narrowingMatches > 0.6) st.setTransformationScore(2);
+			else st.setTransformationScore(1);
+		}
+		catch (Exception e){
+			CRTLogger.out(StringUtilities.stackTraceToString(e), CRTLogger.LEVEL_PROD);
+		}
 	}
 	
 	/**

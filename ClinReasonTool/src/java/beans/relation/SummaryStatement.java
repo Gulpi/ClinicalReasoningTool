@@ -42,7 +42,14 @@ public class SummaryStatement extends Beans implements Serializable{
 	private List<SummaryStatementSQ> sqHits;
 	private List<SummaryStElem> itemHits; //identified findings and diseases
 	
+	/**
+	 * score can be 0, 1, or 2 (see rubric by Smith et al)
+	 */
 	private int sqScore;
+	/**
+	 * score can be 0, 1, or 2 (see rubric by Smith et al)
+	 */
+	private int transformationScore;
 	
 	public SummaryStatement(){}
 	public SummaryStatement(String text){
@@ -66,6 +73,8 @@ public class SummaryStatement extends Beans implements Serializable{
 	public void setAnalyzed(boolean analyzed) {this.analyzed = analyzed;}	
 	public String getLang() {return lang;}
 	public void setLang(String lang) {this.lang = lang;}
+	public int getTransformationScore() {return transformationScore;}
+	public void setTransformationScore(int transformationScore) {this.transformationScore = transformationScore;}
 	/**
 	 * column "SQ1"
 	 * @return
@@ -145,6 +154,24 @@ public class SummaryStatement extends Beans implements Serializable{
 			if(e.isFinding()) fdgs.append(e.toString()+", ");
 		}
 		return fdgs.toString();
+	}
+	
+	public int getFindingHitsNum(){
+		if(itemHits==null || itemHits.isEmpty()) return 0;
+		int counter=0;
+		for(int i=0; i<itemHits.size();i++){
+			if(itemHits.get(i).isFinding()) counter++;
+		}
+		return counter;
+	}
+	
+	public int getDiagnosesHitsNum(){
+		if(itemHits==null || itemHits.isEmpty()) return 0;
+		int counter=0;
+		for(int i=0; i<itemHits.size();i++){
+			if(itemHits.get(i).isDiagnosis()) counter++;
+		}
+		return counter;
 	}
 	
 	/**
@@ -229,6 +256,22 @@ public class SummaryStatement extends Beans implements Serializable{
 			if(e.getExpertScriptMatch()>0) sb.append(e.toString()+" ("+e.getExpertScriptMatch()+"), ");
 		}
 		return sb.toString();
+	}
+	
+	/**
+	 * we return the number of matches with the expert in findings and diagnoses as a narrowing indicator
+	 * @return
+	 */
+	public int getExpMatchNarrowing(){
+		if(itemHits==null) return 0;
+		int counter = 0;
+		for(int i=0; i<itemHits.size();i++){
+			SummaryStElem e = itemHits.get(i);
+			if(e.getExpertScriptMatch()==Relation.TYPE_PROBLEM || e.getExpertScriptMatch()==Relation.TYPE_DDX)
+				counter++;
+			else if(e.isExpertMatch() && (e.isFinding() || e.isDiagnosis())) counter++;
+		}
+		return counter;
 	}
 	
 	/**

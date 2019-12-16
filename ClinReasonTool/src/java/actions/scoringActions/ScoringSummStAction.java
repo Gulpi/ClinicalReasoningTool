@@ -151,6 +151,8 @@ public class ScoringSummStAction {
 			int narrowingMatches = st.getFindingHitsNum() + st.getDiagnosesHitsNum();
 			//if(st.getDiagnosesHits()!=null ) narrowingMatches += st.getDiagnosesHits().length();
 			int expMatchNarr = st.getExpMatchNarrowing();
+			
+			// float int issue resolved
 			float tmpScore = (float) expMatchNarr / (float) narrowingMatches;
 			
 			if(tmpScore < 0.3) st.setNarrowingScore(0);

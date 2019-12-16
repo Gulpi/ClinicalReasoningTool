@@ -51,6 +51,11 @@ public class SummaryStatement extends Beans implements Serializable{
 	 */
 	private int transformationScore;
 	
+	/**
+	 * score can be 0, 1, or 2 (see rubric by Smith et al)
+	 */
+	private int narrowingScore;
+	
 	public SummaryStatement(){}
 	public SummaryStatement(String text){
 		this.text = text;
@@ -75,6 +80,14 @@ public class SummaryStatement extends Beans implements Serializable{
 	public void setLang(String lang) {this.lang = lang;}
 	public int getTransformationScore() {return transformationScore;}
 	public void setTransformationScore(int transformationScore) {this.transformationScore = transformationScore;}
+	
+	public int getNarrowingScore() {
+		return narrowingScore;
+	}
+	public void setNarrowingScore(int narrowingScore) {
+		this.narrowingScore = narrowingScore;
+	}
+	
 	/**
 	 * column "SQ1"
 	 * @return

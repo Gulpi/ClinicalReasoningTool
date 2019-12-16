@@ -226,11 +226,10 @@ public class SummaryStatementController {
 		st.setText(text);
 		st.setLang(loc.getLanguage());
 		if(textAsList==null) return st;
+		compareList(items, st); 
+		if(aList!=null) compareList(aList.get(loc.getLanguage()), st);
 		for(int i=0; i<textAsList.size(); i++){
-			String s = textAsList.get(i);
-			
-			compareList(items, st); 
-			if(aList!=null) compareList(aList.get(loc.getLanguage()), st);
+			String s = textAsList.get(i);		
 			compareSimilarList(items, st, loc, s);
 			if(aList!=null) compareSimilarList(aList.get(loc.getLanguage()), st, loc, s);			
 		}

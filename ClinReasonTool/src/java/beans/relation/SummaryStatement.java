@@ -36,14 +36,6 @@ public class SummaryStatement extends Beans implements Serializable{
 	 * has the text been evaluated/analyzed
 	 */
 	private boolean analyzed;
-	/*private String test;
-	private int testNum = -1;
-	private int testTransf = -1;
-	private int testNumExpMatches = -1;
-	private int testSQNum = -1;
-	private String testSQ;
-	private int testExpSQNum = -1;*/
-	//private String testExpSQ;
 	/**
 	 * all semantic qualifier ids that have been
 	 */

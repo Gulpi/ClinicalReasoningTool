@@ -242,6 +242,7 @@ public class SummaryStatementController {
 		}
 		int sqScore = new ScoringSummStAction().calculateSemanticQualScoreNew(st); //score SQ
 		st.setSqScore(sqScore);
+		new ScoringSummStAction().calculateNarrowing(st);
 		
 		/*CRTLogger.out("SQ1: " + st.getSqHits()!=null ? st.getSqHits().toString() : "null", CRTLogger.LEVEL_PROD); //coumn SQ1
 		CRTLogger.out("fdgs: " + st.getFindingHits()!=null ? st.getFindingHits() : "null", CRTLogger.LEVEL_PROD); //coumn findings

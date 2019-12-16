@@ -26,6 +26,16 @@ public class SummaryStatementSQ {
 	 */
 	private String text;
 	
+	/**
+	 * This is the whole word that contains the semantic qualifier
+	 */
+	private String textMatch;
+	
+	/**
+	 * position of the first char of the semantic qualifier in the text we have a match with
+	 */
+	private int position = -1;
+	
 	public long getSummStId() {return summStId;}
 	public void setSummStId(long summStId) {this.summStId = summStId;}
 	public int getSqId() {return sqId;}
@@ -33,7 +43,11 @@ public class SummaryStatementSQ {
 	public long getId() {return id;}
 	public void setId(long id) {this.id = id;}	
 	public String getText() {return text;}
-	public void setText(String text) {this.text = text;}
+	public void setText(String text) {this.text = text;}		
+	public String getTextMatch() {return textMatch;}
+	public void setTextMatch(String textMatch) {this.textMatch = textMatch;}	
+	public int getPosition() {return position;}
+	public void setPosition(int position) {this.position = position;}
 	
 	public SummaryStatementSQ(){}
 	public SummaryStatementSQ(long summStId, int sqId, String text){

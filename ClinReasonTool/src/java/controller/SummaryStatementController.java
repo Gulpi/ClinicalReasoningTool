@@ -124,7 +124,10 @@ public class SummaryStatementController {
 			for(int i=0; i < sqs.size(); i++){
 				String s = sqs.get(i).getQualifier().toLowerCase().trim();
 				if(stst.getText().toLowerCase().contains(s)){
-					hits.add(new SummaryStatementSQ(stst.getId(),sqs.get(i).getId(), s));			
+					SummaryStatementSQ sssq = new SummaryStatementSQ(stst.getId(),sqs.get(i).getId(), s);
+					sssq.setPosition(stst.getText().toLowerCase().indexOf(s));
+					//sssq.setTextMatch(StringUtilities.getWordFromText(stst.getText(), s));
+					hits.add(sssq);			
 				}
 			}
 			if(hits!=null && !hits.isEmpty() && stst.getId()>0)

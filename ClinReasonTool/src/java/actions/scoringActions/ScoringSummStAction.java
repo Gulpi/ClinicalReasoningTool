@@ -151,8 +151,10 @@ public class ScoringSummStAction {
 			int narrowingMatches = st.getFindingHitsNum() + st.getDiagnosesHitsNum();
 			//if(st.getDiagnosesHits()!=null ) narrowingMatches += st.getDiagnosesHits().length();
 			int expMatchNarr = st.getExpMatchNarrowing();
-			if(expMatchNarr / narrowingMatches < 0.3) st.setNarrowingScore(0);
-			else if (expMatchNarr / narrowingMatches > 0.6) st.setNarrowingScore(2);
+			float tmpScore = (float) expMatchNarr / (float) narrowingMatches;
+			
+			if(tmpScore < 0.3) st.setNarrowingScore(0);
+			else if (tmpScore > 0.6) st.setNarrowingScore(2);
 			else st.setNarrowingScore(1);
 		}
 		catch (Exception e){

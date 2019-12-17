@@ -137,7 +137,7 @@ public class ScoringSummStAction {
 	 * 
 	 * @param learnerSt
 	 */
-	public void calculateNarrowing(SummaryStatement st){
+	public void calculateNarrowing(SummaryStatement st, SummaryStatement expSt){
 		try{
 			if(st==null || st.getItemHits()==null || st.getItemHits().isEmpty()){
 				st.setNarrowingScore(0);
@@ -149,7 +149,6 @@ public class ScoringSummStAction {
 				return;
 			}
 			int narrowingMatches = st.getFindingHitsNum() + st.getDiagnosesHitsNum();
-			//if(st.getDiagnosesHits()!=null ) narrowingMatches += st.getDiagnosesHits().length();
 			int expMatchNarr = st.getExpMatchNarrowing();
 			
 			// float int issue resolved 20191216

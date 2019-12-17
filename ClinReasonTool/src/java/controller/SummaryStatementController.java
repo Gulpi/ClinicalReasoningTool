@@ -414,4 +414,13 @@ public class SummaryStatementController {
 			}
 		}
 	}
+
+	public static Map<String, PatientIllnessScript> getTempExpMaps() {
+		return tempExpMaps;
+	}
+
+	public static void setTempExpMaps(Map<String, PatientIllnessScript> tempExpMaps) {
+		SummaryStatementController.tempExpMaps = tempExpMaps;
+	}
+	
 }

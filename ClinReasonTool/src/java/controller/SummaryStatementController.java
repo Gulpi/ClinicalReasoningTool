@@ -227,7 +227,7 @@ public class SummaryStatementController {
 	/**
 	 * test summary statement rating using the list creation mechanism.
 	 * (1) exp fdgs & ddx -> expPis.getSummSt().getDiagnosesHits() und expPis.getSummSt().getFindingsHits()
-	 * (2) exp map items -> expPis.getFindings(), expPis.getDiagnoses(), expPis.getTests(), expPis.getMngs()
+	 * (2) exp map items -> expPis.getProblems(), expPis.getDiagnoses(), expPis.getTests(), expPis.getMngs()
 	 * (3) student fdgs & ddx (schon drin in den Spalten Findings und Diagnoses)
 	 * (4,5) number of matches mit statement und map (schon drin) 
 	 * (6,7) Number of additional fdgs, ddx / items -> können wir im Excel sehen

@@ -295,7 +295,18 @@ public class CRTFacesContext extends FacesContextWrapper implements MyFacesConte
 
 	}
 	
-
+	/**
+	 * experiment, but not continued
+	 */
+	public void initCLISession(PatientIllnessScript pis, String vpId){ 
+		/*long startms = System.currentTimeMillis();
+		this.patillscript = pis;
+		if(this.patillscript!=null){
+			initGraph();		
+		}
+		
+		long endms = System.currentTimeMillis();*/
+	}
 	
 	/**
 	 * load PatientIllnessScript based on id or sessionId

@@ -83,6 +83,10 @@ public class NavigationController implements Serializable {
 	}
 	
 	public MyFacesContext getMyFacesContext(){
+		if (FacesContext.getCurrentInstance() ==null) {
+			return null;
+		}
+		
 		MyFacesContext learnerContext = (MyFacesContext) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get(CRTFacesContext.CRT_FC_KEY);
 		//More security for returning the correct context, if user simultaneously edits and views maps:
 		String path = FacesContext.getCurrentInstance().getExternalContext().getRequestServletPath();

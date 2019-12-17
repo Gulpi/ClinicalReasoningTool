@@ -207,7 +207,15 @@ public abstract class Relation extends Beans implements Rectangle{
 	 */
 	private int getIsSyndromePart(){
 		//if(this.getIsSyndrome()==1) return 0; //if it is a syndrome it cannot be a child!
-		Graph g = NavigationController.getInstance().getMyFacesContext().getGraph();
+		// for command line running....
+		Graph g = null;
+		try {
+			g = NavigationController.getInstance().getMyFacesContext().getGraph();
+		} catch (Exception e) {
+		}
+		
+		if (g==null) return 0;
+		
 		MultiVertex mv = g.getVertexByIdAndType(this.getListItemId(), this.getRelationType());
 		if(mv==null) return 0;
 		Set<MultiEdge> cnxs = g.getExplicitExpertEdges(mv);

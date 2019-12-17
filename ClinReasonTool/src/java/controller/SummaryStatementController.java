@@ -2,11 +2,8 @@ package controller;
 
 import java.util.*;
 
-import javax.servlet.ServletContext;
-
 import actions.scoringActions.ScoringSummStAction;
 import application.AppBean;
-//import beans.list.ListInterface;
 import beans.list.ListItem;
 import beans.list.Synonym;
 import beans.relation.Relation;
@@ -35,6 +32,8 @@ public class SummaryStatementController {
 	private static Map<String, List<ListItem>> listItems;
 	private static Map<String, List<ListItem>> aList; //Mesh items with code "A" - have it separate because not considered for scripts.
 
+	//key = vp_id
+	private static Map<String, PatientIllnessScript>  tempExpMaps= new TreeMap();
 	
 	/**
 	 * returns a List of ListItems for the given language or null if nothing is found.
@@ -211,14 +210,35 @@ public class SummaryStatementController {
 		return testSummStRating(loc, text, vpId);
 	}
 	
+	private static void analyzeExpStatement(SummaryStatement st){
+		if(st.getItemHits()!=null && !st.getItemHits().isEmpty()) return; //already done....
+		List<ListItem> items = getListItemsByLang(st.getLang());
+		List<String> textAsList = StringUtilities.createStringListFromString(st.getText());
+		compareList(items, st); 
+		if(aList!=null) compareList(aList.get(st.getLang()), st);
+		for(int i=0; i<textAsList.size(); i++){
+			String s = textAsList.get(i);		
+			compareSimilarList(items, st, s);
+			if(aList!=null) compareSimilarList(aList.get(st.getLang()), st, s);			
+		}
+		checkForSemanticQualifiers(st);
+	}
+	
 	/**
 	 * test summary statement rating using the list creation mechanism.
+	 * (1) exp fdgs & ddx -> expPis.getSummSt().getDiagnosesHits() und expPis.getSummSt().getFindingsHits()
+	 * (2) exp map items -> expPis.getFindings(), expPis.getDiagnoses(), expPis.getTests(), expPis.getMngs()
+	 * (3) student fdgs & ddx (schon drin in den Spalten Findings und Diagnoses)
+	 * (4,5) number of matches mit statement und map (schon drin) 
+	 * (6,7) Number of additional fdgs, ddx / items -> können wir im Excel sehen
 	 * @param contextIn
 	 */
 	public static SummaryStatement testSummStRating(Locale loc, String text, String vpId){
 		
 		List<ListItem> items = getListItemsByLang(loc.getLanguage());
 		PatientIllnessScript expPis = new DBClinReason().selectExpertPatIllScriptByVPId(vpId);		
+		analyzeExpStatement(expPis.getSummSt());
+		if(!tempExpMaps.containsKey(vpId)) tempExpMaps.put(vpId, expPis);
 		
 		if(text==null || text.isEmpty() || items==null) return null; 
 		List<String> textAsList = StringUtilities.createStringListFromString(text);
@@ -230,8 +250,8 @@ public class SummaryStatementController {
 		if(aList!=null) compareList(aList.get(loc.getLanguage()), st);
 		for(int i=0; i<textAsList.size(); i++){
 			String s = textAsList.get(i);		
-			compareSimilarList(items, st, loc, s);
-			if(aList!=null) compareSimilarList(aList.get(loc.getLanguage()), st, loc, s);			
+			compareSimilarList(items, st, s);
+			if(aList!=null) compareSimilarList(aList.get(loc.getLanguage()), st, s);			
 		}
 		
 		checkForSemanticQualifiers(st); //count SQ
@@ -241,19 +261,8 @@ public class SummaryStatementController {
 		}
 		int sqScore = new ScoringSummStAction().calculateSemanticQualScoreNew(st); //score SQ
 		st.setSqScore(sqScore);
-		new ScoringSummStAction().calculateNarrowing(st);
+		new ScoringSummStAction().calculateNarrowing(st, expPis.getSummSt());
 		
-		/*CRTLogger.out("SQ1: " + st.getSqHits()!=null ? st.getSqHits().toString() : "null", CRTLogger.LEVEL_PROD); //coumn SQ1
-		CRTLogger.out("fdgs: " + st.getFindingHits()!=null ? st.getFindingHits() : "null", CRTLogger.LEVEL_PROD); //coumn findings
-		CRTLogger.out("anatomy " + st.getAnatomyHits()!=null ? st.getAnatomyHits() : "null", CRTLogger.LEVEL_PROD); //column anatomy
-		CRTLogger.out("exp: " + st.getExpMatches()!=null ? st.getExpMatches() : "null", CRTLogger.LEVEL_PROD); //column ExpMatchSumSt
-		CRTLogger.out("diagn: " + st.getDiagnosesHits()!=null ? st.getDiagnosesHits() : "null", CRTLogger.LEVEL_PROD); //column diagnoses
-		CRTLogger.out("test: " + st.getTestHits()!=null ? st.getTestHits() : "null", CRTLogger.LEVEL_PROD); //column tests
-		CRTLogger.out("ther: " + st.getTherHits()!=null ? st.getTherHits() : "null", CRTLogger.LEVEL_PROD); //column therapies
-		CRTLogger.out("all: " + st.getItemHits()!=null ? st.getItemHits().toString() : "null", CRTLogger.LEVEL_PROD);
-		CRTLogger.out("otger: " + st.getOtherHits()!=null ? st.getOtherHits().toString() : "null", CRTLogger.LEVEL_PROD); //column other
-		CRTLogger.out("exp script: " + st.getExpScriptMatches()!=null ? st.getExpScriptMatches() : "null", CRTLogger.LEVEL_PROD); //column ExpMatchScript
-		CRTLogger.out("" + sqScore, CRTLogger.LEVEL_PROD);*/
 		return st;		
 	}
 	
@@ -285,11 +294,10 @@ public class SummaryStatementController {
 	 * @param loc
 	 * @param s
 	 */
-	private static boolean compareSimilarList(List items, SummaryStatement st, Locale loc, String s){	
+	private static boolean compareSimilarList(List items, SummaryStatement st, String s){	
 		for(int j=0;j<items.size(); j++){ //comparison with adapted Mesh list:
 			ListItem li = (ListItem) items.get(j);	
-			//if(li.getListItemId()==1246 && s.equalsIgnoreCase("Hypoxemia"))
-			//	CRTLogger.out("", 1);
+			Locale loc = new Locale(st.getLang());
 
 			boolean isSimilar = StringUtilities.similarStrings(s, li.getName(), loc);
 			

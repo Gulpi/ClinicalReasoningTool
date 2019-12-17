@@ -148,15 +148,38 @@ public class ScoringSummStAction {
 				st.setNarrowingScore(0);
 				return;
 			}
-			int narrowingMatches = st.getFindingHitsNum() + st.getDiagnosesHitsNum();
-			int expMatchNarr = st.getExpMatchNarrowing();
+			int narrowingMatches = st.getFindingHitsNum() + st.getDiagnosesHitsNum() + st.getAnatomyHitsNum();
 			
-			// float int issue resolved 20191216
-			float tmpScore = (float) expMatchNarr / (float) narrowingMatches;
+			//number of matches (findings, diagnoses, anatomy) between statement and expert map or statement
+			int expMatchNarr = st.getExpMatchNarrowing(); 
+			
+			//found findings, ddx and anatomy terms in expert statement: 
+			int expStNum = expSt.getFindingHitsNum() + expSt.getDiagnosesHitsNum() + expSt.getAnatomyHitsNum();
+			
+			//version 0.2:
+			int diffStMatches = expStNum - st.getExpMatchesNum(); 
+			
+			float percDiffStMatches = (float)diffStMatches/(float)expStNum;
+			if(diffStMatches<=0) st.setNarrowingScore(2);
+			else if (percDiffStMatches>=0.66) st.setNarrowingScore(2);
+			else if (percDiffStMatches<=0.33) st.setNarrowingScore(0);
+			else st.setNarrowingScore(1);
+			
+			//version 0.3:
+			//additional findings/diagnoses/anatomy in the learner statement, which are not present in the expert map or statement
+			int addItemsNum = st.getFindingHitsNum() + st.getDiagnosesHitsNum() + st.getAnatomyHitsNum() - st.getExpMatchNarrowing(); 
+			float percDiffStAdd = (float)addItemsNum/(float)expStNum;
+			if (percDiffStMatches >= 0.66 && percDiffStAdd < 0.33) st.setNarrowingScoreNew(2);
+			else if (percDiffStMatches >= 0.66 && percDiffStAdd >= 0.33) st.setNarrowingScoreNew(1);			
+			else if (percDiffStMatches < 0.66 && percDiffStMatches >= 0.33 && percDiffStAdd < 0.66) st.setNarrowingScoreNew(1);
+			else if (percDiffStMatches < 0.66 && percDiffStMatches >= 0.33 && percDiffStAdd >= 0.66) st.setNarrowingScoreNew(0);
+			else if (percDiffStMatches < 0.33) st.setNarrowingScoreNew(0);
+			// version 0.1: float int issue resolved 20191216
+			/*float tmpScore = (float) expMatchNarr / (float) narrowingMatches;
 			
 			if(tmpScore < 0.3) st.setNarrowingScore(0);
 			else if (tmpScore > 0.6) st.setNarrowingScore(2);
-			else st.setNarrowingScore(1);
+			else st.setNarrowingScore(1);*/
 		}
 		catch (Exception e){
 			CRTLogger.out(StringUtilities.stackTraceToString(e), CRTLogger.LEVEL_PROD);
@@ -164,37 +187,17 @@ public class ScoringSummStAction {
 	}
 	
 	/**
-	 * Score for transformation (e.g. Pulse 180 -> Tachcardia); 0=none, 1=some, 2=frequent/appropriate
-	 * 1. split the text into single words
-	 * 2. run against the 
+	 * Score for transformation (e.g. Pulse 180 -> Tachycardia); 0=none, 1=some, 2=frequent/appropriate
 	 * @param expSt
 	 * @param learnerSt
 	 * @return
 	 */
-	/*public int calculateTransformation(SummaryStatement expSt, SummaryStatement learnerSt, JsonCreator jc ){
+	public int calculateTransformation(SummaryStatement expSt, SummaryStatement learnerSt){
 		if(learnerSt==null || learnerSt.getText()==null || learnerSt.getText().trim().equals("")) return 0;
-		List<String> matchingWords = SummaryStatementController.getInstance().getMatchingWordsFromMesh(learnerSt.getText(), learnerSt.getLang(), jc);
-		System.out.println(matchingWords);
-		if(matchingWords==null || matchingWords.isEmpty()) learnerSt.setTestNumExpMatches(0);
-		else if(expSt!=null){	
-			int numMatchesExp = calculateMatchesWithExpStatement(matchingWords, expSt.getTest());
-			learnerSt.setTestNumExpMatches(numMatchesExp);
-		}
-		SummaryStatementController.checkForSemanticQualifiers(learnerSt);
-		if(learnerSt.getSqHits()!=null){
-			learnerSt.setTestSQ(learnerSt.getSqHits().toString());
-			learnerSt.setTestSQNum(learnerSt.getSqHits().size());
-		}
-		if(expSt!=null && expSt.getSqHits()!=null){
-			learnerSt.setTestExpSQ(expSt.getSqHits().toString());
-			learnerSt.setTestExpSQNum(expSt.getSqHits().size());			
-		}
-		learnerSt.setTestNum(matchingWords.size());
-		learnerSt.setTest(StringUtilities.toString(matchingWords, "#"));
-		new DBClinReason().saveAndCommit(learnerSt);
+		
 		return 0;
 		
-	}*/
+	}
 	
 
 }

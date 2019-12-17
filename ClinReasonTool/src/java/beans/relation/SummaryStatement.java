@@ -53,8 +53,15 @@ public class SummaryStatement extends Beans implements Serializable{
 	
 	/**
 	 * score can be 0, 1, or 2 (see rubric by Smith et al)
+	 * we try to do the same here as manually done
 	 */
 	private int narrowingScore;
+	
+	/**
+	 * score can be 0, 1, or 2 (see rubric by Smith et al)
+	 * we try to be more accurate here, considering more than for the original score.
+	 */
+	private int narrowingScoreNew;
 	
 	public SummaryStatement(){}
 	public SummaryStatement(String text){
@@ -79,14 +86,11 @@ public class SummaryStatement extends Beans implements Serializable{
 	public String getLang() {return lang;}
 	public void setLang(String lang) {this.lang = lang;}
 	public int getTransformationScore() {return transformationScore;}
-	public void setTransformationScore(int transformationScore) {this.transformationScore = transformationScore;}
-	
-	public int getNarrowingScore() {
-		return narrowingScore;
-	}
-	public void setNarrowingScore(int narrowingScore) {
-		this.narrowingScore = narrowingScore;
-	}
+	public void setTransformationScore(int transformationScore) {this.transformationScore = transformationScore;}	
+	public int getNarrowingScore() {return narrowingScore;}
+	public void setNarrowingScore(int narrowingScore) {this.narrowingScore = narrowingScore;}	
+	public int getNarrowingScoreNew() {return narrowingScoreNew;}
+	public void setNarrowingScoreNew(int narrowingScoreNew) {this.narrowingScoreNew = narrowingScoreNew;}
 	
 	/**
 	 * column "SQ1"
@@ -201,6 +205,16 @@ public class SummaryStatement extends Beans implements Serializable{
 		return sb.toString();
 	}
 	
+	public int getAnatomyHitsNum(){
+		if(itemHits==null || itemHits.isEmpty()) return 0;
+		int counter=0;
+		for(int i=0; i<itemHits.size();i++){
+			if(itemHits.get(i).isAnatomy()) counter++;
+		}
+		return counter;
+	}
+	
+	
 	/**
 	 * column "Diagnoses"
 	 * @return
@@ -245,6 +259,7 @@ public class SummaryStatement extends Beans implements Serializable{
 	
 	/**
 	 * column ExpMatchSumSt
+	 * all matching entries of the summary statement with the expert statement
 	 * @return
 	 */
 	public String getExpMatches(){
@@ -258,6 +273,22 @@ public class SummaryStatement extends Beans implements Serializable{
 	}
 	
 	/**
+	 * column ExpMatchSumSt
+	 * all matching entries of the summary statement with the expert statement
+	 * @return
+	 */
+	public int getExpMatchesNum(){
+		if(itemHits==null) return 0;
+		int counter = 0;
+		for(int i=0; i<itemHits.size();i++){
+			SummaryStElem e = itemHits.get(i);
+			if(e.isExpertMatch()) counter++;
+		}
+		return counter;
+	}
+	
+	/**
+	 * all matching entries of the summary statement with the expert map
 	 * column ExpMatchScript
 	 * @return
 	 */
@@ -272,7 +303,8 @@ public class SummaryStatement extends Beans implements Serializable{
 	}
 	
 	/**
-	 * we return the number of matches with the expert in findings and diagnoses as a narrowing indicator
+	 * we return the number of matches with the expert statement and the map in findings, diagnoses, and anatomy as a 
+	 * narrowing indicator
 	 * @return
 	 */
 	public int getExpMatchNarrowing(){
@@ -282,7 +314,7 @@ public class SummaryStatement extends Beans implements Serializable{
 			SummaryStElem e = itemHits.get(i);
 			if(e.getExpertScriptMatch()==Relation.TYPE_PROBLEM || e.getExpertScriptMatch()==Relation.TYPE_DDX)
 				counter++;
-			else if(e.isExpertMatch() && (e.isFinding() || e.isDiagnosis())) counter++;
+			else if(e.isExpertMatch() && (e.isAnatomy() || e.isFinding() || e.isDiagnosis())) counter++;
 		}
 		return counter;
 	}

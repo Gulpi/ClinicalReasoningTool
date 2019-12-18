@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="beans.list">
+
+	<class name="SIUnit" table="crt.si_units">
+		<cache usage="nonstrict-read-write" />
+		<comment>SiUnit</comment>	
+	
+		  <id name="id" type="long" column="id">
+			<generator class="sequence">
+				<param name ="sequence">CRT.LIST_SEQ</param>
+			</generator>
+		</id>
+					
+		 <property name="name" column="name" type="string" length="20"/>
+		  <property name="type" column="type" type="int" />	 
+</class>
+</hibernate-mapping>

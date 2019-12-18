@@ -292,17 +292,32 @@ public class StringUtilities {
 		return sb.toString();
 	}
 	
-	public static List<String> createStringListFromString(String s){
+	public static List<String> createStringListFromString(String s, boolean doReplace){
 		if(s==null || s.trim().isEmpty()) return null;
 		List<String> sList = new ArrayList<String>(); 
-		s = s.replace(",", " ");
-		s = s.replace(".", " ");
+		if(doReplace){
+			s = s.replace(",", " ");
+			s = s.replace(".", " ");
+		}
 		StringTokenizer st = new StringTokenizer(s);
 		while (st.hasMoreTokens()) {
 			sList.add(st.nextToken().trim());
 		}
 		return sList;
-		
+	}
+
+	
+	public static boolean isNumeric(String strNum) {
+	    if (strNum == null) {
+	        return false;
+	    }
+	    if(strNum.contains(",")) strNum = strNum.replace(',', '.'); 
+	    try {
+	        double d = Double.parseDouble(strNum);
+	    } catch (NumberFormatException nfe) {
+	        return false;
+	    }
+	    return true;
 	}
 	
 	/**

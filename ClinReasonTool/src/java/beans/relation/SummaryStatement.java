@@ -6,9 +6,7 @@ import java.util.*;
 
 import javax.faces.bean.SessionScoped;
 
-import beans.list.ListInterface;
-import beans.list.ListItem;
-import beans.list.Synonym; 
+import beans.list.*; 
 /**
  * Summary Statement of the author or learner for a VP. There might be multiple Summary Statements for a case (changed
  * at distinct steps), all changes, variants are saved in the PIS_Log object.
@@ -63,6 +61,12 @@ public class SummaryStatement extends Beans implements Serializable{
 	 */
 	private int narrowingScoreNew;
 	
+	/**
+	 * SIunits we have found in the summary statement (e.g. mg, dl, mmHg,...) as a negative indicator 
+	 * for transformation
+	 */
+	private List<SummaryStNumeric> units;
+	
 	public SummaryStatement(){}
 	public SummaryStatement(String text){
 		this.text = text;
@@ -91,7 +95,19 @@ public class SummaryStatement extends Beans implements Serializable{
 	public void setNarrowingScore(int narrowingScore) {this.narrowingScore = narrowingScore;}	
 	public int getNarrowingScoreNew() {return narrowingScoreNew;}
 	public void setNarrowingScoreNew(int narrowingScoreNew) {this.narrowingScoreNew = narrowingScoreNew;}
+	public List<SummaryStNumeric> getUnits() {return units;}
+	public void setUnits(List<SummaryStNumeric> units) {this.units = units;}
 	
+	public void addUnit(SummaryStNumeric u){
+		if(u==null) return;
+		if(units==null) units = new ArrayList<SummaryStNumeric>();
+		units.add(u); 
+	}
+	
+	public int getUnitNum(){
+		if(units==null) return 0;
+		return units.size();
+	}
 	/**
 	 * column "SQ1"
 	 * @return
@@ -274,15 +290,18 @@ public class SummaryStatement extends Beans implements Serializable{
 	
 	/**
 	 * column ExpMatchSumSt
-	 * all matching entries of the summary statement with the expert statement
+	 * all matching entries of the summary statement with the expert statement and matches with the 
+	 * expert map are counted as 50%
 	 * @return
 	 */
-	public int getExpMatchesNum(){
+	public float getExpMatchesNum(){
 		if(itemHits==null) return 0;
-		int counter = 0;
+		float counter = (float) 0.0;
 		for(int i=0; i<itemHits.size();i++){
 			SummaryStElem e = itemHits.get(i);
-			if(e.isExpertMatch()) counter++;
+			if(e.isExpertMatch()) counter = (float) (counter + 1.0);
+			else if (e.getExpertScriptMatch()==1 || e.getExpertScriptMatch()==2)
+				counter = (float) (counter + 0.5);
 		}
 		return counter;
 	}
@@ -334,16 +353,16 @@ public class SummaryStatement extends Beans implements Serializable{
 		return sb.toString();
 	}
 	
-	public int getSqScore() {
-		return sqScore;
+	public int getSqScore() {return sqScore;}	
+	public String getSqScoreToString() {return Integer.toString(sqScore);}
+	public void setSqScore(int sqScore) {this.sqScore = sqScore;}
+	public String getUnitHitsToString(){
+		if(units==null) return "";
+		return units.toString();
 	}
-	
-	public String getSqScoreToString() {
-		return Integer.toString(sqScore);
+	public int getUnitsNum(){
+		if(units==null) return 0;
+		return units.size();
 	}
-	public void setSqScore(int sqScore) {
-		this.sqScore = sqScore;
-	}
-	
 	
 }

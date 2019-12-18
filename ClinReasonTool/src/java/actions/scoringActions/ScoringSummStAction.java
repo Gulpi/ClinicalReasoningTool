@@ -157,12 +157,12 @@ public class ScoringSummStAction {
 			int expStNum = expSt.getFindingHitsNum() + expSt.getDiagnosesHitsNum() + expSt.getAnatomyHitsNum();
 			
 			//version 0.2:
-			int diffStMatches = expStNum - st.getExpMatchesNum(); 
+			float diffStMatches = (float) (expStNum - st.getExpMatchesNum()); 
 			
 			float percDiffStMatches = (float)diffStMatches/(float)expStNum;
 			if(diffStMatches<=0) st.setNarrowingScore(2);
-			else if (percDiffStMatches>=0.66) st.setNarrowingScore(2);
-			else if (percDiffStMatches<=0.33) st.setNarrowingScore(0);
+			else if (percDiffStMatches>=0.66) st.setNarrowingScore(0);
+			else if (percDiffStMatches<=0.33) st.setNarrowingScore(2);
 			else st.setNarrowingScore(1);
 			
 			//version 0.3:

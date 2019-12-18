@@ -111,8 +111,7 @@ public class AppBean extends ApplicationWrapper implements HttpSessionListener{
 	    
 
 	    //does not have to be done on every restart:
-	    new JsonCreator().initJsonExport(context); 
-	    //recodeUsrIds();
+	    new JsonCreator().initJsonExport(context);
 
 	   //doTestStuff(context);
 	    startms = System.currentTimeMillis();
@@ -130,6 +129,7 @@ public class AppBean extends ApplicationWrapper implements HttpSessionListener{
 	    }
 	   
 	    try{
+	    	SummaryStatementController.setSIUnitList();
 	    	//we load the semantic qualifiers and analyze any summary statements that have not yet been analyzed.
 	    	if(semanticQuals==null) semanticQuals = SummaryStatementController.loadSemanticQuals();
 	    	if(semanticQuals!=null) SummaryStatementController.analyzeSemanticQualsStatements();

@@ -4,10 +4,10 @@ import java.util.*;
 
 import actions.scoringActions.ScoringSummStAction;
 import application.AppBean;
-import beans.list.ListItem;
-import beans.list.Synonym;
+import beans.list.*;
 import beans.relation.Relation;
 import beans.relation.SummaryStElem;
+import beans.relation.SummaryStNumeric;
 import beans.relation.SummaryStatement;
 import beans.relation.SummaryStatementSQ;
 import beans.scripts.PatientIllnessScript;
@@ -31,7 +31,7 @@ public class SummaryStatementController {
 	 */
 	private static Map<String, List<ListItem>> listItems;
 	private static Map<String, List<ListItem>> aList; //Mesh items with code "A" - have it separate because not considered for scripts.
-
+	private static List<SIUnit> unitList;
 	//key = vp_id
 	private static Map<String, PatientIllnessScript>  tempExpMaps= new TreeMap();
 	
@@ -138,74 +138,11 @@ public class SummaryStatementController {
 			CRTLogger.out(StringUtilities.stackTraceToString(e), CRTLogger.LEVEL_ERROR);
 		}
 	}
-	
-	/**
-	 * We split the text written by the learner and compare each word (length>3) with the MesH list entries. 
-	 * If we find a match, we store it in a String array and return it. 
-	 * @param learnerText
-	 * @param lang
-	 * @return
-	 */
-	/*public List<String> getMatchingWordsFromMesh(String learnerText, String lang, JsonCreator jc){
-		try{
-			learnerText = learnerText.replace("\n", " ");
-			String[] sumStSplit = StringUtils.splitByWholeSeparator(learnerText, " ");
-			List<String> matchingTerms = new ArrayList<String>();
-			List<ListInterface> list = getListItemsByLang(lang);
-			if(list==null) return matchingTerms;
-			for(int i = 0; i < sumStSplit.length; i++){
-				String word = sumStSplit[i];
-				if(word!=null && word.length()>3){ //only compare words with more than 2 letters:
-					innerloop: for(int j=0;j<list.size();j++){
-						String s2 = list.get(j).getName();
-						//for transformation we do not consider categories M, I, E
-						//if(s2.equalsIgnoreCase("Rale"))
-						//	System.out.println("");
-						if(list.get(j).getItemType().equalsIgnoreCase("C") || list.get(j).getItemType().equalsIgnoreCase("Syn")){
-						   boolean isSimilar = word.equalsIgnoreCase(s2);
-						   if(!isSimilar) isSimilar = StringUtilities.similarStrings(word, s2,new Locale(lang), 4, 10);
-						   if(isSimilar){
-							   ListInterface parent = getListItem(list.get(j));
-							   if(parent!=null && parent.getItemType().equalsIgnoreCase("C")){
-								   String termWithCat = parent.getName();
-								   if(!matchingTerms.contains(termWithCat)){
-									   matchingTerms.add(termWithCat); //make sure we have each term only once!
-									   break innerloop;
-								   }
-							   }
-						   }
-						}
-					}
-				}
-				
-			}
-			return matchingTerms;
-		}
-		catch(Exception e){
-			CRTLogger.out(StringUtilities.stackTraceToString(e), CRTLogger.LEVEL_ERROR);
-			return null;
-		}
-	}*/
-	
-	/**
-	 * returns the listItem or the parent listItem (which we have to select from the database first) if the 
-	 * listItem is a synonym
-	 * @param li
-	 * @return
-	 */
-	/*private ListInterface getListItem(ListInterface li){
-		if(!li.getItemType().equalsIgnoreCase("Syn"))
-			return li; //.getItemType();
-		//for synonyms we have to check the parent list item:
-		ListInterface parent = new DBList().selectListItemById(li.getListItemId());
-		/*if(parent!=null)*/ /*return parent; //.getItemType();
-		//return null; //should not happen
 		
-	}	*/	
 	
 	public static SummaryStatement testSummStRating(){
 		Locale loc = new Locale("en");
-		String text = "Mr Henry Rodin, 22 y.o. car mechanics. Comes from hiking trip. since two days ago has experienced cough, dyspnea, flushing, chest pain on right side and weakness. Productive cough w/green exudate. Findings: Tachypnea - 45/min Tachycardia - 116/min Poor sat - 79%Fever - 39,6 BP - 109/55  Auscultation: Bronchial breathing and coarse rales over the upper right quadrant. A pleural friction rub is present This area is dull to percussion. Chest x-ray: Consolidation of right upper lobe Diagnosis: Lobar pneumoniaGive oxygen, paracetamole, fluids and antibiotics.";
+		String text = "22 year old man, comes inn ill and distressed. Patient could not continue the trekking tour. Felt weak. Had a cold 2 weeks ago. Has fever, tachypnea, tachycardia, leukocytosis (4/4 SIRS) Consolidation right upper lobe. Lobal pneumonia is diagnosed. Start oxygen,penicillin, fluids, and paracetamol. ";
 		String vpId = "408797_2"; 
 		return testSummStRating(loc, text, vpId);
 	}
@@ -213,7 +150,7 @@ public class SummaryStatementController {
 	private static void analyzeExpStatement(SummaryStatement st){
 		if(st.getItemHits()!=null && !st.getItemHits().isEmpty()) return; //already done....
 		List<ListItem> items = getListItemsByLang(st.getLang());
-		List<String> textAsList = StringUtilities.createStringListFromString(st.getText());
+		List<String> textAsList = StringUtilities.createStringListFromString(st.getText(), true);
 		compareList(items, st); 
 		if(aList!=null) compareList(aList.get(st.getLang()), st);
 		for(int i=0; i<textAsList.size(); i++){
@@ -241,7 +178,7 @@ public class SummaryStatementController {
 		if(!tempExpMaps.containsKey(vpId)) tempExpMaps.put(vpId, expPis);
 		
 		if(text==null || text.isEmpty() || items==null) return null; 
-		List<String> textAsList = StringUtilities.createStringListFromString(text);
+		List<String> textAsList = StringUtilities.createStringListFromString(text, true);
 		SummaryStatement st = new SummaryStatement();
 		st.setText(text);
 		st.setLang(loc.getLanguage());
@@ -251,19 +188,73 @@ public class SummaryStatementController {
 		for(int i=0; i<textAsList.size(); i++){
 			String s = textAsList.get(i);		
 			compareSimilarList(items, st, s);
+			st.addUnit(compareSIUnits(s, i));
 			if(aList!=null) compareSimilarList(aList.get(loc.getLanguage()), st, s);			
 		}
 		
 		checkForSemanticQualifiers(st); //count SQ
+		compareNumbers(st);
 		if(expPis!=null){
 			calculateMatchesWithExpStatement(st.getItemHits(), expPis.getSummSt().getText());
 			compareWithExpIllScript(st, expPis);
 		}
-		int sqScore = new ScoringSummStAction().calculateSemanticQualScoreNew(st); //score SQ
+		ScoringSummStAction scoreAct = new ScoringSummStAction();
+		int sqScore = scoreAct.calculateSemanticQualScoreNew(st); //score SQ
 		st.setSqScore(sqScore);
-		new ScoringSummStAction().calculateNarrowing(st, expPis.getSummSt());
-		
+		scoreAct.calculateNarrowing(st, expPis.getSummSt());
+		scoreAct.calculateTransformation(expPis.getSummSt(), st);
 		return st;		
+	}
+	
+	/**
+	 * We look whether we can find any of the SI units in the list in the element of the summary statement. 
+	 * @param text
+	 * @return
+	 */
+	private static SummaryStNumeric compareSIUnits(String text, int pos){
+		if(text==null) return null;	
+		
+		for(int i=0; i< unitList.size(); i++){
+			if(text.equalsIgnoreCase(unitList.get(i).getName())) return new SummaryStNumeric(unitList.get(i), pos);
+			
+			if(text.contains("/")){ //identify something like g/dl and count it once
+				String text2 = text.replace('/', ' ');
+				List<String> s = StringUtilities.createStringListFromString(text2, true);
+				if(s!=null){
+					for(int j=0;j < s.size();j++){
+						String st = s.get(j);
+						if(st.equalsIgnoreCase(unitList.get(i).getName())) 
+							return new SummaryStNumeric(unitList.get(i),text, pos);
+					}
+				}
+			}
+			if(text.contains(unitList.get(i).getName())){ //identify something like 14mg or 79%
+				String text3 = text.replace(unitList.get(i).getName(), "");
+				if(text3!=null && StringUtilities.isNumeric(text3))
+					return new SummaryStNumeric(unitList.get(i), text, pos);
+			}
+		}
+		return null;
+	}
+	
+	/**
+	 * We look for numbers in the original text, before removing commas etc.
+	 * @param text
+	 * @param pos
+	 * @return
+	 */
+	private static void compareNumbers(SummaryStatement st){
+		if(st==null || st.getText()==null) return;
+		List<String> s = StringUtilities.createStringListFromString(st.getText(), false);
+		
+		for(int i=0; i<s.size(); i++){
+			//identify something like 45 or 4.5
+			String s1 = s.get(i);
+			if(StringUtilities.isNumeric(s.get(i))){ 
+				//String s1 = s.get(i);
+				st.addUnit(new SummaryStNumeric(null, s.get(i), i));
+			}
+		}
 	}
 	
 	/**
@@ -376,41 +367,18 @@ public class SummaryStatementController {
 				}
 
 				//compare synonyms:
-					ListItem li  = (ListItem) elem.getListItem();
-					if (li.getSynonyma()!=null && !li.getSynonyma().isEmpty()){
-						Iterator it = li.getSynonyma().iterator();
-						while(it.hasNext()){
-							Synonym s= (Synonym) it.next();
-							if(StringUtilities.similarStrings(s.getName(), expMatchesArr[i], elem.getListItem().getLanguage())){
-								//matchCounter++;
-								elem.setExpertMatch(true);
-								break innerLoop;
-							}
+				ListItem li  = (ListItem) elem.getListItem();
+				if (li.getSynonyma()!=null && !li.getSynonyma().isEmpty()){
+					Iterator it = li.getSynonyma().iterator();
+					while(it.hasNext()){
+						Synonym s= (Synonym) it.next();
+						if(StringUtilities.similarStrings(s.getName(), expMatchesArr[i], elem.getListItem().getLanguage())){
+							//matchCounter++;
+							elem.setExpertMatch(true);
+							break innerLoop;
 						}
 					}
-					
-				//}
-				/*if(elem.getSynonymStr()!=null){
-					//Synonym s = (Synonym) elem.getListItem();
-					//ListItem li = elem.getListItem(); //new DBList().selectListItemById(s.getListItemId());
-					if(li!=null && StringUtilities.similarStrings(li.getName(), expMatchesArr[i], elem.getListItem().getLanguage())){
-						//matchCounter++;
-						elem.setExpertMatch(true);
-						break innerLoop;
-					}
-				}*/
-					/*if(li!=null && li.getSynonyma()!=null){
-						Iterator it2 = li.getSynonyma().iterator();
-						while(it2.hasNext()){
-							Synonym s2= (Synonym) it2.next();
-							if(StringUtilities.similarStrings(s2.getName(), expMatchesArr[i], elem.getListItem().getLanguage())){
-								matchCounter++;
-								elem.setExpertMatch(true);
-								break innerLoop;
-							}
-						}
-					}
-				}*/
+				}
 			}
 		}
 	}
@@ -421,6 +389,10 @@ public class SummaryStatementController {
 
 	public static void setTempExpMaps(Map<String, PatientIllnessScript> tempExpMaps) {
 		SummaryStatementController.tempExpMaps = tempExpMaps;
+	}
+	
+	public static void setSIUnitList(){
+		unitList = new DBList().selectSIUnits();
 	}
 	
 }

@@ -1,6 +1,9 @@
 package beans.list;
 
 import org.apache.commons.lang3.StringUtils;
+
+import controller.SummaryStatementController;
+
 import java.io.Serializable;
 import java.util.*;
 
@@ -176,7 +179,9 @@ public class ListItem implements Serializable, ListInterface, Comparable{
 	 * @return
 	 */
 	public boolean isFinding(){
-		if (firstCode!=null && firstCode.startsWith("C23")) return true;
+		if (firstCode!=null && (firstCode.startsWith("C23") || firstCode.startsWith("F01"))) return true;
+		//otherCodes we have only for English mesh terms, therefore we have to get the ones from the matching English term
+		if(otherCodes == null && !this.language.getLanguage().equalsIgnoreCase("en")) getOtherCodes(); 
 		if (otherCodes!=null){
 			Iterator it = otherCodes.iterator();
 			while(it.hasNext()){
@@ -226,5 +231,21 @@ public class ListItem implements Serializable, ListInterface, Comparable{
 			//if (firstCode!=null && firstCode.startsWith("C14")) return true;			
 		}
 		return false;
+	}
+	
+	/**
+	 * if the language is NOT English we have to get the otherCodes from the main English term. 
+	 * TODO: We could update the database with the otherCodes, so with time this should reduce the searching 
+	 * we have to do....
+	 */
+	public void setOtherCodes(){
+		List<ListItem> enList = SummaryStatementController.getListItemsByLang("en");
+		for(int i=0; i<enList.size(); i++){
+			ListItem li = enList.get(i);
+			if(li.getFirstCode().equalsIgnoreCase(firstCode)){
+				this.otherCodes = li.getOtherCodes();
+				break;
+			}
+		}
 	}
 }

@@ -247,5 +247,13 @@ public class DBList extends DBClinReason {
     	criteria.add(Restrictions.eq("deleteFlag", new Integer(0)));
     	return criteria.list();
     }
+    
+    public List<SIUnit> selectSIUnits(){
+    	Session s = instance.getInternalSession(Thread.currentThread(), false);
+    	Criteria criteria = s.createCriteria(SIUnit.class,"SIUnit");
+    	return criteria.list();
+    }
+    
+
      
 }

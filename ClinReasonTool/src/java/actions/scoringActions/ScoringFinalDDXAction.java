@@ -209,12 +209,12 @@ public class ScoringFinalDDXAction /*implements ScoringAction*/{
 			for(int i=0; i<expFinals.size();i++){
 				RelationDiagnosis expFinal = expFinals.get(i);
 				//compare main entries:
-				isSimilar = StringUtilities.similarStrings(learnerRel.getListItem().getName(), expFinal.getListItem().getName(), loc, 3, StringUtilities.MAX_FUZZY_DISTANCE);
+				isSimilar = StringUtilities.similarStrings(learnerRel.getListItem().getName(), expFinal.getListItem().getName(), loc, 3, StringUtilities.MAX_FUZZY_DISTANCE, false);
 				if(isSimilar) return ScoringController.FULL_SCORE;
 				if(expFinal.getSynonyma()!=null && !expFinal.getSynonyma().isEmpty()){ //compare synonyms:
 					Iterator it = expFinal.getSynonyma().iterator();
 						while(it.hasNext()){
-							isSimilar = StringUtilities.similarStrings(learnerRel.getListItem().getName(), ((ListInterface) it.next()).getName(), loc, 3, StringUtilities.MAX_FUZZY_DISTANCE);
+							isSimilar = StringUtilities.similarStrings(learnerRel.getListItem().getName(), ((ListInterface) it.next()).getName(), loc, 3, StringUtilities.MAX_FUZZY_DISTANCE, false);
 							if(isSimilar) return ScoringController.FULL_SCORE;
 					}
 				}

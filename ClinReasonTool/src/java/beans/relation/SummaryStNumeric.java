@@ -16,22 +16,25 @@ public class SummaryStNumeric {
 	 * for the moment we store here if we have identified a number that is combined with the unit (this is 
 	 * not stored in the database.
 	 */
-	private String numeric;
+	//private String numeric;
 	
 	/**
 	 * position of the word in the text (0-based)
 	 */
 	private int pos;
+	private int endPos;
 	
 	public SummaryStNumeric(){}
 	public SummaryStNumeric(SIUnit unit, int pos){
 		this.unit = unit;	
 		this.pos = pos;
+		this.endPos = pos;
 	}
 	public SummaryStNumeric(SIUnit unit, String name, int pos){
 		this.unit = unit;	
 		this.name = name;
 		this.pos = pos;
+		this.endPos = pos;
 	}
 	
 	public long getId() {return id;}
@@ -42,7 +45,8 @@ public class SummaryStNumeric {
 	public void setUnit(SIUnit unit) {this.unit = unit;}
 	public int getPos() {return pos;}
 	public void setPos(int pos) {this.pos = pos;}
-	
+	public int getEndPos() {return endPos;}
+	public void setEndPos(int endPos) {this.endPos = endPos;}
 	/* (non-Javadoc)
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
@@ -55,6 +59,7 @@ public class SummaryStNumeric {
 	 * @see java.lang.Object#toString()
 	 */
 	public String toString(){
+		if(name!=null && unit!=null) return name + " " + unit.toString() + " (" + pos + ")";
 		if(name!=null) return name + " (" + pos + ")";
 		if(unit!=null) return unit.toString() + " (" + pos + ")";
 		return "";

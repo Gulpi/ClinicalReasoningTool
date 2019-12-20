@@ -138,20 +138,24 @@ public class ScoringSummStAction {
 	 * @param learnerSt
 	 */
 	public void calculateNarrowing(SummaryStatement st, SummaryStatement expSt){
+		float upperBorder = (float) 0.7;//0.66
+		float lowerBoarder = (float) 0.25; //0.34
 		try{
 			if(st==null || st.getItemHits()==null || st.getItemHits().isEmpty()){
 				st.setNarrowingScore(0);
 				return;
 			}
+			//CRTLogger.out("", 1);
+			int fdgsHits = st.getFindingHitsNum();
 			//we have no findings at all, which speaks for no narrowing
-			if(st.getFindingHits()==null || st.getFindingHits().isEmpty()){
+			/*if(fdgsHits==0){
 				st.setNarrowingScore(0);
 				return;
-			}
-			int narrowingMatches = st.getFindingHitsNum() + st.getDiagnosesHitsNum() + st.getAnatomyHitsNum();
+			}*/
+			//int narrowingMatches = st.getFindingHitsNum() + st.getDiagnosesHitsNum() + st.getAnatomyHitsNum();
 			
 			//number of matches (findings, diagnoses, anatomy) between statement and expert map or statement
-			int expMatchNarr = st.getExpMatchNarrowing(); 
+			//int expMatchNarr = st.getExpMatchNarrowing(); 
 			
 			//found findings, ddx and anatomy terms in expert statement: 
 			int expStNum = expSt.getFindingHitsNum() + expSt.getDiagnosesHitsNum() + expSt.getAnatomyHitsNum();
@@ -161,19 +165,21 @@ public class ScoringSummStAction {
 			
 			float percDiffStMatches = (float)diffStMatches/(float)expStNum;
 			if(diffStMatches<=0) st.setNarrowingScore(2);
-			else if (percDiffStMatches>=0.66) st.setNarrowingScore(0);
-			else if (percDiffStMatches<=0.33) st.setNarrowingScore(2);
+			else if (percDiffStMatches>=upperBorder) st.setNarrowingScore(0);
+			else if (percDiffStMatches<lowerBoarder) st.setNarrowingScore(2);
 			else st.setNarrowingScore(1);
+			st.setNarr1Score(percDiffStMatches);
 			
 			//version 0.3:
 			//additional findings/diagnoses/anatomy in the learner statement, which are not present in the expert map or statement
-			int addItemsNum = st.getFindingHitsNum() + st.getDiagnosesHitsNum() + st.getAnatomyHitsNum() - st.getExpMatchNarrowing(); 
+			int addItemsNum = fdgsHits + st.getDiagnosesHitsNum() + st.getAnatomyHitsNum() - st.getExpMatchNarrowing(); 
 			float percDiffStAdd = (float)addItemsNum/(float)expStNum;
-			if (percDiffStMatches >= 0.66 && percDiffStAdd < 0.33) st.setNarrowingScoreNew(2);
-			else if (percDiffStMatches >= 0.66 && percDiffStAdd >= 0.33) st.setNarrowingScoreNew(1);			
-			else if (percDiffStMatches < 0.66 && percDiffStMatches >= 0.33 && percDiffStAdd < 0.66) st.setNarrowingScoreNew(1);
-			else if (percDiffStMatches < 0.66 && percDiffStMatches >= 0.33 && percDiffStAdd >= 0.66) st.setNarrowingScoreNew(0);
-			else if (percDiffStMatches < 0.33) st.setNarrowingScoreNew(0);
+			if (percDiffStMatches <= lowerBoarder && percDiffStAdd < lowerBoarder) st.setNarrowingScoreNew(2);
+			else if (percDiffStMatches <= lowerBoarder && percDiffStAdd >= lowerBoarder) st.setNarrowingScoreNew(1);			
+			else if (percDiffStMatches < upperBorder && percDiffStMatches >= lowerBoarder && percDiffStAdd < upperBorder) st.setNarrowingScoreNew(1);
+			else if (percDiffStMatches < upperBorder && percDiffStMatches >= lowerBoarder && percDiffStAdd >= upperBorder) st.setNarrowingScoreNew(0);
+			else if (percDiffStMatches >= upperBorder) st.setNarrowingScoreNew(0);
+			st.setNarr2Score(percDiffStAdd);
 			// version 0.1: float int issue resolved 20191216
 			/*float tmpScore = (float) expMatchNarr / (float) narrowingMatches;
 			
@@ -192,10 +198,16 @@ public class ScoringSummStAction {
 	 * @param learnerSt
 	 * @return
 	 */
-	public int calculateTransformation(SummaryStatement expSt, SummaryStatement learnerSt){
-		if(learnerSt==null || learnerSt.getText()==null || learnerSt.getText().trim().equals("")) return 0;
+	public void calculateTransformation(SummaryStatement expSt, SummaryStatement learnerSt){
+		if(learnerSt==null || learnerSt.getText()==null || learnerSt.getText().trim().equals("")){
+			learnerSt.setTransformationScore(0);
+			return;
+		}
+		int siUnitsNum = learnerSt.getUnitsNum();
 		
-		return 0;
+		if(siUnitsNum>5) learnerSt.setTransformationScore(0); //too many non-transformed terms
+		
+		
 		
 	}
 	

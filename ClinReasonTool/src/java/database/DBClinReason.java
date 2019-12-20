@@ -347,6 +347,20 @@ public class DBClinReason /*extends HibernateUtil*/{
 		return criteria.list();
 	}
 	
+	/**
+	 * Get all summary statements (experts & learners) depending of analyze status. Called on start 
+	 * to analyze all non-analyzed statements.
+	 * @param type
+	 * @param analyzed
+	 * @return
+	 */
+	public List<SummaryStatement> getSummaryStatementsById(Long[] ids){
+		Session s = instance.getInternalSession(Thread.currentThread(), false);
+		Criteria criteria = s.createCriteria(SummaryStatement.class,"SummaryStatement");
+		criteria.add(Restrictions.in("id", ids));
+		return criteria.list();
+	}
+	
 	public static List<VPScriptRef> getVPScriptRefs(){
 		Session s = instance.getInternalSession(Thread.currentThread(), false);
 		Criteria criteria = s.createCriteria(VPScriptRef.class,"VPScriptRef");

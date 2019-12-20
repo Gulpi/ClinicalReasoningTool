@@ -1,6 +1,5 @@
 package beans.relation;
 
-import beans.list.ListInterface;
 import beans.list.ListItem;
 
 public class SummaryStElem {
@@ -22,6 +21,16 @@ public class SummaryStElem {
 	 * if the match is a synonym we store the string here, but save the parent listItem
 	 */
 	private String synonymStr = null;
+	
+	/**
+	 * start position of the word in the text (wordcount, 0-based)
+	 */
+	private int startPos;
+	
+	/**
+	 * end position of the word in the text (wordcount, 0-based)
+	 */
+	private int endPos;
 
 	public SummaryStElem(ListItem li ){
 		this.listItem = li;
@@ -56,6 +65,11 @@ public class SummaryStElem {
 	public boolean isDiagnosis(){return listItem.isDiagnosis();}
 	public boolean isTher(){return listItem.isTher();}
 	public boolean isTest(){return listItem.isTest();}
+	public int getStartPos() {return startPos;}
+	public void setStartPos(int startPos) {this.startPos = startPos;}
+	public int getEndPos() {return endPos;}
+	public void setEndPos(int endPos) {this.endPos = endPos;}
+	
 	
 	/*public int getType(){
 		if(listItem==null) return -1;

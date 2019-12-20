@@ -97,8 +97,8 @@ public class StringUtilities {
 		return s;		
 	}
 	
-	public static boolean similarStrings(String item1, String item2, Locale loc){
-		return similarStrings(item1, item2, loc, MIN_LEVEN_DISTANCE, MAX_FUZZY_DISTANCE);
+	public static boolean similarStrings(String item1, String item2, Locale loc, boolean isStrict){
+		return similarStrings(item1, item2, loc, MIN_LEVEN_DISTANCE, MAX_FUZZY_DISTANCE, isStrict);
 	}
 	
 	private static String replaceChars(String item1){
@@ -131,7 +131,9 @@ public class StringUtilities {
 	 * @param item2
 	 * @return
 	 */
-	public static boolean similarStrings(String item1, String item2, Locale loc, int leven, int fuzzy){
+	public static boolean similarStrings(String item1, String item2, Locale loc, int leven, int fuzzy, boolean isStrict){
+		if(item1.equalsIgnoreCase("Penicillin") && item2.equalsIgnoreCase("Penicillins"))
+			CRTLogger.out("", 1);
 		item1 = replaceChars(item1);
 		item2 = replaceChars(item2);
 		if(item1.equalsIgnoreCase(item2)) return true;
@@ -141,7 +143,7 @@ public class StringUtilities {
 		if(item1.startsWith("Type I") && item2.startsWith("Type II") || item2.startsWith("Type I") && item1.startsWith("Type II"))
 			return false;
 
-		if(isMatchBasedOnLevelAndFuzzy(item1, item2, loc, leven, fuzzy)) return true;
+		if(isMatchBasedOnLevelAndFuzzy(item1, item2, loc, leven, fuzzy, isStrict)) return true;
 		
 		//if we have multiple words we split them and compare them separately
 		String[] item1Arr = item1.trim().split(" ");
@@ -164,15 +166,15 @@ public class StringUtilities {
 			//check for something like: "Streptokokkenpneumonie" / "Penumonie, Streptokokken"
 			if((item1Arr.length==1 && item2Arr.length==2)){
 				String item2_1Str = item2Arr[0].trim() +  item2Arr[1].trim();
-				if(isMatchBasedOnLevelAndFuzzy(item1, item2_1Str, loc, leven, fuzzy)) return true;
+				if(isMatchBasedOnLevelAndFuzzy(item1, item2_1Str, loc, leven, fuzzy, isStrict)) return true;
 				String item2_2Str = item2Arr[1].trim() +  item2Arr[0].trim();
-				if(isMatchBasedOnLevelAndFuzzy(item1, item2_2Str, loc, leven, fuzzy)) return true;				
+				if(isMatchBasedOnLevelAndFuzzy(item1, item2_2Str, loc, leven, fuzzy, isStrict)) return true;				
 			}
 			if((item2Arr.length==1 && item1Arr.length==2)){
 				String item1_1Str = item1Arr[0].trim() +  item1Arr[1].trim();
-				if(isMatchBasedOnLevelAndFuzzy(item2, item1_1Str, loc, leven, fuzzy)) return true;
+				if(isMatchBasedOnLevelAndFuzzy(item2, item1_1Str, loc, leven, fuzzy, isStrict)) return true;
 				String item1_2Str = item1Arr[1].trim() +  item1Arr[0].trim();
-				if(isMatchBasedOnLevelAndFuzzy(item2, item1_2Str, loc, leven, fuzzy)) return true;				
+				if(isMatchBasedOnLevelAndFuzzy(item2, item1_2Str, loc, leven, fuzzy, isStrict)) return true;				
 			}
 			return false;
 			
@@ -208,7 +210,7 @@ public class StringUtilities {
 		return isMatch;
 	}
 	
-	private static boolean isMatchBasedOnLevelAndFuzzy(String s1, String s2, Locale loc, int inLeven, int inFuzzy){
+	private static boolean isMatchBasedOnLevelAndFuzzy(String s1, String s2, Locale loc, int inLeven, int inFuzzy, boolean isStrict){
 		int leven = StringUtils.getLevenshteinDistance(s1.toLowerCase(), s2.toLowerCase());
 		int fuzzy = StringUtils.getFuzzyDistance(s1.toLowerCase(), s2.toLowerCase(), loc);
 		
@@ -218,7 +220,8 @@ public class StringUtilities {
 		//if(leven ==2 && fuzzy>20 && fuzzy < inFuzzy)
 		//	System.out.println(s1 + ", " + s2 + ", leven " + leven + ", fuzzy: " + fuzzy);
 
-		if(s1.length()>3 && leven == 1 && fuzzy > 1) return true; 
+		if(!isStrict && s1.length()>3 &&s2.length()>3 && leven == 1 && fuzzy > 1) return true; 
+		if(isStrict && s1.length()>3 &&s2.length()>3 && leven==1 && fuzzy>=28) return true;
 		if(leven == 2 && fuzzy > 30) return true; 
 		
 		if(leven < inLeven && fuzzy >= inFuzzy/*&& firstLetterItem1.equalsIgnoreCase(firstLetterItem2)*/){
@@ -318,6 +321,30 @@ public class StringUtilities {
 	        return false;
 	    }
 	    return true;
+	}
+	
+	/**
+	 * we go trhough a text and look at which position (word count, 0-based) we find the starting position of this string
+	 * and return it.
+	 * @param s
+	 * @param text
+	 * @return
+	 */
+	public static int getStartPosOfStrInText(String s, String text){
+		List<String> textAsList = StringUtilities.createStringListFromString(text, true);
+		int startPos = -1;
+		if(s.contains(" ")){
+			List<String> str = StringUtilities.createStringListFromString(s, false);
+			for (int i=0; i < textAsList.size(); i++){
+				if(textAsList.get(i).equalsIgnoreCase(str.get(0)) && textAsList.get(i+1)!=null && textAsList.get(i+1).equalsIgnoreCase(str.get(1))) return i;
+			}
+		}
+		else{
+			for (int i=0; i < textAsList.size(); i++){
+				if(textAsList.get(i).equalsIgnoreCase(s)) return i;
+			}
+		}
+		return startPos;
 	}
 	
 	/**

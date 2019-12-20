@@ -43,23 +43,27 @@ public class SummaryStatement extends Beans implements Serializable{
 	/**
 	 * score can be 0, 1, or 2 (see rubric by Smith et al)
 	 */
-	private int sqScore;
+	private int sqScore = -1;
 	/**
 	 * score can be 0, 1, or 2 (see rubric by Smith et al)
 	 */
-	private int transformationScore;
+	private int transformationScore = -1;
+	private float transformScorePerc; //temp variable to store the exact calculated percentage
 	
 	/**
 	 * score can be 0, 1, or 2 (see rubric by Smith et al)
 	 * we try to do the same here as manually done
 	 */
-	private int narrowingScore;
+	private int narrowingScore = -1;
 	
 	/**
 	 * score can be 0, 1, or 2 (see rubric by Smith et al)
 	 * we try to be more accurate here, considering more than for the original score.
 	 */
-	private int narrowingScoreNew;
+	private int narrowingScoreNew = -1;
+	
+	private float narr1Score; //temp variable to store (expNum-studMatches)/expNum percentage of macthing items
+	private float narr2Score; //temp variable to store addItems/expNum - percentage of additional items added 
 	
 	/**
 	 * SIunits we have found in the summary statement (e.g. mg, dl, mmHg,...) as a negative indicator 
@@ -96,7 +100,13 @@ public class SummaryStatement extends Beans implements Serializable{
 	public int getNarrowingScoreNew() {return narrowingScoreNew;}
 	public void setNarrowingScoreNew(int narrowingScoreNew) {this.narrowingScoreNew = narrowingScoreNew;}
 	public List<SummaryStNumeric> getUnits() {return units;}
-	public void setUnits(List<SummaryStNumeric> units) {this.units = units;}
+	public void setUnits(List<SummaryStNumeric> units) {this.units = units;}	
+	public float getNarr1Score() {return narr1Score;}
+	public void setNarr1Score(float narr1Score) {this.narr1Score = narr1Score;}
+	public float getNarr2Score() {return narr2Score;}
+	public void setNarr2Score(float narr2Score) {this.narr2Score = narr2Score;}	
+	public float getTransformScorePerc() {return transformScorePerc;}
+	public void setTransformScorePerc(float transformScorePerc) {this.transformScorePerc = transformScorePerc;}
 	
 	public void addUnit(SummaryStNumeric u){
 		if(u==null) return;
@@ -117,9 +127,11 @@ public class SummaryStatement extends Beans implements Serializable{
 	 * add a matching listItem 
 	 * @param li
 	 */
-	public void addItemHit(ListItem li){
+	public void addItemHit(ListItem li, int startPos){
 		if(itemHits==null) itemHits = new ArrayList<SummaryStElem>();
 		SummaryStElem el = new SummaryStElem(li);
+		el.setStartPos(startPos);
+		//el.setEndPos(startPos);
 		if(!itemHits.contains(el)) //do not add duplicates!
 			itemHits.add(el);		
 	}
@@ -129,10 +141,12 @@ public class SummaryStatement extends Beans implements Serializable{
 	 * @param li
 	 * @param s
 	 */
-	public void addItemHit(ListItem li, Synonym s){
+	public void addItemHit(ListItem li, Synonym s, int startPos){
 		if(itemHits==null) itemHits = new ArrayList<SummaryStElem>();
 		SummaryStElem el = new SummaryStElem(li);
 		if(s!=null) el.setSynonymStr(s.getName());
+		el.setStartPos(startPos);
+		//el.setEndPos(startPos);
 		if(!itemHits.contains(el)) //do not add duplicates!
 			itemHits.add(el);		
 	}
@@ -363,6 +377,19 @@ public class SummaryStatement extends Beans implements Serializable{
 	public int getUnitsNum(){
 		if(units==null) return 0;
 		return units.size();
+	}
+	
+	/**
+	 * We look if we already have a unit for the given position in the text.
+	 * @param pos
+	 * @return
+	 */
+	public SummaryStNumeric getUnitAtPos(int pos){
+		if(units==null) return null;
+		for(int i=0; i<units.size(); i++){
+			if(units.get(i).getPos()==pos) return units.get(i);
+		}
+		return null;
 	}
 	
 }

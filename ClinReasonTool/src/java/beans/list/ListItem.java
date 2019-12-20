@@ -3,6 +3,7 @@ package beans.list;
 import org.apache.commons.lang3.StringUtils;
 
 import controller.SummaryStatementController;
+import util.CRTLogger;
 
 import java.io.Serializable;
 import java.util.*;
@@ -180,8 +181,10 @@ public class ListItem implements Serializable, ListInterface, Comparable{
 	 */
 	public boolean isFinding(){
 		if (firstCode!=null && (firstCode.startsWith("C23") || firstCode.startsWith("F01"))) return true;
+		CRTLogger.out("", 1);
 		//otherCodes we have only for English mesh terms, therefore we have to get the ones from the matching English term
-		if(otherCodes == null && !this.language.getLanguage().equalsIgnoreCase("en")) getOtherCodes(); 
+		if((otherCodes == null || otherCodes.isEmpty()) && !this.language.getLanguage().equalsIgnoreCase("en"))
+			setOtherCodes(); 
 		if (otherCodes!=null){
 			Iterator it = otherCodes.iterator();
 			while(it.hasNext()){
@@ -242,7 +245,9 @@ public class ListItem implements Serializable, ListInterface, Comparable{
 		List<ListItem> enList = SummaryStatementController.getListItemsByLang("en");
 		for(int i=0; i<enList.size(); i++){
 			ListItem li = enList.get(i);
-			if(li.getFirstCode().equalsIgnoreCase(firstCode)){
+			if(li==null && li.getFirstCode()==null)
+				CRTLogger.out("", 1);
+			if(li!=null && li.getFirstCode()!=null && li.getFirstCode().equalsIgnoreCase(firstCode)){
 				this.otherCodes = li.getOtherCodes();
 				break;
 			}

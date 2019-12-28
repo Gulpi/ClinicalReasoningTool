@@ -4,7 +4,7 @@ import java.beans.Beans;
 
 import actions.scoringActions.ScoringSummStAction;
 import beans.LogEntry;
-import beans.relation.SummaryStatement;
+import beans.relation.summary.SummaryStatement;
 import beans.scripts.*;
 import database.DBClinReason;
 

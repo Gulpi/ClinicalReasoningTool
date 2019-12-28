@@ -1,6 +1,7 @@
-package beans.relation;
+package beans.relation.summary;
 
 import beans.list.ListItem;
+import net.casus.util.nlp.spacy.SpacyDocToken;
 
 public class SummaryStElem {
 
@@ -28,13 +29,34 @@ public class SummaryStElem {
 	private int startPos;
 	
 	/**
+	 * start position/index within the text 
+	 */
+	private int startIdx;
+	
+	/**
 	 * end position of the word in the text (wordcount, 0-based)
 	 */
 	private int endPos;
 
+	/**
+	 * 1=prefix, 2=suffix, 3= transformed finding (e.g. fever)
+	 */
+	private int transform = 0; 
+	
+	private String type; //currently used for person
+	
 	public SummaryStElem(ListItem li ){
 		this.listItem = li;
+		if(this.listItem.isTransformation()) 
+			this.setTransform(TransformRule.TYPE_FINDING);
 	}
+	
+	public SummaryStElem(SpacyDocToken tok){
+		this.startIdx = tok.getStart();
+		this.type = tok.getLabel();
+		this.synonymStr = tok.getToken();
+	}
+	
 	public ListItem getListItem() {return listItem;}
 	public void setListItem(ListItem listItem) {this.listItem = listItem;}
 	public boolean isExpertMatch() { return expertMatch;}
@@ -42,7 +64,18 @@ public class SummaryStElem {
 	public String getSynonymStr() {return synonymStr;}
 	public void setSynonymStr(String synonymStr) {this.synonymStr = synonymStr;}	
 	public int getExpertScriptMatch() {return expertScriptMatch;}
-	public void setExpertScriptMatch(int expertScriptMatch) {this.expertScriptMatch = expertScriptMatch;}
+	public void setExpertScriptMatch(int expertScriptMatch) {this.expertScriptMatch = expertScriptMatch;}	
+	public int getTransform() {return transform;}
+	public void setTransform(int transform) {this.transform = transform;}
+	public int getStartIdx() {return startIdx;}
+	public void setStartIdx(int startIdx) {this.startIdx = startIdx;}	
+	public String getType() {return type;}
+	public void setType(String type) {this.type = type;}
+	
+	public boolean isPerson(){
+		if(type!=null && type.equals(SpacyDocToken.LABEL_PERSON)) return true;
+		return false;
+	}
 	
 	/* (non-Javadoc)
 	 * @see java.lang.Object#toString()
@@ -60,17 +93,44 @@ public class SummaryStElem {
 		return false;
 	}
 	
-	public boolean isFinding(){return listItem.isFinding();}
-	public boolean isAnatomy(){return listItem.isAnatomy();}
-	public boolean isDiagnosis(){return listItem.isDiagnosis();}
-	public boolean isTher(){return listItem.isTher();}
-	public boolean isTest(){return listItem.isTest();}
+	public boolean isFinding(){
+		if(listItem==null) return false; 
+		return listItem.isFinding();
+	}
+	public boolean isAnatomy(){
+		if(listItem==null) return false; 
+		return listItem.isAnatomy();
+	}
+	public boolean isDiagnosis(){
+		if(listItem==null) return false; 
+		return listItem.isDiagnosis();
+	}
+	public boolean isTher(){
+		if(listItem==null) return false; 
+		return listItem.isTher();
+	}
+	public boolean isTest(){
+		if(listItem==null) return false; 
+		return listItem.isTest();
+	}
 	public int getStartPos() {return startPos;}
 	public void setStartPos(int startPos) {this.startPos = startPos;}
 	public int getEndPos() {return endPos;}
 	public void setEndPos(int endPos) {this.endPos = endPos;}
 	
+	public boolean isCountry(){
+		if(listItem!=null && listItem.getFirstCode().startsWith("Z01")) return true; 
+		return false;
+	}
 	
+	/*private void checkTransformationElem(){
+		if(this.listItem.isTransformation()) 
+			this.setTransform(TransformRule.TYPE_FINDING);
+		else{
+			if(SummaryStatementController.)
+			
+		}
+	}*/
 	/*public int getType(){
 		if(listItem==null) return -1;
 		if(listItem.get)

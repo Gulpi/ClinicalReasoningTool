@@ -6,6 +6,7 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.RequestScoped;
 
 import beans.relation.*;
+import beans.relation.summary.*;
 import beans.scripts.PatientIllnessScript;
 import beans.scripts.VPScriptRef;
 import database.*;

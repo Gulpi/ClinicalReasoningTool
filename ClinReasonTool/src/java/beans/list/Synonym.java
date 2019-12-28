@@ -16,6 +16,7 @@ public class Synonym implements Serializable, ListInterface, Comparable{
 	private Locale language;
 	private String source; //"MESH" or "ADDED" if manually added, currently just in database, no mapping necessary
 	private boolean ignored = false;
+	private boolean transformation = false;
 	/**
 	 * Synonyma can be scored differently if they are not 100%the same as the main listItem. For example the 
 	 * synonym "Shortness of Breath" should be scored less than "Dyspnea". This has to be done manually in the database 
@@ -36,7 +37,10 @@ public class Synonym implements Serializable, ListInterface, Comparable{
 	public void setRatingWeight(float ratingWeight) {this.ratingWeight = ratingWeight;}	
 	public boolean isIgnored() {return ignored;}
 	public void setIgnored(boolean ignored) {this.ignored = ignored;}
-	public boolean isSynonym(){return true;}
+	public boolean isSynonym(){return true;}	
+	public boolean isTransformation() {return transformation;}
+	public void setTransformation(boolean transformation) {this.transformation = transformation;}
+	
 	public Synonym(){}
 	public Synonym(Locale loc, String name){
 		this.language = loc; 

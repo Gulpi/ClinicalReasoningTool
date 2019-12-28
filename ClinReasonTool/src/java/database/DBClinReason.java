@@ -7,10 +7,11 @@ import org.hibernate.criterion.*;
 
 import beans.scripts.PatientIllnessScript;
 import beans.scripts.VPScriptRef;
+import beans.test.JsonTest;
 import beans.LogEntry;
 import beans.relation.*;
-import beans.relation.SummaryStatement;
-import beans.relation.SummaryStatementSQ;
+import beans.relation.summary.SummaryStatement;
+import beans.relation.summary.SummaryStatementSQ;
 import util.*;
 
 public class DBClinReason /*extends HibernateUtil*/{
@@ -171,18 +172,6 @@ public class DBClinReason /*extends HibernateUtil*/{
     
     public PatientIllnessScript selectLearnerPatIllScript(long id, String identifier){
     	return selectAllIllScriptById(id, "id", true);
-    	/*Session s = instance.getInternalSession(Thread.currentThread(), false);
-    	Criteria criteria = s.createCriteria(PatientIllnessScript.class,"PatientIllnessScript");
-    	criteria.add(Restrictions.eq(identifier, new Long(id)));
-    	criteria.add(Restrictions.eq("type", new Integer(PatientIllnessScript.TYPE_LEARNER_CREATED)));
-    	PatientIllnessScript patIllScript =  (PatientIllnessScript) criteria.uniqueResult();
-    	
-    	if(patIllScript!=null){
-    		patIllScript.setSummSt(loadSummSt(patIllScript.getSummStId(), s));
-    		selectNodesAndConns(patIllScript, s);
-    	}
-    	s.close();
-    	return patIllScript;*/
     }
     
     private PatientIllnessScript selectAllIllScriptById(long id, String identifier, boolean considerType){
@@ -439,5 +428,12 @@ public class DBClinReason /*extends HibernateUtil*/{
 		if(attempts==null) return 0;
 		return attempts.size();
 		
+	}
+	
+	public JsonTest selectJsonTestBySummStId(long id){
+		Session s = instance.getInternalSession(Thread.currentThread(), false);
+		Criteria criteria = s.createCriteria(JsonTest.class, "JsonTest");
+		criteria.add(Restrictions.eq("id", new Long(id)));
+		return (JsonTest) criteria.uniqueResult();
 	}
 }

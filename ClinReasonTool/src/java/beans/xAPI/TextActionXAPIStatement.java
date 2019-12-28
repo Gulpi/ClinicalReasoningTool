@@ -2,7 +2,7 @@ package beans.xAPI;
 
 import java.util.*;
 
-import beans.relation.SummaryStatement;
+import beans.relation.summary.SummaryStatement;
 import beans.scoring.ScoreBean;
 import beans.user.User;
 import gov.adlnet.xapi.model.*;

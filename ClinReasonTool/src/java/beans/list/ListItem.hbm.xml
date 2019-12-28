@@ -26,6 +26,7 @@
 		<property name="itemType" column="item_type" type="string" length="5"/>
 		<property name="ignored" column="ignore" type="boolean"/>
 		<property name="isSyndrome" column="syndrome" type="int"/>
+		<property name="transformation" column="transformation" type="boolean"/>
 	    
 	    <set name="synonyma" table="crt.CLINREASON_LIST_SYN" lazy="false" fetch="join" batch-size="100">
     		<key column="item_id"/>

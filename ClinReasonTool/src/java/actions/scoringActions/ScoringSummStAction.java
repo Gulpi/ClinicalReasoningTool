@@ -4,7 +4,7 @@ import java.util.*;
 
 import application.AppBean;
 import beans.scripts.*;
-import beans.relation.SummaryStatement;
+import beans.relation.summary.*;
 import beans.scoring.*;
 import controller.*;
 import database.DBClinReason;
@@ -47,7 +47,7 @@ public class ScoringSummStAction {
 	 * @param patIllScript
 	 */
 	public ScoreBean scoreAction(PatientIllnessScript patIllScript, int stage){
-		SummaryStatementController.checkForSemanticQualifiers(patIllScript.getSummSt());
+		SummaryStatementController.checkForSemanticQualifiers(patIllScript.getSummSt(), null);
 
 		if(patIllScript.isExpScript()) return null;
 		PatientIllnessScript expScript = AppBean.getExpertPatIllScript(patIllScript.getVpId());
@@ -194,6 +194,7 @@ public class ScoringSummStAction {
 	
 	/**
 	 * Score for transformation (e.g. Pulse 180 -> Tachycardia); 0=none, 1=some, 2=frequent/appropriate
+	 * we look for non-transformed hits (with SIUnits) and transformed matches with list of transforming rules.
 	 * @param expSt
 	 * @param learnerSt
 	 * @return
@@ -203,13 +204,66 @@ public class ScoringSummStAction {
 			learnerSt.setTransformationScore(0);
 			return;
 		}
-		int siUnitsNum = learnerSt.getUnitsNum();
-		
-		if(siUnitsNum>5) learnerSt.setTransformationScore(0); //too many non-transformed terms
-		
-		
-		
+		int siUnitsNum = learnerSt.getUnitsNumForTransformation(expSt.getUnits());
+		//too many non-transformed terms or no hits at all:
+		if(siUnitsNum>5 || learnerSt.getItemHits()==null) {
+			learnerSt.setTransformationScore(0); 
+			learnerSt.setTransformScorePerc((float)0.0);
+			return;
+		}
+		int transformNum = calculateTransformedItems(learnerSt);
+		int transformNumExp = calculateTransformedItems(expSt);
+		if(transformNumExp==0) transformNumExp = 1; //avoid division by 0
+		learnerSt.setTransformNum(transformNum);
+		//score calculation:
+		if(transformNum<=0){ 
+			learnerSt.setTransformationScore(0);
+			learnerSt.setTransformScorePerc((float)0.0);
+			//if(transformNum>3) learnerSt.setTransformationScore(2);
+			//else learnerSt.setTransformationScore(1);
+			return;
+		}
+		learnerSt.setTransformScorePerc(((float) transformNum - (float) siUnitsNum)/(float) transformNumExp);
+		if(learnerSt.getTransformScorePerc()>=0.7)  learnerSt.setTransformationScore(2);
+		else if(learnerSt.getTransformScorePerc()<0.25) learnerSt.setTransformationScore(0);
+		else learnerSt.setTransformationScore(1);
 	}
 	
+	/**
+	 * We look how many elements in the statement are transformed by comparing it with the rules (e.g. prefix=tachy)
+	 * and comparing it with transformed findings (e.g. fever)
+	 * @param st
+	 * @return
+	 */
+	private int calculateTransformedItems(SummaryStatement st){
+		int transformNum = 0;
+		//identify matches with the transformation rules:
+		if(SummaryStatementController.transformRules!=null){
+			for(int i=0; i<SummaryStatementController.transformRules.size(); i++){
+				TransformRule tr = SummaryStatementController.transformRules.get(i);
+				for(int j=0; j<st.getItemHits().size(); j++){
+					SummaryStElem s = st.getItemHits().get(j);
+					if(tr.getType()==TransformRule.TYPE_PREFIX && s.getListItem()!=null && s.getListItem().getName().toLowerCase().startsWith(tr.getName())){
+						transformNum++;
+						s.setTransform(TransformRule.TYPE_PREFIX);
+					}
+					
+					else if(tr.getType()==TransformRule.TYPE_SUFFIX && s.getListItem()!=null && s.getListItem().getName().toLowerCase().endsWith(tr.getName())){
+						s.setTransform(TransformRule.TYPE_SUFFIX);
+						transformNum++;
+					}
+				}
+			}
+		}
+		
+		//identify matches with other findings (e.g. Fever);
+		if(st.getItemHits()!=null){
+			for(int i=0; i< st.getItemHits().size(); i++){
+				if(st.getItemHits().get(i).getTransform()==TransformRule.TYPE_FINDING)
+					transformNum++;
+			}
+		}
+		return transformNum;
+	}
 
 }

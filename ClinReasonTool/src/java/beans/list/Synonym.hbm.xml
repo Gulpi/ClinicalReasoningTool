@@ -17,13 +17,12 @@
 			</generator>
 		</id>
 					
-		 <property name="name" column="name" type="string" length="300"/>
-		  <property name="listItemId" column="item_id" type="long" />	
-		<!--  <property name="id" column="id" type="long" />	-->
+		<property name="name" column="name" type="string" length="300"/>
+		<property name="listItemId" column="item_id" type="long" />	
 		<property name="language" column="lang" type="locale"/>
 		<property name="ratingWeight" column="rating_weight" type="float"/>	
 		<property name="ignored" column="ignore" type="boolean"/>
-		
+		<property name="transformation" column="transformation" type="boolean"/>
 	 
 </class>
 </hibernate-mapping>

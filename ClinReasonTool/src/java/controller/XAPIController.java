@@ -2,7 +2,7 @@ package controller;
 
 import beans.CRTFacesContext;
 import beans.relation.Relation;
-import beans.relation.SummaryStatement;
+import beans.relation.summary.SummaryStatement;
 import beans.scripts.PatientIllnessScript;
 import beans.xAPI.*;
 import gov.adlnet.xapi.model.Statement;

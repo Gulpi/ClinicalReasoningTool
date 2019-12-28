@@ -94,6 +94,9 @@ public class JsonCreator {
 				else if(item.getFirstCode().startsWith("A")){
 					SummaryStatementController.addListItemsA(item, loc.getLanguage());
 				}
+				else if(item.getFirstCode().startsWith("Z")){ //we add countries...
+					SummaryStatementController.addListItem(item, loc.getLanguage());
+				}
 			}
 			Collections.sort(itemsAndSyns);
 			//SummaryStatementController.addListItems(itemsAndSyns, loc.getLanguage());
@@ -163,7 +166,7 @@ public class JsonCreator {
 				if(!syn.isIgnored()){
 					boolean isSimilar = false;
 					for(int i=0;i<toAddItems.size(); i++){						
-						isSimilar = StringUtilities.similarStrings(toAddItems.get(i).getName(), syn.getName(), item.getLanguage());
+						isSimilar = StringUtilities.similarStrings(toAddItems.get(i).getName(), syn.getName(), item.getLanguage(), false);
 						if(isSimilar){
 							ListInterface bestItem = bestTerm(toAddItems.get(i),syn);
 							if(!bestItem.equals(toAddItems.get(i))){

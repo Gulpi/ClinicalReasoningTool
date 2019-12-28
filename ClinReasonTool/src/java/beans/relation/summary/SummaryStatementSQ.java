@@ -1,4 +1,4 @@
-package beans.relation;
+package beans.relation.summary;
 
 /**
  * A SummaryStatement object can have multiple SummaryStatementSQ objects attached to it once it has 

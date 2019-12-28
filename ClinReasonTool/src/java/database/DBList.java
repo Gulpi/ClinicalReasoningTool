@@ -10,6 +10,7 @@ import org.hibernate.criterion.Restrictions;
 import org.hibernate.ejb.criteria.expression.function.TrimFunction;
 
 import beans.list.*;
+import beans.relation.summary.TransformRule;
 import model.SemanticQual;
 import util.CRTLogger;
 
@@ -254,6 +255,9 @@ public class DBList extends DBClinReason {
     	return criteria.list();
     }
     
-
-     
+    public List<TransformRule> selectTransformRules(){
+    	Session s = instance.getInternalSession(Thread.currentThread(), false);
+    	Criteria criteria = s.createCriteria(TransformRule.class,"TransformRule");
+    	return criteria.list();
+    }        
 }

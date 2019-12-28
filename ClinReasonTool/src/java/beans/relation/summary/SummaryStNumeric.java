@@ -1,6 +1,7 @@
-package beans.relation;
+package beans.relation.summary;
 
 import beans.list.SIUnit;
+import util.StringUtilities;
 
 public class SummaryStNumeric {
 
@@ -23,20 +24,37 @@ public class SummaryStNumeric {
 	 */
 	private int pos;
 	private int endPos;
+	private int idx;
+	private String spacyType = null;
+	/**
+	 * Does the expert also have this unit in the statement?
+	 */
+	private boolean expMatch = false;
 	
 	public SummaryStNumeric(){}
-	public SummaryStNumeric(SIUnit unit, int pos){
+	public SummaryStNumeric(SIUnit unit, int pos, int idx, String spacy){
 		this.unit = unit;	
 		this.pos = pos;
 		this.endPos = pos;
+		if(idx>=0) this.idx = idx;
+		if(spacy!=null && spacyType==null) spacyType = spacy;
+		//if(StringUtilities.isNumeric(name)) this.numeric = name;
 	}
-	public SummaryStNumeric(SIUnit unit, String name, int pos){
+	public SummaryStNumeric(SIUnit unit, String name, int pos, int idx, String spacy){
 		this.unit = unit;	
 		this.name = name;
 		this.pos = pos;
 		this.endPos = pos;
+		if(idx>=0) this.idx = idx;
+		if(spacy!=null && spacyType==null) spacyType = spacy;
+		//if(StringUtilities.isNumeric(name)) this.numeric = name;
 	}
 	
+	
+	public int getIdx() {return idx;}
+	public void setIdx(int idx) {this.idx = idx;}
+	public String getSpacyType() {return spacyType;}
+	public void setSpacyType(String spacyType) {this.spacyType = spacyType;}
 	public long getId() {return id;}
 	public void setId(long id) {this.id = id;}
 	public String getName() {return name;}
@@ -47,6 +65,12 @@ public class SummaryStNumeric {
 	public void setPos(int pos) {this.pos = pos;}
 	public int getEndPos() {return endPos;}
 	public void setEndPos(int endPos) {this.endPos = endPos;}
+	
+	//public String getNumeric() {return numeric;}
+	//public void setNumeric(String numeric) {this.numeric = numeric;}
+	
+	public boolean isExpMatch() {return expMatch;}
+	public void setExpMatch(boolean expMatch) {this.expMatch = expMatch;}
 	/* (non-Javadoc)
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
@@ -59,9 +83,9 @@ public class SummaryStNumeric {
 	 * @see java.lang.Object#toString()
 	 */
 	public String toString(){
-		if(name!=null && unit!=null) return name + " " + unit.toString() + " (" + pos + ")";
-		if(name!=null) return name + " (" + pos + ")";
-		if(unit!=null) return unit.toString() + " (" + pos + ")";
+		if(name!=null && unit!=null) return name + " " + unit.toString() + " (" + pos + "," + expMatch + ")";
+		if(name!=null) return name + " (" + pos +  "," + expMatch + ")";
+		if(unit!=null) return unit.toString() + " (" + pos  + "," + expMatch+")";
 		return "";
 	}
 			

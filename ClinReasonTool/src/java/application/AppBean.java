@@ -10,31 +10,20 @@ import javax.servlet.ServletContext;
 import javax.servlet.http.HttpSessionEvent;
 import javax.servlet.http.HttpSessionListener;
 
-import actions.scoringActions.ScoringSummStAction;
 import beans.scripts.*;
-import beans.user.User;
 import beans.graph.Graph;
-import beans.list.ListInterface;
-import beans.list.ListItem;
-import beans.list.Synonym;
-import beans.relation.SummaryStatement;
+
 import beans.scoring.PeerContainer;
 import controller.IllnessScriptController;
 import controller.JsonCreator;
-import controller.MeshImporter;
 import controller.PeerSyncController;
 import controller.SummaryStatementController;
 import database.DBClinReason;
-import database.DBList;
-import database.DBUser;
 import database.HibernateUtil;
 import model.SemanticQual;
 import util.CRTLogger;
-import util.Encoder;
 import util.StringUtilities;
 import properties.IntlConfiguration;
-//import test.TextSimilarityComparing;
-//import test.LMMeshMapping;
 
 /**
  * We init here some application stuff, like hibernate,....
@@ -129,7 +118,7 @@ public class AppBean extends ApplicationWrapper implements HttpSessionListener{
 	    }
 	   
 	    try{
-	    	SummaryStatementController.setSIUnitList();
+	    	SummaryStatementController.setSIUnitAndTransformList();
 	    	//we load the semantic qualifiers and analyze any summary statements that have not yet been analyzed.
 	    	if(semanticQuals==null) semanticQuals = SummaryStatementController.loadSemanticQuals();
 	    	if(semanticQuals!=null) SummaryStatementController.analyzeSemanticQualsStatements();

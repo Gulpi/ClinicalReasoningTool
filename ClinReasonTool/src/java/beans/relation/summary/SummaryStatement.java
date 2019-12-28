@@ -1,4 +1,4 @@
-package beans.relation;
+package beans.relation.summary;
 import java.beans.Beans;
 import java.io.Serializable;
 import java.sql.Timestamp;
@@ -6,7 +6,9 @@ import java.util.*;
 
 import javax.faces.bean.SessionScoped;
 
-import beans.list.*; 
+import beans.list.*;
+import beans.relation.Relation;
+import net.casus.util.nlp.spacy.SpacyDocToken; 
 /**
  * Summary Statement of the author or learner for a VP. There might be multiple Summary Statements for a case (changed
  * at distinct steps), all changes, variants are saved in the PIS_Log object.
@@ -14,7 +16,7 @@ import beans.list.*;
  *
  */
 @SessionScoped
-public class SummaryStatement extends Beans implements Serializable{
+public class SummaryStatement extends Beans implements Serializable, Comparable{
 
 	private static final long serialVersionUID = 1L;
 	private String text; 
@@ -70,6 +72,8 @@ public class SummaryStatement extends Beans implements Serializable{
 	 * for transformation
 	 */
 	private List<SummaryStNumeric> units;
+	private int transformNum = 0;
+	//private SummaryStElem person;
 	
 	public SummaryStatement(){}
 	public SummaryStatement(String text){
@@ -107,6 +111,10 @@ public class SummaryStatement extends Beans implements Serializable{
 	public void setNarr2Score(float narr2Score) {this.narr2Score = narr2Score;}	
 	public float getTransformScorePerc() {return transformScorePerc;}
 	public void setTransformScorePerc(float transformScorePerc) {this.transformScorePerc = transformScorePerc;}
+	public int getTransformNum() {return transformNum;}
+	public void setTransformNum(int transformNum) {this.transformNum = transformNum;}	
+	//public SummaryStElem getPerson() {return person;}
+	//public void setPerson(SummaryStElem person) {this.person = person;}
 	
 	public void addUnit(SummaryStNumeric u){
 		if(u==null) return;
@@ -127,10 +135,11 @@ public class SummaryStatement extends Beans implements Serializable{
 	 * add a matching listItem 
 	 * @param li
 	 */
-	public void addItemHit(ListItem li, int startPos){
+	public void addItemHit(ListItem li, int startPos, int idx){
 		if(itemHits==null) itemHits = new ArrayList<SummaryStElem>();
 		SummaryStElem el = new SummaryStElem(li);
 		el.setStartPos(startPos);
+		el.setStartIdx(idx);
 		//el.setEndPos(startPos);
 		if(!itemHits.contains(el)) //do not add duplicates!
 			itemHits.add(el);		
@@ -141,12 +150,18 @@ public class SummaryStatement extends Beans implements Serializable{
 	 * @param li
 	 * @param s
 	 */
-	public void addItemHit(ListItem li, Synonym s, int startPos){
+	public void addItemHit(ListItem li, Synonym s, int startPos, int idx){
 		if(itemHits==null) itemHits = new ArrayList<SummaryStElem>();
 		SummaryStElem el = new SummaryStElem(li);
 		if(s!=null) el.setSynonymStr(s.getName());
 		el.setStartPos(startPos);
-		//el.setEndPos(startPos);
+		el.setStartIdx(idx);
+		if(!itemHits.contains(el)) //do not add duplicates!
+			itemHits.add(el);		
+	}
+	
+	public void addItemHit(SummaryStElem el){
+		if(itemHits==null) itemHits = new ArrayList<SummaryStElem>();
 		if(!itemHits.contains(el)) //do not add duplicates!
 			itemHits.add(el);		
 	}
@@ -374,9 +389,38 @@ public class SummaryStatement extends Beans implements Serializable{
 		if(units==null) return "";
 		return units.toString();
 	}
-	public int getUnitsNum(){
+	
+	
+	/**
+	 * We check the found SI units or numerics in the statement with the expert statement and we do not count numerics that 
+	 * have also been identified by the expert (e.g. age of patient)
+	 * @param expUnits
+	 * @return
+	 */
+	public int getUnitsNumForTransformation(List<SummaryStNumeric> expUnits){
 		if(units==null) return 0;
-		return units.size();
+		int unitNum =0;
+		for(int i=0;i<units.size(); i++){
+			SummaryStNumeric unit = units.get(i);
+			//do not include any dates that are also included in the expert:
+			//if(unit.getSpacyType()==null) unitNum++; 
+			//else{ /* if(!unit.getSpacyType().equals(SpacyDocToken.LABEL_DATE)) unitNum++;*/
+				//if(unit.getSpacyType().equals(SpacyDocToken.LABEL_DATE)){
+				if(expUnits==null) unitNum++;
+				else {
+					//we look whether we find the same unit/numeric in the expert statement, if so we do not count it (presumably it is the patient age)
+					boolean found = false;
+					for (int j=0;j<expUnits.size(); j++){
+						if(expUnits.get(j).getName()!=null && expUnits.get(j).getName().equals(unit.getName())){
+							found = true;
+							unit.setExpMatch(true);
+						}
+					}
+					if(!found) unitNum++;
+				}
+			//}
+		}
+		return unitNum;
 	}
 	
 	/**
@@ -390,6 +434,27 @@ public class SummaryStatement extends Beans implements Serializable{
 			if(units.get(i).getPos()==pos) return units.get(i);
 		}
 		return null;
+	}
+	
+	public String getPersonName(){
+		if(this.itemHits==null) return null;
+		for(int i=0; i<itemHits.size(); i++){
+			SummaryStElem el = itemHits.get(i);
+			if(el.isPerson()) return el.getSynonymStr();
+		}
+		return null;
+	}
+	
+	/* (non-Javadoc)
+	 * @see java.lang.Comparable#compareTo(java.lang.Object)
+	 */
+	public int compareTo(Object o) {
+		if(o instanceof SummaryStatement){
+			if(this.id > ((SummaryStatement) o).getId()) return 1;
+			if(this.id == ((SummaryStatement) o).getId()) return 0;
+			if(this.id < ((SummaryStatement) o).getId()) return -1;			
+		}
+		return 0;
 	}
 	
 }

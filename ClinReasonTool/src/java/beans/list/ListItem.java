@@ -32,6 +32,7 @@ public class ListItem implements Serializable, ListInterface, Comparable{
 	private Locale language; //en, de,...
 	private String mesh_ec; //EC
 	private String itemType; //D=Diagnosis, ...
+	private boolean transformation = false;
 	
 	public static final String TYPE_OWN = "PRIVATE";
 	public static final String TYPE_ADDED = "ADDED";
@@ -87,7 +88,10 @@ public class ListItem implements Serializable, ListInterface, Comparable{
 	public void setItemType(String itemType) {this.itemType = itemType;}			
 	public int getIsSyndrome() {return isSyndrome;}
 	public void setIsSyndrome(int isSyndrome) {this.isSyndrome = isSyndrome;}
-	public boolean isSynonym(){return false;}
+	public boolean isSynonym(){return false;}	
+	public boolean isTransformation() {return transformation;}
+	public void setTransformation(boolean transformation) {this.transformation = transformation;}
+	
 	public String getShortName(){ 
 		return StringUtils.abbreviate(this.name, MAXLENGTH_NAME);
 		/*if(this.name==null || this.name.length()<=MAXLENGTH_NAME) return name;

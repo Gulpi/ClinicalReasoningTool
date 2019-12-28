@@ -90,7 +90,7 @@ public class HibernateSession {
 			cfg.addClass(beans.relation.Connection.class);
 			cfg.addClass(beans.relation.RelationManagement.class);			
 			cfg.addClass(beans.relation.RelationTest.class);	
-			cfg.addClass(beans.relation.SummaryStatement.class);	
+			cfg.addClass(beans.relation.summary.SummaryStatement.class);	
 			cfg.addClass(beans.helper.Range.class);
 			cfg.addClass(beans.scoring.ScoreBean.class);
 			cfg.addClass(beans.error.MyError.class);
@@ -101,10 +101,12 @@ public class HibernateSession {
 			cfg.addClass(beans.helper.TypeAheadBean.class);
 			cfg.addClass(beans.scoring.LearningBean.class);
 			cfg.addClass(model.SemanticQual.class);
-			cfg.addClass(beans.relation.SummaryStatementSQ.class);
+			cfg.addClass(beans.relation.summary.SummaryStatementSQ.class);
 			cfg.addClass(beans.search.SearchResult.class);
 			cfg.addClass(beans.user.SessionSetting.class);
 			cfg.addClass(beans.list.SIUnit.class);
+			cfg.addClass(beans.relation.summary.TransformRule.class);
+			cfg.addClass(beans.test.JsonTest.class); //testing only
 			//cfg.addClass(test.LMMeshMapping.class);
 			
 			if (factory==null) {

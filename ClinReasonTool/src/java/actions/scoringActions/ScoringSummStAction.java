@@ -114,12 +114,22 @@ public class ScoringSummStAction {
 	 * @param learnerSt
 	 * @return
 	 */
-	private int calculateSemanticQualScore(SummaryStatement expSt, SummaryStatement learnerSt){
-		if(learnerSt.getSqHits()==null || learnerSt.getSqHits().isEmpty()) return 0;
+	public int calculateSemanticQualScore(SummaryStatement expSt, SummaryStatement learnerSt){
+		int hits = learnerSt.getSQSpacyHits();
+		int expHits = expSt.getSQSpacyHits();
+		if(expHits==0) expHits = 2;
+		
+		float perc = (float) hits / (float)expHits;
+		learnerSt.setSqScorePerc(perc);
+		if(hits==2) return 1;
+		if(perc >=0.7 ) return 2;
+		if(perc >=0.3 ) return 1;
+		return 0;
+		/*if(learnerSt.getSqHits()==null || learnerSt.getSqHits().isEmpty()) return 0;
 		if(expSt.getSqHits()==null || expSt.getSqHits().isEmpty()) return 2; //should not happen, would be a bad statement
-		if(learnerSt.getSqHits().size() / expSt.getSqHits().size() >=0.6 ) return 2;
-		if(learnerSt.getSqHits().size() / expSt.getSqHits().size() >=0.3 ) return 1;
-		return 0;		
+		if(learnerSt.getSQSpacyHits() / expSt.getSQSpacyHits() >=0.6 ) return 2;
+		if(learnerSt.getSQSpacyHits() / expSt.getSQSpacyHits() >=0.3 ) return 1;
+		return 0;		*/
 	}
 	
 	/**
@@ -128,9 +138,13 @@ public class ScoringSummStAction {
 	 * @return
 	 */
 	public int calculateSemanticQualScoreNew(SummaryStatement learnerSt){
-		if(learnerSt.getSqHits()==null || learnerSt.getSqHits().isEmpty() || learnerSt.getSqHits().size()<=2) return 0;
-		if(learnerSt.getSqHits().size() >4) return 2;
+		int hits = learnerSt.getSQSpacyHits();
+		if(hits<2) return 0;
+		if(hits>4) return 2;
 		return 1;
+		/*if(learnerSt.getSqHits()==null || learnerSt.getSqHits().isEmpty() || learnerSt.getSqHits().size()<=2) return 0;
+		if(learnerSt.getSqHits().size() >4) return 2;*/
+		//return 1;
 	}
 	
 	/**
@@ -213,7 +227,7 @@ public class ScoringSummStAction {
 		}
 		int transformNum = calculateTransformedItems(learnerSt);
 		int transformNumExp = calculateTransformedItems(expSt);
-		if(transformNumExp==0) transformNumExp = 1; //avoid division by 0
+		if(transformNumExp==0) transformNumExp = 2; //avoid division by 0 and have a default value of 2!
 		learnerSt.setTransformNum(transformNum);
 		//score calculation:
 		if(transformNum<=0){ 
@@ -223,9 +237,9 @@ public class ScoringSummStAction {
 			//else learnerSt.setTransformationScore(1);
 			return;
 		}
-		learnerSt.setTransformScorePerc(((float) transformNum - (float) siUnitsNum)/(float) transformNumExp);
-		if(learnerSt.getTransformScorePerc()>=0.7)  learnerSt.setTransformationScore(2);
-		else if(learnerSt.getTransformScorePerc()<0.25) learnerSt.setTransformationScore(0);
+		learnerSt.setTransformScorePerc((((float) transformNum - (float) siUnitsNum)/2) / (float) transformNumExp);
+		if(learnerSt.getTransformScorePerc()>0.6)  learnerSt.setTransformationScore(2);
+		else if(learnerSt.getTransformScorePerc()<0.16) learnerSt.setTransformationScore(0);
 		else learnerSt.setTransformationScore(1);
 	}
 	
@@ -264,6 +278,14 @@ public class ScoringSummStAction {
 			}
 		}
 		return transformNum;
+	}
+	
+	public void calculateGlobal(SummaryStatement st){
+		int sum = st.getTransformationScore() + st.getNarrowingScore() + st.getSqScore();
+		if(sum<=2) st.setGlobalScore(0);
+		if(sum>=6) st.setGlobalScore(2); 
+		st.setGlobalScore(1);
+		
 	}
 
 }

@@ -1,9 +1,7 @@
 package controller;
 
 import java.util.*;
-
 import org.apache.commons.lang3.StringUtils;
-import org.hibernate.Session;
 
 import actions.scoringActions.ScoringSummStAction;
 import application.AppBean;
@@ -16,8 +14,7 @@ import database.DBClinReason;
 import database.DBList;
 import model.SemanticQual;
 import util.*;
-import net.casus.util.nlp.spacy.SpacyDocJson;
-import net.casus.util.nlp.spacy.SpacyDocToken;
+import net.casus.util.nlp.spacy.*;
 
 
 /**
@@ -120,22 +117,31 @@ public class SummaryStatementController {
 	 */
 	public static void checkForSemanticQualifiers(SummaryStatement stst, SpacyDocJson spacy){
 		try{
+			SpacyStructureStats spacyStructureStats = SpacyStructureStats.getInstance();
 			if(stst==null || stst.getText()==null || stst.getText().trim().isEmpty() || stst.getLang()==null) return;
 			List<SemanticQual> sqs = AppBean.getSemantiQualsByLang(stst.getLang());
 			if(sqs==null) return;
-			//List<SemanticQual> hits = new ArrayList<SemanticQual>();
+			
 			List<SummaryStatementSQ> hits= new ArrayList<SummaryStatementSQ>();
 			for(int i=0; i < sqs.size(); i++){
 				String s = sqs.get(i).getQualifier().toLowerCase().trim();
 				if(stst.getText().toLowerCase().contains(s)){
 					SummaryStatementSQ sssq = new SummaryStatementSQ(stst.getId(),sqs.get(i).getId(), s);
 					sssq.setPosition(stst.getText().toLowerCase().indexOf(s));
-					//sssq.setTextMatch(StringUtilities.getWordFromText(stst.getText(), s));
-					hits.add(sssq);			
+					
+					sssq.setSpacyMatch(isSQSpacyHit(sssq, spacy, spacyStructureStats));
+					if(!hits.contains(sssq))
+						hits.add(sssq);	
+					else{ //we optimize hits, to avoid a double hit (e.g. for male and female)
+						SummaryStatementSQ matchHit = hits.get(hits.indexOf(sssq));
+						if(sssq.getText().contains(matchHit.getText())) { //sssq is the better match, so we update
+							hits.remove(matchHit);
+							hits.add(sssq);							
+						}
+						//if matchHit is the better match, we do not have to change anything
+					}
 				}
 			}
-			//if(hits!=null && !hits.isEmpty() && stst.getId()>0)
-			//	new DBClinReason().saveAndCommit(hits);
 			stst.setSqHits(hits);
 			stst.setAnalyzed(true);
 		}
@@ -144,12 +150,30 @@ public class SummaryStatementController {
 		}
 	}
 	
+	private static SpacyDocToken isSQSpacyHit(SummaryStatementSQ loop, SpacyDocJson spacy, SpacyStructureStats spacyStructureStats){
+		String sq = null;
+		try {
+			sq = loop.getTextMatch();
+		} catch (Exception e) {
+		}
+		String sqKey = loop.getText();
+		if (sq != null) sq = sq.toLowerCase();
+		if (sqKey != null) sqKey = sqKey.toLowerCase();
+		if (sq == null) sq = sqKey;
+		
+		SpacyDocToken loopToken = spacy.getSpacyDocToken(loop.getPosition());
+		boolean isHit = false;
+		if (loopToken != null) {
+			isHit =  spacyStructureStats.isHit(sqKey,loopToken);
+		}
+		if(isHit) return loopToken;
+		return null;
+	}
 	
-	private static void analyzeExpStatement(SummaryStatement st){
+	
+	private static void analyzeExpStatement(SummaryStatement st, SpacyDocJson spacy){
 		if(st.getItemHits()!=null && !st.getItemHits().isEmpty()) return; //already done....
-		JsonTest jt = new DBClinReason().selectJsonTestBySummStId(st.getId()); //the json of the statement
-		SpacyDocJson spacy = new SpacyDocJson(jt.getJson().trim());
-		spacy.init();
+		
 		List<ListItem> items = getListItemsByLang(st.getLang());
 		List<String> textAsList = StringUtilities.createStringListFromString(st.getText(), true);
 		compareList(items, st); 
@@ -160,7 +184,7 @@ public class SummaryStatementController {
 			if(aList!=null) compareSimilarList(aList.get(st.getLang()), st, s, i);		
 			st.addUnit(compareSIUnits(s, i, st.getText().toLowerCase().indexOf(s), spacy));
 		}
-		checkForSemanticQualifiers(st, null);
+		checkForSemanticQualifiers(st, spacy);
 		compareNumbers(st, spacy);
 		checkForPerson(st, spacy);
 	}
@@ -181,12 +205,15 @@ public class SummaryStatementController {
 	 */
 	public static SummaryStatement testSummStRating(/*Locale loc, */SummaryStatement st, String vpId){
 		
-		List<ListItem> items = getListItemsByLang(st.getLang());
+		List<ListItem> items = getListItemsByLang(st.getLang());		
+		PatientIllnessScript expPis = new DBClinReason().selectExpertPatIllScriptByVPId(vpId);		
 		JsonTest jt = new DBClinReason().selectJsonTestBySummStId(st.getId()); //the json of the statement
 		SpacyDocJson spacy = new SpacyDocJson(jt.getJson().trim());
 		spacy.init();
-		PatientIllnessScript expPis = new DBClinReason().selectExpertPatIllScriptByVPId(vpId);		
-		analyzeExpStatement(expPis.getSummSt());
+		JsonTest jt2 = new DBClinReason().selectJsonTestBySummStId(expPis.getSummStId()); //the json of the statement
+		SpacyDocJson spacyE = new SpacyDocJson(jt2.getJson().trim());
+		spacyE.init();
+		analyzeExpStatement(expPis.getSummSt(), spacyE);
 		if(!tempExpMaps.containsKey(vpId)) tempExpMaps.put(vpId, expPis);
 		
 		if(st==null || st.getText()==null || items==null) return null; 
@@ -209,10 +236,13 @@ public class SummaryStatementController {
 			compareWithExpIllScript(st, expPis);
 		}
 		checkForPerson(st, spacy);
+		checkAccuracy(st, expPis.getSummSt(),spacy, spacyE);
 		//scoring starts:
 		ScoringSummStAction scoreAct = new ScoringSummStAction();
-		int sqScore = scoreAct.calculateSemanticQualScoreNew(st); //score SQ
+		int sqScoreNew = scoreAct.calculateSemanticQualScoreNew(st); //score SQ
+		int sqScore = scoreAct.calculateSemanticQualScore(expPis.getSummSt(), st);
 		st.setSqScore(sqScore);
+		st.setSqScoreNew(sqScoreNew);
 		//CRTLogger.out("",1);
 		scoreAct.calculateNarrowing(st, expPis.getSummSt());
 		scoreAct.calculateTransformation(expPis.getSummSt(), st);
@@ -224,6 +254,7 @@ public class SummaryStatementController {
 	
 	private static void checkForPerson(SummaryStatement st, SpacyDocJson spacy){
 		SpacyDocToken person = spacy.getTokenByType(SpacyDocToken.LABEL_PERSON);
+		if(person==null) person = spacy.getTokenByType(SpacyDocToken.LABEL_PER);
 		if(person==null) return;
 		st.addItemHit(new SummaryStElem(person));		
 	}
@@ -314,14 +345,16 @@ public class SummaryStatementController {
 		
 		for (int i=0; i<st.getItemHits().size(); i++){
 			ListItem li = st.getItemHits().get(i).getListItem();
-			if(pis.getRelationByListItemIdAndType(li.getListItemId(), Relation.TYPE_PROBLEM)!=null)
-				st.getItemHits().get(i).setExpertScriptMatch(Relation.TYPE_PROBLEM);
-			else if(pis.getRelationByListItemIdAndType(li.getListItemId(), Relation.TYPE_DDX)!=null) 
-				st.getItemHits().get(i).setExpertScriptMatch(Relation.TYPE_DDX);
-			else if(pis.getRelationByListItemIdAndType(li.getListItemId(), Relation.TYPE_TEST)!=null) 
-				st.getItemHits().get(i).setExpertScriptMatch(Relation.TYPE_TEST);
-			else if(pis.getRelationByListItemIdAndType(li.getListItemId(), Relation.TYPE_MNG)!=null) 
-				st.getItemHits().get(i).setExpertScriptMatch(Relation.TYPE_MNG);
+			if(li!=null){
+				if(pis.getRelationByListItemIdAndType(li.getListItemId(), Relation.TYPE_PROBLEM)!=null)
+					st.getItemHits().get(i).setExpertScriptMatch(Relation.TYPE_PROBLEM);
+				else if(pis.getRelationByListItemIdAndType(li.getListItemId(), Relation.TYPE_DDX)!=null) 
+					st.getItemHits().get(i).setExpertScriptMatch(Relation.TYPE_DDX);
+				else if(pis.getRelationByListItemIdAndType(li.getListItemId(), Relation.TYPE_TEST)!=null) 
+					st.getItemHits().get(i).setExpertScriptMatch(Relation.TYPE_TEST);
+				else if(pis.getRelationByListItemIdAndType(li.getListItemId(), Relation.TYPE_MNG)!=null) 
+					st.getItemHits().get(i).setExpertScriptMatch(Relation.TYPE_MNG);
+			}
 		}
 	}
 	
@@ -401,30 +434,32 @@ public class SummaryStatementController {
 	 * @param expMatches
 	 * @return
 	 */
-	private static void calculateMatchesWithExpStatement(List<SummaryStElem> matchingWords, String expMatches){
+	private static void calculateMatchesWithExpStatement(List<SummaryStElem> matchingWords, String expText){
 		if(matchingWords==null || matchingWords.isEmpty()) return;
 		//int matchCounter = 0;
-		String[] expMatchesArr = expMatches.split(" ");
+		String[] expMatchesArr = expText.split(" ");
 		if(expMatchesArr==null || expMatchesArr.length==0) return;
 		for(int i=0;i<expMatchesArr.length;i++){
 			innerLoop: for(int j=0; j<matchingWords.size(); j++){
 				SummaryStElem elem = matchingWords.get(j);
 				//compare main listItem:
-				if (StringUtilities.similarStrings(elem.getListItem().getName(), expMatchesArr[i], elem.getListItem().getLanguage(), true)){
+				if (elem.getListItem()!=null && elem.getListItem().getName()!=null && StringUtilities.similarStrings(elem.getListItem().getName(), expMatchesArr[i], elem.getListItem().getLanguage(), true)){
 					//matchCounter++;
 					elem.setExpertMatch(true);
+					elem.setExpertMatchIdx(expText.indexOf(expMatchesArr[i]));
 					break innerLoop;
 				}
 
 				//compare synonyms:
 				ListItem li  = (ListItem) elem.getListItem();
-				if (li.getSynonyma()!=null && !li.getSynonyma().isEmpty()){
+				if (li!=null && li.getSynonyma()!=null && !li.getSynonyma().isEmpty()){
 					Iterator it = li.getSynonyma().iterator();
 					while(it.hasNext()){
 						Synonym s= (Synonym) it.next();
 						if(StringUtilities.similarStrings(s.getName(), expMatchesArr[i], elem.getListItem().getLanguage(), true)){
 							//matchCounter++;
 							elem.setExpertMatch(true);
+							elem.setExpertMatchIdx(expText.indexOf(expMatchesArr[i]));
 							break innerLoop;
 						}
 					}
@@ -446,14 +481,108 @@ public class SummaryStatementController {
 		transformRules = new DBList().selectTransformRules();
 	}
 	
+	/**
+	 * @param learnerSt
+	 * @param expertSt
+	 * @param lSpacy
+	 * @param eSpacy
+	 */
+	public static void checkAccuracy(SummaryStatement learnerSt, SummaryStatement expertSt, SpacyDocJson lSpacy, SpacyDocJson eSpacy){
+		//minimum requirements:
+		if(learnerSt.getText()==null || learnerSt.getText().length()<=10 || learnerSt.getItemHits()==null){
+			learnerSt.setAccuracyScore(0);
+			return;
+		}
+		try{
+			//we look for contradicting semantic qualifiers for expertMatch hits:
+			List<SummaryStElem> hits = learnerSt.getItemHits();
+			if(hits!=null && !hits.isEmpty()){
+				for (int i=0;i<hits.size(); i++){
+					SummaryStElem elem = hits.get(i);
+					if(elem.isExpertMatch()){
+						SpacyDocToken tokenL = lSpacy.getSpacyDocToken(elem.getStartIdx());
+						SpacyDocToken tokenE = eSpacy.getSpacyDocToken(elem.getExpertMatchIdx());
+						if(tokenL!=null && tokenL.getChildren()!=null){
+							for(int j=0; j<tokenL.getChildren().size();j++){
+								SpacyDocToken learnerChild = tokenL.getChildren().get(j);
+								SummaryStatementSQ learnerSQ = learnerSt.getSQBySpacyToken(learnerChild);
+								if(learnerSQ!=null) //child is a SQ:
+									if(tokenE!=null && tokenE.getChildren()!=null){
+										for(int k=0;k<tokenE.getChildren().size();k++){
+											SpacyDocToken expChild = tokenE.getChildren().get(k);
+											SummaryStatementSQ expSQ = expertSt.getSQBySpacyToken(expChild);
+											//expertChild is an SQ and we found contrasting SQ for the same token:
+											if(expSQ!=null && oppositeSQ(learnerSQ.getSqId(), expSQ.getSqId(), learnerSt.getLang())){ 
+												learnerSt.setAccuracyScore(0);
+												learnerSQ.setExpHasOpposite(true);
+												return;
+											}
+										}
+									}
+								}
+							}
+					}
+				}
+			}
+			int acuracy = checkPersonAgeAccuracy(learnerSt, expertSt, lSpacy, eSpacy);
+			//we have not found anything wrong, so we can only assume that it is correct:
+			learnerSt.setAccuracyScore(acuracy);	
+		}
+		catch(Exception e){
+			CRTLogger.out(StringUtilities.stackTraceToString(e), CRTLogger.LEVEL_ERROR);
+		}
+	}
+	
+	/**
+	 * We check whether persons are in the statements and if so, if the related number/date is the same (presumably this is 
+	 * then the age of the patient.
+	 * @param learnerSt
+	 * @param expSt
+	 * @param lSpacy
+	 * @param eSpacy
+	 * @return
+	 */
+	private static int checkPersonAgeAccuracy(SummaryStatement learnerSt, SummaryStatement expSt, SpacyDocJson lSpacy, SpacyDocJson eSpacy){
+		SummaryStElem personL = learnerSt.getPerson();
+		SummaryStElem personE = expSt.getPerson();
+		if(personL==null || personE==null) return 1; //no persons to reference to
+		SpacyDocToken persTokL = lSpacy.getSpacyDocToken(personL.getStartIdx());
+		SpacyDocToken persTokE = eSpacy.getSpacyDocToken(personE.getStartIdx());
+		if(persTokL==null || persTokE==null) return 1; //no person tokens found
+		SpacyDocToken ageL = persTokL.getTokenByLabelInChildsOrParents(SpacyDocToken.LABEL_DATE);
+		SpacyDocToken ageE = persTokE.getTokenByLabelInChildsOrParents(SpacyDocToken.LABEL_DATE);
+		if (ageL == null || ageE == null) return 1; //no related age found either in learner or in expert statement
+		if(!ageL.getToken().equals(ageE.getToken())) 
+			return 0; //age mismatch
+		
+		return 1;
+
+	}
+		
+	/**
+	 * Check whether the two SQ ids belong to contrasting SQ (e-g. left vs. right or upper vs. lower). 
+	 * @param id1
+	 * @param id2
+	 * @param lang
+	 * @return
+	 */
+	public static boolean oppositeSQ(long id1, long id2, String lang){
+		SemanticQual sq1 = AppBean.getSemantiQualsByLangAndId(lang, id1);
+		SemanticQual sq2 = AppBean.getSemantiQualsByLangAndId(lang, id2);
+		if(sq1==null || sq2==null) return false;
+		if(sq1.isContrast(sq2)) return true;
+		return false;
+	}
+	
 	/*public static SummaryStatement testSummStRating(){
 		//Locale loc = new Locale("en");
-		long id = 54771;
-		String vpId = "447006_2";
+		long id = 86813;
+		String vpId = "910494_2";
 		SummaryStatement st = new DBClinReason().loadSummSt(id, null);
 		st =  testSummStRating(st, vpId);
 		return st;
 	}*/
+
 	
 	public static void testSummStRating(){
 		long[] ids = new long[]{76369,79314,79911,81723,82533,82822,71816,72350,74804,75134,75854,70659,141433,142950,144100,146816,147601,148031,148583,135566,68937,77182,77671,147862,86813,94126,97276,88512,89467,95367,95717,95836,84120,85748,87773,90543,93047,93832,94734,160048,162578,162935,167338,168254,169244,164301,166480,171792,174917,170190,172691,173526,176050,176400,177502,84249,91616,171644,176843,176917,258230,259325,156766,165312,190176,198217,183259,179448,180132,182374,185591,224568,215194,233237,255923,198217,42082,42717,44101,45738,48497,27947,28393,43129,44826,26314,34810,35997,31273,32010,33510,41025,43009,142289,137492,157934,214134,245001,33280,31830,34218,7852,50936,51612,56138,56689,57139,57773,60295,60369,52550,52864,53807,53831,54771,61789,62884,117537,119306,119568,121026,118336,121097,122299,122367,122466,192059};
@@ -465,7 +594,7 @@ public class SummaryStatementController {
 		Collections.sort(list);
 		for(int i=0; i<list.size(); i++){
 			SummaryStatement s = list.get(i);
-			
+			CRTLogger.out("stid = " + s.getId(), 1);
 			PatientIllnessScript pis = new DBClinReason().selectPatIllScriptById(s.getPatillscriptId());
 			testSummStRating(s, pis.getVpId());			
 		}
@@ -480,12 +609,17 @@ public class SummaryStatementController {
 			
 			//sb.append(st.getNarrowingScore()+"\r");
 			//sb2.append(st.getNarrowingScoreNew()+"\r");
-			sb3.append(st.getTransformNum()+ " - "+st.getUnitHitsToString()+"\r");
-			sb.append(st.getTransformationScore()+"\r");
-			sb2.append(st.getTransformScorePerc()+"\r");
-			sb4.append(st.getNarrowingScore()+"\r");
-			sb5.append(st.getPersonName()+"\r");
-			sb6.append(st.getItemHits()+"\r");
+			//sb3.append(st.getTransformNum()+ " - "+st.getUnitHitsToString()+"\r");
+			//sb.append(st.getTransformationScore()+"\r");
+			//sb2.append(st.getTransformScorePerc()+"\r");
+			sb.append(st.getSqHits()+"\r");
+			sb2.append(st.getSqScore()+"\r");
+			sb3.append(st.getSqScoreNew()+"\r");
+			sb4.append(st.getSqScorePerc()+"\r");
+			sb5.append(st.getSQSpacyHits()+"\r");
+			//sb4.append(st.getNarrowingScore()+"\r");
+			//sb5.append(st.getPersonName()+"\r");
+			//sb6.append(st.getItemHits()+"\r");
 			
 		}
 		CRTLogger.out(sb.toString(), 1);

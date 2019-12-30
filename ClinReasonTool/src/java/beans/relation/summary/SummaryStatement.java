@@ -46,6 +46,8 @@ public class SummaryStatement extends Beans implements Serializable, Comparable{
 	 * score can be 0, 1, or 2 (see rubric by Smith et al)
 	 */
 	private int sqScore = -1;
+	private int sqScoreNew = -1;
+	private float sqScorePerc;
 	/**
 	 * score can be 0, 1, or 2 (see rubric by Smith et al)
 	 */
@@ -76,6 +78,12 @@ public class SummaryStatement extends Beans implements Serializable, Comparable{
 	private List<SummaryStNumeric> units;
 	private int transformNum = 0;
 	//private SummaryStElem person;
+	/**
+	 * score can be 0, 1 (see rubric by Smith et al)
+	 */
+	private int accuracyScore;
+	
+	private int globalScore;
 	
 	public SummaryStatement(){}
 	public SummaryStatement(String text){
@@ -115,8 +123,14 @@ public class SummaryStatement extends Beans implements Serializable, Comparable{
 	public void setTransformScorePerc(float transformScorePerc) {this.transformScorePerc = transformScorePerc;}
 	public int getTransformNum() {return transformNum;}
 	public void setTransformNum(int transformNum) {this.transformNum = transformNum;}	
-	//public SummaryStElem getPerson() {return person;}
-	//public void setPerson(SummaryStElem person) {this.person = person;}
+	public int getAccuracyScore() {return accuracyScore;}
+	public void setAccuracyScore(int accuracyScore) {this.accuracyScore = accuracyScore;}
+	public float getSqScorePerc() {return sqScorePerc;}
+	public void setSqScorePerc(float sqScorePerc) {this.sqScorePerc = sqScorePerc;}
+	public int getSqScoreNew() {return sqScoreNew;}
+	public void setSqScoreNew(int sqScoreNew) {this.sqScoreNew = sqScoreNew;}
+	public int getGlobalScore() {return globalScore;}
+	public void setGlobalScore(int globalScore) {this.globalScore = globalScore;}
 	
 	
 	
@@ -141,6 +155,17 @@ public class SummaryStatement extends Beans implements Serializable, Comparable{
 	 * @return
 	 */
 	public List getSqHits(){return sqHits;}
+	
+	public int getSQSpacyHits(){
+		if(sqHits==null) return 0;
+		int counter = 0;
+		for(int i = 0;i < sqHits.size(); i++){
+			if(sqHits.get(i).isSpacyMatch())
+				counter++;
+		}
+		return counter;
+	}
+	
 	/**
 	 * add a matching listItem 
 	 * @param li
@@ -154,6 +179,8 @@ public class SummaryStatement extends Beans implements Serializable, Comparable{
 		if(!itemHits.contains(el)) //do not add duplicates!
 			itemHits.add(el);		
 	}
+	
+
 
 	/**
 	 * add a matching synonym.
@@ -259,6 +286,16 @@ public class SummaryStatement extends Beans implements Serializable, Comparable{
 		}
 		return sb.toString();
 	}
+	
+	public List<SummaryStElem> getAnatomyHitElems(){
+		if(itemHits==null) return null;
+		List<SummaryStElem> aHits = new ArrayList();
+		for(int i=0; i<itemHits.size();i++){
+			if(itemHits.get(i).isAnatomy()) aHits.add(itemHits.get(i));
+		}
+		return aHits;
+	}
+	
 	
 	public int getAnatomyHitsNum(){
 		if(itemHits==null || itemHits.isEmpty()) return 0;
@@ -455,6 +492,16 @@ public class SummaryStatement extends Beans implements Serializable, Comparable{
 		return null;
 	}
 	
+	public SummaryStElem getPerson(){
+		if(this.itemHits==null) return null;
+		for(int i=0; i<itemHits.size(); i++){
+			SummaryStElem el = itemHits.get(i);
+			if(el.isPerson()) return el;
+		}
+		return null;
+	}
+
+	
 	/* (non-Javadoc)
 	 * @see java.lang.Comparable#compareTo(java.lang.Object)
 	 */
@@ -465,6 +512,14 @@ public class SummaryStatement extends Beans implements Serializable, Comparable{
 			if(this.id < ((SummaryStatement) o).getId()) return -1;			
 		}
 		return 0;
+	}
+	
+	public SummaryStatementSQ getSQBySpacyToken(SpacyDocToken tok){
+		if(this.sqHits==null || this.sqHits.isEmpty()) return null;
+		for(int i=0;i<this.sqHits.size();i++){
+			if(this.sqHits.get(i).getSpacyMatch()!=null && this.sqHits.get(i).getSpacyMatch().equals(tok)) return this.sqHits.get(i);
+		}
+		return null;
 	}
 	
 }

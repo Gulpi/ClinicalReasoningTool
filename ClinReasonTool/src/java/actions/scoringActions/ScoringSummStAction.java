@@ -137,7 +137,7 @@ public class ScoringSummStAction {
 	 * @param learnerSt
 	 * @return
 	 */
-	public int calculateSemanticQualScoreNew(SummaryStatement learnerSt){
+	public int calculateSemanticQualScoreBasic(SummaryStatement learnerSt){
 		int hits = learnerSt.getSQSpacyHits();
 		if(hits<2) return 0;
 		if(hits>4) return 2;

@@ -46,7 +46,7 @@ public class SummaryStatement extends Beans implements Serializable, Comparable{
 	 * score can be 0, 1, or 2 (see rubric by Smith et al)
 	 */
 	private int sqScore = -1;
-	private int sqScoreNew = -1;
+	private int sqScoreBasic = -1;
 	private float sqScorePerc;
 	/**
 	 * score can be 0, 1, or 2 (see rubric by Smith et al)
@@ -125,8 +125,8 @@ public class SummaryStatement extends Beans implements Serializable, Comparable{
 	public void setAccuracyScore(int accuracyScore) {this.accuracyScore = accuracyScore;}
 	public float getSqScorePerc() {return sqScorePerc;}
 	public void setSqScorePerc(float sqScorePerc) {this.sqScorePerc = sqScorePerc;}
-	public int getSqScoreNew() {return sqScoreNew;}
-	public void setSqScoreNew(int sqScoreNew) {this.sqScoreNew = sqScoreNew;}
+	public int getSqScoreNew() {return sqScoreBasic;}
+	public void setSqScoreNew(int sqScoreNew) {this.sqScoreBasic = sqScoreNew;}
 	public int getGlobalScore() {return globalScore;}
 	public void setGlobalScore(int globalScore) {this.globalScore = globalScore;}
 	

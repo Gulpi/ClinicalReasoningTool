@@ -239,7 +239,7 @@ public class SummaryStatementController {
 		checkAccuracy(st, expPis.getSummSt(),spacy, spacyE);
 		//scoring starts:
 		ScoringSummStAction scoreAct = new ScoringSummStAction();
-		int sqScoreNew = scoreAct.calculateSemanticQualScoreNew(st); //score SQ
+		int sqScoreNew = scoreAct.calculateSemanticQualScoreBasic(st); //score SQ
 		int sqScore = scoreAct.calculateSemanticQualScore(expPis.getSummSt(), st);
 		st.setSqScore(sqScore);
 		st.setSqScoreNew(sqScoreNew);
@@ -613,7 +613,7 @@ public class SummaryStatementController {
 			//sb.append(st.getTransformationScore()+"\r");
 			//sb2.append(st.getTransformScorePerc()+"\r");
 			sb.append(st.getSqHits()+"\r");
-			sb2.append(st.getSqScore()+"\r");
+			//sb2.append(st.getSqScore()+"\r");
 			sb3.append(st.getSqScoreNew()+"\r");
 			sb4.append(st.getSqScorePerc()+"\r");
 			sb5.append(st.getSQSpacyHits()+"\r");

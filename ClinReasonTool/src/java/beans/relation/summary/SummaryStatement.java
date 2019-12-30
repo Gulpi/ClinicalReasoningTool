@@ -69,6 +69,8 @@ public class SummaryStatement extends Beans implements Serializable, Comparable{
 	private float narr1Score; //temp variable to store (expNum-studMatches)/expNum percentage of macthing items
 	private float narr2Score; //temp variable to store addItems/expNum - percentage of additional items added 
 	
+	private String spacy_json;
+	
 	/**
 	 * SIunits we have found in the summary statement (e.g. mg, dl, mmHg,...) as a negative indicator 
 	 * for transformation
@@ -130,12 +132,20 @@ public class SummaryStatement extends Beans implements Serializable, Comparable{
 	public int getGlobalScore() {return globalScore;}
 	public void setGlobalScore(int globalScore) {this.globalScore = globalScore;}
 	
+	
+	
 	public void addUnit(SummaryStNumeric u){
 		if(u==null) return;
 		if(units==null) units = new ArrayList<SummaryStNumeric>();
 		units.add(u); 
 	}
 	
+	public String getSpacy_json() {
+		return spacy_json;
+	}
+	public void setSpacy_json(String spacy_json) {
+		this.spacy_json = spacy_json;
+	}
 	public int getUnitNum(){
 		if(units==null) return 0;
 		return units.size();

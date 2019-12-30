@@ -210,10 +210,15 @@ public class SummaryStatementController {
 		JsonTest jt = new DBClinReason().selectJsonTestBySummStId(st.getId()); //the json of the statement
 		SpacyDocJson spacy = new SpacyDocJson(jt.getJson().trim());
 		spacy.init();
+
 		JsonTest jt2 = new DBClinReason().selectJsonTestBySummStId(expPis.getSummStId()); //the json of the statement
 		SpacyDocJson spacyE = new SpacyDocJson(jt2.getJson().trim());
 		spacyE.init();
 		analyzeExpStatement(expPis.getSummSt(), spacyE);
+		st.setSpacy_json(jt.getJson());
+		PatientIllnessScript expPis = new DBClinReason().selectExpertPatIllScriptByVPId(vpId);		
+		analyzeExpStatement(expPis.getSummSt());
+
 		if(!tempExpMaps.containsKey(vpId)) tempExpMaps.put(vpId, expPis);
 		
 		if(st==null || st.getText()==null || items==null) return null; 

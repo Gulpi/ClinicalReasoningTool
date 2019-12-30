@@ -18,6 +18,11 @@ public class SummaryStElem {
 	 * -1 / 0 = no match, 1=finding match, 2 = ddx match, 3 = test match, 4 = therapy match
 	 */
 	private int expertScriptMatch = -1; 
+	
+	/**
+	 * we store here the position of the element in the expert statement for later accuracy testing
+	 */
+	private int expertMatchIdx;
 	/**
 	 * if the match is a synonym we store the string here, but save the parent listItem
 	 */
@@ -70,8 +75,10 @@ public class SummaryStElem {
 	public int getStartIdx() {return startIdx;}
 	public void setStartIdx(int startIdx) {this.startIdx = startIdx;}	
 	public String getType() {return type;}
-	public void setType(String type) {this.type = type;}
-	
+	public void setType(String type) {this.type = type;}	
+	public int getExpertMatchIdx() {return expertMatchIdx;}
+	public void setExpertMatchIdx(int expertMatchIdx) {this.expertMatchIdx = expertMatchIdx;}
+
 	public boolean isPerson(){
 		if(type!=null && type.equals(SpacyDocToken.LABEL_PERSON)) return true;
 		return false;

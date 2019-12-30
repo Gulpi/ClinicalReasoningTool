@@ -18,6 +18,11 @@ public class SemanticQual {
 	 */
 	private int category;
 	private int deleteFlag = 0;
+	/**
+	 * opposite of another semantic qualifier (e.g. left vs. right)
+	 */
+	private int contrasts = -1;
+	
 	public static final int CATEGORY_PATIENT = 1; //patient characteristic (male, tall,...)
 	public static final int CATEGORY_SETTING = 2; //exercise-induced,...
 	public static final int CATEGORY_ONSET = 3; //e.g. acute, recurrence,...
@@ -41,6 +46,9 @@ public class SemanticQual {
 	public int getDeleteFlag() {return deleteFlag;}
 	public void setDeleteFlag(int deleteFlag) {this.deleteFlag = deleteFlag;}
 	
+	public int getContrasts() {return contrasts;}
+	public void setContrasts(int contrasts) {this.contrasts = contrasts;}
+	
 	/* (non-Javadoc)
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
@@ -50,4 +58,11 @@ public class SemanticQual {
 			if(ssq.getId() == this.id) return true;
 		}
 		return false;
-	}}
+	}
+
+	public boolean isContrast(SemanticQual sq){
+		if(sq.getId()==this.contrasts) return true;
+		if(this.id==sq.getContrasts()) return true;
+		return false;
+	}
+}

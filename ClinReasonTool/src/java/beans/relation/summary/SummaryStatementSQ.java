@@ -1,5 +1,7 @@
 package beans.relation.summary;
 
+import net.casus.util.nlp.spacy.SpacyDocToken;
+
 /**
  * A SummaryStatement object can have multiple SummaryStatementSQ objects attached to it once it has 
  * been analyzed. A SummaryStatementSQ object stores ths relation to semantic qualifiers included in the 
@@ -36,6 +38,19 @@ public class SummaryStatementSQ {
 	 */
 	private int position = -1;
 	
+	private SpacyDocToken spacyMatch;
+	/**
+	 * we store here if we have found an opposite SQ in the expert statement (for the same reference term)
+	 */
+	private boolean expHasOpposite = false;
+	
+	public SummaryStatementSQ(){}
+	public SummaryStatementSQ(long summStId, int sqId, String text){
+		this.summStId = summStId;
+		this.sqId = sqId;
+		this.text = text;
+	}
+	
 	public long getSummStId() {return summStId;}
 	public void setSummStId(long summStId) {this.summStId = summStId;}
 	public int getSqId() {return sqId;}
@@ -48,20 +63,26 @@ public class SummaryStatementSQ {
 	public void setTextMatch(String textMatch) {this.textMatch = textMatch;}	
 	public int getPosition() {return position;}
 	public void setPosition(int position) {this.position = position;}
+	public boolean isExpHasOpposite() {return expHasOpposite;}
+	public void setExpHasOpposite(boolean expHasOpposite) {this.expHasOpposite = expHasOpposite;}
 	
-	public SummaryStatementSQ(){}
-	public SummaryStatementSQ(long summStId, int sqId, String text){
-		this.summStId = summStId;
-		this.sqId = sqId;
-		this.text = text;
-	}
+	public boolean isSpacyMatch() {
+		if(spacyMatch!=null) return true;
+		return false;
+		}
+	public void setSpacyMatch(SpacyDocToken spacyMatch) {this.spacyMatch = spacyMatch;}
+	public SpacyDocToken getSpacyMatch(){return spacyMatch;} 
+	
+
 	/* (non-Javadoc)
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	public boolean equals(Object o){
 		if(o !=null && o instanceof SummaryStatementSQ){
 			SummaryStatementSQ ssq = (SummaryStatementSQ) o;
-			if(ssq.getSummStId() == this.summStId && ssq.getSqId()==this.sqId) return true;
+			if(this.sqId!=-1 && ssq.getSummStId() == this.summStId && ssq.getSqId()==this.sqId) return true;
+			if(ssq.getSummStId() == this.summStId && this.position == ssq.getPosition()) return true;
+			if(ssq.getSummStId() == this.summStId && (this.text.contains(ssq.getText()) || ssq.getText().contains(text))) return true;
 		}
 		return false;
 	}
@@ -70,7 +91,7 @@ public class SummaryStatementSQ {
 	 * @see java.lang.Object#toString()
 	 */
 	public String toString(){
-		return text;
+		return text + "("+spacyMatch+")";
 	}
 	
 }

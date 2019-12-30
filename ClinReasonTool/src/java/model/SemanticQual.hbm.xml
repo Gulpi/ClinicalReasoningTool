@@ -17,6 +17,7 @@
 		<property name="lang" column="language" type="string" length="10"/>
 		<property name="category" column="category" type="int"/>
 		<property name="deleteFlag" column="delete_flag" type="int"/>
+		<property name="contrasts" column="contrasts" type="int"/>
 		
 </class>
 </hibernate-mapping>

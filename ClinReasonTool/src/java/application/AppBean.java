@@ -121,9 +121,11 @@ public class AppBean extends ApplicationWrapper implements HttpSessionListener{
 	    	SummaryStatementController.setSIUnitAndTransformList();
 	    	//we load the semantic qualifiers and analyze any summary statements that have not yet been analyzed.
 	    	if(semanticQuals==null) semanticQuals = SummaryStatementController.loadSemanticQuals();
+	    	SummaryStatementController.testSummStRating();
+	    	
 	    	if(semanticQuals!=null) SummaryStatementController.analyzeSemanticQualsStatements();
 	    	//testing:
-		    SummaryStatementController.testSummStRating();
+		    
 	    }
 	    catch(Exception e){
 	    	CRTLogger.out("AppBean(): " + StringUtilities.stackTraceToString(e), CRTLogger.LEVEL_ERROR);
@@ -373,5 +375,14 @@ public class AppBean extends ApplicationWrapper implements HttpSessionListener{
 		if(semanticQuals==null) return null;
 		return semanticQuals.get(lang);
 	}
-
+	
+	public static SemanticQual getSemantiQualsByLangAndId(String lang, long id){
+		List<SemanticQual> quals = getSemantiQualsByLang(lang);
+		if(quals!=null){
+			for (int i=0;i<quals.size();i++){
+				if(quals.get(i).getId()==id) return quals.get(i);
+			}
+		}
+		return null;
+	}
 }

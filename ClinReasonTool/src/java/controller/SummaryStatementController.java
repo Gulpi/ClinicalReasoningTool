@@ -185,6 +185,8 @@ public class SummaryStatementController {
 		JsonTest jt = new DBClinReason().selectJsonTestBySummStId(st.getId()); //the json of the statement
 		SpacyDocJson spacy = new SpacyDocJson(jt.getJson().trim());
 		spacy.init();
+		
+		st.setSpacy_json(jt.getJson());
 		PatientIllnessScript expPis = new DBClinReason().selectExpertPatIllScriptByVPId(vpId);		
 		analyzeExpStatement(expPis.getSummSt());
 		if(!tempExpMaps.containsKey(vpId)) tempExpMaps.put(vpId, expPis);

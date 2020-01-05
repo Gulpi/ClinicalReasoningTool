@@ -134,10 +134,11 @@ public class ScoringSummStAction {
 	
 	/**
 	 * Strictly counting numbers of semantic qualifiers
+	 * used for pilot study
 	 * @param learnerSt
 	 * @return
 	 */
-	public int calculateSemanticQualScoreNew(SummaryStatement learnerSt){
+	public int calculateSemanticQualScoreBasic(SummaryStatement learnerSt){
 		int hits = learnerSt.getSQSpacyHits();
 		if(hits<2) return 0;
 		if(hits>4) return 2;
@@ -147,12 +148,17 @@ public class ScoringSummStAction {
 		//return 1;
 	}
 	
+	public void calculatePersonScore(SummaryStatement learnerSt){
+		if(learnerSt.getPerson()!=null) learnerSt.setPersonScore(1);
+		else learnerSt.setPersonScore(0);
+	}
+	
 	/**
 	 * 
 	 * @param learnerSt
 	 */
 	public void calculateNarrowing(SummaryStatement st, SummaryStatement expSt){
-		float upperBorder = (float) 0.7;//0.66
+		float upperBorder = (float) 0.75;//0.66
 		float lowerBoarder = (float) 0.25; //0.34
 		try{
 			if(st==null || st.getItemHits()==null || st.getItemHits().isEmpty()){
@@ -173,13 +179,13 @@ public class ScoringSummStAction {
 			
 			//found findings, ddx and anatomy terms in expert statement: 
 			int expStNum = expSt.getFindingHitsNum() + expSt.getDiagnosesHitsNum() + expSt.getAnatomyHitsNum();
-			
+			int learnerStNum = st.getFindingHitsNum() + st.getDiagnosesHitsNum() + st.getAnatomyHitsNum();
 			//version 0.2:
 			float diffStMatches = (float) (expStNum - st.getExpMatchesNum()); 
 			
 			float percDiffStMatches = (float)diffStMatches/(float)expStNum;
 			if(diffStMatches<=0) st.setNarrowingScore(2);
-			else if (percDiffStMatches>=upperBorder) st.setNarrowingScore(0);
+			else if (percDiffStMatches>upperBorder) st.setNarrowingScore(0);
 			else if (percDiffStMatches<lowerBoarder) st.setNarrowingScore(2);
 			else st.setNarrowingScore(1);
 			st.setNarr1Score(percDiffStMatches);
@@ -194,12 +200,7 @@ public class ScoringSummStAction {
 			else if (percDiffStMatches < upperBorder && percDiffStMatches >= lowerBoarder && percDiffStAdd >= upperBorder) st.setNarrowingScoreNew(0);
 			else if (percDiffStMatches >= upperBorder) st.setNarrowingScoreNew(0);
 			st.setNarr2Score(percDiffStAdd);
-			// version 0.1: float int issue resolved 20191216
-			/*float tmpScore = (float) expMatchNarr / (float) narrowingMatches;
-			
-			if(tmpScore < 0.3) st.setNarrowingScore(0);
-			else if (tmpScore > 0.6) st.setNarrowingScore(2);
-			else st.setNarrowingScore(1);*/
+
 		}
 		catch (Exception e){
 			CRTLogger.out(StringUtilities.stackTraceToString(e), CRTLogger.LEVEL_PROD);
@@ -230,15 +231,23 @@ public class ScoringSummStAction {
 		if(transformNumExp==0) transformNumExp = 2; //avoid division by 0 and have a default value of 2!
 		learnerSt.setTransformNum(transformNum);
 		//score calculation:
-		if(transformNum<=0){ 
+		if(transformNum<=0){  //no transformed items:
 			learnerSt.setTransformationScore(0);
 			learnerSt.setTransformScorePerc((float)0.0);
 			//if(transformNum>3) learnerSt.setTransformationScore(2);
 			//else learnerSt.setTransformationScore(1);
 			return;
 		}
-		learnerSt.setTransformScorePerc((((float) transformNum - (float) siUnitsNum)/2) / (float) transformNumExp);
-		if(learnerSt.getTransformScorePerc()>0.6)  learnerSt.setTransformationScore(2);
+		
+		int textlength = learnerSt.getText().length();
+		int textLenCat = 0;
+		if(textlength>500) textLenCat = 2; 
+		else if(textlength>200) textLenCat = 1;
+		float tmp1 = ((float) transformNum - (float) siUnitsNum);
+		float tmp2 = (float) (transformNumExp + textLenCat);
+		learnerSt.tempExpTransfNum = transformNumExp;
+		learnerSt.setTransformScorePerc( tmp1 / tmp2 );
+		if(learnerSt.getTransformScorePerc()>0.7)  learnerSt.setTransformationScore(2);
 		else if(learnerSt.getTransformScorePerc()<0.16) learnerSt.setTransformationScore(0);
 		else learnerSt.setTransformationScore(1);
 	}
@@ -280,11 +289,19 @@ public class ScoringSummStAction {
 		return transformNum;
 	}
 	
+	/**
+	 * we sum up all category scores, if sum>=6 global score is 2, if the sum >=2 score is 1 and otherwise 0.
+	 * @param st
+	 */
 	public void calculateGlobal(SummaryStatement st){
-		int sum = st.getTransformationScore() + st.getNarrowingScore() + st.getSqScore();
+		if(st.getText()==null || st.getText().length()<=25) {
+			st.setGlobalScore(0);
+			return;
+		}
+		int sum = st.getTransformationScore() + st.getNarrowingScore() + st.getSqScore() + st.getPersonScore() + st.getAccuracyScore();
 		if(sum<=2) st.setGlobalScore(0);
-		if(sum>=6) st.setGlobalScore(2); 
-		st.setGlobalScore(1);
+		else if(sum>=6) st.setGlobalScore(2); 
+		else st.setGlobalScore(1);
 		
 	}
 

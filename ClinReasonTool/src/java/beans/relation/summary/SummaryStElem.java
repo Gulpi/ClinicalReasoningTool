@@ -56,8 +56,14 @@ public class SummaryStElem {
 			this.setTransform(TransformRule.TYPE_FINDING);
 	}
 	
-	public SummaryStElem(SpacyDocToken tok){
-		this.startIdx = tok.getStart();
+	/**
+	 * somehow there is a mismatch between the idx in the token and the "real" index, that is why we have it here as
+	 * separate parameter....
+	 * @param tok
+	 * @param startIdx
+	 */
+	public SummaryStElem(SpacyDocToken tok, int startIdx){
+		this.startIdx = startIdx;
 		this.type = tok.getLabel();
 		this.synonymStr = tok.getToken();
 	}
@@ -96,6 +102,7 @@ public class SummaryStElem {
 		if(o instanceof SummaryStElem){
 			SummaryStElem se = (SummaryStElem) o;
 			if(se.getListItem()!=null && this.getListItem()!=null && se.getListItem().getListItemId() == this.getListItem().getListItemId()) return true;
+			if(se.getStartIdx()==this.startIdx) return true;
 		}
 		return false;
 	}
@@ -120,10 +127,10 @@ public class SummaryStElem {
 		if(listItem==null) return false; 
 		return listItem.isTest();
 	}
-	public int getStartPos() {return startPos;}
-	public void setStartPos(int startPos) {this.startPos = startPos;}
-	public int getEndPos() {return endPos;}
-	public void setEndPos(int endPos) {this.endPos = endPos;}
+	//public int getStartPos() {return startPos;}
+	//public void setStartPos(int startPos) {this.startPos = startPos;}
+	//public int getEndPos() {return endPos;}
+	//public void setEndPos(int endPos) {this.endPos = endPos;}
 	
 	public boolean isCountry(){
 		if(listItem!=null && listItem.getFirstCode().startsWith("Z01")) return true; 

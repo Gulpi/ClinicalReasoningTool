@@ -46,7 +46,7 @@ public class SummaryStatement extends Beans implements Serializable, Comparable{
 	 * score can be 0, 1, or 2 (see rubric by Smith et al)
 	 */
 	private int sqScore = -1;
-	private int sqScoreNew = -1;
+	private int sqScoreBasic = -1;
 	private float sqScorePerc;
 	/**
 	 * score can be 0, 1, or 2 (see rubric by Smith et al)
@@ -66,8 +66,20 @@ public class SummaryStatement extends Beans implements Serializable, Comparable{
 	 */
 	private int narrowingScoreNew = -1;
 	
-	private float narr1Score; //temp variable to store (expNum-studMatches)/expNum percentage of macthing items
-	private float narr2Score; //temp variable to store addItems/expNum - percentage of additional items added 
+	/**
+	 * (expNum-studMatches)/expNum percentage of macthing items
+	 * used for basic rating
+	 */
+	private float narr1Score; 
+	/**
+	 * addItems/expNum - percentage of additional items added 
+	 */
+	private float narr2Score; 
+	
+	/**
+	 * score can be 0, 1 depending on whether we find a patient's name in the statement
+	 */	
+	private int personScore = 0;
 	
 	private String spacy_json;
 	
@@ -84,6 +96,10 @@ public class SummaryStatement extends Beans implements Serializable, Comparable{
 	private int accuracyScore;
 	
 	private int globalScore;
+	
+	public int tempExpTransfNum = 0;
+	
+	public long analysisMs;
 	
 	public SummaryStatement(){}
 	public SummaryStatement(String text){
@@ -127,10 +143,12 @@ public class SummaryStatement extends Beans implements Serializable, Comparable{
 	public void setAccuracyScore(int accuracyScore) {this.accuracyScore = accuracyScore;}
 	public float getSqScorePerc() {return sqScorePerc;}
 	public void setSqScorePerc(float sqScorePerc) {this.sqScorePerc = sqScorePerc;}
-	public int getSqScoreNew() {return sqScoreNew;}
-	public void setSqScoreNew(int sqScoreNew) {this.sqScoreNew = sqScoreNew;}
+	public int getSqScoreBasic() {return sqScoreBasic;}
+	public void setSqScoreBasic(int sqScoreNew) {this.sqScoreBasic = sqScoreNew;}
 	public int getGlobalScore() {return globalScore;}
-	public void setGlobalScore(int globalScore) {this.globalScore = globalScore;}
+	public void setGlobalScore(int globalScore) {this.globalScore = globalScore;}	
+	public int getPersonScore() {return personScore;}
+	public void setPersonScore(int personScore) {this.personScore = personScore;}
 	
 	
 	
@@ -170,10 +188,10 @@ public class SummaryStatement extends Beans implements Serializable, Comparable{
 	 * add a matching listItem 
 	 * @param li
 	 */
-	public void addItemHit(ListItem li, int startPos, int idx){
+	public void addItemHit(ListItem li, /*int startPos,*/ int idx){
 		if(itemHits==null) itemHits = new ArrayList<SummaryStElem>();
 		SummaryStElem el = new SummaryStElem(li);
-		el.setStartPos(startPos);
+		//el.setStartPos(startPos);
 		el.setStartIdx(idx);
 		//el.setEndPos(startPos);
 		if(!itemHits.contains(el)) //do not add duplicates!
@@ -187,11 +205,11 @@ public class SummaryStatement extends Beans implements Serializable, Comparable{
 	 * @param li
 	 * @param s
 	 */
-	public void addItemHit(ListItem li, Synonym s, int startPos, int idx){
+	public void addItemHit(ListItem li, Synonym s, /*int startPos,*/ int idx){
 		if(itemHits==null) itemHits = new ArrayList<SummaryStElem>();
 		SummaryStElem el = new SummaryStElem(li);
 		if(s!=null) el.setSynonymStr(s.getName());
-		el.setStartPos(startPos);
+		//el.setStartPos(startPos);
 		el.setStartIdx(idx);
 		if(!itemHits.contains(el)) //do not add duplicates!
 			itemHits.add(el);		

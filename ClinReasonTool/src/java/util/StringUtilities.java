@@ -101,7 +101,7 @@ public class StringUtilities {
 		return similarStrings(item1, item2, loc, MIN_LEVEN_DISTANCE, MAX_FUZZY_DISTANCE, isStrict);
 	}
 	
-	private static String replaceChars(String item1){
+	public static String replaceChars(String item1){
 		item1 = item1.replace("-", " ");
 		item1 = item1.replace(",", "");
 		item1 = item1.replace("'", "");
@@ -132,10 +132,9 @@ public class StringUtilities {
 	 * @return
 	 */
 	public static boolean similarStrings(String item1, String item2, Locale loc, int leven, int fuzzy, boolean isStrict){
-		if(item1.equalsIgnoreCase("Penicillin") && item2.equalsIgnoreCase("Penicillins"))
-			CRTLogger.out("", 1);
-		item1 = replaceChars(item1);
-		item2 = replaceChars(item2);
+		//if(item1.equalsIgnoreCase("Penicillin") && item2.equalsIgnoreCase("Penicillins"))
+		//item1 = replaceChars(item1);
+		//item2 = replaceChars(item2);
 		if(item1.equalsIgnoreCase(item2)) return true;
 		//unilateral/bilateral is too similar, but needs to be both in the list:
 		if(item1.startsWith("Unilat") && item2.startsWith("Bilat") || item2.startsWith("Unilat") && item1.startsWith("Bilat"))
@@ -148,7 +147,7 @@ public class StringUtilities {
 		//if we have multiple words we split them and compare them separately
 		String[] item1Arr = item1.trim().split(" ");
 		String[] item2Arr = item2.trim().split(" ");
-		if(/*item1Arr.length!=item2Arr.length ||*/ (item1Arr.length==1 || item2Arr.length==1)) return false; //TODO: we might still compare them?
+		if(item1Arr.length==1 || item2Arr.length==1) return false; //TODO: we might still compare them?
 			//we go thru each item and compare it with the items2
 			boolean[] isMatch;
 			//System.out.println("");
@@ -330,7 +329,7 @@ public class StringUtilities {
 	 * @param text
 	 * @return
 	 */
-	public static int getStartPosOfStrInText(String s, String text){
+	/*public static int getStartPosOfStrInText(String s, String text){
 		List<String> textAsList = StringUtilities.createStringListFromString(text, true);
 		int startPos = -1;
 		if(s.contains(" ")){
@@ -345,7 +344,7 @@ public class StringUtilities {
 			}
 		}
 		return startPos;
-	}
+	}*/
 	
 	/**
 	 * We go thru the text and look for the match String. If found we return the complete word (the

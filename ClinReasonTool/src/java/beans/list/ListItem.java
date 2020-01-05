@@ -4,6 +4,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import controller.SummaryStatementController;
 import util.CRTLogger;
+import util.StringUtilities;
 
 import java.io.Serializable;
 import java.util.*;
@@ -33,6 +34,10 @@ public class ListItem implements Serializable, ListInterface, Comparable{
 	private String mesh_ec; //EC
 	private String itemType; //D=Diagnosis, ...
 	private boolean transformation = false;
+	/**
+	 * name of the listItem with replace special chars and in lower case
+	 */
+	private transient String replName;
 	
 	public static final String TYPE_OWN = "PRIVATE";
 	public static final String TYPE_ADDED = "ADDED";
@@ -53,12 +58,16 @@ public class ListItem implements Serializable, ListInterface, Comparable{
 		this.language = new Locale(lang);
 		this.source = source;
 		this.name = name;
+		this.replName = StringUtilities.replaceChars(name.toLowerCase());
 	}
 		
 	public boolean isIgnored() {return ignored;}
 	public void setIgnored(boolean ignored) {this.ignored = ignored;}
 	public String getName() {return name;}
-	public void setName(String name) {this.name = name;}
+	public void setName(String name) {
+		this.name = name;
+		this.replName = StringUtilities.replaceChars(name.toLowerCase());
+	}
 	public String getMesh_id() {return mesh_id;}
 	public void setMesh_id(String mesh_id) {this.mesh_id = mesh_id;}
 	public long getItem_id() {return item_id;}
@@ -91,6 +100,7 @@ public class ListItem implements Serializable, ListInterface, Comparable{
 	public boolean isSynonym(){return false;}	
 	public boolean isTransformation() {return transformation;}
 	public void setTransformation(boolean transformation) {this.transformation = transformation;}
+	public String getReplName() {return replName;}
 	
 	public String getShortName(){ 
 		return StringUtils.abbreviate(this.name, MAXLENGTH_NAME);

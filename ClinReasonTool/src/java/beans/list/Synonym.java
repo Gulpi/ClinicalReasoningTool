@@ -5,6 +5,8 @@ import java.util.*;
 
 import org.apache.commons.lang3.StringUtils;
 
+import util.StringUtilities;
+
 public class Synonym implements Serializable, ListInterface, Comparable{
 
 	private String name;
@@ -23,10 +25,24 @@ public class Synonym implements Serializable, ListInterface, Comparable{
 	 * on a case-basis over time. What shall we choose for default value?
 	 */
 	private float ratingWeight = 1; 
+	/**
+	 * name of the synonym with replace special chars and in lower case
+	 */
+	private transient String replName;
 	public static final String SYN_VERTEXID_PREFIX = "syn_";
 
+	public Synonym(){}
+	public Synonym(Locale loc, String name){
+		this.language = loc; 
+		this.name = name;
+		this.replName = StringUtilities.replaceChars(name.toLowerCase());
+	}
+	
 	public String getName() {return name;}
-	public void setName(String name) {this.name = name;}
+	public void setName(String name) {
+		this.name = name;
+		this.replName = StringUtilities.replaceChars(name.toLowerCase());
+	}
 	public long getId() {return id;}
 	public void setId(long id) {this.id = id;}
 	public long getListItemId() {return listItemId;}
@@ -39,13 +55,8 @@ public class Synonym implements Serializable, ListInterface, Comparable{
 	public void setIgnored(boolean ignored) {this.ignored = ignored;}
 	public boolean isSynonym(){return true;}	
 	public boolean isTransformation() {return transformation;}
-	public void setTransformation(boolean transformation) {this.transformation = transformation;}
-	
-	public Synonym(){}
-	public Synonym(Locale loc, String name){
-		this.language = loc; 
-		this.name = name;
-	}
+	public void setTransformation(boolean transformation) {this.transformation = transformation;}	
+	public String getReplName() {return replName;}
 	/* (non-Javadoc)
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */

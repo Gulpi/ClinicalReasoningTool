@@ -68,6 +68,8 @@ public class SummaryStatementController {
 		listItems.get(lang).add(myListItem);
 	}
 	
+
+	
 	/**
 	 * Adds a listItem or synonym to the aList containing all mesh items with code A (anatomy)
 	 * @param listItem
@@ -171,7 +173,7 @@ public class SummaryStatementController {
 	}
 	
 	
-	private static void analyzeExpStatement(SummaryStatement st, SpacyDocJson spacy){
+	private static void analyzeExpStatement(SummaryStatement st, SpacyDocJson spacy, Locale loc){
 		if(st.getItemHits()!=null && !st.getItemHits().isEmpty()) return; //already done....
 		
 		List<ListItem> items = getListItemsByLang(st.getLang());
@@ -180,8 +182,8 @@ public class SummaryStatementController {
 		if(aList!=null) compareList(aList.get(st.getLang()), st);
 		for(int i=0; i<textAsList.size(); i++){
 			String s = textAsList.get(i);		
-			compareSimilarList(items, st, s, i);
-			if(aList!=null) compareSimilarList(aList.get(st.getLang()), st, s, i);		
+			compareSimilarList(items, st, s, i, loc);
+			if(aList!=null) compareSimilarList(aList.get(st.getLang()), st, s, i, loc);		
 			st.addUnit(compareSIUnits(s, i, st.getText().toLowerCase().indexOf(s), spacy));
 		}
 		checkForSemanticQualifiers(st, spacy);
@@ -203,9 +205,9 @@ public class SummaryStatementController {
 	 * (6,7) Number of additional fdgs, ddx / items -> können wir im Excel sehen
 	 * @param contextIn
 	 */
-	public static SummaryStatement testSummStRating(/*Locale loc, */SummaryStatement st, String vpId){
-		
-		List<ListItem> items = getListItemsByLang(st.getLang());		
+	public static SummaryStatement testSummStRating(/*Locale loc, */SummaryStatement st, String vpId){		
+		List<ListItem> items = getListItemsByLang(st.getLang());	
+		if(st==null || st.getText()==null || items==null) return null;
 		PatientIllnessScript expPis = new DBClinReason().selectExpertPatIllScriptByVPId(vpId);		
 		JsonTest jt = new DBClinReason().selectJsonTestBySummStId(st.getId()); //the json of the statement
 		SpacyDocJson spacy = new SpacyDocJson(jt.getJson().trim());
@@ -213,20 +215,29 @@ public class SummaryStatementController {
 		JsonTest jt2 = new DBClinReason().selectJsonTestBySummStId(expPis.getSummStId()); //the json of the statement
 		SpacyDocJson spacyE = new SpacyDocJson(jt2.getJson().trim());
 		spacyE.init();
-		analyzeExpStatement(expPis.getSummSt(), spacyE);
+		Locale loc = new Locale(st.getLang());
+		analyzeExpStatement(expPis.getSummSt(), spacyE, loc);
 		if(!tempExpMaps.containsKey(vpId)) tempExpMaps.put(vpId, expPis);
 		
-		if(st==null || st.getText()==null || items==null) return null; 
-		List<String> textAsList = StringUtilities.createStringListFromString(st.getText(), true);
+		long startms = System.currentTimeMillis();
+		CRTLogger.out("start: " + startms, CRTLogger.LEVEL_TEST);
+		 
+		List<String> textAsListOrg = StringUtilities.createStringListFromString(st.getText(), true);
+		//String sumstTxtLowerCase = st.getText().toLowerCase();
 		
-		if(textAsList==null) return st;
+		if(textAsListOrg==null) return st;
+		
 		compareList(items, st); 
 		if(aList!=null) compareList(aList.get(st.getLang()), st);
-		for(int i=0; i<textAsList.size(); i++){
-			String s = textAsList.get(i);		
-			compareSimilarList(items, st, s, i);
-			st.addUnit(compareSIUnits(s, i, st.getText().toLowerCase().indexOf(s), spacy));
-			if(aList!=null) compareSimilarList(aList.get(st.getLang()), st, s, i);			
+		
+		for(int i=0; i<textAsListOrg.size(); i++){
+			String orgS = textAsListOrg.get(i);		
+			
+			if(isTermToAnalyze(orgS,st.getText().indexOf(orgS), spacy, true)){
+				compareSimilarList(items, st, orgS, i, loc);
+				st.addUnit(compareSIUnits(orgS, i, st.getText().indexOf(orgS), spacy));
+				if(aList!=null) compareSimilarList(aList.get(st.getLang()), st, orgS, i, loc);		
+			}
 		}
 		
 		checkForSemanticQualifiers(st, spacy); //count SQ
@@ -242,21 +253,61 @@ public class SummaryStatementController {
 		int sqScoreNew = scoreAct.calculateSemanticQualScoreBasic(st); //score SQ
 		int sqScore = scoreAct.calculateSemanticQualScore(expPis.getSummSt(), st);
 		st.setSqScore(sqScore);
-		st.setSqScoreNew(sqScoreNew);
+		st.setSqScoreBasic(sqScoreNew);
 		//CRTLogger.out("",1);
 		scoreAct.calculateNarrowing(st, expPis.getSummSt());
 		scoreAct.calculateTransformation(expPis.getSummSt(), st);
-		/*CRTLogger.out("id= " + st.getId(), 1);
-		CRTLogger.out("  " + st.getNarr1Score(), 1);
-		CRTLogger.out(" " + st.getNarr2Score(), 1);*/
+		scoreAct.calculatePersonScore(st);
+		scoreAct.calculateGlobal(st);
+		long endms = System.currentTimeMillis();
+		st.analysisMs = endms - startms;
+		CRTLogger.out("end: " + startms, CRTLogger.LEVEL_TEST);
 		return st;		
 	}
 	
+	/**
+	 * We check whether a string at a given position should be further analyzed or not. We do not 
+	 * further consider prepositions, conjunctions,...
+	 * @param s
+	 * @param idx
+	 * @param spacy
+	 * @return
+	 */
+	private static boolean isTermToAnalyze(String s,int idx,SpacyDocJson spacy, boolean strict){
+		if(s==null || s.length()==0) return false;  
+		if(strict && s.length()==1) return false; //stuff like "a" should generally not be analyzed, only when we look for units.
+		SpacyDocToken tok = spacy.getSpacyDocToken(idx);
+		if(tok==null) return true; 
+		if(tok.getPos().equals(SpacyDocToken.LABEL_ADP)) return false; 
+		if(tok.getPos().equals(SpacyDocToken.LABEL_DET)) return false; 
+		if(tok.getPos().equals(SpacyDocToken.LABEL_PRON)) return false; 
+		if(tok.getPos().equals(SpacyDocToken.LABEL_CCONJ)) return false;
+		if(tok.getPos().equals(SpacyDocToken.LABEL_CONJ)) return false;
+		
+		return true;
+	}
+	
+	/**
+	 * we look whether we have a spacy token of PERSON and if so we double check whether it is not already
+	 * in the found items or semantic qualifiers (spacy is not 100% accurate)
+	 * @param st
+	 * @param spacy
+	 */
 	private static void checkForPerson(SummaryStatement st, SpacyDocJson spacy){
 		SpacyDocToken person = spacy.getTokenByType(SpacyDocToken.LABEL_PERSON);
 		if(person==null) person = spacy.getTokenByType(SpacyDocToken.LABEL_PER);
 		if(person==null) return;
-		st.addItemHit(new SummaryStElem(person));		
+		//check if person is not in the list of SQ (can happen,since spay is not 100% accurate)
+		boolean isSQ = false;
+		if(st.getSqHits()!=null){	
+			for(int i=0;i<st.getSqHits().size();i++){
+				SummaryStatementSQ sq = (SummaryStatementSQ) st.getSqHits().get(i);
+				if(sq.getSpacyMatch()!=null && sq.getSpacyMatch().equals(person)) isSQ = true;
+				else if(sq.getText()!=null && sq.getText().equalsIgnoreCase(person.getToken())) isSQ = true;
+			}
+		}
+		//added only if not already present in list (can happen,since spay is not 100% accurate)
+		if(!isSQ) st.addItemHit(new SummaryStElem(person, st.getText().indexOf(person.getToken())));		
 	}
 	
 	/**
@@ -267,8 +318,7 @@ public class SummaryStatementController {
 	private static SummaryStNumeric compareSIUnits(String text, int pos, int idx, SpacyDocJson spacy){
 		if(text==null) return null;	
 		String spacyType = spacy.getEntityTypeByIdx(idx);
-		CRTLogger.out("", 1);
-		//if(spacyType.equals(SpacyDocToken.LABEL_DATE)) return null; //we do not
+		
 		for(int i=0; i< unitList.size(); i++){
 			if(text.equalsIgnoreCase(unitList.get(i).getName())) return new SummaryStNumeric(unitList.get(i), pos, idx, spacyType);
 			
@@ -278,7 +328,7 @@ public class SummaryStatementController {
 				if(s!=null){
 					for(int j=0;j < s.size();j++){
 						String st = s.get(j);
-						if(st.equalsIgnoreCase(unitList.get(i).getName())) 
+						if(/*isTermToAnalyze(st,idx, spacy, false) &&*/ st.equalsIgnoreCase(unitList.get(i).getName())) 
 							return new SummaryStNumeric(unitList.get(i),text, pos, idx, spacyType);
 					}
 				}
@@ -365,18 +415,16 @@ public class SummaryStatementController {
 	 * @param loc
 	 * @param s
 	 */
-	private static boolean compareSimilarList(List items, SummaryStatement st, String s, int pos){	
+	private static boolean compareSimilarList(List items, SummaryStatement st, String orgS, int pos, Locale loc){	
+		String replS = StringUtilities.replaceChars(orgS.toLowerCase());
 		for(int j=0;j<items.size(); j++){ //comparison with adapted Mesh list:
 			ListItem li = (ListItem) items.get(j);	
-			if(li.getName().equalsIgnoreCase("Leucocytosis"))
-				CRTLogger.out("", 1);
-			Locale loc = new Locale(st.getLang());
 
-			boolean isSimilar = StringUtilities.similarStrings(s, li.getName(), loc, true);
+			boolean isSimilar = StringUtilities.similarStrings(replS, li.getReplName(), loc, true);
 			
 			if(isSimilar){
 				
-				st.addItemHit(li, pos, st.getText().indexOf(s));
+				st.addItemHit(li, /*pos,*/ st.getText().indexOf(orgS));
 				return true;
 			}
 			
@@ -384,9 +432,9 @@ public class SummaryStatementController {
 				Iterator<Synonym> it = li.getSynonyma().iterator();
 				while(it.hasNext() && !isSimilar){
 					Synonym syn = it.next();
-					isSimilar = StringUtilities.similarStrings(s, syn.getName(), loc, true);
+					isSimilar = StringUtilities.similarStrings(replS, syn.getReplName(), loc, true);
 					if(isSimilar){
-						st.addItemHit(li, syn, pos, st.getText().indexOf(s));	
+						st.addItemHit(li, syn, /*pos,*/ st.getText().indexOf(orgS));	
 					
 						return true;
 					}
@@ -407,8 +455,8 @@ public class SummaryStatementController {
 
 			if (li.getName().contains(" ") && st.getText().toLowerCase().contains(li.getName().toLowerCase())){
 				//get start and end position of match in text
-				int startPos = StringUtilities.getStartPosOfStrInText(li.getName().toLowerCase(),  st.getText().toLowerCase());
-				st.addItemHit(li, startPos, st.getText().toLowerCase().indexOf(li.getName().toLowerCase()));		
+				//int startPos = StringUtilities.getStartPosOfStrInText(li.getName().toLowerCase(),  st.getText().toLowerCase());
+				st.addItemHit(li, /*startPos,*/ st.getText().toLowerCase().indexOf(li.getName().toLowerCase()));		
 			}
 			else if(li instanceof ListItem){ //also look for synonyms with two or more words
 				ListItem li2 = (ListItem) li;
@@ -417,8 +465,8 @@ public class SummaryStatementController {
 					while(it.hasNext()){
 						Synonym sy = it.next();
 						if(sy.getName().contains(" ") && st.getText().toLowerCase().contains(sy.getName().toLowerCase())){
-							int startPos = StringUtilities.getStartPosOfStrInText(sy.getName().toLowerCase(),  st.getText().toLowerCase());
-							st.addItemHit(li2, sy, startPos, st.getText().toLowerCase().indexOf(sy.getName().toLowerCase()));
+							//int startPos = StringUtilities.getStartPosOfStrInText(sy.getName().toLowerCase(),  st.getText().toLowerCase());
+							st.addItemHit(li2, sy, /*startPos,*/ st.getText().toLowerCase().indexOf(sy.getName().toLowerCase()));
 						}
 					}
 				}
@@ -439,11 +487,13 @@ public class SummaryStatementController {
 		//int matchCounter = 0;
 		String[] expMatchesArr = expText.split(" ");
 		if(expMatchesArr==null || expMatchesArr.length==0) return;
+		
 		for(int i=0;i<expMatchesArr.length;i++){
 			innerLoop: for(int j=0; j<matchingWords.size(); j++){
 				SummaryStElem elem = matchingWords.get(j);
+				String expMatchRepl = StringUtilities.replaceChars(expMatchesArr[i].toLowerCase());
 				//compare main listItem:
-				if (elem.getListItem()!=null && elem.getListItem().getName()!=null && StringUtilities.similarStrings(elem.getListItem().getName(), expMatchesArr[i], elem.getListItem().getLanguage(), true)){
+				if (elem.getListItem()!=null && elem.getListItem().getName()!=null && StringUtilities.similarStrings(elem.getListItem().getReplName(), expMatchRepl, elem.getListItem().getLanguage(), true)){
 					//matchCounter++;
 					elem.setExpertMatch(true);
 					elem.setExpertMatchIdx(expText.indexOf(expMatchesArr[i]));
@@ -456,7 +506,7 @@ public class SummaryStatementController {
 					Iterator it = li.getSynonyma().iterator();
 					while(it.hasNext()){
 						Synonym s= (Synonym) it.next();
-						if(StringUtilities.similarStrings(s.getName(), expMatchesArr[i], elem.getListItem().getLanguage(), true)){
+						if(StringUtilities.similarStrings(s.getReplName(), expMatchRepl, elem.getListItem().getLanguage(), true)){
 							//matchCounter++;
 							elem.setExpertMatch(true);
 							elem.setExpertMatchIdx(expText.indexOf(expMatchesArr[i]));
@@ -576,8 +626,8 @@ public class SummaryStatementController {
 	
 	/*public static SummaryStatement testSummStRating(){
 		//Locale loc = new Locale("en");
-		long id = 86813;
-		String vpId = "910494_2";
+		long id = 28393;
+		String vpId = "914015_2";
 		SummaryStatement st = new DBClinReason().loadSummSt(id, null);
 		st =  testSummStRating(st, vpId);
 		return st;
@@ -585,7 +635,7 @@ public class SummaryStatementController {
 
 	
 	public static void testSummStRating(){
-		long[] ids = new long[]{76369,79314,79911,81723,82533,82822,71816,72350,74804,75134,75854,70659,141433,142950,144100,146816,147601,148031,148583,135566,68937,77182,77671,147862,86813,94126,97276,88512,89467,95367,95717,95836,84120,85748,87773,90543,93047,93832,94734,160048,162578,162935,167338,168254,169244,164301,166480,171792,174917,170190,172691,173526,176050,176400,177502,84249,91616,171644,176843,176917,258230,259325,156766,165312,190176,198217,183259,179448,180132,182374,185591,224568,215194,233237,255923,198217,42082,42717,44101,45738,48497,27947,28393,43129,44826,26314,34810,35997,31273,32010,33510,41025,43009,142289,137492,157934,214134,245001,33280,31830,34218,7852,50936,51612,56138,56689,57139,57773,60295,60369,52550,52864,53807,53831,54771,61789,62884,117537,119306,119568,121026,118336,121097,122299,122367,122466,192059};
+		long[] ids = new long[]{76369,79314,79911,81723,82533,82822,71816,72350,74804,75134,75854,70659,141433,142950,144100,146816,147601,148031,148583,135566,68937,77182,77671,147862,86813,94126,97276,88512,89467,95367,95717,95836,84120,85748,87773,90543,93832,94734,160048,162578,162935,167338,168254,169244,164301,166480,171792,174917,170190,172691,173526,176050,176400,177502,84249,91616,171644,176843,176917,258230,259325,156766,165312,190176,198217,183259,179448,180132,182374,185591,224568,215194,233237,255923,198217,42082,42717,44101,45738,48497,27947,28393,43129,44826,26314,34810,35997,31273,32010,33510,41025,43009,142289,137492,157934,214134,245001,33280,31830,34218,7852,50936,51612,56138,56689,57139,57773,60295,60369,52550,52864,53807,53831,54771,61789,62884,117537,119306,119568,121026,118336,121097,122299,122367,122466,192059};
 		Long[] idsL = new Long[ids.length];
 		for (int i=0; i<ids.length; i++){
 			idsL[i] = new Long(ids[i]);
@@ -607,27 +657,33 @@ public class SummaryStatementController {
 		for(int i=0;i<list.size();i++){
 			SummaryStatement st = list.get(i);
 			
-			//sb.append(st.getNarrowingScore()+"\r");
+			sb.append(st.analysisMs+"\r");
 			//sb2.append(st.getNarrowingScoreNew()+"\r");
-			//sb3.append(st.getTransformNum()+ " - "+st.getUnitHitsToString()+"\r");
-			//sb.append(st.getTransformationScore()+"\r");
-			//sb2.append(st.getTransformScorePerc()+"\r");
-			sb.append(st.getSqHits()+"\r");
+			//sb3.append(st.getNarr1Score()+"\r");
+			//sb4.append(st.getNarr2Score()+"\r");
+			sb3.append(st.getTransformNum()+"\r");
+			//sb4.append(st.getUnitNum()+"\r");
+			//sb3.append(st.getTransformationScore()+"\r");
+			sb2.append(st.getTransformScorePerc()+"\r");
+			sb4.append(st.getGlobalScore()+"\r");
+			sb5.append(st.tempExpTransfNum +"\r");
+			//sb.append(st.getSqHits()+"\r");
 			//sb2.append(st.getSqScore()+"\r");
-			sb3.append(st.getSqScoreNew()+"\r");
-			sb4.append(st.getSqScorePerc()+"\r");
-			sb5.append(st.getSQSpacyHits()+"\r");
-			//sb4.append(st.getNarrowingScore()+"\r");
+			//sb3.append(st.getSqScoreBasic()+"\r"); //used for pilot study
+			//sb3.append(st.getSqScorePerc()+"\r");
+			//sb3.append(st.getAccuracyScore()+"\r");
+			//sb5.append(st.getSQSpacyHits()+"\r");
+			//sb4.append(st.getGlobalScore()+"\r");
 			//sb5.append(st.getPersonName()+"\r");
-			//sb6.append(st.getItemHits()+"\r");
+			//sb6.append(st.getPersonScore()+"\r");
 			
 		}
 		CRTLogger.out(sb.toString(), 1);
-		CRTLogger.out(sb2.toString(), 1);
+		CRTLogger.out(sb2.toString(), 1); 
 		CRTLogger.out(sb3.toString(), 1);
 		CRTLogger.out(sb4.toString(), 1);
 		CRTLogger.out(sb5.toString(), 1);
-		CRTLogger.out(sb6.toString(), 1);
+		//CRTLogger.out(sb6.toString(), 1);
 	}
 	
 }

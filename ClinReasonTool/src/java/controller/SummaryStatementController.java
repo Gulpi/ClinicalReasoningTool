@@ -216,16 +216,12 @@ public class SummaryStatementController {
 		JsonTest jt2 = new DBClinReason().selectJsonTestBySummStId(expPis.getSummStId()); //the json of the statement
 		SpacyDocJson spacyE = new SpacyDocJson(jt2.getJson().trim());
 		spacyE.init();
-<<<<<<< HEAD
 		Locale loc = new Locale(st.getLang());
 		analyzeExpStatement(expPis.getSummSt(), spacyE, loc);
-=======
-		analyzeExpStatement(expPis.getSummSt(), spacyE);
 		st.setSpacy_json(jt.getJson());
-		PatientIllnessScript expPis = new DBClinReason().selectExpertPatIllScriptByVPId(vpId);		
-		analyzeExpStatement(expPis.getSummSt());
+		//PatientIllnessScript expPis = new DBClinReason().selectExpertPatIllScriptByVPId(vpId);		
+		//analyzeExpStatement(expPis.getSummSt());
 
->>>>>>> branch 'master' of https://github.com/clinReasonTool/ClinicalReasoningTool.git
 		if(!tempExpMaps.containsKey(vpId)) tempExpMaps.put(vpId, expPis);
 		
 		long startms = System.currentTimeMillis();

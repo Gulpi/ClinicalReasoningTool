@@ -121,7 +121,7 @@ public class AppBean extends ApplicationWrapper implements HttpSessionListener{
 	    	SummaryStatementController.setSIUnitAndTransformList();
 	    	//we load the semantic qualifiers and analyze any summary statements that have not yet been analyzed.
 	    	if(semanticQuals==null) semanticQuals = SummaryStatementController.loadSemanticQuals();
-	    	SummaryStatementController.testSummStRating();
+	    	//SummaryStatementController.testSummStRating();
 	    	
 	    	if(semanticQuals!=null) SummaryStatementController.analyzeSemanticQualsStatements();
 	    	//testing:

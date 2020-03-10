@@ -14,6 +14,8 @@
 		<property name="summStId" column="sumst_id" type="long" />
 		<property name="sqId" column="sq_id" type="int" />
 		<property name="text" column="text" type="string" />
-
+		<property name="expHasOpposite" column="exp_opp" type="boolean" />
+		<property name="position" column="position" type="int" />
+		<property name="textMatch" column="text_match" type="string" />
 </class>
 </hibernate-mapping>

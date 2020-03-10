@@ -39,20 +39,20 @@ public class SummaryStatement extends Beans implements Serializable, Comparable{
 	/**
 	 * all semantic qualifier ids that have been
 	 */
-	private List<SummaryStatementSQ> sqHits;
-	private List<SummaryStElem> itemHits; //identified findings and diseases
+	private Set<SummaryStatementSQ> sqHits;
+	private Set<SummaryStElem> itemHits; //identified findings and diseases
 	
 	/**
 	 * score can be 0, 1, or 2 (see rubric by Smith et al)
 	 */
 	private int sqScore = -1;
 	private int sqScoreBasic = -1;
-	private float sqScorePerc;
+	private float sqScorePerc = -1;
 	/**
 	 * score can be 0, 1, or 2 (see rubric by Smith et al)
 	 */
 	private int transformationScore = -1;
-	private float transformScorePerc; //temp variable to store the exact calculated percentage
+	private float transformScorePerc = -1; //temp variable to store the exact calculated percentage
 	
 	/**
 	 * score can be 0, 1, or 2 (see rubric by Smith et al)
@@ -70,16 +70,16 @@ public class SummaryStatement extends Beans implements Serializable, Comparable{
 	 * (expNum-studMatches)/expNum percentage of macthing items
 	 * used for basic rating
 	 */
-	private float narr1Score; 
+	private float narr1Score = -1; 
 	/**
 	 * addItems/expNum - percentage of additional items added 
 	 */
-	private float narr2Score; 
+	private float narr2Score = -1; 
 	
 	/**
 	 * score can be 0, 1 depending on whether we find a patient's name in the statement
 	 */	
-	private int personScore = 0;
+	private int personScore = -1;
 	
 	private String spacy_json;
 	
@@ -87,15 +87,15 @@ public class SummaryStatement extends Beans implements Serializable, Comparable{
 	 * SIunits we have found in the summary statement (e.g. mg, dl, mmHg,...) as a negative indicator 
 	 * for transformation
 	 */
-	private List<SummaryStNumeric> units;
-	private int transformNum = 0;
+	private Set<SummaryStNumeric> units;
+	private int transformNum = -1;
 	//private SummaryStElem person;
 	/**
 	 * score can be 0, 1 (see rubric by Smith et al)
 	 */
-	private int accuracyScore;
+	private int accuracyScore = -1;
 	
-	private int globalScore;
+	private int globalScore = -1;
 	
 	public int tempExpTransfNum = 0;
 	
@@ -129,8 +129,8 @@ public class SummaryStatement extends Beans implements Serializable, Comparable{
 	public void setNarrowingScore(int narrowingScore) {this.narrowingScore = narrowingScore;}	
 	public int getNarrowingScoreNew() {return narrowingScoreNew;}
 	public void setNarrowingScoreNew(int narrowingScoreNew) {this.narrowingScoreNew = narrowingScoreNew;}
-	public List<SummaryStNumeric> getUnits() {return units;}
-	public void setUnits(List<SummaryStNumeric> units) {this.units = units;}	
+	public Set<SummaryStNumeric> getUnits() {return units;}
+	public void setUnits(Set<SummaryStNumeric> units) {this.units = units;}	
 	public float getNarr1Score() {return narr1Score;}
 	public void setNarr1Score(float narr1Score) {this.narr1Score = narr1Score;}
 	public float getNarr2Score() {return narr2Score;}
@@ -154,7 +154,7 @@ public class SummaryStatement extends Beans implements Serializable, Comparable{
 	
 	public void addUnit(SummaryStNumeric u){
 		if(u==null) return;
-		if(units==null) units = new ArrayList<SummaryStNumeric>();
+		if(units==null) units = new TreeSet<SummaryStNumeric>();
 		units.add(u); 
 	}
 	
@@ -172,13 +172,15 @@ public class SummaryStatement extends Beans implements Serializable, Comparable{
 	 * column "SQ1"
 	 * @return
 	 */
-	public List getSqHits(){return sqHits;}
+	public Set getSqHits(){return sqHits;}
 	
 	public int getSQSpacyHits(){
 		if(sqHits==null) return 0;
 		int counter = 0;
-		for(int i = 0;i < sqHits.size(); i++){
-			if(sqHits.get(i).isSpacyMatch())
+		Iterator<SummaryStatementSQ> it = sqHits.iterator();
+		//for(int i = 0;i < sqHits.size(); i++){
+		while (it.hasNext()){
+			if(it.next().isSpacyMatch())
 				counter++;
 		}
 		return counter;
@@ -189,7 +191,7 @@ public class SummaryStatement extends Beans implements Serializable, Comparable{
 	 * @param li
 	 */
 	public void addItemHit(ListItem li, /*int startPos,*/ int idx){
-		if(itemHits==null) itemHits = new ArrayList<SummaryStElem>();
+		if(itemHits==null) itemHits = new TreeSet<SummaryStElem>();
 		SummaryStElem el = new SummaryStElem(li);
 		//el.setStartPos(startPos);
 		el.setStartIdx(idx);
@@ -206,7 +208,7 @@ public class SummaryStatement extends Beans implements Serializable, Comparable{
 	 * @param s
 	 */
 	public void addItemHit(ListItem li, Synonym s, /*int startPos,*/ int idx){
-		if(itemHits==null) itemHits = new ArrayList<SummaryStElem>();
+		if(itemHits==null) itemHits = new TreeSet<SummaryStElem>();
 		SummaryStElem el = new SummaryStElem(li);
 		if(s!=null) el.setSynonymStr(s.getName());
 		//el.setStartPos(startPos);
@@ -216,7 +218,7 @@ public class SummaryStatement extends Beans implements Serializable, Comparable{
 	}
 	
 	public void addItemHit(SummaryStElem el){
-		if(itemHits==null) itemHits = new ArrayList<SummaryStElem>();
+		if(itemHits==null) itemHits = new TreeSet<SummaryStElem>();
 		if(!itemHits.contains(el)) //do not add duplicates!
 			itemHits.add(el);		
 	}
@@ -231,10 +233,15 @@ public class SummaryStatement extends Beans implements Serializable, Comparable{
 		return false;
 	}	
 	
-	public List<SummaryStElem> getItemHits() {return itemHits;}
-	public void setItemHits(List<SummaryStElem> itemHits) {this.itemHits = itemHits;}
-	public void setSqHits(List<SummaryStatementSQ> hits){this.sqHits = hits;}
-	
+	public Set<SummaryStElem> getItemHits() {return itemHits;}
+	public void setItemHits(Set<SummaryStElem> itemHits) {this.itemHits = itemHits;}
+	public void setSqHits(Set<SummaryStatementSQ> hits){this.sqHits = hits;}
+	public void setSqHitsAsList(List<SummaryStatementSQ> hitsL){
+		if(hitsL==null) sqHits = null;
+		for(int i=0; i<hitsL.size(); i++){
+			this.sqHits.add(hitsL.get(i));
+		}
+	}
 	/**
 	 * display the summary statement with the highlighted sematic qualifiers 
 	 * We split the text, match it with the sematic qualifier hits and print the hits in a different color/bold.
@@ -246,8 +253,11 @@ public class SummaryStatement extends Beans implements Serializable, Comparable{
 		String[] splitText = text.split(" ");
 		for(int i=0;i<splitText.length; i++){
 			String s = splitText[i].toLowerCase().trim();
-			for(int j=0; j<sqHits.size(); j++){
-				if(s.contains(sqHits.get(j).getText().trim().toLowerCase())){
+			//for(int j=0; j<sqHits.size(); j++){
+			Iterator<SummaryStatementSQ> it = sqHits.iterator();
+			while(it.hasNext()){
+				SummaryStatementSQ sq = it.next();
+				if(s.contains(sq.getText().trim().toLowerCase())){
 					splitText[i] = "<span class='sqhit'>"+s+"</span>";
 				}
 			}
@@ -266,8 +276,10 @@ public class SummaryStatement extends Beans implements Serializable, Comparable{
 	public String getFindingHits(){
 		if(itemHits==null) return "";
 		StringBuffer fdgs = new StringBuffer();
-		for(int i=0; i<itemHits.size();i++){
-			SummaryStElem e = itemHits.get(i);
+		Iterator<SummaryStElem> it = itemHits.iterator();
+		while(it.hasNext()){
+		//for(int i=0; i<itemHits.size();i++){
+			SummaryStElem e = it.next();
 			if(e.isFinding()) fdgs.append(e.toString()+", ");
 		}
 		return fdgs.toString();
@@ -276,8 +288,10 @@ public class SummaryStatement extends Beans implements Serializable, Comparable{
 	public int getFindingHitsNum(){
 		if(itemHits==null || itemHits.isEmpty()) return 0;
 		int counter=0;
-		for(int i=0; i<itemHits.size();i++){
-			if(itemHits.get(i).isFinding()) counter++;
+		Iterator<SummaryStElem> it = itemHits.iterator();
+		while(it.hasNext()){
+		//for(int i=0; i<itemHits.size();i++){
+			if(it.next().isFinding()) counter++;
 		}
 		return counter;
 	}
@@ -285,8 +299,10 @@ public class SummaryStatement extends Beans implements Serializable, Comparable{
 	public int getDiagnosesHitsNum(){
 		if(itemHits==null || itemHits.isEmpty()) return 0;
 		int counter=0;
-		for(int i=0; i<itemHits.size();i++){
-			if(itemHits.get(i).isDiagnosis()) counter++;
+		Iterator<SummaryStElem> it = itemHits.iterator();
+		while(it.hasNext()){
+		//for(int i=0; i<itemHits.size();i++){
+			if(it.next().isDiagnosis()) counter++;
 		}
 		return counter;
 	}
@@ -298,8 +314,10 @@ public class SummaryStatement extends Beans implements Serializable, Comparable{
 	public String getAnatomyHits(){
 		if(itemHits==null) return "";
 		StringBuffer sb = new StringBuffer();
-		for(int i=0; i<itemHits.size();i++){
-			SummaryStElem e = itemHits.get(i);
+		Iterator<SummaryStElem> it = itemHits.iterator();
+		while(it.hasNext()){
+		//for(int i=0; i<itemHits.size();i++){
+			SummaryStElem e = it.next();
 			if(e.isAnatomy()) sb.append(e.toString()+", ");
 		}
 		return sb.toString();
@@ -308,8 +326,11 @@ public class SummaryStatement extends Beans implements Serializable, Comparable{
 	public List<SummaryStElem> getAnatomyHitElems(){
 		if(itemHits==null) return null;
 		List<SummaryStElem> aHits = new ArrayList();
-		for(int i=0; i<itemHits.size();i++){
-			if(itemHits.get(i).isAnatomy()) aHits.add(itemHits.get(i));
+		Iterator<SummaryStElem> it = itemHits.iterator();
+		while(it.hasNext()){
+		//for(int i=0; i<itemHits.size();i++){
+			SummaryStElem e = it.next();
+			if(e.isAnatomy()) aHits.add(e);
 		}
 		return aHits;
 	}
@@ -318,8 +339,10 @@ public class SummaryStatement extends Beans implements Serializable, Comparable{
 	public int getAnatomyHitsNum(){
 		if(itemHits==null || itemHits.isEmpty()) return 0;
 		int counter=0;
-		for(int i=0; i<itemHits.size();i++){
-			if(itemHits.get(i).isAnatomy()) counter++;
+		Iterator<SummaryStElem> it = itemHits.iterator();
+		while(it.hasNext()){
+		//for(int i=0; i<itemHits.size();i++){
+			if(it.next().isAnatomy()) counter++;
 		}
 		return counter;
 	}
@@ -332,8 +355,10 @@ public class SummaryStatement extends Beans implements Serializable, Comparable{
 	public String getDiagnosesHits(){
 		if(itemHits==null) return "";
 		StringBuffer sb = new StringBuffer();
-		for(int i=0; i<itemHits.size();i++){
-			SummaryStElem e = itemHits.get(i);
+		Iterator<SummaryStElem> it = itemHits.iterator();
+		while(it.hasNext()){
+		//for(int i=0; i<itemHits.size();i++){
+			SummaryStElem e = it.next();
 			if(e.isDiagnosis()) sb.append(e.toString()+", ");
 		}
 		return sb.toString();
@@ -346,8 +371,10 @@ public class SummaryStatement extends Beans implements Serializable, Comparable{
 	public String getTherHits(){
 		if(itemHits==null) return "";
 		StringBuffer sb = new StringBuffer();
-		for(int i=0; i<itemHits.size();i++){
-			SummaryStElem e = itemHits.get(i);
+		Iterator<SummaryStElem> it = itemHits.iterator();
+		while(it.hasNext()){
+		//for(int i=0; i<itemHits.size();i++){
+			SummaryStElem e = it.next();
 			if(e.isTher()) sb.append(e.toString()+", ");
 		}
 		return sb.toString();
@@ -360,8 +387,10 @@ public class SummaryStatement extends Beans implements Serializable, Comparable{
 	public String getTestHits(){
 		if(itemHits==null) return "";
 		StringBuffer sb = new StringBuffer();
-		for(int i=0; i<itemHits.size();i++){
-			SummaryStElem e = itemHits.get(i);
+		Iterator<SummaryStElem> it = itemHits.iterator();
+		while(it.hasNext()){
+		//for(int i=0; i<itemHits.size();i++){
+			SummaryStElem e = it.next();
 			if(e.isTest()) sb.append(e.toString()+", ");
 		}
 		return sb.toString();
@@ -375,8 +404,10 @@ public class SummaryStatement extends Beans implements Serializable, Comparable{
 	public String getExpMatches(){
 		if(itemHits==null) return "";
 		StringBuffer sb = new StringBuffer();
-		for(int i=0; i<itemHits.size();i++){
-			SummaryStElem e = itemHits.get(i);
+		Iterator<SummaryStElem> it = itemHits.iterator();
+		while(it.hasNext()){
+		//for(int i=0; i<itemHits.size();i++){
+			SummaryStElem e = it.next();
 			if(e.isExpertMatch()) sb.append(e.toString()+", ");
 		}
 		return sb.toString();
@@ -391,8 +422,10 @@ public class SummaryStatement extends Beans implements Serializable, Comparable{
 	public float getExpMatchesNum(){
 		if(itemHits==null) return 0;
 		float counter = (float) 0.0;
-		for(int i=0; i<itemHits.size();i++){
-			SummaryStElem e = itemHits.get(i);
+		Iterator<SummaryStElem> it = itemHits.iterator();
+		while(it.hasNext()){
+		//for(int i=0; i<itemHits.size();i++){
+			SummaryStElem e = it.next();
 			if(e.isExpertMatch()) counter = (float) (counter + 1.0);
 			else if (e.getExpertScriptMatch()==1 || e.getExpertScriptMatch()==2)
 				counter = (float) (counter + 0.5);
@@ -408,8 +441,10 @@ public class SummaryStatement extends Beans implements Serializable, Comparable{
 	public String getExpScriptMatches(){
 		if(itemHits==null) return "";
 		StringBuffer sb = new StringBuffer();
-		for(int i=0; i<itemHits.size();i++){
-			SummaryStElem e = itemHits.get(i);
+		Iterator<SummaryStElem> it = itemHits.iterator();
+		while(it.hasNext()){
+		//for(int i=0; i<itemHits.size();i++){
+			SummaryStElem e = it.next();
 			if(e.getExpertScriptMatch()>0) sb.append(e.toString()+" ("+e.getExpertScriptMatch()+"), ");
 		}
 		return sb.toString();
@@ -423,8 +458,10 @@ public class SummaryStatement extends Beans implements Serializable, Comparable{
 	public int getExpMatchNarrowing(){
 		if(itemHits==null) return 0;
 		int counter = 0;
-		for(int i=0; i<itemHits.size();i++){
-			SummaryStElem e = itemHits.get(i);
+		Iterator<SummaryStElem> it = itemHits.iterator();
+		while(it.hasNext()){
+		//for(int i=0; i<itemHits.size();i++){
+			SummaryStElem e = it.next();
 			if(e.getExpertScriptMatch()==Relation.TYPE_PROBLEM || e.getExpertScriptMatch()==Relation.TYPE_DDX)
 				counter++;
 			else if(e.isExpertMatch() && (e.isAnatomy() || e.isFinding() || e.isDiagnosis())) counter++;
@@ -439,8 +476,10 @@ public class SummaryStatement extends Beans implements Serializable, Comparable{
 	public String getOtherHits(){
 		if(itemHits==null) return "";
 		StringBuffer sb = new StringBuffer();
-		for(int i=0; i<itemHits.size();i++){
-			SummaryStElem e = itemHits.get(i);
+		Iterator<SummaryStElem> it = itemHits.iterator();
+		while(it.hasNext()){
+		//for(int i=0; i<itemHits.size();i++){
+			SummaryStElem e = it.next();
 			if(!e.isAnatomy() && !e.isDiagnosis() &&!e.isFinding() && !e.isTest() && !e.isTher()) 
 				sb.append(e.toString());
 		}
@@ -462,11 +501,13 @@ public class SummaryStatement extends Beans implements Serializable, Comparable{
 	 * @param expUnits
 	 * @return
 	 */
-	public int getUnitsNumForTransformation(List<SummaryStNumeric> expUnits){
+	public int getUnitsNumForTransformation(Set<SummaryStNumeric> expUnits){
 		if(units==null) return 0;
 		int unitNum =0;
-		for(int i=0;i<units.size(); i++){
-			SummaryStNumeric unit = units.get(i);
+		Iterator<SummaryStNumeric> it = units.iterator();
+		while(it.hasNext()){
+		//for(int i=0;i<units.size(); i++){
+			SummaryStNumeric unit = it.next();
 			//do not include any dates that are also included in the expert:
 			//if(unit.getSpacyType()==null) unitNum++; 
 			//else{ /* if(!unit.getSpacyType().equals(SpacyDocToken.LABEL_DATE)) unitNum++;*/
@@ -475,15 +516,17 @@ public class SummaryStatement extends Beans implements Serializable, Comparable{
 				else {
 					//we look whether we find the same unit/numeric in the expert statement, if so we do not count it (presumably it is the patient age)
 					boolean found = false;
-					for (int j=0;j<expUnits.size(); j++){
-						if(expUnits.get(j).getName()!=null && expUnits.get(j).getName().equals(unit.getName())){
+					Iterator<SummaryStNumeric> it2 = expUnits.iterator();
+					while(it2.hasNext()){
+					//for (int j=0;j<expUnits.size(); j++){
+						SummaryStNumeric eu = it2.next();
+						if(eu.getName()!=null && eu.getName().equals(unit.getName())){
 							found = true;
 							unit.setExpMatch(true);
 						}
 					}
 					if(!found) unitNum++;
 				}
-			//}
 		}
 		return unitNum;
 	}
@@ -495,16 +538,21 @@ public class SummaryStatement extends Beans implements Serializable, Comparable{
 	 */
 	public SummaryStNumeric getUnitAtPos(int pos){
 		if(units==null) return null;
-		for(int i=0; i<units.size(); i++){
-			if(units.get(i).getPos()==pos) return units.get(i);
+		Iterator<SummaryStNumeric> it = units.iterator();
+		while(it.hasNext()){
+			SummaryStNumeric sn = it.next();
+		//for(int i=0; i<units.size(); i++){
+			if(sn.getPos()==pos) return sn;
 		}
 		return null;
 	}
 	
 	public String getPersonName(){
 		if(this.itemHits==null) return null;
-		for(int i=0; i<itemHits.size(); i++){
-			SummaryStElem el = itemHits.get(i);
+		Iterator<SummaryStElem> it = itemHits.iterator();
+		while(it.hasNext()){
+		//for(int i=0; i<itemHits.size(); i++){
+			SummaryStElem el = it.next();
 			if(el.isPerson()) return el.getSynonymStr();
 		}
 		return null;
@@ -512,8 +560,10 @@ public class SummaryStatement extends Beans implements Serializable, Comparable{
 	
 	public SummaryStElem getPerson(){
 		if(this.itemHits==null) return null;
-		for(int i=0; i<itemHits.size(); i++){
-			SummaryStElem el = itemHits.get(i);
+		Iterator<SummaryStElem> it = itemHits.iterator();
+		while(it.hasNext()){
+		//for(int i=0; i<itemHits.size(); i++){
+			SummaryStElem el = it.next();
 			if(el.isPerson()) return el;
 		}
 		return null;
@@ -534,8 +584,11 @@ public class SummaryStatement extends Beans implements Serializable, Comparable{
 	
 	public SummaryStatementSQ getSQBySpacyToken(SpacyDocToken tok){
 		if(this.sqHits==null || this.sqHits.isEmpty()) return null;
-		for(int i=0;i<this.sqHits.size();i++){
-			if(this.sqHits.get(i).getSpacyMatch()!=null && this.sqHits.get(i).getSpacyMatch().equals(tok)) return this.sqHits.get(i);
+		Iterator<SummaryStatementSQ> it = sqHits.iterator();
+		while(it.hasNext()){
+			SummaryStatementSQ sq = it.next();
+		//for(int i=0;i<this.sqHits.size();i++){
+			if(sq.getSpacyMatch()!=null && sq.getSpacyMatch().equals(tok)) return sq;
 		}
 		return null;
 	}

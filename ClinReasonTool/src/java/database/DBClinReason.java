@@ -301,7 +301,7 @@ public class DBClinReason /*extends HibernateUtil*/{
 		Criteria criteria = s.createCriteria(SummaryStatement.class,"SummaryStatement");
 		criteria.add(Restrictions.eq("id", new Long(id)));
 		SummaryStatement st = (SummaryStatement) criteria.uniqueResult();
-		st.setSqHits(selectSummaryStatementSQsBySumId(st.getId(), s));
+		st.setSqHitsAsList(selectSummaryStatementSQsBySumId(st.getId(), s));
 		return st;
 	}
 
@@ -311,7 +311,7 @@ public class DBClinReason /*extends HibernateUtil*/{
 		Criteria criteria = s.createCriteria(SummaryStatement.class,"SummaryStatement");
 		criteria.add(Restrictions.eq("id", new Long(id)));
 		SummaryStatement st = (SummaryStatement) criteria.uniqueResult();
-		st.setSqHits(selectSummaryStatementSQsBySumId(st.getId(), s));
+		st.setSqHitsAsList(selectSummaryStatementSQsBySumId(st.getId(), s));
 		return st;
 	}
 	

@@ -36,7 +36,7 @@ public class SummaryStatementSQ {
 	/**
 	 * position of the first char of the semantic qualifier in the text we have a match with
 	 */
-	private int position = -1;
+	private int position;
 	
 	private SpacyDocToken spacyMatch;
 	/**

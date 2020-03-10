@@ -144,7 +144,7 @@ public class SummaryStatementController {
 					}
 				}
 			}
-			stst.setSqHits(hits);
+			stst.setSqHitsAsList(hits);
 			stst.setAnalyzed(true);
 		}
 		catch(Exception e){
@@ -174,6 +174,7 @@ public class SummaryStatementController {
 	
 	
 	private static void analyzeExpStatement(SummaryStatement st, SpacyDocJson spacy, Locale loc){
+		if(st.isAnalyzed()) return; //exp statement already analyzed.
 		if(st.getItemHits()!=null && !st.getItemHits().isEmpty()) return; //already done....
 		
 		List<ListItem> items = getListItemsByLang(st.getLang());
@@ -189,13 +190,15 @@ public class SummaryStatementController {
 		checkForSemanticQualifiers(st, spacy);
 		compareNumbers(st, spacy);
 		checkForPerson(st, spacy);
+		st.setAnalyzed(true);
+		new DBClinReason().saveAndCommit(st);
 	}
 	
-	public static SummaryStatement testSummStRating(/*Locale loc, */String text, String vpId){
+	/*public static SummaryStatement testSummStRating(String text, String vpId){
 		SummaryStatement st = new SummaryStatement();
 		st.setText(text);
-		return testSummStRating(/*loc,*/ st, vpId);
-	}
+		return testSummStRating(/st, vpId);
+	}*/
 	/**
 	 * test summary statement rating using the list creation mechanism.
 	 * (1) exp fdgs & ddx -> expPis.getSummSt().getDiagnosesHits() und expPis.getSummSt().getFindingsHits()
@@ -205,7 +208,7 @@ public class SummaryStatementController {
 	 * (6,7) Number of additional fdgs, ddx / items -> können wir im Excel sehen
 	 * @param contextIn
 	 */
-	public static SummaryStatement testSummStRating(/*Locale loc, */SummaryStatement st, String vpId){		
+	/*public static SummaryStatement testSummStRating(SummaryStatement st, String vpId){		
 		List<ListItem> items = getListItemsByLang(st.getLang());	
 		if(st==null || st.getText()==null || items==null) return null;
 		PatientIllnessScript expPis = new DBClinReason().selectExpertPatIllScriptByVPId(vpId);		
@@ -267,7 +270,82 @@ public class SummaryStatementController {
 		long endms = System.currentTimeMillis();
 		st.analysisMs = endms - startms;
 		CRTLogger.out("end: " + startms, CRTLogger.LEVEL_TEST);
+		//new DBClinReason().saveAndCommit(st);
 		return st;		
+	}*/
+	
+	public static void initSummStRating(PatientIllnessScript expScript, PatientIllnessScript learnerScript, ScoringSummStAction scoreAct){
+		if(learnerScript==null || learnerScript.getSummSt()==null || learnerScript.getSummSt().getText()==null) return;
+		SummaryStatement st = learnerScript.getSummSt();
+		SummaryStatement expSt = expScript.getSummSt();
+		List<ListItem> items = getListItemsByLang(st.getLang());	
+		//if(st==null || st.getText()==null || items==null) return null;
+		//PatientIllnessScript expPis = new DBClinReason().selectExpertPatIllScriptByVPId(vpId);	
+		
+		//TODO: the json has to be created on the run! 
+		JsonTest jt = new DBClinReason().selectJsonTestBySummStId(st.getId()); //the json of the statement
+		if(jt==null){
+			//TODO
+		}
+		SpacyDocJson spacy = new SpacyDocJson(jt.getJson().trim());
+		spacy.init();
+
+		JsonTest jt2 = new DBClinReason().selectJsonTestBySummStId(expSt.getId()); //the json of the statement
+		SpacyDocJson spacyE = new SpacyDocJson(jt2.getJson().trim());
+		spacyE.init();
+		Locale loc = new Locale(st.getLang());
+		analyzeExpStatement(expSt, spacyE, loc);
+		st.setSpacy_json(jt.getJson());
+		//PatientIllnessScript expPis = new DBClinReason().selectExpertPatIllScriptByVPId(vpId);		
+		//analyzeExpStatement(expPis.getSummSt());
+
+		//if(!tempExpMaps.containsKey(expScript.getVpId())) tempExpMaps.put(expScript.getVpId(), expPis);
+		
+		long startms = System.currentTimeMillis();
+		CRTLogger.out("start: " + startms, CRTLogger.LEVEL_TEST);
+		 
+		List<String> textAsListOrg = StringUtilities.createStringListFromString(st.getText(), true);
+		//String sumstTxtLowerCase = st.getText().toLowerCase();
+		
+		if(textAsListOrg==null) return;
+		
+		compareList(items, st); 
+		if(aList!=null) compareList(aList.get(st.getLang()), st);
+		
+		for(int i=0; i<textAsListOrg.size(); i++){
+			String orgS = textAsListOrg.get(i);		
+			
+			if(isTermToAnalyze(orgS,st.getText().indexOf(orgS), spacy, true)){
+				compareSimilarList(items, st, orgS, i, loc);
+				st.addUnit(compareSIUnits(orgS, i, st.getText().indexOf(orgS), spacy));
+				if(aList!=null) compareSimilarList(aList.get(st.getLang()), st, orgS, i, loc);		
+			}
+		}
+		
+		checkForSemanticQualifiers(st, spacy); //count SQ
+		compareNumbers(st, spacy);
+		if(expSt!=null){
+			calculateMatchesWithExpStatement(st.getItemHits(), expSt.getText());
+			compareWithExpIllScript(st, expScript);
+		}
+		checkForPerson(st, spacy);
+		checkAccuracy(st, expSt,spacy, spacyE);
+		//scoring starts:
+		//ScoringSummStAction scoreAct = new ScoringSummStAction();
+		/*int sqScoreNew = scoreAct.calculateSemanticQualScoreBasic(st); //score SQ
+		int sqScore = scoreAct.calculateSemanticQualScore(expSt, st);
+		st.setSqScore(sqScore);
+		st.setSqScoreBasic(sqScoreNew);
+		//CRTLogger.out("",1);
+		scoreAct.calculateNarrowing(st, expSt);
+		scoreAct.calculateTransformation(expSt, st);
+		scoreAct.calculatePersonScore(st);
+		scoreAct.calculateGlobal(st);*/
+		long endms = System.currentTimeMillis();
+		st.analysisMs = endms - startms;
+		CRTLogger.out("end: " + startms, CRTLogger.LEVEL_TEST);
+		//new DBClinReason().saveAndCommit(st);
+		//return st;		
 	}
 	
 	/**
@@ -304,9 +382,11 @@ public class SummaryStatementController {
 		if(person==null) return;
 		//check if person is not in the list of SQ (can happen,since spay is not 100% accurate)
 		boolean isSQ = false;
-		if(st.getSqHits()!=null){	
-			for(int i=0;i<st.getSqHits().size();i++){
-				SummaryStatementSQ sq = (SummaryStatementSQ) st.getSqHits().get(i);
+		if(st.getSqHits()!=null){
+			Iterator it = st.getSqHits().iterator();
+			while(it.hasNext()){
+			//for(int i=0;i<st.getSqHits().size();i++){
+				SummaryStatementSQ sq = (SummaryStatementSQ) it.next();
 				if(sq.getSpacyMatch()!=null && sq.getSpacyMatch().equals(person)) isSQ = true;
 				else if(sq.getText()!=null && sq.getText().equalsIgnoreCase(person.getToken())) isSQ = true;
 			}
@@ -397,18 +477,19 @@ public class SummaryStatementController {
 	 */
 	private static void compareWithExpIllScript(SummaryStatement st, PatientIllnessScript pis){
 		if(st.getItemHits()==null || pis==null) return; 
-		
-		for (int i=0; i<st.getItemHits().size(); i++){
-			ListItem li = st.getItemHits().get(i).getListItem();
-			if(li!=null){
-				if(pis.getRelationByListItemIdAndType(li.getListItemId(), Relation.TYPE_PROBLEM)!=null)
-					st.getItemHits().get(i).setExpertScriptMatch(Relation.TYPE_PROBLEM);
-				else if(pis.getRelationByListItemIdAndType(li.getListItemId(), Relation.TYPE_DDX)!=null) 
-					st.getItemHits().get(i).setExpertScriptMatch(Relation.TYPE_DDX);
-				else if(pis.getRelationByListItemIdAndType(li.getListItemId(), Relation.TYPE_TEST)!=null) 
-					st.getItemHits().get(i).setExpertScriptMatch(Relation.TYPE_TEST);
-				else if(pis.getRelationByListItemIdAndType(li.getListItemId(), Relation.TYPE_MNG)!=null) 
-					st.getItemHits().get(i).setExpertScriptMatch(Relation.TYPE_MNG);
+		Iterator<SummaryStElem> it = st.getItemHits().iterator();
+		while(it.hasNext()){
+		//for (int i=0; i<st.getItemHits().size(); i++){
+			SummaryStElem se = it.next(); //st.getItemHits().get(i).getListItem();
+			if(se !=null && se.getListItem()!=null){
+				if(pis.getRelationByListItemIdAndType(se.getListItem().getListItemId(), Relation.TYPE_PROBLEM)!=null)
+					se.setExpertScriptMatch(Relation.TYPE_PROBLEM);
+				else if(pis.getRelationByListItemIdAndType(se.getListItem().getListItemId(), Relation.TYPE_DDX)!=null) 
+					se.setExpertScriptMatch(Relation.TYPE_DDX);
+				else if(pis.getRelationByListItemIdAndType(se.getListItem().getListItemId(), Relation.TYPE_TEST)!=null) 
+					se.setExpertScriptMatch(Relation.TYPE_TEST);
+				else if(pis.getRelationByListItemIdAndType(se.getListItem().getListItemId(), Relation.TYPE_MNG)!=null) 
+					se.setExpertScriptMatch(Relation.TYPE_MNG);
 			}
 		}
 	}
@@ -487,15 +568,16 @@ public class SummaryStatementController {
 	 * @param expMatches
 	 * @return
 	 */
-	private static void calculateMatchesWithExpStatement(List<SummaryStElem> matchingWords, String expText){
+	private static void calculateMatchesWithExpStatement(Set<SummaryStElem> matchingWords, String expText){
 		if(matchingWords==null || matchingWords.isEmpty()) return;
 		//int matchCounter = 0;
 		String[] expMatchesArr = expText.split(" ");
 		if(expMatchesArr==null || expMatchesArr.length==0) return;
 		
 		for(int i=0;i<expMatchesArr.length;i++){
-			innerLoop: for(int j=0; j<matchingWords.size(); j++){
-				SummaryStElem elem = matchingWords.get(j);
+			Iterator it2 = matchingWords.iterator();
+			innerLoop: while(it2.hasNext()){//for(int j=0; j<matchingWords.size(); j++){
+				SummaryStElem elem = (SummaryStElem) it2.next();
 				String expMatchRepl = StringUtilities.replaceChars(expMatchesArr[i].toLowerCase());
 				//compare main listItem:
 				if (elem.getListItem()!=null && elem.getListItem().getName()!=null && StringUtilities.similarStrings(elem.getListItem().getReplName(), expMatchRepl, elem.getListItem().getLanguage(), true)){
@@ -550,10 +632,12 @@ public class SummaryStatementController {
 		}
 		try{
 			//we look for contradicting semantic qualifiers for expertMatch hits:
-			List<SummaryStElem> hits = learnerSt.getItemHits();
+			Set<SummaryStElem> hits = learnerSt.getItemHits();
 			if(hits!=null && !hits.isEmpty()){
-				for (int i=0;i<hits.size(); i++){
-					SummaryStElem elem = hits.get(i);
+				Iterator<SummaryStElem> it = hits.iterator();
+				while(it.hasNext()){
+				//for (int i=0;i<hits.size(); i++){
+					SummaryStElem elem = it.next(); //hits.get(i);
 					if(elem.isExpertMatch()){
 						SpacyDocToken tokenL = lSpacy.getSpacyDocToken(elem.getStartIdx());
 						SpacyDocToken tokenE = eSpacy.getSpacyDocToken(elem.getExpertMatchIdx());
@@ -621,12 +705,33 @@ public class SummaryStatementController {
 	 * @param lang
 	 * @return
 	 */
-	public static boolean oppositeSQ(long id1, long id2, String lang){
+	private static boolean oppositeSQ(long id1, long id2, String lang){
 		SemanticQual sq1 = AppBean.getSemantiQualsByLangAndId(lang, id1);
 		SemanticQual sq2 = AppBean.getSemantiQualsByLangAndId(lang, id2);
 		if(sq1==null || sq2==null) return false;
 		if(sq1.isContrast(sq2)) return true;
 		return false;
+	}
+	
+	/**
+	 * To analyze already entered statements we select them and run the new algorithm. 
+	 * CAVE: Before running, make sure that all statements that should be analyzed, have been set to analyzed=0.
+	 */
+	public static void reanalyzeStatements(){
+		List<SummaryStatement> stmts = new DBClinReason().getSummaryStatementsByAnalyzed(false);
+		if(stmts==null || stmts.isEmpty()) return;
+		for(int i=0; i<stmts.size();i++){
+			SummaryStatement st = stmts.get(i);
+			if(st.getType()==1){ //only consider learner statements
+				PatientIllnessScript learnerScript = new DBClinReason().selectPatIllScriptById(st.getPatillscriptId());
+				PatientIllnessScript expScript = new DBClinReason().selectExpertPatIllScriptByVPId(learnerScript.getVpId());	
+				if(learnerScript!=null && expScript!=null && expScript.getSummSt()!=null){
+					ScoringSummStAction ssa = new ScoringSummStAction();
+					initSummStRating(expScript, learnerScript, ssa);
+					ssa.doScoring(st, expScript.getSummSt());
+				}
+			}			
+		}		
 	}
 	
 	/*public static SummaryStatement testSummStRating(){
@@ -639,7 +744,7 @@ public class SummaryStatementController {
 	}*/
 
 	
-	public static void testSummStRating(){
+	/*public static void testSummStRating(){
 		long[] ids = new long[]{76369,79314,79911,81723,82533,82822,71816,72350,74804,75134,75854,70659,141433,142950,144100,146816,147601,148031,148583,135566,68937,77182,77671,147862,86813,94126,97276,88512,89467,95367,95717,95836,84120,85748,87773,90543,93832,94734,160048,162578,162935,167338,168254,169244,164301,166480,171792,174917,170190,172691,173526,176050,176400,177502,84249,91616,171644,176843,176917,258230,259325,156766,165312,190176,198217,183259,179448,180132,182374,185591,224568,215194,233237,255923,198217,42082,42717,44101,45738,48497,27947,28393,43129,44826,26314,34810,35997,31273,32010,33510,41025,43009,142289,137492,157934,214134,245001,33280,31830,34218,7852,50936,51612,56138,56689,57139,57773,60295,60369,52550,52864,53807,53831,54771,61789,62884,117537,119306,119568,121026,118336,121097,122299,122367,122466,192059};
 		Long[] idsL = new Long[ids.length];
 		for (int i=0; i<ids.length; i++){
@@ -689,6 +794,6 @@ public class SummaryStatementController {
 		CRTLogger.out(sb4.toString(), 1);
 		CRTLogger.out(sb5.toString(), 1);
 		//CRTLogger.out(sb6.toString(), 1);
-	}
+	}*/
 	
 }

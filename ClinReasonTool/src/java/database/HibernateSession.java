@@ -102,6 +102,8 @@ public class HibernateSession {
 			cfg.addClass(beans.scoring.LearningBean.class);
 			cfg.addClass(model.SemanticQual.class);
 			cfg.addClass(beans.relation.summary.SummaryStatementSQ.class);
+			cfg.addClass(beans.relation.summary.SummaryStElem.class);
+			cfg.addClass(beans.relation.summary.SummaryStNumeric.class);
 			cfg.addClass(beans.search.SearchResult.class);
 			cfg.addClass(beans.user.SessionSetting.class);
 			cfg.addClass(beans.list.SIUnit.class);

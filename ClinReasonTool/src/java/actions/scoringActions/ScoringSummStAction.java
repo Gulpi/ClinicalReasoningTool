@@ -62,7 +62,7 @@ public class ScoringSummStAction {
 		}
 		//we analyze the text concerning semantic qualifiers:
 		if(expScript!=null && expScript.getSummSt()!=null){ //otherwise we do not have an experts' patIllScript to compare with				
-			calculateAddActionScoreBasedOnExpert(scoreBean, expScript.getSummSt(), patIllScript.getSummSt(), isChg);				
+			calculateAddActionScoreBasedOnExpert(scoreBean, expScript, patIllScript, isChg);				
 		}
 		//if(g.getPeerNums()>ScoringController.MIN_PEERS) //we have enough peers, so we can score based on this as well:
 		//calculateAddActionScoreBasedOnPeers(edge, scoreBean, g.getPeerNums());
@@ -78,12 +78,15 @@ public class ScoringSummStAction {
 	 * @param courseOfTimeExp
 	 * @param courseOfTimeLearner
 	 */
-	private void calculateAddActionScoreBasedOnExpert(ScoreBean scoreBean, SummaryStatement expSt, SummaryStatement learnerSt, boolean isChg){
+	private void calculateAddActionScoreBasedOnExpert(ScoreBean scoreBean, PatientIllnessScript expScript, PatientIllnessScript learnerScript, boolean isChg){
 
-		if(learnerSt==null || learnerSt.getText()==null || learnerSt.getText().trim().equals(""))
+		if(learnerScript==null || learnerScript.getSummSt()==null || learnerScript.getSummSt().getText()==null || learnerScript.getSummSt().getText().trim().equals(""))
+		{
 			scoreBean.setScoreBasedOnExp(ScoringController.NO_SCORE, isChg);
-		else{
-			
+			return;
+		}
+		//else{
+			/*
 			//not enough useful text is there:
 			if(learnerSt.getText().length()<=MIN_LENGTH_SUMST){
 				scoreBean.setScoreBasedOnExp(ScoringController.NO_SCORE, isChg);
@@ -98,14 +101,29 @@ public class ScoringSummStAction {
 				else scoreBean.setScoreBasedOnExp(ScoringController.HALF_SCORE, isChg);
 			}
 			
-		}		
-		if(expSt!=null && learnerSt!=null)
-			scoreBean.setTiming(learnerSt.getStage(), expSt.getStage());
+		}		*/
+		SummaryStatementController.initSummStRating(expScript, learnerScript, this);
+		doScoring(learnerScript.getSummSt(), expScript.getSummSt());
+		if(expScript.getSummSt()!=null && learnerScript.getSummSt()!=null)
+			scoreBean.setTiming(learnerScript.getSummSt().getStage(), expScript.getSummSt().getStage());
 
 		ScoringController.getInstance().setFeedbackInfo(scoreBean, isChg, false);
 
 	}
-	
+
+	public void doScoring(SummaryStatement learnerSt, SummaryStatement expSt){
+		if(learnerSt==null || expSt==null) return;
+		//scoring starts:
+		int sqScoreNew = calculateSemanticQualScoreBasic(learnerSt); //score SQ
+		int sqScore = calculateSemanticQualScore(expSt, learnerSt);
+		learnerSt.setSqScore(sqScore);
+		learnerSt.setSqScoreBasic(sqScoreNew);
+		calculateNarrowing(learnerSt, expSt);
+		calculateTransformation(expSt, learnerSt);
+		calculatePersonScore(learnerSt);
+		calculateGlobal(learnerSt);
+		new DBClinReason().saveAndCommit(learnerSt);
+	}
 	/**
 	 * score = 0, if no semantic qualifiers used or less than 30% of the expert
 	 * score = 1, if more than 30% and less than 60% of the expert
@@ -114,7 +132,7 @@ public class ScoringSummStAction {
 	 * @param learnerSt
 	 * @return
 	 */
-	public int calculateSemanticQualScore(SummaryStatement expSt, SummaryStatement learnerSt){
+	private int calculateSemanticQualScore(SummaryStatement expSt, SummaryStatement learnerSt){
 		int hits = learnerSt.getSQSpacyHits();
 		int expHits = expSt.getSQSpacyHits();
 		if(expHits==0) expHits = 2;
@@ -138,7 +156,7 @@ public class ScoringSummStAction {
 	 * @param learnerSt
 	 * @return
 	 */
-	public int calculateSemanticQualScoreBasic(SummaryStatement learnerSt){
+	private int calculateSemanticQualScoreBasic(SummaryStatement learnerSt){
 		int hits = learnerSt.getSQSpacyHits();
 		if(hits<2) return 0;
 		if(hits>4) return 2;
@@ -148,7 +166,7 @@ public class ScoringSummStAction {
 		//return 1;
 	}
 	
-	public void calculatePersonScore(SummaryStatement learnerSt){
+	private void calculatePersonScore(SummaryStatement learnerSt){
 		if(learnerSt.getPerson()!=null) learnerSt.setPersonScore(1);
 		else learnerSt.setPersonScore(0);
 	}
@@ -157,7 +175,7 @@ public class ScoringSummStAction {
 	 * 
 	 * @param learnerSt
 	 */
-	public void calculateNarrowing(SummaryStatement st, SummaryStatement expSt){
+	private void calculateNarrowing(SummaryStatement st, SummaryStatement expSt){
 		float upperBorder = (float) 0.75;//0.66
 		float lowerBoarder = (float) 0.25; //0.34
 		try{
@@ -214,7 +232,7 @@ public class ScoringSummStAction {
 	 * @param learnerSt
 	 * @return
 	 */
-	public void calculateTransformation(SummaryStatement expSt, SummaryStatement learnerSt){
+	private void calculateTransformation(SummaryStatement expSt, SummaryStatement learnerSt){
 		if(learnerSt==null || learnerSt.getText()==null || learnerSt.getText().trim().equals("")){
 			learnerSt.setTransformationScore(0);
 			return;
@@ -264,8 +282,10 @@ public class ScoringSummStAction {
 		if(SummaryStatementController.transformRules!=null){
 			for(int i=0; i<SummaryStatementController.transformRules.size(); i++){
 				TransformRule tr = SummaryStatementController.transformRules.get(i);
-				for(int j=0; j<st.getItemHits().size(); j++){
-					SummaryStElem s = st.getItemHits().get(j);
+				Iterator<SummaryStElem> it = st.getItemHits().iterator();
+				while(it.hasNext()){
+				//for(int j=0; j<st.getItemHits().size(); j++){
+					SummaryStElem s = it.next(); //st.getItemHits().get(j);
 					if(tr.getType()==TransformRule.TYPE_PREFIX && s.getListItem()!=null && s.getListItem().getName().toLowerCase().startsWith(tr.getName())){
 						transformNum++;
 						s.setTransform(TransformRule.TYPE_PREFIX);
@@ -281,8 +301,10 @@ public class ScoringSummStAction {
 		
 		//identify matches with other findings (e.g. Fever);
 		if(st.getItemHits()!=null){
-			for(int i=0; i< st.getItemHits().size(); i++){
-				if(st.getItemHits().get(i).getTransform()==TransformRule.TYPE_FINDING)
+			Iterator<SummaryStElem> it2 = st.getItemHits().iterator();
+			while(it2.hasNext()){
+			//for(int i=0; i< st.getItemHits().size(); i++){
+				if(it2.next().getTransform()==TransformRule.TYPE_FINDING)
 					transformNum++;
 			}
 		}
@@ -293,7 +315,7 @@ public class ScoringSummStAction {
 	 * we sum up all category scores, if sum>=6 global score is 2, if the sum >=2 score is 1 and otherwise 0.
 	 * @param st
 	 */
-	public void calculateGlobal(SummaryStatement st){
+	private void calculateGlobal(SummaryStatement st){
 		if(st.getText()==null || st.getText().length()<=25) {
 			st.setGlobalScore(0);
 			return;
@@ -302,7 +324,5 @@ public class ScoringSummStAction {
 		if(sum<=2) st.setGlobalScore(0);
 		else if(sum>=6) st.setGlobalScore(2); 
 		else st.setGlobalScore(1);
-		
 	}
-
 }

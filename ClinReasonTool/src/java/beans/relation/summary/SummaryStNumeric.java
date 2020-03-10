@@ -6,6 +6,7 @@ import util.StringUtilities;
 public class SummaryStNumeric {
 
 	private long id; 
+	private long summstId;
 	/**
 	 * name of the matched item (e.g. 14mg,  128/100 mmHg,...)
 	 */
@@ -69,6 +70,8 @@ public class SummaryStNumeric {
 	//public String getNumeric() {return numeric;}
 	//public void setNumeric(String numeric) {this.numeric = numeric;}
 	
+	public long getSummstId() {return summstId;}
+	public void setSummstId(long summstId) {this.summstId = summstId;}
 	public boolean isExpMatch() {return expMatch;}
 	public void setExpMatch(boolean expMatch) {this.expMatch = expMatch;}
 	/* (non-Javadoc)

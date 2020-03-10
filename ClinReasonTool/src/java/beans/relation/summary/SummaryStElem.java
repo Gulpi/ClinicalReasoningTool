@@ -5,6 +5,8 @@ import net.casus.util.nlp.spacy.SpacyDocToken;
 
 public class SummaryStElem {
 
+	private long id;
+	private long summStId;
 	/**
 	 * Reference to the Mesh entry
 	 */
@@ -31,7 +33,7 @@ public class SummaryStElem {
 	/**
 	 * start position of the word in the text (wordcount, 0-based)
 	 */
-	private int startPos;
+	//private int startPos;
 	
 	/**
 	 * start position/index within the text 
@@ -41,7 +43,7 @@ public class SummaryStElem {
 	/**
 	 * end position of the word in the text (wordcount, 0-based)
 	 */
-	private int endPos;
+	//private int endPos;
 
 	/**
 	 * 1=prefix, 2=suffix, 3= transformed finding (e.g. fever)
@@ -84,6 +86,10 @@ public class SummaryStElem {
 	public void setType(String type) {this.type = type;}	
 	public int getExpertMatchIdx() {return expertMatchIdx;}
 	public void setExpertMatchIdx(int expertMatchIdx) {this.expertMatchIdx = expertMatchIdx;}
+	public long getId() {return id;}
+	public void setId(long id) {this.id = id;}
+	public long getSummStId() {return summStId;}
+	public void setSummStId(long summStId) {this.summStId = summStId;}
 
 	public boolean isPerson(){
 		if(type!=null && type.equals(SpacyDocToken.LABEL_PERSON)) return true;

@@ -67,7 +67,7 @@ public class SummaryStatementChgAction /*extends ChgAction*/{
 		patIllScript.setSummStId(sumSt.getId());
 		patIllScript.save();
 		notifyLog(patIllScript.getSummSt(), patIllScript.getSummSt().getId());
-		new ScoringSummStAction().scoreAction(patIllScript, patIllScript.getCurrentStage());
+		//new ScoringSummStAction().scoreAction(patIllScript, patIllScript.getCurrentStage());
 		save(sumSt); //save again, because now we have analyzed it (flag is set to true)
 
 	}
@@ -87,7 +87,8 @@ public class SummaryStatementChgAction /*extends ChgAction*/{
 		}
 		save(patIllScript.getSummSt());
 		notifyLogUpdate(patIllScript.getSummSt(), patIllScript.getSummSt().getId());
-		new ScoringSummStAction().scoreAction(patIllScript, patIllScript.getCurrentStage());
+		//we no longer score it on update but at end of session!
+		//new ScoringSummStAction().scoreAction(patIllScript, patIllScript.getCurrentStage());
 	}
 	
 	/* (non-Javadoc)

@@ -221,7 +221,7 @@ public class LearningAnalyticsContainer implements Serializable{
 	 * Get a combined score of summary statement similarity and use of semantic qualifier
 	 * @return
 	 */
-	public List<ScoreBean> getSumScores(){
+	/*public List<ScoreBean> getSumScores(){
 		if(analytics==null) return null; 
 		List<ScoreBean> l = new ArrayList<ScoreBean>();
 		Iterator<LearningAnalyticsBean> it = analytics.values().iterator();
@@ -233,7 +233,7 @@ public class LearningAnalyticsContainer implements Serializable{
 			}
 		}
 		return l;
-	}
+	}*/
 	
 	/**
 	 * returns all PeerBean problem list objects for the learner's scripts
@@ -243,7 +243,7 @@ public class LearningAnalyticsContainer implements Serializable{
 	public List<PeerBean> getDDXPeerScores(){ return getPeerScoresLastStage(ScoreBean.TYPE_DDX_LIST, getDDXScores());}
 	public List<PeerBean> getTestPeerScores(){ return getPeerScoresLastStage(ScoreBean.TYPE_TEST_LIST, getTestScores());}
 	public List<PeerBean> getMngPeerScores(){ return getPeerScoresLastStage(ScoreBean.TYPE_MNG_LIST, getMngScores());}
-	public List<PeerBean> getSumPeerScores(){ return getPeerScoresLastStage(ScoreBean.TYPE_SUMMST, getSumScores());}
+	//public List<PeerBean> getSumPeerScores(){ return getPeerScoresLastStage(ScoreBean.TYPE_SUMMST, getSumScores());}
 	
 	public List<PeerBean> getOverallPeerScores(){ 
 		if(AppBean.getPeers()==null) return null;

@@ -154,8 +154,8 @@ public class SummaryStatement extends Beans implements Serializable, Comparable{
 	
 	public void addUnit(SummaryStNumeric u){
 		if(u==null) return;
-		if(units==null) units = new TreeSet<SummaryStNumeric>();
-		units.add(u); 
+		if(units==null) units = new HashSet<SummaryStNumeric>();
+		if(!units.contains(u)) units.add(u); 
 	}
 	
 	public String getSpacy_json() {
@@ -191,8 +191,8 @@ public class SummaryStatement extends Beans implements Serializable, Comparable{
 	 * @param li
 	 */
 	public void addItemHit(ListItem li, /*int startPos,*/ int idx){
-		if(itemHits==null) itemHits = new TreeSet<SummaryStElem>();
-		SummaryStElem el = new SummaryStElem(li);
+		if(itemHits==null) itemHits = new HashSet<SummaryStElem>();
+		SummaryStElem el = new SummaryStElem(li, id);
 		//el.setStartPos(startPos);
 		el.setStartIdx(idx);
 		//el.setEndPos(startPos);
@@ -208,8 +208,8 @@ public class SummaryStatement extends Beans implements Serializable, Comparable{
 	 * @param s
 	 */
 	public void addItemHit(ListItem li, Synonym s, /*int startPos,*/ int idx){
-		if(itemHits==null) itemHits = new TreeSet<SummaryStElem>();
-		SummaryStElem el = new SummaryStElem(li);
+		if(itemHits==null) itemHits = new HashSet<SummaryStElem>();
+		SummaryStElem el = new SummaryStElem(li, id);
 		if(s!=null) el.setSynonymStr(s.getName());
 		//el.setStartPos(startPos);
 		el.setStartIdx(idx);
@@ -218,7 +218,7 @@ public class SummaryStatement extends Beans implements Serializable, Comparable{
 	}
 	
 	public void addItemHit(SummaryStElem el){
-		if(itemHits==null) itemHits = new TreeSet<SummaryStElem>();
+		if(itemHits==null) itemHits = new HashSet<SummaryStElem>();
 		if(!itemHits.contains(el)) //do not add duplicates!
 			itemHits.add(el);		
 	}
@@ -237,9 +237,14 @@ public class SummaryStatement extends Beans implements Serializable, Comparable{
 	public void setItemHits(Set<SummaryStElem> itemHits) {this.itemHits = itemHits;}
 	public void setSqHits(Set<SummaryStatementSQ> hits){this.sqHits = hits;}
 	public void setSqHitsAsList(List<SummaryStatementSQ> hitsL){
-		if(hitsL==null) sqHits = null;
+		if(hitsL==null){
+			sqHits = null;
+			return;
+		}
+		sqHits = new HashSet<SummaryStatementSQ>();
 		for(int i=0; i<hitsL.size(); i++){
-			this.sqHits.add(hitsL.get(i));
+			SummaryStatementSQ sq = hitsL.get(i);
+			if(!this.sqHits.contains(sq)) this.sqHits.add(sq);
 		}
 	}
 	/**
@@ -408,7 +413,7 @@ public class SummaryStatement extends Beans implements Serializable, Comparable{
 		while(it.hasNext()){
 		//for(int i=0; i<itemHits.size();i++){
 			SummaryStElem e = it.next();
-			if(e.isExpertMatch()) sb.append(e.toString()+", ");
+			if(e.isExpertMatchBool()) sb.append(e.toString()+", ");
 		}
 		return sb.toString();
 	}
@@ -426,7 +431,7 @@ public class SummaryStatement extends Beans implements Serializable, Comparable{
 		while(it.hasNext()){
 		//for(int i=0; i<itemHits.size();i++){
 			SummaryStElem e = it.next();
-			if(e.isExpertMatch()) counter = (float) (counter + 1.0);
+			if(e.isExpertMatchBool()) counter = (float) (counter + 1.0);
 			else if (e.getExpertScriptMatch()==1 || e.getExpertScriptMatch()==2)
 				counter = (float) (counter + 0.5);
 		}
@@ -464,7 +469,7 @@ public class SummaryStatement extends Beans implements Serializable, Comparable{
 			SummaryStElem e = it.next();
 			if(e.getExpertScriptMatch()==Relation.TYPE_PROBLEM || e.getExpertScriptMatch()==Relation.TYPE_DDX)
 				counter++;
-			else if(e.isExpertMatch() && (e.isAnatomy() || e.isFinding() || e.isDiagnosis())) counter++;
+			else if(e.isExpertMatchBool() && (e.isAnatomy() || e.isFinding() || e.isDiagnosis())) counter++;
 		}
 		return counter;
 	}

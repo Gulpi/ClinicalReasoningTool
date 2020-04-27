@@ -47,7 +47,7 @@ public class ScoringSummStAction {
 	 * @param patIllScript
 	 */
 	public ScoreBean scoreAction(PatientIllnessScript patIllScript, int stage){
-		SummaryStatementController.checkForSemanticQualifiers(patIllScript.getSummSt(), null);
+		//SummaryStatementController.checkForSemanticQualifiers(patIllScript.getSummSt(), null);
 
 		if(patIllScript.isExpScript()) return null;
 		PatientIllnessScript expScript = AppBean.getExpertPatIllScript(patIllScript.getVpId());
@@ -102,7 +102,7 @@ public class ScoringSummStAction {
 			}
 			
 		}		*/
-		SummaryStatementController.initSummStRating(expScript, learnerScript, this);
+		new SummaryStatementController().initSummStRating(expScript, learnerScript, this);
 		doScoring(learnerScript.getSummSt(), expScript.getSummSt());
 		if(expScript.getSummSt()!=null && learnerScript.getSummSt()!=null)
 			scoreBean.setTiming(learnerScript.getSummSt().getStage(), expScript.getSummSt().getStage());

@@ -9,7 +9,7 @@ import net.casus.util.nlp.spacy.SpacyDocToken;
  * @author ingahege
  *
  */
-public class SummaryStatementSQ {
+public class SummaryStatementSQ /*implements Comparable*/{
 
 	/**
 	 * id of the summary statement that contains the semantic qualifier
@@ -80,6 +80,7 @@ public class SummaryStatementSQ {
 	public boolean equals(Object o){
 		if(o !=null && o instanceof SummaryStatementSQ){
 			SummaryStatementSQ ssq = (SummaryStatementSQ) o;
+			if(this.id>0 && this.id == ssq.getId()) return true;
 			if(this.sqId!=-1 && ssq.getSummStId() == this.summStId && ssq.getSqId()==this.sqId) return true;
 			if(ssq.getSummStId() == this.summStId && this.position == ssq.getPosition()) return true;
 			if(ssq.getSummStId() == this.summStId && (this.text.contains(ssq.getText()) || ssq.getText().contains(text))) return true;
@@ -93,5 +94,17 @@ public class SummaryStatementSQ {
 	public String toString(){
 		return text + "("+spacyMatch+")";
 	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Comparable#compareTo(java.lang.Object)
+	 */
+	/*public int compareTo(Object o) {
+		if(o instanceof SummaryStatementSQ){
+			SummaryStatementSQ sq = (SummaryStatementSQ) o;
+			if(sq.getId()>this.id) return 1;
+			if(sq.getId()<this.id) return -1;
+		}
+		return 0;
+	}*/
 	
 }

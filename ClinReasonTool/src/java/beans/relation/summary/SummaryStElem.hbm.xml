@@ -12,15 +12,16 @@
 			</generator>
 		</id>	
 		<property name="summStId" column="summst_id" type="long" />
-		<property name="expertMatch" column="exp_st_match" type="boolean" />
+		<property name="expertMatch" column="exp_st_match" type="int" />
 		<property name="expertScriptMatch" column="exp_script_match" type="int" />
 		<property name="expertMatchIdx" column="exp_match_idx" type="int" />
 		<property name="synonymStr" column="synonymstr" type="string" />
 		<property name="startIdx" column="start_idx" type="int" />
 		<property name="transform" column="transform" type="int" />
 		<property name="type" column="type" type="string" />
+		<property name="listItemId" column="item_id" type="long"/>
 		
-		<many-to-one name="listItem" class="beans.list.ListItem" column="item_id"  lazy="false" insert="false" update="false"/>
-		
+		<!--  <many-to-one name="listItem" class="beans.list.ListItem" column="item_id"  lazy="false" insert="false" update="false"/>
+		-->
 </class>
 </hibernate-mapping>

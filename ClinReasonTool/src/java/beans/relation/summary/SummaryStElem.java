@@ -14,7 +14,7 @@ public class SummaryStElem {
 	/**
 	 * matching terms with the expert's summary statement 
 	 */
-	private boolean expertMatch = false;
+	private int expertMatch = 0;
 	/**
 	 * matching terms with elements from the expert's illnessScript
 	 * -1 / 0 = no match, 1=finding match, 2 = ddx match, 3 = test match, 4 = therapy match
@@ -52,10 +52,16 @@ public class SummaryStElem {
 	
 	private String type; //currently used for person
 	
-	public SummaryStElem(ListItem li ){
+	private long listItemId;
+	
+	public SummaryStElem(){}
+	
+	public SummaryStElem(ListItem li, long summStId ){
+		this.summStId = summStId;
 		this.listItem = li;
 		if(this.listItem.isTransformation()) 
 			this.setTransform(TransformRule.TYPE_FINDING);
+		if(this.listItem!=null) setListItemId(this.listItem.getItem_id());
 	}
 	
 	/**
@@ -64,16 +70,23 @@ public class SummaryStElem {
 	 * @param tok
 	 * @param startIdx
 	 */
-	public SummaryStElem(SpacyDocToken tok, int startIdx){
+	public SummaryStElem(SpacyDocToken tok, int startIdx, long summStId){
+		this.summStId = summStId;
 		this.startIdx = startIdx;
 		this.type = tok.getLabel();
 		this.synonymStr = tok.getToken();
+		
 	}
 	
 	public ListItem getListItem() {return listItem;}
 	public void setListItem(ListItem listItem) {this.listItem = listItem;}
-	public boolean isExpertMatch() { return expertMatch;}
-	public void setExpertMatch(boolean expertMatch) {this.expertMatch = expertMatch;} 
+	public boolean isExpertMatchBool() { if(expertMatch==1) return true; return false;}
+	public void setExpertMatchBool(boolean expertMatchBool) {
+		if(expertMatchBool) this.expertMatch = 1;
+		else this.expertMatch = 0;
+	} 
+	public int getExpertMatch() {return expertMatch;}
+	public void setExpertMatch(int expertMatch) {this.expertMatch = expertMatch;}
 	public String getSynonymStr() {return synonymStr;}
 	public void setSynonymStr(String synonymStr) {this.synonymStr = synonymStr;}	
 	public int getExpertScriptMatch() {return expertScriptMatch;}
@@ -90,6 +103,8 @@ public class SummaryStElem {
 	public void setId(long id) {this.id = id;}
 	public long getSummStId() {return summStId;}
 	public void setSummStId(long summStId) {this.summStId = summStId;}
+	public long getListItemId() {return listItemId;}
+	public void setListItemId(long listItemId) {this.listItemId = listItemId;}
 
 	public boolean isPerson(){
 		if(type!=null && type.equals(SpacyDocToken.LABEL_PERSON)) return true;
@@ -107,6 +122,7 @@ public class SummaryStElem {
 	public boolean equals(Object o){
 		if(o instanceof SummaryStElem){
 			SummaryStElem se = (SummaryStElem) o;
+			if(se.getId()==this.id) return true;
 			if(se.getListItem()!=null && this.getListItem()!=null && se.getListItem().getListItemId() == this.getListItem().getListItemId()) return true;
 			if(se.getStartIdx()==this.startIdx) return true;
 		}

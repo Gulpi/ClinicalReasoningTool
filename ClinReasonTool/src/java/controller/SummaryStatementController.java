@@ -67,9 +67,16 @@ public class SummaryStatementController {
 		
 		listItems.get(lang).add(myListItem);
 	}
-	
+		
+	public static List<SIUnit> getUnitList() {return unitList;}
+	public static SIUnit getUnitById(long id){
+		if(unitList==null) return null;
+		for(int i=0;i<SummaryStatementController.getUnitList().size();i++){
+			if(SummaryStatementController.getUnitList().get(i).getId()==id) return SummaryStatementController.getUnitList().get(i);	
+		}
+		return null;
+	}
 
-	
 	/**
 	 * Adds a listItem or synonym to the aList containing all mesh items with code A (anatomy)
 	 * @param listItem
@@ -101,23 +108,24 @@ public class SummaryStatementController {
 	/**
 	 * We check for new expert summary statements and analyze them concerning the use of semantic qualifiers. 
 	 * After analysis we save the statements and set the analyzed flag to true.
+	 * @DEPRECATED
 	 */
-	public static void analyzeSemanticQualsStatements(){
-		List<SummaryStatement> statements = new DBClinReason().getSummaryStatementsByAnalyzed(/*PatientIllnessScript.TYPE_EXPERT_CREATED,*/ false);
+	/*public static void analyzeSemanticQualsStatements(){
+		List<SummaryStatement> statements = new DBClinReason().getSummaryStatementsByAnalyzed( false);
 		if(statements==null || statements.isEmpty()) return; //no new statements to analyze
 		for(int i=0; i<statements.size(); i++){
 			SummaryStatement stst = statements.get(i);
 			checkForSemanticQualifiers(stst, null);
 		}
 		new DBClinReason().saveAndCommit(statements);
-	}
+	}*/
 	
 	/**
 	 * We check the text of the summary statement concerning the use of semantic qualifiers.
 	 * all hits are stored in the database.
 	 * @param stst
 	 */
-	public static void checkForSemanticQualifiers(SummaryStatement stst, SpacyDocJson spacy){
+	private static void checkForSemanticQualifiers(SummaryStatement stst, SpacyDocJson spacy){
 		try{
 			SpacyStructureStats spacyStructureStats = SpacyStructureStats.getInstance();
 			if(stst==null || stst.getText()==null || stst.getText().trim().isEmpty() || stst.getLang()==null) return;
@@ -145,7 +153,7 @@ public class SummaryStatementController {
 				}
 			}
 			stst.setSqHitsAsList(hits);
-			stst.setAnalyzed(true);
+			//stst.setAnalyzed(true);
 		}
 		catch(Exception e){
 			CRTLogger.out(StringUtilities.stackTraceToString(e), CRTLogger.LEVEL_ERROR);
@@ -173,9 +181,16 @@ public class SummaryStatementController {
 	}
 	
 	
+	/**
+	 * When for a VP an expert statement has not yet been analyzed we do it before we continue analyzing 
+	 * the lerner statement.
+	 * @param st
+	 * @param spacy
+	 * @param loc
+	 */
 	private static void analyzeExpStatement(SummaryStatement st, SpacyDocJson spacy, Locale loc){
 		if(st.isAnalyzed()) return; //exp statement already analyzed.
-		if(st.getItemHits()!=null && !st.getItemHits().isEmpty()) return; //already done....
+		//if(st.getItemHits()!=null && !st.getItemHits().isEmpty()) return; //already done....
 		
 		List<ListItem> items = getListItemsByLang(st.getLang());
 		List<String> textAsList = StringUtilities.createStringListFromString(st.getText(), true);
@@ -185,11 +200,22 @@ public class SummaryStatementController {
 			String s = textAsList.get(i);		
 			compareSimilarList(items, st, s, i, loc);
 			if(aList!=null) compareSimilarList(aList.get(st.getLang()), st, s, i, loc);		
-			st.addUnit(compareSIUnits(s, i, st.getText().toLowerCase().indexOf(s), spacy));
+			st.addUnit(compareSIUnits(s, i, st.getText().toLowerCase().indexOf(s), spacy, st.getId()));
 		}
 		checkForSemanticQualifiers(st, spacy);
+		
 		compareNumbers(st, spacy);
 		checkForPerson(st, spacy);
+		
+		/*Iterator it = st.getItemHits().iterator();
+		while(it.hasNext()){
+			SummaryStElem e = (SummaryStElem) it.next();
+			new DBClinReason().saveAndCommit(e);
+			
+		}*/
+		new DBClinReason().saveAndCommit(st.getItemHits());
+		new DBClinReason().saveAndCommit(st.getSqHits());
+		new DBClinReason().saveAndCommit(st.getUnits());
 		st.setAnalyzed(true);
 		new DBClinReason().saveAndCommit(st);
 	}
@@ -274,9 +300,12 @@ public class SummaryStatementController {
 		return st;		
 	}*/
 	
-	public static void initSummStRating(PatientIllnessScript expScript, PatientIllnessScript learnerScript, ScoringSummStAction scoreAct){
+	public void initSummStRating(PatientIllnessScript expScript, PatientIllnessScript learnerScript, ScoringSummStAction scoreAct){
 		if(learnerScript==null || learnerScript.getSummSt()==null || learnerScript.getSummSt().getText()==null) return;
 		SummaryStatement st = learnerScript.getSummSt();
+		if(st.isAnalyzed()){ //we do a re-calculation....
+			resetSummSt(st);
+		}
 		SummaryStatement expSt = expScript.getSummSt();
 		List<ListItem> items = getListItemsByLang(st.getLang());	
 		//if(st==null || st.getText()==null || items==null) return null;
@@ -286,9 +315,10 @@ public class SummaryStatementController {
 		JsonTest jt = new DBClinReason().selectJsonTestBySummStId(st.getId()); //the json of the statement
 		if(jt==null){
 			//TODO
+			jt = new JsonTest();
 		}
 		SpacyDocJson spacy = new SpacyDocJson(jt.getJson().trim());
-		spacy.init();
+		if(spacy!=null) spacy.init();
 
 		JsonTest jt2 = new DBClinReason().selectJsonTestBySummStId(expSt.getId()); //the json of the statement
 		SpacyDocJson spacyE = new SpacyDocJson(jt2.getJson().trim());
@@ -317,7 +347,7 @@ public class SummaryStatementController {
 			
 			if(isTermToAnalyze(orgS,st.getText().indexOf(orgS), spacy, true)){
 				compareSimilarList(items, st, orgS, i, loc);
-				st.addUnit(compareSIUnits(orgS, i, st.getText().indexOf(orgS), spacy));
+				st.addUnit(compareSIUnits(orgS, i, st.getText().indexOf(orgS), spacy, st.getId()));
 				if(aList!=null) compareSimilarList(aList.get(st.getLang()), st, orgS, i, loc);		
 			}
 		}
@@ -344,7 +374,11 @@ public class SummaryStatementController {
 		long endms = System.currentTimeMillis();
 		st.analysisMs = endms - startms;
 		CRTLogger.out("end: " + startms, CRTLogger.LEVEL_TEST);
-		//new DBClinReason().saveAndCommit(st);
+		new DBClinReason().saveAndCommit(st.getSqHits());
+		new DBClinReason().saveAndCommit(st.getUnits());
+		new DBClinReason().saveAndCommit(st.getItemHits());
+		st.setAnalyzed(true);
+		new DBClinReason().saveAndCommit(st);
 		//return st;		
 	}
 	
@@ -392,7 +426,7 @@ public class SummaryStatementController {
 			}
 		}
 		//added only if not already present in list (can happen,since spay is not 100% accurate)
-		if(!isSQ) st.addItemHit(new SummaryStElem(person, st.getText().indexOf(person.getToken())));		
+		if(!isSQ) st.addItemHit(new SummaryStElem(person, st.getText().indexOf(person.getToken()), st.getId()));		
 	}
 	
 	/**
@@ -400,12 +434,12 @@ public class SummaryStatementController {
 	 * @param text
 	 * @return
 	 */
-	private static SummaryStNumeric compareSIUnits(String text, int pos, int idx, SpacyDocJson spacy){
+	private static SummaryStNumeric compareSIUnits(String text, int pos, int idx, SpacyDocJson spacy, long sumStId){
 		if(text==null) return null;	
 		String spacyType = spacy.getEntityTypeByIdx(idx);
 		
 		for(int i=0; i< unitList.size(); i++){
-			if(text.equalsIgnoreCase(unitList.get(i).getName())) return new SummaryStNumeric(unitList.get(i), pos, idx, spacyType);
+			if(text.equalsIgnoreCase(unitList.get(i).getName())) return new SummaryStNumeric(unitList.get(i), pos, idx, spacyType, sumStId);
 			
 			if(text.contains("/")){ //identify something like g/dl and count it once
 				String text2 = text.replace('/', ' ');
@@ -414,14 +448,14 @@ public class SummaryStatementController {
 					for(int j=0;j < s.size();j++){
 						String st = s.get(j);
 						if(/*isTermToAnalyze(st,idx, spacy, false) &&*/ st.equalsIgnoreCase(unitList.get(i).getName())) 
-							return new SummaryStNumeric(unitList.get(i),text, pos, idx, spacyType);
+							return new SummaryStNumeric(unitList.get(i),text, pos, idx, spacyType, sumStId);
 					}
 				}
 			}
 			if(text.contains(unitList.get(i).getName())){ //identify something like 14mg or 79%
 				String text3 = text.replace(unitList.get(i).getName(), "");
 				if(text3!=null && StringUtilities.isNumeric(text3))
-					return new SummaryStNumeric(unitList.get(i), text, pos, idx, spacyType);
+					return new SummaryStNumeric(unitList.get(i), text, pos, idx, spacyType, sumStId);
 			}
 		}
 		return null;
@@ -449,7 +483,7 @@ public class SummaryStatementController {
 					sn.setPos(i); //update the start position!
 					
 				}
-				else st.addUnit(new SummaryStNumeric(null, s.get(i), i, -1, null));
+				else st.addUnit(new SummaryStNumeric(null, s.get(i), i, -1, null, st.getId()));
 			}
 			else if(s1.contains("-")){ //identify something like "25-year old"...
 				String[] s2 = StringUtils.split(s1, "-");
@@ -463,7 +497,7 @@ public class SummaryStatementController {
 								
 							}
 							else
-								st.addUnit(new SummaryStNumeric(null, s2[j], i, -1, null));
+								st.addUnit(new SummaryStNumeric(null, s2[j], i, -1, null, st.getId()));
 					}
 				}
 			}
@@ -582,7 +616,7 @@ public class SummaryStatementController {
 				//compare main listItem:
 				if (elem.getListItem()!=null && elem.getListItem().getName()!=null && StringUtilities.similarStrings(elem.getListItem().getReplName(), expMatchRepl, elem.getListItem().getLanguage(), true)){
 					//matchCounter++;
-					elem.setExpertMatch(true);
+					elem.setExpertMatchBool(true);
 					elem.setExpertMatchIdx(expText.indexOf(expMatchesArr[i]));
 					break innerLoop;
 				}
@@ -595,7 +629,7 @@ public class SummaryStatementController {
 						Synonym s= (Synonym) it.next();
 						if(StringUtilities.similarStrings(s.getReplName(), expMatchRepl, elem.getListItem().getLanguage(), true)){
 							//matchCounter++;
-							elem.setExpertMatch(true);
+							elem.setExpertMatchBool(true);
 							elem.setExpertMatchIdx(expText.indexOf(expMatchesArr[i]));
 							break innerLoop;
 						}
@@ -605,16 +639,24 @@ public class SummaryStatementController {
 		}
 	}
 
-	public static Map<String, PatientIllnessScript> getTempExpMaps() {
+	/*public static Map<String, PatientIllnessScript> getTempExpMaps() {
 		return tempExpMaps;
-	}
+	}*/
 
-	public static void setTempExpMaps(Map<String, PatientIllnessScript> tempExpMaps) {
+	/*public static void setTempExpMaps(Map<String, PatientIllnessScript> tempExpMaps) {
 		SummaryStatementController.tempExpMaps = tempExpMaps;
-	}
+	}*/
 	
 	public static void setSIUnitAndTransformList(){
 		unitList = new DBList().selectSIUnits();
+		if(unitList!=null){ //we remove an empty entry which we need for relating numbers for which we do not have a unit 
+			for (int i=0; i<unitList.size();i++){
+				if(unitList.get(i).getId()==0){
+					unitList.remove(unitList.get(i));
+					break;
+				}
+			}
+		}
 		transformRules = new DBList().selectTransformRules();
 	}
 	
@@ -624,7 +666,7 @@ public class SummaryStatementController {
 	 * @param lSpacy
 	 * @param eSpacy
 	 */
-	public static void checkAccuracy(SummaryStatement learnerSt, SummaryStatement expertSt, SpacyDocJson lSpacy, SpacyDocJson eSpacy){
+	private static void checkAccuracy(SummaryStatement learnerSt, SummaryStatement expertSt, SpacyDocJson lSpacy, SpacyDocJson eSpacy){
 		//minimum requirements:
 		if(learnerSt.getText()==null || learnerSt.getText().length()<=10 || learnerSt.getItemHits()==null){
 			learnerSt.setAccuracyScore(0);
@@ -638,7 +680,7 @@ public class SummaryStatementController {
 				while(it.hasNext()){
 				//for (int i=0;i<hits.size(); i++){
 					SummaryStElem elem = it.next(); //hits.get(i);
-					if(elem.isExpertMatch()){
+					if(elem.isExpertMatchBool()){
 						SpacyDocToken tokenL = lSpacy.getSpacyDocToken(elem.getStartIdx());
 						SpacyDocToken tokenE = eSpacy.getSpacyDocToken(elem.getExpertMatchIdx());
 						if(tokenL!=null && tokenL.getChildren()!=null){
@@ -717,7 +759,7 @@ public class SummaryStatementController {
 	 * To analyze already entered statements we select them and run the new algorithm. 
 	 * CAVE: Before running, make sure that all statements that should be analyzed, have been set to analyzed=0.
 	 */
-	public static void reanalyzeStatements(){
+	/*public static void reanalyzeStatements(){
 		List<SummaryStatement> stmts = new DBClinReason().getSummaryStatementsByAnalyzed(false);
 		if(stmts==null || stmts.isEmpty()) return;
 		for(int i=0; i<stmts.size();i++){
@@ -732,6 +774,20 @@ public class SummaryStatementController {
 				}
 			}			
 		}		
+	}*/
+	
+	/**
+	 * We remove the previously found hits for semantic qualifiers, units, and other hits from the database.
+	 * @param st
+	 */
+	private void resetSummSt(SummaryStatement st){
+		if(st.getItemHits() != null) new DBClinReason().deleteAndCommit(st.getItemHits());
+		if(st.getSqHits()!=null) new DBClinReason().deleteAndCommit(st.getSqHits());
+		if(st.getUnits()!=null) new DBClinReason().deleteAndCommit(st.getUnits());
+		st.setItemHits(null);
+		st.setUnits(null);
+		st.setSqHits(null);
+		//TODO reload JsonTest!!!
 	}
 	
 	/*public static SummaryStatement testSummStRating(){

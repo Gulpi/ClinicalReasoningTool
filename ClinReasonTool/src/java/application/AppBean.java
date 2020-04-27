@@ -123,7 +123,8 @@ public class AppBean extends ApplicationWrapper implements HttpSessionListener{
 	    	if(semanticQuals==null) semanticQuals = SummaryStatementController.loadSemanticQuals();
 	    	//SummaryStatementController.testSummStRating();
 	    	
-	    	if(semanticQuals!=null) SummaryStatementController.analyzeSemanticQualsStatements();
+	    	//old version...
+	    	//if(semanticQuals!=null) SummaryStatementController.analyzeSemanticQualsStatements();
 	    	//testing:
 		    
 	    }

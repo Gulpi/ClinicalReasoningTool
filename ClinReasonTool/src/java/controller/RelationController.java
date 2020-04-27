@@ -4,6 +4,7 @@ import java.util.*;
 
 import actions.beanActions.AddAction;
 import beans.relation.Relation;
+import beans.scripts.PatientIllnessScript;
 import beans.user.User;
 import database.DBList;
 import beans.list.*;
@@ -39,12 +40,15 @@ public class RelationController {
 			return;
 		id = Long.valueOf(idStr.trim());
 		li = getListItemById(id, scriptLoc);
-		aa.addRelation(/*id, name*/li, (int)x, (int)y, -1);
+		if(li!=null) aa.addRelation(/*id, name*/li, (int)x, (int)y, -1);
 		
 	}
 	
 	private ListItem getListItemById(long id, Locale loc){
+		
 		if(id == -99 || id == -999){ //-99: user has selected own entry and we have to save this entry into the database, -999 no list available
+			PatientIllnessScript patillscript = NavigationController.getInstance().getMyFacesContext().getPatillscript();
+			if(patillscript==null || patillscript.isExpScript()) return null;
 			String entry = AjaxController.getInstance().getRequestParamByKeyNoDecrypt("orgname");
 			User u = NavigationController.getInstance().getCRTFacesContext().getUser();
 			if(u!=null) u.getUserSetting().setDisplayOwnEntryWarn(false);

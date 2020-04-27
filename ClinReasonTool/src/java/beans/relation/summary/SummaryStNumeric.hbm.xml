@@ -16,7 +16,8 @@
 		<property name="idx" column="idx" type="int" />
 		<property name="spacyType" column="spacy_type" type="string" />	
 		<property name="expMatch" column="exp_match" type="boolean" />
-		<many-to-one name="unit" class="beans.list.SIUnit" column="unit_id"  lazy="false" insert="false" update="false"/>
+		<property name="unitId" column="unit_id" type="long" />
+		<!--  <many-to-one name="unit" class="beans.list.SIUnit" column="unit_id"  lazy="false" insert="false" update="false"/>-->
 		
 </class>
 </hibernate-mapping>

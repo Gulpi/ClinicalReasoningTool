@@ -154,7 +154,7 @@ function doMatch(request,response){
 			my_map[0].label = noEntryFound;
 		}
 		//we have found no match, so we are checking for typos (currently not for expert edit, but could be done, too?)
-		if(my_map.length==1 /*&& !isExp*/){
+		if(my_map.length==1 && !isExp){
 			my_map = createMatchedMapWithTypos(request,response,2);
 			//if we have a match here, we add something saying "Did you mean..."
 			if(my_map.length>1){

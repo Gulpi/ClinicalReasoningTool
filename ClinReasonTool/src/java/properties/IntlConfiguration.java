@@ -27,6 +27,10 @@ public class IntlConfiguration
 		loadProperties("sv");
 	}
 	
+	/**
+	 * TODO: should be changed to: testPropertiesLoad() from CASUS--SupportLib
+	 * @param lang
+	 */
 	private void loadProperties(String lang){
 		try{
 			if(lang=="de"){

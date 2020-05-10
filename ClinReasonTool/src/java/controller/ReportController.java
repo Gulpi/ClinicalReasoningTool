@@ -4,7 +4,7 @@ import java.util.*;
 
 import beans.scripts.PatientIllnessScript;
 import database.DBClinReason;
-import net.casus.model.course.Course;
+//import net.casus.model.course.Course;
 import util.Encoder;
 import util.StringUtilities;
 
@@ -27,7 +27,7 @@ public class ReportController {
 	 * we get all scripts for all the vps and users in the Casus course
 	 * @return
 	 */
-	public   List<PatientIllnessScript> getLearnerScriptsForCourse(Course c){
+	/*public   List<PatientIllnessScript> getLearnerScriptsForCourse(Course c){
 		if(c==null || c.getStudents()==null || c.getCases()==null) return null;
 		//put all userIds as Strings into an array
 		String[] extUserId = getUserIdsInCourse(c.getStudents());
@@ -46,7 +46,7 @@ public class ReportController {
 		}
 		return mapsForCourse;
 		
-	}
+	}*/
 	
 	
 	/**

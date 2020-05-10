@@ -15,8 +15,8 @@ import beans.scoring.ScoreBean;
 import beans.scripts.PatientIllnessScript;
 import beans.user.User;
 import database.DBClinReason;
-import net.casus.model.course.Course;
-import net.casus.util.SessionUtility;
+//import net.casus.model.course.Course;
+//import net.casus.util.SessionUtility;
 import properties.IntlConfiguration;
 
 /**
@@ -105,13 +105,13 @@ public class ExportController {
 	 * and writes it into Excel sheets.
 	 * @param c
 	 */
-	public void getMapsForCourseAsExcel(Course c) {
+	/*public void getMapsForCourseAsExcel(Course c) {
 		if(c==null) return;
 		List maps = ReportController.getInstance().getLearnerScriptsForCourse(c);
 		if (maps==null) return;
 		createAndWriteBasicTable(maps);
 		
-	}
+	}*/
 	
 	 /**
 	  * Create table with the basic data of each map and each map in a separate row.

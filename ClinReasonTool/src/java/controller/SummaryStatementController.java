@@ -412,9 +412,18 @@ public class SummaryStatementController {
 		long endms = System.currentTimeMillis();
 		st.analysisMs = endms - startms;
 		CRTLogger.out("end: " + startms, CRTLogger.LEVEL_TEST);
-		new DBClinReason().saveAndCommit(st.getSqHits());
-		new DBClinReason().saveAndCommit(st.getUnits());
-		new DBClinReason().saveAndCommit(st.getItemHits());
+		if (st.getSqHits() != null) {
+			new DBClinReason().saveAndCommit(st.getSqHits());
+		}
+		
+		if (st.getUnits() != null) {
+			new DBClinReason().saveAndCommit(st.getUnits());
+		}
+		
+		if (st.getItemHits() != null) {
+			new DBClinReason().saveAndCommit(st.getItemHits());
+		}
+		
 		st.setAnalyzed(true);
 		new DBClinReason().saveAndCommit(st);
 		//return st;		

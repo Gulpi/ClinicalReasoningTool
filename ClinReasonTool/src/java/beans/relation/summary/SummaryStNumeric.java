@@ -99,6 +99,11 @@ public class SummaryStNumeric {
 		return false;
 	}
 	
+	@Override
+	public int hashCode() {
+		return super.hashCode();
+	}
+	
 	/* (non-Javadoc)
 	 * @see java.lang.Object#toString()
 	 */

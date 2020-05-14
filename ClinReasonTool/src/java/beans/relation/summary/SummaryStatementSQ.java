@@ -88,6 +88,11 @@ public class SummaryStatementSQ /*implements Comparable*/{
 		return false;
 	}
 	
+	@Override
+	public int hashCode() {
+		return super.hashCode();
+	}
+	
 	/* (non-Javadoc)
 	 * @see java.lang.Object#toString()
 	 */

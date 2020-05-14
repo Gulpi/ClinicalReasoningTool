@@ -129,6 +129,11 @@ public class SummaryStElem {
 		return false;
 	}
 	
+	@Override
+	public int hashCode() {
+		return super.hashCode();
+	}
+	
 	public boolean isFinding(){
 		if(listItem==null) return false; 
 		return listItem.isFinding();

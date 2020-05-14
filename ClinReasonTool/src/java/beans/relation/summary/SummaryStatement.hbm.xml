@@ -28,7 +28,7 @@
 		<property name="sqScorePerc" column="sq_score_perc" type="float"/>
 		
 		 <set name="sqHits" table="crt.sumstatement_sq" lazy="false"> 
-    		<key column="summst_id"/> 
+    		<key column="sumst_id"/> 
     		<one-to-many class="beans.relation.summary.SummaryStatementSQ"/>   		
 		</set>		
 		<set name="itemHits" table="crt.SUMMST_ELEM" lazy="false"> 

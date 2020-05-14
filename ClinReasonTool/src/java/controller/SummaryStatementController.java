@@ -316,7 +316,7 @@ public class SummaryStatementController {
 		JsonTest jt = new DBClinReason().selectJsonTestBySummStId(st.getId()); //the json of the statement
 		if(jt==null){
 			long startms1 = System.currentTimeMillis();
-			CRTLogger.out("spacy processing start: " + startms1, CRTLogger.LEVEL_TEST);
+			CRTLogger.out("spacy processing start: " + startms1, CRTLogger.LEVEL_PROD);
 			
 			jt = new JsonTest();
 			jt.setJson("");
@@ -330,7 +330,7 @@ public class SummaryStatementController {
 			}
 			
 			long endms1 = System.currentTimeMillis();
-			CRTLogger.out("spacy processing end: " + endms1, CRTLogger.LEVEL_TEST);
+			CRTLogger.out("spacy processing end: " + endms1, CRTLogger.LEVEL_PROD);
 		}
 		SpacyDocJson spacy = new SpacyDocJson(jt.getJson().trim());
 		if(spacy!=null) spacy.init();

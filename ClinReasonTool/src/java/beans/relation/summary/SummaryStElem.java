@@ -122,7 +122,7 @@ public class SummaryStElem {
 	public boolean equals(Object o){
 		if(o instanceof SummaryStElem){
 			SummaryStElem se = (SummaryStElem) o;
-			if(se.getId()==this.id) return true;
+			if(this.id>0 && se.getId()==this.id) return true;
 			if(se.getListItem()!=null && this.getListItem()!=null && se.getListItem().getListItemId() == this.getListItem().getListItemId()) return true;
 			if(se.getStartIdx()==this.startIdx) return true;
 		}

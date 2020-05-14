@@ -1,16 +1,15 @@
 package beans.xAPI;
 
-import java.io.Serializable;
-import java.sql.Timestamp;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Locale;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.google.gson.JsonElement;
-
 import beans.relation.Relation;
 import beans.user.User;
-import gov.adlnet.xapi.model.*;
+import gov.adlnet.xapi.model.Activity;
+import gov.adlnet.xapi.model.ActivityDefinition;
+import gov.adlnet.xapi.model.Result;
 import properties.IntlConfiguration;
 
 /**

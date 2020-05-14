@@ -21,6 +21,8 @@ import controller.SummaryStatementController;
 import database.DBClinReason;
 import database.HibernateUtil;
 import model.SemanticQual;
+import net.casus.util.StandaloneLibUtilities;
+import net.casus.util.summarystatement.PerformantSpacyProcessor;
 import util.CRTLogger;
 import util.StringUtilities;
 import properties.IntlConfiguration;
@@ -132,6 +134,11 @@ public class AppBean extends ApplicationWrapper implements HttpSessionListener{
 	    	CRTLogger.out("AppBean(): " + StringUtilities.stackTraceToString(e), CRTLogger.LEVEL_ERROR);
     	
 	    }
+	    
+	    // init for support lib and local spacy handling, night tabe long -> separate thread?
+	    StandaloneLibUtilities.init();
+	    PerformantSpacyProcessor.getInstance();
+	    
 	    CRTLogger.out("End AppBean init:"  + (System.currentTimeMillis()-startms) + "ms", CRTLogger.LEVEL_PROD);
 	    
 	}

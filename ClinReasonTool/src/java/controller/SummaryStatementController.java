@@ -15,6 +15,7 @@ import database.DBList;
 import model.SemanticQual;
 import util.*;
 import net.casus.util.nlp.spacy.*;
+import net.casus.util.summarystatement.PerformantSpacyProcessor;
 
 
 /**
@@ -314,8 +315,22 @@ public class SummaryStatementController {
 		//TODO: the json has to be created on the run! 
 		JsonTest jt = new DBClinReason().selectJsonTestBySummStId(st.getId()); //the json of the statement
 		if(jt==null){
-			//TODO
+			long startms1 = System.currentTimeMillis();
+			CRTLogger.out("spacy processing start: " + startms1, CRTLogger.LEVEL_TEST);
+			
 			jt = new JsonTest();
+			jt.setJson("");
+			try {
+				PerformantSpacyProcessor impl = PerformantSpacyProcessor.getInstanceNoInit();
+				String text_result = impl.getLangMappedSpacyJson( st.getLang(), st.getText());
+				jt.setJson(text_result);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+			long endms1 = System.currentTimeMillis();
+			CRTLogger.out("spacy processing end: " + endms1, CRTLogger.LEVEL_TEST);
 		}
 		SpacyDocJson spacy = new SpacyDocJson(jt.getJson().trim());
 		if(spacy!=null) spacy.init();

@@ -138,15 +138,7 @@ public class AppBean extends ApplicationWrapper implements HttpSessionListener{
 	    // init for support lib and local spacy handling, night tabe long -> separate thread?
 	    try {
 			StandaloneLibUtilities.init();
-			long startms1 = System.currentTimeMillis();
 			PerformantSpacyProcessor.getInstance();
-			CRTLogger.out("End AppBean PerformantSpacyProcessor.getInstance:" + (System.currentTimeMillis()-startms) + "ms", CRTLogger.LEVEL_PROD);
-			
-			// test run, shouldn't tale long!
-			startms1 = System.currentTimeMillis();
-			PerformantSpacyProcessor impl = PerformantSpacyProcessor.getInstanceNoInit();
-			String text_result = impl.getLangMappedSpacyJson( "de","Das ist ein Summary Statement zum Thema Clinical Reasoning und zu Testen.");
-			CRTLogger.out("End AppBean text_result:" + text_result + "; " + (System.currentTimeMillis()-startms1) + "ms", CRTLogger.LEVEL_PROD);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

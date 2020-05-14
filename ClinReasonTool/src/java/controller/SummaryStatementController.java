@@ -412,17 +412,20 @@ public class SummaryStatementController {
 		long endms = System.currentTimeMillis();
 		st.analysisMs = endms - startms;
 		CRTLogger.out("end: " + startms, CRTLogger.LEVEL_TEST);
-		if (st.getSqHits() != null) {
-			new DBClinReason().saveAndCommit(st.getSqHits());
+		if (st.getSqHits() == null) {
+			st.setSqHits(new HashSet<SummaryStatementSQ>());
 		}
+		new DBClinReason().saveAndCommit(st.getSqHits());
 		
-		if (st.getUnits() != null) {
-			new DBClinReason().saveAndCommit(st.getUnits());
+		if (st.getUnits() == null) {
+			st.setUnits(new HashSet<SummaryStNumeric>());
 		}
+		new DBClinReason().saveAndCommit(st.getUnits());
 		
-		if (st.getItemHits() != null) {
-			new DBClinReason().saveAndCommit(st.getItemHits());
+		if (st.getItemHits() == null) {
+			st.setItemHits(new HashSet<SummaryStElem>());
 		}
+		new DBClinReason().saveAndCommit(st.getItemHits());
 		
 		st.setAnalyzed(true);
 		new DBClinReason().saveAndCommit(st);

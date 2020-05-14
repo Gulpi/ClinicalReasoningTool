@@ -426,6 +426,13 @@ public class SummaryStatementController {
 			st.setItemHits(new HashSet<SummaryStElem>());
 		}
 		new DBClinReason().saveAndCommit(st.getItemHits());
+		if (st.getItemHits() != null) {
+			Iterator<SummaryStElem> it = st.getItemHits().iterator();
+			while (it.hasNext()) {
+				SummaryStElem loop = it.next();
+				CRTLogger.out("loop: id:" + loop.getId() + "; listitemid:" + loop.getListItemId() + "; summstid:" + loop.getSummStId() + "; hash:" + loop.hashCode() , CRTLogger.LEVEL_PROD);
+			}
+		}
 		
 		st.setAnalyzed(true);
 		new DBClinReason().saveAndCommit(st);

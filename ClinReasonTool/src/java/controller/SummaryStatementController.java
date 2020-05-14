@@ -330,12 +330,35 @@ public class SummaryStatementController {
 			}
 			
 			long endms1 = System.currentTimeMillis();
-			CRTLogger.out("spacy processing end: " + endms1, CRTLogger.LEVEL_PROD);
+			CRTLogger.out("spacy processing end: " + jt.getJson() + "; " + (endms1-startms1), CRTLogger.LEVEL_PROD);
 		}
 		SpacyDocJson spacy = new SpacyDocJson(jt.getJson().trim());
 		if(spacy!=null) spacy.init();
 
 		JsonTest jt2 = new DBClinReason().selectJsonTestBySummStId(expSt.getId()); //the json of the statement
+		
+		// Expert Info should be present? Better concept required
+		if (jt2 == null || jt2.getJson()==null) {
+			long startms1 = System.currentTimeMillis();
+			CRTLogger.out("spacy exp processing start: " + startms1, CRTLogger.LEVEL_PROD);
+			
+			SummaryStatement st2 = expScript.getSummSt();
+			jt2 = new JsonTest();
+			jt2.setJson("");
+			
+			try {
+				PerformantSpacyProcessor impl = PerformantSpacyProcessor.getInstanceNoInit();
+				String text_result = impl.getLangMappedSpacyJson( st2.getLang(), st2.getText());
+				jt2.setJson(text_result);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+			long endms1 = System.currentTimeMillis();
+			CRTLogger.out("spacy exp processing end: " + jt2.getJson() + "; " + (endms1-startms1), CRTLogger.LEVEL_PROD);
+		}
+		
 		SpacyDocJson spacyE = new SpacyDocJson(jt2.getJson().trim());
 		spacyE.init();
 		Locale loc = new Locale(st.getLang());

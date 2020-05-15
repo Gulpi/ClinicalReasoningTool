@@ -5,6 +5,7 @@ import java.util.*;
 
 import org.apache.commons.lang.StringUtils;
 import database.DBClinReason;
+import database.DBList;
 import beans.list.*;
 import util.*;
 
@@ -18,21 +19,23 @@ import util.*;
  *
  */
 public class MeshImporter {
+	//change for new import:
 	static String file = "/Users/ingahege/ownCloud/documents/Inga/marie_curie/WP2_concept/mesh/d2016.bin";
-	static String file_DE = "/Users/ingahege/ownCloud/documents/Inga/marie_curie/WP2_concept/mesh/deutsch/MeSH-2016.xml";
-	static String file_campus = "/Users/ingahege/ownCloud/Shared/instruct (2)/CASUS/CampusCasus/campus_list_items_not_in_crt_list.txt";
-
+	static String fileToImport = "/Users/ingahege/ownCloud/documents/Inga/Forschung/ToolTranslation/decs_espanol_2018/spadesc2018.xml"; //"/Users/ingahege/ownCloud/documents/Inga/marie_curie/WP2_concept/mesh/deutsch/MeSH-2016.xml";
+	//static String file_campus = "/Users/ingahege/ownCloud/Shared/instruct (2)/CASUS/CampusCasus/campus_list_items_not_in_crt_list.txt";
+	private static final String lang = "es"; //Change for other lists....
 	
 	public static void main(String[] lang){
 		//if(lang.equals("en")) createRecord();
 		//if(lang.equals("de")) importMeshDE();
+		//importMesh();
 		//ScriptCopyController.main(null);
 	}
 	
-	private static void importMeshDE(){
+	private static void importMesh(){
 		
 		try{
-			LineNumberReader lbr = new LineNumberReader(new FileReader(file_DE));
+			LineNumberReader lbr = new LineNumberReader(new FileReader(fileToImport));
 			String line;
 			List<String[]> l = new ArrayList<String[]>();
 			String[] str = new String[3];
@@ -49,16 +52,17 @@ public class MeshImporter {
 					readNextLine1 = false;					
 				}					
 				
-				if(line.contains("<TermUI>ger"))readNextLine2 = true;
+				//if(line.contains("<TermUI>ger"))readNextLine2 = true; //de import
+				if(line.contains("<TermUI>spa"))readNextLine2 = true;
 				if(readNextLine2 && line.contains("<String>")){
 					str[2] = StringUtils.substringBetween(line, "<String>", "</String>");
 					readNextLine2 = false;
-					CRTLogger.out(str[0]+", " + str[1] + ", " + str[2], CRTLogger.LEVEL_TEST);
+					//CRTLogger.out(str[0]+", " + str[1] + ", " + str[2], CRTLogger.LEVEL_TEST);
 					l.add(str);
 					str = new String[3];
 				}
 			}
-			importListItemDE(l);
+			importListItem(l);
 			lbr.close();
 		}
 		catch (Exception e){
@@ -73,8 +77,8 @@ public class MeshImporter {
 	 * str[2] = german Term
 	 * @param strList
 	 */
-	private static void importListItemDE(List<String[]> strList){
-		DBClinReason dbcr = new DBClinReason();
+	private static void importListItem(List<String[]> strList){
+		DBList dbcr = new DBList();
 		List<ListItem> deItems = new ArrayList<ListItem>();
 		ListItem deItem = null;
 		//List<Synonym> deSynonyma = new ArrayList<Synonym>();
@@ -83,16 +87,25 @@ public class MeshImporter {
 			String[] str = strList.get(i);
 			if(str[0]!=null){ //then it a new ListItem
 				currentId = str[0];
-				deItem = new ListItem("de", "MESH", str[2]); //dbcr.selectListItemByMeshId(str[0]);
+				deItem = new ListItem(lang, "MESH", str[2]); //dbcr.selectListItemByMeshId(str[0]);
 				deItem.setLevel(StringUtils.countMatches(str[1], ".")+1);
 				deItem.setItemType(StringUtils.substring(str[1], 0, 1));
 				deItem.setMesh_id(str[0]);
-				deItem.setFirstCode(str[1]);
+				//we get the English ItemId to set the ignore flag and use the old code:
+				ListItem liEn = dbcr.selectListItemByMeshIdAndLang(str[0], "en");
+				if(liEn!=null){
+					deItem.setFirstCode(liEn.getFirstCode());
+					deItem.setIgnored(liEn.isIgnored());
+				}
+				else{
+					deItem.setFirstCode(str[1]);
+					CRTLogger.out(str[1] + "is new", CRTLogger.LEVEL_TEST);
+				}
 				deItems.add(deItem);
 				dbcr.saveAndCommit(deItem);
 			}
 			else{
-				Synonym syn = new Synonym(new Locale("de"), str[2]);
+				Synonym syn = new Synonym(new Locale(lang), str[2]);
 				syn.setListItemId(deItem.getItem_id());
 				dbcr.saveAndCommit(syn);
 			}

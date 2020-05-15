@@ -32,27 +32,6 @@ public class LearningAnalytics1 implements ApiInterface {
 			String in_case = (String) ((HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest()).getParameter("in_case");
 			String in_ext_user = (String) ((HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest()).getParameter("in_ext_user");
 			
-			String hqlQuery1 = "select userId from beans.user.User where extUserId in (:in_ext_user)";;
-			
-			String hqlQuery1a = "select userId,extUserId2 from beans.user.User where userId in (select userId from beans.scripts.PatientIllnessScript where vp_id = :in_case)";
-			
-			String hqlQuery2 = "select id,userId from beans.scripts.PatientIllnessScript where\n"
-					+ " vp_id = :in_case";
-			
-			String hqlQuery3 = "select listItemId as sourceId,count(*) as count from beans.relation.RelationDiagnosis where destId in (\n" + 
-					"select id from beans.scripts.PatientIllnessScript where  vp_id = :in_case) group by listItemId";
-			
-			String hqlQuery4 = "select listItemId as sourceId,count(*) as count from beans.relation.RelationDiagnosis where destId in (\n" + 
-					"select id, from beans.scripts.PatientIllnessScript where  userId in (\n" + 
-					"select userId from beans.user.User where extUserId in (:in_ext_user)\n" + 
-					"and vp_id = :in_case)) group by listItemId";
-			
-			// ok:
-			String hqlQuery5 = "select listItemId,count(*) from beans.relation.RelationDiagnosis where destId in ( " + 
-					"select id from beans.scripts.PatientIllnessScript where vp_id = :in_case\n" + 
-					")\n" + 
-					"group by listItemId";
-			
 			String hqlQuery6 = "select listItemId,count(*) from beans.relation.RelationDiagnosis where destId in ( " + 
 					"select id from beans.scripts.PatientIllnessScript where vp_id = :in_case and userId in (\n" + 
 					"select userId from beans.user.User where extUserId2 in ( :in_ext_user ) ) )\n" + 

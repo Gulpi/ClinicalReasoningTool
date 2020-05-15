@@ -14,6 +14,7 @@ import database.DBClinReason;
 import database.DBList;
 import model.SemanticQual;
 import util.*;
+import net.casus.util.Utility;
 import net.casus.util.nlp.spacy.*;
 import net.casus.util.summarystatement.PerformantSpacyProcessor;
 
@@ -190,8 +191,18 @@ public class SummaryStatementController {
 	 * @param loc
 	 */
 	private static void analyzeExpStatement(SummaryStatement st, SpacyDocJson spacy, Locale loc){
-		if(st.isAnalyzed()) return; //exp statement already analyzed.
-		//if(st.getItemHits()!=null && !st.getItemHits().isEmpty()) return; //already done....
+		
+		if(st.isAnalyzed()){ //we have to make sure that the listItems in the SummStElems are loaded -> HACK!
+			if(st.getItemHits()!=null && st.getItemHits().isEmpty());
+			Iterator<SummaryStElem> it = st.getItemHits().iterator();
+			while(it.hasNext()){
+				SummaryStElem e = it.next();
+				if(e.getListItemId()>0) e.setListItem(new DBList().selectListItemById(e.getListItemId()));
+			}
+			return; //exp statement already analyzed, nothing more to be done....
+		}
+		
+		DBClinReason dcr = new DBClinReason();
 		
 		List<ListItem> items = getListItemsByLang(st.getLang());
 		List<String> textAsList = StringUtilities.createStringListFromString(st.getText(), true);
@@ -214,11 +225,11 @@ public class SummaryStatementController {
 			new DBClinReason().saveAndCommit(e);
 			
 		}*/
-		new DBClinReason().saveAndCommit(st.getItemHits());
-		new DBClinReason().saveAndCommit(st.getSqHits());
-		new DBClinReason().saveAndCommit(st.getUnits());
+		dcr.saveAndCommit(st.getItemHits());
+		dcr.saveAndCommit(st.getSqHits());
+		dcr.saveAndCommit(st.getUnits());
 		st.setAnalyzed(true);
-		new DBClinReason().saveAndCommit(st);
+		dcr.saveAndCommit(st);
 	}
 	
 	/*public static SummaryStatement testSummStRating(String text, String vpId){
@@ -302,141 +313,140 @@ public class SummaryStatementController {
 	}*/
 	
 	public void initSummStRating(PatientIllnessScript expScript, PatientIllnessScript learnerScript, ScoringSummStAction scoreAct){
-		if(learnerScript==null || learnerScript.getSummSt()==null || learnerScript.getSummSt().getText()==null) return;
-		SummaryStatement st = learnerScript.getSummSt();
-		if(st.isAnalyzed()){ //we do a re-calculation....
-			resetSummSt(st);
-		}
-		SummaryStatement expSt = expScript.getSummSt();
-		List<ListItem> items = getListItemsByLang(st.getLang());	
-		//if(st==null || st.getText()==null || items==null) return null;
-		//PatientIllnessScript expPis = new DBClinReason().selectExpertPatIllScriptByVPId(vpId);	
-		
-		//TODO: the json has to be created on the run! 
-		JsonTest jt = new DBClinReason().selectJsonTestBySummStId(st.getId()); //the json of the statement
-		if(jt==null){
-			long startms1 = System.currentTimeMillis();
-			CRTLogger.out("spacy processing start: " + startms1, CRTLogger.LEVEL_PROD);
+		try{
+			if(learnerScript==null || learnerScript.getSummSt()==null || learnerScript.getSummSt().getText()==null) return;
+			SummaryStatement st = learnerScript.getSummSt();
+			if(st.isAnalyzed()){ //we do a re-calculation....
+				resetSummSt(st);
+			}
+			SummaryStatement expSt = expScript.getSummSt();
+			List<ListItem> items = getListItemsByLang(st.getLang());	
+			//if(st==null || st.getText()==null || items==null) return null;
+			//PatientIllnessScript expPis = new DBClinReason().selectExpertPatIllScriptByVPId(vpId);	
 			
-			jt = new JsonTest();
-			jt.setJson("");
-			try {
-				PerformantSpacyProcessor impl = PerformantSpacyProcessor.getInstanceNoInit();
-				String text_result = impl.getLangMappedSpacyJson( st.getLang(), st.getText());
-				jt.setJson(text_result);
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+			//creating the jsons for the student statement
+			JsonTest jt = new DBClinReason().selectJsonTestBySummStId(st.getId()); //the json of the statement
+			if(jt==null) jt = initJsonTest(st);
+	
+			
+			SpacyDocJson spacy = new SpacyDocJson(jt.getJson().trim());
+			if(spacy!=null) spacy.init();
+	
+			JsonTest jt2 = new DBClinReason().selectJsonTestBySummStId(expSt.getId()); //the json of the statement
+			
+			// Expert Info should be present? Better concept required
+			if (jt2 == null || jt2.getJson()==null) jt2 = initJsonTest(expSt);
+				/*long startms1 = System.currentTimeMillis();
+				CRTLogger.out("spacy exp processing start: " + startms1, CRTLogger.LEVEL_PROD);
+				
+				SummaryStatement st2 = expScript.getSummSt();
+				jt2 = new JsonTest();
+				jt2.setJson("");
+				
+				try {
+					PerformantSpacyProcessor impl = PerformantSpacyProcessor.getInstanceNoInit();
+					String text_result = impl.getLangMappedSpacyJson( st2.getLang(), st2.getText());
+					jt2.setJson(text_result);
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+				long endms1 = System.currentTimeMillis();
+				CRTLogger.out("spacy exp processing end: " + jt2.getJson() + "; " + (endms1-startms1), CRTLogger.LEVEL_PROD);
+			}*/
+			
+			SpacyDocJson spacyE = new SpacyDocJson(jt2.getJson().trim());
+			spacyE.init();
+			Locale loc = new Locale(st.getLang());
+			analyzeExpStatement(expSt, spacyE, loc);
+			st.setSpacy_json(jt.getJson());
+			
+			long startms = System.currentTimeMillis();
+			CRTLogger.out("start: " + startms, CRTLogger.LEVEL_TEST);
+			 
+			List<String> textAsListOrg = StringUtilities.createStringListFromString(st.getText(), true);
+			
+			if(textAsListOrg==null) return;
+			
+			compareList(items, st); 
+			if(aList!=null) compareList(aList.get(st.getLang()), st);
+			
+			for(int i=0; i<textAsListOrg.size(); i++){
+				String orgS = textAsListOrg.get(i);		
+				
+				if(isTermToAnalyze(orgS,st.getText().indexOf(orgS), spacy, true)){
+					compareSimilarList(items, st, orgS, i, loc);
+					st.addUnit(compareSIUnits(orgS, i, st.getText().indexOf(orgS), spacy, st.getId()));
+					if(aList!=null) compareSimilarList(aList.get(st.getLang()), st, orgS, i, loc);		
+				}
 			}
 			
-			long endms1 = System.currentTimeMillis();
-			CRTLogger.out("spacy processing end: " + jt.getJson() + "; " + (endms1-startms1), CRTLogger.LEVEL_PROD);
-		}
-		SpacyDocJson spacy = new SpacyDocJson(jt.getJson().trim());
-		if(spacy!=null) spacy.init();
-
-		JsonTest jt2 = new DBClinReason().selectJsonTestBySummStId(expSt.getId()); //the json of the statement
-		
-		// Expert Info should be present? Better concept required
-		if (jt2 == null || jt2.getJson()==null) {
-			long startms1 = System.currentTimeMillis();
-			CRTLogger.out("spacy exp processing start: " + startms1, CRTLogger.LEVEL_PROD);
-			
-			SummaryStatement st2 = expScript.getSummSt();
-			jt2 = new JsonTest();
-			jt2.setJson("");
-			
-			try {
-				PerformantSpacyProcessor impl = PerformantSpacyProcessor.getInstanceNoInit();
-				String text_result = impl.getLangMappedSpacyJson( st2.getLang(), st2.getText());
-				jt2.setJson(text_result);
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+			checkForSemanticQualifiers(st, spacy); //count SQ
+			compareNumbers(st, spacy);
+			if(expSt!=null){
+				calculateMatchesWithExpStatement(st.getItemHits(), expSt.getText());
+				compareWithExpIllScript(st, expScript);
 			}
-			
-			long endms1 = System.currentTimeMillis();
-			CRTLogger.out("spacy exp processing end: " + jt2.getJson() + "; " + (endms1-startms1), CRTLogger.LEVEL_PROD);
-		}
-		
-		SpacyDocJson spacyE = new SpacyDocJson(jt2.getJson().trim());
-		spacyE.init();
-		Locale loc = new Locale(st.getLang());
-		analyzeExpStatement(expSt, spacyE, loc);
-		st.setSpacy_json(jt.getJson());
-		//PatientIllnessScript expPis = new DBClinReason().selectExpertPatIllScriptByVPId(vpId);		
-		//analyzeExpStatement(expPis.getSummSt());
-
-		//if(!tempExpMaps.containsKey(expScript.getVpId())) tempExpMaps.put(expScript.getVpId(), expPis);
-		
-		long startms = System.currentTimeMillis();
-		CRTLogger.out("start: " + startms, CRTLogger.LEVEL_TEST);
-		 
-		List<String> textAsListOrg = StringUtilities.createStringListFromString(st.getText(), true);
-		//String sumstTxtLowerCase = st.getText().toLowerCase();
-		
-		if(textAsListOrg==null) return;
-		
-		compareList(items, st); 
-		if(aList!=null) compareList(aList.get(st.getLang()), st);
-		
-		for(int i=0; i<textAsListOrg.size(); i++){
-			String orgS = textAsListOrg.get(i);		
-			
-			if(isTermToAnalyze(orgS,st.getText().indexOf(orgS), spacy, true)){
-				compareSimilarList(items, st, orgS, i, loc);
-				st.addUnit(compareSIUnits(orgS, i, st.getText().indexOf(orgS), spacy, st.getId()));
-				if(aList!=null) compareSimilarList(aList.get(st.getLang()), st, orgS, i, loc);		
+			checkForPerson(st, spacy);
+			checkAccuracy(st, expSt,spacy, spacyE);
+	
+			long endms = System.currentTimeMillis();
+			st.analysisMs = endms - startms;
+			CRTLogger.out("end: " + startms, CRTLogger.LEVEL_TEST);
+			if (st.getSqHits() == null) {
+				st.setSqHits(new HashSet<SummaryStatementSQ>());
 			}
-		}
-		
-		checkForSemanticQualifiers(st, spacy); //count SQ
-		compareNumbers(st, spacy);
-		if(expSt!=null){
-			calculateMatchesWithExpStatement(st.getItemHits(), expSt.getText());
-			compareWithExpIllScript(st, expScript);
-		}
-		checkForPerson(st, spacy);
-		checkAccuracy(st, expSt,spacy, spacyE);
-		//scoring starts:
-		//ScoringSummStAction scoreAct = new ScoringSummStAction();
-		/*int sqScoreNew = scoreAct.calculateSemanticQualScoreBasic(st); //score SQ
-		int sqScore = scoreAct.calculateSemanticQualScore(expSt, st);
-		st.setSqScore(sqScore);
-		st.setSqScoreBasic(sqScoreNew);
-		//CRTLogger.out("",1);
-		scoreAct.calculateNarrowing(st, expSt);
-		scoreAct.calculateTransformation(expSt, st);
-		scoreAct.calculatePersonScore(st);
-		scoreAct.calculateGlobal(st);*/
-		long endms = System.currentTimeMillis();
-		st.analysisMs = endms - startms;
-		CRTLogger.out("end: " + startms, CRTLogger.LEVEL_TEST);
-		if (st.getSqHits() == null) {
-			st.setSqHits(new HashSet<SummaryStatementSQ>());
-		}
-		new DBClinReason().saveAndCommit(st.getSqHits());
-		
-		if (st.getUnits() == null) {
-			st.setUnits(new HashSet<SummaryStNumeric>());
-		}
-		new DBClinReason().saveAndCommit(st.getUnits());
-		
-		if (st.getItemHits() == null) {
-			st.setItemHits(new HashSet<SummaryStElem>());
-		}
-		new DBClinReason().saveAndCommit(st.getItemHits());
-		if (st.getItemHits() != null) {
-			Iterator<SummaryStElem> it = st.getItemHits().iterator();
-			while (it.hasNext()) {
-				SummaryStElem loop = it.next();
-				CRTLogger.out("loop: id:" + loop.getId() + "; listitemid:" + loop.getListItemId() + "; summstid:" + loop.getSummStId() + "; hash:" + loop.hashCode() , CRTLogger.LEVEL_PROD);
+			new DBClinReason().saveAndCommit(st.getSqHits());
+			
+			if (st.getUnits() == null) {
+				st.setUnits(new HashSet<SummaryStNumeric>());
 			}
+			new DBClinReason().saveAndCommit(st.getUnits());
+			
+			if (st.getItemHits() == null) {
+				st.setItemHits(new HashSet<SummaryStElem>());
+			}
+			new DBClinReason().saveAndCommit(st.getItemHits());
+			/*if (st.getItemHits() != null) {
+				Iterator<SummaryStElem> it = st.getItemHits().iterator();
+				while (it.hasNext()) {
+					SummaryStElem loop = it.next();
+					CRTLogger.out("loop: id:" + loop.getId() + "; listitemid:" + loop.getListItemId() + "; summstid:" + loop.getSummStId() + "; hash:" + loop.hashCode() , CRTLogger.LEVEL_PROD);
+				}
+			}*/
+			
+			st.setAnalyzed(true);
+			new DBClinReason().saveAndCommit(st);
+		}
+		catch(Exception e){
+			CRTLogger.out(Utility.stackTraceToString(e), CRTLogger.LEVEL_ERROR);
+		}
+	}
+	
+	/**
+	 * init the spacy tree and return it as a JsonTest object.
+	 * @param st
+	 * @return
+	 */
+	private JsonTest initJsonTest(SummaryStatement st){
+		long startms1 = System.currentTimeMillis();
+		CRTLogger.out("spacy processing start: " + startms1, CRTLogger.LEVEL_PROD);
+		
+		JsonTest jt = new JsonTest();
+		jt.setJson("");
+		try {
+			PerformantSpacyProcessor impl = PerformantSpacyProcessor.getInstanceNoInit();
+			String text_result = impl.getLangMappedSpacyJson(st.getLang(), st.getText());
+			jt.setJson(text_result);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 		
-		st.setAnalyzed(true);
-		new DBClinReason().saveAndCommit(st);
-		//return st;		
+		long endms1 = System.currentTimeMillis();
+		CRTLogger.out("spacy processing end: " + jt.getJson() + "; " + (endms1-startms1), CRTLogger.LEVEL_PROD);
+		return jt;
 	}
 	
 	/**

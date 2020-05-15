@@ -114,10 +114,10 @@ public class SummaryStElem {
 	/* (non-Javadoc)
 	 * @see java.lang.Object#toString()
 	 */
-	public String toString(){
+	/*public String toString(){
 		if(synonymStr!=null) return synonymStr;
-		else return listItem.getName();
-	}
+		else if(listItem!=null) return listItem.getName();
+	}*/
 	
 	public boolean equals(Object o){
 		if(o instanceof SummaryStElem){

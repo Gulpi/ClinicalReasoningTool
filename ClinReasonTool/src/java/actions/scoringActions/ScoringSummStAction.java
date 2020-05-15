@@ -112,7 +112,7 @@ public class ScoringSummStAction {
 	}
 
 	public void doScoring(SummaryStatement learnerSt, SummaryStatement expSt){
-		if(learnerSt==null || expSt==null) return;
+		//if(learnerSt==null || expSt==null) return;
 		//scoring starts:
 		int sqScoreNew = calculateSemanticQualScoreBasic(learnerSt); //score SQ
 		int sqScore = calculateSemanticQualScore(expSt, learnerSt);
@@ -200,8 +200,9 @@ public class ScoringSummStAction {
 			int learnerStNum = st.getFindingHitsNum() + st.getDiagnosesHitsNum() + st.getAnatomyHitsNum();
 			//version 0.2:
 			float diffStMatches = (float) (expStNum - st.getExpMatchesNum()); 
-			
-			float percDiffStMatches = (float)diffStMatches/(float)expStNum;
+			float percDiffStMatches = (float) 0.0;
+			if(expStNum!=0)
+				percDiffStMatches = (float)diffStMatches/(float)expStNum;
 			if(diffStMatches<=0) st.setNarrowingScore(2);
 			else if (percDiffStMatches>upperBorder) st.setNarrowingScore(0);
 			else if (percDiffStMatches<lowerBoarder) st.setNarrowingScore(2);
@@ -211,7 +212,8 @@ public class ScoringSummStAction {
 			//version 0.3:
 			//additional findings/diagnoses/anatomy in the learner statement, which are not present in the expert map or statement
 			int addItemsNum = fdgsHits + st.getDiagnosesHitsNum() + st.getAnatomyHitsNum() - st.getExpMatchNarrowing(); 
-			float percDiffStAdd = (float)addItemsNum/(float)expStNum;
+			float percDiffStAdd = (float) 0.0; 
+			if(expStNum!=0) percDiffStAdd = (float)addItemsNum/(float)expStNum;
 			if (percDiffStMatches <= lowerBoarder && percDiffStAdd < lowerBoarder) st.setNarrowingScoreNew(2);
 			else if (percDiffStMatches <= lowerBoarder && percDiffStAdd >= lowerBoarder) st.setNarrowingScoreNew(1);			
 			else if (percDiffStMatches < upperBorder && percDiffStMatches >= lowerBoarder && percDiffStAdd < upperBorder) st.setNarrowingScoreNew(1);

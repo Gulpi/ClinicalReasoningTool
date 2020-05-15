@@ -219,6 +219,14 @@ public class ScoringSummStAction {
 			else if (percDiffStMatches >= upperBorder) st.setNarrowingScoreNew(0);
 			st.setNarr2Score(percDiffStAdd);
 
+			// 20200515 MA:
+			// narr1Score and narr2Score can be NaN, should be checked!!!!
+			if (Float.isNaN(st.getNarr1Score())) {
+				st.setNarr1Score(0.0f);
+			}
+			if (Float.isNaN(st.getNarr2Score())) {
+				st.setNarr2Score(0.0f);
+			}
 		}
 		catch (Exception e){
 			CRTLogger.out(StringUtilities.stackTraceToString(e), CRTLogger.LEVEL_PROD);

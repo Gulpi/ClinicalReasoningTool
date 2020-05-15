@@ -195,7 +195,7 @@ public class ListItem implements Serializable, ListInterface, Comparable{
 	 */
 	public boolean isFinding(){
 		if (firstCode!=null && (firstCode.startsWith("C23") || firstCode.startsWith("F01"))) return true;
-		CRTLogger.out("", 1);
+		//CRTLogger.out("", 1);
 		//otherCodes we have only for English mesh terms, therefore we have to get the ones from the matching English term
 		if((otherCodes == null || otherCodes.isEmpty()) && !this.language.getLanguage().equalsIgnoreCase("en"))
 			setOtherCodes(); 

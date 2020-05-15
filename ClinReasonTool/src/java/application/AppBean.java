@@ -38,7 +38,7 @@ import properties.IntlConfiguration;
 public class AppBean extends ApplicationWrapper implements HttpSessionListener{
 
 	public static final String DEFAULT_LOCALE="en"; //TODO get from properties!
-	public static final String[] ACCEPTED_LOCALES = new String[]{"en", "de", "pl", "sv"}; //TODO get from properties!
+	public static final String[] ACCEPTED_LOCALES = new String[]{"en", "de", "pl", "sv", "es"}; //TODO get from properties!
 	public static List<Graph> graphs;
 	public static final String APP_KEY = "AppBean";
 	public static IntlConfiguration intlConf;

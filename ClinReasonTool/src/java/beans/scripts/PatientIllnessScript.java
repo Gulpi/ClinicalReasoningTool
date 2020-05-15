@@ -287,9 +287,8 @@ public class PatientIllnessScript extends Beans implements Comparable, IllnessSc
 	public void setFinalDDXType(int finalDDXType) {this.finalDDXType = finalDDXType;}
 	public String getVpId() {return vpId;}		
 	public void setVpId(String vpId) {this.vpId = vpId;}	
-	public int getCurrentStage() {
-		return currentStage;
-		}	
+	public int getCurrentStage() {return currentStage;}
+	
 	public int getMaxSubmittedStage() {
 		if(maxSubmittedStage>0) return maxSubmittedStage;
 		return submittedStage; //default

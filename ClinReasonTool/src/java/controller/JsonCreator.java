@@ -39,7 +39,7 @@ public class JsonCreator {
 	public static final String fileNameOneListDE = "src/html/jsonp_de.json";
 	public static final String fileNameOneListPL = "src/html/jsonp_pl.json";
 	public static final String fileNameOneListSV = "src/html/jsonp_sv.json";
-	
+	public static final String fileNameOneListES = "src/html/jsonp_es.json";
 	private boolean createOneList = true; //if false, we create multiple lists for problems, ddx, etc.
 	private static ServletContext context;	
 
@@ -60,6 +60,7 @@ public class JsonCreator {
 			exportOneList(new Locale("de"));
 			exportOneList(new Locale("pl"));
 			exportOneList(new Locale("sv"));
+			exportOneList(new Locale("es"));
 		}
 		
 	}
@@ -200,6 +201,7 @@ public class JsonCreator {
 			if (lang.equals("de")) return new File(context.getRealPath(fileNameOneListDE));
 			if (lang.equals("pl")) return new File(context.getRealPath(fileNameOneListPL));
 			if (lang.equals("sv")) return new File(context.getRealPath(fileNameOneListSV));
+			if (lang.equals("es")) return new File(context.getRealPath(fileNameOneListES));
 			return new File(context.getRealPath(fileNameOneListEN));
 		}
 		else {
@@ -207,6 +209,7 @@ public class JsonCreator {
 			if (lang.equals("de"))  name = fileNameOneListDE;
 			if (lang.equals("pl"))  name = fileNameOneListPL;
 			if (lang.equals("sv"))  name = fileNameOneListSV;
+			if (lang.equals("es"))  name = fileNameOneListES;
 			
 			int idx = name.lastIndexOf('/');
 			name = name.substring(idx+1);

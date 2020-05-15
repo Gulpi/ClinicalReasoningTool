@@ -56,10 +56,11 @@ public class DBList extends DBClinReason {
      * @param id
      * @return ListItem or null
      */
-    public ListItem selectListItemByMeshId(String id){
+    public ListItem selectListItemByMeshIdAndLang(String id, String lang){
     	Session s = instance.getInternalSession(Thread.currentThread(), false);
     	Criteria criteria = s.createCriteria(ListItem.class,"ListItem");
     	criteria.add(Restrictions.eq("mesh_id", id));
+    	criteria.add(Restrictions.eq("language", new Locale(lang)));
     	ListItem li = (ListItem) criteria.uniqueResult();
     	s.close();
     	return li;

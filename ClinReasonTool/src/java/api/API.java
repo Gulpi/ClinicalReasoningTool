@@ -1,4 +1,4 @@
-package application;
+package api;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -6,7 +6,9 @@ import java.io.Serializable;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Observable;
 import java.util.Properties;
 
@@ -27,40 +29,39 @@ import javax.servlet.http.HttpSessionListener;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import api.impl.Hello;
+import api.impl.LearningAnalytics1;
 import net.casus.util.String2HashKey;
 
 /**
- * View to display open sessions...
+ * simple API dispatcher
+ * 
  * @author gulpi
  *
  */
 @ManagedBean(name = "api", eager = true)
 @ApplicationScoped
 public  class API  extends Observable implements Serializable {
+	Map<String,ApiInterface> implementations = new HashMap<String,ApiInterface>();
 		
 	public API() {
+		implementations.put("hello", new Hello());
+		implementations.put("la", new LearningAnalytics1());
 	}
 	
 	public String getResult() {
-		FacesContext facesContext = FacesContext.getCurrentInstance();
-		/*ExternalContext externalContext = FacesContextWrapper.getCurrentInstance().getExternalContext();
-	    externalContext.setResponseContentType("text/xml");
-	    externalContext.setResponseCharacterEncoding("UTF-8"); */
-	    //for additional id info (e.g. when adding a new connection)
-		Object o = FacesContext.getCurrentInstance().getExternalContext().getRequest();
-		HttpServletRequest req = ((HttpServletRequest) o);
-		
-		String id = (String) ((HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest()).getParameter("id");
-		
-		String result = "";
-		String2HashKey bean = new String2HashKey("id",id);
-		try {
-			result = new ObjectMapper().writeValueAsString(bean);
-		} catch (JsonProcessingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		String auth_param = (String) ((HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest()).getHeader("auth");
+		// have to be extended... dummy check only !!
+		/*if (auth_param == null || !auth_param.equals("crt_auth")) {
+			return null;
+		}*/
+	
+		String impl_param = (String) ((HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest()).getParameter("impl");
+		ApiInterface impl = null;
+		if (impl_param != null && (impl = implementations.get(impl_param)) != null) {
+			return impl.handle();
 		}
-		return result;
+		return null;
 	}
 	
     

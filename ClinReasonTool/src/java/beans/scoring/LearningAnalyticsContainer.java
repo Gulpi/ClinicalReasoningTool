@@ -205,14 +205,28 @@ public class LearningAnalyticsContainer implements Serializable{
 		return labean.getOverallPeerScore();
 	}
 	
+	/**
+	 * Called from charts_session.xhtml to initialize the calculation of the summary statement score ( but only if learner has 
+	 * completed or almost completed the VP). 
+	 * @return
+	 */
 	public ScoreBean getSumScore(){ 		
 		LearningAnalyticsBean labean = this.getLearningAnalyticsBeanByPatIllScript();
 		if(labean==null) return null;
-		ScoreBean sumStScore = labean.getLastSummStScore();
-		if(sumStScore==null) 
-			sumStScore = new ScoringSummStAction().scoreAction(labean);
-		return sumStScore;
+		PatientIllnessScript patillscript = NavigationController.getInstance().getCRTFacesContext().getPatillscript();
+		
+		if(patillscript==null) return null;
+		//if the learner has not yet completed the VP we do not calculate the score for the summary statement:
+		if(patillscript.getSubmitted() || patillscript.getCurrentStage()> patillscript.getMaxSubmittedStage()){		
+			ScoreBean sumStScore = labean.getLastSummStScore();
+			if(sumStScore==null) 
+				sumStScore = new ScoringSummStAction().scoreAction(labean);
+			return sumStScore;
+		}
+		return null;
+		
 	}
+	
 	public List<ScoreBean> getTestScores(){ return getListScores(ScoreBean.TYPE_TEST_LIST);}
 	public List<ScoreBean> getMngScores(){ return getListScores(ScoreBean.TYPE_MNG_LIST);}
 	

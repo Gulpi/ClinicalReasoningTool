@@ -9,7 +9,6 @@ import beans.list.*;
 import beans.relation.Relation;
 import beans.relation.summary.*;
 import beans.scripts.PatientIllnessScript;
-import beans.test.JsonTest;
 import database.DBClinReason;
 import database.DBList;
 import model.SemanticQual;
@@ -433,13 +432,15 @@ public class SummaryStatementController {
 		long startms1 = System.currentTimeMillis();
 		CRTLogger.out("spacy processing start: " + startms1, CRTLogger.LEVEL_PROD);
 		
-		JsonTest jt = new JsonTest();
+		JsonTest jt = new JsonTest(st.getId());
 		jt.setJson("");
 		try {
 			PerformantSpacyProcessor impl = PerformantSpacyProcessor.getInstanceNoInit();
 			String text_result = impl.getLangMappedSpacyJson(st.getLang(), st.getText());
 			jt.setJson(text_result);
-		} catch (Exception e) {
+			new DBClinReason().saveAndCommit(jt);
+		} 
+		catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}

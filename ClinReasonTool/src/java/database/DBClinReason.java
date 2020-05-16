@@ -7,9 +7,9 @@ import org.hibernate.criterion.*;
 
 import beans.scripts.PatientIllnessScript;
 import beans.scripts.VPScriptRef;
-import beans.test.JsonTest;
 import beans.LogEntry;
 import beans.relation.*;
+import beans.relation.summary.JsonTest;
 import beans.relation.summary.SummaryStatement;
 import beans.relation.summary.SummaryStatementSQ;
 import util.*;

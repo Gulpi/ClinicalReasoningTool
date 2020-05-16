@@ -108,7 +108,7 @@ public class HibernateSession {
 			cfg.addClass(beans.user.SessionSetting.class);
 			cfg.addClass(beans.list.SIUnit.class);
 			cfg.addClass(beans.relation.summary.TransformRule.class);
-			cfg.addClass(beans.test.JsonTest.class); //testing only
+			cfg.addClass(beans.relation.summary.JsonTest.class); //testing only
 			//cfg.addClass(test.LMMeshMapping.class);
 			
 			if (factory==null) {

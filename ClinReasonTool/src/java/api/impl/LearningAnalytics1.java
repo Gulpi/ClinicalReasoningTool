@@ -13,6 +13,7 @@ import org.hibernate.Session;
 
 import api.ApiInterface;
 import database.HibernateSession;
+import database.HibernateUtil;
 import net.casus.util.StringUtilities;
 import net.casus.util.Utility;
 
@@ -48,7 +49,7 @@ public class LearningAnalytics1 implements ApiInterface {
 					"group by listItemId;";
 			
 			String hql = hqlQuery6;
-			Session session = new HibernateSession().getInternalSession(Thread.currentThread(), false);   	
+			Session session = HibernateUtil.impl.getHibernateSession();
 			Query query = session.createQuery(hql);
 			if (hql.contains(":in_case")) {
 				query.setString("in_case", in_case);

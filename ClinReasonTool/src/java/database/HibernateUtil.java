@@ -1,6 +1,8 @@
 package database;
 
+import org.hibernate.Session;
 
+import net.casus.util.database.HibernateSessionInterface;
 
 /**
  * Contains all necessary methods to start Hibernate and get and return a Session. 
@@ -8,8 +10,9 @@ package database;
  * @author inga
  *
  */
-public class HibernateUtil 
+public class HibernateUtil implements HibernateSessionInterface 
 {
+	public static HibernateUtil impl = new HibernateUtil();
 	static HibernateSession instance = new HibernateSession();
 	
 	static public void initHibernate() {
@@ -52,6 +55,12 @@ public class HibernateUtil
 	 */
 	static public void reallyRemoveSessions(Thread t) {
 		instance.reallyRemoveSessionsInternal(t);
+	}
+
+	@Override
+	public Session getHibernateSession() {
+		// TODO Auto-generated method stub
+		return instance.getInternalSession(Thread.currentThread(), false);
 	}
 
 }

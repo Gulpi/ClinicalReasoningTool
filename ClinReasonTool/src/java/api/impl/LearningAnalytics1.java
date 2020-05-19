@@ -1,6 +1,5 @@
 package api.impl;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -9,13 +8,11 @@ import java.util.Map;
 import java.util.Properties;
 
 import javax.faces.context.FacesContext;
-import javax.json.JsonArray;
 import javax.servlet.http.HttpServletRequest;
 
 import org.hibernate.HibernateException;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import api.ApiInterface;
@@ -24,7 +21,6 @@ import net.casus.util.CasusConfiguration;
 import net.casus.util.StringUtilities;
 import net.casus.util.Utility;
 import net.casus.util.database.HQLQuery;
-import properties.IntlConfiguration;
 
 /**
  * Sample ApiInterface implemenation for demo
@@ -61,11 +57,11 @@ public class LearningAnalytics1 implements ApiInterface {
 			List<String> myList = StringUtilities.getStringListFromString(in_ext_user, ",");
 			cell_query_parameter.put("in_ext_user", myList);
 			
-			this.handleSection(cell_query_parameter, "LearningAnalytics1.hqlQuery1" , "LearningAnalytics1.hqlQuery2", props, "diagnosis", "LA.API.diagnosis", locale);
-			this.handleSection(cell_query_parameter, "LearningAnalytics1.hqlQuery3" , "LearningAnalytics1.hqlQuery4", props, "management", "LA.API.management", locale);
-			this.handleSection(cell_query_parameter, "LearningAnalytics1.hqlQuery5" , "LearningAnalytics1.hqlQuery6", props, "problems", "LA.API.problems", locale);
-			this.handleSection(cell_query_parameter, "LearningAnalytics1.hqlQuery7" , "LearningAnalytics1.hqlQuery8", props, "tests", "LA.API.tests", locale);
-			this.handleSummaryStatements(cell_query_parameter, props, "summaryStatements", "LA.API.summaryStatements", locale);
+			this.handleSection(cell_query_parameter, "LearningAnalytics1.hqlQuery1" , "LearningAnalytics1.hqlQuery2", props, "diagnosis", locale);
+			this.handleSection(cell_query_parameter, "LearningAnalytics1.hqlQuery3" , "LearningAnalytics1.hqlQuery4", props, "management", locale);
+			this.handleSection(cell_query_parameter, "LearningAnalytics1.hqlQuery5" , "LearningAnalytics1.hqlQuery6", props, "problems", locale);
+			this.handleSection(cell_query_parameter, "LearningAnalytics1.hqlQuery7" , "LearningAnalytics1.hqlQuery8", props, "tests", locale);
+			this.handleSummaryStatements(cell_query_parameter, props, "summaryStatements", locale);
 		} catch (HibernateException e) {
 			resultObj.put("result", "error");
 			resultObj.put("error", Utility.stackTraceToString(e));
@@ -90,20 +86,12 @@ public class LearningAnalytics1 implements ApiInterface {
 		return result;
 	}
 
-	public void handleSummaryStatements(Map cell_query_parameter, List<Map> props, String key, String headlineKey, Locale locale) {
+	public void handleSummaryStatements(Map cell_query_parameter, List<Map> props, String key, Locale locale) {
 		Map item = new HashMap();
 		props.add(item);
 		
 		item.put("key", key);
 		item.put("type", "textlist");
-		
-		String tmp_headline = IntlConfiguration.getValue(headlineKey, locale);
-		item.put("headline", tmp_headline!=null? tmp_headline : key);
-		
-		String tmp_desc = IntlConfiguration.getValue(headlineKey + ".desc", locale);
-		if (StringUtilities.isValidString(tmp_desc)) {
-			item.put("description", tmp_desc);
-		}
 		
 		HQLQuery hqlQuery = new HQLQuery("LearningAnalytics1.hqlQuerySummaryStatement", "", HibernateUtil.impl);
 		hqlQuery.setQuery_parameter(cell_query_parameter);
@@ -115,20 +103,12 @@ public class LearningAnalytics1 implements ApiInterface {
 		}
 	}
 
-	public void handleSection(Map cell_query_parameter, String hqlKey1, String hqlKey2, List<Map> props, String key, String headlineKey, Locale locale) {
+	public void handleSection(Map cell_query_parameter, String hqlKey1, String hqlKey2, List<Map> props, String key, Locale locale) {
 		Map item = new HashMap();
 		props.add(item);
 		
 		item.put("key", key);
 		item.put("type", "wordcloud");
-		
-		String tmp_headline = IntlConfiguration.getValue(headlineKey, locale);
-		item.put("headline", tmp_headline!=null? tmp_headline : key);
-		
-		String tmp_desc = IntlConfiguration.getValue(headlineKey + ".desc", locale);
-		if (StringUtilities.isValidString(tmp_desc)) {
-			item.put("description", tmp_desc);
-		}
 		
 		HQLQuery hqlQuery = new HQLQuery(hqlKey1, "", HibernateUtil.impl);
 		hqlQuery.setQuery_parameter(cell_query_parameter);

@@ -1,14 +1,19 @@
 package beans.relation.summary;
 
+import java.io.Serializable;
+
 /**
  * storing of the json creation of summary statement 
  * @author ingahege
  *
  */
-public class JsonTest {
+public class JsonTest  implements Serializable, Comparable, Cloneable {
 
-	private long id;
-	private String json;
+	private long id = -1;
+	private String json = null;
+	
+	public JsonTest(){
+	}
 	
 	public JsonTest(long summStId){
 		this.id = summStId;
@@ -26,5 +31,23 @@ public class JsonTest {
 		}
 		return false;
 	}
+
+	@Override
+	public int compareTo(Object o) {
+		// TODO Auto-generated method stub
+		if (this.equals(o)) {
+			return 0;
+		}
+		
+		return 1;
+	}
+
+	@Override
+	protected Object clone() throws CloneNotSupportedException {
+		// TODO Auto-generated method stub
+		return super.clone();
+	}
+	
+	
 	
 }

@@ -285,9 +285,18 @@ public class DBClinReason /*extends HibernateUtil*/{
     	criteria.add(Restrictions.eq("peerSync", new Boolean(false)));
     	criteria.add(Restrictions.gt("submittedStage", 0));
     	criteria.add(Restrictions.eq("type", new Integer(PatientIllnessScript.TYPE_LEARNER_CREATED)));
+    	
+    	long minusOneYearMS = System.currentTimeMillis() - 1000 * 3600 * 24 * 365;
+    	Date minusOneYear = new Date(minusOneYearMS);
+    	criteria.add(Restrictions.gt("lastAccessDate", minusOneYear));
+    	
     	List<PatientIllnessScript> scripts = criteria.list();
     	if(scripts!=null){
+    		CRTLogger.out("DBClinReason.selectLearnerPatIllScriptsByPeerSync: scripts: #"  + scripts.size(), CRTLogger.LEVEL_PROD);
     		for(int i=0;i<scripts.size();i++){
+    			if ((i%2500) == 0) {
+    				CRTLogger.out("DBClinReason.selectLearnerPatIllScriptsByPeerSync: scripts: i:"  + i, CRTLogger.LEVEL_PROD);
+    			}
     			selectNodesAndConns(scripts.get(i), s);
     		}
     	}

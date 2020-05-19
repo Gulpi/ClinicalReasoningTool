@@ -30,6 +30,8 @@ public class PeerSyncController {
 	 * look for scripts and if there are new ones, add them to the peer table...
 	 */
 	public synchronized void sync(){
+		boolean sync1by1 = true;
+		
 		long startms = System.currentTimeMillis();
 		CRTLogger.out("Peer sync start: " + startms + "ms", CRTLogger.LEVEL_PROD);
 
@@ -55,9 +57,14 @@ public class PeerSyncController {
 			}
 			
 			script.setPeerSync(true);
+			if (sync1by1) {
+				new DBClinReason().saveAndCommit(script); //save the changed sync status....
+			}
 			CRTLogger.out("Peer sync: " + script.getId() + " " + i + "/" + i_max + " done", CRTLogger.LEVEL_PROD);
 		}
-		new DBClinReason().saveAndCommit(scripts); //save the changed sync status....
+		if (!sync1by1) {
+			new DBClinReason().saveAndCommit(scripts); //save the changed sync status....
+		}
 		CRTLogger.out("Peer sync done: " + (System.currentTimeMillis() - startms) + "ms", CRTLogger.LEVEL_PROD);
 	}
 	

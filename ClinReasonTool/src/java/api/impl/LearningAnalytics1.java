@@ -21,6 +21,7 @@ import net.casus.util.CasusConfiguration;
 import net.casus.util.StringUtilities;
 import net.casus.util.Utility;
 import net.casus.util.database.HQLQuery;
+import util.CRTLogger;
 
 /**
  * Sample ApiInterface implemenation for demo
@@ -93,6 +94,14 @@ public class LearningAnalytics1 implements ApiInterface {
 	}
 
 	public void handleSummaryStatements(Map cell_query_parameter, List<Map> props, String key, Locale locale) {
+		String key_enabled = (String) ((HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest()).getParameter(key);
+		int enabled = StringUtilities.getIntegerFromString(key_enabled, -1);
+		CRTLogger.out("LearningAnalytics1.handleSummaryStatements: key_enabled(" + key + "):"  + key_enabled + "," + enabled, CRTLogger.LEVEL_PROD);
+		if (enabled != 1) {
+			CRTLogger.out("LearningAnalytics1.handleSummaryStatements: return", CRTLogger.LEVEL_PROD);
+			return;
+		}
+		
 		Map item = new HashMap();
 		props.add(item);
 		
@@ -112,7 +121,9 @@ public class LearningAnalytics1 implements ApiInterface {
 	public void handleSection(Map cell_query_parameter, String hqlKey1, String hqlKey2, List<Map> props, String key, Locale locale) {
 		String key_enabled = (String) ((HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest()).getParameter(key);
 		int enabled = StringUtilities.getIntegerFromString(key_enabled, -1);
+		CRTLogger.out("LearningAnalytics1.handleSection: key_enabled(" + key + "):"  + key_enabled + "," + enabled, CRTLogger.LEVEL_PROD);
 		if (enabled != 1) {
+			CRTLogger.out("LearningAnalytics1.handleSection: return", CRTLogger.LEVEL_PROD);
 			return;
 		}
 		

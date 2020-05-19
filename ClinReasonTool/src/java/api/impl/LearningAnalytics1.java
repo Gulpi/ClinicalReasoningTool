@@ -110,6 +110,12 @@ public class LearningAnalytics1 implements ApiInterface {
 	}
 
 	public void handleSection(Map cell_query_parameter, String hqlKey1, String hqlKey2, List<Map> props, String key, Locale locale) {
+		String key_enabled = (String) ((HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest()).getParameter(key);
+		int enabled = StringUtilities.getIntegerFromString(key_enabled, -1);
+		if (enabled != 1) {
+			return;
+		}
+		
 		Map item = new HashMap();
 		props.add(item);
 		

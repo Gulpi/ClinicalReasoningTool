@@ -39,7 +39,8 @@ public class PeerSyncController {
 		if(scripts==null || scripts.isEmpty()){
 			CRTLogger.out("PeerSyncController.sync - nothing to sync", CRTLogger.LEVEL_PROD);
 		}
-		for(int i=0; i<scripts.size(); i++){
+		int i_max = scripts.size();
+		for(int i=0; i<i_max; i++){
 			PatientIllnessScript script = scripts.get(i);
 			LearningAnalyticsBean lab = new LearningAnalyticsBean(script.getId(), script.getUserId(), script.getVpId());		
 			syncItems(script.getProblems()/*, peers*/, script.getVpId());
@@ -54,7 +55,7 @@ public class PeerSyncController {
 			}
 			
 			script.setPeerSync(true);
-			CRTLogger.out("Peer sync: " + script.getId() + "done", CRTLogger.LEVEL_PROD);
+			CRTLogger.out("Peer sync: " + script.getId() + " " + i + "/" + i_max + " done", CRTLogger.LEVEL_PROD);
 		}
 		new DBClinReason().saveAndCommit(scripts); //save the changed sync status....
 		CRTLogger.out("Peer sync done: " + (System.currentTimeMillis() - startms) + "ms", CRTLogger.LEVEL_PROD);

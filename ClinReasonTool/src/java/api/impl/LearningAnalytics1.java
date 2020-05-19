@@ -57,6 +57,12 @@ public class LearningAnalytics1 implements ApiInterface {
 			List<String> myList = StringUtilities.getStringListFromString(in_ext_user, ",");
 			cell_query_parameter.put("in_ext_user", myList);
 			
+			HQLQuery hqlQuery = new HQLQuery("LearningAnalytics1.hqlQuery.count", "", HibernateUtil.impl);
+			hqlQuery.setQuery_parameter(cell_query_parameter);
+			hqlQuery.query();	
+			int my_count = hqlQuery.getCount();
+			resultObj.put("count", Integer.valueOf(my_count));
+			
 			this.handleSection(cell_query_parameter, "LearningAnalytics1.hqlQuery1" , "LearningAnalytics1.hqlQuery2", props, "diagnosis", locale);
 			this.handleSection(cell_query_parameter, "LearningAnalytics1.hqlQuery3" , "LearningAnalytics1.hqlQuery4", props, "management", locale);
 			this.handleSection(cell_query_parameter, "LearningAnalytics1.hqlQuery5" , "LearningAnalytics1.hqlQuery6", props, "problems", locale);

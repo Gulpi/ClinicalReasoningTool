@@ -113,7 +113,7 @@ public class AppBean extends ApplicationWrapper implements HttpSessionListener{
 	    vpScriptRefs =  IllnessScriptController.getInstance().initVpScriptRefs();
 	    
 	    try{
-	    	new PeerSyncController(peers).sync();
+	    	//new PeerSyncController(peers).sync();
 	    }
 	    catch(Exception e){
 	    	CRTLogger.out("AppBean(): " + StringUtilities.stackTraceToString(e), CRTLogger.LEVEL_ERROR);

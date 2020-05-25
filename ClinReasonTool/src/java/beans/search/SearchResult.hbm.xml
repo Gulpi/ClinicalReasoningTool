@@ -9,6 +9,7 @@
 		<composite-id>
         	<key-property name="vpId" column="vp_id" type="string" />		
         	<key-property name="sourceId" column="source_id" type="long"/>
+         	<key-property name="synId" column="SYNONYM_ID" type="long"/>
         </composite-id>
 		<!-- <id column="ROWID" type="string" />-->
 		
@@ -16,5 +17,11 @@
 		<property name="name" column="name" type="string" />		
 		<!-- <property name="sourceId" column="source_id" type="long"/>	
 		 -->
+		<property name="itemType" column="item_type" type="int" />		
+		<property name="synonym" column="item_synonym" type="int" />		
+		<property name="pisId" column="pis_id" type="long" />		
+		
+		<property name="selSynId" column="SEL_SYN_ID" type="long" />		
+		 
 </class>
 </hibernate-mapping>

@@ -145,14 +145,14 @@ jsPlumb.ready(function () {
     $(function() {
     	var totalScore = "#{crtContext.learningAnalyticsContainer.overallScore.scoreBasedOnExpPerc}";
      	var totalScorePeers = "#{crtContext.learningAnalyticsContainer.overallPeerScore.expPeerPercentagePerc}";
-     	var fdgScore = "#{crtContext.learningAnalyticsContainer.learningAnalyticsBean.overallProblemScore}";
+     	var fdgScore = "-1";
   		var fdgScorePeers = "#{crtContext.learningAnalyticsContainer.learningAnalyticsBean.problemScore}";
-    	var ddxScore = "#{crtContext.learningAnalyticsContainer.learningAnalyticsBean.overallDDXScore}";
-  		var ddxScorePeers = "#{crtContext.learningAnalyticsContainer.learningAnalyticsBean.DDXScore}";
-    	var tstScore = "#{crtContext.learningAnalyticsContainer.learningAnalyticsBean.overallTestScore}";
+    	var ddxScore = "-1";
+  		var ddxScorePeers = "#{crtContext.learningAnalyticsContainer.learningAnalyticsBean.dDXScore}";
+    	var tstScore = "-1";
   		var tstScorePeers = "#{crtContext.learningAnalyticsContainer.learningAnalyticsBean.testScore}";
-    	var mngScore = "#{crtContext.learningAnalyticsContainer.learningAnalyticsBean.overallMngScore}";
-  		var mngScorePeers = "#{crtContext.learningAnalyticsContainer.learningAnalyticsBean.mngScore}";
+    	var mngScore = "#{crtContext.learningAnalyticsContainer.learningAnalyticsBean.mngScore}";
+  		var mngScorePeers = "-1";
   		
   		my_totalScore = validateAnd2PercentScore100(totalScore);
   		my_totalScorePeers = validateAnd2PercentScore100(totalScorePeers);

@@ -443,6 +443,12 @@ function drawSimpleMultipleDonutChart(element, percent, percent2, width, height,
 		
 }
 
+/**
+ * validate and bring to 1...100
+ * 
+ * @param in_score 0...1
+ * @returns {Number} 0...100
+ */
 function validateAnd2PercentScore(in_score) {
 	var result = 0;
 	if (!in_score || in_score == "") {
@@ -464,6 +470,11 @@ function validateAnd2PercentScore(in_score) {
 	return result * 100;
 }
 
+/**
+ * 
+ * @param in_score 1...100
+ * @returns {Number} 1...100
+ */
 function validateAnd2PercentScore100(in_score) {
 	var result = 0;
 	if (!in_score || in_score == "") {
@@ -491,6 +502,17 @@ function d3utils_calcPercent(percent) {
 	};
 
 	
+/**
+ * "corrects" the value in_score
+ * 
+ * @param in_score 1...100
+ * @param threshold1 when in_score<=threshold1 => result = result * factor1;
+ * @param factor1 see threshold1
+ * @param base2 when in_score>threshold1 => result = base2 + (result-base2a)/quot3;
+ * @param base2a see base2
+ * @param quot3 see base2
+ * @returns {Number} 1...100
+ */
 function correctSpecialScore(in_score, threshold1, factor1, base2, base2a, quot3 ) {
 		var result = in_score;
 		
@@ -514,9 +536,20 @@ function correctSpecialScore(in_score, threshold1, factor1, base2, base2a, quot3
 		return result
 }
 
+/**
+ * 
+ * @param in_id DOM id of destination div element for donut
+ * @param in_my participant score float 0...1
+ * @param in_peers peer score float 0...1
+ * @param func_correct
+ */
 function simpleDonutHelper(in_id,in_my,in_peers, func_correct) {
 	// alert(in_id + ":" + in_my + ","+in_peers)
+	
+	// validate and bring to 1...100
 	var my_val = validateAnd2PercentScore(in_my);
+	
+	// validate and bring to 1...100
 	var peers_val = validateAnd2PercentScore(in_peers);
 	if (func_correct) {
 		my_val = func_correct(my_val);

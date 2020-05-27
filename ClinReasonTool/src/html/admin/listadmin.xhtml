@@ -31,7 +31,7 @@ Administration of lists:<br/>
 
   
 <h:form id="recreate_form">
-Recreate list: <select name="lang" id="lang"><option value="de">de</option><option value="en">en</option><option value="pl">pl</option></select><br/>
+Recreate list: <select name="lang" id="lang"><option value="de">de</option><option value="en">en</option><option value="de">es</option><option value="pl">pl</option></select><br/>
 		<!-- <h:commandButton value="Login" action="#{auth.login}" /> -->
 		
 		<h:commandButton id="createButton" value="#{prop['submit']}" action="#{adminContext.getRecreateList}" />
@@ -40,7 +40,7 @@ Recreate list: <select name="lang" id="lang"><option value="de">de</option><opti
  
 <h:form id="search_form">
 #{prop['search']}: <input type="text" name="search" id="search"></input> 
-<select name="locale" id="locale"><option value="">all</option><option value="de">de</option><option value="en">en</option><option value="pl">pl</option></select><br/>
+<select name="locale" id="locale"><option value="">all</option><option value="de">de</option><option value="en">en</option><option value="de">es</option><option value="pl">pl</option></select><br/>
 Search in: <select name="mode" id="mode"><option value="PRIVATE">Private learner entries</option><option value="MESH">Public list entries</option><option value="3">Both</option></select>
 		<h:commandButton id="searchButton" value="#{prop['search']}" >
 		    <f:ajax render="@form" action="#{adminContext.getSearchedListItems}"></f:ajax>

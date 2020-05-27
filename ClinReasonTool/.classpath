@@ -1,10 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="lib" path="/CASUS_SupportLib/lib/jfreechart/jfreechart-experimental.jar"/>
-	<classpathentry kind="lib" path="/CASUS_SupportLib/lib/jfreechart/jfreechart-swt.jar"/>
-	<classpathentry kind="lib" path="/CASUS_SupportLib/lib/jfreechart/jfreechart.jar"/>
 	<classpathentry kind="src" path="src/java"/>
-	<classpathentry kind="src" path="casus-support-lib"/>
+	<classpathentry kind="lib" path="WEB-INF/lib/commons-beanutils-1.8.3.jar"/>
 	<classpathentry kind="lib" path="WEB-INF/lib/commons-codec-1.4.jar"/>
 	<classpathentry kind="lib" path="WEB-INF/lib/commons-collections-3.2.2.jar"/>
 	<classpathentry kind="lib" path="WEB-INF/lib/commons-digester-1.8.jar"/>
@@ -21,6 +18,8 @@
 	<classpathentry kind="lib" path="WEB-INF/lib/javax.el-2.2.6.jar"/>
 	<classpathentry kind="lib" path="WEB-INF/lib/javax.el-api-2.2.5.jar"/>
 	<classpathentry kind="lib" path="WEB-INF/lib/jstl-1.1.0.jar"/>
+	<classpathentry kind="lib" path="WEB-INF/lib/myfaces-api-2.0.23.jar"/>
+	<classpathentry kind="lib" path="WEB-INF/lib/myfaces-impl-2.0.23.jar"/>
 	<classpathentry kind="lib" path="WEB-INF/lib/openwebbeans-impl-1.1.7.jar"/>
 	<classpathentry kind="lib" path="WEB-INF/lib/openwebbeans-jsf-1.1.7.jar"/>
 	<classpathentry kind="lib" path="WEB-INF/lib/openwebbeans-resource-1.1.7.jar"/>
@@ -38,103 +37,13 @@
 	<classpathentry kind="lib" path="WEB-INF/lib/hibernate-tools.jar"/>
 	<classpathentry kind="lib" path="WEB-INF/lib/hibernate.jar"/>
 	<classpathentry kind="lib" path="WEB-INF/lib/jFuzzyLogic.jar"/>
+	<classpathentry kind="lib" path="/Tomcats/apache-tomcat-7/lib/servlet-api.jar"/>
 	<classpathentry kind="lib" path="WEB-INF/lib/commons-lang3-3.4-javadoc.jar"/>
 	<classpathentry kind="lib" path="WEB-INF/lib/commons-lang.jar"/>
 	<classpathentry kind="lib" path="WEB-INF/lib/commons-lang3-3.4.jar"/>
 	<classpathentry kind="lib" path="WEB-INF/lib/jgrapht.jar"/>
+	<classpathentry kind="lib" path="WEB-INF/lib/jxapi-1.0.2.jar"/>
 	<classpathentry kind="lib" path="WEB-INF/lib/log4j.jar"/>
 	<classpathentry kind="lib" path="WEB-INF/lib/adw.v1.0.jar"/>
-	<classpathentry kind="lib" path="WEB-INF/lib/gson.jar"/>
-	<classpathentry kind="lib" path="WEB-INF/lib/jxapi.jar"/>
-	<classpathentry kind="lib" path="WEB-INF/lib/myfaces-api-2.2.12.jar"/>
-	<classpathentry kind="lib" path="WEB-INF/lib/myfaces-bundle-2.2.12.jar"/>
-	<classpathentry kind="lib" path="WEB-INF/lib/myfaces-impl-2.2.12.jar"/>
-	<classpathentry kind="lib" path="WEB-INF/lib/poi-ooxml-schemas.jar"/>
-	<classpathentry kind="lib" path="WEB-INF/lib/poi-ooxml.jar"/>
-	<classpathentry kind="lib" path="WEB-INF/lib/poi-scratchpad.jar"/>
-	<classpathentry kind="lib" path="WEB-INF/lib/poi.jar"/>
-	<classpathentry kind="lib" path="WEB-INF/lib/xmlbeans.jar"/>
-	<classpathentry kind="lib" path="/CASUS_SupportLib/lib/activation.jar"/>
-	<classpathentry kind="lib" path="/CASUS_SupportLib/lib/apache-httpclient.jar"/>
-	<classpathentry kind="lib" path="/CASUS_SupportLib/lib/apache-httpcore.jar"/>
-	<classpathentry kind="lib" path="/CASUS_SupportLib/lib/apache-httpmime.jar"/>
-	<classpathentry kind="lib" path="/CASUS_SupportLib/lib/apache-mime4j.jar"/>
-	<classpathentry kind="lib" path="/CASUS_SupportLib/lib/blake2.jar"/>
-	<classpathentry kind="lib" path="/CASUS_SupportLib/lib/castor.jar"/>
-	<classpathentry kind="lib" path="/CASUS_SupportLib/lib/commons-beanutils.jar"/>
-	<classpathentry kind="lib" path="/CASUS_SupportLib/lib/commons-cli.jar"/>
-	<classpathentry kind="lib" path="/CASUS_SupportLib/lib/commons-codec.jar"/>
-	<classpathentry kind="lib" path="/CASUS_SupportLib/lib/commons-collections.jar"/>
-	<classpathentry kind="lib" path="/CASUS_SupportLib/lib/commons-csv.jar"/>
-	<classpathentry kind="lib" path="/CASUS_SupportLib/lib/commons-dbcp.jar"/>
-	<classpathentry kind="lib" path="/CASUS_SupportLib/lib/commons-digester.jar"/>
-	<classpathentry kind="lib" path="/CASUS_SupportLib/lib/commons-discovery.jar"/>
-	<classpathentry kind="lib" path="/CASUS_SupportLib/lib/commons-fileupload.jar"/>
-	<classpathentry kind="lib" path="/CASUS_SupportLib/lib/commons-httpclient.jar"/>
-	<classpathentry kind="lib" path="/CASUS_SupportLib/lib/commons-io.jar"/>
-	<classpathentry kind="lib" path="/CASUS_SupportLib/lib/commons-lang.jar"/>
-	<classpathentry kind="lib" path="/CASUS_SupportLib/lib/commons-lang3.jar"/>
-	<classpathentry kind="lib" path="/CASUS_SupportLib/lib/commons-logging.jar"/>
-	<classpathentry kind="lib" path="/CASUS_SupportLib/lib/commons-math.jar"/>
-	<classpathentry kind="lib" path="/CASUS_SupportLib/lib/commons-math3.jar"/>
-	<classpathentry kind="lib" path="/CASUS_SupportLib/lib/commons-ssl.jar"/>
-	<classpathentry kind="lib" path="/CASUS_SupportLib/lib/dom4j-full.jar"/>
-	<classpathentry kind="lib" path="/CASUS_SupportLib/lib/ehcache.jar"/>
-	<classpathentry kind="lib" path="/CASUS_SupportLib/lib/hibernate.jar"/>
-	<classpathentry kind="lib" path="/CASUS_SupportLib/lib/itext-rtf.jar"/>
-	<classpathentry kind="lib" path="/CASUS_SupportLib/lib/iText.jar"/>
-	<classpathentry kind="lib" path="/CASUS_SupportLib/lib/jasperreports.jar"/>
-	<classpathentry kind="lib" path="/CASUS_SupportLib/lib/javax.json-api.jar"/>
-	<classpathentry kind="lib" path="/CASUS_SupportLib/lib/jgrapht.jar"/>
-	<classpathentry kind="lib" path="/CASUS_SupportLib/lib/jsqlparser.jar"/>
-	<classpathentry kind="lib" path="/CASUS_SupportLib/lib/log4j.jar"/>
-	<classpathentry kind="lib" path="/CASUS_SupportLib/lib/lucene-analyzers.jar"/>
-	<classpathentry kind="lib" path="/CASUS_SupportLib/lib/lucene-core.jar"/>
-	<classpathentry kind="lib" path="/CASUS_SupportLib/lib/mail.jar"/>
-	<classpathentry kind="lib" path="/CASUS_SupportLib/lib/poi-ooxml-schemas.jar"/>
-	<classpathentry kind="lib" path="/CASUS_SupportLib/lib/poi-ooxml.jar"/>
-	<classpathentry kind="lib" path="/CASUS_SupportLib/lib/poi-scratchpad.jar"/>
-	<classpathentry kind="lib" path="/CASUS_SupportLib/lib/poi.jar"/>
-	<classpathentry kind="lib" path="/CASUS_SupportLib/lib/servlet-api.jar"/>
-	<classpathentry kind="lib" path="/CASUS_SupportLib/lib/tidy.jar"/>
-	<classpathentry kind="lib" path="/CASUS_SupportLib/lib/batik/batik-anim.jar"/>
-	<classpathentry kind="lib" path="/CASUS_SupportLib/lib/batik/batik-awt-util.jar"/>
-	<classpathentry kind="lib" path="/CASUS_SupportLib/lib/batik/batik-bridge.jar"/>
-	<classpathentry kind="lib" path="/CASUS_SupportLib/lib/batik/batik-codec.jar"/>
-	<classpathentry kind="lib" path="/CASUS_SupportLib/lib/batik/batik-css.jar"/>
-	<classpathentry kind="lib" path="/CASUS_SupportLib/lib/batik/batik-dom.jar"/>
-	<classpathentry kind="lib" path="/CASUS_SupportLib/lib/batik/batik-ext.jar"/>
-	<classpathentry kind="lib" path="/CASUS_SupportLib/lib/batik/batik-extension.jar"/>
-	<classpathentry kind="lib" path="/CASUS_SupportLib/lib/batik/batik-gui-util.jar"/>
-	<classpathentry kind="lib" path="/CASUS_SupportLib/lib/batik/batik-gvt.jar"/>
-	<classpathentry kind="lib" path="/CASUS_SupportLib/lib/batik/batik-parser.jar"/>
-	<classpathentry kind="lib" path="/CASUS_SupportLib/lib/batik/batik-rasterizer.jar"/>
-	<classpathentry kind="lib" path="/CASUS_SupportLib/lib/batik/batik-script.jar"/>
-	<classpathentry kind="lib" path="/CASUS_SupportLib/lib/batik/batik-slideshow.jar"/>
-	<classpathentry kind="lib" path="/CASUS_SupportLib/lib/batik/batik-squiggle.jar"/>
-	<classpathentry kind="lib" path="/CASUS_SupportLib/lib/batik/batik-svg-dom.jar"/>
-	<classpathentry kind="lib" path="/CASUS_SupportLib/lib/batik/batik-svggen.jar"/>
-	<classpathentry kind="lib" path="/CASUS_SupportLib/lib/batik/batik-svgpp.jar"/>
-	<classpathentry kind="lib" path="/CASUS_SupportLib/lib/batik/batik-swing.jar"/>
-	<classpathentry kind="lib" path="/CASUS_SupportLib/lib/batik/batik-transcoder.jar"/>
-	<classpathentry kind="lib" path="/CASUS_SupportLib/lib/batik/batik-ttf2svg.jar"/>
-	<classpathentry kind="lib" path="/CASUS_SupportLib/lib/batik/batik-util.jar"/>
-	<classpathentry kind="lib" path="/CASUS_SupportLib/lib/batik/batik-xml.jar"/>
-	<classpathentry kind="lib" path="/CASUS_SupportLib/lib/batik/batik.jar"/>
-	<classpathentry kind="lib" path="/CASUS_SupportLib/lib/batik/xml-apis-ext-1.3.04.jar"/>
-	<classpathentry kind="lib" path="/CASUS_SupportLib/lib/docx4j/avalon-framework-api.jar"/>
-	<classpathentry kind="lib" path="/CASUS_SupportLib/lib/docx4j/avalon-framework-impl.jar"/>
-	<classpathentry kind="lib" path="/CASUS_SupportLib/lib/docx4j/docx4j.jar"/>
-	<classpathentry kind="lib" path="/CASUS_SupportLib/lib/docx4j/fop.jar"/>
-	<classpathentry kind="lib" path="/CASUS_SupportLib/lib/docx4j/jaxb-svg11.jar"/>
-	<classpathentry kind="lib" path="/CASUS_SupportLib/lib/docx4j/jaxb-xmldsig-core.jar"/>
-	<classpathentry kind="lib" path="/CASUS_SupportLib/lib/docx4j/jaxb-xslfo.jar"/>
-	<classpathentry kind="lib" path="/CASUS_SupportLib/lib/docx4j/stringtemplate.jar"/>
-	<classpathentry kind="lib" path="/CASUS_SupportLib/lib/docx4j/wmf2svg.jar"/>
-	<classpathentry kind="lib" path="/CASUS_SupportLib/lib/docx4j/xhtmlrenderer.jar"/>
-	<classpathentry kind="lib" path="/CASUS_SupportLib/lib/flyingsaucer/core-renderer.jar"/>
-	<classpathentry kind="lib" path="/CASUS_SupportLib/lib/jackson/jackson-annotations.jar"/>
-	<classpathentry kind="lib" path="/CASUS_SupportLib/lib/jackson/jackson-core.jar"/>
-	<classpathentry kind="lib" path="/CASUS_SupportLib/lib/jackson/jackson-databind.jar"/>
 	<classpathentry kind="output" path="WEB-INF/classes"/>
 </classpath>

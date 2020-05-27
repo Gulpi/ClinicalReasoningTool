@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
 	<name>ClinReasonTool</name>
 	<comment></comment>
@@ -14,11 +14,4 @@
 	<natures>
 		<nature>org.eclipse.jdt.core.javanature</nature>
 	</natures>
-	<linkedResources>
-		<link>
-			<name>casus-support-lib</name>
-			<type>2</type>
-			<location>/Users/Shared/casus-workspace42/CASUS_SupportLib/src</location>
-		</link>
-	</linkedResources>
 </projectDescription>

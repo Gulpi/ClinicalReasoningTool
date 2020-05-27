@@ -5,3 +5,5 @@ $ cat .gitignore
     /crt/src/nogit/
      /crt/src/nogit/*
 /.DS_Store
+/.classpath
+/.project

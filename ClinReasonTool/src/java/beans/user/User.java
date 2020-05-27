@@ -36,6 +36,8 @@ public class User {
 	 */
 	private String password;
 	
+	private boolean admin = false;
+	
 	/**
 	 * if true, this user is allowed to edit or create expert scripts
 	 */
@@ -65,7 +67,9 @@ public class User {
 	public UserSetting getUserSetting() {return userSetting;}
 	public void setUserSetting(UserSetting userSetting) {this.userSetting = userSetting;}	
 	public String getExtUserId2() {return extUserId2;}
-	public void setExtUserId2(String extUserId2) {this.extUserId2 = extUserId2;}
+	public void setExtUserId2(String extUserId2) {this.extUserId2 = extUserId2;}	
+	public boolean isAdmin() {return admin;}
+	public void setAdmin(boolean admin) {this.admin = admin;}
 	
 	private String decodeUserId(String extUserId){
 		try{

@@ -16,6 +16,7 @@
 		<property name="userName" column="username" type="string" />
 		<property name="password" column="password" type="string" />
 		<property name="editor" column="editor" type="boolean" />
+		<property name="admin" column="admin" type="boolean" />
 		<property name="extUserId2" column="user_id_ext2" type="string" />
 		
 		<!--  <component  name="adress" class="Adress" insert="true" update="true" lazy="false">        

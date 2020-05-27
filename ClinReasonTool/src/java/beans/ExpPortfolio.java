@@ -24,12 +24,12 @@ import controller.ScriptCopyController;
 public class ExpPortfolio implements Serializable{
 
 	private static final long serialVersionUID = 1L;
-	private long userId;
+	private User user;
 	private List<PatientIllnessScript> expscripts;
 	
 	
 	public ExpPortfolio(User u ){
-		this.userId = u.getUserId();
+		this.user =u;
 		loadScripts();
 	}
 		
@@ -54,7 +54,12 @@ public class ExpPortfolio implements Serializable{
 	 * TODO: later on we have to consider the userId to load only scripts that are editable by the current user.
 	 */
 	private void loadScripts(){
-		if(expscripts==null) expscripts = new DBEditing().selectAllExpertPatIllScriptsByUserId(userId);
+		if(expscripts==null){
+			if(user.isAdmin())
+				expscripts = new DBEditing().selectAllExpertPatIllScripts();
+			
+			else expscripts = new DBEditing().selectAllExpertPatIllScriptsByUserId(user.getUserId());
+		}
 	}
 	
 	public PatientIllnessScript getExpScriptById(long id){
@@ -77,7 +82,7 @@ public class ExpPortfolio implements Serializable{
 		if(!vpId.contains("_")) vpId = vpId + "_" +systemId;
 		String lang = AjaxController.getInstance().getRequestParamByKey(AjaxController.REQPARAM_SCRIPTLOC);
 		if(lang==null || lang.isEmpty()) lang = "en";
-		PatientIllnessScript patillscript = new PatientIllnessScript(userId, vpId, new Locale(lang), 2);
+		PatientIllnessScript patillscript = new PatientIllnessScript(user.getUserId(), vpId, new Locale(lang), 2);
 		int maxStage = AjaxController.getInstance().getIntRequestParamByKey(AjaxController.REQPARAM_MAXSTAGE, -1);
 		int maxddxstage = AjaxController.getInstance().getIntRequestParamByKey("maxddxstage", -1);
 		patillscript.iniExpertScript(maxStage, maxddxstage);

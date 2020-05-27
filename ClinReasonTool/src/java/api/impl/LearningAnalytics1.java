@@ -103,6 +103,9 @@ public class LearningAnalytics1 implements ApiInterface {
 	public void handleSummaryStatements(Map cell_query_parameter, List<Map> props, String key, Locale locale) {
 		String key_enabled = (String) ((HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest()).getParameter(key);
 		int enabled = StringUtilities.getIntegerFromString(key_enabled, -1);
+		
+		String key_fetchmax = (String) ((HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest()).getParameter(key + "_fetchmax");
+		int fetchMax = StringUtilities.getIntegerFromString(key_fetchmax, 100);
 		CRTLogger.out("LearningAnalytics1.handleSummaryStatements: key_enabled(" + key + "):"  + key_enabled + "," + enabled, CRTLogger.LEVEL_PROD);
 		if (enabled != 1) {
 			CRTLogger.out("LearningAnalytics1.handleSummaryStatements: return", CRTLogger.LEVEL_PROD);
@@ -116,6 +119,10 @@ public class LearningAnalytics1 implements ApiInterface {
 		item.put("type", "textlist");
 		
 		HQLQuery hqlQuery = new HQLQuery("LearningAnalytics1.hqlQuerySummaryStatement", "", HibernateUtil.impl);
+		if (fetchMax>0) {
+			hqlQuery.setCursormode(1);
+			hqlQuery.setFetchMax(fetchMax);
+		}
 		hqlQuery.setQuery_parameter(cell_query_parameter);
 		hqlQuery.query();		
 		

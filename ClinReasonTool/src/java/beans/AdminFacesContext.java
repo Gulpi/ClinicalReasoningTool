@@ -208,7 +208,7 @@ public class AdminFacesContext extends FacesContextWrapper implements MyFacesCon
 				if(this.user==null){ //load user:
 					new Auth().loginAdminsViaAPI();
 				}
-				if(this.user!=null && (this.patillscript==null || !this.patillscript.getVpIdCrop().trim().equals(vpId))){ //load script and init graph:
+				if(this.user!=null && vpId!=null && (this.patillscript==null || !this.patillscript.getVpIdCrop().trim().equals(vpId))){ //load script and init graph:
 					this.patillscript = new ExpPortfolio(this.user).getOrCreateExpScriptFromVPSystem();
 					if(this.patillscript!=null) initGraph();
 				}

@@ -89,10 +89,10 @@ $(function() {
      	$("#peer_total_score").html(my_totalScorePeers)
    		$(".perfstatus .success").animate({width: my_totalScore + "%"}, 250)
     	
-    	simpleDonutHelper("#vis_cont1",fdgScore,fdgScorePeers,correctFdgScore);
-		simpleDonutHelper("#vis_cont2",ddxScore,ddxScorePeers,correctDDxScore);
-		simpleDonutHelper("#vis_cont3",tstScore,tstScorePeers,correctTstScore);
-    	simpleDonutHelper("#vis_cont4",mngScore,mngScorePeers,correctMngScore);
+    	simpleDonutHelper("#vis_cont1",fdgScore,fdgScorePeers,correctFdgScore,100);
+		simpleDonutHelper("#vis_cont2",ddxScore,ddxScorePeers,correctDDxScore,100);
+		simpleDonutHelper("#vis_cont3",tstScore,tstScorePeers,correctTstScore,100);
+    	simpleDonutHelper("#vis_cont4",mngScore,mngScorePeers,correctMngScore,100);
 	});
 	//printLargeOverall();
 });

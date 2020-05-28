@@ -38,7 +38,8 @@ public class PeerSyncAPI implements ApiInterface {
 		PeerSyncAPIThread mythread = thread;
 		
 		if (mythread == null) {
-			mythread = new PeerSyncAPIThread();
+			thread = new PeerSyncAPIThread();
+			mythread = thread;
 			mythread.start();
 			
 			resultObj.put("result", "started");

@@ -286,9 +286,9 @@ public class DBClinReason /*extends HibernateUtil*/{
     	criteria.add(Restrictions.gt("submittedStage", 0));
     	criteria.add(Restrictions.eq("type", new Integer(PatientIllnessScript.TYPE_LEARNER_CREATED)));
     	
-    	long minusOneYearMS = System.currentTimeMillis() - 1000 * 3600 * 24 * 365;
-    	Date minusOneYear = new Date(minusOneYearMS);
-    	criteria.add(Restrictions.gt("lastAccessDate", minusOneYear));
+    	//long minusOneYearMS = System.currentTimeMillis() - 1000 * 3600 * 24 * 365;
+    	//Date minusOneYear = new Date(minusOneYearMS);
+    	//criteria.add(Restrictions.gt("lastAccessDate", minusOneYear));
     	
     	List<PatientIllnessScript> scripts = criteria.list();
     	if(scripts!=null){

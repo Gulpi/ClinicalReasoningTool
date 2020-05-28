@@ -279,13 +279,24 @@ public class DBClinReason /*extends HibernateUtil*/{
      * and learner scripts (not expert ones) are considered and selected.
      * @return PatientIllnessScript or null
      */
-    public List<PatientIllnessScript> selectLearnerPatIllScriptsByPeerSync(){
+    public List<PatientIllnessScript> selectLearnerPatIllScriptsByPeerSync(int max, Date startDate, Date endDate){
     	Session s = instance.getInternalSession(Thread.currentThread(), false);
     	Criteria criteria = s.createCriteria(PatientIllnessScript.class,"PatientIllnessScript");
     	criteria.add(Restrictions.eq("peerSync", new Boolean(false)));
     	criteria.add(Restrictions.gt("submittedStage", 0));
     	criteria.add(Restrictions.eq("type", new Integer(PatientIllnessScript.TYPE_LEARNER_CREATED)));
     	
+    	if (max>0) {
+    		criteria.setMaxResults(100);
+    	}
+    	
+    	if (startDate != null) {
+    		criteria.add(Restrictions.ge("lastAccessDate", startDate));
+    	}
+    	if (endDate != null) {
+    		criteria.add(Restrictions.le("lastAccessDate", endDate));
+    		
+    	}
     	//long minusOneYearMS = System.currentTimeMillis() - 1000 * 3600 * 24 * 365;
     	//Date minusOneYear = new Date(minusOneYearMS);
     	//criteria.add(Restrictions.gt("lastAccessDate", minusOneYear));

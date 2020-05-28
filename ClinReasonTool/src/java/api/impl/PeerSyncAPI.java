@@ -14,6 +14,14 @@ import net.casus.util.CasusConfiguration;
 import util.CRTLogger;
 import util.StringUtilities;
 
+/**
+ * simple JSON Webservice for simple API JSON framework
+ * 
+ * <base>/crt/src/html/api/api.xhtml?impl=peerSync
+ * should either start a new thread, or return basic running thread data!
+ *
+ * @author Gulpi (=Martin Adler)
+ */
 public class PeerSyncAPI implements ApiInterface {
 	PeerContainer peers = new PeerContainer();
 	PeerSyncAPIThread thread = null;

@@ -31,13 +31,13 @@ public class PeerSyncController {
 	/**
 	 * look for scripts and if there are new ones, add them to the peer table...
 	 */
-	public synchronized void sync(){
+	public synchronized void sync(int max, Date startDate, Date endDate){
 		long startms = System.currentTimeMillis();
 		CRTLogger.out("Peer sync start: " + startms + "ms", CRTLogger.LEVEL_PROD);
 
 		PeerContainer peerCont = AppBean.getPeers();
 		//TODO only select scripts that are at the same stage as the expertscript?
-		scripts = new DBClinReason().selectLearnerPatIllScriptsByPeerSync();
+		scripts = new DBClinReason().selectLearnerPatIllScriptsByPeerSync(max, startDate, endDate);
 		if(scripts==null || scripts.isEmpty()){
 			CRTLogger.out("PeerSyncController.sync - nothing to sync", CRTLogger.LEVEL_PROD);
 		}

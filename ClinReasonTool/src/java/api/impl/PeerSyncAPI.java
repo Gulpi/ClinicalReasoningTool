@@ -4,6 +4,9 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.faces.context.FacesContext;
+import javax.servlet.http.HttpServletRequest;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -11,8 +14,9 @@ import api.ApiInterface;
 import beans.scoring.PeerContainer;
 import controller.PeerSyncController;
 import net.casus.util.CasusConfiguration;
+import net.casus.util.StringUtilities;
+import net.casus.util.Utility;
 import util.CRTLogger;
-import util.StringUtilities;
 
 /**
  * simple JSON Webservice for simple API JSON framework
@@ -39,6 +43,9 @@ public class PeerSyncAPI implements ApiInterface {
 		
 		if (mythread == null) {
 			thread = new PeerSyncAPIThread();
+			thread.setMax(StringUtilities.getIntegerFromString((String) ((HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest()).getParameter("max"), 100));
+			thread.setStartDate(StringUtilities.getDateFromString((String) ((HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest()).getParameter("start_date"), null));
+			thread.setEndDate(StringUtilities.getDateFromString((String) ((HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest()).getParameter("end_date"), null));
 			mythread = thread;
 			mythread.start();
 			
@@ -46,9 +53,12 @@ public class PeerSyncAPI implements ApiInterface {
 		}
 		else {
 			resultObj.put("result", "running");
-			resultObj.put("started", mythread.getStarted());
+			resultObj.put("started", mythread.getStarted().toString());
 			resultObj.put("sync_max", mythread.getCtrl().getSync_idx());
 			resultObj.put("sync_idx", mythread.getCtrl().getSync_idx());
+			resultObj.put("query_max", mythread.getMax());
+			resultObj.put("query_start_date", mythread.getStartDate());
+			resultObj.put("query_end_date", mythread.getEndDate());
 		}
 		
 		ObjectMapper mapper = new ObjectMapper();
@@ -68,15 +78,18 @@ public class PeerSyncAPI implements ApiInterface {
 	class PeerSyncAPIThread extends Thread {
 		PeerSyncController ctrl;
 		Date started = new Date();
+		int max = 100;
+		Date startDate = null;
+		Date endDate = null;
 
 		@Override
 		public void run() {
 			 try{
 				 ctrl =  new PeerSyncController(peers);
-				 ctrl.sync();
+				 ctrl.sync(max,startDate,endDate);
 			 }
 			 catch(Exception e){
-				 CRTLogger.out("PeerSyncAPIThread(): " + StringUtilities.stackTraceToString(e), CRTLogger.LEVEL_ERROR);
+				 CRTLogger.out("PeerSyncAPIThread(): " +Utility.stackTraceToString(e), CRTLogger.LEVEL_ERROR);
 			 } 
 			 
 			 thread = null;
@@ -96,6 +109,30 @@ public class PeerSyncAPI implements ApiInterface {
 
 		public void setCtrl(PeerSyncController ctrl) {
 			this.ctrl = ctrl;
+		}
+
+		public int getMax() {
+			return max;
+		}
+
+		public void setMax(int max) {
+			this.max = max;
+		}
+
+		public Date getStartDate() {
+			return startDate;
+		}
+
+		public void setStartDate(Date startDate) {
+			this.startDate = startDate;
+		}
+
+		public Date getEndDate() {
+			return endDate;
+		}
+
+		public void setEndDate(Date endDate) {
+			this.endDate = endDate;
 		}
 		
 		

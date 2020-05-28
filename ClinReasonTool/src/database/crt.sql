@@ -32792,76 +32792,99 @@ STORAGE    (
 -- VP_LISTITEM_VIEW  (View) 
 --
 CREATE OR REPLACE FORCE VIEW CRT.VP_LISTITEM_VIEW
-(VP_ID, SOURCE_ID, NAME)
-AS 
-SELECT pis.vp_id, rp.source_id, cl.NAME
-     FROM patient_illnessscript pis, relation_problem rp, clinreason_list cl
-    WHERE pis.TYPE = 2
-      AND pis.delete_flag = 0
-      AND pis.ID = rp.dest_id
-      AND (rp.source_id = cl.item_id)
-   UNION
-   SELECT pis.vp_id, rp.source_id, cl.NAME
-     FROM patient_illnessscript pis,
-          relation_problem rp,
-          clinreason_list_syn cl
-    WHERE pis.TYPE = 2
-      AND pis.delete_flag = 0
-      AND cl.item_id = 0
-      AND pis.ID = rp.dest_id
-      AND (rp.source_id = cl.item_id)
-   UNION
-   SELECT pis.vp_id, rp.source_id, cl.NAME
-     FROM patient_illnessscript pis, relation_diagnosis rp,
-          clinreason_list cl
-    WHERE pis.TYPE = 2
-      AND pis.delete_flag = 0
-      AND pis.ID = rp.dest_id
-      AND (rp.source_id = cl.item_id)
-   UNION
-   SELECT pis.vp_id, rp.source_id, cl.NAME
-     FROM patient_illnessscript pis,
-          relation_diagnosis rp,
-          clinreason_list_syn cl
-    WHERE pis.TYPE = 2
-      AND pis.delete_flag = 0
-      AND cl.item_id = 0
-      AND pis.ID = rp.dest_id
-      AND (rp.source_id = cl.item_id)
-   UNION
-   SELECT pis.vp_id, rp.source_id, cl.NAME
-     FROM patient_illnessscript pis, relation_test rp, clinreason_list cl
-    WHERE pis.TYPE = 2
-      AND pis.delete_flag = 0
-      AND pis.ID = rp.dest_id
-      AND (rp.source_id = cl.item_id)
-   UNION
-   SELECT pis.vp_id, rp.source_id, cl.NAME
-     FROM patient_illnessscript pis, relation_test rp, clinreason_list_syn cl
-    WHERE pis.TYPE = 2
-      AND pis.delete_flag = 0
-      AND cl.item_id = 0
-      AND pis.ID = rp.dest_id
-      AND (rp.source_id = cl.item_id)
-   UNION
-   SELECT pis.vp_id, rp.source_id, cl.NAME
-     FROM patient_illnessscript pis,
-          relation_management rp,
-          clinreason_list cl
-    WHERE pis.TYPE = 2
-      AND pis.delete_flag = 0
-      AND pis.ID = rp.dest_id
-      AND (rp.source_id = cl.item_id)
-   UNION
-   SELECT pis.vp_id, rp.source_id, cl.NAME
-     FROM patient_illnessscript pis,
-          relation_management rp,
-          clinreason_list_syn cl
-    WHERE pis.TYPE = 2
-      AND pis.delete_flag = 0
-      AND cl.item_id = 0
-      AND pis.ID = rp.dest_id
-      AND (rp.source_id = cl.item_id);
+(
+    VP_ID,
+    SOURCE_ID,
+    NAME,
+    item_type,
+    item_synonym,
+    pis_id
+)
+AS
+    SELECT pis.vp_id, rp.source_id, cl.NAME, 1, 0, pis.id
+      FROM patient_illnessscript pis, relation_problem rp, clinreason_list cl
+     WHERE     pis.TYPE = 2
+           AND pis.delete_flag = 0
+           AND pis.ID = rp.dest_id
+           AND (rp.source_id = cl.item_id)
+    UNION
+    SELECT pis.vp_id, rp.source_id, cl.NAME, 1, 1, pis.id
+      FROM patient_illnessscript  pis,
+           relation_problem       rp,
+           clinreason_list_syn    cl
+     WHERE     pis.TYPE = 2
+           AND pis.delete_flag = 0
+           AND cl.item_id = 0
+           AND pis.ID = rp.dest_id
+           AND (rp.source_id = cl.item_id)
+    UNION
+    SELECT pis.vp_id, rp.source_id, cl.NAME, 2, 0, pis.id
+      FROM patient_illnessscript  pis,
+           relation_diagnosis     rp,
+           clinreason_list        cl
+     WHERE     pis.TYPE = 2
+           AND pis.delete_flag = 0
+           AND pis.ID = rp.dest_id
+           AND (rp.source_id = cl.item_id)
+    UNION
+    SELECT pis.vp_id, rp.source_id, cl.NAME, 2, 1, pis.id
+      FROM patient_illnessscript  pis,
+           relation_diagnosis     rp,
+           clinreason_list_syn    cl
+     WHERE     pis.TYPE = 2
+           AND pis.delete_flag = 0
+           AND cl.item_id = 0
+           AND pis.ID = rp.dest_id
+           AND (rp.source_id = cl.item_id)
+    UNION
+    SELECT pis.vp_id, rp.source_id, cl.NAME, 3, 0, pis.id
+      FROM patient_illnessscript pis, relation_test rp, clinreason_list cl
+     WHERE     pis.TYPE = 2
+           AND pis.delete_flag = 0
+           AND pis.ID = rp.dest_id
+           AND (rp.source_id = cl.item_id)
+    UNION
+    SELECT pis.vp_id, rp.source_id, cl.NAME, 3, 1, pis.id
+      FROM patient_illnessscript  pis,
+           relation_test          rp,
+           clinreason_list_syn    cl
+     WHERE     pis.TYPE = 2
+           AND pis.delete_flag = 0
+           AND cl.item_id = 0
+           AND pis.ID = rp.dest_id
+           AND (rp.source_id = cl.item_id)
+    UNION
+    SELECT pis.vp_id, rp.source_id, cl.NAME, 4, 0, pis.id
+      FROM patient_illnessscript  pis,
+           relation_management    rp,
+           clinreason_list        cl
+     WHERE     pis.TYPE = 2
+           AND pis.delete_flag = 0
+           AND pis.ID = rp.dest_id
+           AND (rp.source_id = cl.item_id)
+    UNION
+    SELECT pis.vp_id, rp.source_id, cl.NAME, 4, 1, pis.id
+      FROM patient_illnessscript  pis,
+           relation_management    rp,
+           clinreason_list_syn    cl
+     WHERE     pis.TYPE = 2
+           AND pis.delete_flag = 0
+           AND cl.item_id = 0
+           AND pis.ID = rp.dest_id
+           AND (rp.source_id = cl.item_id);
+           
+
+COMMENT ON COLUMN CRT.VP_LISTITEM_VIEW.ITEM_SYNONYM IS '0 for main item, 1 for synonyns';
+
+COMMENT ON COLUMN CRT.VP_LISTITEM_VIEW.ITEM_TYPE IS '1=problem, 2=diagonsis, 3=test,4=management';
+
+COMMENT ON COLUMN CRT.VP_LISTITEM_VIEW.NAME IS 'item name';
+
+COMMENT ON COLUMN CRT.VP_LISTITEM_VIEW.SOURCE_ID IS 'item_id';
+
+COMMENT ON COLUMN CRT.VP_LISTITEM_VIEW.VP_ID IS 'vp';
+
+COMMENT ON COLUMN CRT.VP_LISTITEM_VIEW.PIS_ID IS 'expert(s) patient illness script id';
 
 
 GRANT READ, WRITE ON DIRECTORY DATA_PUMP_DIR TO EXP_FULL_DATABASE;

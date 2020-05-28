@@ -31,6 +31,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import api.impl.Hello;
 import api.impl.LearningAnalytics1;
+import api.impl.PeerSyncAPI;
 import net.casus.util.String2HashKey;
 
 /**
@@ -45,8 +46,8 @@ public  class API  extends Observable implements Serializable {
 	Map<String,ApiInterface> implementations = new HashMap<String,ApiInterface>();
 		
 	public API() {
-		implementations.put("hello", new Hello());
 		implementations.put("la", new LearningAnalytics1());
+		implementations.put("peerSync", new PeerSyncAPI());
 	}
 	
 	public String getResult() {

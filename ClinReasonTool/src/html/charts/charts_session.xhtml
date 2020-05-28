@@ -68,16 +68,17 @@ $(function() {
     });
     
     $(function() {
-    	var totalScore = "#{crtContext.learningAnalyticsContainer.overallScore.scoreBasedOnExpPerc}";
+    	var totalScore = "#{crtContext.learningAnalyticsContainer.overallScore.scoreBasedOnExpPerc}"; 
      	var totalScorePeers = "#{crtContext.learningAnalyticsContainer.overallPeerScore.expPeerPercentagePerc}";
-     	var fdgScore = "#{crtContext.learningAnalyticsContainer.learningAnalyticsBean.problemScore}";
-  		var fdgScorePeers = "#{crtContext.learningAnalyticsContainer.learningAnalyticsBean.problemScore}";
-    	var ddxScore = "#{crtContext.learningAnalyticsContainer.learningAnalyticsBean.dDXScore}";
-  		var ddxScorePeers = "#{crtContext.learningAnalyticsContainer.learningAnalyticsBean.DDXScore}";
-    	var tstScore = "#{crtContext.learningAnalyticsContainer.learningAnalyticsBean.overallTestScore}";
-  		var tstScorePeers = "#{crtContext.learningAnalyticsContainer.learningAnalyticsBean.testScore}";
-    	var mngScore = "#{crtContext.learningAnalyticsContainer.learningAnalyticsBean.overallMngScore}";
-  		var mngScorePeers = "#{crtContext.learningAnalyticsContainer.learningAnalyticsBean.mngScore}";
+     	var fdgScore = "#{crtContext.learningAnalyticsContainer.learningAnalyticsBean.problemScorePerc}";
+  		var fdgScorePeers = "#{crtContext.learningAnalyticsContainer.learningAnalyticsBean.problemlistPeerScore.peerPercentagePerc}";
+    	var ddxScore = "#{crtContext.learningAnalyticsContainer.learningAnalyticsBean.DDXScorePerc}";
+  		var ddxScorePeers = "#{crtContext.learningAnalyticsContainer.learningAnalyticsBean.DDXlistPeerScore.peerPercentagePerc}";
+    	var tstScore = "#{crtContext.learningAnalyticsContainer.learningAnalyticsBean.testScorePerc}";
+  		var tstScorePeers = "#{crtContext.learningAnalyticsContainer.learningAnalyticsBean.testlistPeerScore.peerPercentagePerc}";
+    	var mngScore = "#{crtContext.learningAnalyticsContainer.learningAnalyticsBean.mngScorePerc}";
+  		var mngScorePeers = "#{crtContext.learningAnalyticsContainer.learningAnalyticsBean.mnglistPeerScore.peerPercentagePerc}";
+  
   		
   		my_totalScore = validateAnd2PercentScore100(totalScore);
   		my_totalScorePeers = validateAnd2PercentScore100(totalScorePeers);
@@ -223,10 +224,10 @@ test score: #{crtContext.learningAnalyticsContainer.learningAnalyticsBean.overal
 therapy score: #{crtContext.learningAnalyticsContainer.learningAnalyticsBean.overallMngScoreCat} (#{crtContext.learningAnalyticsContainer.learningAnalyticsBean.mngScore})<br/>
 
 peer scores: <br/>
-problem peer score: #{crtContext.learningAnalyticsContainer.learningAnalyticsBean.problemlistPeerScore.peerPercentage}<br/>
-ddx peer score: #{crtContext.learningAnalyticsContainer.learningAnalyticsBean.DDXlistPeerScore.peerPercentage}<br/>
-test peer score: #{crtContext.learningAnalyticsContainer.learningAnalyticsBean.testlistPeerScore.peerPercentage}<br/>
-mng peer score: #{crtContext.learningAnalyticsContainer.learningAnalyticsBean.mnglistPeerScore.peerPercentage}<br/>
+problem peer score: #{crtContext.learningAnalyticsContainer.learningAnalyticsBean.problemlistPeerScore.peerPercentagePerc}<br/>
+ddx peer score: #{crtContext.learningAnalyticsContainer.learningAnalyticsBean.DDXlistPeerScore.peerPercentagePerc}<br/>
+test peer score: #{crtContext.learningAnalyticsContainer.learningAnalyticsBean.testlistPeerScore.peerPercentagePerc}<br/>
+mng peer score: #{crtContext.learningAnalyticsContainer.learningAnalyticsBean.mnglistPeerScore.peerPercentagePerc}<br/>
 </div>
  </body>
  </f:view>

@@ -351,9 +351,11 @@ function drawSimpleMultipleDonutChart(element, percent, percent2, width, height,
 	    .innerRadius(radius - arc_width)
 	    .outerRadius(radius);
 	
-	var arc2 = d3.svg.arc()
-    .innerRadius(radius2 - arc_width)
-    .outerRadius(radius2);
+	if (has_percent2) {
+		var arc2 = d3.svg.arc()
+	    .innerRadius(radius2 - arc_width)
+	    .outerRadius(radius2);
+	}
 
 	var svg = d3.select(element).append("svg")
 	    .attr("width", width)
@@ -541,20 +543,23 @@ function correctSpecialScore(in_score, threshold1, factor1, base2, base2a, quot3
  * @param in_id DOM id of destination div element for donut
  * @param in_my participant score float 0...1
  * @param in_peers peer score float 0...1
+ * @param in_base peer 1 or 100 whether values are 0...1 or 0...100
  * @param func_correct
  */
-function simpleDonutHelper(in_id,in_my,in_peers, func_correct) {
+function simpleDonutHelper(in_id,in_my,in_peers,in_base,func_correct) {
 	// alert(in_id + ":" + in_my + ","+in_peers)
 	
 	// validate and bring to 1...100
-	var my_val = validateAnd2PercentScore(in_my);
+	var my_val = in_base==100 ? validateAnd2PercentScore100(in_my) : validateAnd2PercentScore(in_my);
 	
 	// validate and bring to 1...100
-	var peers_val = validateAnd2PercentScore(in_peers);
+	var peers_val = in_base==100 ? validateAnd2PercentScore100(in_peers) : validateAnd2PercentScore(in_peers);
 	if (func_correct) {
 		my_val = func_correct(my_val);
 		peers_val = func_correct(peers_val);
 	}
+	if (in_peers<0) peers_val = -1;
+
 	
 	$(in_id + ' .donut').attr('data',my_val);
 	$(in_id + ' .donut').attr('data2',peers_val);

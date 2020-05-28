@@ -203,8 +203,14 @@ public class ScoreBean extends Beans implements Serializable{
 	public void setFeedbackOn(int feedbackOn) {this.feedbackOn = feedbackOn;}
 	public int getStage() {return stage;}
 	public void setStage(int stage) {this.stage = stage;}
-	public int getScoreBasedOnExpPerc() {return (int)(scoreBasedOnExp*100);}
-	public int getOrgScoreBasedOnExpPerc() {return (int)(orgScoreBasedOnExp*100);}
+	public int getScoreBasedOnExpPerc() {
+		float tmp =  (float) scoreBasedOnExp*100;
+		return (int) tmp;		
+	}
+	public int getOrgScoreBasedOnExpPerc() {
+		float tmp = (float) orgScoreBasedOnExp*100;
+		return (int) tmp;
+	}
 	public int getDistance() {return distance;}
 	public void setDistance(int distance) {this.distance = distance;}
 	public long getExpItemId() {return expItemId;}

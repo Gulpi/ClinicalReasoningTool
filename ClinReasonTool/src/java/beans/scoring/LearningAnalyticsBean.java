@@ -108,6 +108,16 @@ public class LearningAnalyticsBean extends Beans implements Serializable, Compar
 		return sb.getOrgScoreBasedOnExp();
 	}
 	
+	/**
+	 * @return the overall problem score (all cards without expert consultation)
+	 * returns a value between 0 and 100 or -1 if no score was calculated
+	 */
+	public int getProblemScorePerc(){
+		ScoreBean sb = getOverallListScores(getProblemScoreStages());
+		if(sb==null) return -1;
+		return sb.getOrgScoreBasedOnExpPerc();
+	}
+	
 	public ScoreBean getOverallDDXScore(){
 		return getOverallListScores(getDDXScoreStages());
 		/*List<ScoreBean> listScores = getDDXScoreStages();
@@ -122,6 +132,16 @@ public class LearningAnalyticsBean extends Beans implements Serializable, Compar
 		ScoreBean sb = getOverallListScores(getDDXScoreStages());
 		if(sb==null) return -1;
 		return sb.getOrgScoreBasedOnExp();
+	}
+	
+	/**
+	 * @return the overall ddx score (all cards without expert consultation)
+	 * returns a value between 0 and 100 or -1 if no score was calculated
+	 */
+	public int getDDXScorePerc(){
+		ScoreBean sb = getOverallListScores(getDDXScoreStages());
+		if(sb==null) return -1;
+		return sb.getOrgScoreBasedOnExpPerc();
 	}
 	
 	/**
@@ -158,6 +178,16 @@ public class LearningAnalyticsBean extends Beans implements Serializable, Compar
 	}
 	
 	/**
+	 * @return the overall test score (all cards without expert consultation)
+	 * returns a value between 0 and 100 or -1 if no score was calculated
+	 */
+	public int getTestScorePerc(){
+		ScoreBean sb = getOverallListScores(getTestScoreStages());
+		if(sb==null) return -1;
+		return sb.getOrgScoreBasedOnExpPerc();
+	}
+	
+	/**
 	 * Returns -1 if no score has been calculated, 
 	 * 0 = score is very low
 	 * 1 = score is low
@@ -181,12 +211,23 @@ public class LearningAnalyticsBean extends Beans implements Serializable, Compar
 	}
 	
 	/**
-	 * @return the overall test score (all cards without expert consultation)
+	 * @return the overall mng score (all cards without expert consultation)
+	 * 
 	 */
 	public float getMngScore(){
 		ScoreBean sb = getOverallListScores(getMngScoreStages());
 		if(sb==null) return -1;
 		return sb.getOrgScoreBasedOnExp();
+	}
+	
+	/**
+	 * @return the overall test score (all cards without expert consultation)
+	 * returns a value between 0 and 100 or -1 if no score was calculated
+	 */
+	public int getMngScorePerc(){
+		ScoreBean sb = getOverallListScores(getMngScoreStages());
+		if(sb==null) return -1;
+		return sb.getOrgScoreBasedOnExpPerc();
 	}
 
 	/**

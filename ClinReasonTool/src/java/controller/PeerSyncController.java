@@ -18,9 +18,11 @@ import util.CRTLogger;
  *
  */
 public class PeerSyncController {
-	
+	boolean sync1by1 = true;
 	List<PatientIllnessScript> scripts;
 	PeerContainer cont;
+	int sync_max = 0;
+	int sync_idx = 0;
 	
 	public PeerSyncController(){}
 	public PeerSyncController(PeerContainer cont){
@@ -30,8 +32,6 @@ public class PeerSyncController {
 	 * look for scripts and if there are new ones, add them to the peer table...
 	 */
 	public synchronized void sync(){
-		boolean sync1by1 = true;
-		
 		long startms = System.currentTimeMillis();
 		CRTLogger.out("Peer sync start: " + startms + "ms", CRTLogger.LEVEL_PROD);
 
@@ -41,8 +41,9 @@ public class PeerSyncController {
 		if(scripts==null || scripts.isEmpty()){
 			CRTLogger.out("PeerSyncController.sync - nothing to sync", CRTLogger.LEVEL_PROD);
 		}
-		int i_max = scripts.size();
-		for(int i=0; i<i_max; i++){
+		sync_max = scripts.size();
+		for(int i=0; i<sync_max; i++){
+			sync_idx = i;
 			PatientIllnessScript script = scripts.get(i);
 			LearningAnalyticsBean lab = new LearningAnalyticsBean(script.getId(), script.getUserId(), script.getVpId());		
 			syncItems(script.getProblems()/*, peers*/, script.getVpId());
@@ -60,7 +61,7 @@ public class PeerSyncController {
 			if (sync1by1) {
 				new DBClinReason().saveAndCommit(script); //save the changed sync status....
 			}
-			CRTLogger.out("Peer sync: " + script.getId() + " " + i + "/" + i_max + " done", CRTLogger.LEVEL_PROD);
+			CRTLogger.out("Peer sync: " + script.getId() + " " + i + "/" + sync_max + " done", CRTLogger.LEVEL_PROD);
 		}
 		if (!sync1by1) {
 			new DBClinReason().saveAndCommit(scripts); //save the changed sync status....
@@ -216,8 +217,34 @@ public class PeerSyncController {
 		return pb;
 	}
 	
+	public boolean isSync1by1() {
+		return sync1by1;
+	}
+	
+	public void setSync1by1(boolean sync1by1) {
+		this.sync1by1 = sync1by1;
+	}
+	
+	public int getSync_max() {
+		return sync_max;
+	}
+	
+	public void setSync_max(int sync_max) {
+		this.sync_max = sync_max;
+	}
+	
+	public int getSync_idx() {
+		return sync_idx;
+	}
+	
+	public void setSync_idx(int sync_idx) {
+		this.sync_idx = sync_idx;
+	}
+	
 	
 	/*private PeerBean createNewPeerBean(int action, String vpId, long itemId, float score, float expScore, float orgExpScore){
 		return createNewPeerBean(action, vpId, itemId, score, -1, expScore, orgExpScore);
 	}*/
+	
+	
 }

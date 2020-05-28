@@ -143,15 +143,16 @@ jsPlumb.ready(function () {
 	
 	 
     $(function() {
-    	var totalScore = "#{crtContext.learningAnalyticsContainer.overallScore.scoreBasedOnExpPerc}";
+    	var totalScore = "#{crtContext.learningAnalyticsContainer.overallScore.scoreBasedOnExpPerc}"; // between 0 and 100
      	var totalScorePeers = "#{crtContext.learningAnalyticsContainer.overallPeerScore.expPeerPercentagePerc}";
-     	var fdgScore = "#{crtContext.learningAnalyticsContainer.learningAnalyticsBean.problemScore}";
+     	
+     	var fdgScore = "#{crtContext.learningAnalyticsContainer.learningAnalyticsBean.problemScorePerc}";
   		var fdgScorePeers = "-1";
-    	var ddxScore = "#{crtContext.learningAnalyticsContainer.learningAnalyticsBean.DDXScore}";
+    	var ddxScore = "#{crtContext.learningAnalyticsContainer.learningAnalyticsBean.DDXScorePerc}";
   		var ddxScorePeers = "-1";
-    	var tstScore = "#{crtContext.learningAnalyticsContainer.learningAnalyticsBean.testScore}";
+    	var tstScore = "#{crtContext.learningAnalyticsContainer.learningAnalyticsBean.testScorePerc}";
   		var tstScorePeers = "-1";
-    	var mngScore = "#{crtContext.learningAnalyticsContainer.learningAnalyticsBean.mngScore}";
+    	var mngScore = "#{crtContext.learningAnalyticsContainer.learningAnalyticsBean.mngScorePerc}";
   		var mngScorePeers = "-1";
   		
   		my_totalScore = validateAnd2PercentScore100(totalScore);

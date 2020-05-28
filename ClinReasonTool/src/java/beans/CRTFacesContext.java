@@ -455,19 +455,19 @@ public class CRTFacesContext extends FacesContextWrapper implements MyFacesConte
 		return feedbackContainer;
 	}
 	public void toogleExpBoxFeedback(String toggleStr, String taskStr){
-		feedbackContainer.toogleExpBoxFeedback(toggleStr, taskStr);
+		getFeedbackContainer().toogleExpBoxFeedback(toggleStr, taskStr);
 	}
 	
 	public void toogleExpFeedback(String toggleStr){
-		feedbackContainer.toogleExpFeedback(toggleStr, this.patillscript.getCurrentStage());
+		getFeedbackContainer().toogleExpFeedback(toggleStr, this.patillscript.getCurrentStage());
 	}
 	
 	public void createClickLogEntry(String action, String item){
-		feedbackContainer.createClickLogEntry(Integer.parseInt(action), Long.parseLong(item));
+		getFeedbackContainer().createClickLogEntry(Integer.parseInt(action), Long.parseLong(item));
 	}
 	
 	public void tooglePeerBoxFeedback(String toggleStr, String taskStr){
-		feedbackContainer.tooglePeerBoxFeedback(toggleStr, taskStr, this.patillscript.getCurrentStage());
+		getFeedbackContainer().tooglePeerBoxFeedback(toggleStr, taskStr, this.patillscript.getCurrentStage());
 	}
 	
 	/** 

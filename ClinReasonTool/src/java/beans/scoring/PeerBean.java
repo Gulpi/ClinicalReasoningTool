@@ -173,7 +173,7 @@ public class PeerBean extends Beans{
 	public int getExpPeerPercentagePerc(){
 		//if(peerNum<=0) return 0;
 		//int sum = (int) (this.scoreBasedOnExp/peerNum * 100);
-		return (int) ( (float) 0.46/20 * 100); //((float)this.scoreBasedOnExp/peerNum * 100);
+		return (int) ((float)this.scoreBasedOnExp/peerNum * 100);
 	}
 	
 	public int getOrgExpPeerPercentagePerc(){

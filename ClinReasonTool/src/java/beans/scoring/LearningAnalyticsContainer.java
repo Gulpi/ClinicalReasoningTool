@@ -259,6 +259,10 @@ public class LearningAnalyticsContainer implements Serializable{
 	public List<PeerBean> getMngPeerScores(){ return getPeerScoresLastStage(ScoreBean.TYPE_MNG_LIST, getMngScores());}
 	//public List<PeerBean> getSumPeerScores(){ return getPeerScoresLastStage(ScoreBean.TYPE_SUMMST, getSumScores());}
 	
+	/**
+	 * list of PeerBeans for the overall performance (at each stage) 
+	 * @return
+	 */
 	public List<PeerBean> getOverallPeerScores(){ 
 		if(AppBean.getPeers()==null) return null;
 		//PatIllScriptContainer cont = NavigationController.getInstance().getCRTFacesContext().getScriptContainer();

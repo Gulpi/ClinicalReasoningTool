@@ -170,6 +170,13 @@ jsPlumb.ready(function () {
 		simpleDonutHelper("#vis_cont2",ddxScore,ddxScorePeers,100,correctDDxScore);
 		simpleDonutHelper("#vis_cont3",tstScore,tstScorePeers,100,correctTstScore);
     	simpleDonutHelper("#vis_cont4",mngScore,mngScorePeers,100,correctMngScore);
+    	
+    	// communicate height to host
+    	window.setTimeout(function() { 
+    		var crtplugin_height = $("body").height() + 15;
+    		top.postMessage("crtplugin_resize_height_" + crtplugin_height, "*");
+		},250);
+    	
 	});
 });
 

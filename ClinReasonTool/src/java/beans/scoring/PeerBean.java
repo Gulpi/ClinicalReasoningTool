@@ -167,7 +167,7 @@ public class PeerBean extends Beans{
 	 */
 	public int getPeerPercentagePerc(){
 		if(peerNum<=0) return 0;
-		return (int) (orgScoreBasedOnExp/peerNum * 100);
+		return (int) ((float)orgScoreBasedOnExp/peerNum * 100);
 	}
 	
 	public int getExpPeerPercentagePerc(){
@@ -178,7 +178,7 @@ public class PeerBean extends Beans{
 	
 	public int getOrgExpPeerPercentagePerc(){
 		if(peerNum<=0) return 0;
-		return (int) (this.orgScoreBasedOnExp/peerNum * 100);
+		return(int) ((float)this.orgScoreBasedOnExp/peerNum * 100);
 	}
 	/**
 	 * How many peers have added this item in comparison to the overall number of peers who have created 

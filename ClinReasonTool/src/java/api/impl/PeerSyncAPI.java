@@ -29,6 +29,7 @@ import util.CRTLogger;
 public class PeerSyncAPI implements ApiInterface {
 	PeerContainer peers = new PeerContainer();
 	PeerSyncAPIThread thread = null;
+	PeerSyncAPIThread lastThread = null;
 	
 	public PeerSyncAPI() {
 	}
@@ -40,25 +41,33 @@ public class PeerSyncAPI implements ApiInterface {
 		@SuppressWarnings("rawtypes")
 		Map resultObj = new HashMap();
 		PeerSyncAPIThread mythread = thread;
-		
-		if (mythread == null) {
-			thread = new PeerSyncAPIThread();
-			thread.setMax(StringUtilities.getIntegerFromString((String) ((HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest()).getParameter("max"), 100));
-			thread.setStartDate(StringUtilities.getDateFromString((String) ((HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest()).getParameter("start_date"), null));
-			thread.setEndDate(StringUtilities.getDateFromString((String) ((HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest()).getParameter("end_date"), null));
-			mythread = thread;
-			mythread.start();
-			
-			resultObj.put("result", "started");
+		String status = ((HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest()).getParameter("status");
+
+		if (StringUtilities.isValidString(status) && status.equalsIgnoreCase("true")) {
+			if (mythread != null) {
+				fillStatus(resultObj, mythread);
+			}
+			else if (lastThread != null) {
+				fillStatus(resultObj, lastThread);
+			}
+			else {
+				resultObj.put("result", "no status available!");
+			}
 		}
 		else {
-			resultObj.put("result", "running");
-			resultObj.put("started", mythread.getStarted().toString());
-			resultObj.put("sync_max", mythread.getCtrl().getSync_idx());
-			resultObj.put("sync_idx", mythread.getCtrl().getSync_idx());
-			resultObj.put("query_max", mythread.getMax());
-			resultObj.put("query_start_date", mythread.getStartDate());
-			resultObj.put("query_end_date", mythread.getEndDate());
+			if (mythread == null) {
+				thread = new PeerSyncAPIThread();
+				thread.setMax(StringUtilities.getIntegerFromString((String) ((HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest()).getParameter("max"), 100));
+				thread.setStartDate(StringUtilities.getDateFromString((String) ((HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest()).getParameter("start_date"), null));
+				thread.setEndDate(StringUtilities.getDateFromString((String) ((HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest()).getParameter("end_date"), null));
+				mythread = thread;
+				mythread.start();
+				
+				resultObj.put("result", "started");
+			}
+			else {
+				fillStatus(resultObj, mythread);
+			}
 		}
 		
 		ObjectMapper mapper = new ObjectMapper();
@@ -74,6 +83,19 @@ public class PeerSyncAPI implements ApiInterface {
 		}
 		return result;
 	}
+
+	@SuppressWarnings("unchecked")
+	public void fillStatus(@SuppressWarnings("rawtypes") Map resultObj, PeerSyncAPIThread mythread) {
+		resultObj.put("result", "running");
+		resultObj.put("started", mythread.getStarted().toString());
+		resultObj.put("sync_max", mythread.getCtrl().getSync_idx());
+		resultObj.put("sync_idx", mythread.getCtrl().getSync_idx());
+		resultObj.put("query_max", mythread.getMax());
+		resultObj.put("query_start_date", mythread.getStartDate());
+		resultObj.put("query_end_date", mythread.getEndDate());
+	}
+	
+	
 	
 	class PeerSyncAPIThread extends Thread {
 		PeerSyncController ctrl;
@@ -92,6 +114,7 @@ public class PeerSyncAPI implements ApiInterface {
 				 CRTLogger.out("PeerSyncAPIThread(): " +Utility.stackTraceToString(e), CRTLogger.LEVEL_ERROR);
 			 } 
 			 
+			 lastThread = thread;
 			 thread = null;
 		}
 

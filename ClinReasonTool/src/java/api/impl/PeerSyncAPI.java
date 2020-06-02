@@ -88,11 +88,15 @@ public class PeerSyncAPI implements ApiInterface {
 	public void fillStatus(@SuppressWarnings("rawtypes") Map resultObj, PeerSyncAPIThread mythread) {
 		resultObj.put("result", "running");
 		resultObj.put("started", mythread.getStarted().toString());
+		if (mythread.getFinished() != null) {
+			resultObj.put("finished", mythread.getFinished().toString());
+		}
 		resultObj.put("sync_max", mythread.getCtrl().getSync_idx());
 		resultObj.put("sync_idx", mythread.getCtrl().getSync_idx());
 		resultObj.put("query_max", mythread.getMax());
 		resultObj.put("query_start_date", mythread.getStartDate());
 		resultObj.put("query_end_date", mythread.getEndDate());
+		
 	}
 	
 	
@@ -100,6 +104,7 @@ public class PeerSyncAPI implements ApiInterface {
 	class PeerSyncAPIThread extends Thread {
 		PeerSyncController ctrl;
 		Date started = new Date();
+		Date finished = null;
 		int max = 100;
 		Date startDate = null;
 		Date endDate = null;
@@ -114,6 +119,7 @@ public class PeerSyncAPI implements ApiInterface {
 				 CRTLogger.out("PeerSyncAPIThread(): " +Utility.stackTraceToString(e), CRTLogger.LEVEL_ERROR);
 			 } 
 			 
+			 this.setFinished(new Date());
 			 lastThread = thread;
 			 thread = null;
 		}
@@ -124,6 +130,14 @@ public class PeerSyncAPI implements ApiInterface {
 
 		public void setStarted(Date started) {
 			this.started = started;
+		}
+		
+		public Date getFinished() {
+			return finished;
+		}
+
+		public void setFinished(Date finished) {
+			this.finished = finished;
 		}
 
 		public PeerSyncController getCtrl() {

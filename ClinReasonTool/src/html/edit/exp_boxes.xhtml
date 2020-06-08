@@ -84,6 +84,8 @@ var ddxBoxUsed = "0";
 var testBoxUsed = "0";
 var mngBoxUsed = "0";
 
+var isEmptyScript = "#{adminContext.patillscript.isEmptyScript}";
+
 $(function() {
 	//if(scriptlang=="de") listUrl = "../jsonp_de.json";
 	$(".listdialog").hide();
@@ -208,6 +210,7 @@ jsPlumb.ready(function () {
 	//$(".jsplumb-exp-connector").removeClass("jsplumb-exp-connector-hide");
 
     jsPlumb.fire("jsPlumbDemoLoaded", instance);
+    $("#scriptloc").val(scriptlang);
     
     //initBoxHeights();
    // initContainerCollapsed();
@@ -235,7 +238,11 @@ Stage: <span id="stageSpan">#{adminContext.patillscript.stage}(#{adminContext.pa
 	<div class="switch" style="left:30px;" mytooltip="#{prop['cnx.show']}">
         <input id="cnxtoggle" class="cmn-toggle cmn-toggle-round" checked="checked" onchange="javascript:toggleCnxDisplay();" type="checkbox" />
         <label for="cnxtoggle"></label>
-</div>
+        
+	</div>
+        <div style="position:absolute;left:80px;top:5px;">#{prop['authoring.language']} <select onChange="javascript:chgMapLang();" name="script_locale" id="scriptloc"><option value="en">en</option><option value="de">de</option><option value="es">es</option><option value="pl">pl</option></select>
+        <i class="fa fa-info-circle" mytooltip="Language of lists to display"></i></div>
+
 </div>
 <div class="boxes_container">
 	<div id="canvas" class="canvas jtk-surface drag-drop jtk-surface-nopan" >

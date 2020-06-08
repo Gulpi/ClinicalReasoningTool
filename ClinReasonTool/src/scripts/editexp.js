@@ -22,6 +22,26 @@ function chgStage(chg, loc){
 }
 
 /**
+ * we change the language of the map and reload the page to display the changed list items
+ */
+function chgMapLang(){
+	var newLang = $("#scriptloc").val();
+	listUrl="../jsonp_"+newLang+".json";
+	scriptlang = newLang;
+	//alert(listUrl);
+	if(isEmptyScript=="true"){ //trigger submit, script is empty
+		sendAjax(newLang, doNothing, "changeLangOfScript", "");
+	}
+	else{ //we have to ask user what he/she wants to do with the already created items
+		var cont = confirm("Wollen Sie die Sprache ändern? Es wird versucht alle bereits eingegebenen Knoten in die neue Sprache zu übersetzen.")
+		if(cont){
+			sendAjax(newLang, doNothing, "changeLangOfScript", "");			
+		}
+	}
+	location.reload();
+}
+
+/**
  * the display of the individual map is either as a step-thru (0) or complete map display (1)
  * @param url
  * @returns

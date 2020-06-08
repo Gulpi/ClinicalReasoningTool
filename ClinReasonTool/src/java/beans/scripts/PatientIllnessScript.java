@@ -442,7 +442,23 @@ public class PatientIllnessScript extends Beans implements Comparable, IllnessSc
 	public void changeConfidence(String idStr, String confVal){new ChgPatIllScriptAction(this).changeConfidence(idStr, confVal);}
 	public void showSolution(String s){new DiagnosisSubmitAction(this).showSolution();}
 	//public void chgCourseOfTime(String courseOfTimeStr) { new ChgPatIllScriptAction(this).chgCourseOfTime(courseOfTimeStr);}
-
+	
+	/**
+	 * author/expert wants to change the language of the (expert) map, we trigger this. If the map/script is not empty we try to
+	 * translate already created items. 
+	 * @param newLang
+	 */
+	public void changeLangOfScript(String newLang){
+		if(newLang==null) return;
+		if(this.getType() == IllnessScriptInterface.TYPE_LEARNER_CREATED) return; //no language change for learner maps!
+		this.setLocale(new Locale(newLang));
+		new DBClinReason().saveAndCommit(this);
+		
+		if(!this.getIsEmptyScript()){ //we try to translate the complete script and entered items:
+			new ScriptTranslationController(this).translateScript();
+		}	
+	}
+	
 	public void addJoker(String idStr, String type){ new JokerAction(this).addJoker(type);}
 	public StatementContainer getStmtContainer() {
 		if(stmtContainer==null) stmtContainer = new StatementContainer(userId, vpId, 2);
@@ -756,7 +772,19 @@ public class PatientIllnessScript extends Beans implements Comparable, IllnessSc
 	 * Exports all map related data into Excel sheets (called from reports area)
 	 */
 	public void getMapAsExcel() {
-		new ExportController().createAndWriteBasicTable(this);
+		new ExportController().createAndWriteBasicTable(this);	
+	}
 	
+	/**
+	 * 
+	 * @return true is no items have been added (no fdgs, ddxs, tests, or mng items), otherwise false.
+	 */
+	public boolean getIsEmptyScript(){
+		if(this.getProblems()!=null && !this.getProblems().isEmpty()) return false; 
+		if(this.getDiagnoses()!=null && !this.getDiagnoses().isEmpty()) return false; 
+		if(this.getTests()!=null && !this.getTests().isEmpty()) return false; 
+		if(this.getMngs()!=null && !this.getMngs().isEmpty()) return false; 
+
+		return true;
 	}
 }

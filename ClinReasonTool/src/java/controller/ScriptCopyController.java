@@ -96,6 +96,11 @@ public class ScriptCopyController {
 		}
 	}
 	
+	/**
+	 * duplicate the script/map and translate all items (if possible) into the new language. 
+	 * @param newLang
+	 * @param vpId
+	 */
 	private static void copyAndTranslateScript(String newLang, String vpId){
 		PatientIllnessScript newScript = createNewScript(newLang, vpId);
 		if(newScript==null) return;
@@ -306,7 +311,16 @@ public class ScriptCopyController {
 	 * @return
 	 */
 	private static ListItem getListItem(String code){	
-		ListItem li = new DBList().selectListItemByCode(code, newScript.getLocale());
+		return getListItem(code, newScript.getLocale());
+	}
+	
+	/**
+	 * select the ListItem with the given code in the language of the new map
+	 * @param code
+	 * @return
+	 */
+	public static ListItem getListItem(String code, Locale loc){	
+		ListItem li = new DBList().selectListItemByCode(code, loc);
 		if(li==null){
 			CRTLogger.out("No ListItem found for code " + code, CRTLogger.LEVEL_PROD);
 			return null;

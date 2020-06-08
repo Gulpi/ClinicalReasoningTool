@@ -19,7 +19,7 @@
 		<!--  <property name="parentId" column="parent_id" type="long"/>-->	
 		<property name="submittedStage" column="ddx_submitted" type="int"/>
 		<property name="type" column="type" type="int"/>
-		<property name="locale" column="locale" update="false" type="locale"/>	
+		<property name="locale" column="locale" type="locale"/>	
 		<property name="currentStage" column="stage" type="int"/>	
 		<property name="confidence" column="confidence" type="int"/>	
 		<property name="lastAccessDate" column="last_access_date" type="timestamp"/>

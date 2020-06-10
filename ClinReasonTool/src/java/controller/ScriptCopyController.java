@@ -25,7 +25,7 @@ public class ScriptCopyController {
 	private static PatientIllnessScript newScript;
 	private static PatientIllnessScript orgScript;
 	private static Properties idTable = new Properties();
-	
+	private static StringBuffer returnMsg = new StringBuffer();
 	
 	/**
 	 * We copy/duplicate a map into the same language
@@ -64,10 +64,17 @@ public class ScriptCopyController {
 		if(orgVPId.indexOf("_")<=0) orgVPId = orgVPId+"_2";
 		orgScript = new DBClinReason().selectExpertPatIllScriptByVPId(orgVPId);
 		if(orgScript == null|| orgScript.getType()!=PatientIllnessScript.TYPE_EXPERT_CREATED) return;
-		if(!orgScript.getLocale().getLanguage().equalsIgnoreCase(lang))
+		if(!orgScript.getLocale().getLanguage().equalsIgnoreCase(lang)){ //copy & translate
 			copyAndTranslateScript(lang, newVPId);
+		}
+		else{ //copy only (same language
+			copyScript(newVPId);
+		}
 	}
 	
+	/** A script it copied (without any translation)
+	 * @param vpId
+	 */
 	private static void copyScript(String vpId){
 		PatientIllnessScript newScript = createNewScript(orgScript.getLocale().getLanguage(), vpId);
 		if(newScript==null) return;
@@ -103,7 +110,7 @@ public class ScriptCopyController {
 	 */
 	private static void copyAndTranslateScript(String newLang, String vpId){
 		PatientIllnessScript newScript = createNewScript(newLang, vpId);
-		if(newScript==null) return;
+		if(newScript==null) return; //can happen if there is already an expert map!
 		createVPScriptRef(newScript);
 		if(orgScript.getProblems()!=null){
 			for(int i=0;i<orgScript.getProblems().size();i++){
@@ -136,28 +143,43 @@ public class ScriptCopyController {
 	private static void createVPScriptRef(PatientIllnessScript newScript){
 		VPScriptRef orgRef = (VPScriptRef) new DBClinReason().getVPScriptRef(orgScript.getVpId());
 		if(orgRef==null) return;
-		VPScriptRef newRef = new VPScriptRef(newScript.getVpId(), orgRef.getVpName(), orgRef.getSystemId(), "-1");
+		VPScriptRef newRef = (VPScriptRef) new DBClinReason().getVPScriptRef(newScript.getVpId());
+		if(newRef!=null) return;//already there!
+		 newRef = new VPScriptRef(newScript.getVpId(), orgRef.getVpName(), orgRef.getSystemId(), "-1");
 		new DBClinReason().saveAndCommit(newRef);
 		
 	}
 	
 	/**
-	 * Creates a new map and stores it in the database, where necessary parameters from the orgScript are transferred. 
+	 * Creates a new map and stores it in the database, where necessary parameters from the orgScript are transferred.
+	 * If we already have an emty map, we use this, if the map is not empty, we return null and we have to provide a warning 
+	 * for the user. 
 	 * @param orgScript
 	 * @param newLang
 	 * @param vpId
 	 * @return
 	 */
 	private static PatientIllnessScript createNewScript(String newLang, String vpId){
-		//todo check whether for the given VP Id a script has already been created!
-		newScript = new PatientIllnessScript(orgScript.getUserId(), vpId, new Locale(newLang), 2);
-		newScript.setFinalDDXType(orgScript.getFinalDDXType());
-		newScript.setType(PatientIllnessScript.TYPE_EXPERT_CREATED);
-		newScript.setCurrentStage(orgScript.getCurrentStage());
-		newScript.setSubmittedStage(orgScript.getSubmittedStage());
-		newScript.setMaxSubmittedStage(orgScript.getMaxSubmittedStage());
-		new DBClinReason().saveAndCommit(newScript);
+		PatientIllnessScript pis = new DBClinReason().selectExpertPatIllScriptByVPId(vpId);
+		if(pis !=null && pis.getIsEmptyScript()){
+			newScript = pis;
+			returnMsg.append("empty map used, " + pis.getId());
+		}
+		
+		else if(pis==null){ //no script has been created yet... 
+			newScript = new PatientIllnessScript(orgScript.getUserId(), vpId, new Locale(newLang), 2);
+			newScript.setFinalDDXType(orgScript.getFinalDDXType());
+			newScript.setType(PatientIllnessScript.TYPE_EXPERT_CREATED);
+			newScript.setCurrentStage(orgScript.getCurrentStage());
+			newScript.setSubmittedStage(orgScript.getSubmittedStage());
+			newScript.setMaxSubmittedStage(orgScript.getMaxSubmittedStage());
+			new DBClinReason().saveAndCommit(newScript);
+			returnMsg.append("new map created " + newScript.getId());
+			
+		}
+		else if(pis!=null && !pis.getIsEmptyScript()) returnMsg.append("filled map already there " + pis.getId());
 		return newScript;
+		
 	}
 	
 	private static Relation copyAndTranslateProblem(RelationProblem rel){
@@ -348,4 +370,9 @@ public class ScriptCopyController {
 			}
 		}
 	}
+
+	public static String getReturnMsg() {
+		if(returnMsg==null) return "";
+		return returnMsg.toString();
+	}	
 }

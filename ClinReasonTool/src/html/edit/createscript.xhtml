@@ -1,15 +1,73 @@
-<ui:composition 
-    xmlns="http://www.w3.org/1999/xhtml"
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"   
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:ui="http://java.sun.com/jsf/facelets"
-      xmlns:f="http://java.sun.com/jsf/core">
-<f:event type="preRenderView" listener="#{facesContext.externalContext.response.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, post-check=0, pre-check=0')}" />
-<f:event type="preRenderView" listener="#{facesContext.externalContext.response.setHeader('Pragma', 'no-cache')}" />
- 
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:v="urn:schemas-microsoft-com:vml">
+ <f:view locale="en"> 
+<head>
+<f:event type="preRenderView" listener="#{facesContext.externalContext.response.setHeader('Cache-Control', 'no-cache, no-store')}" />
+
+<title>Illness Script Portfolio</title>
+ <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+ <script type="text/javascript" src="../../scripts/jquery112/jquery.js"></script>
+<script type="text/javascript" src="../../scripts/jquery112/jquery-ui.min.js"></script>
+<script type="text/javascript" src="../../scripts/jquery112/jquery-ui.js"></script>
+<script src="../../scripts/admin.js"></script>
+<script src="../../scripts/ajax.js"></script>
+<script src="../../scripts/editexp.js"></script>
+
+<link rel="stylesheet" type="text/css" href="../../scripts/jquery112/ui-lightness/jquery-ui.css" /> 
+<link rel="stylesheet" href="../../styles/clinreason_boxes.css" />
+<link rel="stylesheet" href="../../styles/portfolio.css" />
+
+<link rel="stylesheet" href="../../styles/font-awesome/css/font-awesome.css" />
+
+
+<script language="JavaScript">
+var isViaAPI = "#{adminContext.openedViaAPI}";
+$(function() {
+	resetSessionStorage(); 
+	$("#jdialog").dialog({
+		autoOpen: false,
+		modal: true,
+		width: "auto",
+		height: "auto",
+		//position: { my: "right-20 top+100", at: "right-20 top+100", of: window },
+	});
+	$("#jdialog").hide();
+});
+$( this ).tooltip({
+  	items: "[mytooltip]",
+  	position: { my: "left+5 center", at: "right center" },
+  	content: function() {
+    	var element = $( this );
+    	var parent = $( this ).parent();
+   		return $( this ).attr( "mytooltip" );
+	}
+});
+$( document ).tooltip({
+	items: " rect, [title], text, tspan",
+	content: function() {
+		var element = $( this );
+        if ( element.is( "[title]" ) ) { //this is a "normal" tooltip returning the title of an element
+            return element.attr( "title" );
+          }
+	}
+});
+
+
+var doInit = "#{adminContext.adminPortfolio.init}";
+</script>
+ </head>
+ <body class="chartbody">
  <h:form>
-<div>
 
 
+<!--  <div>
 ScriptId:  #{adminContext.patillscript.id}<br/>
 VPId: <input type="text" name="vp_id"></input><i class="fa fa-info-circle" mytooltip="The unique identifier of the VP"></i><br/>
 VP name <input type="text" name="vp_name"></input><br/>
@@ -22,9 +80,9 @@ Language <select name="script_locale"><option value="en">en</option><option valu
     </h:commandButton>
   </h:form>
 
- <h:form><br/><br/>
+ <h:form><br/><br/>-->
 <div>
-Copy and Translate Script:<br/>
+Copy and (if applicable) Translate Script:<br/>
 org VPId: <input type="text" name="org_vp_id"></input><br/>
 new VPId: <input type="text" name="new_vp_id"></input><br/>
 new language <select name="script_locale"><option value="en">en</option><option value="de">de</option><option value="es">es</option><option value="pl">pl</option></select><i class="fa fa-info-circle" mytooltip="Language in which VP is written"></i><br/>
@@ -32,4 +90,6 @@ new language <select name="script_locale"><option value="en">en</option><option 
     <h:commandButton value="Submit" action="#{adminContext.adminPortfolio.copyExpScript}">
     </h:commandButton>
   </h:form>
-</ui:composition>
+  #{adminContext.copyctrl.returnMsg}
+
+</body></f:view></html>

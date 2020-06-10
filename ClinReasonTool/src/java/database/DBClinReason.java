@@ -287,7 +287,7 @@ public class DBClinReason /*extends HibernateUtil*/{
     	criteria.add(Restrictions.eq("type", new Integer(PatientIllnessScript.TYPE_LEARNER_CREATED)));
     	
     	if (max>0) {
-    		criteria.setMaxResults(100);
+    		criteria.setMaxResults(max);
     	}
     	
     	if (startDate != null) {

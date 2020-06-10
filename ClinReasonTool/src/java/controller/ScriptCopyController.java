@@ -87,22 +87,27 @@ public class ScriptCopyController {
 		if(newScript==null) return;
 		createVPScriptRef(newScript);
 		if(orgScript.getProblems()!=null){
+			if(newScript.getProblems()==null) newScript.setProblems(new ArrayList());
 			for(int i=0;i<orgScript.getProblems().size();i++){
-				copyProblem(orgScript.getProblems().get(i));
+				if(newScript.getProblems()==null) newScript.setProblems(new ArrayList());
+				newScript.getProblems().add(copyProblem(orgScript.getProblems().get(i)));
 			}
 		if(orgScript.getDiagnoses()!=null){
+			if(newScript.getDiagnoses()==null) newScript.setDiagnoses(new ArrayList());
 			for(int i=0;i<orgScript.getDiagnoses().size();i++){
-				copyDDX(orgScript.getDiagnoses().get(i));
+				newScript.getDiagnoses().add(copyDDX(orgScript.getDiagnoses().get(i)));
 			}
 			}
 		if(orgScript.getTests()!=null){
+			if(newScript.getTests()==null) newScript.setTests(new ArrayList());
 			for(int i=0;i<orgScript.getTests().size();i++){
-				copyTest(orgScript.getTests().get(i));
+				newScript.getTests().add(copyTest(orgScript.getTests().get(i)));
 			}
 		}
 		if(orgScript.getMngs()!=null){
+			if(newScript.getMngs()==null) newScript.setMngs(new ArrayList());
 			for(int i=0;i<orgScript.getMngs().size();i++){
-				copyManagement(orgScript.getMngs().get(i));
+				newScript.getMngs().add(copyManagement(orgScript.getMngs().get(i)));
 			}
 		}						
 			copyConnections();	
@@ -184,15 +189,16 @@ public class ScriptCopyController {
 			newScript.setMaxSubmittedStage(orgScript.getMaxSubmittedStage());
 			new DBClinReason().saveAndCommit(newScript);
 			returnMsg.append("new map created " + newScript.getId());
+			//return newScript;
 			
 		}
 		//map is not empty, so we do not try to override the map! 
 		else if(pis!=null && !pis.getIsEmptyScript()){
 			returnMsg.append("filled map already there " + pis.getId());
 			newScript = null;
-			return null;
+			//return null;
 		}
-		return null;
+		return newScript;
 		
 	}
 	
@@ -213,7 +219,7 @@ public class ScriptCopyController {
 		return null;
 	}
 	
-	private static Relation copyProblem(RelationProblem rel){
+	private static RelationProblem copyProblem(RelationProblem rel){
 		RelationProblem newRel = (RelationProblem) copyBasicData(new RelationProblem(), rel);
 		newRel.setListItemId(rel.getListItemId());
 		new DBClinReason().saveAndCommit(newRel);
@@ -221,7 +227,7 @@ public class ScriptCopyController {
 		return newRel;
 	}
 	
-	private static Relation copyDDX(RelationDiagnosis rel){
+	private static RelationDiagnosis copyDDX(RelationDiagnosis rel){
 		RelationDiagnosis newRel = (RelationDiagnosis) copyBasicData(new RelationDiagnosis(), rel);
 		newRel.setListItemId(rel.getListItemId());
 		newRel.setFinalDiagnosis(rel.getFinalDiagnosis());
@@ -234,7 +240,7 @@ public class ScriptCopyController {
 		return newRel;
 	}
 	
-	private static Relation copyTest(RelationTest rel){
+	private static RelationTest copyTest(RelationTest rel){
 		RelationTest newRel = (RelationTest) copyBasicData(new RelationTest(), rel);
 		newRel.setListItemId(rel.getListItemId());
 		new DBClinReason().saveAndCommit(newRel);
@@ -242,7 +248,7 @@ public class ScriptCopyController {
 		return newRel;
 	}
 	
-	private static Relation copyManagement(RelationManagement rel){
+	private static RelationManagement copyManagement(RelationManagement rel){
 		RelationManagement newRel = (RelationManagement) copyBasicData(new RelationManagement(), rel);
 		newRel.setListItemId(rel.getListItemId());
 		new DBClinReason().saveAndCommit(newRel);

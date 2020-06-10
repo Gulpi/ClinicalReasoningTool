@@ -236,7 +236,7 @@ public abstract class Relation extends Beans implements Rectangle{
 	 * @return
 	 */
 	public int getIsSyndrome(){
-		if(this.getListItem().getIsSyndrome()==Relation.IS_SYNDROME) return Relation.IS_SYNDROME;
+		if(this.getListItem()!=null && this.getListItem().getIsSyndrome()==Relation.IS_SYNDROME) return Relation.IS_SYNDROME;
 		return getIsSyndromePart();
 		
 	}

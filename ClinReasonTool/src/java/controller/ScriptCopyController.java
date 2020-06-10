@@ -5,6 +5,7 @@ import java.util.*;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.RequestScoped;
 
+import application.AppBean;
 import beans.relation.*;
 import beans.relation.summary.*;
 import beans.scripts.PatientIllnessScript;
@@ -35,6 +36,7 @@ public class ScriptCopyController {
 	public static void initCopy(String orgVPId, String newVPId){
 		if(orgVPId==null) return;
 		if(orgVPId.indexOf("_")<=0) orgVPId = orgVPId+"_2";
+		if(newVPId.indexOf("_")<=0) newVPId = newVPId+"_2";
 		orgScript = new DBClinReason().selectExpertPatIllScriptByVPId(orgVPId);
 		if(orgScript == null|| orgScript.getType()!=PatientIllnessScript.TYPE_EXPERT_CREATED) return;
 		copyScript(newVPId);
@@ -62,13 +64,18 @@ public class ScriptCopyController {
 	public static void initCopyAndTranslate(String orgVPId, String newVPId, String lang){
 		if(orgVPId==null) return;
 		if(orgVPId.indexOf("_")<=0) orgVPId = orgVPId+"_2";
+		if(newVPId.indexOf("_")<=0) newVPId = newVPId+"_2";
 		orgScript = new DBClinReason().selectExpertPatIllScriptByVPId(orgVPId);
 		if(orgScript == null|| orgScript.getType()!=PatientIllnessScript.TYPE_EXPERT_CREATED) return;
+		
 		if(!orgScript.getLocale().getLanguage().equalsIgnoreCase(lang)){ //copy & translate
 			copyAndTranslateScript(lang, newVPId);
 		}
 		else{ //copy only (same language
 			copyScript(newVPId);
+		}
+		if(newScript!=null){
+			NavigationController.getInstance().getAdminFacesContext().getAdminPortfolio().addExpertScript(newScript);
 		}
 	}
 	
@@ -145,8 +152,10 @@ public class ScriptCopyController {
 		if(orgRef==null) return;
 		VPScriptRef newRef = (VPScriptRef) new DBClinReason().getVPScriptRef(newScript.getVpId());
 		if(newRef!=null) return;//already there!
-		 newRef = new VPScriptRef(newScript.getVpId(), orgRef.getVpName(), orgRef.getSystemId(), "-1");
+		
+		newRef = new VPScriptRef(newScript.getVpId(), orgRef.getVpName(), orgRef.getSystemId(), "-1");
 		new DBClinReason().saveAndCommit(newRef);
+		AppBean.addVpScriptRef(newRef);
 		
 	}
 	
@@ -177,8 +186,13 @@ public class ScriptCopyController {
 			returnMsg.append("new map created " + newScript.getId());
 			
 		}
-		else if(pis!=null && !pis.getIsEmptyScript()) returnMsg.append("filled map already there " + pis.getId());
-		return newScript;
+		//map is not empty, so we do not try to override the map! 
+		else if(pis!=null && !pis.getIsEmptyScript()){
+			returnMsg.append("filled map already there " + pis.getId());
+			newScript = null;
+			return null;
+		}
+		return null;
 		
 	}
 	
@@ -374,5 +388,8 @@ public class ScriptCopyController {
 	public static String getReturnMsg() {
 		if(returnMsg==null) return "";
 		return returnMsg.toString();
-	}	
+	}
+	public static void resetReturnMsg() {
+		returnMsg = new StringBuffer("");
+	}
 }

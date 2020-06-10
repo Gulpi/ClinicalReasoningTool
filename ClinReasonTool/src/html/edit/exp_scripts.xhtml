@@ -7,7 +7,7 @@
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:f="http://java.sun.com/jsf/core"
       xmlns:v="urn:schemas-microsoft-com:vml">
- <f:view locale="en"> 
+  <f:view locale="#{adminContext.locale}">    
 <head>
 <f:event type="preRenderView" listener="#{facesContext.externalContext.response.setHeader('Cache-Control', 'no-cache, no-store')}" />
 
@@ -64,14 +64,14 @@ var doInit = "#{adminContext.adminPortfolio.init}";
 </script>
  </head>
  <body class="chartbody">
- 
-<div> 
+<div>
+<ui:include src="createscript.xhtml" /></div> 
 	<h:form>
-	 	<a href="createscript.xhtml" target="new"><i class="fa fa-plus-circle"></i> Copy/Translate script</a><br/>
+	 <!-- 	<a href="createscript.xhtml" target="new"><i class="fa fa-plus-circle"></i> Copy/Translate script</a><br/>-->
 	
 	#{adminContext.adminPortfolio.noscripts}
 	<table id="list"  cellpadding="5" cellspacing="0" border="1">
-	<tr><td><b>Edit</b></td><td><b>Vp Name</b></td><td><b>VP id</b></td><td><b>Lang</b></td><td><b>System</b></td><td><b>View</b></td><td><b>Remove<br/>from cache</b></td></tr>
+	<tr><td><b>Edit</b></td><td><b>Vp Name</b></td><td><b>VP id</b></td><td><b>Lang</b></td><td><b>System</b></td><td><b>View</b></td></tr>
 			<ui:repeat value="#{adminContext.adminPortfolio.expscripts}" var="scripts" varStatus="status">
 				<tr><td><i class="fa fa-pencil"></i><h:commandLink action="#{navController.openExpPatIllScript}" value=" #{scripts.id}" title="Open the prototype">
 				<!--  <f:param name="script_id" value="#{scripts.id}" />-->
@@ -85,14 +85,15 @@ var doInit = "#{adminContext.adminPortfolio.init}";
 				<f:param name="script_id" value="#{scripts.id}" />
 				<f:param name="user_id" value="#{scripts.userId}" />
 			</h:commandLink></td>
-			<td><a href="javascript:removeExpScriptFromCache('#{scripts.vpId}');"><i class="fa fa-eraser"></i></a>
-				</td></tr>
+			<!-- <td><a href="javascript:removeExpScriptFromCache('#{scripts.vpId}');"><i class="fa fa-eraser"></i></a>
+				</td>--></tr>
  		 </ui:repeat>				
 	</table></h:form>
 	
- </div>
 
-	<div id="jdialog" >	<ui:include src="createscript.xhtml" /></div>
+
+
+<!--  <div id="jdialog" >	<ui:include src="createscript.xhtml" /></div>-->
 
  </body></f:view>
  </html>

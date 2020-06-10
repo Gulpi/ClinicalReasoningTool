@@ -248,5 +248,12 @@ public class AdminFacesContext extends FacesContextWrapper implements MyFacesCon
 		if(this.patillscript==null) return null;
 		return AppBean.getExpertPatIllScript(patillscript.getVpId());
 	}
+	
+	public String getReturnMsg(){
+		String msg = ScriptCopyController.getReturnMsg();
+		ScriptCopyController.resetReturnMsg();
+		return msg;
+		
+	}
 
 }

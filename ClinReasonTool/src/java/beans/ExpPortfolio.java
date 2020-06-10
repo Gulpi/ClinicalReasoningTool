@@ -33,7 +33,11 @@ public class ExpPortfolio implements Serializable{
 		loadScripts();
 	}
 		
+	/** expert maps the admin has access to
+	 * @return
+	 */
 	public List<PatientIllnessScript> getExpscripts() {return expscripts;}
+
 	
 	public void addExpertScript(PatientIllnessScript script){
 		if(script==null) return;

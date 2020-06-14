@@ -21,23 +21,21 @@
 
 <script language="JavaScript" src="../../scripts/admin.js"></script>
 <script language="JavaScript">
-	var test = "#{adminContext.userId}"; //we call getUserId() method to redirect to login page if not yet logged in
-	var selVpId = "#{adminContext.reports.selVpId}";
-	var selScript = "#{adminContext.reports.selScriptId}";
-	
-	$(function() {
+var isViaAPI = "#{adminContext.openedViaAPI}";
+/*	$(function() {
 		if(selVpId!=""){
 			$("#report_vpid").val(selVpId);
 		}
 		if(selScript!="")
 			$("#report_scripId").val(selScript);
-	});
+	});*/
 </script>
 </head>
 <body>
-<!-- !!!!!!!!!!!!!!!!!!! DEPRECATED !!!!!!!!!!!!!!! -->
+
 	<h:form>
-		<select id="report_vpid" onchange="javascript:selectScriptForVPId();"><option value="-1"></option>
+	Map Id: <input type="text" id="report_scripId"></input> <a href="javascript:displayScript();">Display</a>
+		<!--  <select id="report_vpid" onchange="javascript:selectScriptForVPId();"><option value="-1"></option>
 			<ui:repeat value="#{adminContext.reports.allVPs}" var="vps" varStatus="status">
 			
 				<option value="#{vps.parentId}">#{vps.vpName}</option>
@@ -52,7 +50,7 @@
 	num=number of peers, action (stage)<br/>
 	<ui:repeat value="#{adminContext.reports.peerBeanByVpId}" var="peers" varStatus="status">
 		num: #{peers.peerNum}, action:  #{peers.actionStr} (#{peers.stage}), scoreOrg: #{peers.orgExpPeerPercentagePerc}%, score: #{peers.expPeerPercentagePerc}%<br/>
-	</ui:repeat></div>	
+	</ui:repeat></div>	-->
 	</h:form>
 	<iframe id="report_iframe" width="800px" height="700px"></iframe>
 	

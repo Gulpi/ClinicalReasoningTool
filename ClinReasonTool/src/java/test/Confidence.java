@@ -1,4 +1,4 @@
-package model;
+package test;
 
 /**
  * Level of confidence, e.g. with the DDX, stored as a value between 1-100. 

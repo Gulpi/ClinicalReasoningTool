@@ -11,7 +11,6 @@ import beans.relation.summary.*;
 import beans.scripts.PatientIllnessScript;
 import database.DBClinReason;
 import database.DBList;
-import model.SemanticQual;
 import util.*;
 import net.casus.util.Utility;
 import net.casus.util.nlp.spacy.*;

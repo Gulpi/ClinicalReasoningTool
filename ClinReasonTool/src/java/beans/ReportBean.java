@@ -6,13 +6,12 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 
 import application.AppBean;
-import beans.scoring.PeerBean;
-import beans.scoring.PeerContainer;
-import beans.scoring.ScoreBean;
+import beans.scoring.*;
 import beans.scripts.*;
 import controller.AjaxController;
 import controller.NavigationController;
 import controller.ReportController;
+import database.DBClinReason;
 
 /**
  * @author ingahege
@@ -88,7 +87,18 @@ public class ReportBean {
 		}
 		return null;
 	}
-	
+
+	/**
+	 * User has selected script id, so we get the script and return it for display
+	 * @return
+	 */
+	public PatientIllnessScript getLearnerScript(){
+		long id = AjaxController.getInstance().getLongRequestParamByKey(AjaxController.REQPARAM_REPORTS_SCRIPT_ID);
+		if(id<0) return null;
+		PatientIllnessScript pis =  new DBClinReason().selectPatIllScriptById(id);
+		NavigationController.getInstance().getAdminFacesContext().setPatillscript(pis);
+		return pis;
+	}
 	
 	public String getSelVpId(){
 		return  AjaxController.getInstance().getRequestParamByKeyNoDecrypt(AjaxController.REQPARAM_REPORTS_VP);

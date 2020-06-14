@@ -28,12 +28,13 @@ function selectScriptForVPIdCallback(response){
 function displayScript(){
 	var vpId = $("#report_vpid").val();
 	var scriptId =  $("#report_scripId").val();
-	sendAjaxReports(vpId, displayScriptCallback, "getSelectedLearnerScript", scriptId);
+	//$("#report_iframe").attr("src", "../view/exp_boxes_view.xhtml?script_id="+scriptId);
+	sendAjaxReports(null, displayScriptCallback, "getLearnerScript", scriptId);
 
 }
 
 function displayScriptCallback(){
 	var d = new Date().getMilliseconds(); 
-	$("#report_iframe").attr("src", "../view/exp_boxes_view.xhtml?ts="+d);
+	$("#report_iframe").attr("src", "../view/exp_boxes_view.xhtml?r_scriptid="+$("#report_scripId").val());
 
 }

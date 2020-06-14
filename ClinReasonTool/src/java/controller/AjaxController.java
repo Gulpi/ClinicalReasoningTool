@@ -149,12 +149,15 @@ public class AjaxController {
 
 	}
 	
-	public void receiveResportsAjax(ReportBean b) throws IOException{
+	public void receiveReportsAjax(ReportBean b) throws IOException{
 		ExternalContext externalContext = FacesContextWrapper.getCurrentInstance().getExternalContext();
 		Map<String, String> reqParams = externalContext.getRequestParameterMap();
 		String methodName = reqParams.get("type");
 		String idStr = reqParams.get(REQPARAM_REPORTS_VP);
-    	Statement stmt = new Statement(b, methodName, new Object[]{idStr});
+		Statement stmt;
+		if(idStr==null || idStr.trim().equals(""))
+			stmt = new Statement(b, methodName, null);
+		else stmt = new Statement(b, methodName, new Object[]{idStr});
     	
     	try {
 			stmt.execute();				

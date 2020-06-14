@@ -36,7 +36,7 @@
 <script src="../../scripts/editexp.js"></script>
  
 <script language="JavaScript">
-
+var test = "#{adminContext.initSession}";
 var hideCnxTitle = "#{prop['cnx.hide']}";
 var showCnxTitle = "#{prop['cnx.show']}";
 var submitDialogTitle = "#{prop['submit.dialog.title']}";
@@ -58,6 +58,7 @@ var instance;
 var item_arr = new Array();
 var exp_arr = new Array();
 var summSt = "#{adminContext.patillscript.summStStage.textSQ}";
+var displayMode = 1;
 
 $(function() {
 	if(lang=="de") listUrl = "../jsonp_de.json";
@@ -152,8 +153,9 @@ item_arr = new Array();
 <body style="font-family:arial;" data-demo-id="draggableConnectors" data-library="dom">
 <div>
 ScriptId:  #{adminContext.patillscript.id}, VPId: #{adminContext.patillscript.vpId}, Date:  #{adminContext.patillscript.lastAccessDate}<br/>
-
-MaxStage: #{adminContext.patillscript.currentStage}, Stage: <span id="stageSpan">#{adminContext.patillscript.stage} </span>
+Correct final diagnosis requested: #{adminContext.patillscript.isShowSolution}<br/>
+Number of errors:  #{adminContext.patillscript.errorNum}<br/>
+Stage: <span id="stageSpan">#{adminContext.patillscript.stage} / #{adminContext.patillscript.currentStage}</span>
 <a href="javascript:chgStage(-1, '../view/exp_boxes_view.xhtml');">previous stage</a> <a href="javascript:chgStage(1, '../view/exp_boxes_view.xhtml');">next stage</a>
 
 </div>

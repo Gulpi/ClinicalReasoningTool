@@ -100,7 +100,7 @@ public class HibernateSession {
 			cfg.addClass(beans.scripts.VPScriptRef.class);
 			cfg.addClass(beans.helper.TypeAheadBean.class);
 			cfg.addClass(beans.scoring.LearningBean.class);
-			cfg.addClass(model.SemanticQual.class);
+			cfg.addClass(beans.relation.summary.SemanticQual.class);
 			cfg.addClass(beans.relation.summary.SummaryStatementSQ.class);
 			cfg.addClass(beans.relation.summary.SummaryStElem.class);
 			cfg.addClass(beans.relation.summary.SummaryStNumeric.class);

@@ -10,8 +10,8 @@ import org.hibernate.criterion.Restrictions;
 import org.hibernate.ejb.criteria.expression.function.TrimFunction;
 
 import beans.list.*;
+import beans.relation.summary.SemanticQual;
 import beans.relation.summary.TransformRule;
-import model.SemanticQual;
 import util.CRTLogger;
 
 /**

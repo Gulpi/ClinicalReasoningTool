@@ -1,4 +1,4 @@
-package model;
+package beans.relation.summary;
 
 /**
  * Semantic qualifiers (e.g. acute/chronic upper/lower ....) for analyzing the summary statements

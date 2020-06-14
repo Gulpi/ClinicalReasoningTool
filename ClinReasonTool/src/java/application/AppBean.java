@@ -12,7 +12,7 @@ import javax.servlet.http.HttpSessionListener;
 
 import beans.scripts.*;
 import beans.graph.Graph;
-
+import beans.relation.summary.SemanticQual;
 import beans.scoring.PeerContainer;
 import controller.IllnessScriptController;
 import controller.JsonCreator;
@@ -20,7 +20,6 @@ import controller.PeerSyncController;
 import controller.SummaryStatementController;
 import database.DBClinReason;
 import database.HibernateUtil;
-import model.SemanticQual;
 import net.casus.util.StandaloneLibUtilities;
 import net.casus.util.summarystatement.PerformantSpacyProcessor;
 import util.CRTLogger;
@@ -77,15 +76,12 @@ public class AppBean extends ApplicationWrapper implements HttpSessionListener{
 	 * We also put this AppBean into the ServletContext for later access to the applicationScoped scripts
 	 * Loading any 
 	 */
-	public AppBean(){
-
-	    
+	public AppBean(){  
 		long startms = System.currentTimeMillis();
 		CRTLogger.out("Start AppBean init:"  + startms + "ms", CRTLogger.LEVEL_PROD);
 		HibernateUtil.initHibernate();
 		CRTLogger.out("Hibernate init done:"  + (System.currentTimeMillis() - startms) + "ms", CRTLogger.LEVEL_PROD);
 		intlConf = new IntlConfiguration();
-		//setViewHandler(new CRTViewHandler(FacesContext.getCurrentInstance().getApplication().getViewHandler()));
 		
 		ServletContext context = null;
 		if (FacesContext.getCurrentInstance() != null) {
@@ -280,6 +276,14 @@ public class AppBean extends ApplicationWrapper implements HttpSessionListener{
 		return null;
 	}
 	
+	public synchronized void addExpertPatIllnessScript(PatientIllnessScript expScript){
+		if(expertPatIllScripts==null) expertPatIllScripts = new HashMap<String, PatientIllnessScript>();
+		if(expScript!=null && !expertPatIllScripts.containsKey(expScript.getVpId())){
+			expertPatIllScripts.put(expScript.getVpId(), expScript);
+			
+		}
+	}
+	
 	public static synchronized void updateExpertPatIllnessScriptForVpId(String vpId){
 		try{
 			if(expertPatIllScripts==null) expertPatIllScripts = new HashMap<String, PatientIllnessScript>();
@@ -303,6 +307,12 @@ public class AppBean extends ApplicationWrapper implements HttpSessionListener{
 			return expertPatIllScripts.get(vpId);
 		return null;
 	}
+	
+	public Map getExpertPatIllScripts() {
+		return expertPatIllScripts;
+	}
+
+	
 	public static List<IllnessScript> getIlnessScripts(String vpId) {
 		if(ilnessScripts==null) return null;
 		return ilnessScripts.get(vpId);

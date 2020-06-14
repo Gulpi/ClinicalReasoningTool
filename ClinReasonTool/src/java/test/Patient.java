@@ -1,4 +1,4 @@
-package model;
+package test;
 public class Patient {
 	public static final int GENDER_M = 1; //male
 	public static final int GENDER_F = 2; //female

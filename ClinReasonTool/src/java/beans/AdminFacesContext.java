@@ -118,7 +118,7 @@ public class AdminFacesContext extends FacesContextWrapper implements MyFacesCon
 	}
 	
 	public void ajaxResponseHandlerReports() throws IOException{
-		AjaxController.getInstance().receiveResportsAjax(reports);
+		AjaxController.getInstance().receiveReportsAjax(getReports());
 	}
 
 	public FacesContext getWrapped() {return FacesContext.getCurrentInstance();}
@@ -143,10 +143,13 @@ public class AdminFacesContext extends FacesContextWrapper implements MyFacesCon
 	public void initSession(){ 
 		if(user==null) return;
 		long id = AjaxController.getInstance().getLongRequestParamByKey(AjaxController.REQPARAM_SCRIPT);
-		if(this.patillscript!=null && (id<0 || this.patillscript.getId()==id)) return; //current script already loaded....
+		if(this.patillscript!=null && (id<0 || this.patillscript.getId()==id)){
+			if(this.graph==null || this.graph.getPatIllScriptId()!=this.patillscript.getId()) initGraph();
+			return; //current script already loaded....
+		}
 		if(id<=0) return;
 
-		if(id>0) this.patillscript = adminPortfolio.getExpScriptById(id);
+		if(id>0 && adminPortfolio!=null) this.patillscript = adminPortfolio.getExpScriptById(id);
 		
 		if(this.patillscript!=null) {
 			initGraph();		

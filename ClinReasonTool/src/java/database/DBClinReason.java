@@ -7,11 +7,9 @@ import org.hibernate.criterion.*;
 
 import beans.scripts.PatientIllnessScript;
 import beans.scripts.VPScriptRef;
-import beans.LogEntry;
+//import beans.LogEntry;
 import beans.relation.*;
-import beans.relation.summary.JsonTest;
-import beans.relation.summary.SummaryStatement;
-import beans.relation.summary.SummaryStatementSQ;
+import beans.relation.summary.*;
 import util.*;
 
 public class DBClinReason /*extends HibernateUtil*/{
@@ -433,22 +431,7 @@ public class DBClinReason /*extends HibernateUtil*/{
 		return connMap;
 	}
 	
-	/**
-	 * Get the number of attempts for submitting a final diagnosis
-	 * @param s
-	 * @param patIllScriptId
-	 * @return
-	 */
-	public int getNumOfFinalDiagnosisAttempts( long patIllScriptId) {
-		Session s = instance.getInternalSession(Thread.currentThread(), false);
-		Criteria criteria = s.createCriteria(LogEntry.class, "LogEntry");
-		criteria.add(Restrictions.eq("patIllscriptId", new Long(patIllScriptId)));
-		criteria.add(Restrictions.eq("action", new Integer(LogEntry.SUBMITDDX_ACTION)));
-		List<LogEntry> attempts = criteria.list();
-		if(attempts==null) return 0;
-		return attempts.size();
-		
-	}
+
 	
 	public JsonTest selectJsonTestBySummStId(long id){
 		Session s = instance.getInternalSession(Thread.currentThread(), false);

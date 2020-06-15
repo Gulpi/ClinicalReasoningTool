@@ -5,13 +5,15 @@
 
 function chgStage(chg, loc){
 	if(chg==-1 && currentStage==1) return;
-	if(chg==1 && currentStage==maxStage){
+	if(chg>=1 && currentStage==maxStage){
 		alert("last stage");
 		return;
 	}
-
-	var oldStage = currentStage;
-	currentStage += chg;
+	if(chg==1 || chg==-1){
+		var oldStage = currentStage;
+		currentStage += chg;
+	}
+	else if(chg>1) currentStage = chg;
 	var winloc = window.location.href;
 	
 	if(winloc.indexOf("stage")<0) winloc = loc+"?stage="+currentStage;

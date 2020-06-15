@@ -102,6 +102,18 @@ public class AdminFacesContext extends FacesContextWrapper implements MyFacesCon
 	public void setReports(ReportBean reports) {
 		this.reports = reports;
 	}
+	
+	/**
+	 * We want to display all log entries for a map (e.g. to see whether something was deleted), so, we get the log entries from
+	 * the database (if not yet done) and return them as a list.
+	 * @return
+	 */
+	public List<LogEntry> getLogEntriesForLearnerScript(){
+		if(this.patillscript==null) return null;
+		if(this.patillscript.getLogEntries()==null)
+			this.patillscript.setLogEntries(LogEntryController.getInstance().getLogEntriesForScript(this.patillscript.getId()));
+		return this.patillscript.getLogEntries();
+	}
 
 	public AppBean getAppBean(){
 	    ServletContext context = (ServletContext) FacesContext.getCurrentInstance().getExternalContext().getContext();

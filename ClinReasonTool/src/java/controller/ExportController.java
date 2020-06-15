@@ -15,6 +15,7 @@ import beans.scoring.ScoreBean;
 import beans.scripts.PatientIllnessScript;
 import beans.user.User;
 import database.DBClinReason;
+import database.DBLog;
 //import net.casus.model.course.Course;
 //import net.casus.util.SessionUtility;
 import properties.IntlConfiguration;
@@ -279,7 +280,7 @@ public class ExportController {
 			 else row.createCell(18).setCellValue(0);
 			 if(p.hasError(MyError.TYPE_CONFIRMATION)) row.createCell(19).setCellValue(1);
 			 else row.createCell(19).setCellValue(0);		 
-			 row.createCell(20).setCellValue(new DBClinReason().getNumOfFinalDiagnosisAttempts(p.getId()));	
+			 row.createCell(20).setCellValue(new DBLog().getNumOfFinalDiagnosisAttempts(p.getId()));	
 			if(p.getIsShowSolution()) row.createCell(21).setCellValue(1);	
 			else row.createCell(21).setCellValue(0);	
 	}

@@ -152,10 +152,10 @@ item_arr = new Array();
 </head>
 <body style="font-family:arial;" data-demo-id="draggableConnectors" data-library="dom">
 <div>
-ScriptId:  #{adminContext.patillscript.id}, VPId: #{adminContext.patillscript.vpId}, Date:  #{adminContext.patillscript.lastAccessDate}<br/>
-Correct final diagnosis requested: #{adminContext.patillscript.isShowSolution}<br/>
-Number of errors:  #{adminContext.patillscript.errorNum}<br/>
-Stage: <span id="stageSpan">#{adminContext.patillscript.stage} / #{adminContext.patillscript.currentStage}</span>
+ScriptId:  #{adminContext.patillscript.id}, VP: #{adminContext.patillscript.VPName}, Date:  #{adminContext.patillscript.lastAccessDate}<br/>
+Correct final diagnosis requested: #{adminContext.patillscript.isShowSolution}; Final diagnosis made at stage #{adminContext.patillscript.submittedStage}<br/>
+Number of detected errors:  #{adminContext.patillscript.errorNum}, Confidence with final diagnosis: #{adminContext.patillscript.confidence} %<br/>
+Stage: <span id="stageSpan">#{adminContext.patillscript.stage} / <a href="javascript:chgStage(#{adminContext.patillscript.currentStage}, '../view/exp_boxes_view.xhtml');">#{adminContext.patillscript.currentStage}</a></span>
 <a href="javascript:chgStage(-1, '../view/exp_boxes_view.xhtml');">previous stage</a> <a href="javascript:chgStage(1, '../view/exp_boxes_view.xhtml');">next stage</a>
 
 </div>
@@ -165,7 +165,7 @@ Stage: <span id="stageSpan">#{adminContext.patillscript.stage} / #{adminContext.
 	<!--  <a href="exp_stages.xhtml" target="new">exp dev</a>-->
 	<!--  <a href="alert('not yet available, will show the development of the experts script during the case');">exp dev</a>-->
 </div>
-<div class="boxes_container" style="float:left;width:60%;">
+<div class="boxes_container" style="float:left;width:60%;position:absolute;">
 	<div id="canvas" class="canvas jtk-surface drag-drop jtk-surface-nopan" style="width:550px;height:750px; max-height:750px;">
 		  <!-- problems -->
 		  <div id="fdg_box"  class="container viewcontainer" group="fdg_group">
@@ -248,14 +248,21 @@ Stage: <span id="stageSpan">#{adminContext.patillscript.stage} / #{adminContext.
 <div id="connContext">
 	<ui:include src="../cnxchange.xhtml" />
 </div>
-<div style="float:right;width:200px;height:100%;z-index:99;">
+<div style="left:570px;width:40%;position:absolute;">
 <h:form id="fdbform">
-	  			<h:panelGroup>
-					<ul>
-			 		<ui:repeat value="#{adminContext.feedbackBeans}" var="fb" varStatus="status">
-						<li>#{fb.itemType} (#{fb.stage})</li>
-	   				</ui:repeat></ul>		 		
-	  				</h:panelGroup>
+	<h:panelGroup>
+		<ul>
+ 		<ui:repeat value="#{adminContext.feedbackBeans}" var="fb" varStatus="status">
+			<li>#{fb.itemType} (#{fb.stage})</li>
+ 		</ui:repeat></ul>		 		
+	</h:panelGroup>
+	  				
+	 <h:panelGroup>
+		<ul>
+			 <ui:repeat value="#{adminContext.logEntriesForLearnerScript}" var="logs" varStatus="status">
+				<li>#{logs.actionStr}: Stage (#{logs.stage}), Id (#{logs.sourceId}, #{logs.sourceIdStr})</li>
+	   		</ui:repeat></ul>		 		
+	  </h:panelGroup>
 	  				<h:panelGroup>
 					
 					type (stage): score (org)<br/>

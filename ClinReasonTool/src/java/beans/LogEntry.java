@@ -2,9 +2,13 @@ package beans;
 
 import java.beans.*;
 import java.sql.Timestamp;
+import java.util.*;
 
+import application.AppBean;
+import beans.list.ListItem;
 import controller.NavigationController;
 import database.DBClinReason;
+import database.DBList;
 
 /**
  * We save all the actions in a log table. 
@@ -134,6 +138,27 @@ public class LogEntry extends Beans{
 	public void save(){
 		setStageBasedOnCurrentStage();
 		new DBClinReason().saveAndCommit(this);
+	}
+	
+	public String getActionStr(){
+		String s =  NavigationController.getInstance().getAdminFacesContext().getAppBean().intlConf.getValue("log.action."+action, new Locale("en"));
+		return s;
+	}
+	
+	public String getSourceIdStr(){
+		if(this.sourceId<=0) return "";
+		ListItem li = new DBList().selectListItemById(sourceId);
+		if(li!=null) return li.getName();
+		return "";
+	}
+	
+	public String toString(){
+		StringBuffer sb = new StringBuffer(100);
+		sb.append(getActionStr()+": ");
+		sb.append("Stage: " + this.stage);
+		sb.append("Id: " + this.sourceId);
+		return sb.toString();
+		
 	}
 		
 }

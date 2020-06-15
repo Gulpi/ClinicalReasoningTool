@@ -23,6 +23,7 @@ import beans.user.User;
 import beans.xAPI.StatementContainer;
 import controller.*;
 import database.DBClinReason;
+import database.DBLog;
 import properties.IntlConfiguration;
 import util.CRTLogger;
 import util.StringUtilities;
@@ -171,6 +172,7 @@ public class PatientIllnessScript extends Beans implements Comparable, IllnessSc
 	 * so only first attempt counts and only if diagnosis has been submitted.This makes data analysis easier!
 	 */	
 	private int orderNrSubmitted = -1;
+	private List<LogEntry> logentries;
 
 	public PatientIllnessScript(){}
 	public PatientIllnessScript(long userId, String vpId, Locale loc, int systemId){
@@ -765,7 +767,7 @@ public class PatientIllnessScript extends Beans implements Comparable, IllnessSc
 	}
 	
 	public int getNumFinalDiagnosisAttempts() {
-		return new DBClinReason().getNumOfFinalDiagnosisAttempts(this.getId());
+		return new DBLog().getNumOfFinalDiagnosisAttempts(this.getId());
 	}
 	
 	/**
@@ -787,4 +789,7 @@ public class PatientIllnessScript extends Beans implements Comparable, IllnessSc
 
 		return true;
 	}
+	//used for admin purposes only (display in admin area for individual maps)
+	public List<LogEntry> getLogEntries(){return logentries;}
+	public void setLogEntries(List<LogEntry> le ){this.logentries = le;}
 }

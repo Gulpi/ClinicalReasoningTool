@@ -2,15 +2,10 @@ package database;
 
 import java.util.*;
 
-import org.hibernate.Criteria;
-import org.hibernate.Session;
-import org.hibernate.criterion.Order;
-import org.hibernate.criterion.Restrictions;
+import org.hibernate.*;
+import org.hibernate.criterion.*;
 
-import beans.scoring.FeedbackBean;
-import beans.scoring.LearningBean;
-import beans.scoring.PeerBean;
-import beans.scoring.ScoreBean;
+import beans.scoring.*;
 
 public class DBScoring extends DBClinReason {
 

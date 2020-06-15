@@ -270,5 +270,16 @@ public class AdminFacesContext extends FacesContextWrapper implements MyFacesCon
 		return msg;
 		
 	}
+	
+	/**
+	 * Used for the indiv. map display in the admin area, where we want to display a few expert items (such as 
+	 * final diagnosis)
+	 * @return
+	 */
+	public PatientIllnessScript getExpScriptFromPortfolio(){
+		if(this.patillscript==null || getAdminPortfolio()==null) return null;
+		return adminPortfolio.getExpScriptByVPId(this.patillscript.getVpId());
+		
+	}
 
 }

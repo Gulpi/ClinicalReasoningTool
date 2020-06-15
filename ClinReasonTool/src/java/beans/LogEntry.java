@@ -1,10 +1,9 @@
 package beans;
 
 import java.beans.*;
+import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.*;
-
-import application.AppBean;
 import beans.list.ListItem;
 import controller.NavigationController;
 import database.DBClinReason;
@@ -16,8 +15,12 @@ import database.DBList;
  * @author ingahege
  *
  */
-public class LogEntry extends Beans{
+public class LogEntry extends Beans implements Serializable{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	public static final int ADDPROBLEM_ACTION = 1;
 	public static final int ADDTEST_ACTION = 17;
 	public static final int ADDMNG_ACTION = 18;

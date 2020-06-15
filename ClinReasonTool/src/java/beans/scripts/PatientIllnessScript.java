@@ -550,6 +550,16 @@ public class PatientIllnessScript extends Beans implements Comparable, IllnessSc
 		return finals;
 	}
 	
+	public String getFinalDiagnosesToString(){
+		List<RelationDiagnosis> l = getFinalDiagnoses();
+		if(l==null) return "";
+		StringBuffer sb = new StringBuffer(100);
+		for (int i=0;i<l.size();i++){
+			sb.append(l.get(i).getLabelOrSynLabel() + " ");
+		}
+		return sb.toString();
+	}
+	
 	
 	/**
 	 * return all diagnoses entered by the learner that are NOT final diagnoses. We do this in order to 

@@ -76,6 +76,16 @@ public class ExpPortfolio implements Serializable{
 		return null;
 	}
 	
+	public PatientIllnessScript getExpScriptByVPId(String vpId){
+		if(expscripts==null) return null;
+		Iterator<PatientIllnessScript> it = expscripts.iterator();
+		while(it.hasNext()){
+			PatientIllnessScript scr = it.next();
+			if(scr.getVpId().equalsIgnoreCase(vpId)) return scr;		
+		}
+		return null;
+	}
+	
 	/**
 	 * A new expert script is created and stored into the database
 	 */

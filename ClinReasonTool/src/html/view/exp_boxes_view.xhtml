@@ -151,7 +151,7 @@ item_arr = new Array();
 </head>
 <body style="font-family:arial;" data-demo-id="draggableConnectors" data-library="dom">
 <div>
-ScriptId:  #{adminContext.patillscript.id}, VP: #{adminContext.patillscript.VPName}, Date:  #{adminContext.patillscript.lastAccessDate}<br/>
+ScriptId:  #{adminContext.patillscript.id}, VP: #{adminContext.patillscript.VPName} (Final diagnosis: #{adminContext.expScriptFromPortfolio.finalDiagnosesToString}), Date:  #{adminContext.patillscript.lastAccessDate}<br/>
 Correct final diagnosis requested: #{adminContext.patillscript.isShowSolution}; Final diagnosis made at stage #{adminContext.patillscript.submittedStage}<br/>
 Number of detected errors:  #{adminContext.patillscript.errorNum}, Confidence with final diagnosis: #{adminContext.patillscript.confidence} %<br/>
 Stage: <span id="stageSpan">#{adminContext.patillscript.stage} / <a href="javascript:chgStage(#{adminContext.patillscript.currentStage}, '../view/exp_boxes_view.xhtml');">#{adminContext.patillscript.currentStage}</a></span>

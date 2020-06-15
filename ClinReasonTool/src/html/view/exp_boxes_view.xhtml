@@ -57,7 +57,6 @@ var active;
 var instance;
 var item_arr = new Array();
 var exp_arr = new Array();
-var summSt = "#{adminContext.patillscript.summStStage.textSQ}";
 var displayMode = 1;
 
 $(function() {
@@ -239,7 +238,7 @@ Stage: <span id="stageSpan">#{adminContext.patillscript.stage} / <a href="javasc
 	  		<div id="sum_box" class="container sum_container_view" group="sum_group">	
 		 	<div class="title" style="font-size:12px;">#{prop['summst']}</div>
 		 	 <div class="node-collapse"></div>
-		 	 <span style="font-size:16px;" id="summstdisplay"></span>
+		 	 <span style="font-size:16px;" id="summstdisplay">#{adminContext.patillscript.summStStage.textSQ}</span>
 		</div>
 	</div>
 </div>

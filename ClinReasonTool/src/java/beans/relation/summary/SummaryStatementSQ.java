@@ -1,5 +1,7 @@
 package beans.relation.summary;
 
+import java.io.Serializable;
+
 import net.casus.util.nlp.spacy.SpacyDocToken;
 
 /**
@@ -9,7 +11,7 @@ import net.casus.util.nlp.spacy.SpacyDocToken;
  * @author ingahege
  *
  */
-public class SummaryStatementSQ /*implements Comparable*/{
+public class SummaryStatementSQ implements Serializable{
 
 	/**
 	 * id of the summary statement that contains the semantic qualifier

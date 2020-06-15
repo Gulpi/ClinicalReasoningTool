@@ -1,9 +1,11 @@
 package beans.relation.summary;
 
+import java.io.Serializable;
+
 import beans.list.ListItem;
 import net.casus.util.nlp.spacy.SpacyDocToken;
 
-public class SummaryStElem {
+public class SummaryStElem implements Serializable{
 
 	private long id;
 	private long summStId;

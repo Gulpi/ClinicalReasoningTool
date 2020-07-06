@@ -32,7 +32,9 @@
       <default-locale>en</default-locale>
       <supported-locale>de</supported-locale>
       <supported-locale>pl</supported-locale>
-   </locale-config>
+      <supported-locale>es</supported-locale>
+       <supported-locale>pt</supported-locale>
+      <supported-locale>sv</supported-locale></locale-config>
    <resource-bundle>
       <base-name>properties.intlproperties</base-name>
       <var>prop</var>

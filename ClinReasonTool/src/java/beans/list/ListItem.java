@@ -66,7 +66,12 @@ public class ListItem implements Serializable, ListInterface, Comparable{
 	public String getName() {return name;}
 	public void setName(String name) {
 		this.name = name;
-		this.replName = StringUtilities.replaceChars(name.toLowerCase());
+		if(name!=null) {
+			this.replName = StringUtilities.replaceChars(name.toLowerCase());
+		}
+		else {
+			CRTLogger.out("item id with no name: " + this.item_id, CRTLogger.LEVEL_ERROR);
+		}
 	}
 	public String getMesh_id() {return mesh_id;}
 	public void setMesh_id(String mesh_id) {this.mesh_id = mesh_id;}

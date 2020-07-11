@@ -439,4 +439,17 @@ public class DBClinReason /*extends HibernateUtil*/{
 		criteria.add(Restrictions.eq("id", new Long(id)));
 		return (JsonTest) criteria.uniqueResult();
 	}
+	
+	/**
+	 * temporary method to select scripts without a sessionId and add the encoded sessionId
+	 * @return
+	 */
+	public List selectTmpPatientIllScripts() {
+		Session s = instance.getInternalSession(Thread.currentThread(), false);
+		Criteria criteria = s.createCriteria(PatientIllnessScript.class,"PatientIllnessScript");
+    	criteria.add(Restrictions.eq("sessionId", new Long(-1)));
+    	criteria.add(Restrictions.eq("type", PatientIllnessScript.TYPE_LEARNER_CREATED));
+    	
+    	return criteria.list();
+	}
 }

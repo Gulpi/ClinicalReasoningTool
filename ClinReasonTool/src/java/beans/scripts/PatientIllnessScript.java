@@ -26,6 +26,7 @@ import database.DBClinReason;
 import database.DBLog;
 import properties.IntlConfiguration;
 import util.CRTLogger;
+import util.Encoder;
 import util.StringUtilities;
 
 /**
@@ -173,6 +174,10 @@ public class PatientIllnessScript extends Beans implements Comparable, IllnessSc
 	 */	
 	private int orderNrSubmitted = -1;
 	private List<LogEntry> logentries;
+	/**
+	 * the CASUS session id
+	 */
+	private long sessionId;
 
 	public PatientIllnessScript(){}
 	public PatientIllnessScript(long userId, String vpId, Locale loc, int systemId){
@@ -253,7 +258,9 @@ public class PatientIllnessScript extends Beans implements Comparable, IllnessSc
 		return null;
 	}	
 	public String getExtUId() {return extUId;}
-	public void setExtUId(String extUId) {this.extUId = extUId;}
+	public void setExtUId(String extUId) {
+		this.extUId = extUId;
+	}
 	public void setSummSt(SummaryStatement summSt) {this.summSt = summSt;	}	
 	public int getShowSolution() {return showSolution;}
 	public boolean getIsShowSolution() {
@@ -262,8 +269,16 @@ public class PatientIllnessScript extends Beans implements Comparable, IllnessSc
 	public void setShowSolution(int showSolution) {this.showSolution = showSolution;}
 	public boolean isPeerSync() {return peerSync;}
 	public boolean getPeerSync() {return peerSync;}
-	public void setPeerSync(boolean peerSync) {this.peerSync = peerSync;}
-	
+	public void setPeerSync(boolean peerSync) {this.peerSync = peerSync;}	
+	public long getSessionId() {return sessionId;}
+	public void setSessionId(long sessionId) {this.sessionId = sessionId;}
+	public void setSessionId(String sessionId) {
+		try {			
+			String s = Encoder.getInstance().decodeQueryParam(extUId);
+			this.sessionId = Long.valueOf(s).longValue();
+		}
+		catch(Exception e) {}
+	}
 	/**
 	 * @deprecated
 	 */

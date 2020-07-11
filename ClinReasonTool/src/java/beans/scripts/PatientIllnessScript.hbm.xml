@@ -32,7 +32,8 @@
 	     <property name="maxSubmittedStage" column="max_ddx_submitted" type="int"/>
 	     <property name="extUId" column="ext_uid" type="string"/>
 	     <property name="deleteFlag" column="delete_flag" type="boolean"/>
-	      <property name="finalDDXType" column="final_ddx_type" type="int"/>
+	     <property name="finalDDXType" column="final_ddx_type" type="int"/>
+	     <property name="sessionId" column="session_id" type="long"/>
 	     
 
 	    <list name="errors" table="crt.error" lazy="false"> <!-- table="crt.relation_problem"-->

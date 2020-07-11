@@ -89,6 +89,7 @@ public class AppBean extends ApplicationWrapper implements HttpSessionListener{
 			context.setAttribute(APP_KEY, this);
 		}
 	    
+		IllnessScriptController.addSessionIdToMaps();
 	    try{
 	    	//load properties for the application(file is in WEB-INF/classes:
 	    	InputStream input =  Thread.currentThread().getContextClassLoader().getResourceAsStream("properties/globalsettings.properties");

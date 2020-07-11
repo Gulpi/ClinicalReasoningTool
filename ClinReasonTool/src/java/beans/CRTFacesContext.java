@@ -350,7 +350,7 @@ public class CRTFacesContext extends FacesContextWrapper implements MyFacesConte
 					CRTLogger.out("SCRIP_CREATED: id= "+ patillscript.getId() + " user_id= " + this.getUserId() + " httpsess= " + userAgent , CRTLogger.LEVEL_PROD);
 				}
 			}
-		}
+		}		
 		//TODO error handling!!!!
 		initLearningAnalyticsContainer();
 		loadExpScripts(true);

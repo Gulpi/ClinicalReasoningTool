@@ -13,6 +13,7 @@ import database.DBClinReason;
 import database.DBScoring;
 import properties.IntlConfiguration;
 import util.CRTLogger;
+import util.Encoder;
 import util.StringUtilities;
 
 /**
@@ -68,6 +69,7 @@ public class IllnessScriptController implements Serializable{
 		Locale loc = LocaleController.getInstance().getScriptLocale();//FacesContext.getCurrentInstance().getApplication().getViewHandler().calculateLocale(FacesContext.getCurrentInstance());
 		PatientIllnessScript patillscript = new PatientIllnessScript( userId, vpId, loc, systemId);
 		patillscript.setExtUId(extUId);
+		patillscript.setSessionId(extUId);
 		patillscript.save();
 
 		CRTLogger.out("New PatIllScript created for vp_id: " + vpId, CRTLogger.LEVEL_PROD);
@@ -188,5 +190,23 @@ public class IllnessScriptController implements Serializable{
 		if(patillscript==null) return;
 		if(patillscript.getOrderNrSubmitted()>0) return; 
 		
+	}
+	
+	/**
+	 * We store the CASUS session id for all maps in the database
+	 */
+	public static void addSessionIdToMaps() {
+		DBClinReason dbc = new DBClinReason();
+		List maps = dbc.selectTmpPatientIllScripts();
+		if(maps == null) return; 
+		for (int i=0; i< maps.size(); i++) {
+			PatientIllnessScript pis = (PatientIllnessScript) maps.get(i);
+			if(pis.getExtUId()!=null) {
+				String s = Encoder.getInstance().decodeQueryParam(pis.getExtUId());
+				pis.setSessionId(Long.valueOf(s).longValue());
+				dbc.saveAndCommit(pis);
+			}
+			
+		}
 	}
 }

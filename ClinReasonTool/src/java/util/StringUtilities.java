@@ -102,6 +102,7 @@ public class StringUtilities {
 	}
 	
 	public static String replaceChars(String item1){
+		item1 = item1.toLowerCase();
 		item1 = item1.replace("-", " ");
 		item1 = item1.replace(",", "");
 		item1 = item1.replace("'", "");
@@ -112,14 +113,19 @@ public class StringUtilities {
 		item1 = item1.replace("ü", "ue");
 		
 		item1 = item1.replace("ą", "a");
+		item1 = item1.replace("á", "a");
+		item1 = item1.replace("é", "a");
 		item1 = item1.replace("ć", "c");
 		item1 = item1.replace("ę", "e");
 		item1 = item1.replace("ł", "l");
 		item1 = item1.replace("ń", "n");
+		item1 = item1.replace("ñ", "n");	
 		item1 = item1.replace("ó", "o");
 		item1 = item1.replace("ś", "s");
 		item1 = item1.replace("ź", "z");
 		item1 = item1.replace("ż", "z");
+		item1 = item1.replace("í", "i");
+		item1 = item1.replace("ú", "u");
 		
 		item1 = item1.trim();
 		return item1;

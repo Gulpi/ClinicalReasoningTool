@@ -377,6 +377,8 @@ public class CRTFacesContext extends FacesContextWrapper implements MyFacesConte
 	    		}	    		
 	    	}
 	    }
+	    //just to make sure user has not changed language we init it here again: 
+	    locale = LocaleController.setLocale();
 	}
 	
 	/**

@@ -7,7 +7,7 @@
       xmlns:f="http://java.sun.com/jsf/core"
 	 xmlns:v="urn:schemas-microsoft-com:vml"     
 	  >
-<f:view locale="#{crtContext.locale}">
+<f:view locale="#{crtContext.language}">
 
 <head>
 <f:event type="preRenderView" listener="#{facesContext.externalContext.response.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, post-check=0, pre-check=0')}" />
@@ -49,7 +49,7 @@ if(scriptlang=="de") listUrl = "jsonp_de.json";
 else if(scriptlang=="es") listUrl = "jsonp_es.json";
 else if(scriptlang=="pt") listUrl = "jsonp_pt.json";
 else if(scriptlang=="pl") listUrl = "jsonp_pl.json"; //Testing the Polish list! 
-
+else if (scriptlang=="sv") listUrl = "";
 var lang="#{crtContext.locale}";
 var currentStage = $.getUrlVar('stage');
 var currentStageScript = "#{crtContext.patillscript.currentStageWithUpdate}";
@@ -95,8 +95,8 @@ var displayMode = -1;
 $(function() {
     postEnforceFinalDDXSubmission(submitted/*, myStage, maxSubmittedStage*/);
 
-	if(scriptlang=="de") listUrl = "jsonp_de.json";
-	if(scriptlang=="pl" || scriptlang=="sv") listUrl = ""; //currently we do not have a good Polish/Swedish list, so use freetext entry instead.
+	//if(scriptlang=="de") listUrl = "jsonp_de.json";
+	//if(/*scriptlang=="pl" ||*/ scriptlang=="sv") listUrl = ""; //currently we do not have a good Polish/Swedish list, so use freetext entry instead.
 	$(".listdialog").hide();
 	$("#jdialogError").hide();
 	$("#connContext").hide();

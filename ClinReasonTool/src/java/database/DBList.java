@@ -209,11 +209,18 @@ public class DBList extends DBClinReason {
      * @param id
      * @return ListItem or null
      */
-    private ListItem selectListItemByCode(String code, Session s, Locale lang){    	
-    	Criteria criteria = s.createCriteria(ListItem.class,"ListItem");
-    	criteria.add(Restrictions.eq("firstCode", code));
-    	criteria.add(Restrictions.eq("language", lang));
-    	ListItem li = (ListItem) criteria.uniqueResult();
+    private ListItem selectListItemByCode(String code, Session s, Locale lang){   
+    	ListItem li = null;
+    	try {
+	    	Criteria criteria = s.createCriteria(ListItem.class,"ListItem");
+	    	criteria.add(Restrictions.eq("firstCode", code));
+	    	criteria.add(Restrictions.eq("language", lang));
+	    	li = (ListItem) criteria.uniqueResult();
+	    	
+    	}
+    	catch(Exception e) {
+    		return null;
+    	}
     	return li;
     }
     

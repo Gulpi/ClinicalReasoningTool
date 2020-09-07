@@ -241,7 +241,8 @@ public class PatientIllnessScript extends Beans implements Comparable, IllnessSc
 	public void setConns(Map<Long,Connection> conns) {this.conns = conns;}
 	public long getUserId() {return userId;}
 	public void setUserId(long userId) {this.userId = userId;}	
-	public Locale getLocale() {return locale;}
+	public Locale getLocale() {
+		return locale;}
 	public void setLocale(Locale locale) {this.locale = locale;}	
 	public SummaryStatement getSummSt() {return summSt;}
 	public SummaryStatement getSummStStage() {

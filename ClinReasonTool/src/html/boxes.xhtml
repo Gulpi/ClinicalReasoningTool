@@ -48,7 +48,7 @@ var scriptlang = "#{crtContext.patillscript.locale}";
 if(scriptlang=="de") listUrl = "jsonp_de.json";
 else if(scriptlang=="es") listUrl = "jsonp_es.json";
 else if(scriptlang=="pt") listUrl = "jsonp_pt.json";
-else if(scriptlang=="pl") listUrl = "" //listUrl = "jsonp_pl.json"; //Testing the Polish list! 
+else if(scriptlang=="pl") listUrl = "jsonp_pl.json"; 
 else if (scriptlang=="sv") listUrl = "";
 var lang="#{crtContext.locale}";
 var currentStage = $.getUrlVar('stage');
@@ -95,8 +95,6 @@ var displayMode = -1;
 $(function() {
     postEnforceFinalDDXSubmission(submitted/*, myStage, maxSubmittedStage*/);
 
-	//if(scriptlang=="de") listUrl = "jsonp_de.json";
-	//if(/*scriptlang=="pl" ||*/ scriptlang=="sv") listUrl = ""; //currently we do not have a good Polish/Swedish list, so use freetext entry instead.
 	$(".listdialog").hide();
 	$("#jdialogError").hide();
 	$("#connContext").hide();

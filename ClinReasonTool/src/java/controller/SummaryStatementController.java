@@ -610,7 +610,7 @@ public class SummaryStatementController {
 		for(int j=0;j<items.size(); j++){ //comparison with adapted Mesh list:
 			ListItem li = (ListItem) items.get(j);	
 
-			boolean isSimilar = StringUtilities.similarStrings(replS, li.getReplName(), loc, true);
+			boolean isSimilar = StringUtilities.similarStrings(replS, li.getReplName(), replS, li.getReplName(), loc, true);
 			
 			if(isSimilar){
 				
@@ -622,7 +622,7 @@ public class SummaryStatementController {
 				Iterator<Synonym> it = li.getSynonyma().iterator();
 				while(it.hasNext() && !isSimilar){
 					Synonym syn = it.next();
-					isSimilar = StringUtilities.similarStrings(replS, syn.getReplName(), loc, true);
+					isSimilar = StringUtilities.similarStrings(replS, syn.getReplName(), replS, syn.getReplName(), loc, true);
 					if(isSimilar){
 						st.addItemHit(li, syn, /*pos,*/ st.getText().indexOf(orgS));	
 					
@@ -684,7 +684,7 @@ public class SummaryStatementController {
 				SummaryStElem elem = (SummaryStElem) it2.next();
 				String expMatchRepl = StringUtilities.replaceChars(expMatchesArr[i].toLowerCase());
 				//compare main listItem:
-				if (elem.getListItem()!=null && elem.getListItem().getName()!=null && StringUtilities.similarStrings(elem.getListItem().getReplName(), expMatchRepl, elem.getListItem().getLanguage(), true)){
+				if (elem.getListItem()!=null && elem.getListItem().getName()!=null && StringUtilities.similarStrings(elem.getListItem().getReplName(), expMatchRepl, elem.getListItem().getReplName(), expMatchRepl, elem.getListItem().getLanguage(), true)){
 					//matchCounter++;
 					elem.setExpertMatchBool(true);
 					elem.setExpertMatchIdx(expText.indexOf(expMatchesArr[i]));
@@ -697,7 +697,7 @@ public class SummaryStatementController {
 					Iterator it = li.getSynonyma().iterator();
 					while(it.hasNext()){
 						Synonym s= (Synonym) it.next();
-						if(StringUtilities.similarStrings(s.getReplName(), expMatchRepl, elem.getListItem().getLanguage(), true)){
+						if(StringUtilities.similarStrings(s.getReplName(), expMatchRepl, s.getReplName(), expMatchRepl, elem.getListItem().getLanguage(), true)){
 							//matchCounter++;
 							elem.setExpertMatchBool(true);
 							elem.setExpertMatchIdx(expText.indexOf(expMatchesArr[i]));

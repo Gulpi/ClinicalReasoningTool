@@ -640,13 +640,16 @@ public class SummaryStatementController {
 	 * @param st
 	 */
 	private static void compareList(List items, SummaryStatement st){
+		String st_text_lower = st.getText();
+		if (st_text_lower != null) st_text_lower = st_text_lower.toLowerCase();
+		
 		for(int j=0;j<items.size(); j++){ //look for two or more word items, e.g. "productive cough"
 			ListItem li = (ListItem) items.get(j);
 
-			if (li.getName().contains(" ") && st.getText().toLowerCase().contains(li.getName().toLowerCase())){
+			if (li.getName().contains(" ") && st_text_lower.contains(li.getName().toLowerCase())){
 				//get start and end position of match in text
 				//int startPos = StringUtilities.getStartPosOfStrInText(li.getName().toLowerCase(),  st.getText().toLowerCase());
-				st.addItemHit(li, /*startPos,*/ st.getText().toLowerCase().indexOf(li.getName().toLowerCase()));		
+				st.addItemHit(li, /*startPos,*/ st_text_lower.indexOf(li.getName().toLowerCase()));		
 			}
 			else if(li instanceof ListItem){ //also look for synonyms with two or more words
 				ListItem li2 = (ListItem) li;
@@ -654,9 +657,9 @@ public class SummaryStatementController {
 					Iterator<Synonym> it = li2.getSynonyma().iterator();
 					while(it.hasNext()){
 						Synonym sy = it.next();
-						if(sy.getName().contains(" ") && st.getText().toLowerCase().contains(sy.getName().toLowerCase())){
+						if(sy.getName().contains(" ") && st_text_lower.contains(sy.getName().toLowerCase())){
 							//int startPos = StringUtilities.getStartPosOfStrInText(sy.getName().toLowerCase(),  st.getText().toLowerCase());
-							st.addItemHit(li2, sy, /*startPos,*/ st.getText().toLowerCase().indexOf(sy.getName().toLowerCase()));
+							st.addItemHit(li2, sy, /*startPos,*/ st_text_lower.indexOf(sy.getName().toLowerCase()));
 						}
 					}
 				}

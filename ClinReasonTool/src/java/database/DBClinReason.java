@@ -298,7 +298,7 @@ public class DBClinReason /*extends HibernateUtil*/{
      * for recalculation and scoring of summary statements in new format
      * @return PatientIllnessScript or null
      */
-    public List<PatientIllnessScript> selectLearnerPatIllScriptsByNotAnalyzedSummSt(int max, Date startDate, Date endDate){
+    public List<PatientIllnessScript> selectLearnerPatIllScriptsByNotAnalyzedSummSt(int max, Date startDate, Date endDate, boolean loadNodes){
     	Session s = instance.getInternalSession(Thread.currentThread(), false);
     	Criteria criteria = s.createCriteria(PatientIllnessScript.class,"PatientIllnessScript");
     	criteria.add(Restrictions.eq("type", new Integer(PatientIllnessScript.TYPE_LEARNER_CREATED)));
@@ -329,7 +329,9 @@ public class DBClinReason /*extends HibernateUtil*/{
     			PatientIllnessScript loop = scripts.get(i); 
     			loop.setSummSt(loadSummSt(loop.getSummStId(), s));
 
-    			selectNodesAndConns(loop, s);
+    			if (loadNodes) {
+    				selectNodesAndConns(loop, s);
+    			}
     		}
     	}
     	s.close();

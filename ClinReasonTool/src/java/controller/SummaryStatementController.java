@@ -328,7 +328,6 @@ public class SummaryStatementController {
 			JsonTest jt = new DBClinReason().selectJsonTestBySummStId(st.getId()); //the json of the statement
 			if(jt==null) jt = initJsonTest(st);
 	
-			
 			SpacyDocJson spacy = new SpacyDocJson(jt.getJson().trim());
 			if(spacy!=null) spacy.init();
 	

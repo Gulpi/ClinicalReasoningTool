@@ -99,6 +99,7 @@ public class SummaryStatementAPI implements ApiInterface {
 					thread.setMax(StringUtilities.getIntegerFromString((String) ((HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest()).getParameter("max"), 100));
 					thread.setStartDate(StringUtilities.getDateFromString((String) ((HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest()).getParameter("start_date"), null));
 					thread.setEndDate(StringUtilities.getDateFromString((String) ((HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest()).getParameter("end_date"), null));
+					thread.setLoadNodes(StringUtilities.getBooleanFromString((String) ((HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest()).getParameter("load_nodes"), false));
 					mythread = thread;
 					mythread.start();
 					
@@ -211,6 +212,7 @@ public class SummaryStatementAPI implements ApiInterface {
 		Date endDate = null;
 		SummaryStatementAPI ctrl = null;
 		List<Map> results = new ArrayList<Map>();
+		boolean loadNodes = false;
 		
 		int count = -1;
 		int idx = -1;
@@ -218,7 +220,7 @@ public class SummaryStatementAPI implements ApiInterface {
 		@Override
 		public void run() {
 			 try{
-				 List<PatientIllnessScript> userPatientIllnesScripts = new DBClinReason().selectLearnerPatIllScriptsByNotAnalyzedSummSt(max, startDate, endDate);
+				 List<PatientIllnessScript> userPatientIllnesScripts = new DBClinReason().selectLearnerPatIllScriptsByNotAnalyzedSummSt(max, startDate, endDate, loadNodes);
 				 if (userPatientIllnesScripts != null) {
 					 this.count = userPatientIllnesScripts.size();
 					 this.idx = 0;
@@ -321,6 +323,14 @@ public class SummaryStatementAPI implements ApiInterface {
 
 		public void setIdx(int idx) {
 			this.idx = idx;
+		}
+
+		public boolean isLoadNodes() {
+			return loadNodes;
+		}
+
+		public void setLoadNodes(boolean loadNodes) {
+			this.loadNodes = loadNodes;
 		}
 		
 		

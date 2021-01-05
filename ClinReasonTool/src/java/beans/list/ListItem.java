@@ -41,6 +41,7 @@ public class ListItem implements Serializable, ListInterface, Comparable{
 	private Boolean isTestCache = null;
 	private Boolean isTherapyCache = null;
 	private Boolean isAnatomyCache = null;
+	private boolean useCaches = false;
 
 	/**
 	 * name of the listItem with replace special chars and in lower case
@@ -209,7 +210,7 @@ public class ListItem implements Serializable, ListInterface, Comparable{
 	 * @return
 	 */
 	public boolean isFinding(){
-		if (isFindingCache != null) return isFindingCache.booleanValue();
+		if (useCaches && isFindingCache != null) return isFindingCache.booleanValue();
 		
 		if (firstCode!=null && (firstCode.startsWith("C23") || firstCode.startsWith("F01"))) {
 			isFindingCache = Boolean.TRUE;
@@ -235,7 +236,7 @@ public class ListItem implements Serializable, ListInterface, Comparable{
 	}
 	
 	public boolean isAnatomy(){
-		if (isAnatomyCache != null) return isAnatomyCache.booleanValue();
+		if (useCaches && isAnatomyCache != null) return isAnatomyCache.booleanValue();
 		
 		if (firstCode!=null && firstCode.startsWith("A")) {
 			isAnatomyCache = Boolean.TRUE;
@@ -254,7 +255,7 @@ public class ListItem implements Serializable, ListInterface, Comparable{
 	}
 	
 	public boolean isDiagnosis(){
-		if (isDiagnosisCache != null) return isDiagnosisCache.booleanValue();
+		if (useCaches && isDiagnosisCache != null) return isDiagnosisCache.booleanValue();
 
 		if(!isFinding()){
 			if (firstCode!=null && firstCode.startsWith("C")) {
@@ -269,7 +270,7 @@ public class ListItem implements Serializable, ListInterface, Comparable{
 	}
 	
 	public boolean isTest(){
-		if (isTestCache != null) return isTestCache.booleanValue();
+		if (useCaches && isTestCache != null) return isTestCache.booleanValue();
 		if(!isFinding()){
 			if (firstCode!=null && firstCode.startsWith("E01")) {
 				isTestCache = Boolean.TRUE;
@@ -282,7 +283,7 @@ public class ListItem implements Serializable, ListInterface, Comparable{
 		return false;
 	}
 	public boolean isTher(){
-		if (isTherapyCache != null) return isTherapyCache.booleanValue();
+		if (useCaches && isTherapyCache != null) return isTherapyCache.booleanValue();
 		
 		if(!isFinding()){
 			boolean my_result = false;

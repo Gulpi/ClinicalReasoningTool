@@ -294,6 +294,46 @@ public class DBClinReason /*extends HibernateUtil*/{
     	return scripts;
     }
     
+    /**
+     * for recalculation and scoring of summary statements in new format
+     * @return PatientIllnessScript or null
+     */
+    public List<PatientIllnessScript> selectLearnerPatIllScriptsByNotAnalyzedSummSt(int max, Date startDate, Date endDate){
+    	Session s = instance.getInternalSession(Thread.currentThread(), false);
+    	Criteria criteria = s.createCriteria(PatientIllnessScript.class,"PatientIllnessScript");
+    	criteria.add(Restrictions.eq("type", new Integer(PatientIllnessScript.TYPE_LEARNER_CREATED)));
+    	
+    	DetachedCriteria stmts = DetachedCriteria.forClass(SummaryStatement.class, "stmt")
+    			.setProjection( Property.forName("stmt.id") )
+    			.add( Property.forName("stmt.narrowingScore").eq(new Integer(-1)) );
+    	
+    	if (startDate != null) {
+    		stmts.add(Restrictions.ge("creationDate", startDate));
+    	}
+    	if (endDate != null) {
+    		stmts.add(Restrictions.le("creationDate", endDate));
+    	}
+    	
+    	criteria.add(Property.forName("summStId").in(stmts));
+    	if (max>0) {
+    		criteria.setMaxResults(max);
+    	}
+    	
+    	List<PatientIllnessScript> scripts = criteria.list();
+    	if(scripts!=null){
+    		CRTLogger.out("DBClinReason.selectLearnerPatIllScriptsByNotAnalyzedSummSt: scripts: #"  + scripts.size(), CRTLogger.LEVEL_PROD);
+    		for(int i=0;i<scripts.size();i++){
+    			if ((i%2500) == 0) {
+    				CRTLogger.out("DBClinReason.selectLearnerPatIllScriptsByNotAnalyzedSummSt: scripts: i:"  + i, CRTLogger.LEVEL_PROD);
+    			}
+    			selectNodesAndConns(scripts.get(i), s);
+    		}
+    	}
+    	s.close();
+    	
+    	return scripts;    	
+    }
+    
     
     /**
      * Selects all PatientIllnessScripts that can be included into the peer responses. 

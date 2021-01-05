@@ -166,6 +166,13 @@ public class SummaryStatementAPI implements ApiInterface {
 		resultObj.put(key, value != null ? value : "-");
 	}
 	
+	void addSummaryStatementToResultObj(Map resultObj, PatientIllnessScript userPatientIllnesScript) {
+		this.addToResultObj(resultObj, "userPatientIllnesScript.id", userPatientIllnesScript.getId());
+		this.addToResultObj(resultObj, "userPatientIllnesScript.userId", userPatientIllnesScript.getUserId());
+		this.addToResultObj(resultObj, "userPatientIllnesScript.vpId", userPatientIllnesScript.getVpId());
+		this.addToResultObj(resultObj, "userPatientIllnesScript.stage", userPatientIllnesScript.getStage());
+	}
+	
 	void addSummaryStatementToResultObj(Map resultObj, PatientIllnessScript userPatientIllnesScript, SummaryStatement st) {
 		this.addToResultObj(resultObj, "userPatientIllnesScript.id", userPatientIllnesScript.getId());
 		this.addToResultObj(resultObj, "userPatientIllnesScript.userId", userPatientIllnesScript.getUserId());
@@ -219,12 +226,19 @@ public class SummaryStatementAPI implements ApiInterface {
 					 while (it.hasNext()) {
 						 PatientIllnessScript userPatientIllnesScript = it.next();
 						 idx++;
-						 SummaryStatement st = ctrl.handleByPatientIllnessScript(userPatientIllnesScript);
-						 if (st != null) {
+						 try {
+							SummaryStatement st = ctrl.handleByPatientIllnessScript(userPatientIllnesScript);
+							 if (st != null) {
+								Map result1 = new HashMap();
+								ctrl.addSummaryStatementToResultObj(result1, userPatientIllnesScript, st);
+								results.add(result1);
+							 }
+						} catch (Throwable e) {
 							Map result1 = new HashMap();
-							ctrl.addSummaryStatementToResultObj(result1, userPatientIllnesScript, st);
+							ctrl.addSummaryStatementToResultObj(result1, userPatientIllnesScript);
+							ctrl.addToResultObj(result1, "exception", Utility.stackTraceToString(e));
 							results.add(result1);
-						 }
+						}
 					 }
 				 }
 			 }

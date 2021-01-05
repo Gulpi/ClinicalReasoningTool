@@ -16,11 +16,16 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import actions.scoringActions.ScoringSummStAction;
 import api.ApiInterface;
+import application.AppBean;
+import beans.relation.summary.SummaryStatement;
+import beans.scoring.LearningAnalyticsBean;
 import beans.scoring.PeerContainer;
 import beans.scoring.ScoreBean;
+import beans.scoring.ScoreContainer;
 import beans.scripts.PatientIllnessScript;
 import controller.NavigationController;
 import controller.PeerSyncController;
+import controller.SummaryStatementController;
 import database.DBClinReason;
 import net.casus.util.CasusConfiguration;
 import net.casus.util.StringUtilities;
@@ -50,12 +55,29 @@ public class SummaryStatementAPI implements ApiInterface {
 		
 		long id = StringUtilities.getLongFromString((String) ((HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest()).getParameter("id"), -1);
 		if (id > 0) {
+			SummaryStatement st = null;
 			PatientIllnessScript userPatientIllnesScript = new DBClinReason().selectLearnerPatIllScript(id, "id");
-			ScoringSummStAction action = new ScoringSummStAction();
-			ScoreBean scoreBean = action.scoreAction(userPatientIllnesScript, userPatientIllnesScript.getCurrentStage());
-			resultObj.put("scoreBean", scoreBean);
+			PatientIllnessScript expScript = AppBean.getExpertPatIllScript(userPatientIllnesScript.getVpId());
+			
+			ScoreBean scoreBean = new ScoreBean(userPatientIllnesScript, userPatientIllnesScript.getSummStId(), ScoreBean.TYPE_SUMMST, userPatientIllnesScript.getStage());
+			if(expScript!=null && expScript.getSummSt()!=null){
+				ScoringSummStAction action = new ScoringSummStAction();
+				st = new SummaryStatementController().initSummStRating(expScript, userPatientIllnesScript, action);	
+				
+			}
+			
+			if (st != null) {
+				resultObj.put("status", "ok");
+				resultObj.put("SummaryStatement", st);
+
+			}
+			else {
+				resultObj.put("status", "error");
+				resultObj.put("errorMsg", "no SummaryStatement object ?");
+			}
 		}
 		else {
+			resultObj.put("status", "error");
 			resultObj.put("errorMsg", "userPatientIllnesScriptID invalid! " + id);
 		}
 		

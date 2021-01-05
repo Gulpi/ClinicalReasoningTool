@@ -310,10 +310,11 @@ public class SummaryStatementController {
 		return st;		
 	}*/
 	
-	public void initSummStRating(PatientIllnessScript expScript, PatientIllnessScript learnerScript, ScoringSummStAction scoreAct){
+	public SummaryStatement initSummStRating(PatientIllnessScript expScript, PatientIllnessScript learnerScript, ScoringSummStAction scoreAct){
+		SummaryStatement st = null;
 		try{
-			if(learnerScript==null || learnerScript.getSummSt()==null || learnerScript.getSummSt().getText()==null) return;
-			SummaryStatement st = learnerScript.getSummSt();
+			if(learnerScript==null || learnerScript.getSummSt()==null || learnerScript.getSummSt().getText()==null) return st;
+			st = learnerScript.getSummSt();
 			if(st.isAnalyzed()){ //we do a re-calculation....
 				resetSummSt(st);
 			}
@@ -365,7 +366,7 @@ public class SummaryStatementController {
 			 
 			List<String> textAsListOrg = StringUtilities.createStringListFromString(st.getText(), true);
 			
-			if(textAsListOrg==null) return;
+			if(textAsListOrg==null) return st;
 			
 			compareList(items, st); 
 			if(aList!=null) compareList(aList.get(st.getLang()), st);
@@ -420,6 +421,8 @@ public class SummaryStatementController {
 		catch(Exception e){
 			CRTLogger.out(Utility.stackTraceToString(e), CRTLogger.LEVEL_ERROR);
 		}
+		
+		return st;
 	}
 	
 	/**

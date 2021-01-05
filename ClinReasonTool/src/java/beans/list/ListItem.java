@@ -20,6 +20,7 @@ public class ListItem implements Serializable, ListInterface, Comparable{
 	public static final int MAXLENGTH_NAME = 15;
 	private static final long serialVersionUID = 1L;
 	private String name; //MH
+	private String nameLower = null;
 	private String mesh_id; //UI
 	private long item_id = -1;
 	private String firstCode; //MN
@@ -64,6 +65,12 @@ public class ListItem implements Serializable, ListInterface, Comparable{
 	public boolean isIgnored() {return ignored;}
 	public void setIgnored(boolean ignored) {this.ignored = ignored;}
 	public String getName() {return name;}
+	public String getNameLower() {
+		if (this.nameLower == null && this.name != null) {
+			this.nameLower = this.name.toLowerCase();
+		}
+		return this.nameLower;
+	}
 	public void setName(String name) {
 		this.name = name;
 		if(name!=null) {

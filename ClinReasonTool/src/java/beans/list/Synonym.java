@@ -10,6 +10,7 @@ import util.StringUtilities;
 public class Synonym implements Serializable, ListInterface, Comparable{
 
 	private String name;
+	private String nameLower;
 	private long id;
 	/**
 	 * the id of the ListItem object the synonym is referring to.fg
@@ -39,6 +40,12 @@ public class Synonym implements Serializable, ListInterface, Comparable{
 	}
 	
 	public String getName() {return name;}
+	public String getNameLower() {
+		if (this.nameLower == null && this.name != null) {
+			this.nameLower = this.name.toLowerCase();
+		}
+		return this.nameLower;
+	}
 	public void setName(String name) {
 		this.name = name;
 		this.replName = StringUtilities.replaceChars(name.toLowerCase());

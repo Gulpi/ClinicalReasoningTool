@@ -6,6 +6,7 @@ public interface ListInterface {
 
 	public String getIdForJsonList();
 	public String getName();
+	public String getNameLower();
 	public Locale getLanguage();
 	public boolean isSynonym();
 	public String getItemType();

@@ -170,14 +170,14 @@ public class SummaryStatementAPI implements ApiInterface {
 		this.addToResultObj(resultObj, "userPatientIllnesScript.id", userPatientIllnesScript.getId());
 		this.addToResultObj(resultObj, "userPatientIllnesScript.userId", userPatientIllnesScript.getUserId());
 		this.addToResultObj(resultObj, "userPatientIllnesScript.vpId", userPatientIllnesScript.getVpId());
-		this.addToResultObj(resultObj, "userPatientIllnesScript.stage", userPatientIllnesScript.getStage());
+		this.addToResultObj(resultObj, "userPatientIllnesScript.stage", userPatientIllnesScript.getRawStage());
 	}
 	
 	void addSummaryStatementToResultObj(Map resultObj, PatientIllnessScript userPatientIllnesScript, SummaryStatement st) {
 		this.addToResultObj(resultObj, "userPatientIllnesScript.id", userPatientIllnesScript.getId());
 		this.addToResultObj(resultObj, "userPatientIllnesScript.userId", userPatientIllnesScript.getUserId());
 		this.addToResultObj(resultObj, "userPatientIllnesScript.vpId", userPatientIllnesScript.getVpId());
-		this.addToResultObj(resultObj, "userPatientIllnesScript.stage", userPatientIllnesScript.getStage());
+		this.addToResultObj(resultObj, "userPatientIllnesScript.stage", userPatientIllnesScript.getRawStage());
 		
 		this.addToResultObj(resultObj, "SummaryStatement.text", st.getText());
 		this.addToResultObj(resultObj, "SummaryStatement.lang", st.getLang());

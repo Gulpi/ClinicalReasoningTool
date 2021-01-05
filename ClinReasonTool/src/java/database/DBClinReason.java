@@ -159,6 +159,28 @@ public class DBClinReason /*extends HibernateUtil*/{
     	return patIllScripts;
 
     }
+    
+    /**
+     * loads all learner scripts by given pisID
+     *
+     * @param vpId
+     * @return
+     */
+    public List<PatientIllnessScript> selectLearnerPatIllScriptsById(long pisId){
+    	Session s = instance.getInternalSession(Thread.currentThread(), false);
+    	Criteria criteria = s.createCriteria(PatientIllnessScript.class,"PatientIllnessScript");
+    	criteria.add(Restrictions.eq("id", pisId));
+    	criteria.add(Restrictions.eq("type", new Integer(PatientIllnessScript.TYPE_LEARNER_CREATED)));
+    	List<PatientIllnessScript> patIllScripts =  criteria.list();
+    	if(patIllScripts!=null){   		
+    		for(int i=0; i<patIllScripts.size(); i++){
+    			selectNodesAndConns(patIllScripts.get(i), s);
+    		}
+    	}
+    	s.close();
+    	
+    	return patIllScripts;
+    }
    
     
     /**

@@ -58,6 +58,7 @@ public class SummaryStatementAPI implements ApiInterface {
 			SummaryStatement st = null;
 			PatientIllnessScript userPatientIllnesScript = new DBClinReason().selectLearnerPatIllScript(id, "id");
 			PatientIllnessScript expScript = AppBean.getExpertPatIllScript(userPatientIllnesScript.getVpId());
+			expScript.getSummStStage();
 			
 			ScoreBean scoreBean = new ScoreBean(userPatientIllnesScript, userPatientIllnesScript.getSummStId(), ScoreBean.TYPE_SUMMST, userPatientIllnesScript.getStage());
 			if(expScript!=null && expScript.getSummSt()!=null){

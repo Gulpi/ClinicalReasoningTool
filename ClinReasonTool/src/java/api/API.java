@@ -32,6 +32,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import api.impl.Hello;
 import api.impl.LearningAnalytics1;
 import api.impl.PeerSyncAPI;
+import api.impl.SummaryStatementAPI;
 import net.casus.util.String2HashKey;
 
 /**
@@ -48,6 +49,7 @@ public  class API  extends Observable implements Serializable {
 	public API() {
 		implementations.put("la", new LearningAnalytics1());
 		implementations.put("peerSync", new PeerSyncAPI());
+		implementations.put("stmt", new SummaryStatementAPI());
 	}
 	
 	public String getResult() {

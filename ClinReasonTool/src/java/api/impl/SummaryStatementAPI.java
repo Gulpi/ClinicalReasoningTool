@@ -112,8 +112,8 @@ public class SummaryStatementAPI implements ApiInterface {
 		this.addToResultObj(resultObj, "SummaryStatement.lang", st.getLang());
 		this.addToResultObj(resultObj, "SummaryStatement.analyzed", st.isAnalyzed());
 		
-		this.addToResultObj(resultObj, "SummaryStatement.sqHits", st.getSqHits() );
-		this.addToResultObj(resultObj, "SummaryStatement.itemHits", st.getItemHits());
+		//this.addToResultObj(resultObj, "SummaryStatement.sqHits", st.getSqHits() );
+		//this.addToResultObj(resultObj, "SummaryStatement.itemHits", st.getItemHits());
 		
 		this.addToResultObj(resultObj, "SummaryStatement.sqScore", st.getSqScore());
 		this.addToResultObj(resultObj, "SummaryStatement.sqScoreBasic", st.getSqScoreBasic());
@@ -125,7 +125,7 @@ public class SummaryStatementAPI implements ApiInterface {
 		this.addToResultObj(resultObj, "SummaryStatement.narrowingScore", st.getNarrowingScore());
 		this.addToResultObj(resultObj, "SummaryStatement.personScore", st.getPersonScore());
 
-		this.addToResultObj(resultObj, "SummaryStatement.units", st.getUnits());
+		//this.addToResultObj(resultObj, "SummaryStatement.units", st.getUnits());
 		this.addToResultObj(resultObj, "SummaryStatement.transformNum", st.getTransformNum());
 
 		this.addToResultObj(resultObj, "SummaryStatement.accuracyScore", st.getAccuracyScore());

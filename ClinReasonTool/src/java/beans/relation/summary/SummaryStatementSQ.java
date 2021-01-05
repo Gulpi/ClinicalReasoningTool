@@ -99,7 +99,7 @@ public class SummaryStatementSQ implements Serializable{
 	 * @see java.lang.Object#toString()
 	 */
 	public String toString(){
-		return text + "("+spacyMatch+")";
+		return text;
 	}
 
 	/* (non-Javadoc)

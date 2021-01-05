@@ -74,7 +74,7 @@ public class SummaryStatementAPI implements ApiInterface {
 			
 			if (st != null) {
 				resultObj.put("status", "ok");
-				this.addSummaryStatementToResultObj(resultObj, st);
+				this.addSummaryStatementToResultObj(resultObj, userPatientIllnesScript, st);
 			}
 			else {
 				resultObj.put("status", "error");
@@ -107,7 +107,12 @@ public class SummaryStatementAPI implements ApiInterface {
 		resultObj.put(key, value != null ? value : "-");
 	}
 	
-	void addSummaryStatementToResultObj(Map resultObj,SummaryStatement st) {
+	void addSummaryStatementToResultObj(Map resultObj, PatientIllnessScript userPatientIllnesScript, SummaryStatement st) {
+		this.addToResultObj(resultObj, "userPatientIllnesScript.id", userPatientIllnesScript.getId());
+		this.addToResultObj(resultObj, "userPatientIllnesScript.userId", userPatientIllnesScript.getUserId());
+		this.addToResultObj(resultObj, "userPatientIllnesScript.vpId", userPatientIllnesScript.getVpId());
+		this.addToResultObj(resultObj, "userPatientIllnesScript.stage", userPatientIllnesScript.getStage());
+		
 		this.addToResultObj(resultObj, "SummaryStatement.text", st.getText());
 		this.addToResultObj(resultObj, "SummaryStatement.lang", st.getLang());
 		this.addToResultObj(resultObj, "SummaryStatement.analyzed", st.isAnalyzed());

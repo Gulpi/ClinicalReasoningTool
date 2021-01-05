@@ -212,12 +212,12 @@ public class ScoringFinalDDXAction /*implements ScoringAction*/{
 				String learnerRelListNameLower = learnerRelListName.toLowerCase();
 				
 				//compare main entries:
-				isSimilar = StringUtilities.similarStrings(learnerRelListName, expFinal.getListItem().getName(), learnerRelListNameLower, null, loc, 3, StringUtilities.MAX_FUZZY_DISTANCE, false);
+				isSimilar = StringUtilities.similarStrings(learnerRelListName, expFinal.getListItem().getName(), learnerRelListNameLower, expFinal.getListItem().getNameLower(), loc, 3, StringUtilities.MAX_FUZZY_DISTANCE, false);
 				if(isSimilar) return ScoringController.FULL_SCORE;
 				if(expFinal.getSynonyma()!=null && !expFinal.getSynonyma().isEmpty()){ //compare synonyms:
 					Iterator it = expFinal.getSynonyma().iterator();
 						while(it.hasNext()){
-							isSimilar = StringUtilities.similarStrings(learnerRelListName, ((ListInterface) it.next()).getName(), learnerRelListNameLower, null, loc, 3, StringUtilities.MAX_FUZZY_DISTANCE, false);
+							isSimilar = StringUtilities.similarStrings(learnerRelListName, ((ListInterface) it.next()).getName(), learnerRelListNameLower, ((ListInterface) it.next()).getNameLower(), loc, 3, StringUtilities.MAX_FUZZY_DISTANCE, false);
 							if(isSimilar) return ScoringController.FULL_SCORE;
 					}
 				}

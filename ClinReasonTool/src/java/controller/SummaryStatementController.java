@@ -684,6 +684,8 @@ public class SummaryStatementController {
 				SummaryStElem elem = (SummaryStElem) it2.next();
 				String expMatchRepl = StringUtilities.replaceChars(expMatchesArr[i].toLowerCase());
 				//compare main listItem:
+				
+				// expMatchRepl && getReplName() already lower case
 				if (elem.getListItem()!=null && elem.getListItem().getName()!=null && StringUtilities.similarStrings(elem.getListItem().getReplName(), expMatchRepl, elem.getListItem().getReplName(), expMatchRepl, elem.getListItem().getLanguage(), true)){
 					//matchCounter++;
 					elem.setExpertMatchBool(true);
@@ -697,6 +699,8 @@ public class SummaryStatementController {
 					Iterator it = li.getSynonyma().iterator();
 					while(it.hasNext()){
 						Synonym s= (Synonym) it.next();
+						
+						// expMatchRepl && getReplName() already lower case
 						if(StringUtilities.similarStrings(s.getReplName(), expMatchRepl, s.getReplName(), expMatchRepl, elem.getListItem().getLanguage(), true)){
 							//matchCounter++;
 							elem.setExpertMatchBool(true);

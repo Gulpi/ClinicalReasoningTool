@@ -303,9 +303,14 @@ public class DBClinReason /*extends HibernateUtil*/{
     	Criteria criteria = s.createCriteria(PatientIllnessScript.class,"PatientIllnessScript");
     	criteria.add(Restrictions.eq("type", new Integer(PatientIllnessScript.TYPE_LEARNER_CREATED)));
     	
+    	List<String> lang = new ArrayList<String>();
+    	lang.add("de");
+    	lang.add("en");
+    	
     	DetachedCriteria stmts = DetachedCriteria.forClass(SummaryStatement.class, "stmt")
     			.setProjection( Property.forName("stmt.id") )
-    			.add( Property.forName("stmt.narrowingScore").eq(new Integer(-1)) );
+    			.add( Property.forName("stmt.narrowingScore").eq(new Integer(-1)) )
+    			.add(Property.forName("lang").in(lang));
     	
     	if (startDate != null) {
     		stmts.add(Restrictions.ge("creationDate", startDate));
@@ -318,6 +323,7 @@ public class DBClinReason /*extends HibernateUtil*/{
     	if (max>0) {
     		criteria.setMaxResults(max);
     	}
+    	
     	
     	List<PatientIllnessScript> scripts = criteria.list();
     	if(scripts!=null){

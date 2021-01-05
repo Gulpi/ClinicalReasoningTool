@@ -97,7 +97,7 @@ public class SummaryStatementSQ /*implements Comparable*/{
 	 * @see java.lang.Object#toString()
 	 */
 	public String toString(){
-		return text + "("+spacyMatch+")";
+		return text;
 	}
 
 	/* (non-Javadoc)

@@ -324,7 +324,10 @@ public class DBClinReason /*extends HibernateUtil*/{
     			if ((i%2500) == 0) {
     				CRTLogger.out("DBClinReason.selectLearnerPatIllScriptsByNotAnalyzedSummSt: scripts: i:"  + i, CRTLogger.LEVEL_PROD);
     			}
-    			selectNodesAndConns(scripts.get(i), s);
+    			PatientIllnessScript loop = scripts.get(i); 
+    			loop.setSummSt(loadSummSt(loop.getSummStId(), s));
+
+    			selectNodesAndConns(loop, s);
     		}
     	}
     	s.close();

@@ -1,8 +1,10 @@
 package api.impl;
 
+import java.sql.Timestamp;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpServletRequest;
@@ -17,7 +19,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import actions.scoringActions.ScoringSummStAction;
 import api.ApiInterface;
 import application.AppBean;
+import beans.relation.summary.SummaryStElem;
+import beans.relation.summary.SummaryStNumeric;
 import beans.relation.summary.SummaryStatement;
+import beans.relation.summary.SummaryStatementSQ;
 import beans.scoring.LearningAnalyticsBean;
 import beans.scoring.PeerContainer;
 import beans.scoring.ScoreBean;
@@ -64,13 +69,12 @@ public class SummaryStatementAPI implements ApiInterface {
 			if(expScript!=null && expScript.getSummSt()!=null){
 				ScoringSummStAction action = new ScoringSummStAction();
 				st = new SummaryStatementController().initSummStRating(expScript, userPatientIllnesScript, action);	
-				
+				action.doScoring(st, expScript.getSummSt());
 			}
 			
 			if (st != null) {
 				resultObj.put("status", "ok");
-				resultObj.put("SummaryStatement", st);
-
+				this.addSummaryStatementToResultObj(resultObj, st);
 			}
 			else {
 				resultObj.put("status", "error");
@@ -95,5 +99,36 @@ public class SummaryStatementAPI implements ApiInterface {
 			result = e.getMessage();
 		}
 		return result;
+	}
+	
+	// --------- helper ------------------------------------------------------------------------
+	
+	void addToResultObj(Map resultObj, String key, Object value) {
+		resultObj.put(key, value != null ? value : "-");
+	}
+	
+	void addSummaryStatementToResultObj(Map resultObj,SummaryStatement st) {
+		this.addToResultObj(resultObj, "SummaryStatement.text", st.getText());
+		this.addToResultObj(resultObj, "SummaryStatement.lang", st.getLang());
+		this.addToResultObj(resultObj, "SummaryStatement.analyzed", st.isAnalyzed());
+		
+		this.addToResultObj(resultObj, "SummaryStatement.sqHits", st.getSqHits() );
+		this.addToResultObj(resultObj, "SummaryStatement.itemHits", st.getItemHits());
+		
+		this.addToResultObj(resultObj, "SummaryStatement.sqScore", st.getSqScore());
+		this.addToResultObj(resultObj, "SummaryStatement.sqScoreBasic", st.getSqScoreBasic());
+		this.addToResultObj(resultObj, "SummaryStatement.sqScorePerc", st.getSqScorePerc());
+		
+		this.addToResultObj(resultObj, "SummaryStatement.transformationScore", st.getTransformationScore());
+		this.addToResultObj(resultObj, "SummaryStatement.transformScorePerc", st.getTransformScorePerc());
+		
+		this.addToResultObj(resultObj, "SummaryStatement.narrowingScore", st.getNarrowingScore());
+		this.addToResultObj(resultObj, "SummaryStatement.personScore", st.getPersonScore());
+
+		this.addToResultObj(resultObj, "SummaryStatement.units", st.getUnits());
+		this.addToResultObj(resultObj, "SummaryStatement.transformNum", st.getTransformNum());
+
+		this.addToResultObj(resultObj, "SummaryStatement.accuracyScore", st.getAccuracyScore());
+		this.addToResultObj(resultObj, "SummaryStatement.globalScore", st.getGlobalScore());
 	}
 }

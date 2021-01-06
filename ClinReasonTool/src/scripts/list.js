@@ -59,6 +59,19 @@ var isSuccess = false;
 		  	      		handleClose(3);
 		  	      	}
 		      });
+	          $( "#patho" ).autocomplete({
+		            source: doMatch,
+		            minLength: minLengthTypeAhead,
+		            select: function( event, ui ) {
+		            	isSuccess = true;
+		            	addPatho(ui.item.value, ui.item.label, $("#patho").val());
+		            	ui.item.value = ""; //necessary if action is cancelled
+		            },
+		  	      	close: function(ui) {
+		  	      		$("#patho").val("");
+		  	      		handleClose(6);
+		  	      	}
+		      });
 	          $( "#mng" ).autocomplete({
 		            source: doMatch,
 		            minLength: minLengthTypeAhead,
@@ -84,7 +97,17 @@ var isSuccess = false;
 	    	        $(this).trigger("enterProb");
 	    	    }
 	    	});
-	    	
+
+	    $("#patho").bind("enterPatho",function(e){
+	    	addPatho(-999, "-999", $("#patho").val());	 
+	    	});
+	    	$("#patho").keyup(function(e){
+	    	    if(e.keyCode == 13 && listUrl=="")
+	    	    {
+	    	        $(this).trigger("enterPatho");
+	    	    }
+	    	});	  
+  	
 		 $("#ddx").bind("enterDDX",function(e){
 		    	addDiagnosis(-999, "-999", $("#ddx").val());	 
 		    	});

@@ -2,6 +2,7 @@ package controller;
 
 import java.util.Locale;
 
+import beans.relation.Relation;
 import beans.user.SessionSetting;
 import database.DBUser;
 import util.CRTLogger;
@@ -13,6 +14,11 @@ import util.CRTLogger;
  *
  */
 public class SessionSettingController {
+	/**
+	 * boxes can be on different positions and active/inactive. Max. 4 boxes!
+	 */
+	public static final boolean dynamicBoxesOn = true;
+
 	static private SessionSettingController instance = new SessionSettingController();
 	static public SessionSettingController getInstance() { return instance; }
 	
@@ -49,11 +55,17 @@ public class SessionSettingController {
 		sessSetting.setExpFeedbackMode(AjaxController.getInstance().getIntRequestParamByKey(AjaxController.REQPARAM_EXP_FB_MODE, 0));
 		sessSetting.setPeerFeedbackMode(AjaxController.getInstance().getIntRequestParamByKey(AjaxController.REQPARAM_PEER_FB_MODE, 0));
 		sessSetting.setDdxMode(AjaxController.getInstance().getIntRequestParamByKey(AjaxController.REQPARAM_DDX_MODE, 0));
+		initBoxesSettings(sessSetting);
+	}
+	
+	private void initBoxesSettings(SessionSetting sessSetting) {
 		//hide, show, inactivate the four boxes:
+		//if(!dynamicBoxesOn) {
 		sessSetting.setBoxesUsed(0,AjaxController.getInstance().getIntRequestParamByKey(AjaxController.REQPARAM_BOXES_P_MODE,1));
 		sessSetting.setBoxesUsed(1,AjaxController.getInstance().getIntRequestParamByKey(AjaxController.REQPARAM_BOXES_D_MODE,1));
 		sessSetting.setBoxesUsed(2,AjaxController.getInstance().getIntRequestParamByKey(AjaxController.REQPARAM_BOXES_T_MODE,1));
 		sessSetting.setBoxesUsed(3,AjaxController.getInstance().getIntRequestParamByKey(AjaxController.REQPARAM_BOXES_M_MODE,1));
+		sessSetting.setBoxesUsed(3,AjaxController.getInstance().getIntRequestParamByKey(AjaxController.REQPARAM_BOXES_PAT_MODE,0));
 	}
 }	
 

@@ -250,21 +250,7 @@ function submitDDXConfirmed(){
 
 /** 3. we come back after the submission and have to reload ddxs once again show feedback for submitted diagnoses */
 function submitDDXConfirmedCallBack(data){
-	//if(isCallbackStatusSuccess(data)){
-	$("#jdialog").load("submitteddialog.xhtml");
-	//removeElems("ddxs");
-	//removeElems("expddxs");
-	//window.setTimeout(function() { 
-	//	$("[id='ddxform:hiddenDDXButton']").click();
-	//	$("[id='cnxsform:hiddenCnxButton']").click();
-
-	//},500);
-
-
-	//we update the ddx boxes (re-printing all boxes)
-	
-	
-	
+	$("#jdialog").load("submitteddialog.xhtml");		
 }
 
 /* 5. show feedback for submitted diagnoses */
@@ -283,21 +269,10 @@ function backToCase(){
 
 /** called when the submitting dialog is closed or backToCase is clicked**/
 function revertSubmissionCallback(data){
-	//if(isCallbackStatusSuccess(data)){
-		//$(".ddxs").remove();
-		//removeElems("ddxs");
-		//removeElems("expddxs");
-
 	//we update the ddx boxes (re-printing all boxes)
 		presubmitted = "false";
 		checkSubmitBtn();
 		postEnforceFinalDDXSubmission("false");
-		/*removeElems("ddxs");
-		removeElems("expddxs");
-		$("[id='ddxform:hiddenDDXButton']").click();	
-		$("[id='cnxsform:hiddenCnxButton']").click();	*/
-
-	//}
 }
 
 /* 
@@ -308,11 +283,9 @@ function tryAgain(){
 }
 
 function tryAgainCallback(data){
-	//if(isCallbackStatusSuccess(data)){
-		presubmitted = "false";
-		postEnforceFinalDDXSubmission("false");
-		$("#jdialog").load("submitdialog.xhtml");
-	//}
+	presubmitted = "false";
+	postEnforceFinalDDXSubmission("false");
+	$("#jdialog").load("submitdialog.xhtml");
 }
 
 function showSolution(){
@@ -467,15 +440,6 @@ function initSubmittedDialog(){
 		$(".aftersubmit_fail").hide();
 		$(".errors").hide();
 		postEnforceFinalDDXSubmission(submitted/*, myStage, maxSubmittedStage*/);
-		//update ddx box:
-		//$(".ddxs").remove();
-		//$("[id='ddxform:hiddenDDXButton']").click();
-		/*removeElems("ddxs");
-		removeElems("expddxs");
-		$("[id='ddxform:hiddenDDXButton']").click();	
-		$("[id='cnxsform:hiddenCnxButton']").click();*/
-
-
 		return;
 	}
 	 //show solution has been selected
@@ -484,14 +448,6 @@ function initSubmittedDialog(){
 		$(".aftersubmit_succ").show();
 		$(".aftersubmit_fail").hide();
 		postEnforceFinalDDXSubmission(submitted/*, myStage, maxSubmittedStage*/);
-		//update ddx box:
-		//$(".ddxs").remove();
-		//$("[id='ddxform:hiddenDDXButton']").click();
-		/*removeElems("ddxs");
-		removeElems("expddxs");
-		$("[id='ddxform:hiddenDDXButton']").click();	
-		$("[id='cnxsform:hiddenCnxButton']").click();*/
-
 
 		return;
 	}
@@ -631,6 +587,68 @@ function togglePeersTest(){
 	clearErrorMsgs();
 	togglePeerBoxFeedback("peerFeedbackTest", "peer_score_test", 3);
 }
+
+/******************** pathophysiology *******************************/
+
+/*
+ * a test is added to the list of the already added tests:
+ */
+function addPatho(pathoId, name, typedinName){
+	clearErrorMsgs();
+	if(name!=""){
+		checkBoxColorOnAdd("patho_title", "patho");
+		sendAjax(pathoId, testCallBack, "addPatho", name, typedinName);
+	}
+}
+
+function delPatho(id){
+	clearErrorMsgs();
+	sendAjax(id, delPathoCallBack, "delPatho", "");
+}
+
+function delPathoCallBack(pathoId, selPatho){
+	pathoCallBack(pathoId, selPatho);
+}
+
+function pathoCallBack(pathoId, selPatho){
+	$("#patho").val("");	
+	//$(".tests").remove();
+	removeElems("patho");
+	removeElems("exppatho");
+	//we update the problems list and the json string
+	$("[id='pathoform:hiddenPathoButton']").click();		
+	$("[id='cnxsform:hiddenCnxButton']").click();
+}
+
+function updatePathoCallback(data){
+	if(isCallbackStatusSuccess(data)){
+		updateItemCallback(data, "pat","patho_box");
+		if(isOverallExpertOn()) //re-display expert items:
+			turnOverallExpFeedbackOn('expFeedback', 'icon-user-md');
+	}
+}
+
+function chgPatho(id, type){
+	clearErrorMsgs();
+	sendAjax(id, pathoCallBack, "changePatho", type);
+	
+}
+
+function addJokerPatho(){
+	clearErrorMsgs();
+	sendAjax("", pathoCallBack, "addJoker", 3);
+}
+
+function togglePathoFeedback(){
+	clearErrorMsgs();
+	toggleExpBoxFeedback("expFeedbackPatho", "patho", 6);
+}
+
+function togglePeersPatho(){
+	clearErrorMsgs();
+	togglePeerBoxFeedback("peerFeedbackPatho", "peer_score_patho", 6);
+}
+
 
 /******************** summary statement *******************************/
 
@@ -811,6 +829,7 @@ function turnOverallExpFeedbackOn(iconId, itemClass){
 	turnExpBoxFeedbackOn("expFeedbackFdg", "fdgs");
 	turnExpBoxFeedbackOn("expFeedbackDDX", "ddxs");
 	turnExpBoxFeedbackOn("expFeedbackTest", "tests");
+	turnExpBoxFeedbackOn("expFeedbackPatho", "patho");
 	turnExpBoxFeedbackOn("expFeedbackMng", "mngs");
 	if(isOverallCnxOn()){
 		$(".jtk-exp-connector").addClass("jtk-exp-connector-show");
@@ -852,14 +871,24 @@ function turnViewModeOn(){
 		$("#tst_box .search").removeClass("boxchild");
 		$("#tst_box .search").height(30);
 		$(".tstpassive").show();
-		turnExpBoxFeedbackOn("expFeedbackTest", "ddxs");
+		turnExpBoxFeedbackOn("expFeedbackTest", "tests");
+	}
+	if(pathoBoxUsed=="2"){
+		$(".exppatho").removeClass("expboxinvis");
+		$(".exppatho").removeClass("expboxstatus");
+		$(".exppatho").addClass("expboxstatus_show");
+		$(".pathosearch").hide(); //hide search box
+		$("#pat_box .search").removeClass("boxchild");
+		$("#pat_box .search").height(30);
+		$(".patpassive").show();
+		turnExpBoxFeedbackOn("expFeedbackPatho", "patho");
 	}
 	
 	if(mngBoxUsed=="2"){
 		$(".expmngs").removeClass("expboxinvis");
 		$(".expmngs").removeClass("expboxstatus");
 		$(".expmngs").addClass("expboxstatus_show");
-		turnExpBoxFeedbackOn("expFeedbackMng", "ddxs");
+		turnExpBoxFeedbackOn("expFeedbackMng", "mngs");
 		$(".mngsearch").hide(); //hide search box
 		$("#mng_box .search").removeClass("boxchild");
 		$("#mng_box .search").height(30);
@@ -888,6 +917,7 @@ function turnOverallExpFeedbackOff(iconId, itemClass){
 	turnExpBoxFeedbackOff("expFeedbackFdg", "fdgs");
 	turnExpBoxFeedbackOff("expFeedbackDDX", "ddxs");
 	turnExpBoxFeedbackOff("expFeedbackTest", "tests");
+	turnExpBoxFeedbackOff("expFeedbackPatho", "patho");
 	turnExpBoxFeedbackOff("expFeedbackMng", "mngs");
 	$(".jtk-exp-connector").addClass("jtk-exp-connector-hide");
 	$(".jtk-exp-connector").removeClass("jtk-exp-connector-show");

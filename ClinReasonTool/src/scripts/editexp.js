@@ -43,6 +43,32 @@ function chgMapLang(){
 	location.reload();
 }
 
+
+
+/*function chgBox2(){
+	var newType = $("#chgbox2").val();
+	sendAjax(newType, callBackReload, "changeBoxType2", "");
+	//location.reload();
+}
+
+function chgBox3(){
+	var newType = $("#chgbox3").val();
+	sendAjax(newType, callBackReload, "changeBoxType3", "");
+	//location.reload();
+}
+
+function chgBox4(){
+	var newType = $("#chgbox4").val();
+	sendAjax(newType, callBackReload, "changeBoxType4", "");
+	//location.reload();
+}
+
+function chgBox6(){
+	var newType = $("#chgbox6").val();
+	sendAjax(newType, callBackReload, "changeBoxType6", "");
+	//location.reload();
+}*/
+
 /**
  * the display of the individual map is either as a step-thru (0) or complete map display (1)
  * @param url
@@ -130,3 +156,52 @@ function toggleStageDisplay(){
     	$(".stagestepoff").show();
     }
 }
+
+function openSelBoxes(){
+	$("#boxesSel").dialog( "option", "width", ['200'] );
+	$("#boxesSel").dialog( "option", "height", ['200'] );
+	$("#boxesSel").dialog( "option", "title", "");
+	$("#boxesSel").dialog( "option", "buttons", [ ] );
+	$("#boxesSel" ).dialog( "open" );
+	$("#boxesSel").show();
+}
+
+/**
+* we check whether the author has checked 4 or less boxes, if more we alert a warning. 
+ */
+function checkBoxNum(){
+	var boxesNum = ($('.boxeschk :checked').size());
+	if(boxesNum>4) alert("Please only select 4 Boxes.");
+}
+
+function saveBoxesSel(){
+	if(($('.boxeschk :checked').size())>4){
+		alert("Please only select 4 Boxes.");
+	}
+	else{
+		var arr = [];
+		$(".boxeschk").each(function(){
+	   		if($(this).is(":checked")){
+		 		arr.push($(this).val());
+	   		}
+		})
+	var vals = arr.join(",");
+	//alert(vals);	
+		sendAjax(vals, callBackReload, "changeBoxType", "");
+	}
+}
+
+function initBoxesSel(){
+	   for(var i=1; i<=6;i++){
+		//var val = box1type;
+		if(box1Type==i || box2Type==i || box3Type==i || box4Type==i)
+			$("#boxtypes"+i).prop("checked", true);
+	}
+
+}
+
+/*function chgBox(boxNo){
+	var newType = $("#chgbox"+boxNo).val();
+	sendAjax(newType, callBackReload, "changeBoxType"+boxNo, "");
+	//location.reload();
+}*/

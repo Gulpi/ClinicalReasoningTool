@@ -34,6 +34,10 @@
 	     <property name="deleteFlag" column="delete_flag" type="boolean"/>
 	     <property name="finalDDXType" column="final_ddx_type" type="int"/>
 	     <property name="sessionId" column="session_id" type="long"/>
+	     <property name="box1Type" column="box1_type" type="int"/>
+	     <property name="box2Type" column="box2_type" type="int"/>
+	     <property name="box3Type" column="box3_type" type="int"/>
+	     <property name="box4Type" column="box4_type" type="int"/>
 	     
 
 	    <list name="errors" table="crt.error" lazy="false"> <!-- table="crt.relation_problem"-->
@@ -45,6 +49,7 @@
 	    <sql-query name="script.selByRelProb">select pis.id, pis.vp_id, pis.type, rd.source_id from patient_illnessscript pis where (pis.user_id=:userId or pis.type=2) and pis.id in(select rd.dest_id from relation_problem rd where source_id in(:ids)) and pis.id = rd.dest_id</sql-query>
 	    <sql-query name="script.selByRelTest">select pis.id, pis.vp_id, pis.type, rd.source_id from patient_illnessscript pis where (pis.user_id=:userId or pis.type=2) and pis.id in(select rd.dest_id from relation_test rd where source_id in(:ids)) and pis.id = rd.dest_id</sql-query>
 	    <sql-query name="script.selByRelMng">select pis.id, pis.vp_id, pis.type, rd.source_id from patient_illnessscript pis where (pis.user_id=:userId or pis.type=2) and pis.id in(select rd.dest_id from relation_management rd where source_id in(:ids)) and pis.id = rd.dest_id </sql-query>
+	    <sql-query name="script.selByRelPat">select pis.id, pis.vp_id, pis.type, rd.source_id from patient_illnessscript pis where (pis.user_id=:userId or pis.type=2) and pis.id in(select rd.dest_id from relation_patho rd where source_id in(:ids)) and pis.id = rd.dest_id </sql-query>
 	    
 </class>
 </hibernate-mapping>

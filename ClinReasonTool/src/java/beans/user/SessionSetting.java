@@ -7,6 +7,7 @@ import javax.faces.bean.SessionScoped;
 
 import beans.scripts.PatientIllnessScript;
 import controller.NavigationController;
+import controller.SessionSettingController;
 import util.*;
 
 /**
@@ -23,7 +24,7 @@ public class SessionSetting {
 	public static final int EXPFEEDBACKMODE_NEVER = 2; //show no expert feedback at all
 	public static final int LIST_MODE_NONE = 1; //no list is used
 	public static final int LIST_MODE_USE = 0; //list is used
-	
+
 	
 	private long id;
 	/**
@@ -54,12 +55,17 @@ public class SessionSetting {
 	private int listMode = 0;
 	
 	/**
-	 * each position stands for a box (0=problems, 1=ddx, 2=tests, 3=therapies, 4=summary statement), per default all 
+	 * each position stands for a box (0=problems, 1=ddx, 2=tests, 3=therapies, 4=summary statement, 5 = patho), per default all 
 	 * boxes are used. If boxes shall not be used/displayed, there needs to be a 0 at the position.
 	 * If boxes shall be displayed but in a passive mode, there needs to be a 2 at the position.
 	 * Is stores as a String in the database! 
 	 */
-	private int[] boxesUsed = {1,1,1,1,1}; 
+	private int[] boxesUsed = {1,1,1,1,1,0}; 
+	/**
+	 * at which position is a box, default is problems (0) at pos[0] upper left corner etc 
+	 * pos[1]=upper right corner, pos[2] = lower left corner, pos[3] = lower right corner
+	 */
+	private int[] boxesPositions = {0,1,2,3}; //default
 	
 	
 	public SessionSetting(){}
@@ -181,6 +187,13 @@ public class SessionSetting {
 		boxesUsed = StringUtilities.getIntArrFromString(boxesUsedStr, ",");
 	}
 	
+	/**
+	 * value was originally 0 or 1 (on/off), now we use a value to indicate the type of box 
+	 * shall be displayed at which position. 
+	 * value definitions see Relation class
+	 * @param i
+	 * @param value
+	 */
 	public void setBoxesUsed(int i, int value){	
 		try{
 			if(value>=0)
@@ -194,5 +207,6 @@ public class SessionSetting {
 	public int getDdxBoxUsed(){ return boxesUsed[1];}	
 	public int getTestBoxUsed(){ return boxesUsed[2];}
 	public int getMngBoxUsed(){ return boxesUsed[3];}
+	public int getPathoBoxUsed(){ return boxesUsed[4];}
 	
 }

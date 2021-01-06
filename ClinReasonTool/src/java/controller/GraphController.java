@@ -29,11 +29,13 @@ public class GraphController implements Serializable{
 	public static final String PREFIX_MNG = "cmmng_";
 	public static final String PREFIX_CNX = "cnx_";
 	public static final String PREFIX_TEST = "cmtes_";
+	public static final String PREFIX_PATHO = "cmpat_";
 	public static final String PREFIX_PROB2 = "fdg_";
 	public static final String PREFIX_EPI2 = "epi_";
 	public static final String PREFIX_DDX2 = "ddx_";
 	public static final String PREFIX_MNG2 = "mng_";
 	public static final String PREFIX_TEST2 = "tst_";
+	public static final String PREFIX_PATHO2 = "pat_";
 	private Graph graph;
 	
 	public GraphController(Graph g){
@@ -93,6 +95,7 @@ public class GraphController implements Serializable{
 		 addVertices( patIllScript.getDiagnoses(), illnessScriptType);
 		 addVertices( patIllScript.getMngs(), illnessScriptType);
 		 addVertices( patIllScript.getTests(), illnessScriptType);
+		 addVertices( patIllScript.getPatho(), illnessScriptType);
 
 	}
 	

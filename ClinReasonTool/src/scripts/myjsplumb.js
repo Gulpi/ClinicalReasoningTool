@@ -5,7 +5,7 @@ var ep_left_prefix = "2_";
 var ep_top_prefix = "3_";
 var ep_bottom_prefix = "4_";
 
-var groups = new Array("fdg_group", "ddx_group","tst_group", "mng_group", "sum_group");
+var groups = new Array("fdg_group", "ddx_group","tst_group", "mng_group", "sum_group", "pat_group");
 
 /*
  * TODO not very elegant, but the "" vs non "" is important and seems to be difficult to do when getting the items/ids from 
@@ -13,9 +13,8 @@ var groups = new Array("fdg_group", "ddx_group","tst_group", "mng_group", "sum_g
  * all groups are created and all items attached to a group
  */
 function initGroups(){
-	//var boxes = new Array(fdg_box, ddx_box, tst_box, mng_box, sum_box /*, pat_box*/ );
-	var boxes = new Array("fdg_box", "ddx_box", "tst_box", "mng_box", "sum_box" /*, pat_box*/ );
-
+	//var boxes = new Array("fdg_box", "ddx_box", "tst_box", "mng_box", "sum_box" /*, pat_box*/ );
+	var boxes = createBoxesArr();
 	for(var i=0; i<boxes.length;i++){
 		instance.addGroup({
 	        el: document.getElementById(boxes[i]),
@@ -27,24 +26,6 @@ function initGroups(){
 	    });
 	}
 	initElems("");
-	/*for(var i=0; i<item_arr.length;i++){
-		var itemId = item_arr[i];
-		var item = $("#"+itemId)[0];
-		addToGroup(itemId, item);
-		//this makes each node a target for connections, independent from the endpoint:
-		instance.makeTarget(item,{
-			isTarget:true,
-			maxConnections:10,			
-			anchor: ["Perimeter", { shape:"Rectangle" }]
-			//paintStyle:{ fill:"red" },
-		});
-		createEndpointsForItems(itemId);
-	}
-	for(var i=0; i<exp_arr.length;i++){
-		var itemId = exp_arr[i];
-		var item = $("#"+itemId)[0];
-		addToGroup(itemId, item);
-	}*/
 }
 
 function initElems(selector){
@@ -58,10 +39,8 @@ function initElems(selector){
 				isTarget:true,
 				maxConnections:10,			
 				anchor: ["Perimeter", { shape:"Rectangle" }]
-				//paintStyle:{ fill:"red" },
 			});
-			/*if(isView) createExpEndpointsForItems
-			else*/ createEndpointsForItems(itemId);
+			createEndpointsForItems(itemId);
 		}
 	}
 	for(var i=0; i<exp_arr.length;i++){
@@ -70,7 +49,6 @@ function initElems(selector){
 			var item = $("#"+itemId)[0];
 			addToGroup(itemId, item);
 		}
-		//createExpEndpointsForItems(itemId);
 	}
 	initDraggables();
 } 
@@ -93,6 +71,19 @@ function createEndpointsForItems(itemId){
 	    ep2.maxConnections = 10;
 }
 
+var lookup = new Array("", "fdg_box", "ddx_box", "tst_box", "mng_box", "sum_box", "pat_box");
+
+/**
+ * we have to create the boxes array dynamically now
+ */
+function createBoxesArr(){
+	var boxesArr = new Array("fdg_box", "ddx_box", "tst_box", "mng_box", "sum_box");	
+	boxesArr[0] = lookup[box1Type];
+	boxesArr[1] = lookup[box2Type];
+	boxesArr[2] = lookup[box3Type];
+	boxesArr[3] = lookup[box4Type];
+	return boxesArr;
+}
 
 function createExpEndpointsForItems(itemId){	
 	var eps = instance.getEndpoints(itemId);
@@ -132,6 +123,10 @@ function addToGroup(itemId, item){
 	}
 	if(itemId.indexOf("mng")>=0){
 		instance.addToGroup("mng_group", item);
+	}
+	
+	if(itemId.indexOf("pat")>=0){
+		instance.addToGroup("pat_group", item);
 	}
 	
 }
@@ -188,43 +183,44 @@ function initConnections(){
 /*
  * init positions of all containers....
  */
-function initContainerPos(){
+/*function initContainerPos(){
 	initOneContainerPos("fdg", "fdg_box");
 	//initOneContainerPos("pat", "pat_box");
 	initOneContainerPos("ddx", "ddx_box");
 	initOneContainerPos("tst", "tst_box");
 	initOneContainerPos("mng", "mng_box");
 	initOneContainerPos("sum", "sum_box");
-}
+}*/
 
-function initOneContainerPos(type, box){
+/*function initOneContainerPos(type, box){
 	var x = getContainerX(type); 
 	var y = getContainerY(type); 
 	$("#"+box).offset({ top: getContainerY(type), left: getContainerX(type) });
-}
+}*/
 
 /*
  * init collapse status of all containers....
  */
-function initContainerCollapsed(){
+/*function initContainerCollapsed(){
 	initOneContainerCollapsed("fdg", "fdg_box");
 	//initOneContainerCollapsed("pat", "pat_box");
 	initOneContainerCollapsed("ddx", "ddx_box");
 	initOneContainerCollapsed("tst", "tst_box");
 	initOneContainerCollapsed("mng", "mng_box");
 	initOneContainerCollapsed("sum", "sum_box");
-}
+	initOneContainerCollapsed("pat", "pat_box");
+}*/
 /**
  * 
  * @param type e.g. "fdg"
  * @param box e.g. "fdg_box"
  */
-function initOneContainerCollapsed(type, box){ 
+/*function initOneContainerCollapsed(type, box){ 
 	var isCollapsed = getContainerCollapsed(type); 
 	if(!isCollapsed || isCollapsed=="false") return; //nothing to do...
 	$("#"+box).addClass("collapsed");
 	$("#fdg_box").addClass("jsplumb-group-collapsed");
-}
+}*/
 
 function deleteEndpoints(id){
 	var ep = instance.getEndpoints(id);
@@ -236,8 +232,8 @@ function deleteEndpoints(id){
 }
 
 function initBoxHeights(){
-	var storedHeightRow1 = getBoxFdgDDXHeight();
-	var storedHeightRow2 = getBoxTstMngHeight();
+	var storedHeightRow1 = getBoxRow1Height();//getBoxFdgDDXHeight();
+	var storedHeightRow2 = getBoxRow2Height();//getBoxTstMngHeight();
 	var maxYRow1 = 210; //height of fdg & ddx containers
 	var maxYRow2 = 210; //height of tst & mng containers
 	
@@ -267,25 +263,30 @@ function initBoxHeights(){
 	}	
 	if(maxYRow1>storedHeightRow1){
 		storedHeightRow1 = maxYRow1;
-		setBoxHeight("fdg_box", maxYRow1);
+		setBoxHeight(1, maxYRow1);
 	}
 	
 	if(maxYRow2>storedHeightRow2){
 		storedHeightRow2 = maxYRow2;
-		setBoxHeight("mng_box", maxYRow2);
+		setBoxHeight(2, maxYRow2);
 	}
-	$("#fdg_box").height(storedHeightRow1);
+	/*$("#fdg_box").height(storedHeightRow1);
 	$("#ddx_box").height(storedHeightRow1);
 
 	$("#tst_box").height(maxYRow2);
-	$("#mng_box").height(maxYRow2);
+	$("#mng_box").height(maxYRow2);*/
+	$(".pos_1").height(storedHeightRow1);
+	$(".pos_2").height(storedHeightRow1);
+
+	$(".pos_3").height(maxYRow2);
+	$(".pos_4").height(maxYRow2);
 	
 	sendNewHeightToHostSystem();
 
 }
 
 function sendNewHeightToHostSystem(){
-	var rowsHeight = $("#fdg_box").height() + $("#mng_box").height();
+	var rowsHeight = $(".pos_1").height() + $(".pos_3").height(); //$("#fdg_box").height() + $("#mng_box").height();
 	var minHeight = 520;
 	var newFrameHeight = 730;
 	if((rowsHeight-520)>0) newFrameHeight += rowsHeight-520;

@@ -90,6 +90,13 @@ var probBoxUsed = "#{crtContext.sessSetting.probBoxUsed}";
 var ddxBoxUsed = "#{crtContext.sessSetting.ddxBoxUsed}";
 var testBoxUsed = "#{crtContext.sessSetting.testBoxUsed}";
 var mngBoxUsed = "#{crtContext.sessSetting.mngBoxUsed}"; 
+var patBoxUsed = "#{crtContext.sessSetting.pathoBoxUsed}";
+//indicates at which position with box (fdg, patho, ddx, tests, mnsg) is
+var box1Type = "#{crtContext.patillscript.box1Type}";
+var box2Type = "#{crtContext.patillscript.box2Type}";
+var box3Type = "#{crtContext.patillscript.box3Type}";
+var box4Type = "#{crtContext.patillscript.box4Type}";
+
 var displayMode = -1;
 
 $(function() {
@@ -106,14 +113,6 @@ $(function() {
 	$(".exphintdivvis_true").toggle("drop", {direction: "right"}, 1000); //effect for the expert feedback hint
 	//checkDisplayCnxHint(); //display of hint for connections
 	
-/*uncomment if endpoint issues with dragging boxes is solved:*/
-  /*  $( ".container" ).draggable({
-        stop: function() {
-        	storeContainerPos(this.id, this.offsetLeft, this.offsetTop);
-        },
-        containment:"parent"
-    
-      });*/
     $( ".itembox" ).draggable({
     	 start: function(event, ui) {             
             // $(ui.helper).find('.tooltip').hide(); 
@@ -287,20 +286,36 @@ item_arr = new Array();
 
 <div class="boxes_container">
 	<div id="canvas" class="canvas jtk-surface drag-drop jtk-surface-nopan" >
-		 <!--   <div id="pat_box" class="container" group="pat_group">
-		  		<div class="title">Patient</div>
-		   		<div class="node-collapse"></div>
-				 <div id="patimg" class="boxchild" style="position:relative;right:5px; top:30px; float:right;"><img src="patient.png" width="100px" /><br/>Delai Johnston</div>
-		  		<div id="descr" class="boxchild" style="float:left;position:absolute;">
-				Course of Time: 
-				<h:selectOneMenu onchange="javascript:changeCourseOfTime();" class="f_select" id="courseTime" value="#{crtContext.patillscript.courseOfTime}">
-				<f:selectItem itemLabel="-" itemValue="-1" />
-				<f:selectItem itemLabel="acute" itemValue="1" />
-				<f:selectItem itemLabel="chronic" itemValue="2" />
-				</h:selectOneMenu>
-				<span class="list_score" style="float:left;position:absolute;vertical-align:middle;">&nbsp;<i class="#{crtContext.patillscript.courseOfTimeScore}"></i></span><br/><br/>
-			</div>
-		  </div>-->
+		  
+		  <!-- pathos -->
+		  <div id="pat_box" class="container pat_cont pos_#{crtContext.patillscript.patBoxNo} hide_#{crtContext.sessSetting.pathoBoxUsed}" group="pat_group">
+		  		<div id="pat_title" mytooltip="#{prop['patho.search']}" class="title  contcol_#{crtContext.patillscript.pathoDiff}">#{prop['patho']} <i class="fa fa-info-circle"></i></div>
+		  		<div class="search  boxchild">
+		  			<i class="fa fa-search ininput pathosearch"></i>
+		  			<input class="f_text pathosearch" onkeyup="javascript:storeHistory('patho');" onFocus="javascript:hideTooltips();"  placeholder="#{prop['patho.add']} ..." id="patho" mytooltip="#{prop['patho.search']}"></input>
+		  		</div>
+		  			<h:form id="pathoform">
+		  			<h:panelGroup>
+					
+						<ui:repeat value="#{crtContext.patillscript.patho}" var="patho" varStatus="status">
+							<ui:include src="pathobox.xhtml" />
+     					</ui:repeat>	
+     					<ui:repeat value="#{crtContext.expPatIllScript.patho}" var="exppatho" varStatus="status">
+							<ui:include src="pathoexpbox.xhtml" />
+     					</ui:repeat>			
+    				</h:panelGroup>
+    				     <h:commandButton id="hiddenPathoButton" value="RenderSomething" style="visibility:hidden">
+    						<f:ajax render="@form" onevent="updatePathoCallback"></f:ajax>
+						</h:commandButton>
+					</h:form>
+					<span class="errormsg" id="msg_pathoform" onClick="javascript:clearErrorMsgs();"></span>
+				<div class="patpassive passive" style="position:absolute;top:10%;left:0px;width:100%;z-index:9;">
+		  			<div style="text-align:left;margin:5px;">#{prop['patho.passive']}</div>
+					<div style="text-align:left;margin:10px;padding:0px;margin-top:20px;color:white; font-size:110px">
+						<i class="fa fa-lock"></i>
+					</div>
+				</div>
+		</div>
 		  <!-- problems -->
 		  <div id="fdg_box" class="container fdg_cont hide_#{crtContext.sessSetting.probBoxUsed}" group="fdg_group">
 		   		<div id="fdg_title" class="title contcol_#{crtContext.patillscript.problemsDiff}"  mytooltip="#{prop['findings.search']}">#{prop['findings']} 

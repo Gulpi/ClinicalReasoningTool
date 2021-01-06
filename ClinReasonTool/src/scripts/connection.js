@@ -460,6 +460,8 @@ function getErrorMsgSpanByTargetId(targetId){
 		return "msg_mngform";
 	case "tst":
 		return "msg_testform";
+	case "pat":
+		return "msg_pathoform";
 		default: return "";
 	}
 }

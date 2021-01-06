@@ -84,6 +84,7 @@ public class HibernateSession {
 			cfg.addClass(beans.list.Synonym.class);
 			cfg.addClass(beans.scripts.PatientIllnessScript.class);	
 			cfg.addClass(beans.relation.RelationProblem.class);
+			cfg.addClass(beans.relation.RelationPatho.class);
 			cfg.addClass(beans.relation.RelationSyndrome.class);
 			cfg.addClass(beans.relation.RelationDiagnosis.class);	
 			cfg.addClass(beans.LogEntry.class);

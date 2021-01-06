@@ -35,6 +35,7 @@ public class ScoreBean extends Beans implements Serializable{
 	public static final int TYPE_PROBLEM_LIST = 7;
 	public static final int TYPE_DDX_LIST = 8;
 	public static final int TYPE_TEST_LIST = 9;
+	public static final int TYPE_PATHO_LIST = 19;
 	public static final int TYPE_MNG_LIST = 10;
 	public static final int TYPE_FINAL_DDX = 11;
 	public static final int TYPE_CNXS = 12;

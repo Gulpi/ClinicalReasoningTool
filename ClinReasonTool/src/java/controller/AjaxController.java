@@ -38,6 +38,7 @@ public class AjaxController {
 	public static final String REQPARAM_BOXES_D_MODE = "dm";
 	public static final String REQPARAM_BOXES_T_MODE = "tm";
 	public static final String REQPARAM_BOXES_M_MODE = "mm";
+	public static final String REQPARAM_BOXES_PAT_MODE = "pat";
 	public static final String REQPARAM_REPORT_ACCESS ="rep_acc"; //parameter indocating access from an educator to a specific learner map
 	public static final String REQPARAM_API = "api";
 	public static final String REQPARAM_MAXSTAGE = "maxstage";

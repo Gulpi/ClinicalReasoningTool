@@ -26,7 +26,7 @@ public class RelationProblem extends Relation implements Serializable{
 	/**
 	 * problems: key-finding, other,... (?)
 	 */
-	private int value; //key finding,...
+	//private int value; //key finding,...
 	
 	/**
 	 * how often is a problem prevalent in a diagnosis (rare, medium, often)

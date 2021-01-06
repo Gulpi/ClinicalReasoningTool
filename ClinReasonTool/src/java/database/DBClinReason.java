@@ -157,7 +157,29 @@ public class DBClinReason /*extends HibernateUtil*/{
     	return patIllScripts;
 
     }
-   
+    
+    /**
+     * loads all learner scripts by given pisID
+     *
+     * @param vpId
+     * @return
+     */
+    public List<PatientIllnessScript> selectLearnerPatIllScriptsById(long pisId){
+    	Session s = instance.getInternalSession(Thread.currentThread(), false);
+    	Criteria criteria = s.createCriteria(PatientIllnessScript.class,"PatientIllnessScript");
+    	criteria.add(Restrictions.eq("id", pisId));
+    	criteria.add(Restrictions.eq("type", new Integer(PatientIllnessScript.TYPE_LEARNER_CREATED)));
+    	List<PatientIllnessScript> patIllScripts =  criteria.list();
+    	if(patIllScripts!=null){   		
+    		for(int i=0; i<patIllScripts.size(); i++){
+    			selectNodesAndConns(patIllScripts.get(i), s);
+    		}
+    	}
+    	s.close();
+    	
+    	return patIllScripts;
+    }
+
     
     /**
      * Select the PatientIllnessScript for the sessionId from the database. 
@@ -268,6 +290,57 @@ public class DBClinReason /*extends HibernateUtil*/{
     	}
     	s.close();
     	return scripts;
+    }
+    
+    /**
+     * for recalculation and scoring of summary statements in new format
+     * @return PatientIllnessScript or null
+     */
+    public List<PatientIllnessScript> selectLearnerPatIllScriptsByNotAnalyzedSummSt(int max, Date startDate, Date endDate, boolean loadNodes){
+    	Session s = instance.getInternalSession(Thread.currentThread(), false);
+    	Criteria criteria = s.createCriteria(PatientIllnessScript.class,"PatientIllnessScript");
+    	criteria.add(Restrictions.eq("type", new Integer(PatientIllnessScript.TYPE_LEARNER_CREATED)));
+    	
+    	List<String> lang = new ArrayList<String>();
+    	lang.add("de");
+    	lang.add("en");
+    	
+    	DetachedCriteria stmts = DetachedCriteria.forClass(SummaryStatement.class, "stmt")
+    			.setProjection( Property.forName("stmt.id") )
+    			.add( Property.forName("stmt.narrowingScore").eq(new Integer(-1)) )
+    			.add(Property.forName("lang").in(lang));
+    	
+    	if (startDate != null) {
+    		stmts.add(Restrictions.ge("creationDate", startDate));
+    	}
+    	if (endDate != null) {
+    		stmts.add(Restrictions.le("creationDate", endDate));
+    	}
+    	
+    	criteria.add(Property.forName("summStId").in(stmts));
+    	if (max>0) {
+    		criteria.setMaxResults(max);
+    	}
+    	
+    	
+    	List<PatientIllnessScript> scripts = criteria.list();
+    	if(scripts!=null){
+    		CRTLogger.out("DBClinReason.selectLearnerPatIllScriptsByNotAnalyzedSummSt: scripts: #"  + scripts.size(), CRTLogger.LEVEL_PROD);
+    		for(int i=0;i<scripts.size();i++){
+    			if ((i%2500) == 0) {
+    				CRTLogger.out("DBClinReason.selectLearnerPatIllScriptsByNotAnalyzedSummSt: scripts: i:"  + i, CRTLogger.LEVEL_PROD);
+    			}
+    			PatientIllnessScript loop = scripts.get(i); 
+    			loop.setSummSt(loadSummSt(loop.getSummStId(), s));
+
+    			if (loadNodes) {
+    				selectNodesAndConns(loop, s);
+    			}
+    		}
+    	}
+    	s.close();
+    	
+    	return scripts;    	
     }
     
     
@@ -383,6 +456,7 @@ public class DBClinReason /*extends HibernateUtil*/{
 	
 	protected void selectNodesAndConns(PatientIllnessScript patIllScript, Session s){
 		patIllScript.setProblems(selectProblemsForScript(s, patIllScript.getId()));
+		patIllScript.setPatho(selectPathosForScript(s, patIllScript.getId()));
 		patIllScript.setDiagnoses(selectDiagnosesForScript(s, patIllScript.getId()));
 		patIllScript.setTests(selectTestsForScript(s, patIllScript.getId()));
 		patIllScript.setMngs(selectMngsForScript(s, patIllScript.getId()));
@@ -396,7 +470,13 @@ public class DBClinReason /*extends HibernateUtil*/{
 		criteria.addOrder(Order.asc("order"));
 		return criteria.list();	
 	}
-	
+
+	private List<RelationPatho> selectPathosForScript(Session s, long patIllscriptId){
+		Criteria criteria = s.createCriteria(RelationPatho.class,"RelationPatho");
+		criteria.add(Restrictions.eq("destId", new Long(patIllscriptId)));
+		criteria.addOrder(Order.asc("order"));
+		return criteria.list();	
+	}
 	private List<RelationDiagnosis> selectDiagnosesForScript(Session s, long patIllscriptId){
 		Criteria criteria = s.createCriteria(RelationDiagnosis.class,"RelationDiagnosis");
 		criteria.add(Restrictions.eq("destId", new Long(patIllscriptId)));

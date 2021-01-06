@@ -38,7 +38,6 @@
 	<classpathentry kind="lib" path="WEB-INF/lib/hibernate-tools.jar"/>
 	<classpathentry kind="lib" path="WEB-INF/lib/hibernate.jar"/>
 	<classpathentry kind="lib" path="WEB-INF/lib/jFuzzyLogic.jar"/>
-	<classpathentry kind="lib" path="/Tomcats/apache-tomcat-7/lib/servlet-api.jar"/>
 	<classpathentry kind="lib" path="WEB-INF/lib/commons-lang3-3.4-javadoc.jar"/>
 	<classpathentry kind="lib" path="WEB-INF/lib/commons-lang.jar"/>
 	<classpathentry kind="lib" path="WEB-INF/lib/commons-lang3-3.4.jar"/>
@@ -139,5 +138,6 @@
 	<classpathentry kind="lib" path="/CASUS_SupportLib/lib/poi.jar"/>
 	<classpathentry kind="lib" path="/CASUS_SupportLib/lib/servlet-api.jar"/>
 	<classpathentry kind="lib" path="/CASUS_SupportLib/lib/tidy.jar"/>
+	<classpathentry kind="lib" path="/CASUS_SupportLib/lib/owasp-java-html-sanitizer.jar"/>
 	<classpathentry kind="output" path="WEB-INF/classes"/>
 </classpath>

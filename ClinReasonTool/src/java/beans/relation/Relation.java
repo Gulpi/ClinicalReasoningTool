@@ -30,6 +30,7 @@ public abstract class Relation extends Beans implements Rectangle{
 	public static final int TYPE_DDX = 2;
 	public static final int TYPE_TEST = 3;
 	public static final int TYPE_MNG = 4;
+	public static final int TYPE_PATHO = 6; //new type for pathophysiology
 	public static final int TYPE_CNX = 5;
 	public static final int IS_SYNDROME = 1;
 	public static final int IS_SYNDROME_PART = 2;

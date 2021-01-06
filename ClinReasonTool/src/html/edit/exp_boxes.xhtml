@@ -83,6 +83,12 @@ var probBoxUsed = "0";
 var ddxBoxUsed = "0";
 var testBoxUsed = "0";
 var mngBoxUsed = "0";
+var pathoBoxUsed = "0";
+
+var box1Type = #{adminContext.patillscript.box1Type}; 
+var box2Type = #{adminContext.patillscript.box2Type};
+var box3Type = #{adminContext.patillscript.box3Type};
+var box4Type = #{adminContext.patillscript.box4Type};
 
 var isEmptyScript = "#{adminContext.patillscript.isEmptyScript}";
 
@@ -91,6 +97,7 @@ $(function() {
 	$(".listdialog").hide();
 	//$("#jdialogError").hide();
 	$("#connContext").hide();
+	$("#boxesSel").hide();
 	$("#summStText").on('change',function(){
 		saveSummSt('#{adminContext.patillscript.summStId}');
 	 });
@@ -129,6 +136,13 @@ $(function() {
 		width: "auto",
 		height: "auto"
 	});
+	$("#boxesSel").dialog({
+		autoOpen: false,
+		modal: true,
+		width: "auto",
+		height: "auto"
+	});
+	
 	
 	$( this ).tooltip({
       	items: "[mytooltip]",
@@ -211,13 +225,19 @@ jsPlumb.ready(function () {
 
     jsPlumb.fire("jsPlumbDemoLoaded", instance);
     $("#scriptloc").val(scriptlang);
+    initBoxesSel();
+
+   /* $("#chgbox1").val(box1Type);
+    $("#chgbox2").val(box2Type);
+    $("#chgbox3").val(box3Type);
+    $("#chgbox4").val(box4Type);*/
     
     //initBoxHeights();
    // initContainerCollapsed();
 	
 });
 
-var item_arr = new Array();
+//var item_arr = new Array();
 var ajaxUrl = "/crt/src/html/edit/tabs_ajax.xhtml";
 //]]>
 </script>
@@ -240,20 +260,46 @@ Stage: <span id="stageSpan">#{adminContext.patillscript.stage}(#{adminContext.pa
         <label for="cnxtoggle"></label>
         
 	</div>
-        <div style="position:absolute;left:80px;top:5px;">#{prop['authoring.language']} <select onChange="javascript:chgMapLang();" name="script_locale" id="scriptloc"><option value="en">en</option><option value="de">de</option><option value="es">es</option><option value="pl">pl</option></select>
-        <i class="fa fa-info-circle" mytooltip="Language of lists to display"></i></div>
+        <div style="position:absolute;left:80px;top:5px;">#{prop['authoring.language']} <select onChange="javascript:chgMapLang();" name="script_locale" id="scriptloc"><option value="en">en</option><option value="de">de</option><option value="es">es</option><option value="pl">pl</option><option value="pl">pt</option></select>
+        <i class="fa fa-info-circle" mytooltip="Language of lists to display"></i>
+       
+        </div><div style="position:absolute;left:210px;top:5px;"> <a href="javascript:openSelBoxes();">#{prop['authoring.slctboxes']}</a></div>
 
 </div>
 <div class="boxes_container">
 	<div id="canvas" class="canvas jtk-surface drag-drop jtk-surface-nopan" >
+		 		  <!-- pathos -->
+		 		  
+		  <div id="pat_box" class="container pos_#{adminContext.patillscript.patBoxNo}"  group="pat_group">
+		  		<div id="pat_title" mytooltip="#{prop['patho.search']}" class="title">#{prop['patho']}<!--  <select id="chgbox#{adminContext.patillscript.patBoxNo}" name="boxtype#{adminContext.patillscript.patBoxNo}" onChange="javascript:chgBox(#{adminContext.patillscript.patBoxNo});"><option value="1">#{prop['findings']}</option><option value="2">#{prop['ddx']}</option>
+		  		   		<option value="3">#{prop['tests']}</option><option value="4">#{prop['mng']}</option><option value="6">#{prop['patho']}</option></select> --> <i class="fa fa-info-circle"></i></div>
+		  		<div class="search  boxchild">
+		  			<i class="fa fa-search ininput pathosearch"></i>
+		  			<input class="f_text pathosearch" onkeyup="javascript:storeHistory('patho');" onFocus="javascript:hideTooltips();"  placeholder="#{prop['patho.add']} ..." id="patho" mytooltip="#{prop['patho.search']}"></input>
+		  		</div>
+		  			<h:form id="pathoform">
+		  			<h:panelGroup>
+					
+						<ui:repeat value="#{adminContext.patillscript.patho}" var="patho" varStatus="status">
+							<ui:include src="../pathobox.xhtml" />
+     					</ui:repeat>	
+ 	
+    				</h:panelGroup>
+    				     <h:commandButton id="hiddenPathoButton" value="RenderSomething" style="visibility:hidden">
+    						<f:ajax render="@form" onevent="updatePathoCallback"></f:ajax>
+						</h:commandButton>
+					</h:form>
+					<span class="errormsg" id="msg_pathoform" onClick="javascript:clearErrorMsgs();"></span>
+		</div>
+		 
 		  <!-- problems -->
-		  <div id="fdg_box"  class="container expcontainer fdg_cont" group="fdg_group">
-		  		   		<div id="fdg_title" class="title"  mytooltip="#{prop['findings.search']}">#{prop['findings']} 
+		  
+		  <div id="fdg_box" class="container expcontainer pos_#{adminContext.patillscript.fdgBoxNo}" group="fdg_group">
+		  		   		<div id="fdg_title" class="title"  mytooltip="#{prop['findings.search']}">#{prop['findings']}
+		  		   		<!-- <select id="chgbox#{adminContext.patillscript.fdgBoxNo}" name="boxtype#{adminContext.patillscript.fdgBoxNo}" onChange="javascript:chgBox(#{adminContext.patillscript.fdgBoxNo});"><option value="1">#{prop['findings']}</option><option value="2">#{prop['ddx']}</option>
+		  		   		<option value="3">#{prop['tests']}</option><option value="4">#{prop['mng']}</option><option value="6">#{prop['patho']}</option></select> -->
 		   		<i class="fa fa-info-circle"></i></div>
 		  
-		   		<!--  <div class="title">#{prop['findings']}  
-		   		</div>
-		   		<div class="node-collapse"></div>-->
 		  			<div class="search boxchild"><span class="icon"><i class="icon-search"></i></span>
 		  			<input type="text" id="fdg_prefix" style="display:none;" />
 		  			
@@ -274,8 +320,10 @@ Stage: <span id="stageSpan">#{adminContext.patillscript.stage}(#{adminContext.pa
 						<span class="errormsg" id="msg_probform" onClick="javascript:clearErrorMsgs();"></span>
 		  </div>
 		  <!--  diagnoses -->
-		  <div id="ddx_box" class="container expcontainer ddx_cont" group="ddx_group">	
-		  		  		<div id="ddx_title"  mytooltip="#{prop['ddx.search']}" class="title">#{prop['ddx']} <i class="fa fa-info-circle"></i></div>
+		  
+		  <div id="ddx_box" class="container expcontainer pos_#{adminContext.patillscript.ddxBoxNo}" group="ddx_group">	
+		  		  		<div id="ddx_title"  mytooltip="#{prop['ddx.search']}" class="title">#{prop['ddx']} <!--  <select id="chgbox#{adminContext.patillscript.ddxBoxNo}" name="boxtype#{adminContext.patillscript.ddxBoxNo}" onChange="javascript:chgBox(#{adminContext.patillscript.ddxBoxNo});"><option value="1">#{prop['findings']}</option><option value="2">#{prop['ddx']}</option>
+		  		   		<option value="3">#{prop['tests']}</option><option value="4">#{prop['mng']}</option><option value="6">#{prop['patho']}</option></select>--> <i class="fa fa-info-circle"></i></div>
 		  
 		  		<!--  <div class="title">#{prop['ddx']}
 		  		</div>	
@@ -291,10 +339,12 @@ Stage: <span id="stageSpan">#{adminContext.patillscript.stage}(#{adminContext.pa
 	    						<f:ajax render="@form" onevent="updateDDXCallback"></f:ajax>
 							</h:commandButton></h:form>
 					<span class="errormsg" id="msg_ddxform" onClick="javascript:clearErrorMsgs();"></span>							
-		  </div><br/>
+		  </div>
 		  <!-- tests -->
-		  <div id="tst_box" class="container expcontainer tst_cont" group="tst_group">
-		  		<div id="tst_title" mytooltip="#{prop['tests.search']}" class="title">#{prop['tests']} <i class="fa fa-info-circle"></i>
+	
+		  <div id="tst_box" class="container expcontainer pos_#{adminContext.patillscript.tstBoxNo}" group="tst_group">
+		  		<div id="tst_title" mytooltip="#{prop['tests.search']}" class="title">#{prop['tests']} <!--  <select id="chgbox#{adminContext.patillscript.tstBoxNo}" name="boxtype#{adminContext.patillscript.tstBoxNo}" onChange="javascript:chgBox(#{adminContext.patillscript.tstBoxNo});"><option value="1">#{prop['findings']}</option><option value="2">#{prop['ddx']}</option>
+		  		   		<option value="3">#{prop['tests']}</option><option value="4">#{prop['mng']}</option><option value="6">#{prop['patho']}</option></select>--><i class="fa fa-info-circle"></i>
 		  		</div>
 		 	 	<!--  <div class="node-collapse"></div>-->
 		  		<div class="search boxchild"><input class="f_text" id="tests" placeholder="#{prop['tests.add']} ..." mytooltip="#{prop['tests.search']}"></input></div>
@@ -312,8 +362,10 @@ Stage: <span id="stageSpan">#{adminContext.patillscript.stage}(#{adminContext.pa
 					<span class="errormsg" id="msg_testform" onClick="javascript:clearErrorMsgs();"></span>
 		</div>
 		  <!-- managements -->
-		  <div id="mng_box" class="container expcontainer mng_cont" group="mng_group">
-		  	<div id="mng_title"  mytooltip="#{prop['mng.search']}" class="title">#{prop['mng']} <i class="fa fa-info-circle"></i>
+		  
+		  <div id="mng_box" class="container expcontainer pos_#{adminContext.patillscript.mngBoxNo}" group="mng_group">
+		  	<div id="mng_title"  mytooltip="#{prop['mng.search']}" class="title">#{prop['mng']} <!-- <select id="chgbox#{adminContext.patillscript.mngBoxNo}" name="boxtype#{adminContext.patillscript.mngBoxNo}" onChange="javascript:chgBox(#{adminContext.patillscript.mngBoxNo});"><option value="1">#{prop['findings']}</option><option value="2">#{prop['ddx']}</option>
+		  		   		<option value="3">#{prop['tests']}</option><option value="4">#{prop['mng']}</option><option value="6">#{prop['patho']}</option></select>--><i class="fa fa-info-circle"></i>
 		  	</div>
 		 	 <!-- <div class="node-collapse"></div>-->
 		  	<div class="search boxchild"><input class="f_text" id="mng" placeholder="#{prop['mng.add']} ..." mytooltip="#{prop['mng.search']}"></input></div>
@@ -343,9 +395,8 @@ Stage: <span id="stageSpan">#{adminContext.patillscript.stage}(#{adminContext.pa
 </div>
 <div id="jsonConns" style="display:none;">#{adminContext.graph.jsonConns}</div> 
 
-<div id="connContext">
-	<ui:include src="expcnxchange.xhtml" />
-</div>
+<div id="connContext"><ui:include src="expcnxchange.xhtml" /></div>
+<div id="boxesSel"><ui:include src="selboxes.xhtml" /></div>
 <br clear="all"/>
 
 <div id="allitems">
@@ -373,7 +424,12 @@ Stage: <span id="stageSpan">#{adminContext.patillscript.stage}(#{adminContext.pa
 		<tr><td>#{nodes.label}</td>
 		<td><input id="chgstage_#{nodes.listItemId}" class="chgstage" value="#{nodes.stage}" style="width:20px;"/></td>
 		<td></td></tr>
-	</ui:repeat>		
+	</ui:repeat>	
+		<ui:repeat value="#{adminContext.patillscript.patho}" var="nodes" varStatus="status">
+		<tr><td>#{nodes.label}</td>
+		<td><input id="chgstage_#{nodes.listItemId}" class="chgstage" value="#{nodes.stage}" style="width:20px;"/></td>
+		<td></td></tr>
+	</ui:repeat>	
 	</table>
 	<table>
 	<tr><td><b>#{prop['authoring.node.cnx']}</b></td><td><b>#{prop['authoring.node.stage']}</b></td>

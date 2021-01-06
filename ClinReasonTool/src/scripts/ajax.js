@@ -64,6 +64,10 @@ function sendAjax(id, callback, type, name, typedinName){
 	
 }
 
+function callBackReload(){
+	location.reload();
+}
+
 
 function sendAjaxCharts(id, callback, type, name){
 	clearErrorMsgs();
@@ -225,12 +229,12 @@ function isCallbackStatusSuccess(data){
 	 }
 }
 
-function storeContainerPos(type, x, y){
+/*function storeContainerPos(type, x, y){
 	if(type=="fdg_box"){
 		sessionStorage.fdgx = x; 
 		sessionStorage.fdgy = y; 
 	}
-}
+}*/
 
 /*
  * 0=off, 1 = on, default=on
@@ -254,20 +258,35 @@ function toggleCnxStatus(){
 	return sessionStorage.cnxtoggle;
 }
 
+/* deprecated */
 /* storing the max height for boxes fdg/ddx and test/mng for use on next card. */ 
 function getBoxFdgDDXHeight(){
 	if(sessionStorage.fdgddxHeight && sessionStorage.fdgddxHeight>0) return sessionStorage.fdgddxHeight;
 	return -1;
 }
 
+/* storing the max height for boxes in row 1 for use on next card. */ 
+function getBoxRow1Height(){
+	if(sessionStorage.row1Height && sessionStorage.row1Height>0) return sessionStorage.row1Height;
+	return -1;
+}
+/* storing the max height for boxes in row 1 for use on next card. */ 
+function getBoxRow2Height(){
+	if(sessionStorage.row2Height && sessionStorage.row2Height>0) return sessionStorage.row2Height;
+	return -1;
+}
+
+/* deprecated */
 function getBoxTstMngHeight(){
 	if(sessionStorage.testmngHeight && sessionStorage.testmngHeight>0) return sessionStorage.testmngHeight;
 	return -1;
 }
 
 function setBoxHeight(boxId, height){
-	if(boxId=="fdg_box" || boxId=="ddx_box") setBoxFdgDDXHeight(height);
-	if(boxId=="tst_box" || boxId=="mng_box") setBoxTstMngHeight(height);		
+	if((boxId ==1) || (boxId==2)) setBoxRow1Height(height);
+	if((boxId ==3) || (boxId==4)) setBoxRow2Height(height);
+	//if(boxId=="fdg_box" || boxId=="ddx_box") setBoxFdgDDXHeight(height);
+	//if(boxId=="tst_box" || boxId=="mng_box") setBoxTstMngHeight(height);		
 }
 
 /**
@@ -275,21 +294,31 @@ function setBoxHeight(boxId, height){
  * the sessionStorage when the user starts a new session.
  */
 function resetSessionStorage(){
-	sessionStorage.testmngHeight = -1;
-	sessionStorage.fdgddxHeight = -1;
+	//sessionStorage.testmngHeight = -1;
+	//sessionStorage.fdgddxHeight = -1;
+	sessionStorage.row1Height = -1;
+	sessionStorage.row2Height = -1;
 }
 
+/* deprecated */
 function setBoxFdgDDXHeight(height){
 	sessionStorage.fdgddxHeight = height; 
 }
-
+/*deprecated */
 function setBoxTstMngHeight(height){
 	sessionStorage.testmngHeight = height; 
 }
 
+function setBoxRow1Height(height){
+	sessionStorage.row1Height = height; 
+}
+function setBoxRow2Height(height){
+	sessionStorage.row2Height = height; 
+}
+
 /*storing x and y position of boxes - currently not in use*/
 
-function getContainerX(type){
+/*function getContainerX(type){
 	if(type=="fdg"){
 		if(sessionStorage.fdgx) return sessionStorage.fdgx;
 		sessionStorage.fdgx = fdgDefX;
@@ -321,7 +350,8 @@ function getContainerX(type){
 		return sessionStorage.patx;
 	}
 }
-
+*/
+/*
 function getContainerY(type){
 	if(type=="fdg"){
 		if(sessionStorage.fdgy) return sessionStorage.fdgy;
@@ -353,12 +383,12 @@ function getContainerY(type){
 		sessionStorage.paty = patDefY;
 		return sessionStorage.paty;
 	}
-}
+}*/
 
 /*
  * returns true if container is collapsed, else false, currently not in use 
  */
-function getContainerCollapsed(type){
+/*function getContainerCollapsed(type){
 	if(type=="fdg"){
 		if(sessionStorage.fdgcollapsed)
 			return sessionStorage.fdgcollapsed;		
@@ -434,6 +464,15 @@ function toggleStoredContainerCollapsed(type){
 		}
 		else sessionStorage.tstcollapsed = "true";
 	}
+	if(type=="pat_box"){
+		if(sessionStorage.patcollapsed){
+			if(sessionStorage.patcollapsed=="true")
+				sessionStorage.patcollapsed = "false";
+			else 
+				sessionStorage.patcollapsed = "true";
+		}
+		else sessionStorage.patcollapsed = "true";
+	}
 	if(type=="sum_box"){
 		if(sessionStorage.sumcollapsed){
 			if(sessionStorage.sumcollapsed=="true")
@@ -452,7 +491,7 @@ function toggleStoredContainerCollapsed(type){
 		}
 		else sessionStorage.patcollapsed = "true";
 	}
-}
+}*/
 
 /*********communication with VP system (via HTML5 cross-domain messaging) ***************/
 

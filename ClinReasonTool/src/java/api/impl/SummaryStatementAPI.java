@@ -66,9 +66,7 @@ public class SummaryStatementAPI implements ApiInterface {
 		
 		ReScoreThread mythread = thread;
 		String status = ((HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest()).getParameter("status");
-	
-		
-		
+
 		if (StringUtilities.isValidString(status) && status.equalsIgnoreCase("true")) {
 			if (mythread != null) {
 				fillStatus(resultObj, mythread);
@@ -157,9 +155,6 @@ public class SummaryStatementAPI implements ApiInterface {
 		ScoreBean scoreBean = new ScoreBean(userPatientIllnesScript, userPatientIllnesScript.getSummStId(), ScoreBean.TYPE_SUMMST, userPatientIllnesScript.getCurrentStage());
 		if(expScript!=null && expScript.getSummSt()!=null){
 			ScoringSummStAction action = new ScoringSummStAction();
-			
-			
-			
 			st = new SummaryStatementController().initSummStRating(expScript, userPatientIllnesScript, action);	
 			action.doScoring(st, expScript.getSummSt());
 		}

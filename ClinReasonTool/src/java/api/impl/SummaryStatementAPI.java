@@ -67,6 +67,23 @@ public class SummaryStatementAPI implements ApiInterface {
 		ReScoreThread mythread = thread;
 		String status = ((HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest()).getParameter("status");
 
+		 try{
+		    	SummaryStatementController.setSIUnitAndTransformList();
+		    	//we load the semantic qualifiers and analyze any summary statements that have not yet been analyzed.
+		    	if(semanticQuals==null) semanticQuals = SummaryStatementController.loadSemanticQuals();
+		    	//SummaryStatementController.testSummStRating();
+		    	
+		    	//old version...
+		    	//if(semanticQuals!=null) SummaryStatementController.analyzeSemanticQualsStatements();
+		    	//testing:
+			    
+		    }
+		    catch(Exception e){
+		    	CRTLogger.out("AppBean(): " + StringUtilities.stackTraceToString(e), CRTLogger.LEVEL_ERROR);
+	    	
+		    }
+		
+		
 		if (StringUtilities.isValidString(status) && status.equalsIgnoreCase("true")) {
 			if (mythread != null) {
 				fillStatus(resultObj, mythread);
@@ -155,6 +172,9 @@ public class SummaryStatementAPI implements ApiInterface {
 		ScoreBean scoreBean = new ScoreBean(userPatientIllnesScript, userPatientIllnesScript.getSummStId(), ScoreBean.TYPE_SUMMST, userPatientIllnesScript.getRawStage());
 		if(expScript!=null && expScript.getSummSt()!=null){
 			ScoringSummStAction action = new ScoringSummStAction();
+			
+			
+			
 			st = new SummaryStatementController().initSummStRating(expScript, userPatientIllnesScript, action);	
 			action.doScoring(st, expScript.getSummSt());
 		}

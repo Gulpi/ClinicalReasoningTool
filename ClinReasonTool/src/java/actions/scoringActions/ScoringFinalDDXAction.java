@@ -208,13 +208,16 @@ public class ScoringFinalDDXAction /*implements ScoringAction*/{
 			boolean isSimilar = false; 
 			for(int i=0; i<expFinals.size();i++){
 				RelationDiagnosis expFinal = expFinals.get(i);
+				String learnerRelListName = learnerRel.getListItem().getName();
+				String learnerRelListNameLower = learnerRelListName.toLowerCase();
+				
 				//compare main entries:
-				isSimilar = StringUtilities.similarStrings(learnerRel.getListItem().getName(), expFinal.getListItem().getName(), loc, 3, StringUtilities.MAX_FUZZY_DISTANCE, false);
+				isSimilar = StringUtilities.similarStrings(learnerRelListName, expFinal.getListItem().getName(), learnerRelListNameLower, expFinal.getListItem().getNameLower(), loc, 3, StringUtilities.MAX_FUZZY_DISTANCE, false);
 				if(isSimilar) return ScoringController.FULL_SCORE;
 				if(expFinal.getSynonyma()!=null && !expFinal.getSynonyma().isEmpty()){ //compare synonyms:
 					Iterator it = expFinal.getSynonyma().iterator();
 						while(it.hasNext()){
-							isSimilar = StringUtilities.similarStrings(learnerRel.getListItem().getName(), ((ListInterface) it.next()).getName(), loc, 3, StringUtilities.MAX_FUZZY_DISTANCE, false);
+							isSimilar = StringUtilities.similarStrings(learnerRelListName, ((ListInterface) it.next()).getName(), learnerRelListNameLower, ((ListInterface) it.next()).getNameLower(), loc, 3, StringUtilities.MAX_FUZZY_DISTANCE, false);
 							if(isSimilar) return ScoringController.FULL_SCORE;
 					}
 				}

@@ -20,6 +20,7 @@ public class ListItem implements Serializable, ListInterface, Comparable{
 	public static final int MAXLENGTH_NAME = 15;
 	private static final long serialVersionUID = 1L;
 	private String name; //MH
+	private String nameLower = null;
 	private String mesh_id; //UI
 	private long item_id = -1;
 	private String firstCode; //MN
@@ -34,6 +35,14 @@ public class ListItem implements Serializable, ListInterface, Comparable{
 	private String mesh_ec; //EC
 	private String itemType; //D=Diagnosis, ...
 	private boolean transformation = false;
+	
+	private Boolean isFindingCache = null;
+	private Boolean isDiagnosisCache = null;
+	private Boolean isTestCache = null;
+	private Boolean isTherapyCache = null;
+	private Boolean isAnatomyCache = null;
+	static private boolean useCaches = true;
+
 	/**
 	 * name of the listItem with replace special chars and in lower case
 	 */
@@ -64,6 +73,12 @@ public class ListItem implements Serializable, ListInterface, Comparable{
 	public boolean isIgnored() {return ignored;}
 	public void setIgnored(boolean ignored) {this.ignored = ignored;}
 	public String getName() {return name;}
+	public String getNameLower() {
+		if (this.nameLower == null && this.name != null) {
+			this.nameLower = this.name.toLowerCase();
+		}
+		return this.nameLower;
+	}
 	public void setName(String name) {
 		this.name = name;
 		if(name!=null) {
@@ -193,13 +208,19 @@ public class ListItem implements Serializable, ListInterface, Comparable{
 		return 0;
 	}
 	
+
 	/**
 	 * returns true if the ListItem belongs to the mesh category C23 (Pathological Conditions, Signs and Symptoms) either 
 	 * with the first code or with other codes.
 	 * @return
 	 */
 	public boolean isFinding(){
-		if (firstCode!=null && (firstCode.startsWith("C23") || firstCode.startsWith("F01"))) return true;
+		if (useCaches && isFindingCache != null) return isFindingCache.booleanValue();
+		
+		if (firstCode!=null && (firstCode.startsWith("C23") || firstCode.startsWith("F01"))) {
+			isFindingCache = Boolean.TRUE;
+			return true;
+		}
 		//CRTLogger.out("", 1);
 		//otherCodes we have only for English mesh terms, therefore we have to get the ones from the matching English term
 		if((otherCodes == null || otherCodes.isEmpty()) && !this.language.getLanguage().equalsIgnoreCase("en"))
@@ -208,14 +229,24 @@ public class ListItem implements Serializable, ListInterface, Comparable{
 			Iterator it = otherCodes.iterator();
 			while(it.hasNext()){
 				String code = (String) it.next();
-				if(code.startsWith("C23")) return true;
+				if(code.startsWith("C23")) {
+					isFindingCache = Boolean.TRUE;
+					return true;
+				}
 			}
 		}
+		
+		isFindingCache = Boolean.FALSE;
 		return false; 
 	}
 	
 	public boolean isAnatomy(){
-		if (firstCode!=null && firstCode.startsWith("A")) return true;
+		if (useCaches && isAnatomyCache != null) return isAnatomyCache.booleanValue();
+		
+		if (firstCode!=null && firstCode.startsWith("A")) {
+			isAnatomyCache = Boolean.TRUE;
+			return true;
+		}
 		/*if (otherCodes!=null){
 			Iterator it = otherCodes.iterator();
 			while(it.hasNext()){
@@ -223,35 +254,59 @@ public class ListItem implements Serializable, ListInterface, Comparable{
 				if(code.startsWith("C23")) return true;
 			}
 		}*/
+		
+		isAnatomyCache = Boolean.FALSE;
 		return false; 
 	}
 	
 	public boolean isDiagnosis(){
+		if (useCaches && isDiagnosisCache != null) return isDiagnosisCache.booleanValue();
+
 		if(!isFinding()){
-			if (firstCode!=null && firstCode.startsWith("C")) return true;
+			if (firstCode!=null && firstCode.startsWith("C")) {
+				isDiagnosisCache = Boolean.TRUE;
+				return true;
+			}
 			//if (firstCode!=null && firstCode.startsWith("C14")) return true;			
 		}
+		
+		isDiagnosisCache = Boolean.FALSE;
 		return false;
 	}
 	
 	public boolean isTest(){
+		if (useCaches && isTestCache != null) return isTestCache.booleanValue();
 		if(!isFinding()){
-			if (firstCode!=null && firstCode.startsWith("E01")) return true;
+			if (firstCode!=null && firstCode.startsWith("E01")) {
+				isTestCache = Boolean.TRUE;
+				return true;
+			}
 			//if (firstCode!=null && firstCode.startsWith("C14")) return true;			
 		}
+		
+		isTestCache = Boolean.FALSE;
 		return false;
 	}
 	public boolean isTher(){
+		if (useCaches && isTherapyCache != null) return isTherapyCache.booleanValue();
+		
 		if(!isFinding()){
-			if (firstCode!=null && firstCode.startsWith("E02")) return true;
-			if (firstCode!=null && firstCode.startsWith("E03")) return true;
-			if (firstCode!=null && firstCode.startsWith("E04")) return true;
-			if (firstCode!=null && firstCode.startsWith("E07")) return true;
-			if (firstCode!=null && firstCode.startsWith("D01")) return true;
-			if (firstCode!=null && firstCode.startsWith("D02")) return true;
-			if (firstCode!=null && firstCode.startsWith("D27")) return true;
+			boolean my_result = false;
+			if (firstCode!=null && firstCode.startsWith("E02")) my_result = true;
+			if (firstCode!=null && firstCode.startsWith("E03")) my_result = true;
+			if (firstCode!=null && firstCode.startsWith("E04")) my_result = true;
+			if (firstCode!=null && firstCode.startsWith("E07")) my_result = true;
+			if (firstCode!=null && firstCode.startsWith("D01")) my_result = true;
+			if (firstCode!=null && firstCode.startsWith("D02")) my_result = true;
+			if (firstCode!=null && firstCode.startsWith("D27")) my_result = true;
+			if (my_result == true) {
+				isTherapyCache = Boolean.TRUE;
+				return true;
+			}
 			//if (firstCode!=null && firstCode.startsWith("C14")) return true;			
 		}
+		
+		isTherapyCache = Boolean.FALSE;
 		return false;
 	}
 	

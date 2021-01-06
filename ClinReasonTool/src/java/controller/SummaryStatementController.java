@@ -310,10 +310,11 @@ public class SummaryStatementController {
 		return st;		
 	}*/
 	
-	public void initSummStRating(PatientIllnessScript expScript, PatientIllnessScript learnerScript, ScoringSummStAction scoreAct){
+	public SummaryStatement initSummStRating(PatientIllnessScript expScript, PatientIllnessScript learnerScript, ScoringSummStAction scoreAct){
+		SummaryStatement st = null;
 		try{
-			if(learnerScript==null || learnerScript.getSummSt()==null || learnerScript.getSummSt().getText()==null) return;
-			SummaryStatement st = learnerScript.getSummSt();
+			if(learnerScript==null || learnerScript.getSummSt()==null || learnerScript.getSummSt().getText()==null) return st;
+			st = learnerScript.getSummSt();
 			if(st.isAnalyzed()){ //we do a re-calculation....
 				resetSummSt(st);
 			}
@@ -326,7 +327,6 @@ public class SummaryStatementController {
 			JsonTest jt = new DBClinReason().selectJsonTestBySummStId(st.getId()); //the json of the statement
 			if(jt==null) jt = initJsonTest(st);
 	
-			
 			SpacyDocJson spacy = new SpacyDocJson(jt.getJson().trim());
 			if(spacy!=null) spacy.init();
 	
@@ -365,7 +365,7 @@ public class SummaryStatementController {
 			 
 			List<String> textAsListOrg = StringUtilities.createStringListFromString(st.getText(), true);
 			
-			if(textAsListOrg==null) return;
+			if(textAsListOrg==null) return st;
 			
 			compareList(items, st); 
 			if(aList!=null) compareList(aList.get(st.getLang()), st);
@@ -420,6 +420,8 @@ public class SummaryStatementController {
 		catch(Exception e){
 			CRTLogger.out(Utility.stackTraceToString(e), CRTLogger.LEVEL_ERROR);
 		}
+		
+		return st;
 	}
 	
 	/**
@@ -607,7 +609,7 @@ public class SummaryStatementController {
 		for(int j=0;j<items.size(); j++){ //comparison with adapted Mesh list:
 			ListItem li = (ListItem) items.get(j);	
 
-			boolean isSimilar = StringUtilities.similarStrings(replS, li.getReplName(), loc, true);
+			boolean isSimilar = StringUtilities.similarStrings(replS, li.getReplName(), replS, li.getReplName(), loc, true);
 			
 			if(isSimilar){
 				
@@ -619,7 +621,7 @@ public class SummaryStatementController {
 				Iterator<Synonym> it = li.getSynonyma().iterator();
 				while(it.hasNext() && !isSimilar){
 					Synonym syn = it.next();
-					isSimilar = StringUtilities.similarStrings(replS, syn.getReplName(), loc, true);
+					isSimilar = StringUtilities.similarStrings(replS, syn.getReplName(), replS, syn.getReplName(), loc, true);
 					if(isSimilar){
 						st.addItemHit(li, syn, /*pos,*/ st.getText().indexOf(orgS));	
 					
@@ -637,13 +639,16 @@ public class SummaryStatementController {
 	 * @param st
 	 */
 	private static void compareList(List items, SummaryStatement st){
+		String st_text_lower = st.getText();
+		if (st_text_lower != null) st_text_lower = st_text_lower.toLowerCase();
+		
 		for(int j=0;j<items.size(); j++){ //look for two or more word items, e.g. "productive cough"
 			ListItem li = (ListItem) items.get(j);
 
-			if (li.getName().contains(" ") && st.getText().toLowerCase().contains(li.getName().toLowerCase())){
+			if (li.getName().contains(" ") && st_text_lower.contains(li.getNameLower())){
 				//get start and end position of match in text
 				//int startPos = StringUtilities.getStartPosOfStrInText(li.getName().toLowerCase(),  st.getText().toLowerCase());
-				st.addItemHit(li, /*startPos,*/ st.getText().toLowerCase().indexOf(li.getName().toLowerCase()));		
+				st.addItemHit(li, /*startPos,*/ st_text_lower.indexOf(li.getNameLower()));		
 			}
 			else if(li instanceof ListItem){ //also look for synonyms with two or more words
 				ListItem li2 = (ListItem) li;
@@ -651,9 +656,9 @@ public class SummaryStatementController {
 					Iterator<Synonym> it = li2.getSynonyma().iterator();
 					while(it.hasNext()){
 						Synonym sy = it.next();
-						if(sy.getName().contains(" ") && st.getText().toLowerCase().contains(sy.getName().toLowerCase())){
+						if(sy.getName().contains(" ") && st_text_lower.contains(sy.getNameLower())){
 							//int startPos = StringUtilities.getStartPosOfStrInText(sy.getName().toLowerCase(),  st.getText().toLowerCase());
-							st.addItemHit(li2, sy, /*startPos,*/ st.getText().toLowerCase().indexOf(sy.getName().toLowerCase()));
+							st.addItemHit(li2, sy, /*startPos,*/ st_text_lower.indexOf(sy.getNameLower()));
 						}
 					}
 				}
@@ -681,7 +686,9 @@ public class SummaryStatementController {
 				SummaryStElem elem = (SummaryStElem) it2.next();
 				String expMatchRepl = StringUtilities.replaceChars(expMatchesArr[i].toLowerCase());
 				//compare main listItem:
-				if (elem.getListItem()!=null && elem.getListItem().getName()!=null && StringUtilities.similarStrings(elem.getListItem().getReplName(), expMatchRepl, elem.getListItem().getLanguage(), true)){
+				
+				// expMatchRepl && getReplName() already lower case
+				if (elem.getListItem()!=null && elem.getListItem().getName()!=null && StringUtilities.similarStrings(elem.getListItem().getReplName(), expMatchRepl, elem.getListItem().getReplName(), expMatchRepl, elem.getListItem().getLanguage(), true)){
 					//matchCounter++;
 					elem.setExpertMatchBool(true);
 					elem.setExpertMatchIdx(expText.indexOf(expMatchesArr[i]));
@@ -694,7 +701,9 @@ public class SummaryStatementController {
 					Iterator it = li.getSynonyma().iterator();
 					while(it.hasNext()){
 						Synonym s= (Synonym) it.next();
-						if(StringUtilities.similarStrings(s.getReplName(), expMatchRepl, elem.getListItem().getLanguage(), true)){
+						
+						// expMatchRepl && getReplName() already lower case
+						if(StringUtilities.similarStrings(s.getReplName(), expMatchRepl, s.getReplName(), expMatchRepl, elem.getListItem().getLanguage(), true)){
 							//matchCounter++;
 							elem.setExpertMatchBool(true);
 							elem.setExpertMatchIdx(expText.indexOf(expMatchesArr[i]));

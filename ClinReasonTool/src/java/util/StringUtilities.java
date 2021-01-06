@@ -5,6 +5,7 @@ import org.apache.commons.lang3.StringUtils;
 import java.io.*;
 import java.util.*;
 
+	
 /**
  * Any kind of utilities we need for string handling
  * @author ingahege
@@ -14,6 +15,7 @@ public class StringUtilities {
 	private static final int MIN_LEVEN_DISTANCE = 4; //if we have a level 1 similarity the item is not included
 	public static final int MAX_FUZZY_DISTANCE = 38; //if we have a level 1 similarity the item is not included
 	private static final char[] HEXDIGITS = "0123456789abcdef".toCharArray();
+	static final boolean useSimilarOptimization = true;
 
 	/**
 	 * Counts the number of a pattern within a string.
@@ -101,6 +103,10 @@ public class StringUtilities {
 		return similarStrings(item1, item2, loc, MIN_LEVEN_DISTANCE, MAX_FUZZY_DISTANCE, isStrict);
 	}
 	
+	public static boolean similarStrings(String item1, String item2, String item1lower, String item2lower, Locale loc, boolean isStrict){
+		return similarStrings(item1, item2, item2lower, item2lower, loc, MIN_LEVEN_DISTANCE, MAX_FUZZY_DISTANCE, isStrict);
+	}
+	
 	public static String replaceChars(String item1){
 		item1 = item1.toLowerCase();
 		item1 = item1.replace("-", " ");
@@ -145,6 +151,7 @@ public class StringUtilities {
 		item1 = item1.trim();
 		return item1;
 	}
+	
 	/**
 	 * We compare two strings and calculate the levensthein disctance. If it is lower than the accepted distance 
 	 * and starts with the same letter, we return the levensthein distance. 
@@ -153,6 +160,21 @@ public class StringUtilities {
 	 * @return
 	 */
 	public static boolean similarStrings(String item1, String item2, Locale loc, int leven, int fuzzy, boolean isStrict){
+		return similarStrings( item1,  item2, null, null,  loc,  leven,  fuzzy,  isStrict);
+	}
+	
+	/**
+	 * We compare two strings and calculate the levensthein disctance. If it is lower than the accepted distance 
+	 * and starts with the same letter, we return the levensthein distance. 
+	 * added support for lowercase prep
+	 * @param item1
+	 * @param item2
+	 * @return
+	 */
+	public static boolean similarStrings(String item1, String item2, String item1lower, String item2lower, Locale loc, int leven, int fuzzy, boolean isStrict){
+		if (!useSimilarOptimization && item1lower == null) item1lower = item1.toLowerCase();
+		if (!useSimilarOptimization && item2lower == null) item2lower = item2.toLowerCase();
+		
 		//if(item1.equalsIgnoreCase("Penicillin") && item2.equalsIgnoreCase("Penicillins"))
 		//item1 = replaceChars(item1);
 		//item2 = replaceChars(item2);
@@ -163,7 +185,7 @@ public class StringUtilities {
 		if(item1.startsWith("Type I") && item2.startsWith("Type II") || item2.startsWith("Type I") && item1.startsWith("Type II"))
 			return false;
 
-		if(isMatchBasedOnLevelAndFuzzy(item1, item2, loc, leven, fuzzy, isStrict)) return true;
+		if(isMatchBasedOnLevelAndFuzzy(item1, item2, item1lower, item2lower, loc, leven, fuzzy, isStrict)) return true;
 		
 		//if we have multiple words we split them and compare them separately
 		String[] item1Arr = item1.trim().split(" ");
@@ -186,18 +208,17 @@ public class StringUtilities {
 			//check for something like: "Streptokokkenpneumonie" / "Penumonie, Streptokokken"
 			if((item1Arr.length==1 && item2Arr.length==2)){
 				String item2_1Str = item2Arr[0].trim() +  item2Arr[1].trim();
-				if(isMatchBasedOnLevelAndFuzzy(item1, item2_1Str, loc, leven, fuzzy, isStrict)) return true;
+				if(isMatchBasedOnLevelAndFuzzy(item1, item2_1Str, item1lower, null, loc, leven, fuzzy, isStrict)) return true;
 				String item2_2Str = item2Arr[1].trim() +  item2Arr[0].trim();
-				if(isMatchBasedOnLevelAndFuzzy(item1, item2_2Str, loc, leven, fuzzy, isStrict)) return true;				
+				if(isMatchBasedOnLevelAndFuzzy(item1, item2_2Str, item1lower, null, loc, leven, fuzzy, isStrict)) return true;				
 			}
 			if((item2Arr.length==1 && item1Arr.length==2)){
 				String item1_1Str = item1Arr[0].trim() +  item1Arr[1].trim();
-				if(isMatchBasedOnLevelAndFuzzy(item2, item1_1Str, loc, leven, fuzzy, isStrict)) return true;
+				if(isMatchBasedOnLevelAndFuzzy(item2, item1_1Str, item2lower, null, loc, leven, fuzzy, isStrict)) return true;
 				String item1_2Str = item1Arr[1].trim() +  item1Arr[0].trim();
-				if(isMatchBasedOnLevelAndFuzzy(item2, item1_2Str, loc, leven, fuzzy, isStrict)) return true;				
+				if(isMatchBasedOnLevelAndFuzzy(item2, item1_2Str, item2lower, null, loc, leven, fuzzy, isStrict)) return true;				
 			}
 			return false;
-			
 	}
 	
 	/**
@@ -231,8 +252,16 @@ public class StringUtilities {
 	}
 	
 	private static boolean isMatchBasedOnLevelAndFuzzy(String s1, String s2, Locale loc, int inLeven, int inFuzzy, boolean isStrict){
-		int leven = StringUtils.getLevenshteinDistance(s1.toLowerCase(), s2.toLowerCase());
-		int fuzzy = StringUtils.getFuzzyDistance(s1.toLowerCase(), s2.toLowerCase(), loc);
+		return isMatchBasedOnLevelAndFuzzy(s1, s2, null, null,  loc,  inLeven,  inFuzzy,  isStrict);
+	}
+	
+	private static boolean isMatchBasedOnLevelAndFuzzy(String s1, String s2, String s1lower, String s2lower, Locale loc, int inLeven, int inFuzzy, boolean isStrict) {
+		// prep lower / only once and be prepared for caching on top levels
+		if (s1lower == null) s1lower = s1.toLowerCase(); 
+		if (s2lower == null) s2lower = s2.toLowerCase(); 
+		
+		int leven = StringUtils.getLevenshteinDistance(s1lower, s2lower);
+		int fuzzy = StringUtils.getFuzzyDistance(s1lower,s2lower, loc);
 		
 		//compare Strings as they are:
 		//if(s1.equals("Abdomen, Acute") || item2.equals("Abdomen, Acute"))

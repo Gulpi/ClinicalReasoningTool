@@ -41,7 +41,7 @@ public class ListItem implements Serializable, ListInterface, Comparable{
 	private Boolean isTestCache = null;
 	private Boolean isTherapyCache = null;
 	private Boolean isAnatomyCache = null;
-	private boolean useCaches = false;
+	static private boolean useCaches = true;
 
 	/**
 	 * name of the listItem with replace special chars and in lower case

@@ -310,11 +310,16 @@ public class SummaryStatementController {
 		return st;		
 	}*/
 	
-	public SummaryStatement initSummStRating(PatientIllnessScript expScript, PatientIllnessScript learnerScript, ScoringSummStAction scoreAct){
-		SummaryStatement st = null;
+	public SummaryStatement initSummStRating(PatientIllnessScript expScript, PatientIllnessScript learnerScript,  ScoringSummStAction scoreAct){
+		if(learnerScript==null || learnerScript.getSummSt()==null || learnerScript.getSummSt().getText()==null) return null;
+		return initSummStRating(expScript, learnerScript.getSummSt(), scoreAct);	
+	}
+	
+	public SummaryStatement initSummStRating(PatientIllnessScript expScript, SummaryStatement st, ScoringSummStAction scoreAct){
+		if(st==null) return null;
 		try{
-			if(learnerScript==null || learnerScript.getSummSt()==null || learnerScript.getSummSt().getText()==null) return st;
-			st = learnerScript.getSummSt();
+			//if(learnerScript==null || learnerScript.getSummSt()==null || learnerScript.getSummSt().getText()==null) return st;
+			//st = learnerScript.getSummSt();
 			if(st.isAnalyzed()){ //we do a re-calculation....
 				resetSummSt(st);
 			}

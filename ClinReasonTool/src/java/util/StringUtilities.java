@@ -104,7 +104,7 @@ public class StringUtilities {
 	}
 	
 	public static boolean similarStrings(String item1, String item2, String item1lower, String item2lower, Locale loc, boolean isStrict){
-		return similarStrings(item1, item2, item2lower, item2lower, loc, MIN_LEVEN_DISTANCE, MAX_FUZZY_DISTANCE, isStrict);
+		return similarStrings(item1, item2, item1lower, item2lower, loc, MIN_LEVEN_DISTANCE, MAX_FUZZY_DISTANCE, isStrict);
 	}
 	
 	public static String replaceChars(String item1){

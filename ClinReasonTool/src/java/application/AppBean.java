@@ -134,7 +134,7 @@ public class AppBean extends ApplicationWrapper implements HttpSessionListener{
 	    
 	    // init for support lib and local spacy handling, night tabe long -> separate thread?
 	    try {
-			StandaloneLibUtilities.init();
+			StandaloneLibUtilities.init(context);
 			PerformantSpacyProcessor.getInstance();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block

@@ -611,6 +611,10 @@ public class SummaryStatementController {
 	 */
 	private static boolean compareSimilarList(List items, SummaryStatement st, String orgS, int pos, Locale loc){	
 		String replS = StringUtilities.replaceChars(orgS.toLowerCase());
+		CRTLogger.out("", 1);
+		//we do not compare anything for ver short strings (including age) 
+		if(replS==null || replS.trim().length()<=2) return false;
+		
 		for(int j=0;j<items.size(); j++){ //comparison with adapted Mesh list:
 			ListItem li = (ListItem) items.get(j);	
 

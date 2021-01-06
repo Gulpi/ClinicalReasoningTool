@@ -149,8 +149,10 @@ public class SummaryStatement extends Beans implements Serializable, Comparable{
 	public void setGlobalScore(int globalScore) {this.globalScore = globalScore;}	
 	public int getPersonScore() {return personScore;}
 	public void setPersonScore(int personScore) {this.personScore = personScore;}
-	
-	
+	public Timestamp getCreationDate() { return creationDate; }
+	public void setCreationDate(Timestamp creationDate) { this.creationDate = creationDate; }
+	public long getAnalysisMs() { return analysisMs; }
+	public void setAnalysisMs(long analysisMs) { this.analysisMs = analysisMs; }
 	
 	public void addUnit(SummaryStNumeric u){
 		if(u==null) return;

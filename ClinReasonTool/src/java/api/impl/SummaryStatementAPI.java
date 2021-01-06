@@ -8,6 +8,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpServletRequest;
@@ -61,7 +62,7 @@ public class SummaryStatementAPI implements ApiInterface {
 	public synchronized String handle() {
 		String result = null;
 		@SuppressWarnings("rawtypes")
-		Map resultObj = new HashMap();
+		Map resultObj = new TreeMap();
 		
 		ReScoreThread mythread = thread;
 		String status = ((HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest()).getParameter("status");
@@ -168,21 +169,22 @@ public class SummaryStatementAPI implements ApiInterface {
 	}
 	
 	void addSummaryStatementToResultObj(Map resultObj, PatientIllnessScript userPatientIllnesScript) {
-		this.addToResultObj(resultObj, "userPatientIllnesScript.id", userPatientIllnesScript.getId());
-		this.addToResultObj(resultObj, "userPatientIllnesScript.userId", userPatientIllnesScript.getUserId());
-		this.addToResultObj(resultObj, "userPatientIllnesScript.vpId", userPatientIllnesScript.getVpId());
-		this.addToResultObj(resultObj, "userPatientIllnesScript.stage", userPatientIllnesScript.getRawStage());
+		this.addToResultObj(resultObj, "UserPatientIllnesScript.id", userPatientIllnesScript.getId());
+		this.addToResultObj(resultObj, "UserPatientIllnesScript.userId", userPatientIllnesScript.getUserId());
+		this.addToResultObj(resultObj, "UserPatientIllnesScript.vpId", userPatientIllnesScript.getVpId());
+		this.addToResultObj(resultObj, "UserPatientIllnesScript.stage", userPatientIllnesScript.getRawStage());
 	}
 	
 	void addSummaryStatementToResultObj(Map resultObj, PatientIllnessScript userPatientIllnesScript, SummaryStatement st) {
-		this.addToResultObj(resultObj, "userPatientIllnesScript.id", userPatientIllnesScript.getId());
-		this.addToResultObj(resultObj, "userPatientIllnesScript.userId", userPatientIllnesScript.getUserId());
-		this.addToResultObj(resultObj, "userPatientIllnesScript.vpId", userPatientIllnesScript.getVpId());
-		this.addToResultObj(resultObj, "userPatientIllnesScript.stage", userPatientIllnesScript.getRawStage());
+		this.addToResultObj(resultObj, "UserPatientIllnesScript.id", userPatientIllnesScript.getId());
+		this.addToResultObj(resultObj, "UserPatientIllnesScript.userId", userPatientIllnesScript.getUserId());
+		this.addToResultObj(resultObj, "UserPatientIllnesScript.vpId", userPatientIllnesScript.getVpId());
+		this.addToResultObj(resultObj, "UserPatientIllnesScript.stage", userPatientIllnesScript.getRawStage());
 		
 		this.addToResultObj(resultObj, "SummaryStatement.text", st.getText());
 		this.addToResultObj(resultObj, "SummaryStatement.lang", st.getLang());
 		this.addToResultObj(resultObj, "SummaryStatement.analyzed", st.isAnalyzed());
+		this.addToResultObj(resultObj, "SummaryStatement.creationDate", st.getCreationDate());
 		
 		//this.addToResultObj(resultObj, "SummaryStatement.sqHits", st.getSqHits() );
 		//this.addToResultObj(resultObj, "SummaryStatement.itemHits", st.getItemHits());
@@ -195,6 +197,10 @@ public class SummaryStatementAPI implements ApiInterface {
 		this.addToResultObj(resultObj, "SummaryStatement.transformScorePerc", st.getTransformScorePerc());
 		
 		this.addToResultObj(resultObj, "SummaryStatement.narrowingScore", st.getNarrowingScore());
+		this.addToResultObj(resultObj, "SummaryStatement.narr1Score", st.getNarr1Score());
+		this.addToResultObj(resultObj, "SummaryStatement.narr2Score", st.getNarr2Score());
+		this.addToResultObj(resultObj, "SummaryStatement.narrowingScoreNew", st.getNarrowingScoreNew());
+		
 		this.addToResultObj(resultObj, "SummaryStatement.personScore", st.getPersonScore());
 
 		//this.addToResultObj(resultObj, "SummaryStatement.units", st.getUnits());
@@ -236,7 +242,7 @@ public class SummaryStatementAPI implements ApiInterface {
 								results.add(result1);
 							 }
 						} catch (Throwable e) {
-							Map result1 = new HashMap();
+							Map result1 = new TreeMap();
 							ctrl.addSummaryStatementToResultObj(result1, userPatientIllnesScript);
 							ctrl.addToResultObj(result1, "exception", Utility.stackTraceToString(e));
 							results.add(result1);

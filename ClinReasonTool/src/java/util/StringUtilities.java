@@ -5,6 +5,7 @@ import org.apache.commons.lang3.StringUtils;
 import java.io.*;
 import java.util.*;
 
+	
 /**
  * Any kind of utilities we need for string handling
  * @author ingahege
@@ -14,6 +15,7 @@ public class StringUtilities {
 	private static final int MIN_LEVEN_DISTANCE = 4; //if we have a level 1 similarity the item is not included
 	public static final int MAX_FUZZY_DISTANCE = 38; //if we have a level 1 similarity the item is not included
 	private static final char[] HEXDIGITS = "0123456789abcdef".toCharArray();
+	static final boolean useSimilarOptimization = true;
 
 	/**
 	 * Counts the number of a pattern within a string.
@@ -149,8 +151,8 @@ public class StringUtilities {
 	 * @return
 	 */
 	public static boolean similarStrings(String item1, String item2, String item1lower, String item2lower, Locale loc, int leven, int fuzzy, boolean isStrict){
-		if (item1lower == null) item1lower = item1.toLowerCase();
-		if (item2lower == null) item2lower = item2.toLowerCase();
+		if (!useSimilarOptimization && item1lower == null) item1lower = item1.toLowerCase();
+		if (!useSimilarOptimization && item2lower == null) item2lower = item2.toLowerCase();
 		
 		//if(item1.equalsIgnoreCase("Penicillin") && item2.equalsIgnoreCase("Penicillins"))
 		//item1 = replaceChars(item1);

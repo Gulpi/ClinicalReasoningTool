@@ -113,7 +113,7 @@ public class PatientIllnessScript extends Beans implements Comparable, IllnessSc
 	private List<RelationDiagnosis> diagnoses; //contains all diagnoses, including the final(s)?
 	private List<RelationManagement> mngs;
 	private List<RelationTest> tests;
-		
+	private List<RelationPatho> patho;		
 	/**
 	 * key = cnxId (Long), value = Connection object
 	 */
@@ -178,6 +178,11 @@ public class PatientIllnessScript extends Beans implements Comparable, IllnessSc
 	 * the CASUS session id
 	 */
 	private long sessionId;
+	
+	private int box1Type = 1; //default is fdgs, upper left corner box
+	private int box2Type = 2; //default is ddxs, upper right corner box
+	private int box3Type = 3; //default is tests, lower left corner box
+	private int box4Type = 4; //default is mngs, lower right corner box
 
 	public PatientIllnessScript(){}
 	public PatientIllnessScript(long userId, String vpId, Locale loc, int systemId){
@@ -205,6 +210,12 @@ public class PatientIllnessScript extends Beans implements Comparable, IllnessSc
 		updateStage(AjaxController.getInstance().getRequestParamByKey(AjaxController.REQPARAM_STAGE));
 		return stage;
 	}
+	
+	public int getRawStage() {
+		return stage;
+	}
+	
+	
 	public void setStage(int stage) {this.stage = stage;}
 	public int getCourseOfTime() {return courseOfTime;}
 	public void setCourseOfTime(int courseOfTime) {this.courseOfTime = courseOfTime;}
@@ -226,23 +237,26 @@ public class PatientIllnessScript extends Beans implements Comparable, IllnessSc
 	
 	public boolean isDeleteFlag() {return deleteFlag;}
 	public void setDeleteFlag(boolean deleteFlag) {this.deleteFlag = deleteFlag;}
-	public List<RelationDiagnosis> getDiagnoses() 
-	{
-		return diagnoses;}
+	public List<RelationDiagnosis> getDiagnoses() {return diagnoses;}
 	public List<RelationDiagnosis> getDiagnosesStage() { return getRelationsByStage(diagnoses);}
 	public void setDiagnoses(List<RelationDiagnosis> diagnoses) {this.diagnoses = diagnoses;}
 	public List<RelationManagement> getMngs() {return mngs;}
 	public List<RelationManagement> getMngsStage() { return getRelationsByStage(mngs);}
 	public void setMngs(List<RelationManagement> mngs) {this.mngs = mngs;}	
 	public List<RelationTest> getTests() {return tests;}
+	public List<RelationPatho> getPatho() {return patho;}
+
+	public List<RelationPatho> getPathoStage() { return getRelationsByStage(patho);}
 	public List<RelationTest> getTestsStage() { return getRelationsByStage(tests);}
+
 	public void setTests(List<RelationTest> tests) {this.tests = tests;}	
+	public void setPatho(List<RelationPatho> patho) {this.patho = patho;}	
+
 	public Map<Long,Connection> getConns() {return conns;}
 	public void setConns(Map<Long,Connection> conns) {this.conns = conns;}
 	public long getUserId() {return userId;}
 	public void setUserId(long userId) {this.userId = userId;}	
-	public Locale getLocale() {
-		return locale;}
+	public Locale getLocale() {return locale;}
 	public void setLocale(Locale locale) {this.locale = locale;}	
 	public SummaryStatement getSummSt() {return summSt;}
 	public SummaryStatement getSummStStage() {
@@ -420,11 +434,14 @@ public class PatientIllnessScript extends Beans implements Comparable, IllnessSc
 	public void addTest(String idStr, String name, String x, String y){ new AddTestAction(this).add(idStr, name, x,y);}
 	public void addMng(String idStr, String name){ new AddMngAction(this).add(idStr, name);}
 	public void addMng(String idStr, String name, String x, String y){ new AddMngAction(this).add(idStr, name, x,y);}
+	public void addPatho(String idStr, String name){ new AddPathoAction(this).add(idStr, name);}
+	public void addPatho(String idStr, String name, String x, String y){ new AddPathoAction(this).add(idStr, name, x,y);}
 	
 	public void delProblem(String idStr){ new DelProblemAction(this).delete(idStr);}
 	public void delDiagnosis(String idStr){ new DelDiagnosisAction(this).delete(idStr);}
 	public void delTest(String idStr){ new DelTestAction(this).delete(idStr);}
 	public void delMng(String idStr){ new DelMngAction(this).delete(idStr);}
+	public void delPatho(String idStr){ new DelPathoAction(this).delete(idStr);}
 
 	//public void reorderProblems(String idStr, String newOrderStr){ new MoveProblemAction(this).reorder(idStr, newOrderStr);}
 	//public void reorderDiagnoses(String idStr, String newOrderStr){ new MoveDiagnosisAction(this).reorder(idStr, newOrderStr);}
@@ -438,6 +455,7 @@ public class PatientIllnessScript extends Beans implements Comparable, IllnessSc
 	public void changeTest(String idStr,String changeMode){new ChangeTestAction(this).changeTest(idStr, changeMode);}
 	public void changeMng(String idStr,String changeMode){new ChangeMngAction(this).changeMng(idStr, changeMode);}
 	public void changeMnM(String idStr/*, String newValue*/){new ChangeDiagnosisAction(this).toggleMnM(idStr/*, newValue*/);}
+	public void changePatho(String idStr,String changeMode){new ChangePathoAction(this).changePatho(idStr, changeMode);}
 	
 	//public void addConnection(String sourceId, String targetId){new AddConnectionAction(this).add(sourceId,targetId);}
 	public void addConnection(String sourceId, String targetId, String startEpId, String targetEpX, String targetEpY){new AddConnectionAction(this).add(sourceId,targetId,startEpId,targetEpX, targetEpY);}
@@ -477,6 +495,66 @@ public class PatientIllnessScript extends Beans implements Comparable, IllnessSc
 		}	
 	}
 	
+	/** change of box types in authoring system
+	 * we get for the four boxes a string like '6,1,2,3' (patho, fdg, ddx, tests)
+	 *
+	 **/
+	public void changeBoxType(String newTypes) {
+		try {
+			//int type = Integer.valueOf(newType).intValue();
+			if(newTypes==null || newTypes.trim().contentEquals("")) return; //an error happened... 
+			int[] types = StringUtilities.getIntArrFromString(newTypes, ",");
+			//for(int i=0; i<types.length;i++) {
+				this.box1Type = types[0];
+				this.box2Type = types[1];
+				this.box3Type = types[2];
+				this.box4Type = types[3];
+			//}
+			//this.box1Type = type;
+			new DBClinReason().saveAndCommit(this);
+		}
+		catch(Exception e) {
+			CRTLogger.out(StringUtilities.stackTraceToString(e),CRTLogger.LEVEL_ERROR);
+		}
+	}
+	
+/*	public void changeBoxType2(String newType) {
+		CRTLogger.out("", 1);
+		try {
+			int type = Integer.valueOf(newType).intValue();
+			this.box2Type = type;
+			new DBClinReason().saveAndCommit(this);
+		}
+		catch(Exception e) {
+			CRTLogger.out(StringUtilities.stackTraceToString(e),CRTLogger.LEVEL_ERROR);
+		}
+	}
+	public void changeBoxType3(String newType) {
+		CRTLogger.out("", 1);
+		try {
+			int type = Integer.valueOf(newType).intValue();
+			this.box3Type = type;
+			new DBClinReason().saveAndCommit(this);
+		}
+		catch(Exception e) {
+			CRTLogger.out(StringUtilities.stackTraceToString(e),CRTLogger.LEVEL_ERROR);
+		}
+	}
+	public void changeBoxType4(String newType) {
+		CRTLogger.out("", 1);
+		try {
+			int type = Integer.valueOf(newType).intValue();
+			this.box4Type = type;
+			new DBClinReason().saveAndCommit(this);
+		}
+		catch(Exception e) {
+			CRTLogger.out(StringUtilities.stackTraceToString(e),CRTLogger.LEVEL_ERROR);
+		}
+	}
+	*/
+	/*** end change of box types in authoring system *****/
+	
+	
 	public void addJoker(String idStr, String type){ new JokerAction(this).addJoker(type);}
 	public StatementContainer getStmtContainer() {
 		if(stmtContainer==null) stmtContainer = new StatementContainer(userId, vpId, 2);
@@ -510,13 +588,17 @@ public class PatientIllnessScript extends Beans implements Comparable, IllnessSc
 	public RelationProblem getProblemById(long id){return (RelationProblem) getRelationById(problems, id);}	
 	public RelationDiagnosis getDiagnosisById(long id){return (RelationDiagnosis) getRelationById(diagnoses, id);}	
 	public RelationTest getTestById(long id){return (RelationTest) getRelationById(tests, id);}		
+	public RelationPatho getPathoById(long id){return (RelationPatho) getRelationById(patho, id);}		
+
 	public RelationManagement getMngById(long id){return (RelationManagement) getRelationById(mngs, id);}	
 
 	public Relation getRelationByListItemIdAndType(long id, int type){
 		if(type==Relation.TYPE_PROBLEM) return getRelationByListItemId(this.problems, id);
 		if(type==Relation.TYPE_DDX) return getRelationByListItemId(this.diagnoses, id);
 		if(type==Relation.TYPE_MNG) return getRelationByListItemId(this.mngs, id);
-		if(type==Relation.TYPE_TEST) return getRelationByListItemId(this.tests, id);		
+		if(type==Relation.TYPE_TEST) return getRelationByListItemId(this.tests, id);
+		if(type==Relation.TYPE_PATHO) return getRelationByListItemId(this.patho, id);		
+
 		return null;
 	}
 	
@@ -597,6 +679,7 @@ public class PatientIllnessScript extends Beans implements Comparable, IllnessSc
 		if(type==Relation.TYPE_DDX) return getRelationById(this.diagnoses, id);
 		if(type==Relation.TYPE_MNG) return getRelationById(this.mngs, id);
 		if(type==Relation.TYPE_TEST) return getRelationById(this.tests, id);
+		if(type==Relation.TYPE_PATHO) return getRelationById(this.patho, id);
 		
 		return null;
 	}
@@ -752,6 +835,17 @@ public class PatientIllnessScript extends Beans implements Comparable, IllnessSc
 	}
 
 	/**
+	 * difference between pathophysiology items entered by expert and student at current stage. If view mode is on we return 0.
+	 * @return
+	 */
+	public int getPathoDiff(){
+		if(this.isExpScript()) return 0;
+		CRTFacesContext crtContext = new NavigationController().getCRTFacesContext();
+		//if we have view mode only, we do not change color of box:
+		if(crtContext.getSessSetting()!=null && crtContext.getSessSetting().getPathoBoxUsed()==2) return 0;
+		return FeedbackController.getInstance().getItemsDiffExpForStage(currentStage, getPatho(), Relation.TYPE_PATHO);
+	}
+	/**
 	 * difference between differentials entered by expert and student at current stage. If view mode is on we return 0.
 	 * @return
 	 */
@@ -818,4 +912,32 @@ public class PatientIllnessScript extends Beans implements Comparable, IllnessSc
 	//used for admin purposes only (display in admin area for individual maps)
 	public List<LogEntry> getLogEntries(){return logentries;}
 	public void setLogEntries(List<LogEntry> le ){this.logentries = le;}
+	
+	public int getBox1Type() {return box1Type;}
+	public void setBox1Type(int box1Type) {this.box1Type = box1Type;}
+	public int getBox2Type() {return box2Type;}
+	public void setBox2Type(int box2Type) {this.box2Type = box2Type;}
+	public int getBox3Type() {return box3Type;}
+	public void setBox3Type(int box3Type) {this.box3Type = box3Type;}
+	public int getBox4Type() {return box4Type;}
+	public void setBox4Type(int box4Type) {this.box4Type = box4Type;}
+	
+	public int getPatBoxNo() { return getBoxByType(Relation.TYPE_PATHO);}
+	public int getFdgBoxNo() { return getBoxByType(Relation.TYPE_PROBLEM);}
+	public int getDdxBoxNo() { return getBoxByType(Relation.TYPE_DDX);}
+	public int getTstBoxNo() { return getBoxByType(Relation.TYPE_TEST);}
+	public int getMngBoxNo() { return getBoxByType(Relation.TYPE_MNG);}
+	/**
+	 * we return the box that contains the given type (fgd, ddx,...) or 
+	 * 0 if should not be displayed. 
+	 * @param type
+	 * @return
+	 */
+	private int getBoxByType(int type) {
+		if(box1Type==type) return 1;
+		if(box2Type==type) return 2;
+		if(box3Type==type) return 3;
+		if(box4Type==type) return 4;
+		return 0;
+	}
 }

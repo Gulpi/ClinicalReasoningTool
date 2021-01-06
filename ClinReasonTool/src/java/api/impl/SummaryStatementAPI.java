@@ -152,7 +152,7 @@ public class SummaryStatementAPI implements ApiInterface {
 		PatientIllnessScript expScript = (PatientIllnessScript) new DBClinReason().selectExpertPatIllScriptByVPId(userPatientIllnesScript.getVpId());
 		expScript.getSummStStage();
 		
-		ScoreBean scoreBean = new ScoreBean(userPatientIllnesScript, userPatientIllnesScript.getSummStId(), ScoreBean.TYPE_SUMMST, userPatientIllnesScript.getRawStage());
+		ScoreBean scoreBean = new ScoreBean(userPatientIllnesScript, userPatientIllnesScript.getSummStId(), ScoreBean.TYPE_SUMMST, userPatientIllnesScript.getCurrentStage());
 		if(expScript!=null && expScript.getSummSt()!=null){
 			ScoringSummStAction action = new ScoringSummStAction();
 			st = new SummaryStatementController().initSummStRating(expScript, userPatientIllnesScript, action);	
@@ -172,14 +172,14 @@ public class SummaryStatementAPI implements ApiInterface {
 		this.addToResultObj(resultObj, "UserPatientIllnesScript.id", userPatientIllnesScript.getId());
 		this.addToResultObj(resultObj, "UserPatientIllnesScript.userId", userPatientIllnesScript.getUserId());
 		this.addToResultObj(resultObj, "UserPatientIllnesScript.vpId", userPatientIllnesScript.getVpId());
-		this.addToResultObj(resultObj, "UserPatientIllnesScript.stage", userPatientIllnesScript.getRawStage());
+		this.addToResultObj(resultObj, "UserPatientIllnesScript.stage", userPatientIllnesScript.getCurrentStage());
 	}
 	
 	void addSummaryStatementToResultObj(Map resultObj, PatientIllnessScript userPatientIllnesScript, SummaryStatement st) {
 		this.addToResultObj(resultObj, "UserPatientIllnesScript.id", userPatientIllnesScript.getId());
 		this.addToResultObj(resultObj, "UserPatientIllnesScript.userId", userPatientIllnesScript.getUserId());
 		this.addToResultObj(resultObj, "UserPatientIllnesScript.vpId", userPatientIllnesScript.getVpId());
-		this.addToResultObj(resultObj, "UserPatientIllnesScript.stage", userPatientIllnesScript.getRawStage());
+		this.addToResultObj(resultObj, "UserPatientIllnesScript.stage", userPatientIllnesScript.getCurrentStage());
 		
 		this.addToResultObj(resultObj, "SummaryStatement.text", st.getText());
 		this.addToResultObj(resultObj, "SummaryStatement.lang", st.getLang());

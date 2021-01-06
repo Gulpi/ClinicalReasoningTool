@@ -1,0 +1,19 @@
+ <ui:composition 
+    xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:v="urn:schemas-microsoft-com:vml">
+
+	<h:form id="boxesnumform" class="boxeschk">
+		#{prop['patho']} <input class="boxeschk" type="checkbox" onChange="javascript:checkBoxNum();" value="6" id="boxtypes6" /><br/>
+		#{prop['findings']} <input class="boxeschk" type="checkbox" value="1" onChange="javascript:checkBoxNum();" id="boxtypes1" /><br/>
+		#{prop['ddx']} <input class="boxeschk" type="checkbox" value="2" onChange="javascript:checkBoxNum();" id="boxtypes2" /><br/>
+		#{prop['tests']} <input class="boxeschk" type="checkbox" value="3" onChange="javascript:checkBoxNum();" id="boxtypes3" /><br/>
+		#{prop['mng']} <input class="boxeschk" type="checkbox" value="4" onChange="javascript:checkBoxNum();" id="boxtypes4" /><br/>
+	</h:form>
+
+
+		
+	<a class="del" href="javascript:saveBoxesSel();">save</a>
+</ui:composition>

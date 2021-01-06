@@ -211,10 +211,6 @@ public class PatientIllnessScript extends Beans implements Comparable, IllnessSc
 		return stage;
 	}
 	
-	public int getRawStage() {
-		return stage;
-	}
-	
 	
 	public void setStage(int stage) {this.stage = stage;}
 	public int getCourseOfTime() {return courseOfTime;}

@@ -1,0 +1,27 @@
+ <ui:composition 
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core">
+
+ 	<div id="pat_#{patho.id}"  score="#{patho.score}" class="itembox pathos row1" style="left:#{patho.x}px; top:#{patho.boxY}px;"> 
+ 		<span mytooltip="#{patho.labelOrSynLabel}" >#{patho.shortLabelOrSynShortLabel}</span>
+ 		<script language="Javascript">
+ 			item_arr.push("pat_#{patho.id}");
+ 		</script>
+  		<span class="dropdown" onClick="javascript:showDropDown('ddpat_#{patho.id}','pat_#{patho.id}');"><i class="fa fa-chevron-circle-down"></i></span>
+		<span class="peer_score_patho" title="#{prop['patho.peer.hint']}" id="peerscore#{patho.id}"> (#{patho.peerPercentage})</span>
+ 		<div class="icons_score patho_score boxscore_#{patho.score}"><i class="fa fa-check"></i></div>
+
+	</div>
+	<div class="dropdown-content" id="ddpat_#{patho.id}" onmouseleave="javascript:hideDropDown('ddpat_#{patho.id}');">
+	<span style="float:left;" class="dropd_#{patho.isExpertHierarchyItem}">#{prop['change']}:</span>
+	<span class="dropdownX"><a href="javascript:hideDropDown('ddppat_#{patho.id}');"><i class="fa fa fa-times"></i></a></span>
+	
+	<br/>
+		<div class="links">	
+			<span class="dropd_#{patho.isExpertHierarchyItem}"><a class="dropd_#{patho.isExpertHierarchyItem}" href="javascript:chgPatho(#{patho.id}, 2);"><i class="fa fa-long-arrow-right"></i> #{patho.expItemLabel}</a><br/></span> <!-- Hierarchy -->
+		</div>
+		<a class="del" href="javascript:delPatho(#{patho.id});"><i class="fa fa-trash"></i> #{prop['delete']}</a>
+	</div>
+</ui:composition>

@@ -164,7 +164,7 @@ public class DBClinReason /*extends HibernateUtil*/{
      * @param vpId
      * @return
      */
-    public List<PatientIllnessScript> selectLearnerPatIllScriptsById(long pisId){
+    /*public List<PatientIllnessScript> selectLearnerPatIllScriptsById(long pisId){
     	Session s = instance.getInternalSession(Thread.currentThread(), false);
     	Criteria criteria = s.createCriteria(PatientIllnessScript.class,"PatientIllnessScript");
     	criteria.add(Restrictions.eq("id", pisId));
@@ -178,7 +178,7 @@ public class DBClinReason /*extends HibernateUtil*/{
     	s.close();
     	
     	return patIllScripts;
-    }
+    }*/
 
     
     /**

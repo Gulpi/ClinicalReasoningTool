@@ -66,9 +66,14 @@ public class SummaryStatementAPI implements ApiInterface {
 		Map resultObj = new TreeMap();
 		
 		try {
+			// make sure appBean is there / in internal thread we don't have contexts!!
 			this.getAppBean();
-			ServletContext context = (ServletContext) FacesContext.getCurrentInstance().getExternalContext().getContext();
-			new JsonCreator().initJsonExport(context);
+			
+			// make sure lists are created already!
+			if (SummaryStatementController.getListItemsByLang("de") == null || SummaryStatementController.getListItemsByLang("en") == null) {
+				ServletContext context = (ServletContext) FacesContext.getCurrentInstance().getExternalContext().getContext();
+				new JsonCreator().initJsonExport(context);
+			}
 		} catch (Exception e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();

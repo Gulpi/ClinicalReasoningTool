@@ -1,40 +1,27 @@
 package api.impl;
 
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.TreeMap;
 
 import javax.faces.context.FacesContext;
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
-
-import org.hibernate.Criteria;
-import org.hibernate.Session;
-import org.hibernate.criterion.Restrictions;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import actions.scoringActions.ScoringSummStAction;
 import api.ApiInterface;
-import api.impl.PeerSyncAPI.PeerSyncAPIThread;
 import application.AppBean;
-import beans.relation.summary.SummaryStElem;
-import beans.relation.summary.SummaryStNumeric;
 import beans.relation.summary.SummaryStatement;
-import beans.relation.summary.SummaryStatementSQ;
-import beans.scoring.LearningAnalyticsBean;
-import beans.scoring.PeerContainer;
 import beans.scoring.ScoreBean;
-import beans.scoring.ScoreContainer;
 import beans.scripts.PatientIllnessScript;
-import controller.NavigationController;
-import controller.PeerSyncController;
+import controller.JsonCreator;
 import controller.SummaryStatementController;
 import database.DBClinReason;
 import net.casus.util.CasusConfiguration;
@@ -64,6 +51,14 @@ public class SummaryStatementAPI implements ApiInterface {
 		@SuppressWarnings("rawtypes")
 		Map resultObj = new TreeMap();
 		
+		try {
+			ServletContext context = (ServletContext) FacesContext.getCurrentInstance().getExternalContext().getContext();
+			new JsonCreator().initJsonExport(context);
+		} catch (Exception e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		
 		ReScoreThread mythread = thread;
 		String status = ((HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest()).getParameter("status");
 
@@ -81,7 +76,7 @@ public class SummaryStatementAPI implements ApiInterface {
 		else {
 			long id = StringUtilities.getLongFromString((String) ((HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest()).getParameter("id"), -1);
 			if (id > 0) {
-				PatientIllnessScript userPatientIllnesScript = new DBClinReason().selectLearnerPatIllScript(id, "id");
+				PatientIllnessScript userPatientIllnesScript = new DBClinReason().selectPatIllScriptById(id);
 				SummaryStatement st = this.handleByPatientIllnessScript(userPatientIllnesScript);
 				
 				if (st != null) {
@@ -98,6 +93,7 @@ public class SummaryStatementAPI implements ApiInterface {
 					thread = new ReScoreThread();
 					thread.setCtrl(this);
 					thread.setMax(StringUtilities.getIntegerFromString((String) ((HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest()).getParameter("max"), 100));
+					thread.setType(StringUtilities.getIntegerFromString((String) ((HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest()).getParameter("type"), PatientIllnessScript.TYPE_LEARNER_CREATED));
 					thread.setStartDate(StringUtilities.getDateFromString((String) ((HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest()).getParameter("start_date"), null));
 					thread.setEndDate(StringUtilities.getDateFromString((String) ((HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest()).getParameter("end_date"), null));
 					thread.setLoadNodes(StringUtilities.getBooleanFromString((String) ((HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest()).getParameter("load_nodes"), false));
@@ -149,7 +145,7 @@ public class SummaryStatementAPI implements ApiInterface {
 	
 	public SummaryStatement handleByPatientIllnessScript(PatientIllnessScript userPatientIllnesScript) {
 		SummaryStatement st = null;
-		PatientIllnessScript expScript = (PatientIllnessScript) new DBClinReason().selectExpertPatIllScriptByVPId(userPatientIllnesScript.getVpId());
+		PatientIllnessScript expScript = AppBean.getExpertPatIllScript(userPatientIllnesScript.getVpId());
 		expScript.getSummStStage();
 		
 		ScoreBean scoreBean = new ScoreBean(userPatientIllnesScript, userPatientIllnesScript.getSummStId(), ScoreBean.TYPE_SUMMST, userPatientIllnesScript.getCurrentStage());
@@ -214,6 +210,7 @@ public class SummaryStatementAPI implements ApiInterface {
 		Date started = new Date();
 		Date finished = null;
 		int max = 100;
+		int type =  PatientIllnessScript.TYPE_LEARNER_CREATED;
 		Date startDate = null;
 		Date endDate = null;
 		SummaryStatementAPI ctrl = null;
@@ -226,7 +223,7 @@ public class SummaryStatementAPI implements ApiInterface {
 		@Override
 		public void run() {
 			 try{
-				 List<PatientIllnessScript> userPatientIllnesScripts = new DBClinReason().selectLearnerPatIllScriptsByNotAnalyzedSummSt(max, startDate, endDate, loadNodes);
+				 List<PatientIllnessScript> userPatientIllnesScripts = new DBClinReason().selectLearnerPatIllScriptsByNotAnalyzedSummSt(max, startDate, endDate, type, loadNodes);
 				 if (userPatientIllnesScripts != null) {
 					 this.count = userPatientIllnesScripts.size();
 					 this.idx = 0;
@@ -337,6 +334,14 @@ public class SummaryStatementAPI implements ApiInterface {
 
 		public void setLoadNodes(boolean loadNodes) {
 			this.loadNodes = loadNodes;
+		}
+
+		public int getType() {
+			return type;
+		}
+
+		public void setType(int type) {
+			this.type = type;
 		}
 		
 		

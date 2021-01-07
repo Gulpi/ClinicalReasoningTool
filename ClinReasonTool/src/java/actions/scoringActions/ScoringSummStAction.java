@@ -288,10 +288,12 @@ public class ScoringSummStAction {
 	 */
 	private int calculateTransformedItems(SummaryStatement st){
 		int transformNum = 0;
+		
+		List<TransformRule> myTransformRules = SummaryStatementController.getOrFetchTransformRules();
 		//identify matches with the transformation rules:
-		if(SummaryStatementController.transformRules!=null){
-			for(int i=0; i<SummaryStatementController.transformRules.size(); i++){
-				TransformRule tr = SummaryStatementController.transformRules.get(i);
+		if(myTransformRules!=null){
+			for(int i=0; i<myTransformRules.size(); i++){
+				TransformRule tr = myTransformRules.get(i);
 				Iterator<SummaryStElem> it = st.getItemHits().iterator();
 				while(it.hasNext()){
 				//for(int j=0; j<st.getItemHits().size(); j++){

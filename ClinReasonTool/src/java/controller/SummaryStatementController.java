@@ -28,6 +28,8 @@ public class SummaryStatementController {
 	/**
 	 * caching of the MesH entries (value) for each language (key). We need this for the scoring of the 
 	 * summary statements (more suitable than the JSON file, because we have additional information (such as 
+	 * 
+	 * not nice, init should be handled better
 	 * category...) 
 	 */
 	private static Map<String, List<ListItem>> listItems;
@@ -69,8 +71,33 @@ public class SummaryStatementController {
 	}
 		
 	public static List<SIUnit> getUnitList() {return unitList;}
+	
+	public static  List<SIUnit> getOrFetchUnitList() { 
+		if (getUnitList() != null) {
+			return getUnitList(); 
+		}
+		
+		setSIUnitAndTransformList();
+		return getUnitList(); 
+	}
+	
+	public static List<TransformRule> getTransformRules() {return transformRules;}
+
+	
+	public static  List<TransformRule> getOrFetchTransformRules() { 
+		if (getTransformRules() != null) {
+			return getTransformRules(); 
+		}
+		
+		setSIUnitAndTransformList();
+		return getTransformRules(); 
+	}
+	
+	
+	
 	public static SIUnit getUnitById(long id){
-		if(unitList==null) return null;
+		getOrFetchUnitList();
+		if(getUnitList()==null) return null;
 		for(int i=0;i<SummaryStatementController.getUnitList().size();i++){
 			if(SummaryStatementController.getUnitList().get(i).getId()==id) return SummaryStatementController.getUnitList().get(i);	
 		}
@@ -512,8 +539,10 @@ public class SummaryStatementController {
 		if(text==null) return null;	
 		String spacyType = spacy.getEntityTypeByIdx(idx);
 		
-		for(int i=0; i< unitList.size(); i++){
-			if(text.equalsIgnoreCase(unitList.get(i).getName())) return new SummaryStNumeric(unitList.get(i), pos, idx, spacyType, sumStId);
+		List<SIUnit>  myUnitList = SummaryStatementController.getOrFetchUnitList();
+		
+		for(int i=0; i< myUnitList.size(); i++){
+			if(text.equalsIgnoreCase(myUnitList.get(i).getName())) return new SummaryStNumeric(myUnitList.get(i), pos, idx, spacyType, sumStId);
 			
 			if(text.contains("/")){ //identify something like g/dl and count it once
 				String text2 = text.replace('/', ' ');
@@ -521,15 +550,15 @@ public class SummaryStatementController {
 				if(s!=null){
 					for(int j=0;j < s.size();j++){
 						String st = s.get(j);
-						if(/*isTermToAnalyze(st,idx, spacy, false) &&*/ st.equalsIgnoreCase(unitList.get(i).getName())) 
-							return new SummaryStNumeric(unitList.get(i),text, pos, idx, spacyType, sumStId);
+						if(/*isTermToAnalyze(st,idx, spacy, false) &&*/ st.equalsIgnoreCase(myUnitList.get(i).getName())) 
+							return new SummaryStNumeric(myUnitList.get(i),text, pos, idx, spacyType, sumStId);
 					}
 				}
 			}
-			if(text.contains(unitList.get(i).getName())){ //identify something like 14mg or 79%
-				String text3 = text.replace(unitList.get(i).getName(), "");
+			if(text.contains(myUnitList.get(i).getName())){ //identify something like 14mg or 79%
+				String text3 = text.replace(myUnitList.get(i).getName(), "");
 				if(text3!=null && StringUtilities.isNumeric(text3))
-					return new SummaryStNumeric(unitList.get(i), text, pos, idx, spacyType, sumStId);
+					return new SummaryStNumeric(myUnitList.get(i), text, pos, idx, spacyType, sumStId);
 			}
 		}
 		return null;
@@ -733,15 +762,17 @@ public class SummaryStatementController {
 	}*/
 	
 	public static void setSIUnitAndTransformList(){
-		unitList = new DBList().selectSIUnits();
-		if(unitList!=null){ //we remove an empty entry which we need for relating numbers for which we do not have a unit 
-			for (int i=0; i<unitList.size();i++){
-				if(unitList.get(i).getId()==0){
-					unitList.remove(unitList.get(i));
+		List<SIUnit> myunitList = new DBList().selectSIUnits();
+		if(myunitList!=null){ //we remove an empty entry which we need for relating numbers for which we do not have a unit 
+			for (int i=0; i<myunitList.size();i++){
+				if(myunitList.get(i).getId()==0){
+					myunitList.remove(myunitList.get(i));
 					break;
 				}
 			}
 		}
+		
+		unitList = myunitList;
 		transformRules = new DBList().selectTransformRules();
 	}
 	

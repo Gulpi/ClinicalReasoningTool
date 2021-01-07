@@ -145,6 +145,7 @@ public class SummaryStatementAPI implements ApiInterface {
 	
 	public SummaryStatement handleByPatientIllnessScript(PatientIllnessScript userPatientIllnesScript) {
 		SummaryStatement st = null;
+		AppBean.updateExpertPatIllnessScriptForVpId(userPatientIllnesScript.getVpId());
 		PatientIllnessScript expScript = AppBean.getExpertPatIllScript(userPatientIllnesScript.getVpId());
 		expScript.getSummStStage();
 		

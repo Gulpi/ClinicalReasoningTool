@@ -38,10 +38,24 @@ import util.CRTLogger;
  * @author Gulpi (=Martin Adler)
  */
 public class SummaryStatementAPI implements ApiInterface {
+	AppBean appBean = null;
 	ReScoreThread thread = null;
 	ReScoreThread lastThread = null;
 	
 	public SummaryStatementAPI() {
+	}
+	
+	/**
+	 * needs to be initialized, to be available alos from Threads, which do NOT have a Faces context!!!
+	 * @return
+	 */
+	public AppBean getAppBean(){
+		if (appBean == null) {
+			ServletContext context = (ServletContext) FacesContext.getCurrentInstance().getExternalContext().getContext();
+			appBean = (AppBean) context.getAttribute(AppBean.APP_KEY);
+		}
+		
+		return appBean;
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -52,6 +66,7 @@ public class SummaryStatementAPI implements ApiInterface {
 		Map resultObj = new TreeMap();
 		
 		try {
+			this.getAppBean();
 			ServletContext context = (ServletContext) FacesContext.getCurrentInstance().getExternalContext().getContext();
 			new JsonCreator().initJsonExport(context);
 		} catch (Exception e1) {
@@ -145,8 +160,8 @@ public class SummaryStatementAPI implements ApiInterface {
 	
 	public SummaryStatement handleByPatientIllnessScript(PatientIllnessScript userPatientIllnesScript) {
 		SummaryStatement st = null;
-		AppBean.updateExpertPatIllnessScriptForVpId(userPatientIllnesScript.getVpId());
-		PatientIllnessScript expScript = AppBean.getExpertPatIllScript(userPatientIllnesScript.getVpId());
+		
+		PatientIllnessScript expScript = getAppBean().addExpertPatIllnessScriptForVpId(userPatientIllnesScript.getVpId());
 		expScript.getSummStStage();
 		
 		ScoreBean scoreBean = new ScoreBean(userPatientIllnesScript, userPatientIllnesScript.getSummStId(), ScoreBean.TYPE_SUMMST, userPatientIllnesScript.getCurrentStage());

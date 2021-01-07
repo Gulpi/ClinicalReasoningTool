@@ -211,7 +211,7 @@ public class SummaryStatementAPI implements ApiInterface {
 		
 		this.addToResultObj(resultObj, prefix + "sqScore", st.getSqScore());
 		this.addToResultObj(resultObj, prefix + "sqScoreBasic", st.getSqScoreBasic());
-		this.addToResultObj(resultObj, "SummaryStatement.sqScorePerc", st.getSqScorePerc());
+		this.addToResultObj(resultObj, prefix + "sqScorePerc", st.getSqScorePerc());
 		
 		this.addToResultObj(resultObj, prefix + "transformationScore", st.getTransformationScore());
 		this.addToResultObj(resultObj, prefix + "transformScorePerc", st.getTransformScorePerc());

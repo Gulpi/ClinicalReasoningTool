@@ -219,7 +219,7 @@ public class SummaryStatementController {
 		//we have to make sure that the listItems in the SummStElems are loaded -> HACK!
 		// also when it's analyzed bit itemHits is null || empty we should try to reinitialize!
 		if(st.isAnalyzed() || (st.getItemHits()==null || st.getItemHits().isEmpty())) { 
-			if(st.getItemHits()!=null && st.getItemHits().isEmpty());
+			//if(st.getItemHits()!=null && st.getItemHits().isEmpty());
 			Iterator<SummaryStElem> it = st.getItemHits().iterator();
 			while(it.hasNext()){
 				SummaryStElem e = it.next();
@@ -227,9 +227,9 @@ public class SummaryStatementController {
 			}
 			return; //exp statement already analyzed, nothing more to be done....
 		}
-		
+
 		DBClinReason dcr = new DBClinReason();
-		
+
 		List<ListItem> items = getListItemsByLang(st.getLang());
 		List<String> textAsList = StringUtilities.createStringListFromString(st.getText(), true);
 		compareList(items, st); 
@@ -241,15 +241,15 @@ public class SummaryStatementController {
 			st.addUnit(compareSIUnits(s, i, st.getText().toLowerCase().indexOf(s), spacy, st.getId()));
 		}
 		checkForSemanticQualifiers(st, spacy);
-		
+
 		compareNumbers(st, spacy);
 		checkForPerson(st, spacy);
-		
+
 		/*Iterator it = st.getItemHits().iterator();
 		while(it.hasNext()){
 			SummaryStElem e = (SummaryStElem) it.next();
 			new DBClinReason().saveAndCommit(e);
-			
+
 		}*/
 		dcr.saveAndCommit(st.getItemHits());
 		dcr.saveAndCommit(st.getSqHits());

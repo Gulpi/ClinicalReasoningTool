@@ -101,11 +101,18 @@ public class SummaryStatementAPI implements ApiInterface {
 				
 				if (st != null) {
 					resultObj.put("status", "ok");
-					this.addSummaryStatementToResultObj(resultObj, userPatientIllnesScript, st);
+					
+					Map userObj = new TreeMap();
+					resultObj.put("User", userObj);
+					this.addSummaryStatementToResultObj(userObj, userPatientIllnesScript, st);
+					
 					PatientIllnessScript expScript = getAppBean().addExpertPatIllnessScriptForVpId(userPatientIllnesScript.getVpId());
 					if (expScript != null) {
-						this.addSummaryStatementToResultObj(resultObj, "ExpertPatientIllnesScript.", expScript);
-						this.addSummaryStatementToResultObj(resultObj, "ExpertSummaryStatement.", expScript.getSummSt());
+						Map expertObj = new TreeMap();
+						resultObj.put("Expert", expertObj);
+
+						this.addSummaryStatementToResultObj(expertObj, "ExpertPatientIllnesScript.", expScript);
+						this.addSummaryStatementToResultObj(expertObj, "ExpertSummaryStatement.", expScript.getSummSt());
 					}
 				}
 				else {
@@ -279,7 +286,9 @@ public class SummaryStatementAPI implements ApiInterface {
 							 }
 						} catch (Throwable e) {
 							Map result1 = new TreeMap();
-							ctrl.addSummaryStatementToResultObj(result1, "UserPatientIllnesScript.", userPatientIllnesScript);
+							Map userObj = new TreeMap();
+							result1.put("User", userObj);
+							ctrl.addSummaryStatementToResultObj(userObj, "UserPatientIllnesScript.", userPatientIllnesScript);
 							ctrl.addToResultObj(result1, "exception", Utility.stackTraceToString(e));
 							results.add(result1);
 						}

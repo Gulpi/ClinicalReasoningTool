@@ -228,6 +228,11 @@ public class SummaryStatementAPI implements ApiInterface {
 
 		this.addToResultObj(resultObj, prefix + "accuracyScore", st.getAccuracyScore());
 		this.addToResultObj(resultObj, prefix + "globalScore", st.getGlobalScore());
+		
+		this.addToResultObj(resultObj, prefix + "itemHits.size", st.getItemHits()!=null?st.getItemHits().size():"-");
+		this.addToResultObj(resultObj, prefix + "anatomyHitElems.size", st.getAnatomyHitElems()!=null?st.getAnatomyHitElems().size():"-");
+		this.addToResultObj(resultObj, prefix + "sqHits.size", st.getSqHits()!=null?st.getSqHits().size():"-");
+
 	}
 	
 	void addSummaryStatementToResultObj(Map resultObj, PatientIllnessScript userPatientIllnesScript, SummaryStatement st) {

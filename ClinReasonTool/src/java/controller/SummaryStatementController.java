@@ -356,9 +356,13 @@ public class SummaryStatementController {
 			DBClinReason dbc = new DBClinReason();
 			//if(learnerScript==null || learnerScript.getSummSt()==null || learnerScript.getSummSt().getText()==null) return st;
 			//st = learnerScript.getSummSt();
-			if(st.isAnalyzed()){ //we do a re-calculation....
-				SummaryStatementController.resetSummSt(dbc,st);
+			if(st.isAnalyzed()){
+				return st;
 			}
+			
+			// ToDo: can be moved out later!
+			SummaryStatementController.resetSummSt(dbc,st);
+			
 			SummaryStatement expSt = expScript.getSummSt();
 			List<ListItem> items = getListItemsByLang(st.getLang());	
 			//if(st==null || st.getText()==null || items==null) return null;

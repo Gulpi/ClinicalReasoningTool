@@ -296,7 +296,7 @@ public class DBClinReason /*extends HibernateUtil*/{
      * for recalculation and scoring of summary statements in new format
      * @return PatientIllnessScript or null
      */
-    public List selectLearnerPatIllScriptsByNotAnalyzedSummSt(int max, Date startDate, Date endDate, int type, boolean loadNodes){
+    public List selectLearnerPatIllScriptsByNotAnalyzedSummSt(int max, Date startDate, Date endDate, int type, boolean loadNodes, int analyzed){
     	/*
     	 * select * from CRT.PATIENT_ILLNESSSCRIPT pis,CRT.SUMMSTATEMENT smst where pis.SUMMST_ID = smst.ID and smst.ANALYZED = 0 and lang in ('de', 'en') and pis.TYPE = 1
     	 */
@@ -311,21 +311,24 @@ public class DBClinReason /*extends HibernateUtil*/{
     	
     	DetachedCriteria stmts = DetachedCriteria.forClass(SummaryStatement.class, "stmt")
     			.setProjection( Property.forName("stmt.id") )
-    			.add( Property.forName("stmt.narrowingScore").eq(new Integer(-1)) )
     			.add(Property.forName("lang").in(lang));
     	
+    	if (analyzed>=0) {
+    		stmts.add( Property.forName("stmt.analyzed").eq(analyzed == 1 ? Boolean.TRUE : Boolean.FALSE) );
+    	}
+    	
     	if (startDate != null) {
-    		stmts.add(Restrictions.ge("creationDate", startDate));
+    		stmts.add(Restrictions.ge("stmt.creationDate", startDate));
     	}
     	if (endDate != null) {
-    		stmts.add(Restrictions.le("creationDate", endDate));
+    		stmts.add(Restrictions.le("stmt.creationDate", endDate));
     	}
     	
     	criteria.add(Property.forName("summStId").in(stmts));
     	if (max>0) {
     		criteria.setMaxResults(max);
     	}
-    	
+    	criteria.addOrder(Order.asc("creationDate"));
     	
     	List<PatientIllnessScript> scripts = criteria.list();
     	if(scripts!=null){

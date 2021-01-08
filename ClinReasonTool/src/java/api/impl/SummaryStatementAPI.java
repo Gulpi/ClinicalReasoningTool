@@ -322,6 +322,7 @@ public class SummaryStatementAPI implements ApiInterface {
 		SummaryStatementAPI ctrl = null;
 		List<Map> results = new ArrayList<Map>();
 		boolean loadNodes = false;
+		int analyzed = -1;
 		
 		int count = -1;
 		int idx = -1;
@@ -329,7 +330,7 @@ public class SummaryStatementAPI implements ApiInterface {
 		@Override
 		public void run() {
 			 try{
-				 List<PatientIllnessScript> userPatientIllnesScripts = new DBClinReason().selectLearnerPatIllScriptsByNotAnalyzedSummSt(max, startDate, endDate, type, loadNodes);
+				 List<PatientIllnessScript> userPatientIllnesScripts = new DBClinReason().selectLearnerPatIllScriptsByNotAnalyzedSummSt(max, startDate, endDate, type, loadNodes, analyzed);
 				 if (userPatientIllnesScripts != null) {
 					 this.count = userPatientIllnesScripts.size();
 					 this.idx = 0;
@@ -450,6 +451,14 @@ public class SummaryStatementAPI implements ApiInterface {
 
 		public void setType(int type) {
 			this.type = type;
+		}
+
+		public int getAnalyzed() {
+			return analyzed;
+		}
+
+		public void setAnalyzed(int analyzed) {
+			this.analyzed = analyzed;
 		}
 		
 		

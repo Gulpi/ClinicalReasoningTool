@@ -106,15 +106,15 @@ public class SummaryStatementAPI implements ApiInterface {
 					
 					Map userObj = new TreeMap();
 					resultObj.put("User", userObj);
-					this.addSummaryStatementToResultObj(userObj, userPatientIllnesScript, st);
+					boolean collections = StringUtilities.getBooleanFromString((String) ((HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest()).getParameter("collections"), true);
+					this.addSummaryStatementToResultObj(userObj, userPatientIllnesScript, st, collections);
 					
 					PatientIllnessScript expScript = getAppBean().addExpertPatIllnessScriptForVpId(userPatientIllnesScript.getVpId());
 					if (expScript != null) {
 						Map expertObj = new TreeMap();
 						resultObj.put("Expert", expertObj);
-						boolean collections = StringUtilities.getBooleanFromString((String) ((HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest()).getParameter("collections"), true);
 						this.addSummaryStatementToResultObj(expertObj, "ExpertPatientIllnesScript.", expScript);
-						this.addSummaryStatementToResultObj(expertObj, "ExpertSummaryStatement.", expScript.getSummSt(), collections);
+						this.addSummaryStatementToResultObj(expertObj, "ExpertSummaryStatement.", expScript.getSummSt(), true, collections);
 					}
 				}
 				else {
@@ -210,7 +210,7 @@ public class SummaryStatementAPI implements ApiInterface {
 		this.addToResultObj(resultObj, prefix + "stage", userPatientIllnesScript.getCurrentStage());
 	}
 	
-	void addSummaryStatementToResultObj(Map resultObj, String prefix, SummaryStatement st, boolean collections) {
+	void addSummaryStatementToResultObj(Map resultObj, String prefix, SummaryStatement st, boolean expert, boolean collections) {
 		if (st == null) {
 			this.addToResultObj(resultObj, prefix + "obj", "null");
 			return;
@@ -253,10 +253,16 @@ public class SummaryStatementAPI implements ApiInterface {
 				if (loop.getListItem() != null) {
 					if (sb.length()>0) sb.append(", ");
 					sb.append(loop.getListItem().getListItemId() + ":" + loop.getListItem().getName());
+					if (!expert) {
+						sb.append(";match:" + loop.getExpertMatch());
+					}
 				}
 				else {
 					if (sb.length()>0) sb.append(", ");
 					sb.append(loop.getId() + ":" + loop.getType());
+					if (!expert) {
+						sb.append(";match:" + loop.getExpertMatch());
+					}
 				}
 			}
 			this.addToResultObj(resultObj, prefix + "itemHits", "[" + sb.toString() + "]");
@@ -271,10 +277,16 @@ public class SummaryStatementAPI implements ApiInterface {
 				if (loop.getListItem() != null) {
 					if (sb.length()>0) sb.append(", ");
 					sb.append(loop.getListItem().getListItemId() + ":" + loop.getListItem().getName());
+					if (!expert) {
+						sb.append(";match:" + loop.getExpertMatch());
+					}
 				}
 				else {
 					if (sb.length()>0) sb.append(", ");
 					sb.append(loop.getId() + ":" + loop.getType());
+					if (!expert) {
+						sb.append(";match:" + loop.getExpertMatch());
+					}
 				}
 			}
 			this.addToResultObj(resultObj, prefix + "anatomyHitElems", "[" + sb.toString() + "]");
@@ -295,9 +307,9 @@ public class SummaryStatementAPI implements ApiInterface {
 
 	}
 	
-	void addSummaryStatementToResultObj(Map resultObj, PatientIllnessScript userPatientIllnesScript, SummaryStatement st) {
+	void addSummaryStatementToResultObj(Map resultObj, PatientIllnessScript userPatientIllnesScript, SummaryStatement st, boolean collection) {
 		this.addSummaryStatementToResultObj(resultObj, "UserPatientIllnesScript.", userPatientIllnesScript);
-		this.addSummaryStatementToResultObj(resultObj, "UserSummaryStatement.", st, false);
+		this.addSummaryStatementToResultObj(resultObj, "UserSummaryStatement.", st, false, collection);
 	}
 	
 	class ReScoreThread extends Thread {
@@ -329,7 +341,7 @@ public class SummaryStatementAPI implements ApiInterface {
 							SummaryStatement st = ctrl.handleByPatientIllnessScript(userPatientIllnesScript);
 							 if (st != null) {
 								Map result1 = new HashMap();
-								ctrl.addSummaryStatementToResultObj(result1, userPatientIllnesScript, st);
+								ctrl.addSummaryStatementToResultObj(result1, userPatientIllnesScript, st,false);
 								results.add(result1);
 							 }
 						} catch (Throwable e) {

@@ -254,14 +254,14 @@ public class SummaryStatementAPI implements ApiInterface {
 					if (sb.length()>0) sb.append(", ");
 					sb.append(loop.getListItem().getListItemId() + ":" + loop.getListItem().getName());
 					if (!expert) {
-						sb.append(";match:" + loop.getExpertMatch());
+						sb.append(";match:" + loop.getExpertMatch() + "," + loop.getExpertScriptMatch());
 					}
 				}
 				else {
 					if (sb.length()>0) sb.append(", ");
 					sb.append(loop.getId() + ":" + loop.getType());
 					if (!expert) {
-						sb.append(";match:" + loop.getExpertMatch());
+						sb.append(";match:" + loop.getExpertMatch() + "," + loop.getExpertScriptMatch());
 					}
 				}
 			}
@@ -278,14 +278,14 @@ public class SummaryStatementAPI implements ApiInterface {
 					if (sb.length()>0) sb.append(", ");
 					sb.append(loop.getListItem().getListItemId() + ":" + loop.getListItem().getName());
 					if (!expert) {
-						sb.append(";match:" + loop.getExpertMatch());
+						sb.append(";match:" + loop.getExpertMatch() + "," + loop.getExpertScriptMatch());
 					}
 				}
 				else {
 					if (sb.length()>0) sb.append(", ");
 					sb.append(loop.getId() + ":" + loop.getType());
 					if (!expert) {
-						sb.append(";match:" + loop.getExpertMatch());
+						sb.append(";match:" + loop.getExpertMatch() + "," + loop.getExpertScriptMatch());
 					}
 				}
 			}

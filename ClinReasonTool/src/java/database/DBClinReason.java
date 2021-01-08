@@ -300,7 +300,8 @@ public class DBClinReason /*extends HibernateUtil*/{
     	/*
     	 * select * from CRT.PATIENT_ILLNESSSCRIPT pis,CRT.SUMMSTATEMENT smst where pis.SUMMST_ID = smst.ID and smst.ANALYZED = 0 and lang in ('de', 'en') and pis.TYPE = 1
     	 */
-    	
+		CRTLogger.out("DBClinReason.selectLearnerPatIllScriptsByNotAnalyzedSummSt: max: "  + max + ", startDate: " + startDate + ", endDate: " + endDate+ ", type: " + type+ ", loadNodes: " + loadNodes+ ", analyzed: " + analyzed+ ", submittedStage: " + submittedStage, CRTLogger.LEVEL_PROD);
+   	
     	Session s = instance.getInternalSession(Thread.currentThread(), false);
     	Criteria criteria = s.createCriteria(PatientIllnessScript.class,"PatientIllnessScript");
     	criteria.add(Restrictions.eq("type", new Integer(type)));
@@ -336,7 +337,7 @@ public class DBClinReason /*extends HibernateUtil*/{
     	}
     	
     	criteria.addOrder(Order.asc("creationDate"));
-		CRTLogger.out("DBClinReason.selectLearnerPatIllScriptsByNotAnalyzedSummSt: criteria: "  + criteria, CRTLogger.LEVEL_PROD);
+		CRTLogger.out("DBClinReason.selectLearnerPatIllScriptsByNotAnalyzedSummSt: criteria: "  + criteria + ", " + stmts, CRTLogger.LEVEL_PROD);
   	
     	List<PatientIllnessScript> scripts = criteria.list();
     	long smstMs = 0;
@@ -364,7 +365,7 @@ public class DBClinReason /*extends HibernateUtil*/{
     			}
     		}
     		
-    		CRTLogger.out("DBClinReason.selectLearnerPatIllScriptsByNotAnalyzedSummSt: finish post process: smstMs"  + smstMs + "ms; nodesMs"  + smstMs + "ms; ", CRTLogger.LEVEL_PROD);
+    		CRTLogger.out("DBClinReason.selectLearnerPatIllScriptsByNotAnalyzedSummSt: finish post process: smstMs: "  + smstMs + "ms; nodesMs: "  + nodesMs + "ms; ", CRTLogger.LEVEL_PROD);
     	}
     	else {
     		CRTLogger.out("DBClinReason.selectLearnerPatIllScriptsByNotAnalyzedSummSt: finish post process: scripts == null !!", CRTLogger.LEVEL_PROD);

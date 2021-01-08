@@ -40,6 +40,7 @@ public class CRTFacesContext extends FacesContextWrapper implements MyFacesConte
 	private IllnessScriptController isc = new IllnessScriptController();
 	private PatientIllnessScript patillscript;
 	private Graph graph;
+	
 		
 	/**
 	 * This is the locale of the navigation etc. script locale (for lists) is in PatientIllnessScript
@@ -524,11 +525,13 @@ public class CRTFacesContext extends FacesContextWrapper implements MyFacesConte
 		return false;
 	}*/
 	
-	public Locale getLocale(){
-		return locale;}//LocaleController.getLocale(this).getLanguage();}	
-	public String getLanguage(){
-		return locale.getLanguage();}
-	public float getScoreForAllowReSubmit(){
-		return ScoringController.scoreForAllowReSubmit;
-	}
+	public Locale getLocale(){ return locale;}//LocaleController.getLocale(this).getLanguage();}	
+	public String getLanguage(){return locale.getLanguage();}
+	public float getScoreForAllowReSubmit(){return ScoringController.scoreForAllowReSubmit;}
+	
+	/**
+	 * new version enabled in which author can choose from several box types 
+	 * @return
+	 */
+	public boolean getAdaptableBoxesEnabled() {return AppBean.getProperty("AdaptableBoxes", false);}
 }

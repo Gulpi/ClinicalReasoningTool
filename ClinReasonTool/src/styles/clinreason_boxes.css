@@ -1234,5 +1234,11 @@ input.cmn-toggle-round:checked + label:after {
 	display:none !important;
 }
 
+.showadaptBox_true{
+	display;block;
+}
+.showadaptBox_false{
+	display:none;
+}
 
 

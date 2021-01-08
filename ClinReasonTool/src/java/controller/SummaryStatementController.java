@@ -28,6 +28,8 @@ public class SummaryStatementController {
 	/**
 	 * caching of the MesH entries (value) for each language (key). We need this for the scoring of the 
 	 * summary statements (more suitable than the JSON file, because we have additional information (such as 
+	 * 
+	 * not nice, init should be handled better
 	 * category...) 
 	 */
 	private static Map<String, List<ListItem>> listItems;
@@ -69,8 +71,33 @@ public class SummaryStatementController {
 	}
 		
 	public static List<SIUnit> getUnitList() {return unitList;}
+	
+	public static  List<SIUnit> getOrFetchUnitList() { 
+		if (getUnitList() != null) {
+			return getUnitList(); 
+		}
+		
+		setSIUnitAndTransformList();
+		return getUnitList(); 
+	}
+	
+	public static List<TransformRule> getTransformRules() {return transformRules;}
+
+	
+	public static  List<TransformRule> getOrFetchTransformRules() { 
+		if (getTransformRules() != null) {
+			return getTransformRules(); 
+		}
+		
+		setSIUnitAndTransformList();
+		return getTransformRules(); 
+	}
+	
+	
+	
 	public static SIUnit getUnitById(long id){
-		if(unitList==null) return null;
+		getOrFetchUnitList();
+		if(getUnitList()==null) return null;
 		for(int i=0;i<SummaryStatementController.getUnitList().size();i++){
 			if(SummaryStatementController.getUnitList().get(i).getId()==id) return SummaryStatementController.getUnitList().get(i);	
 		}
@@ -189,45 +216,53 @@ public class SummaryStatementController {
 	 * @param loc
 	 */
 	private static void analyzeExpStatement(SummaryStatement st, SpacyDocJson spacy, Locale loc){
-		
-		if(st.isAnalyzed()){ //we have to make sure that the listItems in the SummStElems are loaded -> HACK!
-			if(st.getItemHits()!=null && st.getItemHits().isEmpty());
-			Iterator<SummaryStElem> it = st.getItemHits().iterator();
-			while(it.hasNext()){
-				SummaryStElem e = it.next();
-				if(e.getListItemId()>0) e.setListItem(new DBList().selectListItemById(e.getListItemId()));
+		//we have to make sure that the listItems in the SummStElems are loaded -> HACK!
+		// also when it's analyzed bit itemHits is null || empty we should try to reinitialize ?
+		/*if(st.isAnalyzed()) { 
+				if (st.getItemHits()!=null ) {
+				//if(st.getItemHits()!=null && st.getItemHits().isEmpty());
+				Iterator<SummaryStElem> it = st.getItemHits().iterator();
+				while(it.hasNext()){
+					SummaryStElem e = it.next();
+					if(e.getListItemId()>0) e.setListItem(new DBList().selectListItemById(e.getListItemId()));
+				}
 			}
-			return; //exp statement already analyzed, nothing more to be done....
-		}
-		
-		DBClinReason dcr = new DBClinReason();
-		
-		List<ListItem> items = getListItemsByLang(st.getLang());
-		List<String> textAsList = StringUtilities.createStringListFromString(st.getText(), true);
-		compareList(items, st); 
-		if(aList!=null) compareList(aList.get(st.getLang()), st);
-		for(int i=0; i<textAsList.size(); i++){
-			String s = textAsList.get(i);		
-			compareSimilarList(items, st, s, i, loc);
-			if(aList!=null) compareSimilarList(aList.get(st.getLang()), st, s, i, loc);		
-			st.addUnit(compareSIUnits(s, i, st.getText().toLowerCase().indexOf(s), spacy, st.getId()));
-		}
-		checkForSemanticQualifiers(st, spacy);
-		
-		compareNumbers(st, spacy);
-		checkForPerson(st, spacy);
-		
-		/*Iterator it = st.getItemHits().iterator();
-		while(it.hasNext()){
-			SummaryStElem e = (SummaryStElem) it.next();
-			new DBClinReason().saveAndCommit(e);
-			
 		}*/
-		dcr.saveAndCommit(st.getItemHits());
-		dcr.saveAndCommit(st.getSqHits());
-		dcr.saveAndCommit(st.getUnits());
-		st.setAnalyzed(true);
-		dcr.saveAndCommit(st);
+		
+		if(!st.isAnalyzed()) { 
+			DBClinReason dcr = new DBClinReason();
+			
+			// reset old items, more issue tolerant than just reanalyze when we foeget to reset also relations in database
+			SummaryStatementController.resetSummSt(dcr, st);
+	
+			// now rescan
+			List<ListItem> items = getListItemsByLang(st.getLang());
+			List<String> textAsList = StringUtilities.createStringListFromString(st.getText(), true);
+			compareList(items, st); 
+			if(aList!=null) compareList(aList.get(st.getLang()), st);
+			for(int i=0; i<textAsList.size(); i++){
+				String s = textAsList.get(i);		
+				compareSimilarList(items, st, s, i, loc);
+				if(aList!=null) compareSimilarList(aList.get(st.getLang()), st, s, i, loc);		
+				st.addUnit(compareSIUnits(s, i, st.getText().toLowerCase().indexOf(s), spacy, st.getId()));
+			}
+			checkForSemanticQualifiers(st, spacy);
+	
+			compareNumbers(st, spacy);
+			checkForPerson(st, spacy);
+	
+			/*Iterator it = st.getItemHits().iterator();
+			while(it.hasNext()){
+				SummaryStElem e = (SummaryStElem) it.next();
+				new DBClinReason().saveAndCommit(e);
+	
+			}*/
+			dcr.saveAndCommit(st.getItemHits());
+			dcr.saveAndCommit(st.getSqHits());
+			dcr.saveAndCommit(st.getUnits());
+			st.setAnalyzed(true);
+			dcr.saveAndCommit(st);
+		}
 	}
 	
 	/*public static SummaryStatement testSummStRating(String text, String vpId){
@@ -318,11 +353,16 @@ public class SummaryStatementController {
 	public SummaryStatement initSummStRating(PatientIllnessScript expScript, SummaryStatement st, ScoringSummStAction scoreAct){
 		if(st==null) return null;
 		try{
+			DBClinReason dbc = new DBClinReason();
 			//if(learnerScript==null || learnerScript.getSummSt()==null || learnerScript.getSummSt().getText()==null) return st;
 			//st = learnerScript.getSummSt();
-			if(st.isAnalyzed()){ //we do a re-calculation....
-				resetSummSt(st);
+			if(st.isAnalyzed()){
+				return st;
 			}
+			
+			// ToDo: can be moved out later!
+			SummaryStatementController.resetSummSt(dbc,st);
+			
 			SummaryStatement expSt = expScript.getSummSt();
 			List<ListItem> items = getListItemsByLang(st.getLang());	
 			//if(st==null || st.getText()==null || items==null) return null;
@@ -400,17 +440,17 @@ public class SummaryStatementController {
 			if (st.getSqHits() == null) {
 				st.setSqHits(new HashSet<SummaryStatementSQ>());
 			}
-			new DBClinReason().saveAndCommit(st.getSqHits());
+			dbc.saveAndCommit(st.getSqHits());
 			
 			if (st.getUnits() == null) {
 				st.setUnits(new HashSet<SummaryStNumeric>());
 			}
-			new DBClinReason().saveAndCommit(st.getUnits());
+			dbc.saveAndCommit(st.getUnits());
 			
 			if (st.getItemHits() == null) {
 				st.setItemHits(new HashSet<SummaryStElem>());
 			}
-			new DBClinReason().saveAndCommit(st.getItemHits());
+			dbc.saveAndCommit(st.getItemHits());
 			/*if (st.getItemHits() != null) {
 				Iterator<SummaryStElem> it = st.getItemHits().iterator();
 				while (it.hasNext()) {
@@ -420,7 +460,7 @@ public class SummaryStatementController {
 			}*/
 			
 			st.setAnalyzed(true);
-			new DBClinReason().saveAndCommit(st);
+			dbc.saveAndCommit(st);
 		}
 		catch(Exception e){
 			CRTLogger.out(Utility.stackTraceToString(e), CRTLogger.LEVEL_ERROR);
@@ -512,8 +552,10 @@ public class SummaryStatementController {
 		if(text==null) return null;	
 		String spacyType = spacy.getEntityTypeByIdx(idx);
 		
-		for(int i=0; i< unitList.size(); i++){
-			if(text.equalsIgnoreCase(unitList.get(i).getName())) return new SummaryStNumeric(unitList.get(i), pos, idx, spacyType, sumStId);
+		List<SIUnit>  myUnitList = SummaryStatementController.getOrFetchUnitList();
+		
+		for(int i=0; i< myUnitList.size(); i++){
+			if(text.equalsIgnoreCase(myUnitList.get(i).getName())) return new SummaryStNumeric(myUnitList.get(i), pos, idx, spacyType, sumStId);
 			
 			if(text.contains("/")){ //identify something like g/dl and count it once
 				String text2 = text.replace('/', ' ');
@@ -521,15 +563,15 @@ public class SummaryStatementController {
 				if(s!=null){
 					for(int j=0;j < s.size();j++){
 						String st = s.get(j);
-						if(/*isTermToAnalyze(st,idx, spacy, false) &&*/ st.equalsIgnoreCase(unitList.get(i).getName())) 
-							return new SummaryStNumeric(unitList.get(i),text, pos, idx, spacyType, sumStId);
+						if(/*isTermToAnalyze(st,idx, spacy, false) &&*/ st.equalsIgnoreCase(myUnitList.get(i).getName())) 
+							return new SummaryStNumeric(myUnitList.get(i),text, pos, idx, spacyType, sumStId);
 					}
 				}
 			}
-			if(text.contains(unitList.get(i).getName())){ //identify something like 14mg or 79%
-				String text3 = text.replace(unitList.get(i).getName(), "");
+			if(text.contains(myUnitList.get(i).getName())){ //identify something like 14mg or 79%
+				String text3 = text.replace(myUnitList.get(i).getName(), "");
 				if(text3!=null && StringUtilities.isNumeric(text3))
-					return new SummaryStNumeric(unitList.get(i), text, pos, idx, spacyType, sumStId);
+					return new SummaryStNumeric(myUnitList.get(i), text, pos, idx, spacyType, sumStId);
 			}
 		}
 		return null;
@@ -611,7 +653,7 @@ public class SummaryStatementController {
 	 */
 	private static boolean compareSimilarList(List items, SummaryStatement st, String orgS, int pos, Locale loc){	
 		String replS = StringUtilities.replaceChars(orgS.toLowerCase());
-		CRTLogger.out("", 1);
+		//CRTLogger.out("", 1);
 		//we do not compare anything for ver short strings (including age) 
 		if(replS==null || replS.trim().length()<=2) return false;
 		
@@ -733,15 +775,17 @@ public class SummaryStatementController {
 	}*/
 	
 	public static void setSIUnitAndTransformList(){
-		unitList = new DBList().selectSIUnits();
-		if(unitList!=null){ //we remove an empty entry which we need for relating numbers for which we do not have a unit 
-			for (int i=0; i<unitList.size();i++){
-				if(unitList.get(i).getId()==0){
-					unitList.remove(unitList.get(i));
+		List<SIUnit> myunitList = new DBList().selectSIUnits();
+		if(myunitList!=null){ //we remove an empty entry which we need for relating numbers for which we do not have a unit 
+			for (int i=0; i<myunitList.size();i++){
+				if(myunitList.get(i).getId()==0){
+					myunitList.remove(myunitList.get(i));
 					break;
 				}
 			}
 		}
+		
+		unitList = myunitList;
 		transformRules = new DBList().selectTransformRules();
 	}
 	
@@ -865,13 +909,17 @@ public class SummaryStatementController {
 	 * We remove the previously found hits for semantic qualifiers, units, and other hits from the database.
 	 * @param st
 	 */
-	private void resetSummSt(SummaryStatement st){
-		if(st.getItemHits() != null) new DBClinReason().deleteAndCommit(st.getItemHits());
-		if(st.getSqHits()!=null) new DBClinReason().deleteAndCommit(st.getSqHits());
-		if(st.getUnits()!=null) new DBClinReason().deleteAndCommit(st.getUnits());
+	static private void resetSummSt(DBClinReason dbc,SummaryStatement st){
+		if (dbc == null) {
+			dbc = new DBClinReason();
+		}
+		if(st.getItemHits() != null) dbc.deleteAndCommit(st.getItemHits());
+		if(st.getSqHits()!=null) dbc.deleteAndCommit(st.getSqHits());
+		if(st.getUnits()!=null) dbc.deleteAndCommit(st.getUnits());
 		st.setItemHits(null);
 		st.setUnits(null);
 		st.setSqHits(null);
+		
 		//TODO reload JsonTest!!!
 	}
 	

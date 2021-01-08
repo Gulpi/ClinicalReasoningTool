@@ -296,48 +296,81 @@ public class DBClinReason /*extends HibernateUtil*/{
      * for recalculation and scoring of summary statements in new format
      * @return PatientIllnessScript or null
      */
-    public List<PatientIllnessScript> selectLearnerPatIllScriptsByNotAnalyzedSummSt(int max, Date startDate, Date endDate, boolean loadNodes){
+    public List selectLearnerPatIllScriptsByNotAnalyzedSummSt(int max, Date startDate, Date endDate, int type, boolean loadNodes, int analyzed, boolean submittedStage){
+    	/*
+    	 * select * from CRT.PATIENT_ILLNESSSCRIPT pis,CRT.SUMMSTATEMENT smst where pis.SUMMST_ID = smst.ID and smst.ANALYZED = 0 and lang in ('de', 'en') and pis.TYPE = 1
+    	 */
+		CRTLogger.out("DBClinReason.selectLearnerPatIllScriptsByNotAnalyzedSummSt: max: "  + max + ", startDate: " + startDate + ", endDate: " + endDate+ ", type: " + type+ ", loadNodes: " + loadNodes+ ", analyzed: " + analyzed+ ", submittedStage: " + submittedStage, CRTLogger.LEVEL_PROD);
+   	
     	Session s = instance.getInternalSession(Thread.currentThread(), false);
     	Criteria criteria = s.createCriteria(PatientIllnessScript.class,"PatientIllnessScript");
-    	criteria.add(Restrictions.eq("type", new Integer(PatientIllnessScript.TYPE_LEARNER_CREATED)));
+    	criteria.add(Restrictions.eq("type", new Integer(type)));
     	
     	List<String> lang = new ArrayList<String>();
     	lang.add("de");
     	lang.add("en");
     	
+    	// sub query:
     	DetachedCriteria stmts = DetachedCriteria.forClass(SummaryStatement.class, "stmt")
     			.setProjection( Property.forName("stmt.id") )
-    			.add( Property.forName("stmt.narrowingScore").eq(new Integer(-1)) )
-    			.add(Property.forName("lang").in(lang));
+    			.add(Property.forName("stmt.lang").in(lang));
+    	
+    	if (analyzed>=0) {
+    		stmts.add( Property.forName("stmt.analyzed").eq(analyzed == 1 ? Boolean.TRUE : Boolean.FALSE) );
+    	}
     	
     	if (startDate != null) {
-    		stmts.add(Restrictions.ge("creationDate", startDate));
+    		stmts.add(Restrictions.ge("stmt.creationDate", startDate));
     	}
     	if (endDate != null) {
-    		stmts.add(Restrictions.le("creationDate", endDate));
+    		stmts.add(Restrictions.le("stmt.creationDate", endDate));
     	}
     	
+    	// now query
     	criteria.add(Property.forName("summStId").in(stmts));
     	if (max>0) {
     		criteria.setMaxResults(max);
     	}
+
+    	if (submittedStage) {
+    		criteria.add(Property.forName("submittedStage").gt(Integer.valueOf(0)));
+    	}
     	
-    	
+    	criteria.addOrder(Order.asc("creationDate"));
+		CRTLogger.out("DBClinReason.selectLearnerPatIllScriptsByNotAnalyzedSummSt: criteria: "  + criteria + ", " + stmts, CRTLogger.LEVEL_PROD);
+  	
     	List<PatientIllnessScript> scripts = criteria.list();
+    	long smstMs = 0;
+    	long nodesMs = 0;
+    	long startms = 0;
+    	long endms = 0;
     	if(scripts!=null){
     		CRTLogger.out("DBClinReason.selectLearnerPatIllScriptsByNotAnalyzedSummSt: scripts: #"  + scripts.size(), CRTLogger.LEVEL_PROD);
     		for(int i=0;i<scripts.size();i++){
-    			if ((i%2500) == 0) {
+    			if ((i%250) == 0) {
     				CRTLogger.out("DBClinReason.selectLearnerPatIllScriptsByNotAnalyzedSummSt: scripts: i:"  + i, CRTLogger.LEVEL_PROD);
     			}
+    			
     			PatientIllnessScript loop = scripts.get(i); 
+    			startms = System.currentTimeMillis() ;
     			loop.setSummSt(loadSummSt(loop.getSummStId(), s));
-
+    			endms = System.currentTimeMillis() ;
+    			smstMs += (endms-startms);
+    			
     			if (loadNodes) {
+        			startms = System.currentTimeMillis() ;
     				selectNodesAndConns(loop, s);
+        			endms = System.currentTimeMillis() ;
+        			nodesMs += (endms-startms);
     			}
     		}
+    		
+    		CRTLogger.out("DBClinReason.selectLearnerPatIllScriptsByNotAnalyzedSummSt: finish post process: smstMs: "  + smstMs + "ms; nodesMs: "  + nodesMs + "ms; ", CRTLogger.LEVEL_PROD);
     	}
+    	else {
+    		CRTLogger.out("DBClinReason.selectLearnerPatIllScriptsByNotAnalyzedSummSt: finish post process: scripts == null !!", CRTLogger.LEVEL_PROD);
+    	}
+    	
     	s.close();
     	
     	return scripts;    	

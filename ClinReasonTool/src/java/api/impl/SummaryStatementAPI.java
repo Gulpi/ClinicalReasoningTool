@@ -126,11 +126,13 @@ public class SummaryStatementAPI implements ApiInterface {
 				if (mythread == null) {
 					thread = new ReScoreThread();
 					thread.setCtrl(this);
+					thread.setAnalyzed(StringUtilities.getIntegerFromString((String) ((HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest()).getParameter("analyzed"), 0));
 					thread.setMax(StringUtilities.getIntegerFromString((String) ((HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest()).getParameter("max"), 100));
 					thread.setType(StringUtilities.getIntegerFromString((String) ((HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest()).getParameter("type"), PatientIllnessScript.TYPE_LEARNER_CREATED));
 					thread.setStartDate(StringUtilities.getDateFromString((String) ((HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest()).getParameter("start_date"), null));
 					thread.setEndDate(StringUtilities.getDateFromString((String) ((HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest()).getParameter("end_date"), null));
 					thread.setLoadNodes(StringUtilities.getBooleanFromString((String) ((HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest()).getParameter("load_nodes"), false));
+					thread.setSubmittedStage(StringUtilities.getBooleanFromString((String) ((HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest()).getParameter("submitted_stage"), true));
 					mythread = thread;
 					mythread.start();
 					
@@ -323,6 +325,7 @@ public class SummaryStatementAPI implements ApiInterface {
 		List<Map> results = new ArrayList<Map>();
 		boolean loadNodes = false;
 		int analyzed = -1;
+		boolean submittedStage = true;
 		
 		int count = -1;
 		int idx = -1;
@@ -330,7 +333,7 @@ public class SummaryStatementAPI implements ApiInterface {
 		@Override
 		public void run() {
 			 try{
-				 List<PatientIllnessScript> userPatientIllnesScripts = new DBClinReason().selectLearnerPatIllScriptsByNotAnalyzedSummSt(max, startDate, endDate, type, loadNodes, analyzed);
+				 List<PatientIllnessScript> userPatientIllnesScripts = new DBClinReason().selectLearnerPatIllScriptsByNotAnalyzedSummSt(max, startDate, endDate, type, loadNodes, analyzed, submittedStage);
 				 if (userPatientIllnesScripts != null) {
 					 this.count = userPatientIllnesScripts.size();
 					 this.idx = 0;
@@ -459,6 +462,14 @@ public class SummaryStatementAPI implements ApiInterface {
 
 		public void setAnalyzed(int analyzed) {
 			this.analyzed = analyzed;
+		}
+
+		public boolean isSubmittedStage() {
+			return submittedStage;
+		}
+
+		public void setSubmittedStage(boolean submittedStage) {
+			this.submittedStage = submittedStage;
 		}
 		
 		

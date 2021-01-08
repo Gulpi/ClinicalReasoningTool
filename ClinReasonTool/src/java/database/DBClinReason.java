@@ -296,7 +296,7 @@ public class DBClinReason /*extends HibernateUtil*/{
      * for recalculation and scoring of summary statements in new format
      * @return PatientIllnessScript or null
      */
-    public List selectLearnerPatIllScriptsByNotAnalyzedSummSt(int max, Date startDate, Date endDate, int type, boolean loadNodes, int analyzed){
+    public List selectLearnerPatIllScriptsByNotAnalyzedSummSt(int max, Date startDate, Date endDate, int type, boolean loadNodes, int analyzed, boolean submittedStage){
     	/*
     	 * select * from CRT.PATIENT_ILLNESSSCRIPT pis,CRT.SUMMSTATEMENT smst where pis.SUMMST_ID = smst.ID and smst.ANALYZED = 0 and lang in ('de', 'en') and pis.TYPE = 1
     	 */
@@ -330,23 +330,42 @@ public class DBClinReason /*extends HibernateUtil*/{
     	if (max>0) {
     		criteria.setMaxResults(max);
     	}
+
+    	if (submittedStage) {
+    		criteria.add(Property.forName("submittedStage").gt(Integer.valueOf(0)));
+    	}
+    	
     	criteria.addOrder(Order.asc("creationDate"));
     	
     	List<PatientIllnessScript> scripts = criteria.list();
+    	long smstMs = 0;
+    	long nodesMs = 0;
+    	long startms = 0;
+    	long endms = 0;
     	if(scripts!=null){
     		CRTLogger.out("DBClinReason.selectLearnerPatIllScriptsByNotAnalyzedSummSt: scripts: #"  + scripts.size(), CRTLogger.LEVEL_PROD);
     		for(int i=0;i<scripts.size();i++){
-    			if ((i%2500) == 0) {
+    			if ((i%250) == 0) {
     				CRTLogger.out("DBClinReason.selectLearnerPatIllScriptsByNotAnalyzedSummSt: scripts: i:"  + i, CRTLogger.LEVEL_PROD);
     			}
+    			
     			PatientIllnessScript loop = scripts.get(i); 
+    			startms = System.currentTimeMillis() ;
     			loop.setSummSt(loadSummSt(loop.getSummStId(), s));
-
+    			endms = System.currentTimeMillis() ;
+    			smstMs += (endms-startms);
+    			
     			if (loadNodes) {
+        			startms = System.currentTimeMillis() ;
     				selectNodesAndConns(loop, s);
+        			endms = System.currentTimeMillis() ;
+        			nodesMs += (endms-startms);
     			}
     		}
+    		
+    		CRTLogger.out("DBClinReason.selectLearnerPatIllScriptsByNotAnalyzedSummSt: finish post prep: smstMs"  + smstMs + "ms; nodesMs"  + smstMs + "ms; ", CRTLogger.LEVEL_PROD);
     	}
+    	
     	s.close();
     	
     	return scripts;    	

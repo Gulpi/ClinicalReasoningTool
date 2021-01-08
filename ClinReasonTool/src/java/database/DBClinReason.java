@@ -309,9 +309,10 @@ public class DBClinReason /*extends HibernateUtil*/{
     	lang.add("de");
     	lang.add("en");
     	
+    	// sub query:
     	DetachedCriteria stmts = DetachedCriteria.forClass(SummaryStatement.class, "stmt")
     			.setProjection( Property.forName("stmt.id") )
-    			.add(Property.forName("lang").in(lang));
+    			.add(Property.forName("stmt.lang").in(lang));
     	
     	if (analyzed>=0) {
     		stmts.add( Property.forName("stmt.analyzed").eq(analyzed == 1 ? Boolean.TRUE : Boolean.FALSE) );
@@ -324,6 +325,7 @@ public class DBClinReason /*extends HibernateUtil*/{
     		stmts.add(Restrictions.le("stmt.creationDate", endDate));
     	}
     	
+    	// now query
     	criteria.add(Property.forName("summStId").in(stmts));
     	if (max>0) {
     		criteria.setMaxResults(max);

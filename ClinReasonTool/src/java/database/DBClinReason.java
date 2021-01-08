@@ -336,7 +336,8 @@ public class DBClinReason /*extends HibernateUtil*/{
     	}
     	
     	criteria.addOrder(Order.asc("creationDate"));
-    	
+		CRTLogger.out("DBClinReason.selectLearnerPatIllScriptsByNotAnalyzedSummSt: criteria: "  + criteria, CRTLogger.LEVEL_PROD);
+  	
     	List<PatientIllnessScript> scripts = criteria.list();
     	long smstMs = 0;
     	long nodesMs = 0;
@@ -363,7 +364,10 @@ public class DBClinReason /*extends HibernateUtil*/{
     			}
     		}
     		
-    		CRTLogger.out("DBClinReason.selectLearnerPatIllScriptsByNotAnalyzedSummSt: finish post prep: smstMs"  + smstMs + "ms; nodesMs"  + smstMs + "ms; ", CRTLogger.LEVEL_PROD);
+    		CRTLogger.out("DBClinReason.selectLearnerPatIllScriptsByNotAnalyzedSummSt: finish post process: smstMs"  + smstMs + "ms; nodesMs"  + smstMs + "ms; ", CRTLogger.LEVEL_PROD);
+    	}
+    	else {
+    		CRTLogger.out("DBClinReason.selectLearnerPatIllScriptsByNotAnalyzedSummSt: finish post process: scripts == null !!", CRTLogger.LEVEL_PROD);
     	}
     	
     	s.close();

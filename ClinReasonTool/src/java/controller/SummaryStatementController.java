@@ -218,44 +218,52 @@ public class SummaryStatementController {
 	private static void analyzeExpStatement(SummaryStatement st, SpacyDocJson spacy, Locale loc){
 		//we have to make sure that the listItems in the SummStElems are loaded -> HACK!
 		// also when it's analyzed bit itemHits is null || empty we should try to reinitialize!
-		if(st.isAnalyzed() && st.getItemHits()!=null) { 
-			//if(st.getItemHits()!=null && st.getItemHits().isEmpty());
-			Iterator<SummaryStElem> it = st.getItemHits().iterator();
-			while(it.hasNext()){
-				SummaryStElem e = it.next();
-				if(e.getListItemId()>0) e.setListItem(new DBList().selectListItemById(e.getListItemId()));
+		if(st.isAnalyzed()) { 
+				if (st.getItemHits()!=null ) {
+				//if(st.getItemHits()!=null && st.getItemHits().isEmpty());
+				Iterator<SummaryStElem> it = st.getItemHits().iterator();
+				while(it.hasNext()){
+					SummaryStElem e = it.next();
+					if(e.getListItemId()>0) e.setListItem(new DBList().selectListItemById(e.getListItemId()));
+				}
 			}
-			return; //exp statement already analyzed, nothing more to be done....
 		}
-
-		DBClinReason dcr = new DBClinReason();
-
-		List<ListItem> items = getListItemsByLang(st.getLang());
-		List<String> textAsList = StringUtilities.createStringListFromString(st.getText(), true);
-		compareList(items, st); 
-		if(aList!=null) compareList(aList.get(st.getLang()), st);
-		for(int i=0; i<textAsList.size(); i++){
-			String s = textAsList.get(i);		
-			compareSimilarList(items, st, s, i, loc);
-			if(aList!=null) compareSimilarList(aList.get(st.getLang()), st, s, i, loc);		
-			st.addUnit(compareSIUnits(s, i, st.getText().toLowerCase().indexOf(s), spacy, st.getId()));
+		else {
+			DBClinReason dcr = new DBClinReason();
+			if(st.getItemHits() != null) dcr.deleteAndCommit(st.getItemHits());
+			if(st.getSqHits()!=null) dcr.deleteAndCommit(st.getSqHits());
+			if(st.getUnits()!=null) dcr.deleteAndCommit(st.getUnits());
+			st.setItemHits(null);
+			st.setUnits(null);
+			st.setSqHits(null);
+	
+			List<ListItem> items = getListItemsByLang(st.getLang());
+			List<String> textAsList = StringUtilities.createStringListFromString(st.getText(), true);
+			compareList(items, st); 
+			if(aList!=null) compareList(aList.get(st.getLang()), st);
+			for(int i=0; i<textAsList.size(); i++){
+				String s = textAsList.get(i);		
+				compareSimilarList(items, st, s, i, loc);
+				if(aList!=null) compareSimilarList(aList.get(st.getLang()), st, s, i, loc);		
+				st.addUnit(compareSIUnits(s, i, st.getText().toLowerCase().indexOf(s), spacy, st.getId()));
+			}
+			checkForSemanticQualifiers(st, spacy);
+	
+			compareNumbers(st, spacy);
+			checkForPerson(st, spacy);
+	
+			/*Iterator it = st.getItemHits().iterator();
+			while(it.hasNext()){
+				SummaryStElem e = (SummaryStElem) it.next();
+				new DBClinReason().saveAndCommit(e);
+	
+			}*/
+			dcr.saveAndCommit(st.getItemHits());
+			dcr.saveAndCommit(st.getSqHits());
+			dcr.saveAndCommit(st.getUnits());
+			st.setAnalyzed(true);
+			dcr.saveAndCommit(st);
 		}
-		checkForSemanticQualifiers(st, spacy);
-
-		compareNumbers(st, spacy);
-		checkForPerson(st, spacy);
-
-		/*Iterator it = st.getItemHits().iterator();
-		while(it.hasNext()){
-			SummaryStElem e = (SummaryStElem) it.next();
-			new DBClinReason().saveAndCommit(e);
-
-		}*/
-		dcr.saveAndCommit(st.getItemHits());
-		dcr.saveAndCommit(st.getSqHits());
-		dcr.saveAndCommit(st.getUnits());
-		st.setAnalyzed(true);
-		dcr.saveAndCommit(st);
 	}
 	
 	/*public static SummaryStatement testSummStRating(String text, String vpId){

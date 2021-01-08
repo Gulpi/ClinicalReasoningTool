@@ -302,7 +302,7 @@ public class SummaryStatementAPI implements ApiInterface {
 				sb.append(loop.getSqId() + ":" + loop.getText());
 			}
 			
-			this.addToResultObj(resultObj, prefix + "anatomyHitElems", "[" + sb.toString() + "]");
+			this.addToResultObj(resultObj, prefix + "sqHits", "[" + sb.toString() + "]");
 		}
 
 	}

@@ -215,6 +215,7 @@ public class SummaryStatementAPI implements ApiInterface {
 			this.addToResultObj(resultObj, prefix + "obj", "null");
 			return;
 		}
+		this.addToResultObj(resultObj, prefix + "#id", st.getId());
 		this.addToResultObj(resultObj, prefix + "text", st.getText());
 		this.addToResultObj(resultObj, prefix + "lang", st.getLang());
 		this.addToResultObj(resultObj, prefix + "analyzed", st.isAnalyzed());

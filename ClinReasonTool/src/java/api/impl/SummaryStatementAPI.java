@@ -1,10 +1,12 @@
 package api.impl;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -18,6 +20,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import actions.scoringActions.ScoringSummStAction;
 import api.ApiInterface;
 import application.AppBean;
+import beans.list.ListItem;
 import beans.relation.summary.SummaryStElem;
 import beans.relation.summary.SummaryStatement;
 import beans.relation.summary.SummaryStatementSQ;
@@ -26,9 +29,11 @@ import beans.scripts.PatientIllnessScript;
 import controller.JsonCreator;
 import controller.SummaryStatementController;
 import database.DBClinReason;
+import database.DBList;
 import net.casus.util.CasusConfiguration;
 import net.casus.util.StringUtilities;
 import net.casus.util.Utility;
+import net.casus.util.io.IOUtilities;
 import util.CRTLogger;
 
 /**
@@ -60,6 +65,8 @@ public class SummaryStatementAPI implements ApiInterface {
 		return appBean;
 	}
 	
+
+	
 	@SuppressWarnings("unchecked")
 	@Override
 	public synchronized String handle() {
@@ -75,6 +82,8 @@ public class SummaryStatementAPI implements ApiInterface {
 			if (SummaryStatementController.getListItemsByLang("de") == null || SummaryStatementController.getListItemsByLang("en") == null) {
 				ServletContext context = (ServletContext) FacesContext.getCurrentInstance().getExternalContext().getContext();
 				new JsonCreator().initJsonExport(context);
+				
+				cacheListItems2Json();
 			}
 		} catch (Exception e1) {
 			// TODO Auto-generated catch block
@@ -473,5 +482,31 @@ public class SummaryStatementAPI implements ApiInterface {
 		}
 		
 		
+	}
+	
+	
+	
+	// ----------------
+	
+	protected void cacheListItems2Json(String lang) {
+		ObjectMapper mapper = new ObjectMapper();
+		try {
+			List<ListItem> items = new DBList().selectListItemsByTypesAndLang(new Locale(lang), new String[]{JsonCreator.TYPE_ANATOMY, JsonCreator.TYPE_PROBLEM, JsonCreator.TYPE_TEST, JsonCreator.TYPE_DRUGS, JsonCreator.TYPE_EPI, JsonCreator.TYPE_MANUALLY_ADDED, JsonCreator.TYPE_PERSONS, JsonCreator.TYPE_HEALTHCARE, JsonCreator.TYPE_CONTEXT, JsonCreator.TYPE_B, JsonCreator.TYPE_G});
+			String result = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(items);
+			
+			File file = new File("list_items_" + lang);
+			IOUtilities.writeString2File(file, result);
+			CRTLogger.out("SummaryStatementAPI.cacheListItems2Json:" + file.getAbsolutePath(), CRTLogger.LEVEL_PROD);
+		} catch (Exception e) {
+			CRTLogger.out("x:" + e, CRTLogger.LEVEL_PROD);
+		}
+	}
+	protected void cacheListItems2Json() {
+		cacheListItems2Json("en");
+		cacheListItems2Json("de");
+		cacheListItems2Json("pl");
+		cacheListItems2Json("sv");
+		cacheListItems2Json("es");
+		cacheListItems2Json("pt");
 	}
 }

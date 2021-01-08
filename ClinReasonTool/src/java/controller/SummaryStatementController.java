@@ -218,7 +218,7 @@ public class SummaryStatementController {
 	private static void analyzeExpStatement(SummaryStatement st, SpacyDocJson spacy, Locale loc){
 		//we have to make sure that the listItems in the SummStElems are loaded -> HACK!
 		// also when it's analyzed bit itemHits is null || empty we should try to reinitialize!
-		if(st.isAnalyzed() || (st.getItemHits()==null || st.getItemHits().isEmpty())) { 
+		if(st.isAnalyzed() && st.getItemHits()!=null) { 
 			//if(st.getItemHits()!=null && st.getItemHits().isEmpty());
 			Iterator<SummaryStElem> it = st.getItemHits().iterator();
 			while(it.hasNext()){

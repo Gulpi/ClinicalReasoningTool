@@ -18,7 +18,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import actions.scoringActions.ScoringSummStAction;
 import api.ApiInterface;
 import application.AppBean;
+import beans.relation.summary.SummaryStElem;
 import beans.relation.summary.SummaryStatement;
+import beans.relation.summary.SummaryStatementSQ;
 import beans.scoring.ScoreBean;
 import beans.scripts.PatientIllnessScript;
 import controller.JsonCreator;
@@ -110,9 +112,9 @@ public class SummaryStatementAPI implements ApiInterface {
 					if (expScript != null) {
 						Map expertObj = new TreeMap();
 						resultObj.put("Expert", expertObj);
-
+						boolean collections = StringUtilities.getBooleanFromString((String) ((HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest()).getParameter("collections"), true);
 						this.addSummaryStatementToResultObj(expertObj, "ExpertPatientIllnesScript.", expScript);
-						this.addSummaryStatementToResultObj(expertObj, "ExpertSummaryStatement.", expScript.getSummSt());
+						this.addSummaryStatementToResultObj(expertObj, "ExpertSummaryStatement.", expScript.getSummSt(), collections);
 					}
 				}
 				else {
@@ -208,7 +210,7 @@ public class SummaryStatementAPI implements ApiInterface {
 		this.addToResultObj(resultObj, prefix + "stage", userPatientIllnesScript.getCurrentStage());
 	}
 	
-	void addSummaryStatementToResultObj(Map resultObj, String prefix, SummaryStatement st) {
+	void addSummaryStatementToResultObj(Map resultObj, String prefix, SummaryStatement st, boolean collections) {
 		if (st == null) {
 			this.addToResultObj(resultObj, prefix + "obj", "null");
 			return;
@@ -242,14 +244,51 @@ public class SummaryStatementAPI implements ApiInterface {
 		this.addToResultObj(resultObj, prefix + "globalScore", st.getGlobalScore());
 		
 		this.addToResultObj(resultObj, prefix + "itemHits.size", st.getItemHits()!=null?st.getItemHits().size():"-");
+		if (collections &&  st.getItemHits()!=null) {
+			StringBuffer sb = new StringBuffer();
+			Iterator<SummaryStElem> it = st.getItemHits().iterator();
+			while (it.hasNext()) {
+				SummaryStElem loop = it.next();
+				if (loop.getListItem() != null) {
+					if (sb.length()>0) sb.append(", ");
+					sb.append(loop.getListItem().getListItemId() + ":" + loop.getListItem().getName());
+				}
+			}
+			this.addToResultObj(resultObj, prefix + "itemHits", "[" + sb.toString() + "]");
+		}
+		
 		this.addToResultObj(resultObj, prefix + "anatomyHitElems.size", st.getAnatomyHitElems()!=null?st.getAnatomyHitElems().size():"-");
+		if (collections &&  st.getAnatomyHitElems()!=null) {
+			StringBuffer sb = new StringBuffer();
+			Iterator<SummaryStElem> it = st.getAnatomyHitElems().iterator();
+			while (it.hasNext()) {
+				SummaryStElem loop = it.next();
+				if (loop.getListItem() != null) {
+					if (sb.length()>0) sb.append(", ");
+					sb.append(loop.getListItem().getListItemId() + ":" + loop.getListItem().getName());
+				}
+			}
+			this.addToResultObj(resultObj, prefix + "anatomyHitElems", "[" + sb.toString() + "]");
+		}
+		
 		this.addToResultObj(resultObj, prefix + "sqHits.size", st.getSqHits()!=null?st.getSqHits().size():"-");
+		if (collections &&  st.getSqHits()!=null) {
+			StringBuffer sb = new StringBuffer();
+			Iterator<SummaryStatementSQ> it = st.getSqHits().iterator();
+			while (it.hasNext()) {
+				SummaryStatementSQ loop = it.next();
+				if (sb.length()>0) sb.append(", ");
+				sb.append(loop.getSqId() + ":" + loop.getText());
+			}
+			
+			this.addToResultObj(resultObj, prefix + "anatomyHitElems", "[" + sb.toString() + "]");
+		}
 
 	}
 	
 	void addSummaryStatementToResultObj(Map resultObj, PatientIllnessScript userPatientIllnesScript, SummaryStatement st) {
 		this.addSummaryStatementToResultObj(resultObj, "UserPatientIllnesScript.", userPatientIllnesScript);
-		this.addSummaryStatementToResultObj(resultObj, "UserSummaryStatement.", st);
+		this.addSummaryStatementToResultObj(resultObj, "UserSummaryStatement.", st, false);
 	}
 	
 	class ReScoreThread extends Thread {

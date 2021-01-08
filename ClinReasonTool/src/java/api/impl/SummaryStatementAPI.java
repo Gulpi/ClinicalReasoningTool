@@ -254,6 +254,10 @@ public class SummaryStatementAPI implements ApiInterface {
 					if (sb.length()>0) sb.append(", ");
 					sb.append(loop.getListItem().getListItemId() + ":" + loop.getListItem().getName());
 				}
+				else {
+					if (sb.length()>0) sb.append(", ");
+					sb.append(loop.getId() + ":" + loop.getType());
+				}
 			}
 			this.addToResultObj(resultObj, prefix + "itemHits", "[" + sb.toString() + "]");
 		}
@@ -267,6 +271,10 @@ public class SummaryStatementAPI implements ApiInterface {
 				if (loop.getListItem() != null) {
 					if (sb.length()>0) sb.append(", ");
 					sb.append(loop.getListItem().getListItemId() + ":" + loop.getListItem().getName());
+				}
+				else {
+					if (sb.length()>0) sb.append(", ");
+					sb.append(loop.getId() + ":" + loop.getType());
 				}
 			}
 			this.addToResultObj(resultObj, prefix + "anatomyHitElems", "[" + sb.toString() + "]");

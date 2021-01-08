@@ -230,13 +230,11 @@ public class SummaryStatementController {
 		}
 		else {
 			DBClinReason dcr = new DBClinReason();
-			if(st.getItemHits() != null) dcr.deleteAndCommit(st.getItemHits());
-			if(st.getSqHits()!=null) dcr.deleteAndCommit(st.getSqHits());
-			if(st.getUnits()!=null) dcr.deleteAndCommit(st.getUnits());
-			st.setItemHits(null);
-			st.setUnits(null);
-			st.setSqHits(null);
+			
+			// reset old items, more issue tolerant than just reanalyze when we foeget to reset also relations in database
+			SummaryStatementController.resetSummSt(dcr, st);
 	
+			// now rescan
 			List<ListItem> items = getListItemsByLang(st.getLang());
 			List<String> textAsList = StringUtilities.createStringListFromString(st.getText(), true);
 			compareList(items, st); 
@@ -354,10 +352,11 @@ public class SummaryStatementController {
 	public SummaryStatement initSummStRating(PatientIllnessScript expScript, SummaryStatement st, ScoringSummStAction scoreAct){
 		if(st==null) return null;
 		try{
+			DBClinReason dbc = new DBClinReason();
 			//if(learnerScript==null || learnerScript.getSummSt()==null || learnerScript.getSummSt().getText()==null) return st;
 			//st = learnerScript.getSummSt();
 			if(st.isAnalyzed()){ //we do a re-calculation....
-				resetSummSt(st);
+				SummaryStatementController.resetSummSt(dbc,st);
 			}
 			SummaryStatement expSt = expScript.getSummSt();
 			List<ListItem> items = getListItemsByLang(st.getLang());	
@@ -436,17 +435,17 @@ public class SummaryStatementController {
 			if (st.getSqHits() == null) {
 				st.setSqHits(new HashSet<SummaryStatementSQ>());
 			}
-			new DBClinReason().saveAndCommit(st.getSqHits());
+			dbc.saveAndCommit(st.getSqHits());
 			
 			if (st.getUnits() == null) {
 				st.setUnits(new HashSet<SummaryStNumeric>());
 			}
-			new DBClinReason().saveAndCommit(st.getUnits());
+			dbc.saveAndCommit(st.getUnits());
 			
 			if (st.getItemHits() == null) {
 				st.setItemHits(new HashSet<SummaryStElem>());
 			}
-			new DBClinReason().saveAndCommit(st.getItemHits());
+			dbc.saveAndCommit(st.getItemHits());
 			/*if (st.getItemHits() != null) {
 				Iterator<SummaryStElem> it = st.getItemHits().iterator();
 				while (it.hasNext()) {
@@ -456,7 +455,7 @@ public class SummaryStatementController {
 			}*/
 			
 			st.setAnalyzed(true);
-			new DBClinReason().saveAndCommit(st);
+			dbc.saveAndCommit(st);
 		}
 		catch(Exception e){
 			CRTLogger.out(Utility.stackTraceToString(e), CRTLogger.LEVEL_ERROR);
@@ -905,13 +904,17 @@ public class SummaryStatementController {
 	 * We remove the previously found hits for semantic qualifiers, units, and other hits from the database.
 	 * @param st
 	 */
-	private void resetSummSt(SummaryStatement st){
-		if(st.getItemHits() != null) new DBClinReason().deleteAndCommit(st.getItemHits());
-		if(st.getSqHits()!=null) new DBClinReason().deleteAndCommit(st.getSqHits());
-		if(st.getUnits()!=null) new DBClinReason().deleteAndCommit(st.getUnits());
+	static private void resetSummSt(DBClinReason dbc,SummaryStatement st){
+		if (dbc == null) {
+			dbc = new DBClinReason();
+		}
+		if(st.getItemHits() != null) dbc.deleteAndCommit(st.getItemHits());
+		if(st.getSqHits()!=null) dbc.deleteAndCommit(st.getSqHits());
+		if(st.getUnits()!=null) dbc.deleteAndCommit(st.getUnits());
 		st.setItemHits(null);
 		st.setUnits(null);
 		st.setSqHits(null);
+		
 		//TODO reload JsonTest!!!
 	}
 	

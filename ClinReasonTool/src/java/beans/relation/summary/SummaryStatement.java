@@ -1,4 +1,5 @@
 package beans.relation.summary;
+
 import java.beans.Beans;
 import java.io.Serializable;
 import java.sql.Timestamp;
@@ -9,11 +10,11 @@ import javax.faces.bean.SessionScoped;
 import beans.list.*;
 import beans.relation.Relation;
 import net.casus.util.nlp.spacy.SpacyDocToken; 
+
 /**
  * Summary Statement of the author or learner for a VP. There might be multiple Summary Statements for a case (changed
  * at distinct steps), all changes, variants are saved in the PIS_Log object.
  * @author ingahege
- *
  */
 @SessionScoped
 public class SummaryStatement extends Beans implements Serializable, Comparable{

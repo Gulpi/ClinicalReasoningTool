@@ -35,7 +35,7 @@ public class SummaryStatementController {
 	private static Map<String, List<ListItem>> listItems;
 	private static Map<String, List<ListItem>> aList; //Mesh items with code "A" - have it separate because not considered for scripts.
 	private static List<SIUnit> unitList;
-	public static List<TransformRule> transformRules;
+	private static List<TransformRule> transformRules;
 	//key = vp_id
 	private static Map<String, PatientIllnessScript>  tempExpMaps= new TreeMap();
 	

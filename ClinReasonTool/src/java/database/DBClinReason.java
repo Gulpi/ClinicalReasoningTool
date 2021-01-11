@@ -292,9 +292,6 @@ public class DBClinReason /*extends HibernateUtil*/{
     	return scripts;
     }
     
-    public List<SummaryStatement> readTrainingSummaryStatementsForScoring() {
-    	return null;
-    }
     
     /**
      * for recalculation and scoring of summary statements in new format

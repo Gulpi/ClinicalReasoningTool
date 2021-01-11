@@ -1,5 +1,14 @@
 package util.nlp;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
+import beans.relation.summary.SummaryStatement;
+import beans.relation.summary.SummaryStatementSQ;
+import database.DBSummaryStatement;
 import net.casus.util.Integer2Wrapper;
 import net.casus.util.StringUtilities;
 import net.casus.util.nlp.spacy.SpacyDocJson;
@@ -9,31 +18,13 @@ import net.casus.util.nlp.spacy.SpacyDocTokenHashKey2;
 import net.casus.util.nlp.spacy.SpacyStructureStats;
 import net.casus.util.nlp.spacy.helper.SpacyStructureStatsDataProviderInterface;
 
-import java.io.StringReader;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
-import javax.json.Json;
-import javax.json.JsonArray;
-import javax.json.JsonObject;
-import javax.json.JsonReader;
-import javax.json.JsonValue;
-
-import beans.relation.summary.SummaryStatement;
-import beans.relation.summary.SummaryStatementSQ;
-import database.DBClinReason;
-
-
 public class SpacyStructureStatsDataProviderDB implements SpacyStructureStatsDataProviderInterface {
 	SpacyStructureStats container = null;
 	
 	@Override
 	public void init() {
 		// load from DB
-		List<SummaryStatement> l = new DBClinReason().readTrainingSummaryStatementsForScoring();
+		List<SummaryStatement> l = new DBSummaryStatement().readTrainingSummaryStatementsForScoring();
 
 		
 		for (int i=0;i<l.size();i++) {

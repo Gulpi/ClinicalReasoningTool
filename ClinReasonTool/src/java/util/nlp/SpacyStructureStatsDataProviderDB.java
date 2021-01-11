@@ -6,8 +6,10 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import beans.relation.summary.JsonTest;
 import beans.relation.summary.SummaryStatement;
 import beans.relation.summary.SummaryStatementSQ;
+import database.DBClinReason;
 import database.DBSummaryStatement;
 import net.casus.util.Integer2Wrapper;
 import net.casus.util.StringUtilities;
@@ -31,6 +33,13 @@ public class SpacyStructureStatsDataProviderDB implements SpacyStructureStatsDat
 			SummaryStatement loop = l.get(i);
 			String text =loop.getText();
 			String json = loop.getSpacy_json();
+			
+			if (json == null) {
+				JsonTest jt = new DBClinReason().selectJsonTestBySummStId(loop.getId()); //the json of the statement
+				if (jt != null) {
+					json = jt.getJson();
+				}
+			}
 
 			if (StringUtilities.isValidString(text) && StringUtilities.isValidString(json) && StringUtilities.isValidString(json.trim())) {
 				try {

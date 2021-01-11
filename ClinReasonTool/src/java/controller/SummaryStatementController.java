@@ -216,9 +216,9 @@ public class SummaryStatementController {
 	 * @param loc
 	 */
 	private static void analyzeExpStatement(SummaryStatement st, SpacyDocJson spacy, Locale loc){
-		//we have to make sure that the listItems in the SummStElems are loaded -> HACK!
+		//we have to make sure that the listItems in the SummStElems are really loaded -> HACK!
 		// also when it's analyzed bit itemHits is null || empty we should try to reinitialize ?
-		/*if(st.isAnalyzed()) { 
+		if(st.isAnalyzed()) { 
 				if (st.getItemHits()!=null ) {
 				//if(st.getItemHits()!=null && st.getItemHits().isEmpty());
 				Iterator<SummaryStElem> it = st.getItemHits().iterator();
@@ -227,7 +227,7 @@ public class SummaryStatementController {
 					if(e.getListItemId()>0) e.setListItem(new DBList().selectListItemById(e.getListItemId()));
 				}
 			}
-		}*/
+		}
 		
 		if(!st.isAnalyzed()) { 
 			DBClinReason dcr = new DBClinReason();
@@ -356,7 +356,7 @@ public class SummaryStatementController {
 			DBClinReason dbc = new DBClinReason();
 			//if(learnerScript==null || learnerScript.getSummSt()==null || learnerScript.getSummSt().getText()==null) return st;
 			//st = learnerScript.getSummSt();
-			if(st.isAnalyzed()){
+			if(st.isAnalyzed() || !st.doRecalculate()){
 				return st;
 			}
 			

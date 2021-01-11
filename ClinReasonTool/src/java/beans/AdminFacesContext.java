@@ -281,5 +281,7 @@ public class AdminFacesContext extends FacesContextWrapper implements MyFacesCon
 		return adminPortfolio.getExpScriptByVPId(this.patillscript.getVpId());
 		
 	}
+	
+	public boolean getAdaptableBoxesEnabled() {return AppBean.getProperty("AdaptableBoxes", false);}
 
 }

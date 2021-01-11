@@ -102,6 +102,12 @@ public class SummaryStatement extends Beans implements Serializable, Comparable{
 	
 	public long analysisMs;
 	
+	/**
+	 * 0 = do recalculate, 1 = do not recalculate, default is 0.
+	 * we use this for training summary statements for which we want to avoid that they are recalculated!
+	 */
+	private int recalcMode = 0;
+	
 	public SummaryStatement(){}
 	public SummaryStatement(String text){
 		this.text = text;
@@ -153,7 +159,13 @@ public class SummaryStatement extends Beans implements Serializable, Comparable{
 	public Timestamp getCreationDate() { return creationDate; }
 	public void setCreationDate(Timestamp creationDate) { this.creationDate = creationDate; }
 	public long getAnalysisMs() { return analysisMs; }
-	public void setAnalysisMs(long analysisMs) { this.analysisMs = analysisMs; }
+	public void setAnalysisMs(long analysisMs) { this.analysisMs = analysisMs; }	
+	public int getRecalcMode() {return recalcMode;}
+	public void setRecalcMode(int recalcMode) {this.recalcMode = recalcMode;}
+	public boolean doRecalculate() {
+		if (recalcMode==0)return true; 
+		return false;
+	}
 	
 	public void addUnit(SummaryStNumeric u){
 		if(u==null) return;

@@ -63,16 +63,10 @@ public class SpacyStructureStatsDataProviderDB implements SpacyStructureStatsDat
 							SummaryStatementSQ loop2 = sq_it.next();
 							SpacyDocToken jsqJsonObject = impl.getSpacyDocToken(loop2.getPosition());;
 							if (jsqJsonObject != null) {
-								int position = jsqJsonObject.getPrintpos();
-								String sq = loop2.getText();
-								SpacyDocToken loopToken = impl.getSpacyDocToken(position);
-								SpacyDocToken tree = loopToken;
-								
-								if (loopToken != null) {
-									SpacyDocTokenHashKey hk = new SpacyDocTokenHashKey2(sq, loopToken.getToken(), loopToken).initRefs(loopToken);
-									Map<String,Map<SpacyDocTokenHashKey,Integer2Wrapper>> tmp = container.getHitMap();
-									container.readIn_stats(sq_experts_list, sq, loopToken, hk, tmp);
-								}
+								String sq = loop2.getText().toLowerCase();
+								SpacyDocTokenHashKey hk = new SpacyDocTokenHashKey2(sq, jsqJsonObject.getToken(), jsqJsonObject).initRefs(jsqJsonObject);
+								Map<String,Map<SpacyDocTokenHashKey,Integer2Wrapper>> tmp = container.getHitMap();
+								container.readIn_stats(sq_experts_list, sq, jsqJsonObject, hk, tmp);
 							}
 						}
 					}

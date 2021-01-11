@@ -64,7 +64,7 @@ public class SpacyStructureStatsDataProviderDB implements SpacyStructureStatsDat
 							SpacyDocToken jsqJsonObject = impl.getSpacyDocToken(loop2.getPosition());;
 							if (jsqJsonObject != null) {
 								int position = jsqJsonObject.getPrintpos();
-								String sq = jsqJsonObject.getLabel();
+								String sq = loop2.getText();
 								SpacyDocToken loopToken = impl.getSpacyDocToken(position);
 								SpacyDocToken tree = loopToken;
 								

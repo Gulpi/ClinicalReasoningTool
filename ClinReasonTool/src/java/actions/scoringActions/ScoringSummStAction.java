@@ -112,7 +112,7 @@ public class ScoringSummStAction {
 	}
 
 	public void doScoring(SummaryStatement learnerSt, SummaryStatement expSt){
-		//if(learnerSt==null || expSt==null) return;
+		if(learnerSt ==null || !learnerSt.doRecalculate()) return;
 		//scoring starts:
 		int sqScoreNew = calculateSemanticQualScoreBasic(learnerSt); //score SQ
 		int sqScore = calculateSemanticQualScore(expSt, learnerSt);
@@ -134,8 +134,9 @@ public class ScoringSummStAction {
 	 */
 	private int calculateSemanticQualScore(SummaryStatement expSt, SummaryStatement learnerSt){
 		int hits = learnerSt.getSQSpacyHits();
-		int expHits = expSt.getSQSpacyHits();
-		if(expHits==0) expHits = 2;
+		int expHits = 2;
+		if(expSt!=null&& expSt.getSqHits()!=null && expSt.getSqHits().size()>2)//getSQSpacyHits();
+			expHits = expSt.getSqHits().size();
 		
 		float perc = (float) hits / (float)expHits;
 		learnerSt.setSqScorePerc(perc);
@@ -274,6 +275,7 @@ public class ScoringSummStAction {
 		float tmp1 = ((float) transformNum - (float) siUnitsNum);
 		float tmp2 = (float) (transformNumExp + textLenCat);
 		learnerSt.tempExpTransfNum = transformNumExp;
+		if(tmp1>tmp2) tmp2 = tmp1;
 		learnerSt.setTransformScorePerc( tmp1 / tmp2 );
 		if(learnerSt.getTransformScorePerc()>0.7)  learnerSt.setTransformationScore(2);
 		else if(learnerSt.getTransformScorePerc()<0.16) learnerSt.setTransformationScore(0);

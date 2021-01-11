@@ -31,7 +31,7 @@ public class SummaryStatementSQ implements Serializable{
 	private String text;
 	
 	/**
-	 * This is the whole word that contains the semantic qualifier
+	 * This is the whole word that contains the semantic qualifier (=token from Spacy)
 	 */
 	private String textMatch;
 	
@@ -40,7 +40,7 @@ public class SummaryStatementSQ implements Serializable{
 	 */
 	private int position;
 	
-	private SpacyDocToken spacyMatch;
+	private SpacyDocToken spacyMatch; //not stored in database, only token is stored.
 	/**
 	 * we store here if we have found an opposite SQ in the expert statement (for the same reference term)
 	 */
@@ -71,8 +71,13 @@ public class SummaryStatementSQ implements Serializable{
 	public boolean isSpacyMatch() {
 		if(spacyMatch!=null) return true;
 		return false;
-		}
-	public void setSpacyMatch(SpacyDocToken spacyMatch) {this.spacyMatch = spacyMatch;}
+	}
+	
+	public void setSpacyMatch(SpacyDocToken spacyMatch) {
+		this.spacyMatch = spacyMatch;
+		if(this.spacyMatch!=null) setTextMatch(spacyMatch.getToken());
+	}
+	
 	public SpacyDocToken getSpacyMatch(){return spacyMatch;} 
 	
 
@@ -100,18 +105,5 @@ public class SummaryStatementSQ implements Serializable{
 	 */
 	public String toString(){
 		return text;
-	}
-
-	/* (non-Javadoc)
-	 * @see java.lang.Comparable#compareTo(java.lang.Object)
-	 */
-	/*public int compareTo(Object o) {
-		if(o instanceof SummaryStatementSQ){
-			SummaryStatementSQ sq = (SummaryStatementSQ) o;
-			if(sq.getId()>this.id) return 1;
-			if(sq.getId()<this.id) return -1;
-		}
-		return 0;
-	}*/
-	
+	}	
 }

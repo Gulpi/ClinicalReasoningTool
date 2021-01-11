@@ -134,8 +134,8 @@ public class SummaryStatementAPI implements ApiInterface {
 				}
 			}
 			else if (request_type != null && request_type.equalsIgnoreCase("sq_ml")) {
-				 SpacyStructureStats spacyStructureStats =  SpacyStructureStats.getInstance();
-				 resultObj.put(" spacyStructureStats.getHitMap", spacyStructureStats.getHitMap());
+				 SpacyStructureStats spacyStructureStats =  SpacyStructureStats.resetInstance();
+				 resultObj.put("spacyStructureStats.getHitMap", spacyStructureStats.getHitMap());
 			}
 			else {
 				if (mythread == null) {

@@ -106,7 +106,6 @@ public class SummaryStatementAPI implements ApiInterface {
 			}
 		}
 		else {
-			String request_type = ((HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest()).getParameter("request_type");
 			long id = StringUtilities.getLongFromString((String) ((HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest()).getParameter("id"), -1);
 			if (id > 0) {
 				PatientIllnessScript userPatientIllnesScript = new DBClinReason().selectPatIllScriptById(id);
@@ -132,10 +131,6 @@ public class SummaryStatementAPI implements ApiInterface {
 					resultObj.put("status", "error");
 					resultObj.put("errorMsg", "no SummaryStatement object ?");
 				}
-			}
-			else if (request_type != null && request_type.equalsIgnoreCase("sq_ml")) {
-				 SpacyStructureStats spacyStructureStats =  SpacyStructureStats.resetInstance();
-				 resultObj.put("spacyStructureStats.getHitMap", spacyStructureStats.getHitMap());
 			}
 			else {
 				if (mythread == null) {

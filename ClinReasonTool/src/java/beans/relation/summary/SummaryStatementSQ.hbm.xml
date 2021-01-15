@@ -17,5 +17,6 @@
 		<property name="expHasOpposite" column="exp_opp" type="boolean" />
 		<property name="position" column="position" type="int" />
 		<property name="textMatch" column="text_match" type="string" />
+		<property name="manuallyApproved" column="manual_appr" type="int" />
 </class>
 </hibernate-mapping>

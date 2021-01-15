@@ -41,6 +41,11 @@ public class SummaryStatementSQ implements Serializable{
 	private int position;
 	
 	private SpacyDocToken spacyMatch; //not stored in database, only token is stored.
+	
+	/**
+	 * 1= hit manually approved by expert, 0 = not checked, 2 = disapproved
+	 */
+	private int manuallyApproved = 0;
 	/**
 	 * we store here if we have found an opposite SQ in the expert statement (for the same reference term)
 	 */
@@ -67,6 +72,8 @@ public class SummaryStatementSQ implements Serializable{
 	public void setPosition(int position) {this.position = position;}
 	public boolean isExpHasOpposite() {return expHasOpposite;}
 	public void setExpHasOpposite(boolean expHasOpposite) {this.expHasOpposite = expHasOpposite;}
+	public int getManuallyApproved() {return manuallyApproved;}
+	public void setManuallyApproved(int manuallyApproved) {this.manuallyApproved = manuallyApproved;}
 	
 	public boolean isSpacyMatch() {
 		if(spacyMatch!=null) return true;

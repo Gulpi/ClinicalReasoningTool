@@ -54,7 +54,9 @@ public class SpacyStructureStatsDataProviderDB implements SpacyStructureStatsDat
 					while (sq_it.hasNext()) {
 						SummaryStatementSQ loop2 = sq_it.next();
 						sq_experts_map.put(loop2.getText().toLowerCase(), loop2.getText());
-						sq_experts_list.add(loop2.getText().toLowerCase());
+						if (loop2.getManuallyApproved() == 0 || loop2.getManuallyApproved() == 1) {
+							sq_experts_list.add(loop2.getText().toLowerCase());
+						}
 					}
 						
 					if (true) {

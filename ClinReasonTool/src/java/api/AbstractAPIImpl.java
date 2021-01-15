@@ -1,4 +1,4 @@
-package api.impl;
+package api;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -18,7 +18,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import actions.scoringActions.ScoringSummStAction;
-import api.AbstractAPIImpl;
 import api.ApiInterface;
 import application.AppBean;
 import beans.list.ListItem;
@@ -46,45 +45,29 @@ import util.CRTLogger;
  *
  * @author Gulpi (=Martin Adler)
  */
-public class SpacyStructureStatsAPI extends AbstractAPIImpl {
+public abstract class AbstractAPIImpl implements ApiInterface {
+	AppBean appBean = null;
 	
-	@SuppressWarnings("unchecked")
-	@Override
-	public synchronized String handle() {
-		String result = null;
-		@SuppressWarnings("rawtypes")
-		Map resultObj = new TreeMap();
+	/**
+	 * needs to be initialized, to be available alos from Threads, which do NOT have a Faces context!!!
+	 * @return
+	 */
+	public AppBean getAppBean(){
+		if (appBean == null) {
+			ServletContext context = (ServletContext) FacesContext.getCurrentInstance().getExternalContext().getContext();
+			appBean = (AppBean) context.getAttribute(AppBean.APP_KEY);
+		}
 		
+		return appBean;
+	}
+	
+	public void init() {
 		try {
 			// make sure appBean is there / in internal thread we don't have contexts!!
-			this.init();
-			
-			// make sure lists are created already!
-			if (SummaryStatementController.getListItemsByLang("de") == null || SummaryStatementController.getListItemsByLang("en") == null) {
-				ServletContext context = (ServletContext) FacesContext.getCurrentInstance().getExternalContext().getContext();
-				new JsonCreator().initJsonExport(context);
-			}
+			this.getAppBean();
 		} catch (Exception e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-		
-		
-		SpacyStructureStats spacyStructureStats =  SpacyStructureStats.resetInstance();
-		resultObj.put("spacyStructureStats.getHitMap", spacyStructureStats.getHitMap());
-			
-		
-		ObjectMapper mapper = new ObjectMapper();
-		try {
-			if (CasusConfiguration.getGlobalBooleanValue("SummaryStatementAPI.prettyJSON", true)) {
-				result = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(resultObj);
-			}
-			else {
-				result = mapper.writeValueAsString(resultObj);
-			}
-		} catch (JsonProcessingException e) {
-			result = e.getMessage();
-		}
-		return result;
 	}
 }

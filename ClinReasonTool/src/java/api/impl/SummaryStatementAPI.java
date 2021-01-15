@@ -18,6 +18,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import actions.scoringActions.ScoringSummStAction;
+import api.AbstractAPIImpl;
 import api.ApiInterface;
 import application.AppBean;
 import beans.list.ListItem;
@@ -45,29 +46,14 @@ import util.CRTLogger;
  *
  * @author Gulpi (=Martin Adler)
  */
-public class SummaryStatementAPI implements ApiInterface {
-	AppBean appBean = null;
+public class SummaryStatementAPI extends AbstractAPIImpl {
 	ReScoreThread thread = null;
 	ReScoreThread lastThread = null;
 	
 	public SummaryStatementAPI() {
 	}
 	
-	/**
-	 * needs to be initialized, to be available alos from Threads, which do NOT have a Faces context!!!
-	 * @return
-	 */
-	public AppBean getAppBean(){
-		if (appBean == null) {
-			ServletContext context = (ServletContext) FacesContext.getCurrentInstance().getExternalContext().getContext();
-			appBean = (AppBean) context.getAttribute(AppBean.APP_KEY);
-		}
 		
-		return appBean;
-	}
-	
-
-	
 	@SuppressWarnings("unchecked")
 	@Override
 	public synchronized String handle() {
@@ -77,7 +63,7 @@ public class SummaryStatementAPI implements ApiInterface {
 		
 		try {
 			// make sure appBean is there / in internal thread we don't have contexts!!
-			this.getAppBean();
+			this.init();
 			
 			// make sure lists are created already!
 			if (SummaryStatementController.getListItemsByLang("de") == null || SummaryStatementController.getListItemsByLang("en") == null) {

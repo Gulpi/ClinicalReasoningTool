@@ -25,6 +25,7 @@ public class SummaryStatement extends Beans implements Serializable, Comparable{
 	private Timestamp creationDate;
 	private int stage = -1;
 	private String lang;
+	public static final int RECALC_MODE_NO = 1; 
 	/**
 	 * not yet needed, but we store it already for changing later on to multiple statements/script...
 	 */

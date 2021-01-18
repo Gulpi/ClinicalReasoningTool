@@ -48,11 +48,15 @@ public class ScoringSummStAction {
 	 */
 	public ScoreBean scoreAction(PatientIllnessScript patIllScript, int stage){
 		//SummaryStatementController.checkForSemanticQualifiers(patIllScript.getSummSt(), null);
-
+		
 		if(patIllScript.isExpScript()) return null;
 		PatientIllnessScript expScript = AppBean.getExpertPatIllScript(patIllScript.getVpId());
 		ScoreContainer scoreContainer = NavigationController.getInstance().getCRTFacesContext().getScoreContainer();		
 		ScoreBean scoreBean = scoreContainer.getListScoreBeanByStage(ScoreBean.TYPE_SUMMST, stage);
+		//do not recalculate summary statements if already analyzed or re-cacluation disabled:
+		if(patIllScript.getSummSt()!=null && (patIllScript.getSummSt().isAnalyzed() || patIllScript.getSummSt().getRecalcMode()==SummaryStatement.RECALC_MODE_NO))
+			return scoreBean;
+		
 		boolean isChg = true;
 		//if(scoreBean!=null) return;
 		if(scoreBean==null){

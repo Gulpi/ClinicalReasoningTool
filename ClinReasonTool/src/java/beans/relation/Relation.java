@@ -105,7 +105,16 @@ public abstract class Relation extends Beans implements Rectangle{
 	public int getOrder() {return order;}
 	public void setOrder(int order) {this.order = order;}		
 	public String getPrefix() {return prefix;}
-	public void setPrefix(String prefix) {this.prefix = prefix;}
+	public void setPrefix(String prefix) {
+		this.prefix = prefix;
+		//for the Polish negation "brak" we add ":" as otherwise the negation would not be grammatically correct: 
+		if(this.getListItem()!=null && this.getListItem().getLanguage()!=null && this.getListItem().getLanguage().equals(new Locale("pl"))) {
+			if(prefix!=null && prefix.trim().equalsIgnoreCase("brak")) {
+				prefix = prefix+": ";
+			}
+		}
+	
+	}
 	
 	/**
 	 * Currently all prefixes are a negation, if expanding this to e.g. include qualifiers such as "acute/chronic" etc.

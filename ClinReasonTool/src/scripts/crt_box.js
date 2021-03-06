@@ -818,6 +818,7 @@ function toggleExpFeedback(iconId, itemClass, isAllowed){
 
 
 function turnOverallExpFeedbackOn(iconId, itemClass){
+	turnViewModeOff();
 	if(iconId!=""){
 		$("#"+iconId).removeClass("fa-user-md_off");	
 		$("#"+iconId).addClass("fa-user-md_on");
@@ -826,75 +827,112 @@ function turnOverallExpFeedbackOn(iconId, itemClass){
 	$(".expbox").addClass("expboxstatus_show");
 	$(".expbox").removeClass("expboxstatus");
 	$(".expbox").removeClass("expboxinvis");
-	turnExpBoxFeedbackOn("expFeedbackFdg", "fdgs");
-	turnExpBoxFeedbackOn("expFeedbackDDX", "ddxs");
-	turnExpBoxFeedbackOn("expFeedbackTest", "tests");
-	turnExpBoxFeedbackOn("expFeedbackPatho", "patho");
-	turnExpBoxFeedbackOn("expFeedbackMng", "mngs");
+	if(probBoxUsed==0)turnExpBoxFeedbackOn("expFeedbackFdg", "fdgs");
+	if(ddxBoxUsed==0) turnExpBoxFeedbackOn("expFeedbackDDX", "ddxs");
+	if(testBoxUsed==0)turnExpBoxFeedbackOn("expFeedbackTest", "tests");
+	if(pathoBoxUsed==0)turnExpBoxFeedbackOn("expFeedbackPatho", "patho");
+	if(mngBoxUsed==0)turnExpBoxFeedbackOn("expFeedbackMng", "mngs");
 	if(isOverallCnxOn()){
 		$(".jtk-exp-connector").addClass("jtk-exp-connector-show");
 		$(".jtk-exp-connector").removeClass("jtk-exp-connector-hide");
 	}
 }
+
+function turnViewModeBoxOn(box, prefix, prefix2){
+	if(box=="2"){ //view mode
+		$(".pass"+prefix+"s").removeClass("passboxinvis");
+		$(".pass"+prefix+"s").removeClass("passboxstatus");
+		$(".pass"+prefix+"s").addClass("passboxstatus_show");
+		//turnExpBoxFeedbackOn("expFeedbackFdg", "fdgs");
+		$("."+prefix2+"search").hide(); //hide search box
+		//THIS IS AN UGLY HACK - without it, the box is 30px downwards.
+		$("#"+prefix+"_box.search").removeClass("boxchild");
+		$("#"+prefix+"_box.search").height(30);
+		$("."+prefix+"passive").show();
+	}
+}
+
+function turnViewModeBoxOff(box, prefix, prefix2){
+	if(box=="2"){ //view mode
+		$(".pass"+prefix+"s").addClass("passboxinvis");
+		$(".pass"+prefix+"s").addClass("passboxstatus");
+		$(".pass"+prefix+"s").removeClass("passboxstatus_show");
+		//turnExpBoxFeedbackOn("expFeedbackFdg", "fdgs");
+		//$("."+prefix2+"search").hide(); //hide search box
+		//THIS IS AN UGLY HACK - without it, the box is 30px downwards.
+		//$("#"+prefix+"_box.search").removeClass("boxchild");
+		//$("#"+prefix+"_box.search").height(30);
+		$("."+prefix+"passive").show();
+	}
+}
+
 /*
  * if boxes are displayed in view mode we show the expert items and hide the search box.
  */
 function turnViewModeOn(){
-	if(probBoxUsed=="2"){ //view mode
-		$(".expfdgs").removeClass("expboxinvis");
-		$(".expfdgs").removeClass("expboxstatus");
-		$(".expfdgs").addClass("expboxstatus_show");
-		turnExpBoxFeedbackOn("expFeedbackFdg", "fdgs");
+	turnViewModeBoxOn(probBoxUsed, "fdg", "prob");
+	turnViewModeBoxOn(ddxBoxUsed, "ddx", "ddx");
+	turnViewModeBoxOn(testBoxUsed, "test", "test");
+	turnViewModeBoxOn(pathoBoxUsed, "patho", "pat");
+	turnViewModeBoxOn(mngBoxUsed, "mng", "mng");
+
+	
+
+	/*if(probBoxUsed=="2"){ //view mode
+		$(".passfdgs").removeClass("passboxinvis");
+		$(".passfdgs").removeClass("passboxstatus");
+		$(".passfdgs").addClass("passboxstatus_show");
+		//turnExpBoxFeedbackOn("expFeedbackFdg", "fdgs");
 		$(".probsearch").hide(); //hide search box
 		//THIS IS AN UGLY HACK - without it, the box is 30px downwards.
-		$("#fdg_box .search").removeClass("boxchild");
-		$("#fdg_box .search").height(30);
+		$("#fdg_box.search").removeClass("boxchild");
+		$("#fdg_box.search").height(30);
 		$(".fdgpassive").show();
 
-	}
-	if(ddxBoxUsed=="2"){
-		$(".expddxs").removeClass("expboxinvis");
-		$(".expddxs").removeClass("expboxstatus");
-		$(".expddxs").addClass("expboxstatus_show");
+	}*/
+	/*if(ddxBoxUsed=="2"){
+		$(".passddxs").removeClass("passboxinvis");
+		$(".passddxs").removeClass("passboxstatus");
+		$(".passddxs").addClass("passboxstatus_show");
 		$(".footer").hide(); //hide final diagnosis button because we are in readonly mode
 		$(".ddxsearch").hide(); //hide search box
-		$("#ddx_box .search").removeClass("boxchild");
-		$("#ddx_box .search").height(30);
+		$("#ddx_box.search").removeClass("boxchild");
+		$("#ddx_box.search").height(30);
 		$(".ddxpassive").show();
-		turnExpBoxFeedbackOn("expFeedbackDDX", "ddxs");
-	}
-	if(testBoxUsed=="2"){
-		$(".exptests").removeClass("expboxinvis");
-		$(".exptests").removeClass("expboxstatus");
-		$(".exptests").addClass("expboxstatus_show");
+		//turnExpBoxFeedbackOn("expFeedbackDDX", "ddxs");
+	}*/
+/*	if(testBoxUsed=="2"){
+		$(".passtests").removeClass("passboxinvis");
+		$(".passtests").removeClass("passboxstatus");
+		$(".passtests").addClass("passboxstatus_show");
 		$(".testsearch").hide(); //hide search box
-		$("#tst_box .search").removeClass("boxchild");
-		$("#tst_box .search").height(30);
+		$("#tst_box.search").removeClass("boxchild");
+		$("#tst_box.search").height(30);
 		$(".tstpassive").show();
-		turnExpBoxFeedbackOn("expFeedbackTest", "tests");
-	}
-	if(pathoBoxUsed=="2"){
-		$(".exppatho").removeClass("expboxinvis");
-		$(".exppatho").removeClass("expboxstatus");
-		$(".exppatho").addClass("expboxstatus_show");
+		//turnExpBoxFeedbackOn("expFeedbackTest", "tests");
+	}*/
+	/*if(pathoBoxUsed=="2"){
+		$(".passpatho").removeClass("passboxinvis");
+		$(".passpatho").removeClass("passboxstatus");
+		$(".passpatho").addClass("passboxstatus_show");
 		$(".pathosearch").hide(); //hide search box
-		$("#pat_box .search").removeClass("boxchild");
-		$("#pat_box .search").height(30);
+		$("#pat_box.search").removeClass("boxchild");
+		$("#pat_box.search").height(30);
 		$(".patpassive").show();
-		turnExpBoxFeedbackOn("expFeedbackPatho", "patho");
-	}
+		//turnExpBoxFeedbackOn("expFeedbackPatho", "patho");
+	}*/
 	
-	if(mngBoxUsed=="2"){
-		$(".expmngs").removeClass("expboxinvis");
-		$(".expmngs").removeClass("expboxstatus");
-		$(".expmngs").addClass("expboxstatus_show");
-		turnExpBoxFeedbackOn("expFeedbackMng", "mngs");
+	/*if(mngBoxUsed=="2"){
+		$(".passmngs").removeClass("passboxinvis");
+		$(".passmngs").removeClass("passboxstatus");
+		$(".passmngs").addClass("passboxstatus_show");
+		//turnExpBoxFeedbackOn("passFeedbackMng", "mngs");
 		$(".mngsearch").hide(); //hide search box
-		$("#mng_box .search").removeClass("boxchild");
-		$("#mng_box .search").height(30);
+		$("#mng_box.search").removeClass("boxchild");
+		$("#mng_box.search").height(30);
 		$(".mngpassive").show();
 
-	}
+	}*/
 	
 	//hide search boxes and ddx footer
 	//turnExpBoxFeedbackOn("expFeedbackTest", "tests");
@@ -904,6 +942,14 @@ function turnViewModeOn(){
 		$(".jtk-exp-connector").removeClass("jtk-exp-connector-hide");
 	}*/
 
+}
+
+function turnViewModeOff(){
+	turnViewModeBoxOff(probBoxUsed, "fdg", "prob");
+	turnViewModeBoxOff(ddxBoxUsed, "ddx", "ddx");
+	turnViewModeBoxOff(testBoxUsed, "test", "tst");
+	turnViewModeBoxOff(pathoBoxUsed, "patho", "pat");
+	turnViewModeBoxOff(mngBoxUsed, "mng", "mng");
 }
 
 function turnOverallExpFeedbackOff(iconId, itemClass){

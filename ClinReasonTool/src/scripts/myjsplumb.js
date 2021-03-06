@@ -50,6 +50,20 @@ function initElems(selector){
 			addToGroup(itemId, item);
 		}
 	}
+	for(var i=0; i<pass_arr.length;i++){
+		var itemId = pass_arr[i];
+		if(selector==""|| itemId.startsWith(selector)){
+			var item = $("#"+itemId)[0];
+			if (!isView) addToGroup(itemId, item);
+			//this makes each node a target for connections, independent from the endpoint:
+			instance.makeTarget(item,{
+				isTarget:true,
+				maxConnections:10,			
+				anchor: ["Perimeter", { shape:"Rectangle" }]
+			});
+			createEndpointsForItems(itemId);
+		}
+	}
 	initDraggables();
 } 
 

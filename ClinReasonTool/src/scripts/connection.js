@@ -213,8 +213,12 @@ function addConnection(conn){
 	var sourceId = conn.sourceId; 
 	var targetId = conn.targetId;
 	var target = $("#"+targetId)[0];
-	var targetLeft = target.offsetParent.offsetLeft;
-	var targetTop = target.offsetParent.offsetTop;
+	var targetLeft = 0;
+	var targetTop = 0;
+	if(target.offsetParent!=null){		
+		targetLeft =  target.offsetParent.offsetLeft;
+		targetTop = target.offsetParent.offsetTop;
+	}
 	targetPosX = targetPosX - targetLeft +12.5;
 	targetPosY = targetPosY - targetTop +7.5;
 	//sendAjaxCnx(sourceId, addConnectionCallback, "addConnection", targetId, epSourceIdx, epTargetIdx);

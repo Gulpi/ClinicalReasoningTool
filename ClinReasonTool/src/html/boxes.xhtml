@@ -79,6 +79,7 @@ var saveSumConfirm = "#{prop['summst.saveconfirm']}";
 var instance;
 var item_arr = new Array();
 var exp_arr = new Array();
+var pass_arr = new Array();
 var ajaxUrl = "/crt/src/html/tabs_ajax.xhtml";
 var fireAddConnection = true; //false during re-init of exp cnxs, otherwise new cnxs are stored!
 var isExp = false;
@@ -86,11 +87,11 @@ var noEntryFound = "#{prop['list.noentry']}";
 var didYouMean = "#{prop['list.didyoumean']}";
 var isView = false;
 //which boxes are displayed in active mode (0), hidden (1) or displayed in view mode (2)
-var probBoxUsed = "#{crtContext.sessSetting.probBoxUsed}"; 
-var ddxBoxUsed = "#{crtContext.sessSetting.ddxBoxUsed}";
-var testBoxUsed = "#{crtContext.sessSetting.testBoxUsed}";
-var mngBoxUsed = "#{crtContext.sessSetting.mngBoxUsed}"; 
-var patBoxUsed = "#{crtContext.sessSetting.pathoBoxUsed}";
+var probBoxUsed = "#{crtContext.sessSetting.boxUsedFdg}"; 
+var ddxBoxUsed = "#{crtContext.sessSetting.boxUsedDDX}";
+var testBoxUsed = "#{crtContext.sessSetting.boxUsedTst}";
+var mngBoxUsed = "#{crtContext.sessSetting.boxUsedMng}"; 
+var pathoBoxUsed = "#{crtContext.sessSetting.boxUsedPat}";
 //indicates at which position with box (fdg, patho, ddx, tests, mnsg) is
 var box1Type = "#{crtContext.patillscript.box1Type}";
 var box2Type = "#{crtContext.patillscript.box2Type}";
@@ -250,7 +251,6 @@ jsPlumb.ready(function () {
     jsPlumb.fire("jsPlumbDemoLoaded", instance);
     $(".passive").hide();
     turnViewModeOn();
-    //turnViewModeOn();
     //initContainerCollapsed(); //put back in if collapsing works again
    
 });
@@ -288,7 +288,7 @@ item_arr = new Array();
 	<div id="canvas" class="canvas jtk-surface drag-drop jtk-surface-nopan" >
 		  
 		  <!-- pathos -->
-		  <div id="pat_box" class="container pat_cont pos_#{crtContext.patillscript.patBoxNo} hide_#{crtContext.sessSetting.pathoBoxUsed}" group="pat_group">
+		  <div id="pat_box" class="container pat_cont pos_#{crtContext.patillscript.patBoxNo} hide_#{crtContext.sessSetting.boxUsedPat}" group="pat_group">
 		  		<div id="pat_title" mytooltip="#{prop['patho.search']}" class="title  contcol_#{crtContext.patillscript.pathoDiff}">#{prop['patho']} <i class="fa fa-info-circle"></i></div>
 		  		<div class="search  boxchild">
 		  			<i class="fa fa-search ininput pathosearch"></i>
@@ -317,7 +317,7 @@ item_arr = new Array();
 				</div>
 		</div>
 		  <!-- problems -->
-		  <div id="fdg_box" class="container fdg_cont hide_#{crtContext.sessSetting.probBoxUsed}" group="fdg_group">
+		  <div id="fdg_box" class="container fdg_cont hide_#{crtContext.sessSetting.boxUsedFdg}" group="fdg_group">
 		   		<div id="fdg_title" class="title contcol_#{crtContext.patillscript.problemsDiff}"  mytooltip="#{prop['findings.search']}">#{prop['findings']} 
 		   		<i class="fa fa-info-circle"></i>
 		   			<!--  <span class="icons">
@@ -339,7 +339,10 @@ item_arr = new Array();
 	    					</ui:repeat>	    					
 						   <ui:repeat id="repeatexpprob" value="#{crtContext.expPatIllScript.problems}" var="expprob" varStatus="status">
 						   		<ui:include src="probexpbox.xhtml" />
-	    					</ui:repeat>	    					
+	    					</ui:repeat>	 
+	    					<ui:repeat id="repeatpassprob" value="#{crtContext.expPatIllScript.problems}" var="passprob" varStatus="status">
+						   		<ui:include src="probpassbox.xhtml" />
+	    					</ui:repeat>   					
 	    				</h:panelGroup>
     				     <h:commandButton id="hiddenProbButton" value="RenderSomething" style="visibility:hidden">
     						<f:ajax render="@form" onevent="updateProbCallback"></f:ajax>
@@ -356,7 +359,7 @@ item_arr = new Array();
 				</div>
 		  </div>
 		  <!--  diagnoses -->
-		  <div id="ddx_box" class="container ddx_cont hide_#{crtContext.sessSetting.ddxBoxUsed}" group="ddx_group">	
+		  <div id="ddx_box" class="container ddx_cont hide_#{crtContext.sessSetting.boxUsedDDX}" group="ddx_group">	
 		  		<div id="ddx_title"  mytooltip="#{prop['ddx.search']}" class="title contcol_#{crtContext.patillscript.DDXDiff}">#{prop['ddx']} <i class="fa fa-info-circle"></i>
 		  			<!--  <span class="icons">
 		  				<a href="javascript:addJokerDDX();" title="#{prop['ddx.joker']}"><i mytooltip="#{prop['ddx.joker']}" class="fa fa-puzzle-piece"></i></a> 
@@ -380,7 +383,10 @@ item_arr = new Array();
 	     					</ui:repeat>
 	     					<ui:repeat value="#{crtContext.expPatIllScript.diagnoses}" var="expddx" varStatus="status">
 								<ui:include src="ddxexpbox.xhtml" />
-	     					</ui:repeat>				
+	     					</ui:repeat>		
+	     					<ui:repeat value="#{crtContext.expPatIllScript.diagnoses}" var="passddx" varStatus="status">
+								<ui:include src="ddxpassbox.xhtml" />
+     						</ui:repeat>			
 	    				</h:panelGroup>
 	    				     <h:commandButton id="hiddenDDXButton" value="RenderSomething" style="visibility:hidden">
 	    						<f:ajax render="@form" onevent="updateDDXCallback"></f:ajax>
@@ -404,7 +410,7 @@ item_arr = new Array();
 				</div>
 		  </div>
 		  <!-- tests -->
-		  <div id="tst_box" class="container tst_cont hide_#{crtContext.sessSetting.testBoxUsed}" group="tst_group">
+		  <div id="tst_box" class="container tst_cont hide_#{crtContext.sessSetting.boxUsedTst}" group="tst_group">
 		  		<div id="tst_title" mytooltip="#{prop['tests.search']}" class="title  contcol_#{crtContext.patillscript.testsDiff}">#{prop['tests']} <i class="fa fa-info-circle"></i>
 		  			<!--  <span class="icons">
 		  				<a href="javascript:addJokerTest();" title="#{prop['tests.joker']}"><i mytooltip="#{prop['tests.joker']}" class="fa fa-puzzle-piece"></i></a> 
@@ -413,7 +419,7 @@ item_arr = new Array();
 		  			</span>-->
 		  		</div>
 		 	 	<!-- <div class="node-collapse"></div>-->
-		  		<div class="search  boxchild">
+		  		<div class="search boxchild">
 		  			<i class="fa fa-search ininput testsearch"></i>
 		  			<input class="f_text testsearch" onkeyup="javascript:storeHistory('tests');" onFocus="javascript:hideTooltips();"  placeholder="#{prop['tests.add']} ..." id="tests" mytooltip="#{prop['tests.search']}"></input>
 		  		</div>
@@ -425,14 +431,17 @@ item_arr = new Array();
      					</ui:repeat>	
      					<ui:repeat value="#{crtContext.expPatIllScript.tests}" var="exptest" varStatus="status">
 							<ui:include src="testexpbox.xhtml" />
-     					</ui:repeat>			
+     					</ui:repeat>
+     					 <ui:repeat value="#{crtContext.expPatIllScript.tests}" var="passtest" varStatus="status">
+							<ui:include src="testpassbox.xhtml" />
+     					</ui:repeat>	
     				</h:panelGroup>
     				     <h:commandButton id="hiddenTestButton" value="RenderSomething" style="visibility:hidden">
     						<f:ajax render="@form" onevent="updateTestCallback"></f:ajax>
 						</h:commandButton>
 					</h:form>
 					<span class="errormsg" id="msg_testform" onClick="javascript:clearErrorMsgs();"></span>
-				<div class="tstpassive passive" style="position:absolute;top:10%;left:0px;width:100%;z-index:9;">
+				<div class="testpassive passive" style="position:absolute;top:10%;left:0px;width:100%;z-index:9;">
 		  			<div style="text-align:left;margin:5px;">#{prop['tests.passive']}</div>
 					<div style="text-align:left;margin:10px;padding:0px;margin-top:20px;color:white; font-size:110px">
 						<i class="fa fa-lock"></i>
@@ -440,7 +449,7 @@ item_arr = new Array();
 				</div>
 		</div>
 		  <!-- managements -->
-		  <div id="mng_box" class="container mng_cont hide_#{crtContext.sessSetting.mngBoxUsed}" group="mng_group">
+		  <div id="mng_box" class="container mng_cont hide_#{crtContext.sessSetting.boxUsedMng}" group="mng_group">
 		  	<div id="mng_title"  mytooltip="#{prop['mng.search']}" class="title contcol_#{crtContext.patillscript.mngsDiff}">#{prop['mng']} <i class="fa fa-info-circle"></i>
 		  		<!-- <span class="icons">
 		  			<a href="javascript:addJokerMng();" title="#{prop['mng.joker']}"><i mytooltip="#{prop['mng.joker']}" class="fa fa-puzzle-piece"></i></a> 
@@ -461,7 +470,10 @@ item_arr = new Array();
 	   				</ui:repeat>		
 	   				<ui:repeat value="#{crtContext.expPatIllScript.mngs}" var="expmng" varStatus="status">
 							<ui:include src="mngexpbox.xhtml" />
-     					</ui:repeat>		
+     					</ui:repeat>	
+     				<ui:repeat value="#{crtContext.expPatIllScript.mngs}" var="passmng" varStatus="status">
+							<ui:include src="mngpassbox.xhtml" />
+     				</ui:repeat>		
 	  				</h:panelGroup>
 	  				     <h:commandButton id="hiddenMngButton" value="RenderSomething" style="visibility:hidden">
 	  						<f:ajax render="@form" onevent="updatMngCallback"></f:ajax>
@@ -484,7 +496,7 @@ item_arr = new Array();
 		 	</div>
 		 	 <div class="node-collapse"></div>
 		 	 <textarea style="display:none;" id="summStTextHidden" cols="65" rows="4">#{crtContext.patillscript.summSt.text}</textarea>
-				<textarea class="f_textarea boxchild sum_textarea" name="summSt" id="summStText" cols="65" rows="3" placeholder="#{prop['sumst.hint']}">#{crtContext.patillscript.summSt.text}</textarea>
+				<textarea class="f_textarea sum_textarea" name="summSt" id="summStText" cols="65" rows="3" placeholder="#{prop['sumst.hint']}">#{crtContext.patillscript.summSt.text}</textarea>
 		  		<!-- <a href="javascript:saveSummSt('#{crtContext.patillscript.summStId}');" title="Save your summary statement"><i class="icon-floppy"></i></a>-->
 			 	<span class="errormsg" id="msg_sumstform" onClick="javascript:clearErrorMsgs();"></span>
 			 	<span id="list_score_sum" class="list_score_sum sum_textarea" style="color:green; display:none;"> #{crtContext.patillscript.summStExp}</span> 		  

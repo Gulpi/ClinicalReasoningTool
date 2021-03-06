@@ -69,10 +69,10 @@ $(function() {
     });
 	//printLargeOverall();
 	//hide results if boxes are view only or hidden in player
-	if(probBoxUsed=="2" || probBoxUsed=="0") $(".probchart").hide(); 
-	if(ddxBoxUsed=="2" || ddxBoxUsed=="0") $(".ddxchart").hide(); 
-	if(testBoxUsed=="2" || testBoxUsed=="0") $(".testchart").hide(); 
-	if(mngBoxUsed=="2" || mngBoxUsed=="0") $(".mngchart").hide(); 
+	if(boxUsedFdg=="2" || boxUsedFdg=="0") $(".probchart").hide(); 
+	if(boxUsedDDX=="2" || boxUsedDDX=="0") $(".ddxchart").hide(); 
+	if(boxUsedTst=="2" || boxUsedTst=="0") $(".testchart").hide(); 
+	if(boxUsedMng=="2" || boxUsedMng=="0") $(".mngchart").hide(); 
 });
 
 var chartTypeDisplay = "#{chartConf.typeOfChart}";
@@ -101,25 +101,25 @@ var chartTypeDisplay = "#{chartConf.typeOfChart}";
 </div><br clear="all"/><br/>
 <div id="chart-container">
 		<!-- self directed learning: TODO-->
-		<div class="chartbox_cont chart_#{crtContext.sessSetting.probBoxUsed}">
+		<div class="chartbox_cont chart_#{crtContext.sessSetting.boxUsedFdg}">
 			<div class="chartbox chartbox_indiv" >
 				<!-- <a href="javascript:printLargeFdg();">--><ui:include src="vp_prob.xhtml" /><!--</a>-->
 			</div>
 			<div class="chart_footer">#{prop['chart.vp.findings']}</div>
 		</div>
-		<div class="chartbox_cont chart_#{crtContext.sessSetting.ddxBoxUsed}">
+		<div class="chartbox_cont chart_#{crtContext.sessSetting.boxUsedDDX}">
 			<div class="chartbox chartbox_indiv" >
 				<!--<a href="javascript:printLargeDDX();">--><ui:include src="vp_ddx.xhtml" /><!--</a>-->
 			</div>
 			<div class="chart_footer">#{prop['chart.vp.ddx']}</div>
 		</div>
-		<div class="chartbox_cont chart_#{crtContext.sessSetting.testBoxUsed}">
+		<div class="chartbox_cont chart_#{crtContext.sessSetting.boxUsedTst}">
 			<div class="chartbox chartbox_indiv">
 				<!--<a href="javascript:printLargeTst();">--><ui:include src="vp_test.xhtml" /><!--</a>-->
 			</div>
 			<div class="chart_footer">#{prop['chart.vp.tests']}</div>
 		</div>
-		<div class="chartbox_cont chart_#{crtContext.sessSetting.mngBoxUsed}">
+		<div class="chartbox_cont chart_#{crtContext.sessSetting.boxUsedMng}">
 			<div class="chartbox chartbox_indiv">
 				<!--<a href="javascript:printLargeMng();">--><ui:include src="vp_mng.xhtml" /><!--</a>-->
 			</div>

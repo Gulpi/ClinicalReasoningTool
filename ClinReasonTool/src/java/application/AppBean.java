@@ -64,6 +64,9 @@ public class AppBean extends ApplicationWrapper implements HttpSessionListener{
 
 	private static PeerContainer peers = new PeerContainer();
 	
+	/**
+	 * key = parentId
+	 */
 	private static Map<String, VPScriptRef> vpScriptRefs;
 	
 	/**
@@ -389,6 +392,9 @@ public class AppBean extends ApplicationWrapper implements HttpSessionListener{
 		return vpScriptRefs;
 	}
 	
+	/**
+	 * @param ref
+	 */
 	public static void addVpScriptRef(VPScriptRef ref){
 		if(vpScriptRefs==null) vpScriptRefs = new HashMap<String, VPScriptRef>();
 		vpScriptRefs.put(ref.getParentId(), ref);

@@ -1,6 +1,10 @@
 package controller;
 
 import java.util.*;
+
+import javax.faces.context.FacesContext;
+import javax.servlet.ServletContext;
+
 import org.apache.commons.lang3.StringUtils;
 
 import actions.scoringActions.ScoringSummStAction;
@@ -215,7 +219,7 @@ public class SummaryStatementController {
 	 * @param spacy
 	 * @param loc
 	 */
-	private static void analyzeExpStatement(SummaryStatement st, SpacyDocJson spacy, Locale loc){
+	private static void analyzeExpStatement(SummaryStatement st, SpacyDocJson spacy, Locale loc, PatientIllnessScript expScript){
 		//we have to make sure that the listItems in the SummStElems are really loaded -> HACK!
 		// also when it's analyzed bit itemHits is null || empty we should try to reinitialize ?
 		if(st.isAnalyzed()) { 
@@ -249,7 +253,7 @@ public class SummaryStatementController {
 			checkForSemanticQualifiers(st, spacy);
 	
 			compareNumbers(st, spacy);
-			checkForPerson(st, spacy);
+			checkForPerson(st, spacy, AppBean.getVPNameByVPId(expScript.getVpId()));
 	
 			/*Iterator it = st.getItemHits().iterator();
 			while(it.hasNext()){
@@ -352,6 +356,7 @@ public class SummaryStatementController {
 	
 	public SummaryStatement initSummStRating(PatientIllnessScript expScript, SummaryStatement st, ScoringSummStAction scoreAct){
 		if(st==null) return null;
+		
 		try{
 			DBClinReason dbc = new DBClinReason();
 			//if(learnerScript==null || learnerScript.getSummSt()==null || learnerScript.getSummSt().getText()==null) return st;
@@ -364,7 +369,11 @@ public class SummaryStatementController {
 			SummaryStatementController.resetSummSt(dbc,st);
 			
 			SummaryStatement expSt = expScript.getSummSt();
-			List<ListItem> items = getListItemsByLang(st.getLang());	
+			List<ListItem> items = getListItemsByLang(st.getLang());
+			if(items==null) {				
+				new JsonCreator().initJsonExport((ServletContext) FacesContext.getCurrentInstance().getExternalContext().getContext());
+				items = getListItemsByLang(st.getLang());
+			}
 			//if(st==null || st.getText()==null || items==null) return null;
 			//PatientIllnessScript expPis = new DBClinReason().selectExpertPatIllScriptByVPId(vpId);	
 			
@@ -402,11 +411,11 @@ public class SummaryStatementController {
 			SpacyDocJson spacyE = new SpacyDocJson(jt2.getJson().trim());
 			spacyE.init();
 			Locale loc = new Locale(st.getLang());
-			analyzeExpStatement(expSt, spacyE, loc);
+			analyzeExpStatement(expSt, spacyE, loc, expScript);
 			st.setSpacy_json(jt.getJson());
 			
 			long startms = System.currentTimeMillis();
-			CRTLogger.out("start: " + startms, CRTLogger.LEVEL_TEST);
+			//CRTLogger.out("start: " + startms, CRTLogger.LEVEL_TEST);
 			 
 			List<String> textAsListOrg = StringUtilities.createStringListFromString(st.getText(), true);
 			
@@ -431,7 +440,7 @@ public class SummaryStatementController {
 				calculateMatchesWithExpStatement(st.getItemHits(), expSt.getText());
 				compareWithExpIllScript(st, expScript);
 			}
-			checkForPerson(st, spacy);
+			checkForPerson(st, spacy, AppBean.getVPNameByVPId(expScript.getVpId()));
 			checkAccuracy(st, expSt,spacy, spacyE);
 	
 			long endms = System.currentTimeMillis();
@@ -524,12 +533,17 @@ public class SummaryStatementController {
 	 * @param st
 	 * @param spacy
 	 */
-	private static void checkForPerson(SummaryStatement st, SpacyDocJson spacy){
-		SpacyDocToken person = spacy.getTokenByType(SpacyDocToken.LABEL_PERSON);
-		if(person==null) person = spacy.getTokenByType(SpacyDocToken.LABEL_PER);
+	private static void checkForPerson(SummaryStatement st, SpacyDocJson spacy, String vpName){
+		ArrayList<SpacyDocToken> person = spacy.getTokensByType(SpacyDocToken.LABEL_PERSON);
+		if(person==null) person = spacy.getTokensByType(SpacyDocToken.LABEL_PER);
+		
+		//if person has not been identified by spacy we check with case name: 
+		if(person==null) person = checkForPersonVPName(spacy, vpName);
+
+		//still nothing found, so return here... 
 		if(person==null) return;
-		//check if person is not in the list of SQ (can happen,since spay is not 100% accurate)
-		boolean isSQ = false;
+		//check if person is not in the list of SQ (can happen,since spacy is not 100% accurate)
+		/*boolean isSQ = false;
 		if(st.getSqHits()!=null){
 			Iterator it = st.getSqHits().iterator();
 			while(it.hasNext()){
@@ -539,9 +553,31 @@ public class SummaryStatementController {
 				else if(sq.getText()!=null && sq.getText().equalsIgnoreCase(person.getToken())) isSQ = true;
 			}
 		}
-		//added only if not already present in list (can happen,since spay is not 100% accurate)
-		if(!isSQ) st.addItemHit(new SummaryStElem(person, st.getText().indexOf(person.getToken()), st.getId()));		
+		//added only if not already present in list (can happen,since spacy is not 100% accurate)
+		if(!isSQ)*/
+		for(int i=0; i<person.size(); i++) {
+			st.addItemHit(new SummaryStElem(person.get(i), st.getText().indexOf(person.get(i).getToken()), st.getId()));
+		}
 	}
+		
+	/**
+	 * if person has not been identified by spacy we check with case name:
+	 * @param spacy
+	 * @param vpId
+	 */
+	private static ArrayList<SpacyDocToken> checkForPersonVPName(SpacyDocJson spacy, String vpName) {
+		//String vpName = AppBean.getVPNameByVPId(vpId);
+		CRTLogger.out("",1);
+		if(vpName == null) return null;
+		String[] vpNameArr = vpName.split(" ");
+		for(int i=0; i<vpNameArr.length;i++) {
+			SpacyDocToken person = spacy.getTokenByName(vpNameArr[i]);
+			if(person!=null) person.setLabel(SpacyDocToken.LABEL_PER);
+		}
+		return spacy.getTokensByType(SpacyDocToken.LABEL_PER);
+		
+	}
+	
 	
 	/**
 	 * We look whether we can find any of the SI units in the list in the element of the summary statement. 
@@ -801,6 +837,7 @@ public class SummaryStatementController {
 			learnerSt.setAccuracyScore(0);
 			return;
 		}
+		//CRTLogger.out("", 1);
 		try{
 			//we look for contradicting semantic qualifiers for expertMatch hits:
 			Set<SummaryStElem> hits = learnerSt.getItemHits();

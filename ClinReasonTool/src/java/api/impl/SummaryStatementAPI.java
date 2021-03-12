@@ -96,6 +96,9 @@ public class SummaryStatementAPI extends AbstractAPIImpl {
 			if (id > 0) {
 				PatientIllnessScript userPatientIllnesScript = new DBClinReason().selectPatIllScriptById(id);
 				if (userPatientIllnesScript != null) {
+					userPatientIllnesScript = new DBClinReason().selectAllIllScriptById(id, "summStId", false);
+				}
+				if (userPatientIllnesScript != null) {
 					SummaryStatement st = this.handleByPatientIllnessScript(userPatientIllnesScript);
 					
 					if (st != null) {

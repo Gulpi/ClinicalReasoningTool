@@ -194,7 +194,7 @@ public class DBClinReason /*extends HibernateUtil*/{
     	return selectAllIllScriptById(id, "id", true);
     }
     
-    private PatientIllnessScript selectAllIllScriptById(long id, String identifier, boolean considerType){
+    public PatientIllnessScript selectAllIllScriptById(long id, String identifier, boolean considerType){
     	Session s = instance.getInternalSession(Thread.currentThread(), false);
     	Criteria criteria = s.createCriteria(PatientIllnessScript.class,"PatientIllnessScript");
     	criteria.add(Restrictions.eq(identifier, new Long(id)));
@@ -213,6 +213,7 @@ public class DBClinReason /*extends HibernateUtil*/{
     	return patIllScript;
    	
     }
+    
 
     /**
      * Select the PatientIllnessScripts for the userId from the database. 

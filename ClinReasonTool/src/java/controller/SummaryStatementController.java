@@ -413,8 +413,14 @@ public class SummaryStatementController {
 				CRTLogger.out("spacy exp processing end: " + jt2.getJson() + "; " + (endms1-startms1), CRTLogger.LEVEL_PROD);
 			}*/
 			
-			SpacyDocJson spacyE = new SpacyDocJson(jt2.getJson().trim());
-			spacyE.init();
+			SpacyDocJson spacyE = null;
+			try {
+				spacyE = new SpacyDocJson(jt2.getJson().trim());
+				if(spacyE!=null) spacyE.init();
+			} catch (Exception e) {
+				CRTLogger.out("SummarySTatementController.initSummStRating error in init spacy: jt2.id:" + jt2.getId() + ": jt.getJson(): < " + jt2.getJson() + ">", CRTLogger.LEVEL_ERROR);
+			}
+			
 			Locale loc = new Locale(st.getLang());
 			analyzeExpStatement(expSt, spacyE, loc, expScript);
 			st.setSpacy_json(jt.getJson());
@@ -495,10 +501,13 @@ public class SummaryStatementController {
 		
 		try {
 			st.jsonClean();
-			for (int i = 0;i <10; i++) {
+			StringBuffer sb = new StringBuffer();
+			for (int i = 0;i <st.getText().length(); i++) {
 				char c = st.getText().charAt(i);
-				CRTLogger.out("spacy processing start: c[" + i + "]: " + c + "; #" + Integer.toHexString(c), CRTLogger.LEVEL_PROD);
+				sb.append("("); sb.append(i); sb.append("):"); sb.append(Integer.toHexString(c)); sb.append(",");
 			}
+			
+			CRTLogger.out("spacy processing start: sb:" + sb.toString(), CRTLogger.LEVEL_PROD);
 		}
 		catch (Throwable th) {
 			

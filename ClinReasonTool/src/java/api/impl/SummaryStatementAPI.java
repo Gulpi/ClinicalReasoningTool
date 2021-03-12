@@ -95,27 +95,33 @@ public class SummaryStatementAPI extends AbstractAPIImpl {
 			long id = StringUtilities.getLongFromString((String) ((HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest()).getParameter("id"), -1);
 			if (id > 0) {
 				PatientIllnessScript userPatientIllnesScript = new DBClinReason().selectPatIllScriptById(id);
-				SummaryStatement st = this.handleByPatientIllnessScript(userPatientIllnesScript);
-				
-				if (st != null) {
-					resultObj.put("status", "ok");
+				if (userPatientIllnesScript != null) {
+					SummaryStatement st = this.handleByPatientIllnessScript(userPatientIllnesScript);
 					
-					Map userObj = new TreeMap();
-					resultObj.put("User", userObj);
-					boolean collections = StringUtilities.getBooleanFromString((String) ((HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest()).getParameter("collections"), true);
-					this.addSummaryStatementToResultObj(userObj, userPatientIllnesScript, st, collections);
-					
-					PatientIllnessScript expScript = getAppBean().addExpertPatIllnessScriptForVpId(userPatientIllnesScript.getVpId());
-					if (expScript != null) {
-						Map expertObj = new TreeMap();
-						resultObj.put("Expert", expertObj);
-						this.addSummaryStatementToResultObj(expertObj, "ExpertPatientIllnesScript.", expScript);
-						this.addSummaryStatementToResultObj(expertObj, "ExpertSummaryStatement.", expScript.getSummSt(), true, collections);
+					if (st != null) {
+						resultObj.put("status", "ok");
+						
+						Map userObj = new TreeMap();
+						resultObj.put("User", userObj);
+						boolean collections = StringUtilities.getBooleanFromString((String) ((HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest()).getParameter("collections"), true);
+						this.addSummaryStatementToResultObj(userObj, userPatientIllnesScript, st, collections);
+						
+						PatientIllnessScript expScript = getAppBean().addExpertPatIllnessScriptForVpId(userPatientIllnesScript.getVpId());
+						if (expScript != null) {
+							Map expertObj = new TreeMap();
+							resultObj.put("Expert", expertObj);
+							this.addSummaryStatementToResultObj(expertObj, "ExpertPatientIllnesScript.", expScript);
+							this.addSummaryStatementToResultObj(expertObj, "ExpertSummaryStatement.", expScript.getSummSt(), true, collections);
+						}
+					}
+					else {
+						resultObj.put("status", "error");
+						resultObj.put("errorMsg", "no SummaryStatement object for id: " + id);
 					}
 				}
 				else {
 					resultObj.put("status", "error");
-					resultObj.put("errorMsg", "no SummaryStatement object ?");
+					resultObj.put("errorMsg", "userPatientIllnesScript == null for id: " + id);
 				}
 			}
 			else {

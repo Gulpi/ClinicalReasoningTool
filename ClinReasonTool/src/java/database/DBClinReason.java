@@ -205,6 +205,10 @@ public class DBClinReason /*extends HibernateUtil*/{
     		patIllScript.setSummSt(loadSummSt(patIllScript.getSummStId(), s));
     		selectNodesAndConns(patIllScript, s);
     	}
+    	else {
+    		CRTLogger.out("DBClinReason.selectAllIllScriptById: long: "  + id + ", identifier: " + identifier + ", considerType: " + considerType+ ", criteria: " + criteria, CRTLogger.LEVEL_PROD);
+
+    	}
     	s.close();
     	return patIllScript;
    	

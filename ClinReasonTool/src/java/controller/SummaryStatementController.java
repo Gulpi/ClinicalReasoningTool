@@ -381,8 +381,13 @@ public class SummaryStatementController {
 			JsonTest jt = new DBClinReason().selectJsonTestBySummStId(st.getId()); //the json of the statement
 			if(jt==null) jt = initJsonTest(st);
 	
-			SpacyDocJson spacy = new SpacyDocJson(jt.getJson().trim());
-			if(spacy!=null) spacy.init();
+			SpacyDocJson spacy = null;
+			try {
+				spacy = new SpacyDocJson(jt.getJson().trim());
+				if(spacy!=null) spacy.init();
+			} catch (Exception e) {
+				CRTLogger.out("SummarySTatementController.initSummStRating error in init spacy: smst.id:" + st.getId() + ": jt.getJson(): < " + jt.getJson() + ">", CRTLogger.LEVEL_ERROR);
+			}
 	
 			JsonTest jt2 = new DBClinReason().selectJsonTestBySummStId(expSt.getId()); //the json of the statement
 			

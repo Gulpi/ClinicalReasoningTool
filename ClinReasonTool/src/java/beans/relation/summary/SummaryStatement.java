@@ -9,6 +9,7 @@ import javax.faces.bean.SessionScoped;
 
 import beans.list.*;
 import beans.relation.Relation;
+import net.casus.util.StringUtilities;
 import net.casus.util.nlp.spacy.SpacyDocToken; 
 
 /**
@@ -117,6 +118,20 @@ public class SummaryStatement extends Beans implements Serializable, Comparable{
 		this.text = text;
 		this.patillscriptId = patIllscriptId;
 	}
+	
+	public void jsonClean() {
+		if (this.text != null) {
+			try {
+				this.text = StringUtilities.replace(this.text, "\u00A0", " ");
+			} catch (Throwable e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
+	}
+	
+	
 	public String getText() {return text;}
 	public void setText(String text) {this.text = text;}
 	public long getId() {return id;}

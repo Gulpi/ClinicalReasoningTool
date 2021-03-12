@@ -487,7 +487,9 @@ public class SummaryStatementController {
 		long startms1 = System.currentTimeMillis();
 		CRTLogger.out("spacy processing start: " + startms1, CRTLogger.LEVEL_PROD);
 		CRTLogger.out("spacy processing start: st.getText():" + st.getText(), CRTLogger.LEVEL_PROD);
+		
 		try {
+			st.jsonClean();
 			for (int i = 0;i <10; i++) {
 				char c = st.getText().charAt(i);
 				CRTLogger.out("spacy processing start: c[" + i + "]: " + c + "; #" + Integer.toHexString(c), CRTLogger.LEVEL_PROD);

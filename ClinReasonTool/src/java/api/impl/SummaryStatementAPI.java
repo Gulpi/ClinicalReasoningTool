@@ -95,7 +95,7 @@ public class SummaryStatementAPI extends AbstractAPIImpl {
 			long id = StringUtilities.getLongFromString((String) ((HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest()).getParameter("id"), -1);
 			if (id > 0) {
 				PatientIllnessScript userPatientIllnesScript = new DBClinReason().selectPatIllScriptById(id);
-				if (userPatientIllnesScript != null) {
+				if (userPatientIllnesScript == null) {
 					userPatientIllnesScript = new DBClinReason().selectAllIllScriptById(id, "summStId", false);
 				}
 				if (userPatientIllnesScript != null) {

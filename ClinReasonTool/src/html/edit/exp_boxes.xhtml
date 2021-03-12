@@ -76,6 +76,7 @@ var active;
 var instance;
 var item_arr = new Array();
 var exp_arr = new Array();
+var pass_arr = new Array();
 var isExp = true;
 var isView = false;
 //which boxes are displayed in active mode (0), hidden (1) or displayed in view mode (2)
@@ -389,7 +390,7 @@ Stage: <span id="stageSpan">#{adminContext.patillscript.stage}(#{adminContext.pa
 		 	</div>
 		 	 <div class="node-collapse"></div>
 		 	 <textarea style="display:none;" id="summStTextHidden" cols="65" rows="3">#{adminContext.patillscript.summSt.text}</textarea>
-				<textarea class="f_textarea boxchild" name="summSt" id="summStText" cols="65" rows="3">#{adminContext.patillscript.summStStage.text}</textarea><br/>
+				<textarea class="f_textarea" name="summSt" id="summStText" cols="65" rows="3">#{adminContext.patillscript.summStStage.text}</textarea><br/>
 			 	<span class="errormsg" id="msg_sumstform"></span>
 		</div>
 	</div>

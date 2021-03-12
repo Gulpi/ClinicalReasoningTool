@@ -468,6 +468,7 @@ a#ddx_submit_btn, errorsymbol.a{
 	display:block;
 	padding-left:5px;
 	padding-top:3px;
+	height:30px;
 	/*width:210px;*/
 }
 .boxchild:after{
@@ -729,7 +730,7 @@ span.icons{
 	/*font-size:15px;*/
 }
 
-.expbox{
+.expbox, .passbox{
 	position:absolute;
     width:80px;
     height:25px;
@@ -750,10 +751,17 @@ span.icons{
 .expboxstatus{
 	display:none;
 }
+.passboxstatus{
+	display:none;
+}
 
 /* we need this onLoad for the expboxes to avoid flickering, display:none has side-effects on the 
 endpoint creation, so we can use this only at the very end of the page loading.... */ 
 .expboxinvis{
+	visibility: hidden;
+}
+
+.passboxinvis{
 	visibility: hidden;
 }
 
@@ -763,6 +771,10 @@ endpoint creation, so we can use this only at the very end of the page loading..
 }
 
 .expboxstatus_show{
+	display:block;
+}
+
+.passboxstatus_show{
 	display:block;
 }
 
@@ -1235,7 +1247,7 @@ input.cmn-toggle-round:checked + label:after {
 }
 
 .showadaptBox_true{
-	display;block;
+	display:block;
 }
 .showadaptBox_false{
 	display:none;

@@ -1,0 +1,16 @@
+ <ui:composition 
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core">
+
+ 	<div id="fdg_#{passprob.id}"  class="passfdgs passbox passboxinvis row1" mytooltip="#{passprob.labelOrSynLabel}" style="left:#{passprob.x}px; top:#{passprob.boxY}px;"> 
+ 		#{passprob.shortLabelOrSynShortLabel}
+  	 	 <script language="Javascript">
+  	 		if(probBoxUsed==2) pass_arr.push("fdg_#{passprob.id}");
+ 		</script>
+ 		<div class="icons_exp"><i class="fa fa-user-md"></i></div>
+ 	</div>
+ 	 
+ 
+</ui:composition>

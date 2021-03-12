@@ -826,7 +826,7 @@ public class PatientIllnessScript extends Beans implements Comparable, IllnessSc
 		if(this.isExpScript()) return 0;
 		CRTFacesContext crtContext = new NavigationController().getCRTFacesContext();
 		//if we have view mode only, we do not change color of box:
-		if(crtContext.getSessSetting()!=null && crtContext.getSessSetting().getProbBoxUsed()==2) return 0;
+		if(crtContext.getSessSetting()!=null && crtContext.getSessSetting().getBoxUsedFdg()==2) return 0;
 		return FeedbackController.getInstance().getItemsDiffExpForStage(currentStage, getProblems(), Relation.TYPE_PROBLEM);
 	}
 
@@ -838,7 +838,7 @@ public class PatientIllnessScript extends Beans implements Comparable, IllnessSc
 		if(this.isExpScript()) return 0;
 		CRTFacesContext crtContext = new NavigationController().getCRTFacesContext();
 		//if we have view mode only, we do not change color of box:
-		if(crtContext.getSessSetting()!=null && crtContext.getSessSetting().getPathoBoxUsed()==2) return 0;
+		if(crtContext.getSessSetting()!=null && crtContext.getSessSetting().getBoxUsedPat()==2) return 0;
 		return FeedbackController.getInstance().getItemsDiffExpForStage(currentStage, getPatho(), Relation.TYPE_PATHO);
 	}
 	/**
@@ -850,7 +850,7 @@ public class PatientIllnessScript extends Beans implements Comparable, IllnessSc
 		if(this.getSubmitted()) return 0; //if diagnosis has been made, we do not have to make the box red any longer...
 		CRTFacesContext crtContext = new NavigationController().getCRTFacesContext();
 		//if we have view mode only, we do not change color of box:
-		if(crtContext.getSessSetting()!=null && crtContext.getSessSetting().getDdxBoxUsed()==2) return 0;
+		if(crtContext.getSessSetting()!=null && crtContext.getSessSetting().getBoxUsedDDX()==2) return 0;
 		return FeedbackController.getInstance().getItemsDiffExpForStage(currentStage, getDiagnoses(), Relation.TYPE_DDX);
 	}
 	/**
@@ -861,7 +861,7 @@ public class PatientIllnessScript extends Beans implements Comparable, IllnessSc
 		if(this.isExpScript()) return 0;
 		CRTFacesContext crtContext = new NavigationController().getCRTFacesContext();
 		//if we have view mode only, we do not change color of box:
-		if(crtContext.getSessSetting()!=null && crtContext.getSessSetting().getTestBoxUsed()==2) return 0;
+		if(crtContext.getSessSetting()!=null && crtContext.getSessSetting().getBoxUsedTst()==2) return 0;
 		return FeedbackController.getInstance().getItemsDiffExpForStage(currentStage, getTests(), Relation.TYPE_TEST);
 	}
 	/**
@@ -872,7 +872,7 @@ public class PatientIllnessScript extends Beans implements Comparable, IllnessSc
 		if(this.isExpScript()) return 0;
 		CRTFacesContext crtContext = new NavigationController().getCRTFacesContext();
 		//if we have view mode only, we do not change color of box:
-		if(crtContext.getSessSetting()!=null && crtContext.getSessSetting().getMngBoxUsed()==2) return 0;
+		if(crtContext.getSessSetting()!=null && crtContext.getSessSetting().getBoxUsedMng()==2) return 0;
 
 		return FeedbackController.getInstance().getItemsDiffExpForStage(currentStage, getMngs(), Relation.TYPE_MNG);
 	}

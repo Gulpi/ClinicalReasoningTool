@@ -58,14 +58,16 @@ public class SessionSettingController {
 		initBoxesSettings(sessSetting);
 	}
 	
+	/**
+	 * Parameters from course manager about the display mode of each box are stored in the user session 
+	 * @param sessSetting
+	 */
 	private void initBoxesSettings(SessionSetting sessSetting) {
-		//hide, show, inactivate the four boxes:
-		//if(!dynamicBoxesOn) {
-		sessSetting.setBoxesUsed(0,AjaxController.getInstance().getIntRequestParamByKey(AjaxController.REQPARAM_BOXES_P_MODE,1));
-		sessSetting.setBoxesUsed(1,AjaxController.getInstance().getIntRequestParamByKey(AjaxController.REQPARAM_BOXES_D_MODE,1));
-		sessSetting.setBoxesUsed(2,AjaxController.getInstance().getIntRequestParamByKey(AjaxController.REQPARAM_BOXES_T_MODE,1));
-		sessSetting.setBoxesUsed(3,AjaxController.getInstance().getIntRequestParamByKey(AjaxController.REQPARAM_BOXES_M_MODE,1));
-		sessSetting.setBoxesUsed(3,AjaxController.getInstance().getIntRequestParamByKey(AjaxController.REQPARAM_BOXES_PAT_MODE,0));
+		sessSetting.setBoxUsedFdg(AjaxController.getInstance().getIntRequestParamByKey(AjaxController.REQPARAM_BOXES_P_MODE,1));
+		sessSetting.setBoxUsedDDX(AjaxController.getInstance().getIntRequestParamByKey(AjaxController.REQPARAM_BOXES_D_MODE,1));
+		sessSetting.setBoxUsedTst(AjaxController.getInstance().getIntRequestParamByKey(AjaxController.REQPARAM_BOXES_T_MODE,1));
+		sessSetting.setBoxUsedMng(AjaxController.getInstance().getIntRequestParamByKey(AjaxController.REQPARAM_BOXES_M_MODE,1));
+		sessSetting.setBoxUsedPat(AjaxController.getInstance().getIntRequestParamByKey(AjaxController.REQPARAM_BOXES_PAT_MODE,0));
 	}
 }	
 

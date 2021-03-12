@@ -109,7 +109,7 @@ public class SummaryStElem implements Serializable{
 	public void setListItemId(long listItemId) {this.listItemId = listItemId;}
 
 	public boolean isPerson(){
-		if(type!=null && type.equals(SpacyDocToken.LABEL_PERSON)) return true;
+		if(type!=null && (type.equals(SpacyDocToken.LABEL_PERSON) || type.equals(SpacyDocToken.LABEL_PER))) return true;
 		return false;
 	}
 	

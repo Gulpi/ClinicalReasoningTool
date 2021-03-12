@@ -7,10 +7,10 @@ import javax.faces.bean.SessionScoped;
 import org.jgrapht.alg.DijkstraShortestPath;
 import org.jgrapht.graph.DirectedWeightedMultigraph;
 
+import application.AppBean;
 import beans.scripts.*;
 import beans.relation.Connection;
 import beans.relation.Relation;
-import beans.scripts.IllnessScriptInterface;
 import controller.*;
 import database.DBList;
 import beans.list.ListItem;
@@ -221,6 +221,34 @@ public class Graph extends DirectedWeightedMultigraph<MultiVertex, MultiEdge> {
 		if(source!=null && target!=null){
 			MultiEdge edge = addOrUpdateEdge(getVertexByIdAndType(source.getListItemId(), source.getRelationType()), getVertexByIdAndType(target.getListItemId(), target.getRelationType()), type, weight, cnx, patIllScript.getType());
 			
+		}
+		else if(source==null || target==null) {
+			checkAndAddPassiveEdge(cnx, source, target, type, weight);
+		}	
+	}
+	
+	/**
+	 * If one or both of the end nodes is a "passive" on, i.e. has been added by the expert and just displayed
+	 * for the learner, we have to check in the expert map for this node. 
+	 * @param cnx
+	 * @param source
+	 * @param target
+	 */
+	private void checkAndAddPassiveEdge(Connection cnx, Relation source, Relation target, int type, int weight) {
+		if(source==null) {
+			 PatientIllnessScript expIllScript = AppBean.getExpertPatIllScript(vpId);
+			 if(expIllScript!=null)
+				 source = expIllScript.getRelationByIdAndType(cnx.getStartId(), cnx.getStartType());
+			 
+		}
+		if(target==null) {
+			 PatientIllnessScript expIllScript = AppBean.getExpertPatIllScript(vpId);
+			 if(expIllScript!=null)
+				 target = expIllScript.getRelationByIdAndType(cnx.getTargetId(), cnx.getTargetType());
+			 
+		}
+		if(source!=null && target!=null) {
+			MultiEdge edge = addOrUpdateEdge(getVertexByIdAndType(source.getListItemId(), source.getRelationType()), getVertexByIdAndType(target.getListItemId(), target.getRelationType()), type, weight, cnx, PatientIllnessScript.TYPE_LEARNER_CREATED);
 		}
 	}
 	

@@ -16,7 +16,13 @@
 		<property name="expFeedbackMode" column="exp_feedback_mode" type="int" />
 		<property name="ddxMode" column="ddx_mode" type="int" />
 		<property name="listMode" column="list_mode" type="int" />
-		<property name="boxesUsedStr" column="boxesusedstr" type="string" />
+		<!--property name="boxesUsedStr" column="boxesusedstr" type="string" />-->
+		<property name="boxUsedFdg" column="box_used_fdg" type="int" />
+		<property name="boxUsedDDX" column="box_used_ddx" type="int" />
+		<property name="boxUsedMng" column="box_used_mng" type="int" />
+		<property name="boxUsedTst" column="box_used_tst" type="int" />
+		<property name="boxUsedPat" column="box_used_pat" type="int" />
+		<property name="boxUsedSum" column="box_used_sum" type="int" />
 		
 		
 </class>

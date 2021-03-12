@@ -60,7 +60,16 @@ public class SessionSetting {
 	 * If boxes shall be displayed but in a passive mode, there needs to be a 2 at the position.
 	 * Is stores as a String in the database! 
 	 */
-	private int[] boxesUsed = {1,1,1,1,1,0}; 
+	//private int[] boxesUsed = {1,1,1,1,1,0}; 
+	
+	private int boxUsedFdg = 1; //findings used (active=1, passive=2)
+	private int boxUsedDDX = 1; //ddx used (active=1, passive=2)
+	private int boxUsedTst = 1; //tests used (active=1, passive=2)
+	private int boxUsedMng = 1; //management used (active=1, passive=2)
+	private int boxUsedPat = 0; //pathophys used (active=1, passive=2)
+	private int boxUsedSum = 1; //summary statement used (active=1, passive=2)
+
+	
 	/**
 	 * at which position is a box, default is problems (0) at pos[0] upper left corner etc 
 	 * pos[1]=upper right corner, pos[2] = lower left corner, pos[3] = lower right corner
@@ -166,7 +175,7 @@ public class SessionSetting {
 	 * @param pos
 	 * @return
 	 */
-	public boolean displayBoxatPos(int pos){
+	/*public boolean displayBoxatPos(int pos){
 		try{
 			if (boxesUsed==null) return true; 
 			if (pos>boxesUsed.length) return true; 
@@ -177,15 +186,15 @@ public class SessionSetting {
 		CRTLogger.out("Exception" + StringUtilities.stackTraceToString(e), CRTLogger.LEVEL_ERROR);
 			return true;
 		}
-	}
+	}*/
 	
-	public int[] getBoxesUsed(){ return boxesUsed;}
-	public String getBoxesUsedStr(){ return StringUtilities.toString(boxesUsed,",");}
+	//public int[] getBoxesUsed(){ return boxesUsed;}
+	//public String getBoxesUsedStr(){ return StringUtilities.toString(boxesUsed,",");}
 	
-	public void setBoxesUsedStr(String boxesUsedStr){
+	/*public void setBoxesUsedStr(String boxesUsedStr){
 		if(boxesUsedStr==null || boxesUsedStr.equals("") || !boxesUsedStr.contains(",")) return;
 		boxesUsed = StringUtilities.getIntArrFromString(boxesUsedStr, ",");
-	}
+	}*/
 	
 	/**
 	 * value was originally 0 or 1 (on/off), now we use a value to indicate the type of box 
@@ -194,19 +203,33 @@ public class SessionSetting {
 	 * @param i
 	 * @param value
 	 */
-	public void setBoxesUsed(int i, int value){	
+	/*private void setBoxesUsed(int i, int value){	
 		try{
 			if(value>=0)
 				boxesUsed[i]=value;
 			else boxesUsed[i]=1;
 		}
 		catch (Exception e){};
-	}
+	}*/
 	
-	public int getProbBoxUsed(){ return boxesUsed[0];}
+	public int getBoxUsedFdg() {return boxUsedFdg;}
+	public void setBoxUsedFdg(int boxUsedFdg) {	this.boxUsedFdg = boxUsedFdg;}
+	public int getBoxUsedDDX() {return boxUsedDDX;}
+	public void setBoxUsedDDX(int boxUsedDDX) {this.boxUsedDDX = boxUsedDDX;}
+	public int getBoxUsedTst() {return boxUsedTst;}
+	public void setBoxUsedTst(int boxUsedTst) {this.boxUsedTst = boxUsedTst;}
+	public int getBoxUsedMng() {return boxUsedMng;}
+	public void setBoxUsedMng(int boxUsedMng) {this.boxUsedMng = boxUsedMng;}
+	public int getBoxUsedPat() {return boxUsedPat;}
+	public void setBoxUsedPat(int boxUsedPat) {this.boxUsedPat = boxUsedPat;}
+	public int getBoxUsedSum() {return boxUsedSum;}
+	public void setBoxUsedSum(int boxUsedSum) {this.boxUsedSum = boxUsedSum;}
+	
+	
+	/*public int getProbBoxUsed(){ return boxesUsed[0];}
 	public int getDdxBoxUsed(){ return boxesUsed[1];}	
 	public int getTestBoxUsed(){ return boxesUsed[2];}
 	public int getMngBoxUsed(){ return boxesUsed[3];}
-	public int getPathoBoxUsed(){ return boxesUsed[4];}
+	public int getPathoBoxUsed(){ return boxesUsed[4];}*/
 	
 }

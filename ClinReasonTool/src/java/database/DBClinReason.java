@@ -302,7 +302,7 @@ public class DBClinReason /*extends HibernateUtil*/{
      * for recalculation and scoring of summary statements in new format
      * @return PatientIllnessScript or null
      */
-    public List selectLearnerPatIllScriptsByNotAnalyzedSummSt(int max, Date startDate, Date endDate, int type, boolean loadNodes, int analyzed, boolean submittedStage){
+    public List selectLearnerPatIllScriptsByNotAnalyzedSummSt(int max, Date startDate, Date endDate, int type, boolean loadNodes, int analyzed, boolean submittedStage, int recalc){
     	/*
     	 * select * from CRT.PATIENT_ILLNESSSCRIPT pis,CRT.SUMMSTATEMENT smst where pis.SUMMST_ID = smst.ID and smst.ANALYZED = 0 and lang in ('de', 'en') and pis.TYPE = 1
     	 */
@@ -323,6 +323,10 @@ public class DBClinReason /*extends HibernateUtil*/{
     	
     	if (analyzed>=0) {
     		stmts.add( Property.forName("stmt.analyzed").eq(analyzed == 1 ? Boolean.TRUE : Boolean.FALSE) );
+    	}
+    	
+    	if (recalc>=0) {
+    		stmts.add( Property.forName("stmt.recalcMode").eq(recalc) );
     	}
     	
     	if (startDate != null) {

@@ -138,6 +138,7 @@ public class SummaryStatementAPI extends AbstractAPIImpl {
 					thread.setEndDate(StringUtilities.getDateFromString((String) ((HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest()).getParameter("end_date"), null));
 					thread.setLoadNodes(StringUtilities.getBooleanFromString((String) ((HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest()).getParameter("load_nodes"), false));
 					thread.setSubmittedStage(StringUtilities.getBooleanFromString((String) ((HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest()).getParameter("submitted_stage"), true));
+					thread.setRecalcMode(StringUtilities.getIntegerFromString((String) ((HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest()).getParameter("recalc_mode"), 1));
 					mythread = thread;
 					mythread.start();
 					
@@ -331,6 +332,7 @@ public class SummaryStatementAPI extends AbstractAPIImpl {
 		boolean loadNodes = false;
 		int analyzed = -1;
 		boolean submittedStage = true;
+		int recalcMode = -1;
 		
 		int count = -1;
 		int idx = -1;
@@ -338,7 +340,7 @@ public class SummaryStatementAPI extends AbstractAPIImpl {
 		@Override
 		public void run() {
 			 try{
-				 List<PatientIllnessScript> userPatientIllnesScripts = new DBClinReason().selectLearnerPatIllScriptsByNotAnalyzedSummSt(max, startDate, endDate, type, loadNodes, analyzed, submittedStage);
+				 List<PatientIllnessScript> userPatientIllnesScripts = new DBClinReason().selectLearnerPatIllScriptsByNotAnalyzedSummSt(max, startDate, endDate, type, loadNodes, analyzed, submittedStage, recalcMode);
 				 if (userPatientIllnesScripts != null) {
 					 this.count = userPatientIllnesScripts.size();
 					 this.idx = 0;
@@ -475,6 +477,14 @@ public class SummaryStatementAPI extends AbstractAPIImpl {
 
 		public void setSubmittedStage(boolean submittedStage) {
 			this.submittedStage = submittedStage;
+		}
+
+		public int getRecalcMode() {
+			return recalcMode;
+		}
+
+		public void setRecalcMode(int recalcMode) {
+			this.recalcMode = recalcMode;
 		}
 		
 		

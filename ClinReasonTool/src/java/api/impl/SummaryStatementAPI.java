@@ -356,8 +356,7 @@ public class SummaryStatementAPI extends AbstractAPIImpl {
 								results.add(result1);
 							 }
 							 
-							CRTLogger.out("SummaryStatementAPI.ReScoreThread.run: userPatientIllnesScript: "  + userPatientIllnesScript.getId() + ", st: " + st.getId(), CRTLogger.LEVEL_PROD);
-
+							CRTLogger.out("SummaryStatementAPI.ReScoreThread.run: userPatientIllnesScript: "  + userPatientIllnesScript.getId() + ", st: " + st != null ? Long.toString(st.getId()) : "null?", CRTLogger.LEVEL_PROD);
 						} catch (Throwable e) {
 							Map result1 = new TreeMap();
 							Map userObj = new TreeMap();

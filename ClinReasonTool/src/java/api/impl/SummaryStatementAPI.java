@@ -355,6 +355,9 @@ public class SummaryStatementAPI extends AbstractAPIImpl {
 								ctrl.addSummaryStatementToResultObj(result1, userPatientIllnesScript, st,false);
 								results.add(result1);
 							 }
+							 
+							CRTLogger.out("SummaryStatementAPI.ReScoreThread.run: userPatientIllnesScript: "  + userPatientIllnesScript.getId() + ", st: " + st.getId(), CRTLogger.LEVEL_PROD);
+
 						} catch (Throwable e) {
 							Map result1 = new TreeMap();
 							Map userObj = new TreeMap();
@@ -362,6 +365,7 @@ public class SummaryStatementAPI extends AbstractAPIImpl {
 							ctrl.addSummaryStatementToResultObj(userObj, "UserPatientIllnesScript.", userPatientIllnesScript);
 							ctrl.addToResultObj(result1, "exception", Utility.stackTraceToString(e));
 							results.add(result1);
+							CRTLogger.out("SummaryStatementAPI.ReScoreThread.run: userPatientIllnesScript: "  + userPatientIllnesScript.getId() + ", x: " + Utility.stackTraceToString(e), CRTLogger.LEVEL_PROD);
 						}
 					 }
 				 }

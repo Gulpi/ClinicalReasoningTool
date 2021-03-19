@@ -197,6 +197,9 @@ public class SummaryStatementAPI extends AbstractAPIImpl {
 			st = new SummaryStatementController().initSummStRating(expScript, userPatientIllnesScript, action);	
 			action.doScoring(st, expScript.getSummSt());
 		}
+		else {
+    		CRTLogger.out("SummaryStatementAPI.handleByPatientIllnessScript: !!!! No expert SummSt for userPatientIllnesScript.id: "  + userPatientIllnesScript.getId() + "; userPatientIllnesScript.vp_id: " + userPatientIllnesScript.getVpId() , CRTLogger.LEVEL_PROD);
+		}
 		
 		return st;
 	}

@@ -6,7 +6,7 @@ var ep_top_prefix = "3_";
 var ep_bottom_prefix = "4_";
 
 var groups = new Array("fdg_group", "ddx_group","tst_group", "mng_group", "sum_group", "pat_group");
-
+var boxes;
 /*
  * TODO not very elegant, but the "" vs non "" is important and seems to be difficult to do when getting the items/ids from 
  * an array....
@@ -14,7 +14,7 @@ var groups = new Array("fdg_group", "ddx_group","tst_group", "mng_group", "sum_g
  */
 function initGroups(){
 	//var boxes = new Array("fdg_box", "ddx_box", "tst_box", "mng_box", "sum_box" /*, pat_box*/ );
-	var boxes = createBoxesArr();
+	boxes = createBoxesArr();
 	for(var i=0; i<boxes.length;i++){
 		instance.addGroup({
 	        el: document.getElementById(boxes[i]),
@@ -123,27 +123,33 @@ function updateItemCallback(data, items, boxId){
  * attach an item to a group and make it a target
  */
 function addToGroup(itemId, item){ 
-	if(itemId.indexOf("fdg")>=0){
-		instance.addToGroup("fdg_group", item);
-		return;
+	try{
+		if(itemId.indexOf("fdg")>=0){
+			instance.addToGroup("fdg_group", item);
+			return;
+		}
+		if(itemId.indexOf("ddx")>=0){
+			instance.addToGroup("ddx_group", item);
+			return;
+		}
+		if(itemId.indexOf("tst")>=0){
+			instance.addToGroup("tst_group", item);
+			return;
+		}
+		if(itemId.indexOf("mng")>=0){
+			instance.addToGroup("mng_group", item);
+		}
+		
+		if(itemId.indexOf("pat")>=0){
+			instance.addToGroup("pat_group", item);
+		}
 	}
-	if(itemId.indexOf("ddx")>=0){
-		instance.addToGroup("ddx_group", item);
-		return;
-	}
-	if(itemId.indexOf("tst")>=0){
-		instance.addToGroup("tst_group", item);
-		return;
-	}
-	if(itemId.indexOf("mng")>=0){
-		instance.addToGroup("mng_group", item);
-	}
-	
-	if(itemId.indexOf("pat")>=0){
-		instance.addToGroup("pat_group", item);
+	catch(err){
+		var x = err;
 	}
 	
 }
+
 
 /*
  * an item is moved, so we store the new position
@@ -301,7 +307,7 @@ function initBoxHeights(){
 
 function sendNewHeightToHostSystem(){
 	var rowsHeight = $(".pos_1").height() + $(".pos_3").height(); //$("#fdg_box").height() + $("#mng_box").height();
-	var minHeight = 520;
+	//var minHeight = 520;
 	var newFrameHeight = 730;
 	if((rowsHeight-520)>0) newFrameHeight += rowsHeight-520;
 	postFrameHeight(newFrameHeight);			

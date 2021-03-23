@@ -561,7 +561,7 @@ public class PatientIllnessScript extends Beans implements Comparable, IllnessSc
 	
 	public void save(){
 		User u = NavigationController.getInstance().getMyFacesContext().getUser();
-		if(u!=null && u.getUserId()!=this.userId) return; //so not save if the users do not match!
+		if(u!=null && !(this.getType()==PatientIllnessScript.TYPE_EXPERT_CREATED || u.getUserId()!=this.userId)) return; //so not save if the users do not match!
 		boolean isNew = false;
 		if(getId()<=0) isNew = true;
 		setLastAccessDate(new Timestamp(System.currentTimeMillis()));

@@ -316,6 +316,10 @@ public class DBClinReason /*extends HibernateUtil*/{
     	lang.add("de");
     	lang.add("en");
     	
+    	List<Locale> locale = new ArrayList<Locale>();
+    	locale.add(Locale.GERMAN);
+    	locale.add(Locale.ENGLISH);
+    	
     	// sub query:
     	DetachedCriteria stmts = DetachedCriteria.forClass(SummaryStatement.class, "stmt")
     			.setProjection( Property.forName("stmt.id") )
@@ -348,7 +352,7 @@ public class DBClinReason /*extends HibernateUtil*/{
     	
     	Disjunction disjunction = Restrictions.disjunction();
     	disjunction.add(Property.forName("pis2.summStId").le(Long.valueOf(0)));
-    	disjunction.add(Restrictions.not(Property.forName("pis2.locale").in(lang)));
+    	disjunction.add(Restrictions.not(Property.forName("pis2.locale").in(locale)));
     	
     	//select distinct(vp_id) from CRT.PATIENT_ILLNESSSCRIPT where type=2 and SUMMST_ID = -1
     	DetachedCriteria pis2 = DetachedCriteria.forClass(PatientIllnessScript.class, "pis2")

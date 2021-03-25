@@ -350,6 +350,8 @@ public class SummaryStatementAPI extends AbstractAPIImpl {
 					 Iterator<PatientIllnessScript> it = userPatientIllnesScripts.iterator();
 					 while (it.hasNext()) {
 						 PatientIllnessScript userPatientIllnesScript = it.next();
+						 CRTLogger.out("SummaryStatementAPI.ReScoreThread.run: next: userPatientIllnesScript: "  + userPatientIllnesScript != null ? Long.toString(userPatientIllnesScript.getId()) : "null", CRTLogger.LEVEL_PROD);
+
 						 idx++;
 						 try {
 							SummaryStatement st = ctrl.handleByPatientIllnessScript(userPatientIllnesScript);

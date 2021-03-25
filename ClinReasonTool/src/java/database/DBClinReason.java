@@ -337,7 +337,7 @@ public class DBClinReason /*extends HibernateUtil*/{
     	}
     	
     	// now query
-    	criteria.add(Property.forName("stmt.summStId").in(stmts));
+    	criteria.add(Property.forName("summStId").in(stmts));
     	if (max>0) {
     		criteria.setMaxResults(max);
     	}
@@ -352,7 +352,7 @@ public class DBClinReason /*extends HibernateUtil*/{
     			.add(Property.forName("pis2.type").eq(2))
     			.add(Property.forName("pis2.summStId").le(0));
     	
-    	criteria.add(Property.forName("stmt.vpId").notIn(pis2));
+    	criteria.add(Property.forName("vpId").notIn(pis2));
     	    	
     	criteria.addOrder(Order.asc("creationDate"));
 		CRTLogger.out("DBClinReason.selectLearnerPatIllScriptsByNotAnalyzedSummSt: criteria: "  + criteria + ", " + stmts, CRTLogger.LEVEL_PROD);

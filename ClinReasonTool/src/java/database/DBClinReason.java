@@ -349,8 +349,8 @@ public class DBClinReason /*extends HibernateUtil*/{
     	//select distinct(vp_id) from CRT.PATIENT_ILLNESSSCRIPT where type=2 and SUMMST_ID = -1
     	DetachedCriteria pis2 = DetachedCriteria.forClass(PatientIllnessScript.class, "pis2")
     			.setProjection( Projections.distinct(Property.forName("pis2.vpId")) )
-    			.add(Property.forName("pis2.type").eq(2))
-    			.add(Property.forName("pis2.summStId").le(0));
+    			.add(Property.forName("pis2.type").eq(Integer.valueOf(2)))
+    			.add(Property.forName("pis2.summStId").le(Long.valueOf(0)));
     	
     	criteria.add(Property.forName("vpId").notIn(pis2));
     	    	

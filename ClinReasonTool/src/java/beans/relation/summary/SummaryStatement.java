@@ -179,7 +179,7 @@ public class SummaryStatement extends Beans implements Serializable, Comparable{
 	public int getRecalcMode() {return recalcMode;}
 	public void setRecalcMode(int recalcMode) {this.recalcMode = recalcMode;}
 	public boolean doRecalculate() {
-		if (recalcMode==0)return true; 
+		if (recalcMode==1)return true; 
 		return false;
 	}
 	

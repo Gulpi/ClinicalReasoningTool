@@ -346,16 +346,20 @@ public class DBClinReason /*extends HibernateUtil*/{
     		criteria.add(Property.forName("submittedStage").gt(Integer.valueOf(0)));
     	}
     	
+    	Disjunction disjunction = Restrictions.disjunction();
+    	disjunction.add(Property.forName("pis2.summStId").le(Long.valueOf(0)));
+    	disjunction.add(Restrictions.not(Property.forName("pis2.locale").in(lang)));
+    	
     	//select distinct(vp_id) from CRT.PATIENT_ILLNESSSCRIPT where type=2 and SUMMST_ID = -1
     	DetachedCriteria pis2 = DetachedCriteria.forClass(PatientIllnessScript.class, "pis2")
     			.setProjection( Projections.distinct(Property.forName("pis2.vpId")) )
     			.add(Property.forName("pis2.type").eq(Integer.valueOf(2)))
-    			.add(Property.forName("pis2.summStId").le(Long.valueOf(0)));
+    			.add(disjunction);
     	
     	criteria.add(Property.forName("vpId").notIn(pis2));
     	    	
     	criteria.addOrder(Order.asc("creationDate"));
-		CRTLogger.out("DBClinReason.selectLearnerPatIllScriptsByNotAnalyzedSummSt: criteria: "  + criteria + ", " + stmts, CRTLogger.LEVEL_PROD);
+		CRTLogger.out("DBClinReason.selectLearnerPatIllScriptsByNotAnalyzedSummSt: criteria: "  + criteria + ", " + stmts + "," + pis2, CRTLogger.LEVEL_PROD);
   	
     	List<PatientIllnessScript> scripts = criteria.list();
     	long smstMs = 0;

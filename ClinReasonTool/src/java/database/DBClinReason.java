@@ -194,7 +194,7 @@ public class DBClinReason /*extends HibernateUtil*/{
     	return selectAllIllScriptById(id, "id", true);
     }
     
-    private PatientIllnessScript selectAllIllScriptById(long id, String identifier, boolean considerType){
+    public PatientIllnessScript selectAllIllScriptById(long id, String identifier, boolean considerType){
     	Session s = instance.getInternalSession(Thread.currentThread(), false);
     	Criteria criteria = s.createCriteria(PatientIllnessScript.class,"PatientIllnessScript");
     	criteria.add(Restrictions.eq(identifier, new Long(id)));
@@ -205,10 +205,15 @@ public class DBClinReason /*extends HibernateUtil*/{
     		patIllScript.setSummSt(loadSummSt(patIllScript.getSummStId(), s));
     		selectNodesAndConns(patIllScript, s);
     	}
+    	else {
+    		CRTLogger.out("DBClinReason.selectAllIllScriptById: long: "  + id + ", identifier: " + identifier + ", considerType: " + considerType+ ", criteria: " + criteria, CRTLogger.LEVEL_PROD);
+
+    	}
     	s.close();
     	return patIllScript;
    	
     }
+    
 
     /**
      * Select the PatientIllnessScripts for the userId from the database. 
@@ -292,11 +297,12 @@ public class DBClinReason /*extends HibernateUtil*/{
     	return scripts;
     }
     
+    
     /**
      * for recalculation and scoring of summary statements in new format
      * @return PatientIllnessScript or null
      */
-    public List selectLearnerPatIllScriptsByNotAnalyzedSummSt(int max, Date startDate, Date endDate, int type, boolean loadNodes, int analyzed, boolean submittedStage){
+    public List selectLearnerPatIllScriptsByNotAnalyzedSummSt(int max, Date startDate, Date endDate, int type, boolean loadNodes, int analyzed, boolean submittedStage, int recalc){
     	/*
     	 * select * from CRT.PATIENT_ILLNESSSCRIPT pis,CRT.SUMMSTATEMENT smst where pis.SUMMST_ID = smst.ID and smst.ANALYZED = 0 and lang in ('de', 'en') and pis.TYPE = 1
     	 */
@@ -310,6 +316,10 @@ public class DBClinReason /*extends HibernateUtil*/{
     	lang.add("de");
     	lang.add("en");
     	
+    	List<Locale> locale = new ArrayList<Locale>();
+    	locale.add(Locale.GERMAN);
+    	locale.add(Locale.ENGLISH);
+    	
     	// sub query:
     	DetachedCriteria stmts = DetachedCriteria.forClass(SummaryStatement.class, "stmt")
     			.setProjection( Property.forName("stmt.id") )
@@ -317,6 +327,10 @@ public class DBClinReason /*extends HibernateUtil*/{
     	
     	if (analyzed>=0) {
     		stmts.add( Property.forName("stmt.analyzed").eq(analyzed == 1 ? Boolean.TRUE : Boolean.FALSE) );
+    	}
+    	
+    	if (recalc>=0) {
+    		stmts.add( Property.forName("stmt.recalcMode").eq(recalc) );
     	}
     	
     	if (startDate != null) {
@@ -336,8 +350,20 @@ public class DBClinReason /*extends HibernateUtil*/{
     		criteria.add(Property.forName("submittedStage").gt(Integer.valueOf(0)));
     	}
     	
+    	Disjunction disjunction = Restrictions.disjunction();
+    	disjunction.add(Property.forName("pis2.summStId").le(Long.valueOf(0)));
+    	disjunction.add(Restrictions.not(Property.forName("pis2.locale").in(locale)));
+    	
+    	//select distinct(vp_id) from CRT.PATIENT_ILLNESSSCRIPT where type=2 and SUMMST_ID = -1
+    	DetachedCriteria pis2 = DetachedCriteria.forClass(PatientIllnessScript.class, "pis2")
+    			.setProjection( Projections.distinct(Property.forName("pis2.vpId")) )
+    			.add(Property.forName("pis2.type").eq(Integer.valueOf(2)))
+    			.add(disjunction);
+    	
+    	criteria.add(Property.forName("vpId").notIn(pis2));
+    	    	
     	criteria.addOrder(Order.asc("creationDate"));
-		CRTLogger.out("DBClinReason.selectLearnerPatIllScriptsByNotAnalyzedSummSt: criteria: "  + criteria + ", " + stmts, CRTLogger.LEVEL_PROD);
+		CRTLogger.out("DBClinReason.selectLearnerPatIllScriptsByNotAnalyzedSummSt: criteria: "  + criteria + ", " + stmts + "," + pis2, CRTLogger.LEVEL_PROD);
   	
     	List<PatientIllnessScript> scripts = criteria.list();
     	long smstMs = 0;

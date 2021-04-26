@@ -13,6 +13,7 @@ import beans.scripts.VPScriptRef;
 import database.*;
 import beans.list.*;
 import util.CRTLogger;
+import util.StringUtilities;
 
 /**
  * Copies a script/map created by an expert including translation into a different language (e.g. from de to en). 
@@ -27,6 +28,7 @@ public class ScriptCopyController {
 	private static PatientIllnessScript orgScript;
 	private static Properties idTable = new Properties();
 	private static StringBuffer returnMsg = new StringBuffer();
+	public boolean copyExpScript;
 	
 	/**
 	 * We copy/duplicate a map into the same language
@@ -45,7 +47,7 @@ public class ScriptCopyController {
 	/**
 	 * Triggering of map copying via an API (edit/copyscript.xhtml is called)
 	 */
-	public boolean getCopyExpScriptViaAPI(){
+	/*public boolean getCopyExpScriptViaAPI(){
 		CRTLogger.out("Copy script", CRTLogger.LEVEL_PROD);
 		String orgVpId = AjaxController.getInstance().getRequestParamByKey("org_vp_id");
 		String newVPId = AjaxController.getInstance().getRequestParamByKey("new_vp_id");
@@ -53,7 +55,24 @@ public class ScriptCopyController {
 		if(!validSharedSecret || orgVpId==null || newVPId==null) return false;
 		ScriptCopyController.initCopy(orgVpId, newVPId);
 		return true;
+	}*/
+	/**
+	 * We trigger the copying and translating of an expert script... 
+	 */
+	public boolean getCopyExpScript(){
+		CRTLogger.out("Copy script", CRTLogger.LEVEL_PROD);
+		String orgVpId = AjaxController.getInstance().getRequestParamByKey("org_vp_id");
+		String newVPId = AjaxController.getInstance().getRequestParamByKey("new_vp_id");
+		String lang = AjaxController.getInstance().getRequestParamByKey(AjaxController.REQPARAM_SCRIPTLOC);
+		boolean validSharedSecret = AjaxController.getInstance().isValidSharedSecret();
+		if(!validSharedSecret || orgVpId==null || newVPId==null) return false;
+		ScriptCopyController.initCopyAndTranslate(orgVpId, newVPId, lang);
+		return true;
 	}
+	public void copyExpScript() {
+		getCopyExpScript();
+	}
+
 	
 	/**
 	 * We duplicate the map with the org id and translate it into a different language 
@@ -75,7 +94,12 @@ public class ScriptCopyController {
 			copyScript(newVPId);
 		}
 		if(newScript!=null){
-			NavigationController.getInstance().getAdminFacesContext().getAdminPortfolio().addExpertScript(newScript);
+			try {
+				NavigationController.getInstance().getAdminFacesContext().getAdminPortfolio().addExpertScript(newScript);
+			}
+			catch(Exception e) {
+				CRTLogger.out(StringUtilities.stackTraceToString(e), CRTLogger.LEVEL_ERROR);
+			}
 		}
 	}
 	

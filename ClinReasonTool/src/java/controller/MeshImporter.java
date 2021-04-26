@@ -20,10 +20,10 @@ import util.*;
  */
 public class MeshImporter {
 	//change for new import:
-	static String file = "/Users/ingahege/ownCloud/documents/Inga/marie_curie/WP2_concept/mesh/d2016.bin";
-	static String fileToImport = "/Users/ingahege/ownCloud/documents/Inga/Forschung/ToolTranslation/decs_portugues_2018/pordesc2018.xml"; //"/Users/ingahege/ownCloud/documents/Inga/marie_curie/WP2_concept/mesh/deutsch/MeSH-2016.xml";
+	//static String file = "/Users/ingahege/ownCloud/documents/Inga/marie_curie/WP2_concept/mesh/d2016.bin";
+	static String fileToImport = "/Users/ingahege/ownCloud/documents/Inga/Forschung/ToolTranslation/fredesc2020.xml"; //"/Users/ingahege/ownCloud/documents/Inga/marie_curie/WP2_concept/mesh/deutsch/MeSH-2016.xml";
 	//static String file_campus = "/Users/ingahege/ownCloud/Shared/instruct (2)/CASUS/CampusCasus/campus_list_items_not_in_crt_list.txt";
-	private static final String lang = "pt"; //Change for other lists....
+	private static final String lang = "fr"; //Change for other lists....
 	
 	public static void main(String[] lang){
 		//if(lang.equals("en")) createRecord();
@@ -53,7 +53,7 @@ public class MeshImporter {
 				}					
 				
 				//if(line.contains("<TermUI>ger"))readNextLine2 = true; //de import
-				if(line.contains("<TermUI>por"))readNextLine2 = true;
+				if(line.contains("<TermUI>fre"))readNextLine2 = true;
 				if(readNextLine2 && line.contains("<String>")){
 					str[2] = StringUtils.substringBetween(line, "<String>", "</String>");
 					readNextLine2 = false;

@@ -212,8 +212,11 @@ public class SessionSetting {
 		catch (Exception e){};
 	}*/
 	
-	public int getBoxUsedFdg() {return boxUsedFdg;}
-	public void setBoxUsedFdg(int boxUsedFdg) {	this.boxUsedFdg = boxUsedFdg;}
+	public int getBoxUsedFdg() {
+		return boxUsedFdg;}
+	public void setBoxUsedFdg(int boxUsedFdg) 
+	{	
+		this.boxUsedFdg = boxUsedFdg;}
 	public int getBoxUsedDDX() {return boxUsedDDX;}
 	public void setBoxUsedDDX(int boxUsedDDX) {this.boxUsedDDX = boxUsedDDX;}
 	public int getBoxUsedTst() {return boxUsedTst;}

@@ -39,7 +39,7 @@ public class SummaryStatementController {
 	private static Map<String, List<ListItem>> listItems;
 	private static Map<String, List<ListItem>> aList; //Mesh items with code "A" - have it separate because not considered for scripts.
 	private static List<SIUnit> unitList;
-	public static List<TransformRule> transformRules;
+	private static List<TransformRule> transformRules;
 	//key = vp_id
 	private static Map<String, PatientIllnessScript>  tempExpMaps= new TreeMap();
 	
@@ -381,8 +381,13 @@ public class SummaryStatementController {
 			JsonTest jt = new DBClinReason().selectJsonTestBySummStId(st.getId()); //the json of the statement
 			if(jt==null) jt = initJsonTest(st);
 	
-			SpacyDocJson spacy = new SpacyDocJson(jt.getJson().trim());
-			if(spacy!=null) spacy.init();
+			SpacyDocJson spacy = null;
+			try {
+				spacy = new SpacyDocJson(jt.getJson().trim());
+				if(spacy!=null) spacy.init();
+			} catch (Exception e) {
+				CRTLogger.out("SummarySTatementController.initSummStRating error in init spacy: smst.id:" + st.getId() + ": jt.getJson(): < " + jt.getJson() + ">", CRTLogger.LEVEL_ERROR);
+			}
 	
 			JsonTest jt2 = new DBClinReason().selectJsonTestBySummStId(expSt.getId()); //the json of the statement
 			
@@ -408,8 +413,14 @@ public class SummaryStatementController {
 				CRTLogger.out("spacy exp processing end: " + jt2.getJson() + "; " + (endms1-startms1), CRTLogger.LEVEL_PROD);
 			}*/
 			
-			SpacyDocJson spacyE = new SpacyDocJson(jt2.getJson().trim());
-			spacyE.init();
+			SpacyDocJson spacyE = null;
+			try {
+				spacyE = new SpacyDocJson(jt2.getJson().trim());
+				if(spacyE!=null) spacyE.init();
+			} catch (Exception e) {
+				CRTLogger.out("SummarySTatementController.initSummStRating error in init spacy: jt2.id:" + jt2.getId() + ": jt.getJson(): < " + jt2.getJson() + ">", CRTLogger.LEVEL_ERROR);
+			}
+			
 			Locale loc = new Locale(st.getLang());
 			analyzeExpStatement(expSt, spacyE, loc, expScript);
 			st.setSpacy_json(jt.getJson());
@@ -486,6 +497,21 @@ public class SummaryStatementController {
 	private JsonTest initJsonTest(SummaryStatement st){
 		long startms1 = System.currentTimeMillis();
 		CRTLogger.out("spacy processing start: " + startms1, CRTLogger.LEVEL_PROD);
+		CRTLogger.out("spacy processing start: st.getText():" + st.getText(), CRTLogger.LEVEL_PROD);
+		
+		try {
+			st.jsonClean();
+			StringBuffer sb = new StringBuffer();
+			for (int i = 0;i <st.getText().length(); i++) {
+				char c = st.getText().charAt(i);
+				sb.append("("); sb.append(i); sb.append("):"); sb.append(Integer.toHexString(c)); sb.append(",");
+			}
+			
+			CRTLogger.out("spacy processing start: sb:" + sb.toString(), CRTLogger.LEVEL_PROD);
+		}
+		catch (Throwable th) {
+			
+		}
 		
 		JsonTest jt = new JsonTest(st.getId());
 		jt.setJson("");

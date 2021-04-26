@@ -1,10 +1,12 @@
 package api.impl;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -16,8 +18,10 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import actions.scoringActions.ScoringSummStAction;
+import api.AbstractAPIImpl;
 import api.ApiInterface;
 import application.AppBean;
+import beans.list.ListItem;
 import beans.relation.summary.SummaryStElem;
 import beans.relation.summary.SummaryStatement;
 import beans.relation.summary.SummaryStatementSQ;
@@ -26,9 +30,12 @@ import beans.scripts.PatientIllnessScript;
 import controller.JsonCreator;
 import controller.SummaryStatementController;
 import database.DBClinReason;
+import database.DBList;
 import net.casus.util.CasusConfiguration;
 import net.casus.util.StringUtilities;
 import net.casus.util.Utility;
+import net.casus.util.io.IOUtilities;
+import net.casus.util.nlp.spacy.SpacyStructureStats;
 import util.CRTLogger;
 
 /**
@@ -39,27 +46,14 @@ import util.CRTLogger;
  *
  * @author Gulpi (=Martin Adler)
  */
-public class SummaryStatementAPI implements ApiInterface {
-	AppBean appBean = null;
+public class SummaryStatementAPI extends AbstractAPIImpl {
 	ReScoreThread thread = null;
 	ReScoreThread lastThread = null;
 	
 	public SummaryStatementAPI() {
 	}
 	
-	/**
-	 * needs to be initialized, to be available alos from Threads, which do NOT have a Faces context!!!
-	 * @return
-	 */
-	public AppBean getAppBean(){
-		if (appBean == null) {
-			ServletContext context = (ServletContext) FacesContext.getCurrentInstance().getExternalContext().getContext();
-			appBean = (AppBean) context.getAttribute(AppBean.APP_KEY);
-		}
 		
-		return appBean;
-	}
-	
 	@SuppressWarnings("unchecked")
 	@Override
 	public synchronized String handle() {
@@ -69,12 +63,14 @@ public class SummaryStatementAPI implements ApiInterface {
 		
 		try {
 			// make sure appBean is there / in internal thread we don't have contexts!!
-			this.getAppBean();
+			this.init();
 			
 			// make sure lists are created already!
 			if (SummaryStatementController.getListItemsByLang("de") == null || SummaryStatementController.getListItemsByLang("en") == null) {
 				ServletContext context = (ServletContext) FacesContext.getCurrentInstance().getExternalContext().getContext();
 				new JsonCreator().initJsonExport(context);
+				
+				cacheListItems2Json();
 			}
 		} catch (Exception e1) {
 			// TODO Auto-generated catch block
@@ -99,27 +95,36 @@ public class SummaryStatementAPI implements ApiInterface {
 			long id = StringUtilities.getLongFromString((String) ((HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest()).getParameter("id"), -1);
 			if (id > 0) {
 				PatientIllnessScript userPatientIllnesScript = new DBClinReason().selectPatIllScriptById(id);
-				SummaryStatement st = this.handleByPatientIllnessScript(userPatientIllnesScript);
-				
-				if (st != null) {
-					resultObj.put("status", "ok");
+				if (userPatientIllnesScript == null) {
+					userPatientIllnesScript = new DBClinReason().selectAllIllScriptById(id, "summStId", false);
+				}
+				if (userPatientIllnesScript != null) {
+					SummaryStatement st = this.handleByPatientIllnessScript(userPatientIllnesScript);
 					
-					Map userObj = new TreeMap();
-					resultObj.put("User", userObj);
-					boolean collections = StringUtilities.getBooleanFromString((String) ((HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest()).getParameter("collections"), true);
-					this.addSummaryStatementToResultObj(userObj, userPatientIllnesScript, st, collections);
-					
-					PatientIllnessScript expScript = getAppBean().addExpertPatIllnessScriptForVpId(userPatientIllnesScript.getVpId());
-					if (expScript != null) {
-						Map expertObj = new TreeMap();
-						resultObj.put("Expert", expertObj);
-						this.addSummaryStatementToResultObj(expertObj, "ExpertPatientIllnesScript.", expScript);
-						this.addSummaryStatementToResultObj(expertObj, "ExpertSummaryStatement.", expScript.getSummSt(), true, collections);
+					if (st != null) {
+						resultObj.put("status", "ok");
+						
+						Map userObj = new TreeMap();
+						resultObj.put("User", userObj);
+						boolean collections = StringUtilities.getBooleanFromString((String) ((HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest()).getParameter("collections"), true);
+						this.addSummaryStatementToResultObj(userObj, userPatientIllnesScript, st, collections);
+						
+						PatientIllnessScript expScript = getAppBean().addExpertPatIllnessScriptForVpId(userPatientIllnesScript.getVpId());
+						if (expScript != null) {
+							Map expertObj = new TreeMap();
+							resultObj.put("Expert", expertObj);
+							this.addSummaryStatementToResultObj(expertObj, "ExpertPatientIllnesScript.", expScript);
+							this.addSummaryStatementToResultObj(expertObj, "ExpertSummaryStatement.", expScript.getSummSt(), true, collections);
+						}
+					}
+					else {
+						resultObj.put("status", "error");
+						resultObj.put("errorMsg", "no SummaryStatement object for id: " + id);
 					}
 				}
 				else {
 					resultObj.put("status", "error");
-					resultObj.put("errorMsg", "no SummaryStatement object ?");
+					resultObj.put("errorMsg", "userPatientIllnesScript == null for id: " + id);
 				}
 			}
 			else {
@@ -133,6 +138,7 @@ public class SummaryStatementAPI implements ApiInterface {
 					thread.setEndDate(StringUtilities.getDateFromString((String) ((HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest()).getParameter("end_date"), null));
 					thread.setLoadNodes(StringUtilities.getBooleanFromString((String) ((HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest()).getParameter("load_nodes"), false));
 					thread.setSubmittedStage(StringUtilities.getBooleanFromString((String) ((HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest()).getParameter("submitted_stage"), true));
+					thread.setRecalcMode(StringUtilities.getIntegerFromString((String) ((HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest()).getParameter("recalc_mode"), 1));
 					mythread = thread;
 					mythread.start();
 					
@@ -190,6 +196,9 @@ public class SummaryStatementAPI implements ApiInterface {
 			ScoringSummStAction action = new ScoringSummStAction();
 			st = new SummaryStatementController().initSummStRating(expScript, userPatientIllnesScript, action);	
 			action.doScoring(st, expScript.getSummSt());
+		}
+		else {
+    		CRTLogger.out("SummaryStatementAPI.handleByPatientIllnessScript: !!!! No expert SummSt for userPatientIllnesScript.id: "  + userPatientIllnesScript.getId() + "; userPatientIllnesScript.vp_id: " + userPatientIllnesScript.getVpId() , CRTLogger.LEVEL_PROD);
 		}
 		
 		return st;
@@ -326,6 +335,7 @@ public class SummaryStatementAPI implements ApiInterface {
 		boolean loadNodes = false;
 		int analyzed = -1;
 		boolean submittedStage = true;
+		int recalcMode = -1;
 		
 		int count = -1;
 		int idx = -1;
@@ -333,13 +343,15 @@ public class SummaryStatementAPI implements ApiInterface {
 		@Override
 		public void run() {
 			 try{
-				 List<PatientIllnessScript> userPatientIllnesScripts = new DBClinReason().selectLearnerPatIllScriptsByNotAnalyzedSummSt(max, startDate, endDate, type, loadNodes, analyzed, submittedStage);
+				 List<PatientIllnessScript> userPatientIllnesScripts = new DBClinReason().selectLearnerPatIllScriptsByNotAnalyzedSummSt(max, startDate, endDate, type, loadNodes, analyzed, submittedStage, recalcMode);
 				 if (userPatientIllnesScripts != null) {
 					 this.count = userPatientIllnesScripts.size();
 					 this.idx = 0;
 					 Iterator<PatientIllnessScript> it = userPatientIllnesScripts.iterator();
 					 while (it.hasNext()) {
 						 PatientIllnessScript userPatientIllnesScript = it.next();
+						 CRTLogger.out("SummaryStatementAPI.ReScoreThread.run: next: userPatientIllnesScript: "  + userPatientIllnesScript != null ? Long.toString(userPatientIllnesScript.getId()) : "null", CRTLogger.LEVEL_PROD);
+
 						 idx++;
 						 try {
 							SummaryStatement st = ctrl.handleByPatientIllnessScript(userPatientIllnesScript);
@@ -348,6 +360,8 @@ public class SummaryStatementAPI implements ApiInterface {
 								ctrl.addSummaryStatementToResultObj(result1, userPatientIllnesScript, st,false);
 								results.add(result1);
 							 }
+							 
+							CRTLogger.out("SummaryStatementAPI.ReScoreThread.run: userPatientIllnesScript: "  + userPatientIllnesScript != null ? Long.toString(userPatientIllnesScript.getId()) : "null" + ", st: " + st != null ? Long.toString(st.getId()) : "null?", CRTLogger.LEVEL_PROD);
 						} catch (Throwable e) {
 							Map result1 = new TreeMap();
 							Map userObj = new TreeMap();
@@ -355,6 +369,7 @@ public class SummaryStatementAPI implements ApiInterface {
 							ctrl.addSummaryStatementToResultObj(userObj, "UserPatientIllnesScript.", userPatientIllnesScript);
 							ctrl.addToResultObj(result1, "exception", Utility.stackTraceToString(e));
 							results.add(result1);
+							CRTLogger.out("SummaryStatementAPI.ReScoreThread.run: userPatientIllnesScript: "  + userPatientIllnesScript.getId() + ", x: " + Utility.stackTraceToString(e), CRTLogger.LEVEL_PROD);
 						}
 					 }
 				 }
@@ -471,7 +486,41 @@ public class SummaryStatementAPI implements ApiInterface {
 		public void setSubmittedStage(boolean submittedStage) {
 			this.submittedStage = submittedStage;
 		}
+
+		public int getRecalcMode() {
+			return recalcMode;
+		}
+
+		public void setRecalcMode(int recalcMode) {
+			this.recalcMode = recalcMode;
+		}
 		
 		
+	}
+	
+	
+	
+	// ----------------
+	
+	protected void cacheListItems2Json(String lang) {
+		ObjectMapper mapper = new ObjectMapper();
+		try {
+			List<ListItem> items = new DBList().selectListItemsByTypesAndLang(new Locale(lang), new String[]{JsonCreator.TYPE_ANATOMY, JsonCreator.TYPE_PROBLEM, JsonCreator.TYPE_TEST, JsonCreator.TYPE_DRUGS, JsonCreator.TYPE_EPI, JsonCreator.TYPE_MANUALLY_ADDED, JsonCreator.TYPE_PERSONS, JsonCreator.TYPE_HEALTHCARE, JsonCreator.TYPE_CONTEXT, JsonCreator.TYPE_B, JsonCreator.TYPE_G});
+			String result = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(items);
+			
+			File file = new File("list_items_" + lang);
+			IOUtilities.writeString2File(file, result);
+			CRTLogger.out("SummaryStatementAPI.cacheListItems2Json:" + file.getAbsolutePath(), CRTLogger.LEVEL_PROD);
+		} catch (Exception e) {
+			CRTLogger.out("x:" + e, CRTLogger.LEVEL_PROD);
+		}
+	}
+	protected void cacheListItems2Json() {
+		cacheListItems2Json("en");
+		cacheListItems2Json("de");
+		cacheListItems2Json("pl");
+		cacheListItems2Json("sv");
+		cacheListItems2Json("es");
+		cacheListItems2Json("pt");
 	}
 }

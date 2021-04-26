@@ -1,4 +1,5 @@
 package beans.relation.summary;
+
 import java.beans.Beans;
 import java.io.Serializable;
 import java.sql.Timestamp;
@@ -8,12 +9,13 @@ import javax.faces.bean.SessionScoped;
 
 import beans.list.*;
 import beans.relation.Relation;
+import net.casus.util.StringUtilities;
 import net.casus.util.nlp.spacy.SpacyDocToken; 
+
 /**
  * Summary Statement of the author or learner for a VP. There might be multiple Summary Statements for a case (changed
  * at distinct steps), all changes, variants are saved in the PIS_Log object.
  * @author ingahege
- *
  */
 @SessionScoped
 public class SummaryStatement extends Beans implements Serializable, Comparable{
@@ -116,6 +118,20 @@ public class SummaryStatement extends Beans implements Serializable, Comparable{
 		this.text = text;
 		this.patillscriptId = patIllscriptId;
 	}
+	
+	public void jsonClean() {
+		if (this.text != null) {
+			try {
+				this.text = StringUtilities.replace(this.text, "\u00A0", " ");
+			} catch (Throwable e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
+	}
+	
+	
 	public String getText() {return text;}
 	public void setText(String text) {this.text = text;}
 	public long getId() {return id;}
@@ -163,7 +179,7 @@ public class SummaryStatement extends Beans implements Serializable, Comparable{
 	public int getRecalcMode() {return recalcMode;}
 	public void setRecalcMode(int recalcMode) {this.recalcMode = recalcMode;}
 	public boolean doRecalculate() {
-		if (recalcMode==0)return true; 
+		if (recalcMode==1)return true; 
 		return false;
 	}
 	

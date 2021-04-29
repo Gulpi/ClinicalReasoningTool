@@ -561,7 +561,11 @@ public class PatientIllnessScript extends Beans implements Comparable, IllnessSc
 	
 	public void save(){
 		User u = NavigationController.getInstance().getMyFacesContext().getUser();
-		if(u!=null && !(this.getType()==PatientIllnessScript.TYPE_EXPERT_CREATED || u.getUserId()!=this.userId)) return; //so not save if the users do not match!
+		if(u==null) return; //do not save if we do not have a user! 
+		
+		//in expert maps the editing user can be different from the original, so only if we are in player we have to have matching users: 
+		if(this.getType()!=PatientIllnessScript.TYPE_EXPERT_CREATED && u.getUserId()!=this.userId) return; 
+		//if(!(this.getType()==PatientIllnessScript.TYPE_EXPERT_CREATED || u.getUserId()!=this.userId)) return; //so not save if the users do not match!
 		boolean isNew = false;
 		if(getId()<=0) isNew = true;
 		setLastAccessDate(new Timestamp(System.currentTimeMillis()));

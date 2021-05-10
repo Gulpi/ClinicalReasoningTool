@@ -49,6 +49,7 @@ if(scriptlang=="de") listUrl = "jsonp_de.json";
 else if(scriptlang=="es") listUrl = "jsonp_es.json";
 else if(scriptlang=="pt") listUrl = "jsonp_pt.json";
 else if(scriptlang=="pl") listUrl = "jsonp_pl.json"; 
+else if(scriptlang=="fr") listUrl = "jsonp_fr.json"; 
 else if (scriptlang=="sv") listUrl = "";
 var lang="#{crtContext.locale}";
 var currentStage = $.getUrlVar('stage');
@@ -317,7 +318,7 @@ item_arr = new Array();
 				</div>
 		</div>
 		  <!-- problems -->
-		  <div id="fdg_box" class="container fdg_cont hide_#{crtContext.sessSetting.boxUsedFdg}" group="fdg_group">
+		  <div id="fdg_box" class="container fdg_cont pos_#{crtContext.patillscript.fdgBoxNo} hide_#{crtContext.sessSetting.boxUsedFdg}" group="fdg_group">
 		   		<div id="fdg_title" class="title contcol_#{crtContext.patillscript.problemsDiff}"  mytooltip="#{prop['findings.search']}">#{prop['findings']} 
 		   		<i class="fa fa-info-circle"></i>
 		   			<!--  <span class="icons">
@@ -359,7 +360,7 @@ item_arr = new Array();
 				</div>
 		  </div>
 		  <!--  diagnoses -->
-		  <div id="ddx_box" class="container ddx_cont hide_#{crtContext.sessSetting.boxUsedDDX}" group="ddx_group">	
+		  <div id="ddx_box" class="container ddx_cont pos_#{crtContext.patillscript.ddxBoxNo} hide_#{crtContext.sessSetting.boxUsedDDX}" group="ddx_group">	
 		  		<div id="ddx_title"  mytooltip="#{prop['ddx.search']}" class="title contcol_#{crtContext.patillscript.DDXDiff}">#{prop['ddx']} <i class="fa fa-info-circle"></i>
 		  			<!--  <span class="icons">
 		  				<a href="javascript:addJokerDDX();" title="#{prop['ddx.joker']}"><i mytooltip="#{prop['ddx.joker']}" class="fa fa-puzzle-piece"></i></a> 
@@ -410,7 +411,7 @@ item_arr = new Array();
 				</div>
 		  </div>
 		  <!-- tests -->
-		  <div id="tst_box" class="container tst_cont hide_#{crtContext.sessSetting.boxUsedTst}" group="tst_group">
+		  <div id="tst_box" class="container tst_cont pos_#{crtContext.patillscript.tstBoxNo} hide_#{crtContext.sessSetting.boxUsedTst}" group="tst_group">
 		  		<div id="tst_title" mytooltip="#{prop['tests.search']}" class="title  contcol_#{crtContext.patillscript.testsDiff}">#{prop['tests']} <i class="fa fa-info-circle"></i>
 		  			<!--  <span class="icons">
 		  				<a href="javascript:addJokerTest();" title="#{prop['tests.joker']}"><i mytooltip="#{prop['tests.joker']}" class="fa fa-puzzle-piece"></i></a> 
@@ -449,7 +450,7 @@ item_arr = new Array();
 				</div>
 		</div>
 		  <!-- managements -->
-		  <div id="mng_box" class="container mng_cont hide_#{crtContext.sessSetting.boxUsedMng}" group="mng_group">
+		  <div id="mng_box" class="container mng_cont pos_#{crtContext.patillscript.mngBoxNo} hide_#{crtContext.sessSetting.boxUsedMng}" group="mng_group">
 		  	<div id="mng_title"  mytooltip="#{prop['mng.search']}" class="title contcol_#{crtContext.patillscript.mngsDiff}">#{prop['mng']} <i class="fa fa-info-circle"></i>
 		  		<!-- <span class="icons">
 		  			<a href="javascript:addJokerMng();" title="#{prop['mng.joker']}"><i mytooltip="#{prop['mng.joker']}" class="fa fa-puzzle-piece"></i></a> 

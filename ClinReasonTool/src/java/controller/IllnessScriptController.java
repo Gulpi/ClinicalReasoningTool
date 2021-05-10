@@ -65,6 +65,7 @@ public class IllnessScriptController implements Serializable{
 	 */
 	public PatientIllnessScript createAndSaveNewPatientIllnessScript(long userId, String vpId, int systemId, String extUId){
 		if(vpId==null || userId<=0) return null;
+
 		checkAndSetDeleteFlagOfOldSCriptsAndScore(userId, vpId, systemId);
 		Locale loc = LocaleController.getInstance().getScriptLocale();//FacesContext.getCurrentInstance().getApplication().getViewHandler().calculateLocale(FacesContext.getCurrentInstance());
 		PatientIllnessScript patillscript = new PatientIllnessScript( userId, vpId, loc, systemId);

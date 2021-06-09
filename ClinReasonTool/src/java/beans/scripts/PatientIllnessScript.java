@@ -474,7 +474,8 @@ public class PatientIllnessScript extends Beans implements Comparable, IllnessSc
 	public void changeConfidence(String idStr, String confVal){new ChgPatIllScriptAction(this).changeConfidence(idStr, confVal);}
 	public void showSolution(String s){new DiagnosisSubmitAction(this).showSolution();}
 	//public void chgCourseOfTime(String courseOfTimeStr) { new ChgPatIllScriptAction(this).chgCourseOfTime(courseOfTimeStr);}
-	
+	public void chgSummStCard(String s, String newStage) {
+		new SummaryStatementChgAction(this).updateSummaryStatementStage(newStage);}
 	/**
 	 * author/expert wants to change the language of the (expert) map, we trigger this. If the map/script is not empty we try to
 	 * translate already created items. 

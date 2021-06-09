@@ -128,6 +128,12 @@ function chgStageEdge(obj){
 	var newStage = $("#"+id).val();
 	sendAjax(realId, chgStageCallback, "chgStateOfEdge", newStage);
 }
+function chgSummStCrd(obj){
+	var id = obj.id;
+	var newStage = $("#"+id).val();
+	sendAjax(newStage, chgStageCallback, "chgSummStCard", newStage);
+}
+
 
 function chgStageCallback(){}
 

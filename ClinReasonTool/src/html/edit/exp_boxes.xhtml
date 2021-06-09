@@ -114,6 +114,10 @@ $(function() {
 		chgStageEdge(this);
 	 });
 	
+	$("#chgsummstCrd").on('change',function(){
+		chgSummStCrd(this);
+	 });
+	
     $( ".itembox" ).draggable({
    	 start: function(event, ui) {             
            // $(ui.helper).find('.tooltip').hide(); 
@@ -227,6 +231,8 @@ jsPlumb.ready(function () {
     jsPlumb.fire("jsPlumbDemoLoaded", instance);
     $("#scriptloc").val(scriptlang);
     initBoxesSel();
+    if($("#sumsttxt").is(':empty')) $("#chgSums").hide();
+    else $("#chgSums").show();
 
    /* $("#chgbox1").val(box1Type);
     $("#chgbox2").val(box2Type);
@@ -385,8 +391,9 @@ Stage: <span id="stageSpan">#{adminContext.patillscript.stage}(#{adminContext.pa
 				<span class="errormsg" id="msg_mngform" onClick="javascript:clearErrorMsgs();"></span>
 				
 	  		</div>
-	  		<div id="sum_box" class="container sum_container" group="sum_group">	
-		 	<div class="title">#{prop['summst']}
+	  		<div id="sum_box" class="container sum_container" group="sum_group">
+	  		<div id="chgSums">Show summary statement from card <input type="text" id="chgsummstCrd" size="2" value="#{adminContext.patillscript.summSt.stage}"></input></div>
+		 	<div class="title" id="sumsttxt">#{prop['summst']}
 		 	</div>
 		 	 <div class="node-collapse"></div>
 		 	 <textarea style="display:none;" id="summStTextHidden" cols="65" rows="3">#{adminContext.patillscript.summSt.text}</textarea>

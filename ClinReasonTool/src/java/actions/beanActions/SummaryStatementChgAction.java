@@ -7,6 +7,8 @@ import beans.LogEntry;
 import beans.relation.summary.SummaryStatement;
 import beans.scripts.*;
 import database.DBClinReason;
+import net.casus.util.Utility;
+import util.CRTLogger;
 
 
 public class SummaryStatementChgAction /*extends ChgAction*/{
@@ -50,6 +52,21 @@ public class SummaryStatementChgAction /*extends ChgAction*/{
 		else updateSummaryStatement(text);
 	}
 	
+	public void updateSummaryStatementStage(int stage) {
+		if(this.patIllScript.getSummSt()==null && this.patIllScript.getId()<=0) //should not happen
+			createSummaryStatement("");
+		
+		this.patIllScript.getSummSt().setStage(stage);
+		save(this.patIllScript.getSummSt());
+	}
+	public void updateSummaryStatementStage(String stage) {
+		try {
+			updateSummaryStatementStage(Integer.valueOf(stage).intValue());
+		}
+		catch(Exception e) {
+			CRTLogger.out(Utility.stackTraceToString(e), CRTLogger.LEVEL_ERROR);
+		}
+	}
 	/**
 	 * No summaryStatement has been created so far, so we create one, save it and attach it to the 
 	 * PatientIllnessScript.

@@ -179,10 +179,15 @@ public class PatientIllnessScript extends Beans implements Comparable, IllnessSc
 	 */
 	private long sessionId;
 	
-	private int box1Type = 1; //default is fdgs, upper left corner box
-	private int box2Type = 2; //default is ddxs, upper right corner box
-	private int box3Type = 3; //default is tests, lower left corner box
-	private int box4Type = 4; //default is mngs, lower right corner box
+	private int[] tsttypes = new int[]{1,2,3,4};
+	//private int box1Type = 1; //default is fdgs, upper left corner box
+	//private int box2Type = 2; //default is ddxs, upper right corner box
+	//private int box3Type = 3; //default is tests, lower left corner box
+	//private int box4Type = 4; //default is mngs, lower right corner box
+	private int box1Mode = 1; //0=not display, 1=active, 2=passive
+	private int box2Mode = 1; //0=not display, 1=active, 2=passive
+	private int box3Mode = 1; //0=not display, 1=active, 2=passive
+	private int box4Mode = 1; //0=not display, 1=active, 2=passive
 
 	public PatientIllnessScript(){}
 	public PatientIllnessScript(long userId, String vpId, Locale loc, int systemId){
@@ -501,11 +506,26 @@ public class PatientIllnessScript extends Beans implements Comparable, IllnessSc
 			//int type = Integer.valueOf(newType).intValue();
 			if(newTypes==null || newTypes.trim().contentEquals("")) return; //an error happened... 
 			int[] types = StringUtilities.getIntArrFromString(newTypes, ",");
-			//for(int i=0; i<types.length;i++) {
+			//int counter = 0;
+			//if(newTypes.contains("6")) {
+			//	this.box1Type = 1;
+			//	counter = 1;
+			//}
+			//int[] tsttypes = new int[]{1,2,3,4};
+			tsttypes = new int[]{0,0,0,0};
+			int counter = 0;
+			for(int i=0; i<types.length;i++) {
+				if(types[i]>=1) {
+					tsttypes[counter] = types[i]; //]this.box1Type = 1; 
+					counter++;
+				}
+			}
+			//box1Type = types
+			/*	if(types[i]==2) this.box2Type = 1; 
 				this.box1Type = types[0];
 				this.box2Type = types[1];
 				this.box3Type = types[2];
-				this.box4Type = types[3];
+				this.box4Type = types[3];*/
 			//}
 			//this.box1Type = type;
 			new DBClinReason().saveAndCommit(this);
@@ -914,14 +934,31 @@ public class PatientIllnessScript extends Beans implements Comparable, IllnessSc
 	public List<LogEntry> getLogEntries(){return logentries;}
 	public void setLogEntries(List<LogEntry> le ){this.logentries = le;}
 	
-	public int getBox1Type() {return box1Type;}
+	/*public int getBox1Type() {return box1Type;}
 	public void setBox1Type(int box1Type) {this.box1Type = box1Type;}
 	public int getBox2Type() {return box2Type;}
 	public void setBox2Type(int box2Type) {this.box2Type = box2Type;}
 	public int getBox3Type() {return box3Type;}
 	public void setBox3Type(int box3Type) {this.box3Type = box3Type;}
 	public int getBox4Type() {return box4Type;}
-	public void setBox4Type(int box4Type) {this.box4Type = box4Type;}
+	public void setBox4Type(int box4Type) {this.box4Type = box4Type;}*/
+	public int getBox1Type() {
+		return this.tsttypes[0];}
+	public void setBox1Type(int box1Type) {this.tsttypes[0] = box1Type;}
+	public int getBox2Type() {return tsttypes[1];}
+	public void setBox2Type(int box2Type) {this.tsttypes[1] = box2Type;}
+	public int getBox3Type() {return tsttypes[2];}
+	public void setBox3Type(int box3Type) {this.tsttypes[2] = box3Type;}
+	public int getBox4Type() {return tsttypes[3];}
+	public void setBox4Type(int box4Type) {this.tsttypes[3] = box4Type;}	
+	public int getBox1Mode() {return box1Mode;}
+	public void setBox1Mode(int box1Mode) {this.box1Mode = box1Mode;}
+	public int getBox2Mode() {return box2Mode;}
+	public void setBox2Mode(int box2Mode) {this.box2Mode = box2Mode;}
+	public int getBox3Mode() {return box3Mode;}
+	public void setBox3Mode(int box3Mode) {this.box3Mode = box3Mode;}
+	public int getBox4Mode() {return box4Mode;}
+	public void setBox4Mode(int box4Mode) {this.box4Mode = box4Mode;}
 	
 	public int getPatBoxNo() { return getBoxByType(Relation.TYPE_PATHO);}
 	public int getFdgBoxNo() { return getBoxByType(Relation.TYPE_PROBLEM);}
@@ -935,10 +972,13 @@ public class PatientIllnessScript extends Beans implements Comparable, IllnessSc
 	 * @return
 	 */
 	private int getBoxByType(int type) {
-		if(box1Type==type) return 1;
+		for(int i=0;i< tsttypes.length;i++) {
+			if(tsttypes[i] == type ) return i+1;
+		}
+		/*if(box1Type==type) return 1;
 		if(box2Type==type) return 2;
 		if(box3Type==type) return 3;
-		if(box4Type==type) return 4;
+		if(box4Type==type) return 4;*/
 		return 0;
 	}
 }

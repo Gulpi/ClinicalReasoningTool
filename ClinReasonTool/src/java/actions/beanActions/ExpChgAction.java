@@ -31,13 +31,14 @@ public class ExpChgAction{
 	
 	/**
 	 * Expert changes the stage of a connection...
-	 * @param itemId
+	 * @param itemId (form of "cnx_1234")
 	 * @param stageStr
 	 */
 	public void chgEdgeStage(String itemId, String stageStr){
 		int stage = Integer.valueOf(stageStr);
 		Graph g = NavigationController.getInstance().getAdminFacesContext().getGraph();
-		long cnxId = Long.parseLong(itemId);
+		long cnxId = Long.parseLong(itemId.substring(4));
+		//long cnxId = Long.parseLong(itemId);
 		MultiEdge edge = g.getEdgeByCnxId(PatientIllnessScript.TYPE_EXPERT_CREATED, cnxId);
 		if(edge!=null && edge.getLearnerCnx()!=null){
 			edge.getLearnerCnx().setStage(stage);

@@ -16,6 +16,7 @@ import beans.relation.summary.SemanticQual;
 import beans.scoring.PeerContainer;
 import controller.IllnessScriptController;
 import controller.JsonCreator;
+import controller.MeshImporter;
 import controller.PeerSyncController;
 import controller.SummaryStatementController;
 import database.DBClinReason;
@@ -37,7 +38,7 @@ import properties.IntlConfiguration;
 public class AppBean extends ApplicationWrapper implements HttpSessionListener{
 
 	public static final String DEFAULT_LOCALE="en"; //TODO get from properties!
-	public static final String[] ACCEPTED_LOCALES = new String[]{"en", "de", "pl", "sv", "es", "pt"}; //TODO get from properties!
+	public static final String[] ACCEPTED_LOCALES = new String[]{"en", "de", "pl", "sv", "es", "pt", "fr"}; //TODO get from properties!
 	public static List<Graph> graphs;
 	public static final String APP_KEY = "AppBean";
 	public static IntlConfiguration intlConf;
@@ -144,6 +145,7 @@ public class AppBean extends ApplicationWrapper implements HttpSessionListener{
 			e.printStackTrace();
 		}
 		 
+	    //MeshImporter.importMesh();
 	    CRTLogger.out("End AppBean init:"  + (System.currentTimeMillis()-startms) + "ms", CRTLogger.LEVEL_PROD);
 	    
 	}

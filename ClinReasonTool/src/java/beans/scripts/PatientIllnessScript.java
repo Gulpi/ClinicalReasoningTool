@@ -188,6 +188,8 @@ public class PatientIllnessScript extends Beans implements Comparable, IllnessSc
 	private int box2Mode = 1; //0=not display, 1=active, 2=passive
 	private int box3Mode = 1; //0=not display, 1=active, 2=passive
 	private int box4Mode = 1; //0=not display, 1=active, 2=passive
+	
+	private int showAll = 0; //0 = only show until open card, 1 = show all nodes and cnxs (authoring only!)
 
 	public PatientIllnessScript(){}
 	public PatientIllnessScript(long userId, String vpId, Locale loc, int systemId){
@@ -216,11 +218,24 @@ public class PatientIllnessScript extends Beans implements Comparable, IllnessSc
 		return stage;
 	}
 	
+	public int getShowAll() { return showAll;}
+	public void setShowAll(int showAll) {this.showAll = showAll;}
 	
+	public void toggleShowAll() {
+		if(showAll == 0) showAll = 1;
+		else showAll = 0;
+	}
 	public void setStage(int stage) {this.stage = stage;}
 	public int getCourseOfTime() {return courseOfTime;}
 	public void setCourseOfTime(int courseOfTime) {this.courseOfTime = courseOfTime;}
-	public List<RelationProblem> getProblems() {return problems;}
+	public List<RelationProblem> getProblems() {
+		if(!this.isExpScript())
+			return problems;
+		else {
+			if(showAll ==0)return problems;
+			else return getProblemsStage();
+		}
+	}
 	public List<RelationProblem> getProblemsStage() { return getRelationsByStage(problems);}
 	public void setProblems(List<RelationProblem> problems) {this.problems = problems;}
 	public Timestamp getCreationDate(){ return this.creationDate;} //setting is done in DB	
@@ -646,6 +661,10 @@ public class PatientIllnessScript extends Beans implements Comparable, IllnessSc
 		//when viewing indiv. maps in the reports and the complete map shall be displayed, we return all items here:
 		if(NavigationController.getInstance().getMyFacesContext().isView() && AjaxController.getInstance().getIntRequestParamByKey(AjaxController.REQPARAM_REPORTS_DISPLAYMODE, 0)==1)
 			return items;
+
+		if(this.isExpScript() && AjaxController.getInstance().getIntRequestParamByKey(AjaxController.REQPARAM_REPORTS_DISPLAYMODE, 0)==1)
+			return items;
+
 		
 		List<Relation> stageList = new ArrayList<Relation>();
 		for(int i=0; i< items.size(); i++){

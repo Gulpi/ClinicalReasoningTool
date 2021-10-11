@@ -9,19 +9,31 @@
 	 <script language="Javascript">
 	 	item_arr.push("fdg_#{prob.id}");
 	 </script>
-	 <span class="dropdown" onClick="javascript:showDropDown('ddfdg_#{prob.id}', 'fdg_#{prob.id}');"><i class="fa fa-chevron-circle-down"></i></span>
+ <span class="dropdown" onClick="javascript:showDropDown('ddfdg_#{prob.id}', 'fdg_#{prob.id}');"><i class="fa fa-chevron-circle-down"></i></span>
 
  	<span class="peer_score_fdg" title="#{prop['findings.peer.hint']}" id="peerscore#{prob.id}"> (#{prob.peerPercentage})</span>
  	<div class="icons_score fdgs_score boxscore_#{prob.score}"><i class="fa fa-check"></i></div>
 
  </div> 
-	 <div class="dropdown-content" id="ddfdg_#{prob.id}" onmouseleave="javascript:hideDropDown('ddfdg_#{prob.id}');">
+
+	 <div class="dropdown-content" id="ddfdg_#{prob.id}" ><!--  onmouseleave="javascript:hideDropDown('ddfdg_#{prob.id}');" -->
 	 <span style="float:left;" class="dropd_#{prob.isExpertHierarchyItem}">#{prop['change']}:</span>
 	<span class="dropdownX"><a href="javascript:hideDropDown('ddfdg_#{prob.id}');"><i class="fa fa fa-times"></i></a></span> <br/>
 		<div class="links">
-			<span class="dropd_#{prob.isExpertHierarchyItem}"><a class="dropd_#{prob.isExpertHierarchyItem}" href="javascript:chgProblem(#{prob.id}, 2);"><i class="fa fa-long-arrow-right"></i> #{prob.expItemLabel}</a><br/></span> <!-- Hierarchy -->
+			<span class="dropd_#{prob.isExpertHierarchyItem}"><a class="dropd_#{prob.isExpertHierarchyItem}" href="javascript:chgProblem(#{prob.id}, 2);"><i class="fa fa-long-arrow-right"></i> #{prob.expItemLabel}</a><br/></span>
 		</div>
 		<a class="del" href="javascript:delProblem(#{prob.id});"><i class="fa fa-trash"></i> #{prop['delete']}</a>
-	</div>	
+		<!-- Display on card <select id="chgstage_#{prob.listItemId}"></select>
+		<script>
+		var selectElement = document.getElementById('chgstage_#{prob.listItemId}');
+			for(var i=1;i<=maxStage;i++){
+				 var option = new Option('Text '+i, i);
+			      selectElement.options[i] = option;
+			}
+		</script> -->
+		
+	Display on card <input id="chgstage_#{prob.listItemId}" value="#{prob.stage}" class="chgstage" style="width:20px;" />
+		
+	</div>
 
 </ui:composition>

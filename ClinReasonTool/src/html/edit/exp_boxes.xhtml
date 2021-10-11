@@ -61,6 +61,8 @@ var noEntryFound = "#{prop['list.noentry']}";
 var lang="#{adminContext.locale}";
 var currentStage = #{adminContext.patillscript.stage};
 var maxStage =#{adminContext.patillscript.currentStage};
+//var displayAll = #{adminContext.patillscript.showAll}; //0= off, 1= on (then complete map is displayed)
+var displayMode = 0;
 
 var currentStageScript = "#{adminContext.patillscript.currentStageWithUpdate}";
 var saveSumConfirm = "#{prop['summst.saveconfirm']}";
@@ -94,6 +96,7 @@ var box4Type = #{adminContext.patillscript.box4Type};
 var isEmptyScript = "#{adminContext.patillscript.isEmptyScript}";
 
 $(function() {
+	//if(displayAll==1) currentStage = maxStage;
 	//if(scriptlang=="de") listUrl = "../jsonp_de.json";
 	$(".listdialog").hide();
 	//$("#jdialogError").hide();
@@ -185,8 +188,9 @@ jsPlumb.ready(function () {
         instance.bind("click", function (component, originalEvent) {
         	//todo: ignore expert cnxs....
         	var id = component.id;
+        //alert(component.stage);
         	if(!id.startsWith("exp_")) 
-        		openConnContext(component.id);
+        		openConnContextExp(component.id);
         });
 
        /* instance.draggable(jsPlumb.getSelector(".drag-drop .itembox"));        
@@ -234,13 +238,7 @@ jsPlumb.ready(function () {
     if($("#sumsttxt").is(':empty')) $("#chgSums").hide();
     else $("#chgSums").show();
 
-   /* $("#chgbox1").val(box1Type);
-    $("#chgbox2").val(box2Type);
-    $("#chgbox3").val(box3Type);
-    $("#chgbox4").val(box4Type);*/
-    
-    //initBoxHeights();
-   // initContainerCollapsed();
+	
 	
 });
 
@@ -271,7 +269,10 @@ Stage: <span id="stageSpan">#{adminContext.patillscript.stage}(#{adminContext.pa
         <i class="fa fa-info-circle" mytooltip="Language of lists to display"></i>
        
         </div>
-        <div style="position:absolute;left:210px;top:5px;" class="showadaptBox_#{adminContext.adaptableBoxesEnabled}"> <a href="javascript:openSelBoxes();">#{prop['authoring.slctboxes']}</a></div>
+        <div style="position:absolute;left:210px;top:5px;" class="showadaptBox_#{adminContext.adaptableBoxesEnabled}"> <a href="javascript:openSelBoxes();">#{prop['authoring.slctboxes']}</a>
+        <span style="width:30px;visibility:hidden;">hal</span><a href="javascript:toggleDisplayMode();">
+        <script language="JavaScript">
+        if(sessionStorage.displayMode==1) document.write ("Show full map"); else document.write("Show map at current stage")</script></a></div>
 
 </div>
 <div class="boxes_container">
@@ -289,7 +290,7 @@ Stage: <span id="stageSpan">#{adminContext.patillscript.stage}(#{adminContext.pa
 		  			<h:panelGroup>
 					
 						<ui:repeat value="#{adminContext.patillscript.patho}" var="patho" varStatus="status">
-							<ui:include src="../pathobox.xhtml" />
+							<ui:include src="pathobox.xhtml" />
      					</ui:repeat>	
  	
     				</h:panelGroup>
@@ -340,7 +341,7 @@ Stage: <span id="stageSpan">#{adminContext.patillscript.stage}(#{adminContext.pa
 			  			<h:form id="ddxform">
 						<h:panelGroup >
 							<ui:repeat value="#{adminContext.patillscript.diagnosesStage}" var="ddx" varStatus="status">
-								<ui:include src="../ddxbox.xhtml" />
+								<ui:include src="ddxbox.xhtml" />
 	     					</ui:repeat>					
 	    				</h:panelGroup>
 	    				     <h:commandButton id="hiddenDDXButton" value="RenderSomething" style="visibility:hidden">
@@ -360,7 +361,7 @@ Stage: <span id="stageSpan">#{adminContext.patillscript.stage}(#{adminContext.pa
 		  			<h:panelGroup>
 					
 						<ui:repeat value="#{adminContext.patillscript.testsStage}" var="test" varStatus="status">
-							<ui:include src="../testbox.xhtml" />
+							<ui:include src="testbox.xhtml" />
      					</ui:repeat>				
     				</h:panelGroup>
     				     <h:commandButton id="hiddenTestButton" value="RenderSomething" style="visibility:hidden">
@@ -381,7 +382,7 @@ Stage: <span id="stageSpan">#{adminContext.patillscript.stage}(#{adminContext.pa
 	  			<h:panelGroup>
 	
 					<ui:repeat value="#{adminContext.patillscript.mngsStage}" var="mng" varStatus="status">
-						<ui:include src="../mngbox.xhtml" />
+						<ui:include src="mngbox.xhtml" />
 	   				</ui:repeat>				
 	  				</h:panelGroup>
 	  				     <h:commandButton id="hiddenMngButton" value="RenderSomething" style="visibility:hidden">
@@ -395,7 +396,7 @@ Stage: <span id="stageSpan">#{adminContext.patillscript.stage}(#{adminContext.pa
 	  		<div id="chgSums">Show summary statement from card <input type="text" id="chgsummstCrd" size="2" value="#{adminContext.patillscript.summSt.stage}"></input></div>
 		 	<div class="title" id="sumsttxt">#{prop['summst']}
 		 	</div>
-		 	 <div class="node-collapse"></div>
+		 	<!--  <div class="node-collapse"></div>-->
 		 	 <textarea style="display:none;" id="summStTextHidden" cols="65" rows="3">#{adminContext.patillscript.summSt.text}</textarea>
 				<textarea class="f_textarea" name="summSt" id="summStText" cols="65" rows="3">#{adminContext.patillscript.summStStage.text}</textarea><br/>
 			 	<span class="errormsg" id="msg_sumstform"></span>
@@ -409,11 +410,9 @@ Stage: <span id="stageSpan">#{adminContext.patillscript.stage}(#{adminContext.pa
 <br clear="all"/>
 
 <div id="allitems">
-<table>
+<!-- <table>
 <tr><td><b>#{prop['authoring.node.name']}</b></td><td><b>#{prop['authoring.node.stage']}</b></td><td></td></tr>
-	<!--  <ui:repeat value="#{adminContext.graph.allVertices}" var="nodes" varStatus="status">
-		<ui:include src="items_exp.xhtml" />
-	</ui:repeat>-->
+
 	<ui:repeat value="#{adminContext.patillscript.problems}" var="nodes" varStatus="status">
 		<tr><td>#{nodes.label}</td>
 		<td><input id="chgstage_#{nodes.listItemId}" class="chgstage" value="#{nodes.stage}" style="width:20px;"/></td>
@@ -439,14 +438,14 @@ Stage: <span id="stageSpan">#{adminContext.patillscript.stage}(#{adminContext.pa
 		<td><input id="chgstage_#{nodes.listItemId}" class="chgstage" value="#{nodes.stage}" style="width:20px;"/></td>
 		<td></td></tr>
 	</ui:repeat>	
-	</table>
-	<table>
+	</table>-->
+	<!--<table>
 	<tr><td><b>#{prop['authoring.node.cnx']}</b></td><td><b>#{prop['authoring.node.stage']}</b></td>
-	<td><b>#{prop['authoring.node.weight']}</b></td></tr>	
-		<ui:repeat value="#{adminContext.graph.allEdges}" var="edges" varStatus="status">
+	<td><b>#{prop['authoring.node.weight']}</b></td></tr>	-->
+	<span style="display:none;">	<ui:repeat value="#{adminContext.graph.allEdges}" var="edges" varStatus="status">
 		<ui:include src="edges_exp.xhtml" />
-	</ui:repeat>	
-	</table>			
+	</ui:repeat>	</span>
+	<!--  </table> -->		
 </div>
 </body>
 </f:view>

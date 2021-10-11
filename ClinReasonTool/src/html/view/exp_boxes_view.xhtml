@@ -83,9 +83,9 @@ $(function() {
 	/*$("#summStText").on('change',function(){
 		saveSummSt('#{adminContext.patillscript.summStId}');
 	 });*/
-	$(".chgstage").on('change',function(){
+	/*$(".chgstage").on('change',function(){
 		chgStageItem(this);
-	 });
+	 });*/
 
 	$("#jdialog").dialog({
 		autoOpen: false,
@@ -166,7 +166,7 @@ Stage: <span id="stageSpan">#{adminContext.patillscript.stage} / <a href="javasc
 		  			<h:form id="pathoform">
 		  			<h:panelGroup>
 					
-						<ui:repeat value="#{adminContext.patillscript.patho}" var="patho" varStatus="status">
+						<ui:repeat value="#{adminContext.patillscript.pathoStage}" var="patho" varStatus="status">
 							<ui:include src="pathobox.xhtml" />
      					</ui:repeat>	
      							

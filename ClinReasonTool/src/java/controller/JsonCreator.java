@@ -41,6 +41,8 @@ public class JsonCreator {
 	public static final String fileNameOneListSV = "src/html/jsonp_sv.json";
 	public static final String fileNameOneListES = "src/html/jsonp_es.json";
 	public static final String fileNameOneListPT = "src/html/jsonp_pt.json";
+	public static final String fileNameOneListFR = "src/html/jsonp_fr.json";
+
 	private boolean createOneList = true; //if false, we create multiple lists for problems, ddx, etc.
 	private static ServletContext context;	
 
@@ -53,16 +55,17 @@ public class JsonCreator {
 			lang = AjaxController.getInstance().getRequestParamByKey("lang");
 		}
 		catch(Exception e){}
-		if(lang!=null && (lang.equalsIgnoreCase("de") || lang.equalsIgnoreCase("en"))){
+		/*if(lang!=null && (lang.equalsIgnoreCase("de") || lang.equalsIgnoreCase("en"))){
 			exportOneList(new Locale(lang));
 		}
-		else if(createOneList){			
+		else*/ if(createOneList){			
 			exportOneList(new Locale("en"));
 			exportOneList(new Locale("de"));
 			exportOneList(new Locale("pl"));
 			exportOneList(new Locale("sv"));
 			exportOneList(new Locale("es"));
 			exportOneList(new Locale("pt"));
+			exportOneList(new Locale("fr"));
 		}
 		
 	}
@@ -205,6 +208,8 @@ public class JsonCreator {
 			if (lang.equals("sv")) return new File(context.getRealPath(fileNameOneListSV));
 			if (lang.equals("es")) return new File(context.getRealPath(fileNameOneListES));
 			if (lang.equals("pt")) return new File(context.getRealPath(fileNameOneListPT));
+			if (lang.equals("fr")) return new File(context.getRealPath(fileNameOneListFR));
+
 			return new File(context.getRealPath(fileNameOneListEN));
 		}
 		else {
@@ -214,6 +219,7 @@ public class JsonCreator {
 			if (lang.equals("sv"))  name = fileNameOneListSV;
 			if (lang.equals("es"))  name = fileNameOneListES;
 			if (lang.equals("pt"))  name = fileNameOneListPT;
+			if (lang.equals("fr"))  name = fileNameOneListFR;
 			
 			int idx = name.lastIndexOf('/');
 			name = name.substring(idx+1);

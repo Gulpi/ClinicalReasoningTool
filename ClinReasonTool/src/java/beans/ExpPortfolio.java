@@ -112,7 +112,8 @@ public class ExpPortfolio implements Serializable{
 	}
 	
 	/**
-	 * We trigger the copying and translating of an expert script... 
+	 * We trigger the copying and translating of an expert script...
+	 * @deprecated here... 
 	 */
 	public void copyExpScript(){
 		CRTLogger.out("Copy script", CRTLogger.LEVEL_PROD);

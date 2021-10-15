@@ -71,11 +71,16 @@ var ajaxUrl = "/crt/src/html/tabs_ajax.xhtml";
 var fireAddConnection = true; //false during re-init of exp cnxs, otherwise new cnxs are stored!
 var inputhistory = ""; //not needed, just to avoid js errors for ajax.
 var isView = true;
-//which boxes are displayed in active mode (0), hidden (1) or displayed in view mode (2)
-/*var probBoxUsed = "#{crtContext.sessSetting.probBoxUsed}"; 
-var ddxBoxUsed = "#{crtContext.sessSetting.ddxBoxUsed}";
-var testBoxUsed = "#{crtContext.sessSetting.testBoxUsed}";
-var mngBoxUsed = "#{crtContext.sessSetting.mngBoxUsed}";*/
+var probBoxUsed = "0"; 
+var ddxBoxUsed = "0";
+var testBoxUsed = "0";
+var mngBoxUsed = "0";
+var pathoBoxUsed = "0";
+
+var box1Type = #{crtContext.patillscript.box1Type}; 
+var box2Type = #{crtContext.patillscript.box2Type};
+var box3Type = #{crtContext.patillscript.box3Type};
+var box4Type = #{crtContext.patillscript.box4Type};
 var displayMode= #{chartConf.indivReportsDisplayMode}; //1=show complete map!
 
 $(function() {

@@ -75,6 +75,11 @@ public class AdminFacesContext extends FacesContextWrapper implements MyFacesCon
 		NavigationController.getInstance().redirect("/crt/src/html/admin/login.xhtml");
 		return -1;
 	}
+	public String getUserIdExt() {
+		if(user!=null) return user.getExtUserId2();
+		//NavigationController.getInstance().redirect("/crt/src/html/admin/login.xhtml");
+		return "";
+	}
 	
 	public boolean isView(){
 		String path = FacesContextWrapper.getCurrentInstance().getExternalContext().getRequestServletPath();

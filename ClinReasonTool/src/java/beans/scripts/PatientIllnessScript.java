@@ -229,12 +229,12 @@ public class PatientIllnessScript extends Beans implements Comparable, IllnessSc
 	public int getCourseOfTime() {return courseOfTime;}
 	public void setCourseOfTime(int courseOfTime) {this.courseOfTime = courseOfTime;}
 	public List<RelationProblem> getProblems() {
-		if(!this.isExpScript())
+	//	if(!this.isExpScript())
 			return problems;
-		else {
+	/*	else {
 			if(showAll ==0)return problems;
 			else return getProblemsStage();
-		}
+		}*/
 	}
 	public List<RelationProblem> getProblemsStage() { return getRelationsByStage(problems);}
 	public void setProblems(List<RelationProblem> problems) {this.problems = problems;}
@@ -253,7 +253,10 @@ public class PatientIllnessScript extends Beans implements Comparable, IllnessSc
 	
 	public boolean isDeleteFlag() {return deleteFlag;}
 	public void setDeleteFlag(boolean deleteFlag) {this.deleteFlag = deleteFlag;}
-	public List<RelationDiagnosis> getDiagnoses() {return diagnoses;}
+	public List<RelationDiagnosis> getDiagnoses() {
+
+		return diagnoses;
+	}
 	public List<RelationDiagnosis> getDiagnosesStage() { return getRelationsByStage(diagnoses);}
 	public void setDiagnoses(List<RelationDiagnosis> diagnoses) {this.diagnoses = diagnoses;}
 	public List<RelationManagement> getMngs() {return mngs;}
@@ -504,11 +507,10 @@ public class PatientIllnessScript extends Beans implements Comparable, IllnessSc
 	public void changeLangOfScript(String newLang){
 		if(newLang==null) return;
 		if(this.getType() == IllnessScriptInterface.TYPE_LEARNER_CREATED) return; //no language change for learner maps!
-		this.setLocale(new Locale(newLang));
-		new DBClinReason().saveAndCommit(this);
+		
 		
 		if(!this.getIsEmptyScript()){ //we try to translate the complete script and entered items:
-			new ScriptTranslationController(this).translateScript();
+			new ScriptTranslationController(this).translateScript(new Locale(newLang));
 		}	
 	}
 	

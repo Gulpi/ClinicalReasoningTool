@@ -827,11 +827,11 @@ function turnOverallExpFeedbackOn(iconId, itemClass){
 	$(".expbox").addClass("expboxstatus_show");
 	$(".expbox").removeClass("expboxstatus");
 	$(".expbox").removeClass("expboxinvis");
-	if(probBoxUsed==0)turnExpBoxFeedbackOn("expFeedbackFdg", "fdgs");
-	if(ddxBoxUsed==0) turnExpBoxFeedbackOn("expFeedbackDDX", "ddxs");
-	if(testBoxUsed==0)turnExpBoxFeedbackOn("expFeedbackTest", "tests");
-	if(pathoBoxUsed==0)turnExpBoxFeedbackOn("expFeedbackPatho", "patho");
-	if(mngBoxUsed==0)turnExpBoxFeedbackOn("expFeedbackMng", "mngs");
+	if(probBoxUsed==1)turnExpBoxFeedbackOn("expFeedbackFdg", "fdgs");
+	if(ddxBoxUsed==1) turnExpBoxFeedbackOn("expFeedbackDDX", "ddxs");
+	if(testBoxUsed==1)turnExpBoxFeedbackOn("expFeedbackTest", "tests");
+	if(pathoBoxUsed==1)turnExpBoxFeedbackOn("expFeedbackPatho", "patho");
+	if(mngBoxUsed==1)turnExpBoxFeedbackOn("expFeedbackMng", "mngs");
 	if(isOverallCnxOn()){
 		$(".jtk-exp-connector").addClass("jtk-exp-connector-show");
 		$(".jtk-exp-connector").removeClass("jtk-exp-connector-hide");
@@ -1110,4 +1110,14 @@ function correctTstScore(in_score) {
 
 function correctMngScore(in_score) {
 	return correctSpecialScore (in_score, 40, 2, 80, 40, 3);
+}
+/**
+** in the view mode we can hide/show the scoring for each item (checkmarks)
+ */
+function toggleExpItemFeedback(){
+	if($("#expItemFeedback").prop("checked"))
+		$(".icons_score").show();
+	else	
+		$(".icons_score").hide();
+	
 }

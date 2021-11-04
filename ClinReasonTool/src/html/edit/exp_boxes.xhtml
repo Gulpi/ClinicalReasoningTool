@@ -94,6 +94,7 @@ var box3Type = #{adminContext.patillscript.box3Type};
 var box4Type = #{adminContext.patillscript.box4Type};
 
 var isEmptyScript = "#{adminContext.patillscript.isEmptyScript}";
+var userId = "#{adminContext.userIdExt}"; //hack for showing language change only for certain userIds
 
 $(function() {
 	//if(displayAll==1) currentStage = maxStage;
@@ -163,6 +164,9 @@ $(function() {
 	if(isViaAPI=="true"){ //then we hide some elements:
 		$(".nonapi").hide();
 	}
+	
+	$("#langchgsel").hide();
+	if(userId=="7900") $("#langchgsel").show(); //extremly ugly hack to display the changing of map language only for one super-user. 
 });
 
 
@@ -265,9 +269,8 @@ Stage: <span id="stageSpan">#{adminContext.patillscript.stage}(#{adminContext.pa
         <label for="cnxtoggle"></label>
         
 	</div>
-        <div style="position:absolute;left:80px;top:5px;">#{prop['authoring.language']} <select onChange="javascript:chgMapLang();" name="script_locale" id="scriptloc"><option value="en">en</option><option value="de">de</option><option value="es">es</option><option value="pl">pl</option><option value="pl">pt</option><option value="fr">fr</option></select>
-        <i class="fa fa-info-circle" mytooltip="Language of lists to display"></i>
-       
+        <div id="langchgsel" style="position:absolute;left:80px;top:5px;">#{prop['authoring.language']} <select onChange="javascript:chgMapLang();" name="script_locale" id="scriptloc"><option value="en">en</option><option value="de">de</option><option value="es">es</option><option value="pl">pl</option><option value="pl">pt</option><option value="fr">fr</option></select>
+       	 <i class="fa fa-info-circle" mytooltip="Language of lists to display"></i>
         </div>
         <div style="position:absolute;left:210px;top:5px;" class="showadaptBox_#{adminContext.adaptableBoxesEnabled}"> <a href="javascript:openSelBoxes();">#{prop['authoring.slctboxes']}</a>
         <span style="width:30px;visibility:hidden;">hal</span><a href="javascript:toggleDisplayMode();">

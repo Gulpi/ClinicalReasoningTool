@@ -38,15 +38,15 @@ function chgMapLang(){
 	scriptlang = newLang;
 	//alert(listUrl);
 	if(isEmptyScript=="true"){ //trigger submit, script is empty
-		sendAjax(newLang, doNothing, "changeLangOfScript", "");
+		sendAjax(newLang, callBackReload, "changeLangOfScript", "");
 	}
 	else{ //we have to ask user what he/she wants to do with the already created items
 		var cont = confirm("Wollen Sie die Sprache ändern? Es wird versucht alle bereits eingegebenen Knoten in die neue Sprache zu übersetzen.")
 		if(cont){
-			sendAjax(newLang, doNothing, "changeLangOfScript", "");			
+			sendAjax(newLang, callBackReload, "changeLangOfScript", "");			
 		}
 	}
-	location.reload();
+	//location.reload();
 }
 
 

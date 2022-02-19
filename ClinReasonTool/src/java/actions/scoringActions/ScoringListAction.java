@@ -39,12 +39,12 @@ public class ScoringListAction {
 	
 	private void checkListScoreAtStage(int listType, int relType){
 		if(patillscript.isExpScript()) return;
-		ScoreContainer scoreContainer = new NavigationController().getCRTFacesContext().getScoreContainer();		
-		ScoreBean bean = scoreContainer.getListScoreBeanByStage(listType, patillscript.getCurrentStage());
-		if(bean==null){
+		//ScoreContainer scoreContainer = new NavigationController().getCRTFacesContext().getScoreContainer();		
+		//ScoreBean bean = scoreContainer.getListScoreBeanByStage(listType, patillscript.getCurrentStage());
+		//if(bean==null){
 			scoreList(listType, relType);
 			//new DBScoring().saveAndCommit(bean);
-		}
+		//}
 	}
 	/**
 	 * This can only be done at the end of the session or when diagnoses are committed? 
@@ -64,8 +64,8 @@ public class ScoringListAction {
 		if(mvertices==null) return; //neither learner nor expert has added items
 		ScoreContainer scoreContainer = new NavigationController().getCRTFacesContext().getScoreContainer();		
 		ScoreBean scoreBean = scoreContainer.getListScoreBeanByStage(listType, patillscript.getCurrentStage());
-		//if(scoreBean!=null) return; //already scored....
-		if(scoreBean==null){
+		if(scoreBean!=null) return; //already scored....
+		else{
 			scoreBean = new ScoreBean(patillscript, -1, listType);
 			scoreContainer.addScore(scoreBean);
 		}

@@ -122,8 +122,7 @@ public class Connection extends Beans implements Serializable, Comparable<Connec
 			Connection cnx = (Connection) o;
 			if(this.getId() < cnx.getId()) return -1;
 			if(this.getId() > cnx.getId()) return 1;
-			if(this.getId() == cnx.getId()) return 0;
-			
+			if(this.getId() == cnx.getId()) return 0;			
 		}		
 		return 0;
 	}

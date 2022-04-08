@@ -14,7 +14,7 @@
  		<span class="peer_score_ddx" title="#{prop['ddx.peer.hint']}" id="peerscore#{ddx.id}"> (#{ddx.peerPercentage})</span>
  		<div class="icons_score ddxs_score boxscore_#{ddx.score}"><i class="fa fa-check"></i></div>
   	</div>
-	<div id="ddddx_#{ddx.id}" class="dropdown-content" style="opacity:1;z-index:99;" onmouseleave="javascript:hideDropDown('ddddx_#{ddx.id}');">
+	<div id="ddddx_#{ddx.id}" class="dropdown-content" style="opacity:1;z-index:99;" ><!-- onmouseleave="javascript:hideDropDown('ddddx_#{ddx.id}');"-->
 	 <span style="float:left;">#{prop['change']}:</span>
 		<span class="dropdownX"><a href="javascript:hideDropDown('ddddx_#{ddx.id}');"><i class="fa fa fa-times"></i></a></span> 
 	
@@ -30,8 +30,7 @@
 			<span class="dropd_#{ddx.isExpEdit}">
 				<a class="f_on_#{ddx.finalDDX}" href="javascript:expFinalDiagnosis(#{ddx.id});"><i class="fa fa-long-arrow-right"></i>#{prop['ddx.finalddx']}</a>
 				<a class="f_off_#{ddx.finalDDX}" href="javascript:expNoFinalDiagnosis(#{ddx.id});"><i class="fa fa-long-arrow-right"></i>#{prop['ddx.nofinalddx']}</a>
-				
-				</span>
+			</span>
 
 		</div>
 		<a class="del" href="javascript:delDiagnosis(#{ddx.id});"><i class="fa fa-trash"></i> #{prop['delete']}</a>

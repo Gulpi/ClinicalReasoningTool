@@ -5,6 +5,8 @@ import java.util.*;
 
 
 import controller.GraphController;
+import net.casus.util.Utility;
+import util.CRTLogger;
 import beans.list.*;
 
 /**
@@ -68,7 +70,13 @@ public class RelationTest extends Relation implements Serializable{
 	 * @see beans.relation.Relation#getLabelOrSynLabel()
 	 */
 	public String getLabelOrSynLabel(){		
-		if(getSynId()<=0) return test.getName();
-		else return getSynonym().getName();
+		try {
+			if(getSynId()<=0) return test.getName();
+			else return getSynonym().getName();
+		}
+		catch(Exception e) {
+			CRTLogger.out(Utility.stackTraceToString(e), CRTLogger.LEVEL_ERROR);
+			return "";
+		}
 	}
 }

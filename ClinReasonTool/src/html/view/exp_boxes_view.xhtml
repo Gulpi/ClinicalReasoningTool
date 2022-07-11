@@ -45,9 +45,13 @@ var chgCnxDialogTitle = "#{prop['cnx.dialog.title']}";
 var msg2="Please connect the hypotheses with the findings";
 var scriptId = "#{adminContext.patillscript.id}";
 var listUrl="";
-var lang = "#{adminContext.patillscript.locale}";
-if(lang=="de") listUrl = "../jsonp_de.json";
-
+var scriptlang = "#{adminContext.patillscript.locale}";
+if(scriptlang=="de") listUrl = "jsonp_de.json";
+else if(scriptlang=="es") listUrl = "jsonp_es.json";
+else if(scriptlang=="pt") listUrl = "jsonp_pt.json";
+else if(scriptlang=="pl") listUrl = "jsonp_pl.json"; 
+else if(scriptlang=="fr") listUrl = "jsonp_fr.json"; 
+else if (scriptlang=="sv") listUrl = "";
 
 var currentStage = #{adminContext.patillscript.stage};
 var currentStageScript = "#{adminContext.patillscript.currentStageWithUpdate}";
@@ -57,19 +61,31 @@ var active;
 var instance;
 var item_arr = new Array();
 var exp_arr = new Array();
+var pass_arr = new Array();
 var displayMode = 1;
+//which boxes are displayed in active mode (0), hidden (1) or displayed in view mode (2)
+var probBoxUsed = "#{adminContext.sessSetting.boxUsedFdg}"; 
+var ddxBoxUsed = "#{adminContext.sessSetting.boxUsedDDX}";
+var testBoxUsed = "#{adminContext.sessSetting.boxUsedTst}";
+var mngBoxUsed = "#{adminContext.sessSetting.boxUsedMng}"; 
+var pathoBoxUsed = "#{adminContext.sessSetting.boxUsedPat}";
+//indicates at which position with box (fdg, patho, ddx, tests, mnsg) is
+var box1Type = "#{adminContext.patillscript.box1Type}";
+var box2Type = "#{adminContext.patillscript.box2Type}";
+var box3Type = "#{adminContext.patillscript.box3Type}";
+var box4Type = "#{adminContext.patillscript.box4Type}";
 
 $(function() {
-	if(lang=="de") listUrl = "../jsonp_de.json";
+	//if(lang=="de") listUrl = "../jsonp_de.json";
 	$(".listdialog").hide();
 	//$("#jdialogError").hide();
 	$("#connContext").hide();
 	/*$("#summStText").on('change',function(){
 		saveSummSt('#{adminContext.patillscript.summStId}');
 	 });*/
-	$(".chgstage").on('change',function(){
+	/*$(".chgstage").on('change',function(){
 		chgStageItem(this);
-	 });
+	 });*/
 
 	$("#jdialog").dialog({
 		autoOpen: false,
@@ -106,40 +122,17 @@ jsPlumb.ready(function () {
 
     // suspend drawing and initialise.
     instance.batch(function () {
-
-
-        /*instance.draggable(jsPlumb.getSelector(".drag-drop .itembox"));        
-    	//item was moved -> trigger ajax call to update position
-        $( ".drag-drop .itembox" ).draggable({
-        	  stop: function( event, ui ) {
-        		  handleRectDrop(ui);
-        	  }
-        });*/
         parseConns();
         initGroups(instance);
        
     });
-    // collapse/expand group button
-    /*instance.on(canvas, "click", ".node-collapse", function() {
-    	toggleContainerCollapse(this.parentNode);
-    });*/
-   /* $(".itembox").contextmenu(function(event) {
-    	  //alert( "Handler for .contextmenu() called." );
-    	  showDropDown("dd"+this.id);
-    	  event.preventDefault();
-   	 });*/
     
     initConnections();
     initCnxDisplay();
-   /* $(".jsplumb-connector").attr("title","Click to change or delete");
-    //registers a connection that is made: this code needs to be AFTER the init has happened, otherwise each init 
-    //event triggers this. 
-    instance.bind("connection", function (info, originalEvent){
-    	addConnection(info);
-    });*/
-    $(".expbox").addClass("expboxstatus");
+
+   // $(".expbox").addClass("expboxstatus");
     jsPlumb.fire("jsPlumbDemoLoaded", instance);
-    
+    $(".passive").hide();
     
    // initContainerCollapsed();
 	
@@ -166,8 +159,29 @@ Stage: <span id="stageSpan">#{adminContext.patillscript.stage} / <a href="javasc
 </div>
 <div class="boxes_container" style="float:left;width:60%;position:absolute;">
 	<div id="canvas" class="canvas jtk-surface drag-drop jtk-surface-nopan" style="width:550px;height:750px; max-height:750px;">
+		  
+		  <div id="pat_box" class="container viewcontainer pat_cont pos_#{adminContext.patillscript.patBoxNo} hide_#{adminContext.sessSetting.boxUsedPat}" group="pat_group">
+		  		<div id="pat_title">#{prop['patho']} </div>
+		  		
+		  			<h:form id="pathoform">
+		  			<h:panelGroup>
+					
+						<ui:repeat value="#{adminContext.patillscript.pathoStage}" var="patho" varStatus="status">
+							<ui:include src="pathobox.xhtml" />
+     					</ui:repeat>	
+     							
+    				</h:panelGroup>
+					</h:form>
+					<span class="errormsg" id="msg_pathoform" onClick="javascript:clearErrorMsgs();"></span>
+				<div class="patpassive passive" style="position:absolute;top:10%;left:0px;width:100%;z-index:9;">
+		  			<div style="text-align:left;margin:5px;">#{prop['patho.passive']}</div>
+					<div style="text-align:left;margin:10px;padding:0px;margin-top:20px;color:white; font-size:110px">
+						<i class="fa fa-lock"></i>
+					</div>
+				</div>
+		</div>
 		  <!-- problems -->
-		  <div id="fdg_box"  class="container viewcontainer" group="fdg_group">
+		  <div id="fdg_box"  class="container viewcontainer pos_#{adminContext.patillscript.fdgBoxNo} fdg_cont hide_#{adminContext.sessSetting.boxUsedFdg}" group="fdg_group">
 		   		<div class="title">#{prop['findings']} </div>
 		   		<div class="node-collapse"></div>
 						<h:form id="probform">
@@ -179,14 +193,12 @@ Stage: <span id="stageSpan">#{adminContext.patillscript.stage} / <a href="javasc
     				     <h:commandButton id="hiddenProbButton" value="RenderSomething" style="visibility:hidden">
     						<f:ajax render="@form" onevent="updateItemCallback"></f:ajax>
 						</h:commandButton>
-						
-						<!-- <h:messages errorClass="errorMessage" infoClass="infoMessage" showDetail="true" showSummary="true"/>-->						
-						</h:form>
+												</h:form>
 						<span class="errormsg" id="msg_probform"></span>
 		  </div>
 
 		  <!--  diagnoses -->
-		  <div id="ddx_box" class="container viewcontainer" group="ddx_group">	
+		  <div id="ddx_box" class="container viewcontainer ddx_cont pos_#{adminContext.patillscript.ddxBoxNo} hide_#{adminContext.sessSetting.boxUsedDDX}" group="ddx_group">	
 		  		<div class="title">#{prop['ddx']}</div>	
 		  		<div class="node-collapse"></div>	  		
 			  			<h:form id="ddxform">
@@ -201,7 +213,7 @@ Stage: <span id="stageSpan">#{adminContext.patillscript.stage} / <a href="javasc
 					<span class="errormsg" id="msg_ddxform"></span>							
 		  </div>
 		  <!-- tests -->
-		  <div id="tst_box" class="container viewcontainer" group="tst_group">
+		  <div id="tst_box" class="container viewcontainer tst_cont pos_#{adminContext.patillscript.tstBoxNo} hide_#{adminContext.sessSetting.boxUsedTst}" group="tst_group">
 		  		<div class="title">#{prop['tests']}</div>
 		 	 	<div class="node-collapse"></div>
 		  			<h:form id="testform">
@@ -218,7 +230,7 @@ Stage: <span id="stageSpan">#{adminContext.patillscript.stage} / <a href="javasc
 					<span class="errormsg" id="msg_testform"></span>
 		</div>
 		  <!-- managements -->
-		  <div id="mng_box" class="container viewcontainer" group="mng_group">
+		  <div id="mng_box" class="container viewcontainer mng_cont pos_#{adminContext.patillscript.mngBoxNo} hide_#{adminContext.sessSetting.boxUsedMng}" group="mng_group">
 		  	<div class="title">#{prop['mng']}</div>
 		 	 <div class="node-collapse"></div>
 	  			<h:form id="mngform">

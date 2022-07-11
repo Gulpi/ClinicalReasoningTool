@@ -245,12 +245,30 @@ function openConnContext(cnxId){
 	if(isView) return;
 	if(!cnxId.startsWith("cnx_")) return; //click on endpoint/anchor
 	clearErrorMsgs();
+	setConnContextVals();
+	//var cnx = getConnectionById(cnxId);
+	$("#conn_id").html(cnxId);
+	$("#connContext").show();
+}
+
+function setConnContextVals(){
 	$("#connContext").dialog( "option", "width", ['200'] );
 	$("#connContext").dialog( "option", "height", ['200'] );
 	$("#connContext").dialog( "option", "title", chgCnxDialogTitle);
 	$("#connContext").dialog( "option", "buttons", [ ] );
 	$("#connContext" ).dialog( "open" );
+}
+
+function openConnContextExp(cnxId){
+	if(isView) return;
+	if(!cnxId.startsWith("cnx_")) return; //click on endpoint/anchor
+	clearErrorMsgs();
+	//var cnx = getConnectionById(cnxId);
+	setConnContextVals();
 	$("#conn_id").html(cnxId);
+	var stage = $("#chgstage_"+cnxId).val();
+	//alert(cnxId);
+	$("#conn_stage").val(stage);
 	$("#connContext").show();
 }
 

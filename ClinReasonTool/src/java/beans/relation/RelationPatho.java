@@ -3,6 +3,8 @@ package beans.relation;
 import java.io.Serializable;
 import java.util.*;
 import controller.GraphController;
+import net.casus.util.Utility;
+import util.CRTLogger;
 import beans.list.*;
 /**
  * connects a pathophysiology  object to a (Patient)IllnessScript object with some attributes.
@@ -39,10 +41,16 @@ public class RelationPatho extends Relation implements Serializable {
 	 * @see beans.relation.Relation#getLabelOrSynLabel()
 	 */
 	public String getLabelOrSynLabel(){	
-		String postStr = "";
-		
-		if(getSynId()<=0) return patho.getName() + postStr;
-		else return getSynonym().getName() + postStr;
+		try {
+			String postStr = "";
+			
+			if(getSynId()<=0) return patho.getName() + postStr;
+			else return getSynonym().getName() + postStr;
+		}
+		catch(Exception e) {
+			CRTLogger.out(Utility.stackTraceToString(e), CRTLogger.LEVEL_ERROR);
+			return "";
+		}
 	}
 
 	public Set<Synonym> getSynonyma() {

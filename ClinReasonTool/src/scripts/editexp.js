@@ -22,6 +22,12 @@ function chgStage(chg, loc){
 	}	
 	window.location.href = winloc;
 }
+/**
+** We either display the map at the current stage of the case or display the complete map (as if on last card)
+ */
+/*function toggleMapDisplay(){
+	sendAjax(0, callBackReload, "toggleShowAll", "");
+}*/
 
 /**
  * we change the language of the map and reload the page to display the changed list items
@@ -32,15 +38,15 @@ function chgMapLang(){
 	scriptlang = newLang;
 	//alert(listUrl);
 	if(isEmptyScript=="true"){ //trigger submit, script is empty
-		sendAjax(newLang, doNothing, "changeLangOfScript", "");
+		sendAjax(newLang, callBackReload, "changeLangOfScript", "");
 	}
 	else{ //we have to ask user what he/she wants to do with the already created items
 		var cont = confirm("Wollen Sie die Sprache ändern? Es wird versucht alle bereits eingegebenen Knoten in die neue Sprache zu übersetzen.")
 		if(cont){
-			sendAjax(newLang, doNothing, "changeLangOfScript", "");			
+			sendAjax(newLang, callBackReload, "changeLangOfScript", "");			
 		}
 	}
-	location.reload();
+	//location.reload();
 }
 
 
@@ -69,16 +75,24 @@ function chgBox6(){
 	//location.reload();
 }*/
 
+function toggleDisplayMode(){
+	if(sessionStorage.displayMode==1) sessionStorage.displayMode = 0;
+	else sessionStorage.displayMode = 1; 
+	/*if (displayMode==1) displayMode = 0; 
+	else displayMode = 1;*/
+	toggleShowAll();	
+}
 /**
  * the display of the individual map is either as a step-thru (0) or complete map display (1)
  * @param url
  * @returns
  */
 function toggleShowAll(){
+	
 	var winloc = window.location.href;
 	if(winloc.indexOf("repdm")<0) winloc = winloc+"&repdm=0";
 
-	if (displayMode==1){
+	if (sessionStorage.displayMode==1){
 		winloc = winloc.replace("repdm=1", "repdm=0");
 	}
 	else
@@ -111,7 +125,12 @@ function chgStageItem(obj){
 	var id = obj.id;
 	var realId = id.substring(9);
 	var newStage = $("#"+id).val();
-	sendAjax(realId, chgStageCallback, "chgStateOfItem", newStage);
+	if(newStage<=0 || newStage>maxStage){ //check that the new card idx is within the case length!
+		alert("Invalid card number");
+		return;
+	} 
+	else
+		sendAjax(realId, chgStageCallback, "chgStateOfItem", newStage);
 }
 
 /* changes the stage when the final diagnosis is made */
@@ -122,14 +141,27 @@ function chgStageFinal(obj){
 	sendAjax(realId, chgStageCallback, "chgFinalState", newStage);
 }
 
+/** 
+* the stage at which the connection appears is changed
+ */
 function chgStageEdge(obj){
+	var cnxId = $("#conn_id").html();	// form of "cnx_12345"
+	//var cnx = getConnectionById(cnxId);	
+	var newStage = $("#conn_stage").val();
+	sendAjax(cnxId, chgStageCallback, "chgStateOfEdge", newStage);
+}
+function chgSummStCrd(obj){
 	var id = obj.id;
-	var realId = id.substring(9);
 	var newStage = $("#"+id).val();
-	sendAjax(realId, chgStageCallback, "chgStateOfEdge", newStage);
+	sendAjax(newStage, chgStageCallback, "chgSummStCard", newStage);
 }
 
-function chgStageCallback(){}
+/**
+* we reload the changed box and the connections.
+ */
+function chgStageCallback(){
+	location.reload();
+}
 
 
 /**
@@ -176,13 +208,16 @@ function checkBoxNum(){
 
 function saveBoxesSel(){
 	if(($('.boxeschk :checked').size())>4){
-		alert("Please only select 4 Boxes.");
+		alert("Please only select max. 4 Boxes.");
 	}
 	else{
 		var arr = [];
 		$(".boxeschk").each(function(){
 	   		if($(this).is(":checked")){
 		 		arr.push($(this).val());
+	   		}
+			else{
+		 		arr.push(0);
 	   		}
 		})
 	var vals = arr.join(",");

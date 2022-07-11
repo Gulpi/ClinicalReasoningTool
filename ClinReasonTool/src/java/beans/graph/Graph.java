@@ -520,9 +520,17 @@ public class Graph extends DirectedWeightedMultigraph<MultiVertex, MultiEdge> {
 				
 				//if(this.expEdit || (edge.getLearnerCnxId()<=0 && edge.getExpertCnx()!=null)){ //then it is only an expert edge and we 
 				int currentStage = NavigationController.getInstance().getMyFacesContext().getPatillscript().getCurrentStage();
-				if(expEdit) currentStage = NavigationController.getInstance().getMyFacesContext().getPatillscript().getStage();
+				if(expEdit) {
+					currentStage = NavigationController.getInstance().getMyFacesContext().getPatillscript().getStage();
+					if(AjaxController.getInstance().getIntRequestParamByKey(AjaxController.REQPARAM_REPORTS_DISPLAYMODE, 0)==1) 
+						currentStage = NavigationController.getInstance().getMyFacesContext().getPatillscript().getCurrentStage();
+				}
+			
 				if(expEdit && edge.getLearnerCnx()!=null && edge.getLearnerCnx().getStage()>currentStage) 
 					showExpEdge = false;
+				
+				//else if(expEdit && AjaxController.getInstance().getIntRequestParamByKey(AjaxController.REQPARAM_REPORTS_DISPLAYMODE, 0)==1)
+				//	showExpEdge = true;
 				
 				else if(edge.getExpertCnx()!=null && edge.getLearnerCnx()==null && edge.getExpertCnx().getStage()>0 && edge.getExpertCnx().getStage()>currentStage) 
 					showExpEdge = false;

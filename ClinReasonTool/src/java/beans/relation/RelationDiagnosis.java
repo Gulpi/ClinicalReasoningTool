@@ -12,8 +12,10 @@ import controller.GraphController;
 import controller.IllnessScriptController;
 import controller.NavigationController;
 import controller.ScoringController;
+import net.casus.util.Utility;
 import beans.list.*;
 import properties.IntlConfiguration;
+import util.CRTLogger;
 /**
  * connects a Diagnosis object to a (Patient)IllnessScript object with some attributes.
  * @author ingahege
@@ -258,11 +260,17 @@ public class RelationDiagnosis extends Relation implements Serializable {
 	 * @see beans.relation.Relation#getLabelOrSynLabel()
 	 */
 	public String getLabelOrSynLabel(){		
-		if(this.diagnosis.getItem_id()==0){
-			return IntlConfiguration.getValue("ddx.nodiagnosis");
+		try {
+			if(this.diagnosis.getItem_id()==0){
+				return IntlConfiguration.getValue("ddx.nodiagnosis");
+			}
+			if(getSynId()<=0) return diagnosis.getName();
+			else return getSynonym().getName();
 		}
-		if(getSynId()<=0) return diagnosis.getName();
-		else return getSynonym().getName();
+		catch(Exception e) {
+			CRTLogger.out(Utility.stackTraceToString(e), CRTLogger.LEVEL_ERROR);
+			return "";
+		}
 	}
 	
 	/**

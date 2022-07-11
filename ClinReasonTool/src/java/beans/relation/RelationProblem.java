@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.util.*;
 
 import controller.GraphController;
+import net.casus.util.Utility;
+import util.CRTLogger;
 import beans.list.*;
 
 /**
@@ -72,10 +74,17 @@ public class RelationProblem extends Relation implements Serializable{
 	 * @see beans.relation.Relation#getLabelOrSynLabel()
 	 */
 	public String getLabelOrSynLabel(){	
-		String postStr = "";
-		if(this.getIsSyndrome()==1) postStr = " (Syndrome)";
-		if(getSynId()<=0) return problem.getName() + postStr;
-		else return getSynonym().getName() + postStr;
+		try{
+			String postStr = "";
+			if(this.getIsSyndrome()==1) postStr = " (Syndrome)";
+			if(getSynId()<=0) return problem.getName() + postStr;
+			else return getSynonym().getName() + postStr;
+		}
+		catch(Exception e) {
+			CRTLogger.out(Utility.stackTraceToString(e), CRTLogger.LEVEL_ERROR);
+			return "";
+		}
+		
 	}
 	
 	public int getPrototypical() {return prototypical;}

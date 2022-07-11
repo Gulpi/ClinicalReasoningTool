@@ -71,11 +71,16 @@ var ajaxUrl = "/crt/src/html/tabs_ajax.xhtml";
 var fireAddConnection = true; //false during re-init of exp cnxs, otherwise new cnxs are stored!
 var inputhistory = ""; //not needed, just to avoid js errors for ajax.
 var isView = true;
-//which boxes are displayed in active mode (0), hidden (1) or displayed in view mode (2)
-/*var probBoxUsed = "#{crtContext.sessSetting.probBoxUsed}"; 
-var ddxBoxUsed = "#{crtContext.sessSetting.ddxBoxUsed}";
-var testBoxUsed = "#{crtContext.sessSetting.testBoxUsed}";
-var mngBoxUsed = "#{crtContext.sessSetting.mngBoxUsed}";*/
+var probBoxUsed = "0"; 
+var ddxBoxUsed = "0";
+var testBoxUsed = "0";
+var mngBoxUsed = "0";
+var pathoBoxUsed = "0";
+
+var box1Type = #{crtContext.patillscript.box1Type}; 
+var box2Type = #{crtContext.patillscript.box2Type};
+var box3Type = #{crtContext.patillscript.box3Type};
+var box4Type = #{crtContext.patillscript.box4Type};
 var displayMode= #{chartConf.indivReportsDisplayMode}; //1=show complete map!
 
 $(function() {
@@ -178,6 +183,7 @@ jsPlumb.ready(function () {
 		},250);
     	
 	});
+    $("#expItemFeedback").prop("checked", true);
 });
 
 item_arr = new Array();
@@ -198,8 +204,18 @@ item_arr = new Array();
 <div class="switch" style="left:100px;top:35px" mytooltip="#{prop['feedback.exp']}">
         <input id="expFeedback" class="cmn-toggle cmn-toggle-round" onchange="toggleExpFeedback('expFeedback', 'icon-user-md', 'expfb_true');" type="checkbox" />
         <label for="expFeedback"></label>
-</div><br/>
-	<h:form id="reportsForm">
+</div>
+
+<div class="" style="position:absolute;left:155px;top:35px;" mytooltip="#{prop['feedback.exp']}"><i class="fa fa-check" style="cursor:pointer;" mytooltip="#{prop['feedback.exp']}"></i></div>
+<div class="switch" style="left:170px;top:35px" mytooltip="#{prop['feedback.exp']}">
+        <input id="expItemFeedback" class="cmn-toggle cmn-toggle-round" onchange="toggleExpItemFeedback('expItemFeedback', 'icon-user-md', 'expfb_true');" type="checkbox" />
+        <label for="expItemFeedback"></label>
+</div>
+
+<br/>
+
+
+<h:form id="reportsForm">
 <div class="help" style="position:absolut;margin-top:20px;'width:560px;">
 	<h:commandButton value="Download (Excel)" styleClass="reportBtn" action="#{crtContext.patillscript.getMapAsExcel}" />
 
@@ -222,7 +238,7 @@ item_arr = new Array();
 	<div id="canvas" class="canvas canvas_view jtk-surface drag-drop jtk-surface-nopan" >
 
 		  <!-- problems -->
-		  <div id="fdg_box"  class="container container_view fdg_cont hide_#{crtContext.sessSetting.probBoxUsed}" group="fdg_group">
+		  <div id="fdg_box"  class="container container_view fdg_cont" group="fdg_group">
 		   		<div id="fdg_title" class="title"  mytooltip="#{prop['findings.search']}">#{prop['findings']} <i class="fa fa-info-circle"></i></div>	
 		   			  			
 						<h:form id="probform">
@@ -236,7 +252,7 @@ item_arr = new Array();
 						 </h:form>
 		  </div>
 		  <!--  diagnoses -->
-		  <div id="ddx_box" class="container container_view ddx_cont hide_#{crtContext.sessSetting.ddxBoxUsed}" group="ddx_group">	
+		  <div id="ddx_box" class="container container_view ddx_cont" group="ddx_group">	
 		  		<div id="ddx_title"  mytooltip="#{prop['ddx.search']}" class="title">#{prop['ddx']} <i class="fa fa-info-circle"></i></div>	
 		  			
 			  			<h:form id="ddxform">
@@ -252,7 +268,7 @@ item_arr = new Array();
 		  		</h:form>
 		  </div>
 		  <!-- tests -->
-		  <div id="tst_box" class="container container_view tst_cont hide_#{crtContext.sessSetting.testBoxUsed}" group="tst_group">
+		  <div id="tst_box" class="container container_view tst_cont" group="tst_group">
 		  		<div id="tst_title" mytooltip="#{prop['tests.search']}" class="title">#{prop['tests']} <i class="fa fa-info-circle"></i>
 
 		  		</div>		  		
@@ -266,7 +282,7 @@ item_arr = new Array();
 					</h:form>
 		</div>
 		  <!-- managements -->
-		  <div id="mng_box" class="container container_view mng_cont hide_#{crtContext.sessSetting.mngBoxUsed}" group="mng_group">
+		  <div id="mng_box" class="container container_view mng_cont" group="mng_group">
 		  	<div id="mng_title"  mytooltip="#{prop['mng.search']}" class="title">#{prop['mng']} <i class="fa fa-info-circle"></i></div>
 	  			<h:form id="mngform">
 	  			<h:panelGroup>

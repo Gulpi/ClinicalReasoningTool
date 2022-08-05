@@ -16,6 +16,7 @@ public class IntlConfiguration
 	private static Properties p_es = new Properties();
 	private static Properties p_pt = new Properties();
 	private static Properties p_fr = new Properties();
+	private static Properties p_uk = new Properties();
 
 	private String propFilenameDE = "properties/intlproperties_de.properties";
 	private String propFilenameEN = "properties/intlproperties.properties";
@@ -24,6 +25,7 @@ public class IntlConfiguration
 	private String propFilenameES = "properties/intlproperties_es.properties";
 	private String propFilenamePT = "properties/intlproperties_pt.properties";
 	private String propFilenameFR = "properties/intlproperties_fr.properties";
+	private String propFilenameUK = "properties/intlproperties_uk.properties";
 
 
 	public IntlConfiguration(){
@@ -34,6 +36,7 @@ public class IntlConfiguration
 		loadProperties("es");
 		loadProperties("pt");
 		loadProperties("fr");
+		loadProperties("uk");
 	}
 	
 	/**
@@ -77,6 +80,11 @@ public class IntlConfiguration
 				if(inputStream!=null)
 					p_fr.load(inputStream);
 			}
+				if(lang=="uk"){
+				InputStream inputStream = getClass().getClassLoader().getResourceAsStream(propFilenameUK);
+				if(inputStream!=null)
+					p_uk.load(inputStream);
+			}
 
 		}
 		catch(Exception e){
@@ -91,6 +99,7 @@ public class IntlConfiguration
 		if(loc.getLanguage().equalsIgnoreCase("es")) return p_es.getProperty(key);
 		if(loc.getLanguage().equalsIgnoreCase("pt")) return p_pt.getProperty(key);
 		if(loc.getLanguage().equalsIgnoreCase("fr")) return p_fr.getProperty(key);
+		if(loc.getLanguage().equalsIgnoreCase("uk")) return p_uk.getProperty(key);
 
 		return p_en.getProperty(key);
 	}

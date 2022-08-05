@@ -11,13 +11,11 @@ import javax.servlet.http.HttpSessionEvent;
 import javax.servlet.http.HttpSessionListener;
 
 import beans.scripts.*;
+//import beans.ContextContainer;
 import beans.graph.Graph;
 import beans.relation.summary.SemanticQual;
 import beans.scoring.PeerContainer;
-import controller.IllnessScriptController;
-import controller.JsonCreator;
-import controller.MeshImporter;
-import controller.PeerSyncController;
+import controller.*;
 import controller.SummaryStatementController;
 import database.DBClinReason;
 import database.HibernateUtil;
@@ -38,7 +36,7 @@ import properties.IntlConfiguration;
 public class AppBean extends ApplicationWrapper implements HttpSessionListener{
 
 	public static final String DEFAULT_LOCALE="en"; //TODO get from properties!
-	public static final String[] ACCEPTED_LOCALES = new String[]{"en", "de", "pl", "sv", "es", "pt", "fr"}; //TODO get from properties!
+	public static final String[] ACCEPTED_LOCALES = new String[]{"en", "de", "pl", "sv", "es", "pt", "fr", "uk"}; //TODO get from properties!
 	public static List<Graph> graphs;
 	public static final String APP_KEY = "AppBean";
 	public static IntlConfiguration intlConf;
@@ -80,6 +78,12 @@ public class AppBean extends ApplicationWrapper implements HttpSessionListener{
 	 * We also put this AppBean into the ServletContext for later access to the applicationScoped scripts
 	 * Loading any 
 	 */
+	
+	/**
+	 * key = vpId as Long and value is ContextContainer with list of actors and other factors.
+	 */
+	//public static Map<Long, ContextContainer> expertContexts;
+	
 	public AppBean(){  
 		long startms = System.currentTimeMillis();
 		CRTLogger.out("Start AppBean init:"  + startms + "ms", CRTLogger.LEVEL_PROD);
@@ -103,7 +107,7 @@ public class AppBean extends ApplicationWrapper implements HttpSessionListener{
 	    
 
 	    //does not have to be done on every restart:
-	   // new JsonCreator().initJsonExport(context);
+	    //new JsonCreator().initJsonExport(context);
 
 	   //doTestStuff(context);
 	    startms = System.currentTimeMillis();
@@ -282,13 +286,13 @@ public class AppBean extends ApplicationWrapper implements HttpSessionListener{
 		return null;
 	}
 	
-	public synchronized void addExpertPatIllnessScript(PatientIllnessScript expScript){
+	/*public synchronized void addExpertPatIllnessScript(PatientIllnessScript expScript){
 		if(expertPatIllScripts==null) expertPatIllScripts = new HashMap<String, PatientIllnessScript>();
 		if(expScript!=null && !expertPatIllScripts.containsKey(expScript.getVpId())){
 			expertPatIllScripts.put(expScript.getVpId(), expScript);
 			
 		}
-	}
+	}*/
 	
 	public static synchronized void updateExpertPatIllnessScriptForVpId(String vpId){
 		try{
@@ -304,9 +308,20 @@ public class AppBean extends ApplicationWrapper implements HttpSessionListener{
 		}
 	}
 	
-	
-	public synchronized void addIllnessScriptForDiagnoses(List diagnoses, String vpId){
+	/**
+	 * we add the ContextContainer of the expert for the give vpId to the HashMap (needed for scoring)
+	 * @param vpId
+	 */
+	/*public static synchronized void addExpertContextsForVpId(long vpId) {
+		if(expertContexts==null) expertContexts = new HashMap<Long, ContextContainer>();
+		if(expertContexts.containsKey(new Long(vpId))) return; //ContextContainer for vpId already included
+		expertContexts.put(new Long(vpId), ContextController.getInstance().initExpertContainer(vpId));
 	}
+	
+	public static ContextContainer getExpertContexts(long vpId) {
+		if(expertContexts==null) return null;
+		return expertContexts.get(new Long(vpId));
+	}*/
 	
 	public static PatientIllnessScript getExpertPatIllScript(String vpId) {
 		if(expertPatIllScripts!=null)

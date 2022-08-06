@@ -4,253 +4,132 @@
 var map_autocomplete_instance = null;
 var minLengthTypeAhead = 3;
 
-var item_data = null;
 var isSuccess = false;
+
+
+
 /** init the lists for selecting problems, diagnoses etc.*/
-  $(function() {
-	    function log( message ) {
-	      $( "<div>" ).text( message ).prependTo( "#log" );
-	      $( "#log" ).scrollTop( 0 );
-	    }
+$(function() {
+	function log( message ) {
+		$( "<div>" ).text( message ).prependTo( "#log" );
+		$( "#log" ).scrollTop( 0 );
+	}
 	 
-	    $.ajax({ //list for problems (list view)
-	        url: listUrl, // url: listNursingUrl,
-	        dataType: "json",
-	        success: function( data ) {
-	        	item_data = data;
-	          $( "#problems" ).autocomplete({
-	           /* source: data,*/
-	        	source: doMatch,
-	            minLength: minLengthTypeAhead,
-	            select: function( event, ui ) {	        		
-	            	isSuccess = true;
-	            	addProblem(ui.item.value, ui.item.label, $("#problems").val());	 
-	            	ui.item.value = ""; //necessary if action is cancelled
-	            },
-	  	      	close: function(ui) {
-	  	      		$("#problems").val("");
-	  	      		$("#fdg_prefix").val("");
-	  	      		handleClose('1');
-	  	      	}
-	          });
-	          $( "#ddx" ).autocomplete({
-		            source: doMatch,
-		            minLength: minLengthTypeAhead,
-		            select: function( event, ui ) {
-		            	isSuccess = true;
-		            	addDiagnosis(ui.item.value, ui.item.label, $("#ddx").val());
-		            	ui.item.value = ""; //necessary if action is cancelled
-		            },
-		  	      	close: function(ui) {
-		  	      		$("#ddx").val("");
-		  	      		handleClose(2);
-		  	      	}
-		      });
-	          $( "#tests" ).autocomplete({
-		            source: doMatch,
-		            minLength: minLengthTypeAhead,
-		            select: function( event, ui ) {
-		            	isSuccess = true;
-		            	addTest(ui.item.value, ui.item.label, $("#tests").val());
-		            	ui.item.value = ""; //necessary if action is cancelled
-		            },
-		  	      	close: function(ui) {
-		  	      		$("#tests").val("");
-		  	      		handleClose(3);
-		  	      	}
-		      });
-	          $( "#patho" ).autocomplete({
-		            source: doMatch,
-		            minLength: minLengthTypeAhead,
-		            select: function( event, ui ) {
-		            	isSuccess = true;
-		            	addPatho(ui.item.value, ui.item.label, $("#patho").val());
-		            	ui.item.value = ""; //necessary if action is cancelled
-		            },
-		  	      	close: function(ui) {
-		  	      		$("#patho").val("");
-		  	      		handleClose(6);
-		  	      	}
-		      });
-	          $( "#mng" ).autocomplete({
-		            source: doMatch,
-		            minLength: minLengthTypeAhead,
-		            select: function( event, ui ) {
-		            	isSuccess = true;
-		            	addManagement(ui.item.value, ui.item.label, $("#mng").val());
-		            	ui.item.value = ""; //necessary if action is cancelled
-		            },
-		  	      	close: function(ui) {
-		  	      		$("#mng").val("");
-		  	      		handleClose(4);
-		  	      	}
-		        });
-	          $( "#nddx" ).autocomplete({
-					//url: listNursingUrl,
-		            source: doMatch,
-		            minLength: minLengthTypeAhead,
-		            select: function( event, ui ) {
-		            	isSuccess = true;
-		            	addItem(ui.item.value, ui.item.label, $("#nddx").val(), "Nddx");
-		            	ui.item.value = ""; //necessary if action is cancelled
-		            },
-		  	      	close: function(ui) {
-		  	      		$("#nddx").val("");
-		  	      		handleClose(7);
-		  	      	}
-		      });
-			$( "#nmng").autocomplete({
-		            source: doMatch,
-		            minLength: minLengthTypeAhead,
-		            select: function( event, ui ) {
-		            	isSuccess = true;
-		            	addItem(ui.item.value, ui.item.label, $("#nmng").val(), "Nmng");
-		            	ui.item.value = ""; //necessary if action is cancelled
-		            },
-		  	      	close: function(ui) {
-		  	      		$("#nmng").val("");
-		  	      		handleClose(9);
-		  	      	}
-		      });
-			$( "#info").autocomplete({
-		            source: doMatch,
-		            minLength: minLengthTypeAhead,
-		            select: function( event, ui ) {
-		            	isSuccess = true;
-		            	addItem(ui.item.value, ui.item.label, $("#info").val(), "Info");
-		            	ui.item.value = ""; //necessary if action is cancelled
-		            },
-		  	      	close: function(ui) {
-		  	      		$("#info").val("");
-		  	      		handleClose(10);
-		  	      	}
-		      });
-			$( "#naim").autocomplete({
-		            source: doMatch,
-		            minLength: minLengthTypeAhead,
-		            select: function( event, ui ) {
-		            	isSuccess = true;
-		            	addItem(ui.item.value, ui.item.label, $("#naim").val(), "Naim");
-		            	ui.item.value = ""; //necessary if action is cancelled
-		            },
-		  	      	close: function(ui) {
-		  	      		$("#naim").val("");
-		  	      		handleClose(8);
-		  	      	}
-		      });
-				//contextual factors:
-	          $( "#act_search" ).autocomplete({
-		            source: doMatch,
-		            minLength: minLengthTypeAhead,
-		            select: function( event, ui ) {
-		            	isSuccess = true;
-		            	addActor(ui.item.value, ui.item.label, $("#act_search").val());
-		            	ui.item.value = ""; //necessary if action is cancelled
-		            },
-		  	      	close: function(ui) {
-		  	      		$("#act_search").val("");
-		  	      		handleClose(4);
-		  	      	}
-		        });
-				//contextual factors:
-	          $( "#ctxt_search" ).autocomplete({
-		            source: doMatch,
-		            minLength: minLengthTypeAhead,
-		            select: function( event, ui ) {
-		            	isSuccess = true;
-		            	addContext(ui.item.value, ui.item.label, $("#ctxt_search").val());
-		            	ui.item.value = ""; //necessary if action is cancelled
-		            },
-		  	      	close: function(ui) {
-		  	      		$("#ctxt_search").val("");
-		  	      		handleClose(4);
-		  	      	}
-		        });
-	        }
-	      });
-	    /* alternative handling if we do not have a list: */
-	    $("#problems").bind("enterProb",function(e){
-	    	addProblem(-999, "-999", $("#problems").val());	 
-	    	});
-	    	$("#problems").keyup(function(e){
-	    	    if(e.keyCode == 13 && listUrl=="")
-	    	    {
-	    	        $(this).trigger("enterProb");
-	    	    }
-	    	});
+	$.ajax({ //list for problems (list view)
+		url: listUrl, // url: listNursingUrl,
+		dataType: "json",
+		success: function( data ) {
+			genericCreateAutocomplete("problems", data, 1, true);
+			genericCreateAutocomplete("ddx", data, 2, false);
+			genericCreateAutocomplete("tests", data, 3, false);
+			genericCreateAutocomplete("patho", data, 6, false);
+			genericCreateAutocomplete("mng", data, 4, false);
+			genericCreateAutocomplete("nddx", data, 7, false);
+			genericCreateAutocomplete("nmng", data, 9, false);
+			genericCreateAutocomplete("info", data, 10, false);
+			genericCreateAutocomplete("naim", data, 8, false);
+			genericCreateAutocomplete("act_search", data, 4, false);
+			genericCreateAutocomplete("ctxt_search", data, 4, false);
+		}
+	});
+	
+	genericCreateAutocompleteWithoutList("problems", "enterProb", listUrl);
+	genericCreateAutocompleteWithoutList("patho", "enterPatho", listUrl);
+	genericCreateAutocompleteWithoutList("ddx", "enterDDX", listUrl);
+	genericCreateAutocompleteWithoutList("tests", "enterTest", listUrl);
+	genericCreateAutocompleteWithoutList("mng", "enterMng", listUrl);
+	genericCreateAutocompleteWithoutList("act_search", "enterActor", listUrl);
+	genericCreateAutocompleteWithoutList("ctxt_search", "enterContext", listUrl);
+});
 
-	    $("#patho").bind("enterPatho",function(e){
-	    	addPatho(-999, "-999", $("#patho").val());	 
-	    	});
-	    	$("#patho").keyup(function(e){
-	    	    if(e.keyCode == 13 && listUrl=="")
-	    	    {
-	    	        $(this).trigger("enterPatho");
-	    	    }
-	    	});	  
-  	
-		 $("#ddx").bind("enterDDX",function(e){
-		    	addDiagnosis(-999, "-999", $("#ddx").val());	 
-		    	});
-		    	$("#ddx").keyup(function(e){
-		    	    if(e.keyCode == 13 && listUrl=="")
-		    	    {
-		    	        $(this).trigger("enterDDX");
-		    	    }
-		    });
-			$("#tests").bind("enterTest",function(e){
-			    	addTest(-999, "-999", $("#tests").val());	 
-			    	});
-			    	$("#tests").keyup(function(e){
-			    	    if(e.keyCode == 13 && listUrl=="")
-			    	    {
-			    	        $(this).trigger("enterTest");
-			    	    }
-			    });
-			$("#mng").bind("enterMng",function(e){
-				addManagement(-999, "-999", $("#mng").val());	 
-		    	});
-		    	$("#mng").keyup(function(e){
-		    	    if(e.keyCode == 13 && listUrl=="")
-		    	    {
-		    	        $(this).trigger("enterMng");
-		    	    }
-		    });
-			$("#act_search").bind("enterActor",function(e){
-				addActor(-999, "-999", $("#act_search").val());	 
-		    	});
-		    	$("#act_search").keyup(function(e){
-		    	    if(e.keyCode == 13 && listUrl=="")
-		    	    {
-		    	        $(this).trigger("enterActor");
-		    	    }
-		    });
-			$("#ctxt_search").bind("enterContext",function(e){
-				addContext(-999, "-999", $("#ctxt_search").val());	 
-		    	});
-		    	$("#ctxt_search").keyup(function(e){
-		    	    if(e.keyCode == 13 && listUrl=="")
-		    	    {
-		    	        $(this).trigger("enterContext");
-		    	    }
-		    });			
-	  });
+var exact_item_label = "";
+var exact_item_value = "";
 
-	var exact_item_label = "";
-	var exact_item_value = "";
+function genericAddItem(ui, id) {
+	if (id=="problems") {
+		addProblem(ui.item.value, ui.item.label, $("#" + id).val());	 
+	}
+	else if (id=="ddx") {
+		addDiagnosis(ui.item.value, ui.item.label, $("#" + id).val());	 
+	}
+	else if (id=="tests") {
+		addTest(ui.item.value, ui.item.label, $("#" + id).val());	 
+	}
+	else if (id=="patho") {
+		addPatho(ui.item.value, ui.item.label, $("#" + id).val());	 
+	}
+	else if (id=="mng") {
+		addManagement(ui.item.value, ui.item.label, $("#" + id).val());	 
+	}
+	else if (id=="nddx") {
+		addItem(ui.item.value, ui.item.label,  $("#" + id).val(), "Nddx");
+	}
+	else if (id=="nmng") {
+		addItem(ui.item.value, ui.item.label,  $("#" + id).val(), "Mmng");
+	}
+	else if (id=="info") {
+		addItem(ui.item.value, ui.item.label,  $("#" + id).val(), "Info");
+	}
+	else if (id=="naim") {
+		addItem(ui.item.value, ui.item.label,  $("#" + id).val(), "Naim");
+	}
+	else if (id=="act_search") {
+		addActor(ui.item.value, ui.item.label,  $("#" + id).val());
+	}
+	else if (id=="ctxt_search") {
+		addContext(ui.item.value, ui.item.label,  $("#" + id).val());
+	}
+}
+
+function genericCreateAutocompleteWithoutList(in_id, in_bind, in_listUrl) {
+	$("#" + in_id).bind(in_bind, function(e) {
+		addContext(-999, "-999", $("#" + in_id).val());	 
+    });
+    
+    $("#" + in_id).keyup(function(e){
+		if(e.keyCode == 13 && in_listUrl=="") {
+			$(this).trigger(in_bind);
+		}
+    });	
+}
+	
+
+function genericCreateAutocomplete(in_id, in_data, in_num, in_fdg_prefix_handling) {
+	$( "#" + in_id).autocomplete({
+       	/* source: data,*/
+    	source: function (request, response) {
+			doMatch(request, response, in_data);
+		},
+        minLength: minLengthTypeAhead,
+        select: function( event, ui ) {	        		
+        	isSuccess = true;
+        	genericAddItem(ui, in_id)
+        	ui.item.value = ""; //necessary if action is cancelled
+        },
+      	close: function(ui) {
+      		$("#" + in_id).val("");
+      		if (in_fdg_prefix_handling) {
+				$("#fdg_prefix").val("");
+			}
+      		
+      		handleClose(in_num);
+      	}
+	});
+}
+
 
   /*
    * matches the user input with the list labels. Also considers multiple terms, negations, and
    * a typo tolerance
    */
-function doMatch(request,response){
+function doMatch(request,response, in_data){
 	exact_item_label = "";
 	exact_item_value = "";
 
 	$('.ui-tooltip').remove();
 	
 	if (request.term == "") { //user has entered nothing, so we return here....
-		response( $.map( item_data, function( item ) {
+		response( $.map( in_data, function( item ) {
 			return {
 				value: item.value,
 				/*text: item.label*/
@@ -261,7 +140,7 @@ function doMatch(request,response){
 	}
 	else {
 		
-		var my_map = createMatchedMap(request,response);
+		var my_map = createMatchedMap(request, response, in_data);
 		//if we have an exact match, we display it at the top with a delimiter:
 		if(exact_item_label!="" && exact_item_value!=""){
 			var del = "-----------";
@@ -276,7 +155,7 @@ function doMatch(request,response){
 		}
 		//we have found no match, so we are checking for typos (currently not for expert edit, but could be done, too?)
 		if(my_map.length==1 && !isExp){
-			my_map = createMatchedMapWithTypos(request,response,2);
+			my_map = createMatchedMapWithTypos(request, response, 2, in_data);
 			//if we have a match here, we add something saying "Did you mean..."
 			if(my_map.length>1){
 				var obj = {label: didYouMean, value:"IGNORE", category:"hallo"};
@@ -288,8 +167,8 @@ function doMatch(request,response){
 }
 
 
-function createMatchedMap(request,response){
-	return $.map( item_data, function( item ) {
+function createMatchedMap(request, response, in_data){
+	return $.map( in_data, function( item ) {
 		 
 		if(item.label=="") return;
 		if(item.value=="-99"){
@@ -370,8 +249,8 @@ function createMatchedMap(request,response){
  * @param maxDist
  * @returns
  */
-function createMatchedMapWithTypos(request,response, maxDist){
-	return $.map( item_data, function( item ) {
+function createMatchedMapWithTypos(request, response, maxDist, in_data){
+	return $.map( in_data, function( item ) {
 		 
 		/*if(item.label=="") return;*/
 		if(item.value=="-99"){

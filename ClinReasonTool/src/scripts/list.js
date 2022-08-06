@@ -14,7 +14,7 @@ var isSuccess = false;
 	    }
 	 
 	    $.ajax({ //list for problems (list view)
-	        url: listUrl,
+	        url: listUrl, // url: listNursingUrl,
 	        dataType: "json",
 	        success: function( data ) {
 	        	item_data = data;
@@ -85,6 +85,87 @@ var isSuccess = false;
 		  	      		handleClose(4);
 		  	      	}
 		        });
+	          $( "#nddx" ).autocomplete({
+					//url: listNursingUrl,
+		            source: doMatch,
+		            minLength: minLengthTypeAhead,
+		            select: function( event, ui ) {
+		            	isSuccess = true;
+		            	addItem(ui.item.value, ui.item.label, $("#nddx").val(), "Nddx");
+		            	ui.item.value = ""; //necessary if action is cancelled
+		            },
+		  	      	close: function(ui) {
+		  	      		$("#nddx").val("");
+		  	      		handleClose(7);
+		  	      	}
+		      });
+			$( "#nmng").autocomplete({
+		            source: doMatch,
+		            minLength: minLengthTypeAhead,
+		            select: function( event, ui ) {
+		            	isSuccess = true;
+		            	addItem(ui.item.value, ui.item.label, $("#nmng").val(), "Nmng");
+		            	ui.item.value = ""; //necessary if action is cancelled
+		            },
+		  	      	close: function(ui) {
+		  	      		$("#nmng").val("");
+		  	      		handleClose(9);
+		  	      	}
+		      });
+			$( "#info").autocomplete({
+		            source: doMatch,
+		            minLength: minLengthTypeAhead,
+		            select: function( event, ui ) {
+		            	isSuccess = true;
+		            	addItem(ui.item.value, ui.item.label, $("#info").val(), "Info");
+		            	ui.item.value = ""; //necessary if action is cancelled
+		            },
+		  	      	close: function(ui) {
+		  	      		$("#info").val("");
+		  	      		handleClose(10);
+		  	      	}
+		      });
+			$( "#naim").autocomplete({
+		            source: doMatch,
+		            minLength: minLengthTypeAhead,
+		            select: function( event, ui ) {
+		            	isSuccess = true;
+		            	addItem(ui.item.value, ui.item.label, $("#naim").val(), "Naim");
+		            	ui.item.value = ""; //necessary if action is cancelled
+		            },
+		  	      	close: function(ui) {
+		  	      		$("#naim").val("");
+		  	      		handleClose(8);
+		  	      	}
+		      });
+				//contextual factors:
+	          $( "#act_search" ).autocomplete({
+		            source: doMatch,
+		            minLength: minLengthTypeAhead,
+		            select: function( event, ui ) {
+		            	isSuccess = true;
+		            	addActor(ui.item.value, ui.item.label, $("#act_search").val());
+		            	ui.item.value = ""; //necessary if action is cancelled
+		            },
+		  	      	close: function(ui) {
+		  	      		$("#act_search").val("");
+		  	      		handleClose(4);
+		  	      	}
+		        });
+				//contextual factors:
+	          $( "#ctxt_search" ).autocomplete({
+		            source: doMatch,
+		            minLength: minLengthTypeAhead,
+		            select: function( event, ui ) {
+		            	isSuccess = true;
+		            	addContext(ui.item.value, ui.item.label, $("#ctxt_search").val());
+		            	ui.item.value = ""; //necessary if action is cancelled
+		            },
+		  	      	close: function(ui) {
+		  	      		$("#ctxt_search").val("");
+		  	      		handleClose(4);
+		  	      	}
+		        });
 	        }
 	      });
 	    /* alternative handling if we do not have a list: */
@@ -135,7 +216,24 @@ var isSuccess = false;
 		    	        $(this).trigger("enterMng");
 		    	    }
 		    });
-			
+			$("#act_search").bind("enterActor",function(e){
+				addActor(-999, "-999", $("#act_search").val());	 
+		    	});
+		    	$("#act_search").keyup(function(e){
+		    	    if(e.keyCode == 13 && listUrl=="")
+		    	    {
+		    	        $(this).trigger("enterActor");
+		    	    }
+		    });
+			$("#ctxt_search").bind("enterContext",function(e){
+				addContext(-999, "-999", $("#ctxt_search").val());	 
+		    	});
+		    	$("#ctxt_search").keyup(function(e){
+		    	    if(e.keyCode == 13 && listUrl=="")
+		    	    {
+		    	        $(this).trigger("enterContext");
+		    	    }
+		    });			
 	  });
 
 	var exact_item_label = "";
@@ -375,6 +473,8 @@ function checkStartUserInput(user_input){
 	if(scriptlang=="de") my_arr = start_de_arr;
 	else if(scriptlang=="es") my_arr = start_es_arr;
 	else if(scriptlang=="pl") my_arr = start_pl_arr;
+	//else if(scriptlang=="fr") my_arr = start_fr_arr;
+	//else if(scriptlang=="pt") my_arr = start_pt_arr;
 	
 	for(var i=0; i<my_arr.length; i++){
 	if(user_input.toLowerCase().startsWith(my_arr[i]))

@@ -1,12 +1,18 @@
 
 /******************** list init *******************************/
+/*
+	new init method
+	
+	collect all possible urls -> either default listUrl or attr "listUrl" in search inpout text field
+	 to make a new list possible -> add listUrl attribute to search input text field!
+	 default listUrl in template can also be "", then we scan for search input text filed with set url, otherwise we initialize
+	 the text fields with genericCreateAutocompleteWithoutList!
+ */
 
 var map_autocomplete_instance = null;
 var minLengthTypeAhead = 3;
 
 var isSuccess = false;
-
-
 
 /** init the lists for selecting problems, diagnoses etc.*/
 $(function() {
@@ -14,74 +20,123 @@ $(function() {
 		$( "<div>" ).text( message ).prependTo( "#log" );
 		$( "#log" ).scrollTop( 0 );
 	}
-	 
-	$.ajax({ //list for problems (list view)
-		url: listUrl, // url: listNursingUrl,
-		dataType: "json",
-		success: function( data ) {
-			genericCreateAutocomplete("problems", data, 1, true);
-			genericCreateAutocomplete("ddx", data, 2, false);
-			genericCreateAutocomplete("tests", data, 3, false);
-			genericCreateAutocomplete("patho", data, 6, false);
-			genericCreateAutocomplete("mng", data, 4, false);
-			genericCreateAutocomplete("nddx", data, 7, false);
-			genericCreateAutocomplete("nmng", data, 9, false);
-			genericCreateAutocomplete("info", data, 10, false);
-			genericCreateAutocomplete("naim", data, 8, false);
-			genericCreateAutocomplete("act_search", data, 4, false);
-			genericCreateAutocomplete("ctxt_search", data, 4, false);
+	
+	/* collect all possible urls */
+	var my_listUrl = listUrl; // should be listUrl
+	var inputUrls = new Array();
+	inputUrls[my_listUrl] =  new Array();
+	$(".search input.f_text").each(function(index, value) {
+  		var my_id = $(this).attr("id");
+    	var my_url = $(this).attr("listUrl");
+    	if (my_url) {
+			if (!inputUrls[my_url]) {
+				inputUrls[my_url] = new Array();
+			}
+			inputUrls[my_url].push(my_id);
+		}
+		else {
+			inputUrls[my_listUrl].push(my_id);
 		}
 	});
 	
-	genericCreateAutocompleteWithoutList("problems", "enterProb", listUrl);
-	genericCreateAutocompleteWithoutList("patho", "enterPatho", listUrl);
-	genericCreateAutocompleteWithoutList("ddx", "enterDDX", listUrl);
-	genericCreateAutocompleteWithoutList("tests", "enterTest", listUrl);
-	genericCreateAutocompleteWithoutList("mng", "enterMng", listUrl);
-	genericCreateAutocompleteWithoutList("act_search", "enterActor", listUrl);
-	genericCreateAutocompleteWithoutList("ctxt_search", "enterContext", listUrl);
+	/* no loop over all urls and the assigned list of ids (search input text fields for autocomplete */
+	for (var key in inputUrls) {
+		loadListAndAssign(key,inputUrls[key]);
+	}
+	 
+	/*$.ajax({ //list for problems (list view)
+		url: listUrl, // url: listNursingUrl,
+		dataType: "json",
+		success: function( data ) {
+			genericCreateAutocomplete("problems", data);
+			genericCreateAutocomplete("ddx", data);
+			genericCreateAutocomplete("tests", data);
+			genericCreateAutocomplete("patho", data, 6, false);
+			genericCreateAutocomplete("mng", data);
+			genericCreateAutocomplete("nddx", data);
+			genericCreateAutocomplete("nmng", data);
+			genericCreateAutocomplete("info", data);
+			genericCreateAutocomplete("naim", data);
+			genericCreateAutocomplete("act_search");
+			genericCreateAutocomplete("ctxt_search");
+		}
+	});
+	
+	genericCreateAutocompleteWithoutList("problems", listUrl);
+	genericCreateAutocompleteWithoutList("patho", listUrl);
+	genericCreateAutocompleteWithoutList("ddx", listUrl);
+	genericCreateAutocompleteWithoutList("tests", listUrl);
+	genericCreateAutocompleteWithoutList("mng", listUrl);
+	genericCreateAutocompleteWithoutList("act_search",listUrl);
+	genericCreateAutocompleteWithoutList("ctxt_search", listUrl);
+	*/
 });
 
 var exact_item_label = "";
 var exact_item_value = "";
 
-function genericAddItem(ui, id) {
-	if (id=="problems") {
-		addProblem(ui.item.value, ui.item.label, $("#" + id).val());	 
+/**
+	key = url or empty
+	list of id of seach input text field
+	go thru and init autocomplete
+ */
+function loadListAndAssign(key, list) {
+	if (key && key != "") {
+		$.ajax({ //list for problems (list view)
+			url: key, // url: listNursingUrl,
+			dataType: "json",
+			success: function( data ) {
+				for (let i = 0; i < list.length; i++) {
+					loop = list[i];
+					console.log("list.js: " + key + " -> " + loop);
+					genericCreateAutocomplete(loop, data);
+				}
+			}
+		});
 	}
-	else if (id=="ddx") {
-		addDiagnosis(ui.item.value, ui.item.label, $("#" + id).val());	 
-	}
-	else if (id=="tests") {
-		addTest(ui.item.value, ui.item.label, $("#" + id).val());	 
-	}
-	else if (id=="patho") {
-		addPatho(ui.item.value, ui.item.label, $("#" + id).val());	 
-	}
-	else if (id=="mng") {
-		addManagement(ui.item.value, ui.item.label, $("#" + id).val());	 
-	}
-	else if (id=="nddx") {
-		addItem(ui.item.value, ui.item.label,  $("#" + id).val(), "Nddx");
-	}
-	else if (id=="nmng") {
-		addItem(ui.item.value, ui.item.label,  $("#" + id).val(), "Mmng");
-	}
-	else if (id=="info") {
-		addItem(ui.item.value, ui.item.label,  $("#" + id).val(), "Info");
-	}
-	else if (id=="naim") {
-		addItem(ui.item.value, ui.item.label,  $("#" + id).val(), "Naim");
-	}
-	else if (id=="act_search") {
-		addActor(ui.item.value, ui.item.label,  $("#" + id).val());
-	}
-	else if (id=="ctxt_search") {
-		addContext(ui.item.value, ui.item.label,  $("#" + id).val());
+	else {
+		for (let i = 0; i < list.length; i++) {
+			loop = list[i];
+			console.log("list.js: " + key + " -> " + loop);
+			genericCreateAutocompleteWithoutList(loop, key);
+		}
 	}
 }
 
-function genericCreateAutocompleteWithoutList(in_id, in_bind, in_listUrl) {
+/**
+	add item by id -> uses either specific add<> method or generic addItem
+ */
+function genericAddItem(ui, id) {
+	if (id=="problems") { 	addProblem(ui.item.value, ui.item.label, $("#" + id).val());}
+	else if (id=="ddx") { 	addDiagnosis(ui.item.value, ui.item.label, $("#" + id).val()); }
+	else if (id=="tests") { addTest(ui.item.value, ui.item.label, $("#" + id).val()); }
+	else if (id=="patho") { addPatho(ui.item.value, ui.item.label, $("#" + id).val()); }
+	else if (id=="mng") { 	addManagement(ui.item.value, ui.item.label, $("#" + id).val()); }
+	else if (id=="nddx") { 	addItem(ui.item.value, ui.item.label,  $("#" + id).val(), "Nddx"); }
+	else if (id=="nmng") { 	addItem(ui.item.value, ui.item.label,  $("#" + id).val(), "Mmng"); }
+	else if (id=="info") { 	addItem(ui.item.value, ui.item.label,  $("#" + id).val(), "Info"); }
+	else if (id=="naim") { 	addItem(ui.item.value, ui.item.label,  $("#" + id).val(), "Naim"); }
+	else if (id=="act_search") { addActor(ui.item.value, ui.item.label,  $("#" + id).val()); }
+	else if (id=="ctxt_search") { addContext(ui.item.value, ui.item.label,  $("#" + id).val()); }
+}
+
+/**
+	init search input text filed with empty list
+ */
+function genericCreateAutocompleteWithoutList(in_id, in_listUrl) {
+	var in_bind = "";
+	if (in_id=="problems") 	{ in_bind = "enterProb"; }
+	else if (in_id=="ddx") 	{ in_bind = "enterDDX"; }
+	else if (in_id=="tests") {in_bind = "enterTest"; }
+	else if (in_id=="patho") {in_bind = "enterPatho"; }
+	else if (in_id=="mng") { in_bind = "enterMng"; }
+	else if (in_id=="nddx") {}
+	else if (in_id=="nmng") {}
+	else if (in_id=="info") {}
+	else if (in_id=="naim") {}
+	else if (in_id=="act_search") { in_bind = "enterActor";}
+	else if (in_id=="ctxt_search") { in_bind = "enterContext"; }
+	
 	$("#" + in_id).bind(in_bind, function(e) {
 		addContext(-999, "-999", $("#" + in_id).val());	 
     });
@@ -93,8 +148,27 @@ function genericCreateAutocompleteWithoutList(in_id, in_bind, in_listUrl) {
     });	
 }
 	
-
-function genericCreateAutocomplete(in_id, in_data, in_num, in_fdg_prefix_handling) {
+/**
+	init autocomplete search input text field for given id and data (loaded in advance by url)
+ */
+function genericCreateAutocomplete(in_id, in_data) {
+	var in_num = 0;
+	var in_fdg_prefix_handling = false;
+	if (in_id=="problems") {
+		in_num = 1;
+		in_fdg_prefix_handling = true;
+	}
+	else if (in_id=="ddx") 		{ in_num = 2; }
+	else if (in_id=="tests") 	{ in_num = 3; }
+	else if (in_id=="patho") 	{ in_num = 6; }
+	else if (in_id=="mng") 		{ in_num = 4; }
+	else if (in_id=="nddx") 	{ in_num = 7; }
+	else if (in_id=="nmng") 	{ in_num = 9; }
+	else if (in_id=="info") 	{ in_num = 10; }
+	else if (in_id=="naim") 	{ in_num = 8; }
+	else if (in_id=="act_search") { in_num = 4; }
+	else if (in_id=="ctxt_search") { in_num = 4; }
+	
 	$( "#" + in_id).autocomplete({
        	/* source: data,*/
     	source: function (request, response) {
@@ -117,11 +191,10 @@ function genericCreateAutocomplete(in_id, in_data, in_num, in_fdg_prefix_handlin
 	});
 }
 
-
-  /*
-   * matches the user input with the list labels. Also considers multiple terms, negations, and
-   * a typo tolerance
-   */
+/** 
+ * matches the user input with the list labels. Also considers multiple terms, negations, and
+ * a typo tolerance
+ */
 function doMatch(request,response, in_data){
 	exact_item_label = "";
 	exact_item_value = "";

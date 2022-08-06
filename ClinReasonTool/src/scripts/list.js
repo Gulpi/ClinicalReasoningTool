@@ -107,6 +107,7 @@ function loadListAndAssign(key, list) {
 	add item by id -> uses either specific add<> method or generic addItem
  */
 function genericAddItem(ui, id) {
+	// choose correct add??? function by id!
 	if (id=="problems") { 	addProblem(ui.item.value, ui.item.label, $("#" + id).val());}
 	else if (id=="ddx") { 	addDiagnosis(ui.item.value, ui.item.label, $("#" + id).val()); }
 	else if (id=="tests") { addTest(ui.item.value, ui.item.label, $("#" + id).val()); }
@@ -124,6 +125,7 @@ function genericAddItem(ui, id) {
 	init search input text filed with empty list
  */
 function genericCreateAutocompleteWithoutList(in_id, in_listUrl) {
+	// lookup parameters by id!
 	var in_bind = "";
 	if (in_id=="problems") 	{ in_bind = "enterProb"; }
 	else if (in_id=="ddx") 	{ in_bind = "enterDDX"; }
@@ -152,6 +154,7 @@ function genericCreateAutocompleteWithoutList(in_id, in_listUrl) {
 	init autocomplete search input text field for given id and data (loaded in advance by url)
  */
 function genericCreateAutocomplete(in_id, in_data) {
+	// lookup parameters by id!
 	var in_num = 0;
 	var in_fdg_prefix_handling = false;
 	if (in_id=="problems") {

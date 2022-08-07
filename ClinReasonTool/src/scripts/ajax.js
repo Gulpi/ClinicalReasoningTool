@@ -55,13 +55,6 @@ function sendAjax(id, callback, type, name, typedinName){
 		//if(id=="-99") displayOwnEntryWarn = "false";
 		sendAjaxUrl(id, callback, type, name, typedinName, ajaxUrl);
 	}
-/*	else{//empty boxes -> too early
-		$("#problems").val("");
-		$("#ddx").val("");
-		$("#tests").val("");
-		$("#mng").val("");
-	}*/
-	
 }
 
 function callBackReload(){
@@ -124,6 +117,31 @@ function sendAjaxUrl(id, callback, type, name, orgname, url){
 		  handleResponse(response, callback, name);		
 	  });	
 }
+/** new function for new items in which we separate the action (e.g. del) and the type (e.g. ddx) 
+id of the added / deleted / changed item
+name of callback function
+type of items (ddx, mngs, patho, etc)
+action: to be performed (e.g. delete, add,...)
+*/
+function sendAjaxItemUrl(id, callback, type, name, typedInName, action){
+	clearErrorMsgs();
+	var confirmed = true;
+	if(id=="IGNORE") return;
+	if(id=="-99" && displayOwnEntryWarn=="true"){
+		displayOwnEntryWarn = "false"
+		confirmed = confirm(displayOwnEntryWarnMsg);
+	}
+	if(confirmed){
+		$.ajax({
+			  method: "POST",
+			  url: ajaxUrl,
+			  data: { type: type, id: id, name: name, orgname: typedInName, script_id: scriptId, stage:currentStage, typehistory:inputhistory, action: action }
+			})
+		  .done(function( response ) {
+			  handleResponse(response, callback, name);		
+		  });
+	}	
+}
 /**
  * use this function if you want to get back an html (template)
  * @param id
@@ -182,11 +200,15 @@ function handleResponse(response, callback, name){
 	 displayErrorMsg(response);
 	 var id =  $(response).find('id').text();
 	 var id2 =  $(response).find('id2').text();
+	 var action =  $(response).find('action').text();
+	 var type =  $(response).find('type').text();
 	 var isOk =  $(response).find('ok').text();
 	 //TODO we might need shortnam here (for tooltip in map)s
 	 if(isOk=="1"){
 		 if(id2!="" && id2!=null)
 			 callback(id, id2, name); //addConnectionCallback(sourceId, cnxId, targetId){
+		 else if (action!="" && type!="")
+				callback(id, action, type); //new mechanism for items
 		 else callback(id, name);
 	 }
 	
@@ -258,12 +280,6 @@ function toggleCnxStatus(){
 	return sessionStorage.cnxtoggle;
 }
 
-/* deprecated */
-/* storing the max height for boxes fdg/ddx and test/mng for use on next card. */ 
-function getBoxFdgDDXHeight(){
-	if(sessionStorage.fdgddxHeight && sessionStorage.fdgddxHeight>0) return sessionStorage.fdgddxHeight;
-	return -1;
-}
 
 /* storing the max height for boxes in row 1 for use on next card. */ 
 function getBoxRow1Height(){
@@ -300,14 +316,6 @@ function resetSessionStorage(){
 	sessionStorage.row2Height = -1;
 }
 
-/* deprecated */
-function setBoxFdgDDXHeight(height){
-	sessionStorage.fdgddxHeight = height; 
-}
-/*deprecated */
-function setBoxTstMngHeight(height){
-	sessionStorage.testmngHeight = height; 
-}
 
 function setBoxRow1Height(height){
 	sessionStorage.row1Height = height; 

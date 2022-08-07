@@ -20,7 +20,10 @@ import beans.scripts.*;
 import beans.user.SessionSetting;
 import beans.user.User;
 import controller.*;
+import database.DBContext;
 import database.DBUser;
+import database.HibernateSession;
+import net.casus.util.Utility;
 import util.*;
 
 /**
@@ -40,7 +43,10 @@ public class CRTFacesContext extends FacesContextWrapper implements MyFacesConte
 	private IllnessScriptController isc = new IllnessScriptController();
 	private PatientIllnessScript patillscript;
 	private Graph graph;
-	
+	/**
+	 * if context aspects are enabled / opened, we load and store the actors / factors in this container
+	 */
+	private ContextContainer contxts;	
 		
 	/**
 	 * This is the locale of the navigation etc. script locale (for lists) is in PatientIllnessScript
@@ -49,7 +55,6 @@ public class CRTFacesContext extends FacesContextWrapper implements MyFacesConte
 
 	/**
 	 * all scripts of the user, needed for the overview/portfolio page to display a list. 
-	 * TODO: we only need id and a name, so maybe we do not have to load the full objects? or get 
 	 * them from view?
 	 * We load it from the portfolio view and also here (in case user does not come from portfolio)
 	 */
@@ -83,7 +88,7 @@ public class CRTFacesContext extends FacesContextWrapper implements MyFacesConte
 		setUser();
 		if(user!=null){
 		    FacesContextWrapper.getCurrentInstance().getExternalContext().getSessionMap().put(CRTFacesContext.CRT_FC_KEY, this);
-			initSession();		
+		    initPatIllScript();		
 		}
 		try{
 			CRTLogger.out(FacesContextWrapper.getCurrentInstance().getApplication().getStateManager().getViewState(FacesContext.getCurrentInstance()), CRTLogger.LEVEL_TEST);
@@ -143,7 +148,7 @@ public class CRTFacesContext extends FacesContextWrapper implements MyFacesConte
 
 	public long getUserId() {
 		if(user!=null) return user.getUserId();
-		initSession();
+		initPatIllScript();
 		if(user!=null) return user.getUserId();
 		return -1;
 	}
@@ -296,23 +301,11 @@ public class CRTFacesContext extends FacesContextWrapper implements MyFacesConte
 
 	}
 	
-	/**
-	 * experiment, but not continued
-	 */
-	public void initCLISession(PatientIllnessScript pis, String vpId){ 
-		/*long startms = System.currentTimeMillis();
-		this.patillscript = pis;
-		if(this.patillscript!=null){
-			initGraph();		
-		}
-		
-		long endms = System.currentTimeMillis();*/
-	}
 	
 	/**
 	 * load PatientIllnessScript based on id or sessionId
 	 */
-	public void initSession(){ 
+	public void initPatIllScript(){ 
 		long startms = System.currentTimeMillis();
 		int reportsAccess = AjaxController.getInstance().getIntRequestParamByKey(AjaxController.REQPARAM_REPORT_ACCESS, 0);
 
@@ -348,7 +341,7 @@ public class CRTFacesContext extends FacesContextWrapper implements MyFacesConte
 				//for debugging purposes we log the userAgent:
 				if(patillscript!=null){
 					String userAgent = FacesContext.getCurrentInstance().getExternalContext().getRequestHeaderMap().get("User-Agent");
-					CRTLogger.out("SCRIP_CREATED: id= "+ patillscript.getId() + " user_id= " + this.getUserId() + " httpsess= " + userAgent , CRTLogger.LEVEL_PROD);
+					CRTLogger.out("SCRIPT_CREATED: id= "+ patillscript.getId() + " user_id= " + this.getUserId() + " httpsess= " + userAgent , CRTLogger.LEVEL_PROD);
 				}
 			}
 		}		
@@ -357,8 +350,7 @@ public class CRTFacesContext extends FacesContextWrapper implements MyFacesConte
 		loadExpScripts(true);
 		initFeedbackContainer();
 		if(user!=null && this.patillscript!=null && vpId!=null && (sessSetting==null || !sessSetting.getVpId().equals(vpId))){
-				sessSetting = SessionSettingController.getInstance().initSessionSettings(vpId, user.getUserId(), this.patillscript.getLocale());
-				
+				sessSetting = SessionSettingController.getInstance().initSessionSettings(vpId, user.getUserId(), this.patillscript.getLocale());				
 		}
 		
 		if(this.patillscript!=null){
@@ -409,8 +401,30 @@ public class CRTFacesContext extends FacesContextWrapper implements MyFacesConte
 		}
 	}
 	
+	/**
+	 * we load or initiate the context factors the learner has already added and make sure that the expert context container is added 
+	 * to the Map in the AppBean 
+	 */
+	public boolean getInitContextContainer() {
+		try {
+			setUser();
+			this.contxts = ContextController.getInstance().initContextContainer(contxts, user, locale, ContextContainer.TYPE_PLAYER);
+			return true;
+		}
+		catch(Exception e) {
+			CRTLogger.out(Utility.stackTraceToString(e), CRTLogger.LEVEL_ERROR);
+			return false;
+		}
+	}
+	
+	/**
+	 * TODO: we need an identifier which one to load and open
+	 * @return
+	 */
 	public boolean getInitSession(){
-		initSession();
+		initPatIllScript();
+		//TODO: identify if player or authoring for setting type
+		getInitContextContainer();
 		return true;
 	}
 	
@@ -488,6 +502,10 @@ public class CRTFacesContext extends FacesContextWrapper implements MyFacesConte
 	public void ajaxResponseHandler2() throws IOException {
 		AjaxController.getInstance().receiveAjax(this);
 	}
+	/* we land here from an ajax request for any actions concerning the facesContext....*/	
+	public void ajaxResponseHandlerContext() throws IOException {
+		AjaxController.getInstance().receiveAjax(this.getContxts());
+	}
 	
 	/**
 	 * reset all objects related to the current patientIllnessScript. Call this when the user opens another 
@@ -534,4 +552,8 @@ public class CRTFacesContext extends FacesContextWrapper implements MyFacesConte
 	 * @return
 	 */
 	public boolean getAdaptableBoxesEnabled() {return AppBean.getProperty("AdaptableBoxes", false);}
+
+	public ContextContainer getContxts() {return contxts;}
+	public void setContxts(ContextContainer contxts) {this.contxts = contxts;}
+	
 }

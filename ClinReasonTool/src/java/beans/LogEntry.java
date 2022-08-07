@@ -55,7 +55,7 @@ public class LogEntry extends Beans implements Serializable{
 	public static final int MOVEMNG_ACTION = 20; 
 	public static final int MOVEDIAGNOSIS_ACTION = 7; 
 	public static final int DRAGDROP_ACTION = 34;
-	public static final int MOVEPATHO_ACTION = 47; 
+	public static final int MOVEPATHO_ACTION = 48; 
 
 	
 	public static final int CRTPATILLSCRIPT_ACTION = 23;
@@ -77,6 +77,19 @@ public class LogEntry extends Beans implements Serializable{
 	public static final int ERROR_ACTION = 43; //an error (e.g. Premature Closure) has happened.
 	public static final int SHOWSOL_ACTION = 44;
 	public static final int CLICK_MOVIE_ACTION = 45;
+	public static final int ADD_ACTOR_ACTION = 49;
+	public static final int DEL_ACTOR_ACTION = 50;
+	public static final int ADD_CONTEXT_ACTION = 51;
+	public static final int DEL_CONTEXT_ACTION = 52;
+	public static final int ADDNMNG_ACTION = 53;
+	public static final int ADDINFO_ACTION = 54;
+	public static final int ADDNDDX_ACTION = 55;
+	public static final int ADDNAIM_ACTION = 56;
+	public static final int DELNMNG_ACTION = 57;
+	public static final int DELINFO_ACTION = 58;
+	public static final int DELNDDX_ACTION = 59;
+	public static final int DELNAIM_ACTION = 60;	
+
 	/**
 	 * action triggered by user, e.g. add a problem,... (see static definitions above)
 	 */

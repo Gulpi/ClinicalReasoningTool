@@ -39,6 +39,13 @@ public class AjaxController {
 	public static final String REQPARAM_BOXES_T_MODE = "tm";
 	public static final String REQPARAM_BOXES_M_MODE = "mm";
 	public static final String REQPARAM_BOXES_PAT_MODE = "pat";
+	public static final String REQPARAM_BOXES_ND_MODE = "nd"; // Nursing diagnoses
+	public static final String REQPARAM_BOXES_NA_MODE = "na"; // Nursing aims
+	public static final String REQPARAM_BOXES_NM_MODE = "nm"; // Nursing measures
+	public static final String REQPARAM_BOXES_NI_MODE = "ni"; // Information
+
+
+	
 	public static final String REQPARAM_REPORT_ACCESS ="rep_acc"; //parameter indocating access from an educator to a specific learner map
 	public static final String REQPARAM_API = "api";
 	public static final String REQPARAM_MAXSTAGE = "maxstage";
@@ -64,14 +71,14 @@ public class AjaxController {
 	    	String patillscriptId = reqParams.get(REQPARAM_SCRIPT);
 	    	if(patillscript==null && patillscriptId!=null){ //could be a timeout 
 	    		//long patIllScriptId = Long.parseLong(patillscriptId);
-	    		new NavigationController().getMyFacesContext().initSession();
+	    		new NavigationController().getMyFacesContext().initPatIllScript();
 	    	}
 	    	if(patillscript==null || patillscriptId==null|| Long.parseLong(patillscriptId)!=patillscript.getId()){
 	    		
 	    		CRTLogger.out("Error: patillscriptId is:"+ patillscriptId + " is null", CRTLogger.LEVEL_ERROR);
 	    		return; //TODO we need some more error handling here, how can this happen? What shall we do? 
 	    	}
-	    	String methodName = reqParams.get("type");
+	    	String methodName = reqParams.get("type"); //deprecated
 	    	String idStr = reqParams.get("id");
 	    	String nameStr = reqParams.get("name"); //the list entry
 	    	String orgNameStr = reqParams.get("orgname"); //what the learner has typed in
@@ -79,6 +86,9 @@ public class AjaxController {
 	    	String y = reqParams.get("y"); //y-position of an item or targetEp
 	    	String x1 = reqParams.get("x1"); //x-position of targetEp -> needed for more flexible target enpoints
 	    	patillscript.updateStage(reqParams.get(REQPARAM_STAGE));
+	    	String action = reqParams.get("action"); //what is performed (deleted, add, change)
+	    	String type = reqParams.get("type"); //ddx, nddx, mng,...
+	    	if(action!=null && !action.trim().equals("")) methodName = action+type;
 
 	    	//String patIllScriptId = reqParams.get(REQPARAM_SCRIPT); //TODO check whether belongs to currently loaded script!
 	    	Statement stmt; 
@@ -108,7 +118,37 @@ public class AjaxController {
 	    		responseAjaxTemplate(externalContext, reqParams.get("id"), patillscript);
 	    	}
 
-	    	else*/ responseAjax(externalContext, reqParams.get("id"));
+	    	else*/ responseAjax(externalContext, reqParams.get("id"), action, type);
+	    }
+	}
+	
+	/**
+	 * Receive an ajax call and process it. 
+	 * params: type = method to call, id=id to add/remove...
+	 * @param patillscript
+	 * @throws IOException
+	 */
+	public void receiveAjax(ContextContainer contxt) throws IOException {
+		ExternalContext externalContext = FacesContextWrapper.getCurrentInstance().getExternalContext();
+
+	    Map<String, String> reqParams = externalContext.getRequestParameterMap();
+	    if(reqParams!=null){
+	    	String vpId = reqParams.get(REQPARAM_SCRIPT);
+	    	/*if(vpId==null && contxt==null){ //could be a timeout 
+	    		new NavigationController().getMyFacesContext().getInitContextContainer();
+	    	}*/
+	    	if(vpId==null /*|| Long.parseLong(vpId)!=contxt.getVpId()*/){	    		
+	    		CRTLogger.out("Error: patillscriptId is:"+ vpId + " is null", CRTLogger.LEVEL_ERROR);
+	    		return; //TODO we need some more error handling here, how can this happen? What shall we do? 
+	    	}
+	    	String type = reqParams.get("type");
+	    	String idStr = reqParams.get("id"); // id of the listItem to add
+	    	String name = reqParams.get("name"); //the list entry
+	    	if(type.equals("addActor")) contxt.addActor(idStr, name);
+	    	if(type.equals("delActor")) contxt.delActor(idStr);
+	    	if(type.equals("addContext")) contxt.addContext(idStr, name);
+	    	if(type.equals("delContext")) contxt.delContext(idStr);
+	    	responseAjax(externalContext, reqParams.get("id"));
 	    }
 	}
 	
@@ -192,11 +232,15 @@ public class AjaxController {
 	    		CRTLogger.out("Error: receiveAjax", CRTLogger.LEVEL_PROD);
 	    		return;
 	    	}
-	    	String methodName = reqParams.get("type");
+	    	String methodName = reqParams.get("type");  //deprecated
 	    	String idStr = reqParams.get("id");
 	    	String nameStr = reqParams.get("name");
 	    	String x = reqParams.get("x");
 	    	String y = reqParams.get("y");
+	    	String action = reqParams.get("action"); //what is performed (deleted, add, change)
+	    	String type = reqParams.get("type"); //ddx, nddx, mng,...
+	    	if(action!=null && !action.trim().equals("")) methodName = action+type;
+	    	
 	    	//patillscript.updateStage(reqParams.get(REQPARAM_STAGE));
 
 	    	//String patIllScriptId = reqParams.get(REQPARAM_SCRIPT); //TODO check whether belongs to currently loaded script!
@@ -234,8 +278,21 @@ public class AjaxController {
 		if(id2!=null && !id2.trim().isEmpty())
 				sb.append("<id2>"+id2+"</id2>");
 	    externalContext.getResponseOutputWriter().write(createResponseXML(sb.toString()));
-		
-
+	    facesContext.responseComplete();
+	}
+	
+	private void responseAjax(ExternalContext externalContext, String responseId, String action, String type) throws IOException{
+		FacesContext facesContext = FacesContext.getCurrentInstance();
+	    externalContext.setResponseContentType("text/xml");
+	    externalContext.setResponseCharacterEncoding("UTF-8"); 
+	    //for additional id info (e.g. when adding a new connection)
+		String id2 = (String) ((HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest()).getAttribute("id2");
+		StringBuffer sb = new StringBuffer("<id>"+responseId+"</id>");
+		if(id2!=null && !id2.trim().isEmpty())
+				sb.append("<id2>"+id2+"</id2>");
+		sb.append("<action>"+action+"</action>");
+		sb.append("<type>"+type+"</type>");
+	    externalContext.getResponseOutputWriter().write(createResponseXML(sb.toString()));
 	    facesContext.responseComplete();
 	}
 	

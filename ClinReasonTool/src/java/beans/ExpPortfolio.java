@@ -59,10 +59,9 @@ public class ExpPortfolio implements Serializable{
 	 */
 	private void loadScripts(){
 		if(expscripts==null){
-			if(user.isAdmin())
-				expscripts = new DBEditing().selectAllExpertPatIllScripts();
+			//if(user.isAdmin()) expscripts = new DBEditing().selectAllExpertPatIllScripts(); -> too many scripts are loaded now, 
 			
-			else expscripts = new DBEditing().selectAllExpertPatIllScriptsByUserId(user.getUserId());
+			/*else*/ expscripts = new DBEditing().selectAllExpertPatIllScriptsByUserId(user.getUserId());
 		}
 	}
 	

@@ -9,6 +9,8 @@ import beans.relation.Rectangle;
 import beans.relation.Relation;
 import controller.GraphController;
 import database.DBClinReason;
+import net.casus.util.Utility;
+import util.CRTLogger;
 
 /**
  * An item has been moved in the map view (drag&drop). so, we store the new position in the map. 
@@ -23,9 +25,14 @@ public class DragDropAction {
 	}
 	
 	public void move(String idStr, String xStr, String yStr){
+		try {
 		if(idStr==null) return;
-		int type = GraphController.getTypeByPrefix(idStr.substring(0,4)); //6 for tabs & map
-		long id = Long.parseLong(idStr.substring(4));
+		String cutStr = idStr.substring(0,idStr.indexOf("_")+1);
+		int type = GraphController.getTypeByPrefix(cutStr);
+		if(type==0)	//old mechanism, not flexible enough if prefix is longer (just kept here for safety reasons)
+			type = GraphController.getTypeByPrefix(idStr.substring(0,4)); //6 for tabs & map
+		//String idStr2 = idStr.substring(idStr.indexOf("_")+1);
+		long id = Long.parseLong(idStr.substring(idStr.indexOf("_")+1));
 		Relation rel = patIllScript.getRelationByIdAndType(id, type);
 		if(rel!=null){
 			float x = Float.valueOf(xStr.trim());
@@ -34,6 +41,10 @@ public class DragDropAction {
 		}
 		save(rel);
 		notifyLog(rel);
+		}
+		catch(Exception e) {
+			CRTLogger.out(Utility.stackTraceToString(e), CRTLogger.LEVEL_ERROR);
+		}
 	}
 	
 	private void save(Relation rel){

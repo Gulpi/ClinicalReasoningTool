@@ -1,0 +1,26 @@
+ <ui:composition 
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core">
+   	<div id="naim_#{naim.id}"  class="itembox naim row1" style="left:#{naim.x}px; top:#{naim.boxY}px;">
+  	 	
+  	 	<span mytooltip="#{nmng.labelOrSynLabel}" >#{naim.shortLabelOrSynShortLabel}</span>
+  	 	 <script language="Javascript">
+ 			item_arr.push("naim_#{naim.id}");
+ 		</script>
+   		<span class="dropdown" onClick="javascript:showDropDown('dnaim_#{naim.id}','naim_#{naim.id}');"><i class="fa fa-chevron-circle-down"></i></span>
+  	</div>
+	<div id="dnaim_#{naim.id}" class="dropdown-content" style="opacity:1;z-index:99;" ><!-- onmouseleave="javascript:hideDropDown('ddddx_#{ddx.id}');"-->
+	 <span style="float:left;">#{prop['change']}:</span>
+		<span class="dropdownX"><a href="javascript:hideDropDown('dnaim_#{naim.id}');"><i class="fa fa fa-times"></i></a></span> 
+	
+	<br/>
+		<div class="links">
+			<span class="dropd_#{naim.isExpertHierarchyItem}"><a class="dropd_#{naim.isExpertHierarchyItem}" href="javascript:chgItem(#{naim.id}, 2, 'Naim');"><i class="fa fa-long-arrow-right"></i> #{naim.expItemLabel}</a><br/></span>  <!-- Hierarchy -->
+		</div>
+		<a class="del" href="javascript:delItem(#{naim.id},'Naim');"><i class="fa fa-trash"></i> #{prop['delete']}</a>
+		Display on card <input id="chgstage_#{naim.listItemId}" value="#{naim.stage}" class="chgstage" style="width:20px;" />
+		
+	 </div>
+</ui:composition>

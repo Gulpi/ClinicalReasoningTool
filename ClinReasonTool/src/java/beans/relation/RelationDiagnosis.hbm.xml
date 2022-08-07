@@ -25,6 +25,7 @@
 		<property name="workingDDX" column="working_ddx" type="int"/>
 		<property name="finalDiagnosis" column="final_ddx" type="int"/>
 		<property name="prevalence" column="prevalence" type="int"/>
+		<property name="discriminator" column="discriminator" type="int" />
 
 		
 		<!--  <property name="name" column="name" type="string"/>	-->

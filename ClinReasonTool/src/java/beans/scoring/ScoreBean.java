@@ -31,7 +31,7 @@ public class ScoreBean extends Beans implements Serializable{
 	public static final int TYPE_ADD_TEST = Relation.TYPE_TEST; //3
 	public static final int TYPE_ADD_MNG = Relation.TYPE_MNG; //4
 	public static final int TYPE_ADD_CNX = Relation.TYPE_CNX; //5
-	
+
 	public static final int TYPE_PROBLEM_LIST = 7;
 	public static final int TYPE_DDX_LIST = 8;
 	public static final int TYPE_TEST_LIST = 9;
@@ -44,6 +44,16 @@ public class ScoreBean extends Beans implements Serializable{
 	public static final int TYPE_SCRIPT_CREATION = 16; //we use this for PeerBean creation 
 	public static final int TYPE_OVERALL_SCORE = 17;
 	public static final int TYPE_FINAL_DDX_LIST = 18;
+	public static final int TYPE_ADD_ACTOR = 20;
+	public static final int TYPE_ADD_CONTEXT = 21;
+	public static final int TYPE_ADD_NMNG = 22;
+	public static final int TYPE_ADD_NAIM = 23;
+	public static final int TYPE_ADD_NDDX = 24;
+	public static final int TYPE_ADD_INFO = 25;
+	public static final int TYPE_NMNG_LIST = 26;
+	public static final int TYPE_NAIM_LIST = 27;
+	public static final int TYPE_NDDX_LIST = 28;
+	public static final int TYPE_INFO_LIST = 29;
 	
 	public static final int TIME_OK = 0;
 	public static final int TIME_LATE = 1;
@@ -163,6 +173,13 @@ public class ScoreBean extends Beans implements Serializable{
 		this.userId = laBean.getUserId();		
 	}
 
+	public ScoreBean(int type, long userId, String vpId, long scoredItem){
+		this.scoredItem = scoredItem;
+		this.type = type;
+		this.stage = stage;
+		this.userId = userId;		
+		this.vpId = vpId;
+	}
 	
 	public String getVpId() {return vpId;}
 	public void setVpId(String vpId) {this.vpId = vpId;}

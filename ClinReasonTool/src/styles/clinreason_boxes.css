@@ -571,7 +571,7 @@ span.icons{
     z-index: 100;
 }
 
-.ddxs_score, .fdgs_score, .mngs_score, .tests_score, .patho_score{
+.ddxs_score, .fdgs_score, .mngs_score, .tests_score, .patho_score, .info_score, .nddx_score, .nmng_score, .naim_score{
 	display:none;
 }
 
@@ -627,24 +627,6 @@ span.icons{
     padding-right: 6px;
 }
 
-/*.fdg_cont { 
-	margin-right:10px;
-	margin-bottom:10px;
-}
-.ddx_cont { 
-	margin-bottom:10px;
-}
-.tst_cont { 
-	margin-right:10px;
-	margin-bottom:10px;
-}
-.pat_cont { 
-	margin-right:10px;
-	margin-bottom:10px;
-}
-.mng_cont { 
-	margin-bottom:10px;
-}*/
 
 .pos_1 { 
 	/*margin-right:10px;*/
@@ -665,19 +647,6 @@ span.icons{
 	min-height: 120px; /*110px;*/
 
 }
-/*#fdg_box .title span.icons,
-#tst_box .title span.icons{
-    position:absolute;
-    left:-10px;
-}
-
-
-#ddx_box .title span.icons,
-#mng_box  .title span.icons,
-#sum_box .title span.icons{    
-    position:absolute;
-    right:-10px;
-}*/
 
 .pos1x .title span.icons,
 .pos3 .title span.icons{

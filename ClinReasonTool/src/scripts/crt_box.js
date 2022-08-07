@@ -597,7 +597,7 @@ function addPatho(pathoId, name, typedinName){
 	clearErrorMsgs();
 	if(name!=""){
 		checkBoxColorOnAdd("patho_title", "patho");
-		sendAjax(pathoId, testCallBack, "addPatho", name, typedinName);
+		sendAjax(pathoId, pathoCallBack, "addPatho", name, typedinName);
 	}
 }
 
@@ -648,6 +648,70 @@ function togglePeersPatho(){
 	clearErrorMsgs();
 	togglePeerBoxFeedback("peerFeedbackPatho", "peer_score_patho", 6);
 }
+
+/****************items in general *************** */
+
+function addItem(itemId, name, typedinName, itemType){
+	clearErrorMsgs();
+	if(name!=""){
+		checkBoxColorOnAdd(itemType.toLowerCase()+"_title", itemType.toLowerCase());
+		//sendAjaxItemUrl(id, callback, type, name, typedInName, action)
+		sendAjaxItemUrl(itemId, itemCallBack, itemType, name, typedinName, "add");
+	}
+}
+
+function delItem(itemId, itemType){
+	clearErrorMsgs();
+	//sendAjax(id, delItemCallBack, "del"+itemNameUpper, "");
+	sendAjaxItemUrl(itemId, itemCallBack, itemType, "", "", "del");
+}
+
+/*function delItemCallBack(itemId, selItem, itemNameUpper){
+	itemCallBack(itemId, selItem, itemNameUpper);
+}*/
+
+function itemCallBack(itemId, action, itemTypeUpper){
+	$("#"+itemTypeUpper.toLowerCase()).val("");	
+	//$(".tests").remove();
+	hideDropDown("d"+itemTypeUpper.toLowerCase()+"_"+itemId);
+	removeElems(itemTypeUpper.toLowerCase());
+	removeElems("exp"+itemTypeUpper.toLowerCase());
+	//we update the problems list and the json string
+	$("[id='"+itemTypeUpper.toLowerCase()+"form:hidden"+ itemTypeUpper+"Button'").click();		
+	$("[id='cnxsform:hiddenCnxButton']").click();
+}
+
+function updateItemCallback(data, itemNameLower){
+	if(isCallbackStatusSuccess(data)){
+		updateItemCallback(data, "pat",itemNameLower+"_box");
+		if(isOverallExpertOn()) //re-display expert items:
+			turnOverallExpFeedbackOn('expFeedback', 'icon-user-md');
+	}
+}
+
+function chgItem(id, type, itemNameUpper){
+	clearErrorMsgs();
+	//sendAjax(id, itemCallBack, "change"+itemNameUpper, type);
+	sendAjaxItemUrl(id, itemCallBack, itemNameUpper, "", "", "change");
+	
+}
+
+function addJokerItem(itemIdentifier){
+	clearErrorMsgs();
+	sendAjax("", itemCallBack, "addJoker", itemIdentifier);
+}
+
+function toggleItemFeedback(itemNameUpper, itemIdentifier){
+	clearErrorMsgs();
+	toggleExpBoxFeedback("expFeedback"+itemNameUpper, itemNameUpper.toLowerCase(), itemIdentifier);
+}
+
+function togglePeersItem(itemIdentifier){
+	clearErrorMsgs();
+	togglePeerBoxFeedback("peerFeedback"+itemNameUpper, "peer_score_"+itemNameUpper.toLowerCase(), itemIdentifier);
+}
+
+/******************end items in general*************+ */
 
 
 /******************** summary statement *******************************/
@@ -832,6 +896,10 @@ function turnOverallExpFeedbackOn(iconId, itemClass){
 	if(testBoxUsed==1)turnExpBoxFeedbackOn("expFeedbackTest", "tests");
 	if(pathoBoxUsed==1)turnExpBoxFeedbackOn("expFeedbackPatho", "patho");
 	if(mngBoxUsed==1)turnExpBoxFeedbackOn("expFeedbackMng", "mngs");
+	if(nmngBoxUsed==1)turnExpBoxFeedbackOn("expFeedbackNmng", "nmng");
+	if(ddxBoxUsed==1)turnExpBoxFeedbackOn("expFeedbackNddx", "nddx");
+	if(infoBoxUsed==1)turnExpBoxFeedbackOn("expFeedbackInfo", "info");
+	if(naimBoxUsed==1)turnExpBoxFeedbackOn("expFeedbackNaim", "naim");
 	if(isOverallCnxOn()){
 		$(".jtk-exp-connector").addClass("jtk-exp-connector-show");
 		$(".jtk-exp-connector").removeClass("jtk-exp-connector-hide");
@@ -875,72 +943,11 @@ function turnViewModeOn(){
 	turnViewModeBoxOn(testBoxUsed, "test", "test");
 	turnViewModeBoxOn(pathoBoxUsed, "patho", "pat");
 	turnViewModeBoxOn(mngBoxUsed, "mng", "mng");
+	turnViewModeBoxOn(nmngBoxUsed, "nmng", "nmng");
+	turnViewModeBoxOn(nddxBoxUsed, "nddx", "nddx");
+	turnViewModeBoxOn(naimBoxUsed, "naim", "naim");
+	turnViewModeBoxOn(infoBoxUsed, "info", "info");
 
-	
-
-	/*if(probBoxUsed=="2"){ //view mode
-		$(".passfdgs").removeClass("passboxinvis");
-		$(".passfdgs").removeClass("passboxstatus");
-		$(".passfdgs").addClass("passboxstatus_show");
-		//turnExpBoxFeedbackOn("expFeedbackFdg", "fdgs");
-		$(".probsearch").hide(); //hide search box
-		//THIS IS AN UGLY HACK - without it, the box is 30px downwards.
-		$("#fdg_box.search").removeClass("boxchild");
-		$("#fdg_box.search").height(30);
-		$(".fdgpassive").show();
-
-	}*/
-	/*if(ddxBoxUsed=="2"){
-		$(".passddxs").removeClass("passboxinvis");
-		$(".passddxs").removeClass("passboxstatus");
-		$(".passddxs").addClass("passboxstatus_show");
-		$(".footer").hide(); //hide final diagnosis button because we are in readonly mode
-		$(".ddxsearch").hide(); //hide search box
-		$("#ddx_box.search").removeClass("boxchild");
-		$("#ddx_box.search").height(30);
-		$(".ddxpassive").show();
-		//turnExpBoxFeedbackOn("expFeedbackDDX", "ddxs");
-	}*/
-/*	if(testBoxUsed=="2"){
-		$(".passtests").removeClass("passboxinvis");
-		$(".passtests").removeClass("passboxstatus");
-		$(".passtests").addClass("passboxstatus_show");
-		$(".testsearch").hide(); //hide search box
-		$("#tst_box.search").removeClass("boxchild");
-		$("#tst_box.search").height(30);
-		$(".tstpassive").show();
-		//turnExpBoxFeedbackOn("expFeedbackTest", "tests");
-	}*/
-	/*if(pathoBoxUsed=="2"){
-		$(".passpatho").removeClass("passboxinvis");
-		$(".passpatho").removeClass("passboxstatus");
-		$(".passpatho").addClass("passboxstatus_show");
-		$(".pathosearch").hide(); //hide search box
-		$("#pat_box.search").removeClass("boxchild");
-		$("#pat_box.search").height(30);
-		$(".patpassive").show();
-		//turnExpBoxFeedbackOn("expFeedbackPatho", "patho");
-	}*/
-	
-	/*if(mngBoxUsed=="2"){
-		$(".passmngs").removeClass("passboxinvis");
-		$(".passmngs").removeClass("passboxstatus");
-		$(".passmngs").addClass("passboxstatus_show");
-		//turnExpBoxFeedbackOn("passFeedbackMng", "mngs");
-		$(".mngsearch").hide(); //hide search box
-		$("#mng_box.search").removeClass("boxchild");
-		$("#mng_box.search").height(30);
-		$(".mngpassive").show();
-
-	}*/
-	
-	//hide search boxes and ddx footer
-	//turnExpBoxFeedbackOn("expFeedbackTest", "tests");
-	//turnExpBoxFeedbackOn("expFeedbackMng", "mngs");
-	/*if(isOverallCnxOn()){
-		$(".jtk-exp-connector").addClass("jtk-exp-connector-show");
-		$(".jtk-exp-connector").removeClass("jtk-exp-connector-hide");
-	}*/
 
 }
 
@@ -950,6 +957,10 @@ function turnViewModeOff(){
 	turnViewModeBoxOff(testBoxUsed, "test", "tst");
 	turnViewModeBoxOff(pathoBoxUsed, "patho", "pat");
 	turnViewModeBoxOff(mngBoxUsed, "mng", "mng");
+	turnViewModeBoxOff(nmngBoxUsed, "nmng", "nmng");
+	turnViewModeBoxOff(nddxBoxUsed, "nddx", "nddx");
+	turnViewModeBoxOff(infoBoxUsed, "info", "info");
+	turnViewModeBoxOff(naimBoxUsed, "naim", "naim");
 }
 
 function turnOverallExpFeedbackOff(iconId, itemClass){
@@ -965,26 +976,14 @@ function turnOverallExpFeedbackOff(iconId, itemClass){
 	turnExpBoxFeedbackOff("expFeedbackTest", "tests");
 	turnExpBoxFeedbackOff("expFeedbackPatho", "patho");
 	turnExpBoxFeedbackOff("expFeedbackMng", "mngs");
+	turnExpBoxFeedbackOff("expFeedbackNmng", "nmng");
+	turnExpBoxFeedbackOff("expFeedbackInfo", "info");
+	turnExpBoxFeedbackOff("expFeedbackNaim", "naim");
+	turnExpBoxFeedbackOff("expFeedbackNddx", "nddx");
 	$(".jtk-exp-connector").addClass("jtk-exp-connector-hide");
 	$(".jtk-exp-connector").removeClass("jtk-exp-connector-show");
 	turnViewModeOn();
 }
-
-/**
- * if fireExpNowAvailable is true we display a jdialog with a hint about the availability of the expert feedback button.
- * @param fireExpNowAvailable
- */
-/*function checkDisplayExpFbHint(fireExpNowAvailable){
-	if(fireExpNowAvailable=="true" || fireExpNowAvailable){
-		$("#jdialogFbHint").dialog( "option", "width", ['180'] );
-		$("#jdialogFbHint").dialog( "option", "height", ['220'] );
-		//$("#jdialogFbHint").dialog( "option", "title", "Feedback");
-		$("#jdialogFbHint").dialog( "option", "buttons", [ ] );
-		//$("#jdialogFbHint").html(expFbHint);
-		$('.ui-tooltip').remove();
-		$("#jdialogFbHint" ).dialog( "open" );
-	}
-}*/
 
 function openErrorDialog(){
 	$("#jdialogError").dialog( "option", "width", ['300'] );
@@ -1010,7 +1009,7 @@ function showDropDown(id, pos){
 	hideAllDropDowns(); //we first hide all in case any are still open...
 	clearErrorMsgs();
 	$("#"+id).show();
-	var x =  $("#"+pos).position().left+10;
+	var x =  $("#"+pos).position().left-10; //changed to -10 from +10 because otherwise cut-off on right side
 	var y = $("#"+pos).position().top+5;
 	$("#"+id).css( { left: x + "px", top: y + "px" } ) 
 }

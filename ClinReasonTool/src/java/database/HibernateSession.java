@@ -87,6 +87,10 @@ public class HibernateSession {
 			cfg.addClass(beans.relation.RelationPatho.class);
 			cfg.addClass(beans.relation.RelationSyndrome.class);
 			cfg.addClass(beans.relation.RelationDiagnosis.class);	
+			cfg.addClass(beans.relation.RelationNursingDiagnosis.class);
+			cfg.addClass(beans.relation.RelationInformation.class);
+			cfg.addClass(beans.relation.RelationNursingManagement.class);
+			cfg.addClass(beans.relation.RelationNursingAim.class);
 			cfg.addClass(beans.LogEntry.class);
 			cfg.addClass(beans.relation.Connection.class);
 			cfg.addClass(beans.relation.RelationManagement.class);			
@@ -109,6 +113,8 @@ public class HibernateSession {
 			cfg.addClass(beans.user.SessionSetting.class);
 			cfg.addClass(beans.list.SIUnit.class);
 			cfg.addClass(beans.relation.summary.TransformRule.class);
+			cfg.addClass(beans.context.Actor.class);
+			cfg.addClass(beans.context.Context.class);
 			cfg.addClass(beans.relation.summary.JsonTest.class); //testing only
 			//cfg.addClass(test.LMMeshMapping.class);
 			

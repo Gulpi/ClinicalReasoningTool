@@ -68,6 +68,11 @@ public class SessionSettingController {
 		sessSetting.setBoxUsedTst(AjaxController.getInstance().getIntRequestParamByKey(AjaxController.REQPARAM_BOXES_T_MODE,1));
 		sessSetting.setBoxUsedMng(AjaxController.getInstance().getIntRequestParamByKey(AjaxController.REQPARAM_BOXES_M_MODE,1));
 		sessSetting.setBoxUsedPat(AjaxController.getInstance().getIntRequestParamByKey(AjaxController.REQPARAM_BOXES_PAT_MODE,0));
+		sessSetting.setBoxUsedPat(AjaxController.getInstance().getIntRequestParamByKey(AjaxController.REQPARAM_BOXES_ND_MODE,0));
+		sessSetting.setBoxUsedPat(AjaxController.getInstance().getIntRequestParamByKey(AjaxController.REQPARAM_BOXES_NA_MODE,0));
+		sessSetting.setBoxUsedPat(AjaxController.getInstance().getIntRequestParamByKey(AjaxController.REQPARAM_BOXES_NI_MODE,0));
+		sessSetting.setBoxUsedPat(AjaxController.getInstance().getIntRequestParamByKey(AjaxController.REQPARAM_BOXES_NM_MODE,0));
+
 	}
 }	
 

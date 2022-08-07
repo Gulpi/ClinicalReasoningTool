@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="#{adminContext.language}" xmlns="http://www.w3.org/1999/xhtml"   
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+	 xmlns:v="urn:schemas-microsoft-com:vml"     
+	  >
+ <f:view locale="#{adminContext.locale}">     
+
+<head>
+<f:event type="preRenderView" listener="#{facesContext.externalContext.response.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, post-check=0, pre-check=0')}" />
+<f:event type="preRenderView" listener="#{facesContext.externalContext.response.setHeader('Pragma', 'no-cache')}" />
+<f:event type="preRenderView" listener="#{facesContext.externalContext.response.setHeader('Expires', 'Thu, 01 Jan 1970 00:00:00 GMT')}" />
+
+
+<title>Contextual factors</title>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no"/>
+
+<script type="text/javascript" src="../../scripts/jquery112/jquery.js"></script>
+<script type="text/javascript" src="../../scripts/jquery112/jquery-ui.min.js"></script>
+<script type="text/javascript" src="../../scripts/jquery112/jquery-ui.js"></script>
+<script src="../../scripts/list.js"></script>
+<script src="../../scripts/ajax.js"></script>
+<script src="../../scripts/context.js"></script>
+
+<link rel="stylesheet" type="text/css" href="../../scripts/jquery112/ui-lightness/jquery-ui.css" /> 
+<link rel="stylesheet" href="../../styles/font-awesome/css/font-awesome.css" />
+<link rel="stylesheet" href="../../styles/context.css" />
+<link rel="stylesheet" href="../../styles/clinreason_boxes.css" />
+
+<script language="JavaScript">
+var isViaAPI = "#{adminContext.openedViaAPI}";
+var init = "#{adminContext.initContextContainer}";
+var listUrl="../jsonp_c_#{adminContext.patillscript.locale}.json";
+var scriptlang = "#{adminContext.patillscript.locale}";
+var lang="#{adminContext.locale}";
+var isExp = true; //To be configured!!!
+var vp_id="#{adminContext.contxts.vpId}";
+var scriptId = "#{adminContext.contxts.vpId}"; //needed for ajax.js to work properly
+var currentStage = "#{adminContext.contxts.currentStage}";
+
+
+var ajaxUrl = "/crt/src/html/context/tabs_ajax_ctxt.xhtml";
+$(function() {
+	//$(".listdialog").hide();
+	
+});
+
+
+</script>
+ </head>
+ <h:body class="ctxtbody" style="font-family:arial;">
+  	<div class="search" style="width:210px;">
+  		<i class="fa fa-search ininput actsearch"></i>
+  		<input class="f_text actsearch" id="act_search" placeholder="#{prop['cntxt.actor.add']} ..." mytooltip="#{prop['cntxt.actor.search']}"></input>
+  	</div>
+  	<h:form id="actorsform">
+	  	<h:panelGroup>
+  			<ui:repeat value="#{adminContext.contxts.actors}" var="act" varStatus="status">
+				<ui:include src="actorbox.xhtml" />
+	   		</ui:repeat>	
+	   	</h:panelGroup>
+	   	<h:commandButton id="hiddenActButton" value="RenderSomething" style="visibility:hidden">
+    		<f:ajax render="@form" onevent="updateActCallback"></f:ajax>
+		</h:commandButton>
+	</h:form>
+	
+	  	<div class="search" style="width:210px;">
+  		<i class="fa fa-search ininput ctxtsearch"></i>
+  		<input class="f_text actsearch" id="ctxt_search" placeholder="#{prop['cntxt.context.add']} ..." mytooltip="#{prop['cntxt.context.search']}"></input>
+  	</div>
+  	<h:form id="contextform">
+	  	<h:panelGroup>
+  			<ui:repeat value="#{adminContext.contxts.ctxts}" var="ctxt" varStatus="status">
+				<ui:include src="contextbox.xhtml" />
+	   		</ui:repeat>	
+	   	</h:panelGroup>
+	   	<h:commandButton id="hiddenActButton" value="RenderSomething" style="visibility:hidden">
+    		<f:ajax render="@form" onevent="updateActCallback"></f:ajax>
+		</h:commandButton>
+	</h:form>	
+		
+<div id="jdialog"></div>
+    
+</h:body></f:view></html>

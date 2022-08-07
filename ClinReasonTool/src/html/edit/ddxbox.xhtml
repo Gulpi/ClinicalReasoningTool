@@ -27,14 +27,13 @@
 			<a class="wdon_#{ddx.workingDDXBool}" id="wdon_a_#{ddx.id}" href="javascript:workingDDXOn('#{ddx.id}');" title=">#{prop['ddx.workingddx.on.hint']}"><i class="fa fa-long-arrow-right"></i> #{prop['ddx.workingddx.on']}</a>
 			<a class="wdoff_#{ddx.workingDDXBool}" id="wdoff_a_#{ddx.id}" href="javascript:workingDDXOff('#{ddx.id}');" title="#{prop['ddx.workingddx.off.hint']}"><i class="fa fa-long-arrow-right"></i> #{prop['ddx.workingddx.off']}</a>
 
-			<span class="dropd_#{ddx.isExpEdit}">
-				<a class="f_on_#{ddx.finalDDX}" href="javascript:expFinalDiagnosis(#{ddx.id});"><i class="fa fa-long-arrow-right"></i>#{prop['ddx.finalddx']}</a>
-				<a class="f_off_#{ddx.finalDDX}" href="javascript:expNoFinalDiagnosis(#{ddx.id});"><i class="fa fa-long-arrow-right"></i>#{prop['ddx.nofinalddx']}</a>
-			</span>
+			<a class="f_on_#{ddx.finalDDX}" href="javascript:expFinalDiagnosis(#{ddx.id});"><i class="fa fa-long-arrow-right"></i>#{prop['ddx.finalddx']}</a>
+			<a class="f_off_#{ddx.finalDDX}" href="javascript:expNoFinalDiagnosis(#{ddx.id});"><i class="fa fa-long-arrow-right"></i>#{prop['ddx.nofinalddx']}</a>
 
 		</div>
 		<a class="del" href="javascript:delDiagnosis(#{ddx.id});"><i class="fa fa-trash"></i> #{prop['delete']}</a>
 		Display on card <input id="chgstage_#{ddx.listItemId}" value="#{ddx.stage}" class="chgstage" style="width:20px;" />
+		<span class="f_off_#{ddx.finalDDX}">Final diagnosis from card <input id="chgfinal_#{ddx.listItemId}" value="#{ddx.finalDiagnosis}" class="chgstage" style="width:20px;" /></span>
 		
 	 </div>
 </ui:composition>

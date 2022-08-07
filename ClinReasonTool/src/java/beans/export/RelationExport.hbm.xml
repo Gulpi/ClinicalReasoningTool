@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="beans.list">
+
+	<class name="RelationExport" table="crt.listitem_view_learner">
+		<cache usage="nonstrict-read-write" />
+		<comment>RelationExport</comment>	
+	
+		<composite-id>
+        	<key-property name="patillscriptId" column="pis_id" type="string" />		
+        	<key-property name="sourceId" column="source_id" type="long"/>
+        </composite-id>
+					
+		<property name="name" column="name" type="string"/>
+		<property name="vpId" column="vp_id" type="string"/>
+		<property name="itemType" column="item_type" type="int"/>
+		<property name="mnmStage" column="mnm" type="int"/>
+		<property name="finalDDXStage" column="final_ddx" type="int"/>
+		<property name="ruledOutStage" column="ruled_out" type="int"/>
+		<property name="workingDDStage" column="working_ddc" type="int"/>
+		<property name="prefix" column="prefix" type="string"/>
+		<property name="stage" column="stage" type="int"/>
+		
+		
+	    
+</class>
+</hibernate-mapping>

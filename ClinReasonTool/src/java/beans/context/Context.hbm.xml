@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="beans.context">
+
+	<class name="Context" table="crt.Context_context">
+		<cache usage="nonstrict-read-write" />
+		<comment>Context</comment>	
+		<id name="id" type="long" column="id">
+			<generator class="sequence">
+				<param name ="sequence">CRT.CR_SEQ</param>
+			</generator>
+		</id>	
+		<property name="vpId" column="vp_id" type="long" />
+		<property name="userId" column="user_id" type="long" />
+		<property name="synId" column="syn_id" type="long"/>
+		<property name="order" column="idx" type="int" />
+		<property name="listItemId" column="list_id" type="long"/>	
+		<property name="stage" column="stage" type="int"/>
+		<property name="type" column="type" type="int"/>
+				
+		<many-to-one name="contextItem" class="beans.list.ListItem" column="list_id"  lazy="false" insert="false" update="false" />
+
+		
+</class>
+</hibernate-mapping>

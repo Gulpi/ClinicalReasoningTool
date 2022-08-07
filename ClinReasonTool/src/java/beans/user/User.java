@@ -2,6 +2,7 @@ package beans.user;
 
 import javax.faces.bean.SessionScoped;
 
+import net.casus.util.Utility;
 import util.CRTLogger;
 import util.Encoder;
 import util.StringUtilities;
@@ -20,7 +21,10 @@ public class User {
 	 */
 	private String extUserId;
 	
-	private String extUserId2; //decrypted external userId
+	/**
+	 * decrypted (readable) external userId
+	 */
+	private String extUserId2;
 	
 	/**
 	 * system the externalId is from (TODO could be more than one)
@@ -70,6 +74,20 @@ public class User {
 	public void setExtUserId2(String extUserId2) {this.extUserId2 = extUserId2;}	
 	public boolean isAdmin() {return admin;}
 	public void setAdmin(boolean admin) {this.admin = admin;}
+	/**
+	 * @return the userId from the original / parent system as long
+	 */
+	public long getExtUserIdLong() {
+		if(this.extUserId2==null || this.extUserId2.isEmpty()) return -1;
+		try {
+			return Long.parseLong(this.extUserId2);
+		}
+		catch(Exception e) {
+			CRTLogger.out(Utility.stackTraceToString(e), CRTLogger.LEVEL_ERROR);
+			return -1;
+		}
+		
+	}
 	
 	private String decodeUserId(String extUserId){
 		try{

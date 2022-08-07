@@ -18,6 +18,8 @@ import beans.user.Auth;
 import beans.user.SessionSetting;
 import beans.user.User;
 import controller.*;
+import database.DBContext;
+import net.casus.util.Utility;
 import util.CRTLogger;
 import util.StringUtilities;
 
@@ -47,6 +49,10 @@ public class AdminFacesContext extends FacesContextWrapper implements MyFacesCon
 	private FeedbackContainer feedbackContainer;
 	private LearningAnalyticsBean labean;
 	/**
+	 * if context aspects are enabled / opened, we load and store the actors / factors in this container
+	 */
+	private ContextContainer contxts;
+	/**
 	 * Any specific settings for this session are stored here, e.g. display of expert feedback variants...
 	 * CAVE: is null if no specific settings have been defined.
 	 */
@@ -58,11 +64,22 @@ public class AdminFacesContext extends FacesContextWrapper implements MyFacesCon
 		//ExternalContext ec =  FacesContextWrapper.getCurrentInstance().getExternalContext();
 		locale = LocaleController.setLocale();
 		try{
-			CRTLogger.out(FacesContextWrapper.getCurrentInstance().getApplication().getStateManager().getViewState(FacesContext.getCurrentInstance()), CRTLogger.LEVEL_TEST);
+			// CRTLogger.out(FacesContextWrapper.getCurrentInstance().getApplication().getStateManager().getViewState(FacesContext.getCurrentInstance()), CRTLogger.LEVEL_TEST);
 			Monitor.addHttpSession((HttpSession)FacesContextWrapper.getCurrentInstance().getExternalContext().getSession(true));
 		}
-		catch(Exception e){}
+		catch(Exception e){
+			CRTLogger.out(Utility.stackTraceToString(e), CRTLogger.LEVEL_ERROR);
+		}
 
+	}
+	
+	/**
+	 * we load or initiate the context factors the author has already added
+	 */
+	public boolean getInitContextContainer() {
+		//setUser();
+		this.contxts = ContextController.getInstance().initContextContainer(contxts, user, locale, ContextContainer.TYPE_AUTHOR);
+		return true;
 	}
 	
 	public void setUser(User u){this.user = u;}
@@ -137,6 +154,10 @@ public class AdminFacesContext extends FacesContextWrapper implements MyFacesCon
 	public void ajaxResponseHandlerReports() throws IOException{
 		AjaxController.getInstance().receiveReportsAjax(getReports());
 	}
+	/* we land here from an ajax request for any actions concerning the facesContext....*/	
+	public void ajaxResponseHandlerContext() throws IOException {
+		AjaxController.getInstance().receiveAjax(this.getContxts());
+	}
 
 	public FacesContext getWrapped() {return FacesContext.getCurrentInstance();}
 	
@@ -157,7 +178,7 @@ public class AdminFacesContext extends FacesContextWrapper implements MyFacesCon
 	/* (non-Javadoc)
 	 * @see beans.MyFacesContext#initSession()
 	 */
-	public void initSession(){ 
+	public void initPatIllScript(){ 
 		if(user==null) return;
 		long id = AjaxController.getInstance().getLongRequestParamByKey(AjaxController.REQPARAM_SCRIPT);
 		if(this.patillscript!=null && (id<0 || this.patillscript.getId()==id)){
@@ -177,7 +198,8 @@ public class AdminFacesContext extends FacesContextWrapper implements MyFacesCon
 	}
 
 	public boolean getInitSession(){
-		initSession();
+		initPatIllScript();
+		getInitContextContainer();
 		return true;
 	}
 	
@@ -188,24 +210,12 @@ public class AdminFacesContext extends FacesContextWrapper implements MyFacesCon
 	
 	public void initGraph(){	  
 		if(graph!=null && patillscript!=null && graph.isSameGraph(patillscript.getVpId(), patillscript.getId())) return; //nothing todo, graph already loaded
-
-		//if(graph!=null) return; //nothing todo, graph already loaded
 		graph = new Graph(patillscript.getVpId(), true, patillscript.getId());
-		//if(graph!=null) graph.setExpEdit(true);
 
 	}
-	public PatientIllnessScript getPatillscript() {
-		/*if(this.patillscript==null){ //can happen if an expert map is edited from a VP system, then we have to load/create it here...
-			try{
-				new Auth().loginAdminsViaAPI();
-			}
-			catch (Exception e){}
-			this.patillscript = new ExpPortfolio().getOrCreateExpScriptFromVPSystem();
-			if(this.patillscript!=null) initGraph();
-
-		}*/
-		return this.patillscript;
-	}
+	public PatientIllnessScript getPatillscript() {return this.patillscript;}
+	
+	
 	public void setPatillscript(PatientIllnessScript pi) {this.patillscript = pi;}
 	public ScoreContainer getScoreContainer(){
 		if((labean==null && patillscript!=null) || labean.getPatIllScriptId() != patillscript.getId())
@@ -288,5 +298,9 @@ public class AdminFacesContext extends FacesContextWrapper implements MyFacesCon
 	}
 	
 	public boolean getAdaptableBoxesEnabled() {return AppBean.getProperty("AdaptableBoxes", false);}
+	public ContextContainer getContxts() {
+		if(contxts==null) this.contxts = ContextController.getInstance().initContextContainer(contxts, user, locale, ContextContainer.TYPE_AUTHOR);
+		return contxts;}
+	public void setContxts(ContextContainer contxts) {this.contxts = contxts;}
 
 }

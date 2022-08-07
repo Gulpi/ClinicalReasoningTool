@@ -50,7 +50,9 @@ else if(scriptlang=="es") listUrl = "jsonp_es.json";
 else if(scriptlang=="pt") listUrl = "jsonp_pt.json";
 else if(scriptlang=="pl") listUrl = "jsonp_pl.json"; 
 else if(scriptlang=="fr") listUrl = "jsonp_fr.json"; 
-else if (scriptlang=="sv") listUrl = "";
+else if (scriptlang=="sv") listUrl = ""; //do not use lists for Swedish and Ukrainian
+else if (scriptlang=="ua") listUrl = "";
+
 var lang="#{crtContext.locale}";
 var currentStage = $.getUrlVar('stage');
 var currentStageScript = "#{crtContext.patillscript.currentStageWithUpdate}";
@@ -93,6 +95,10 @@ var ddxBoxUsed = "#{crtContext.sessSetting.boxUsedDDX}";
 var testBoxUsed = "#{crtContext.sessSetting.boxUsedTst}";
 var mngBoxUsed = "#{crtContext.sessSetting.boxUsedMng}"; 
 var pathoBoxUsed = "#{crtContext.sessSetting.boxUsedPat}";
+var nddxBoxUsed = "#{crtContext.sessSetting.boxUsedNDDX}";
+var naimBoxUsed = "#{crtContext.sessSetting.boxUsedNDDX}";
+var nmngBoxUsed = "#{crtContext.sessSetting.boxUsedNDDX}";
+var ninfoBoxUsed = "#{crtContext.sessSetting.boxUsedNInfo}";
 //indicates at which position with box (fdg, patho, ddx, tests, mnsg) is
 var box1Type = "#{crtContext.patillscript.box1Type}";
 var box2Type = "#{crtContext.patillscript.box2Type}";

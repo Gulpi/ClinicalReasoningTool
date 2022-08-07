@@ -1,0 +1,10 @@
+ <ui:composition 
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core">
+
+   	<div id="act_#{act.id}" class="">  
+  	 	<span>#{act.name}</span> <i class="fa fa-check boxscore_#{act.score}"></i> <a class="delCtxt" href="javascript:delActor(#{act.id});"><i class="fa fa-trash"></i></a>
+ 	</div>
+</ui:composition>

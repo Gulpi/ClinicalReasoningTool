@@ -35,15 +35,18 @@ public class DBList extends DBClinReason {
     	return li;
     }
     
+    public ListItem saveNewEntry(String entry, Locale loc){
+    	return saveNewEntry(entry, loc.getLanguage());
+    }
     /**
      * Learner has chosen to add his/her own entry, so we add this entry marked as "PRIVATE" to the list.
      * @param entry
      * @param loc
      * @return
      */
-    public ListItem saveNewEntry(String entry, Locale loc){
+    public ListItem saveNewEntry(String entry, String loc){
     	if(entry==null || entry.trim().equals("")) return null;
-    	ListItem li = new ListItem(loc.getLanguage(), ListItem.TYPE_OWN, entry.trim());
+    	ListItem li = new ListItem(loc, ListItem.TYPE_OWN, entry.trim());
     	saveAndCommit(li);
     	return li;
     }
@@ -141,10 +144,11 @@ public class DBList extends DBClinReason {
     /**
      * Loads ListItems for the given types. CAVE: This returns lots of items, only call during init of application 
      * or for testing!
+     * professionType: 0 = Medicine, 1 = Nursing
      * @param types
      * @return
      */
-    public List<ListItem> selectListItemsByTypesAndLang(Locale loc, String[] types){
+    public List<ListItem> selectListItemsByTypesAndLang(Locale loc, String[] types, int professionType){
     	Session s = instance.getInternalSession(Thread.currentThread(), false);
     	Criteria criteria = s.createCriteria(ListItem.class,"ListItem");
     	criteria.add(Restrictions.in("itemType", types));
@@ -153,6 +157,30 @@ public class DBList extends DBClinReason {
     	//do NOT include items that have been added by learners:
     	criteria.add(Restrictions.ne("source", ListItem.TYPE_OWN));
     	criteria.addOrder(Order.asc("name"));
+    	criteria.add(Restrictions.eq("nursing", professionType));
+    	criteria.add(Restrictions.eq("ignored", false));
+    	List l = criteria.list();
+    	//Collections.sort(l);
+    	s.close();
+    	return l;
+    }
+    
+    /**
+     * Loads ListItems for the given types. CAVE: This returns lots of items, only call during init of application 
+     * or for testing!
+     * professionType: 0 = Medicine, 1 = Nursing
+     * @param types
+     * @return
+     */
+    public List<ListItem> selectListItemsByProfessionAndLang(Locale loc, int professionType){
+    	Session s = instance.getInternalSession(Thread.currentThread(), false);
+    	Criteria criteria = s.createCriteria(ListItem.class,"ListItem");
+    	criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
+    	criteria.add(Restrictions.eq("language", loc));
+    	//do NOT include items that have been added by learners:
+    	criteria.add(Restrictions.ne("source", ListItem.TYPE_OWN));
+    	criteria.addOrder(Order.asc("name"));
+    	criteria.add(Restrictions.eq("nursing", professionType));
     	criteria.add(Restrictions.eq("ignored", false));
     	List l = criteria.list();
     	//Collections.sort(l);

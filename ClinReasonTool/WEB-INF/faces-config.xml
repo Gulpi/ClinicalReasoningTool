@@ -34,7 +34,10 @@
       <supported-locale>pl</supported-locale>
       <supported-locale>es</supported-locale>
        <supported-locale>pt</supported-locale>
-      <supported-locale>sv</supported-locale></locale-config>
+      <supported-locale>sv</supported-locale>
+      <supported-locale>fr</supported-locale>
+      <supported-locale>uk</supported-locale>
+    </locale-config>
    <resource-bundle>
       <base-name>properties.intlproperties</base-name>
       <var>prop</var>

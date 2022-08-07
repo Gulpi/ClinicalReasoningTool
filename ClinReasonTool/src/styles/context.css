@@ -1,0 +1,21 @@
+.ctxtbody{
+	font-family:Arial;
+	margin-left:0px;
+	margin-right:0px;
+	margin-bottom:0px;
+	padding-top:5px;
+}
+
+a{
+	text-decoration:none;
+	color:#006699 !important;
+}
+
+
+.delCtxt{
+   /* display:block;
+    width:98%;*/
+    padding-top:5px;
+    border-top:1px solid #cccccc;
+    margin-bottom:8px;
+}

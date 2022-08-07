@@ -5,7 +5,7 @@ var ep_left_prefix = "2_";
 var ep_top_prefix = "3_";
 var ep_bottom_prefix = "4_";
 
-var groups = new Array("fdg_group", "ddx_group","tst_group", "mng_group", "sum_group", "pat_group");
+var groups = new Array("fdg_group", "ddx_group","tst_group", "mng_group", "sum_group", "pat_group", "nddx_group", "naim_group", "nmng_group", "info_group" );
 var boxes;
 /*
  * TODO not very elegant, but the "" vs non "" is important and seems to be difficult to do when getting the items/ids from 
@@ -18,7 +18,7 @@ function initGroups(){
 	for(var i=0; i<boxes.length;i++){
 		instance.addGroup({
 	        el: document.getElementById(boxes[i]),
-	        id:groups[i],
+	        id: getGroupIdByElem(boxes[i]), //groups[i],
 	        constrain:true,
 	        dropOverride:true,
 	        droppable:false,
@@ -26,6 +26,19 @@ function initGroups(){
 	    });
 	}
 	initElems("");
+}
+
+/**
+elemName e.g. fdg_box, pat_box, nddx_box
+ */
+function getGroupIdByElem(elemName){
+	if(elemName==null || elemName =="") return;
+	for(var i=0; i<groups.length;i++ ){
+		var groupPrefix = groups[i].substring(0,groups[i].indexOf("_"));
+		if(elemName.startsWith(groupPrefix)) 
+		return groups[i];
+	}
+	
 }
 
 function initElems(selector){
@@ -85,7 +98,7 @@ function createEndpointsForItems(itemId){
 	    ep2.maxConnections = 10;
 }
 
-var lookup = new Array("", "fdg_box", "ddx_box", "tst_box", "mng_box", "sum_box", "pat_box");
+var lookup = new Array("", "fdg_box", "ddx_box", "tst_box", "mng_box", "sum_box", "pat_box", "nddx_box", "naim_box", "nmng_box", "info_box");
 
 /**
  * we have to create the boxes array dynamically now
@@ -124,6 +137,14 @@ function updateItemCallback(data, items, boxId){
  */
 function addToGroup(itemId, item){ 
 	try{
+		if(itemId.indexOf("nddx")>=0){
+			instance.addToGroup("nddx_group", item);
+			return;
+		}
+		if(itemId.indexOf("nmng")>=0){
+			instance.addToGroup("nmng_group", item);
+			return;
+			}
 		if(itemId.indexOf("fdg")>=0){
 			instance.addToGroup("fdg_group", item);
 			return;
@@ -138,11 +159,18 @@ function addToGroup(itemId, item){
 		}
 		if(itemId.indexOf("mng")>=0){
 			instance.addToGroup("mng_group", item);
+			return;
 		}
 		
 		if(itemId.indexOf("pat")>=0){
 			instance.addToGroup("pat_group", item);
+			return;
 		}
+
+		if(itemId.indexOf("info")>=0)
+			instance.addToGroup("info_group", item);
+		if(itemId.indexOf("naim")>=0)
+			instance.addToGroup("naim_group", item);
 	}
 	catch(err){
 		var x = err;
@@ -276,11 +304,12 @@ function initBoxHeights(){
 		maxYRow1 += 30; 
 	}
 	var itemArr3 = $(".row2");
-	if(itemArr3.length==0) return;
-	for(i=0; i<itemArr3.length; i++){
-		var myY = $(itemArr3[i]).position().top + 30;
-		if(myY > maxYRow2) maxYRow2 = myY;
-	}	
+	if(itemArr3.length!=0){ //return;
+		for(i=0; i<itemArr3.length; i++){
+			var myY = $(itemArr3[i]).position().top + 30;
+			if(myY > maxYRow2) maxYRow2 = myY;
+		}	
+	}
 	if(maxYRow1>storedHeightRow1){
 		storedHeightRow1 = maxYRow1;
 		setBoxHeight(1, maxYRow1);
@@ -288,7 +317,7 @@ function initBoxHeights(){
 	
 	if(maxYRow2>storedHeightRow2){
 		storedHeightRow2 = maxYRow2;
-		setBoxHeight(2, maxYRow2);
+		setBoxHeight(3, maxYRow2);
 	}
 	/*$("#fdg_box").height(storedHeightRow1);
 	$("#ddx_box").height(storedHeightRow1);
@@ -298,8 +327,8 @@ function initBoxHeights(){
 	$(".pos_1").height(storedHeightRow1);
 	$(".pos_2").height(storedHeightRow1);
 
-	$(".pos_3").height(maxYRow2);
-	$(".pos_4").height(maxYRow2);
+	$(".pos_3").height(storedHeightRow2);
+	$(".pos_4").height(storedHeightRow2);
 	
 	sendNewHeightToHostSystem();
 

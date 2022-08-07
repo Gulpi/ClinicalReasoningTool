@@ -41,6 +41,10 @@ public class ListItem implements Serializable, ListInterface, Comparable{
 	private Boolean isTestCache = null;
 	private Boolean isTherapyCache = null;
 	private Boolean isAnatomyCache = null;
+	/**
+	 * We mark entries that are also (or only relevant for nursing, so we create a separate list)
+	 */
+	private int nursing;
 	static private boolean useCaches = true;
 
 	/**
@@ -120,7 +124,9 @@ public class ListItem implements Serializable, ListInterface, Comparable{
 	public boolean isSynonym(){return false;}	
 	public boolean isTransformation() {return transformation;}
 	public void setTransformation(boolean transformation) {this.transformation = transformation;}
-	public String getReplName() {return replName;}
+	public String getReplName() {return replName;}	
+	public int getNursing() {return nursing;}
+	public void setNursing(int nursing) {this.nursing = nursing;}
 	
 	public String getShortName(){ 
 		return StringUtils.abbreviate(this.name, MAXLENGTH_NAME);

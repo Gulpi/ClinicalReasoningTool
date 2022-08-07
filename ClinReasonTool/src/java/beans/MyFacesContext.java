@@ -16,10 +16,11 @@ public interface MyFacesContext {
 
 	public Graph getGraph();
 	public PatientIllnessScript getPatillscript();
-	public void initSession();
+	public void initPatIllScript();
 	public void reset();
 	public ScoreContainer getScoreContainer();
 	public Locale getLocale();
 	public User getUser();
 	public boolean isView();
+	public boolean getInitContextContainer();
 }

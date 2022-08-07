@@ -424,7 +424,7 @@ public class CRTFacesContext extends FacesContextWrapper implements MyFacesConte
 			patillscript.save();
 		}
 	    
-		app.addIllnessScriptForDiagnoses(patillscript.getDiagnoses(), patillscript.getVpId());
+		// app.addIllnessScriptForDiagnoses(patillscript.getDiagnoses(), patillscript.getVpId());
 	}
 	
 	public AppBean getAppBean(){

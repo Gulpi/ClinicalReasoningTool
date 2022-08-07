@@ -46,7 +46,6 @@
 	<classpathentry kind="lib" path="WEB-INF/lib/adw.v1.0.jar"/>
 	<classpathentry kind="lib" path="WEB-INF/lib/commons-beanutils-1.9.2.jar"/>
 	<classpathentry kind="lib" path="WEB-INF/lib/jxapi.jar"/>
-	<classpathentry kind="lib" path="WEB-INF/lib/dom4j-full.jar"/>
 	<classpathentry kind="lib" path="WEB-INF/lib/gson.jar"/>
 	<classpathentry kind="lib" path="WEB-INF/lib/myfaces-api-2.2.12.jar"/>
 	<classpathentry kind="lib" path="WEB-INF/lib/myfaces-bundle-2.2.12.jar"/>
@@ -139,8 +138,15 @@
 	<classpathentry kind="lib" path="/CASUS_SupportLib/lib/servlet-api.jar"/>
 	<classpathentry kind="lib" path="/CASUS_SupportLib/lib/tidy.jar"/>
 	<classpathentry kind="lib" path="/CASUS_SupportLib/lib/owasp-java-html-sanitizer.jar"/>
+<<<<<<< HEAD
 	<classpathentry kind="lib" path="/CASUS_SupportLib/lib/aws-java-sdk-osgi.jar"/>
 	<classpathentry kind="lib" path="/CASUS/lib/osxkeychain.jar"/>
 	<classpathentry kind="lib" path="/CASUS/lib/pdfbox/pdfbox-app.jar"/>
+=======
+	<classpathentry kind="lib" path="/CASUS_SupportLib/lib/guava.jar"/>
+	<classpathentry kind="lib" path="/CASUS_SupportLib/lib/aws-java-sdk-osgi.jar"/>
+	<classpathentry kind="lib" path="WEB-INF/lib/osxkeychain.jar"/>
+	<classpathentry kind="lib" path="/CASUS_SupportLib/lib/pdfbox-app.jar"/>
+>>>>>>> branch 'master' of git@github.com:clinReasonTool/ClinicalReasoningTool.git
 	<classpathentry kind="output" path="WEB-INF/classes"/>
 </classpath>

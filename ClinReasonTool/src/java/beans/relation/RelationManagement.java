@@ -22,7 +22,10 @@ public class RelationManagement extends Relation implements Serializable{
 		this.setDestId(destId);
 		if(synId>0) setSynId(synId);
 	}
-		
+	
+	public int getDiscriminator() {return TYPE_MNG;}
+	public void setDiscriminator(int i){}
+	
 	public ListItem getManagement() {return management;}
 	public void setManagement(ListItem management) {this.management = management;}
 	public String getIdWithPrefix(){ return GraphController.PREFIX_MNG+this.getId();}

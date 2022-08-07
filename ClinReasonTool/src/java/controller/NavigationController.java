@@ -43,7 +43,7 @@ public class NavigationController implements Serializable {
 		AdminFacesContext context = getAdminFacesContext(); 
 		if(context!=null){
 			context.reset();
-			context.initSession();
+			context.initPatIllScript();
 		}
 		//TODO error handling
 		return "exp_boxes";
@@ -53,7 +53,7 @@ public class NavigationController implements Serializable {
 		AdminFacesContext context = getAdminFacesContext(); 
 		if(context!=null){
 			context.reset();
-			context.initSession();
+			context.initPatIllScript();
 		}
 		//TODO error handling
 		return "/src/html/view/exp_boxes_view";

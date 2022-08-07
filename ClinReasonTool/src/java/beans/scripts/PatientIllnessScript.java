@@ -113,7 +113,12 @@ public class PatientIllnessScript extends Beans implements Comparable, IllnessSc
 	private List<RelationDiagnosis> diagnoses; //contains all diagnoses, including the final(s)?
 	private List<RelationManagement> mngs;
 	private List<RelationTest> tests;
-	private List<RelationPatho> patho;		
+	private List<RelationPatho> patho;	
+	private List<RelationNursingDiagnosis> nursingDiagnoses;	
+	private List<RelationNursingAim> nursingAims;	
+	private List<RelationInformation> infos;
+	private List<RelationNursingManagement> nursingManagement;	
+
 	/**
 	 * key = cnxId (Long), value = Connection object
 	 */
@@ -253,12 +258,30 @@ public class PatientIllnessScript extends Beans implements Comparable, IllnessSc
 	
 	public boolean isDeleteFlag() {return deleteFlag;}
 	public void setDeleteFlag(boolean deleteFlag) {this.deleteFlag = deleteFlag;}
-	public List<RelationDiagnosis> getDiagnoses() {
-
-		return diagnoses;
-	}
+	
+	public List<RelationDiagnosis> getDiagnoses() {return diagnoses;}
 	public List<RelationDiagnosis> getDiagnosesStage() { return getRelationsByStage(diagnoses);}
 	public void setDiagnoses(List<RelationDiagnosis> diagnoses) {this.diagnoses = diagnoses;}
+	
+	public List<RelationNursingDiagnosis> getNursingDiagnoses() 
+	{return nursingDiagnoses;
+	}
+	public List<RelationNursingDiagnosis> getNursingDiagnosesStage() { return getRelationsByStage(nursingDiagnoses);}
+	public void setNursingDiagnoses(List<RelationNursingDiagnosis> nursingDiagnoses) {this.nursingDiagnoses = nursingDiagnoses;}
+
+	public List<RelationNursingAim> getNursingAims() {return nursingAims;}
+	public List<RelationNursingAim> getNursingAimsStage() { return getRelationsByStage(nursingAims);}
+	public void setNursingAims(List<RelationNursingAim> nursingAims) {this.nursingAims = nursingAims;}
+
+	public List<RelationNursingManagement> getNursingManagement() {return nursingManagement;}
+	public List<RelationNursingManagement> getNursingManagementStage() { return getRelationsByStage(nursingManagement);}
+	public void setNursingManagement(List<RelationNursingManagement> nursingManagement) {this.nursingManagement = nursingManagement;}
+
+	public List<RelationInformation> getInfos() {return infos;}
+	public List<RelationInformation> getInformationStage() { return getRelationsByStage(infos);}
+	public void setInformation(List<RelationInformation> infos) {this.infos = infos;}
+
+	
 	public List<RelationManagement> getMngs() {return mngs;}
 	public List<RelationManagement> getMngsStage() { return getRelationsByStage(mngs);}
 	public void setMngs(List<RelationManagement> mngs) {this.mngs = mngs;}	
@@ -453,14 +476,28 @@ public class PatientIllnessScript extends Beans implements Comparable, IllnessSc
 	public void addTest(String idStr, String name, String x, String y){ new AddTestAction(this).add(idStr, name, x,y);}
 	public void addMng(String idStr, String name){ new AddMngAction(this).add(idStr, name);}
 	public void addMng(String idStr, String name, String x, String y){ new AddMngAction(this).add(idStr, name, x,y);}
-	public void addPatho(String idStr, String name){ new AddPathoAction(this).add(idStr, name);}
+	public void addPatho(String idStr, String name){ new AddPathoAction(this).add(idStr, name);}	
 	public void addPatho(String idStr, String name, String x, String y){ new AddPathoAction(this).add(idStr, name, x,y);}
+	
+	//nursing stuff:
+	public void addNddx(String idStr, String name){ new AddNursingDiagnosisAction(this).add(idStr, name);}
+	public void addNddx(String idStr, String name, String x, String y){ new AddNursingDiagnosisAction(this).add(idStr, name, x,y);}
+	public void addInfo(String idStr, String name){ new AddInfoAction(this).add(idStr, name);}
+	public void addInfo(String idStr, String name, String x, String y){ new AddInfoAction(this).add(idStr, name, x,y);}
+	public void addNaim(String idStr, String name){ new AddNursingAimAction(this).add(idStr, name);}
+	public void addNaim(String idStr, String name, String x, String y){ new AddNursingAimAction(this).add(idStr, name, x,y);}
+	public void addNmng(String idStr, String name){ new AddNursingMngAction(this).add(idStr, name);}
+	public void addNmng(String idStr, String name, String x, String y){ new AddNursingMngAction(this).add(idStr, name, x,y);}
 	
 	public void delProblem(String idStr){ new DelProblemAction(this).delete(idStr);}
 	public void delDiagnosis(String idStr){ new DelDiagnosisAction(this).delete(idStr);}
 	public void delTest(String idStr){ new DelTestAction(this).delete(idStr);}
 	public void delMng(String idStr){ new DelMngAction(this).delete(idStr);}
 	public void delPatho(String idStr){ new DelPathoAction(this).delete(idStr);}
+	public void delInfo(String idStr){ new DelInfoAction(this).delete(idStr);}
+	public void delNaim(String idStr){ new DelNursingAimAction(this).delete(idStr);}
+	public void delMmng(String idStr){ new DelNursingMngAction(this).delete(idStr);}
+	public void delNddx(String idStr){ new DelNursingDiagnosisAction(this).delete(idStr);}
 
 	//public void reorderProblems(String idStr, String newOrderStr){ new MoveProblemAction(this).reorder(idStr, newOrderStr);}
 	//public void reorderDiagnoses(String idStr, String newOrderStr){ new MoveDiagnosisAction(this).reorder(idStr, newOrderStr);}
@@ -523,12 +560,7 @@ public class PatientIllnessScript extends Beans implements Comparable, IllnessSc
 			//int type = Integer.valueOf(newType).intValue();
 			if(newTypes==null || newTypes.trim().contentEquals("")) return; //an error happened... 
 			int[] types = StringUtilities.getIntArrFromString(newTypes, ",");
-			//int counter = 0;
-			//if(newTypes.contains("6")) {
-			//	this.box1Type = 1;
-			//	counter = 1;
-			//}
-			//int[] tsttypes = new int[]{1,2,3,4};
+
 			tsttypes = new int[]{0,0,0,0};
 			int counter = 0;
 			for(int i=0; i<types.length;i++) {
@@ -537,14 +569,7 @@ public class PatientIllnessScript extends Beans implements Comparable, IllnessSc
 					counter++;
 				}
 			}
-			//box1Type = types
-			/*	if(types[i]==2) this.box2Type = 1; 
-				this.box1Type = types[0];
-				this.box2Type = types[1];
-				this.box3Type = types[2];
-				this.box4Type = types[3];*/
-			//}
-			//this.box1Type = type;
+
 			new DBClinReason().saveAndCommit(this);
 		}
 		catch(Exception e) {
@@ -552,40 +577,6 @@ public class PatientIllnessScript extends Beans implements Comparable, IllnessSc
 		}
 	}
 	
-/*	public void changeBoxType2(String newType) {
-		CRTLogger.out("", 1);
-		try {
-			int type = Integer.valueOf(newType).intValue();
-			this.box2Type = type;
-			new DBClinReason().saveAndCommit(this);
-		}
-		catch(Exception e) {
-			CRTLogger.out(StringUtilities.stackTraceToString(e),CRTLogger.LEVEL_ERROR);
-		}
-	}
-	public void changeBoxType3(String newType) {
-		CRTLogger.out("", 1);
-		try {
-			int type = Integer.valueOf(newType).intValue();
-			this.box3Type = type;
-			new DBClinReason().saveAndCommit(this);
-		}
-		catch(Exception e) {
-			CRTLogger.out(StringUtilities.stackTraceToString(e),CRTLogger.LEVEL_ERROR);
-		}
-	}
-	public void changeBoxType4(String newType) {
-		CRTLogger.out("", 1);
-		try {
-			int type = Integer.valueOf(newType).intValue();
-			this.box4Type = type;
-			new DBClinReason().saveAndCommit(this);
-		}
-		catch(Exception e) {
-			CRTLogger.out(StringUtilities.stackTraceToString(e),CRTLogger.LEVEL_ERROR);
-		}
-	}
-	*/
 	/*** end change of box types in authoring system *****/
 	
 	
@@ -627,15 +618,22 @@ public class PatientIllnessScript extends Beans implements Comparable, IllnessSc
 	public RelationDiagnosis getDiagnosisById(long id){return (RelationDiagnosis) getRelationById(diagnoses, id);}	
 	public RelationTest getTestById(long id){return (RelationTest) getRelationById(tests, id);}		
 	public RelationPatho getPathoById(long id){return (RelationPatho) getRelationById(patho, id);}		
-
 	public RelationManagement getMngById(long id){return (RelationManagement) getRelationById(mngs, id);}	
+	public RelationInformation getInfoById(long id){return (RelationInformation) getRelationById(infos, id);}	
+	public RelationNursingDiagnosis getNursingDiagnosisById(long id){return (RelationNursingDiagnosis) getRelationById(nursingDiagnoses, id);}	
+	public RelationNursingAim getNursingAimById(long id){return (RelationNursingAim) getRelationById(nursingAims, id);}	
+	public RelationNursingManagement getNursingMngById(long id){return (RelationNursingManagement) getRelationById(nursingManagement, id);}	
 
 	public Relation getRelationByListItemIdAndType(long id, int type){
 		if(type==Relation.TYPE_PROBLEM) return getRelationByListItemId(this.problems, id);
 		if(type==Relation.TYPE_DDX) return getRelationByListItemId(this.diagnoses, id);
 		if(type==Relation.TYPE_MNG) return getRelationByListItemId(this.mngs, id);
 		if(type==Relation.TYPE_TEST) return getRelationByListItemId(this.tests, id);
-		if(type==Relation.TYPE_PATHO) return getRelationByListItemId(this.patho, id);		
+		if(type==Relation.TYPE_PATHO) return getRelationByListItemId(this.patho, id);	
+		if(type==Relation.TYPE_INFO) return getRelationByListItemId(this.infos, id);	
+		if(type==Relation.TYPE_NDDX) return getRelationByListItemId(this.nursingDiagnoses, id);	
+		if(type==Relation.TYPE_NMNG) return getRelationByListItemId(this.nursingManagement, id);	
+		if(type==Relation.TYPE_NURSAIM) return getRelationByListItemId(this.nursingAims, id);	
 
 		return null;
 	}
@@ -722,6 +720,10 @@ public class PatientIllnessScript extends Beans implements Comparable, IllnessSc
 		if(type==Relation.TYPE_MNG) return getRelationById(this.mngs, id);
 		if(type==Relation.TYPE_TEST) return getRelationById(this.tests, id);
 		if(type==Relation.TYPE_PATHO) return getRelationById(this.patho, id);
+		if(type==Relation.TYPE_NDDX) return getRelationById(this.nursingDiagnoses, id);
+		if(type==Relation.TYPE_NMNG) return getRelationById(this.nursingManagement, id);
+		if(type==Relation.TYPE_INFO) return getRelationById(this.infos, id);
+		if(type==Relation.TYPE_NURSAIM) return getRelationById(this.nursingAims, id);
 		
 		return null;
 	}
@@ -737,21 +739,26 @@ public class PatientIllnessScript extends Beans implements Comparable, IllnessSc
 	 * @param stage
 	 */
 	public void updateStage(String stage){
-		if(StringUtils.isNumeric(stage)){
-			int stageNum = Integer.valueOf(stage);
-			//at the next stage we disable the display of the help dialog:
-			if(stageNum==2 && !this.isExpScript()){
-				if(NavigationController.getInstance().getMyFacesContext().getUser()!=null)
-					NavigationController.getInstance().getMyFacesContext().getUser().getUserSetting().setOpenHelpOnLoad(false);
+		try{
+			if(StringUtils.isNumeric(stage)){
+				int stageNum = Integer.valueOf(stage);
+				//at the next stage we disable the display of the help dialog:
+				if(stageNum==2 && !this.isExpScript()){
+					if(NavigationController.getInstance().getMyFacesContext().getUser()!=null)
+						NavigationController.getInstance().getMyFacesContext().getUser().getUserSetting().setOpenHelpOnLoad(false);
+				}
+				this.stage = stageNum; //we always update the stage
+				//we cannot save if the user is an admin and views a learners script
+				if(stageNum > this.currentStage && !NavigationController.getInstance().getMyFacesContext().isView()){
+					//if user is on first card, do NOT calculate list scores:
+					if(stageNum>=2 && !this.isExpScript()) new ScoringListAction(this).checkListScoresAtStage();
+					this.setCurrentStage(stageNum);	
+					save();
+				}
 			}
-			this.stage = stageNum; //we always update the stage
-			//we cannot save if the user is an admin and views a learners script
-			if(stageNum > this.currentStage && !NavigationController.getInstance().getMyFacesContext().isView()){
-				//if user is on first card, do NOT calculate list scores:
-				if(stageNum>=2 && !this.isExpScript()) new ScoringListAction(this).checkListScoresAtStage();
-				this.setCurrentStage(stageNum);	
-				save();
-			}
+		}
+		catch(Exception e) {
+			CRTLogger.out(StringUtilities.stackTraceToString(e), CRTLogger.LEVEL_ERROR);
 		}
 	}
 	
@@ -948,6 +955,12 @@ public class PatientIllnessScript extends Beans implements Comparable, IllnessSc
 		if(this.getDiagnoses()!=null && !this.getDiagnoses().isEmpty()) return false; 
 		if(this.getTests()!=null && !this.getTests().isEmpty()) return false; 
 		if(this.getMngs()!=null && !this.getMngs().isEmpty()) return false; 
+		if(this.getNursingAims()!=null && !this.getNursingAims().isEmpty()) return false; 
+		if(this.getNursingDiagnoses()!=null && !this.getNursingDiagnoses().isEmpty()) return false; 
+		if(this.getInfos()!=null && !this.getInfos().isEmpty()) return false; 
+		if(this.getNursingManagement()!=null && !this.getNursingManagement().isEmpty()) return false; 
+		if(this.getPatho()!=null && !this.getPatho().isEmpty()) return false;
+
 
 		return true;
 	}
@@ -986,6 +999,10 @@ public class PatientIllnessScript extends Beans implements Comparable, IllnessSc
 	public int getDdxBoxNo() { return getBoxByType(Relation.TYPE_DDX);}
 	public int getTstBoxNo() { return getBoxByType(Relation.TYPE_TEST);}
 	public int getMngBoxNo() { return getBoxByType(Relation.TYPE_MNG);}
+	public int getNMngBoxNo() { return getBoxByType(Relation.TYPE_NMNG);}
+	public int getNDdxBoxNo() { return getBoxByType(Relation.TYPE_NDDX);}
+	public int getNAimBoxNo() { return getBoxByType(Relation.TYPE_NURSAIM);}
+	public int getInfoBoxNo() { return getBoxByType(Relation.TYPE_INFO);}
 	/**
 	 * we return the box that contains the given type (fgd, ddx,...) or 
 	 * 0 if should not be displayed. 

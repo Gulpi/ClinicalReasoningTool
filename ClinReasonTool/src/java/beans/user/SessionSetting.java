@@ -68,6 +68,12 @@ public class SessionSetting {
 	private int boxUsedMng = 1; //management used (active=1, passive=2)
 	private int boxUsedPat = 0; //pathophys used (active=1, passive=2)
 	private int boxUsedSum = 1; //summary statement used (active=1, passive=2)
+	private int boxUsedNDDX = 0; 
+	private int boxUsedNMng = 0; 
+	private int boxUsedNAim = 0;
+	private int boxUsedNInfo = 0; 
+
+
 
 	
 	/**
@@ -227,8 +233,14 @@ public class SessionSetting {
 	public void setBoxUsedPat(int boxUsedPat) {this.boxUsedPat = boxUsedPat;}
 	public int getBoxUsedSum() {return boxUsedSum;}
 	public void setBoxUsedSum(int boxUsedSum) {this.boxUsedSum = boxUsedSum;}
-	
-	
+	public int getBoxUsedNDDX() {return boxUsedNDDX;}
+	public void setBoxUsedNDDX(int boxUsedNDDX) {this.boxUsedNDDX = boxUsedNDDX;}	
+	public int getBoxUsedNMng() {return boxUsedNMng;}
+	public void setBoxUsedNMng(int boxUsedNMng) {this.boxUsedNMng = boxUsedNMng;}
+	public int getBoxUsedNInfo() {return boxUsedNInfo;}
+	public void setBoxUsedNInfo(int boxUsedNInfo) {this.boxUsedNInfo = boxUsedNInfo;}
+	public int getBoxUsedNAim() {return boxUsedNAim;}
+	public void setBoxUsedNAim(int boxUsedNAim) {this.boxUsedNAim = boxUsedNAim;}	
 	/*public int getProbBoxUsed(){ return boxesUsed[0];}
 	public int getDdxBoxUsed(){ return boxesUsed[1];}	
 	public int getTestBoxUsed(){ return boxesUsed[2];}

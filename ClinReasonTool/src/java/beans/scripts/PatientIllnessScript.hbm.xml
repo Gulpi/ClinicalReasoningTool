@@ -38,7 +38,7 @@
 	     <property name="box2Type" column="box2_type" type="int"/>
 	     <property name="box3Type" column="box3_type" type="int"/>
 	     <property name="box4Type" column="box4_type" type="int"/>
-	     
+  
 
 	    <list name="errors" table="crt.error" lazy="false"> <!-- table="crt.relation_problem"-->
     		<key column="dest_id"/> <!-- dest_id = patientIllnessScript id -->

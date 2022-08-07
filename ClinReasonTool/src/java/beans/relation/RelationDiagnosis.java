@@ -46,6 +46,8 @@ public class RelationDiagnosis extends Relation implements Serializable {
 	public static final int PREVALENCE_RARE = 1; //disease is relatively rare
 	public static final int PREVALENCE_COMMON = 2; //we could add a more detailed scale here... 
 	
+	public int getDiscriminator() {return REL_TYPE_DDX;}
+	public void setDiscriminator(int i){}
 
 	/**
 	 * has this diagnosis been submitted as final the learner? If yes for certain components no more changes 

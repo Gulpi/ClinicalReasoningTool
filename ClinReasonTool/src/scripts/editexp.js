@@ -35,6 +35,7 @@ function chgStage(chg, loc){
 function chgMapLang(){
 	var newLang = $("#scriptloc").val();
 	listUrl="../jsonp_"+newLang+".json";
+	listNursingUrl="../jsonp_n_"+newLang+".json";
 	scriptlang = newLang;
 	//alert(listUrl);
 	if(isEmptyScript=="true"){ //trigger submit, script is empty
@@ -227,7 +228,7 @@ function saveBoxesSel(){
 }
 
 function initBoxesSel(){
-	   for(var i=1; i<=6;i++){
+	   for(var i=1; i<=20;i++){
 		//var val = box1type;
 		if(box1Type==i || box2Type==i || box3Type==i || box4Type==i)
 			$("#boxtypes"+i).prop("checked", true);

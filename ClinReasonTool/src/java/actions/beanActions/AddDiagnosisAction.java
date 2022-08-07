@@ -164,7 +164,7 @@ public class AddDiagnosisAction implements AddAction, Scoreable{
 				graph.addImplicitEdge(patIllScript.getProblems().get(i).getListItemId(), rel.getListItemId(), IllnessScriptInterface.TYPE_LEARNER_CREATED);
 			}
 		}
-		addHierarchyRelation(rel, graph);
+		//addHierarchyRelation(rel, graph); //creates a lot of unwanted connections
 		CRTLogger.out(graph.toString(), CRTLogger.LEVEL_TEST);
 	}
 	
@@ -175,7 +175,7 @@ public class AddDiagnosisAction implements AddAction, Scoreable{
 	 * @param rel
 	 * @param g
 	 */
-	private void addHierarchyRelation(Relation rel, Graph g){
+	/*private void addHierarchyRelation(Relation rel, Graph g){
 		if(patIllScript.isExpScript()){
 			MultiVertex mv = g.getVertexByIdAndType(rel.getListItemId(), Relation.TYPE_DDX);
 			List<MultiVertex> mv2 = new GraphController(g).findNextHierarchyVertices(mv, Relation.TYPE_DDX);
@@ -184,7 +184,7 @@ public class AddDiagnosisAction implements AddAction, Scoreable{
 				new AddConnectionAction(patIllScript).addConnection(rel.getId(), mv2.get(i).getLearnerVertex().getId(), Relation.TYPE_DDX, Relation.TYPE_DDX, MultiEdge.WEIGHT_EXPLICIT_HIERARCHY, MultiEdge.ENDPOINT_RIGHT, MultiEdge.ENDPOINT_RIGHT);
 			}
 		}
-	}
+	}*/
 	
 	public void updateXAPIStatement(Relation rel){
 		XAPIController.getInstance().addOrUpdateAddStatement(rel);

@@ -59,10 +59,9 @@ public class ExpPortfolio implements Serializable{
 	 */
 	private void loadScripts(){
 		if(expscripts==null){
-			if(user.isAdmin())
-				expscripts = new DBEditing().selectAllExpertPatIllScripts();
+			//if(user.isAdmin()) expscripts = new DBEditing().selectAllExpertPatIllScripts(); -> too many scripts are loaded now, 
 			
-			else expscripts = new DBEditing().selectAllExpertPatIllScriptsByUserId(user.getUserId());
+			/*else*/ expscripts = new DBEditing().selectAllExpertPatIllScriptsByUserId(user.getUserId());
 		}
 	}
 	
@@ -129,7 +128,7 @@ public class ExpPortfolio implements Serializable{
 	public PatientIllnessScript getOrCreateExpScriptFromVPSystem(){
 		CRTLogger.out("Create new script", CRTLogger.LEVEL_PROD);
 		String vpId = AjaxController.getInstance().getRequestParamByKey(AjaxController.REQPARAM_VP);
-		String systemId = AjaxController.getInstance().getRequestParamByKey(AjaxController.REQPARAM_SYSTEM);
+		String systemId = "2"; //AjaxController.getInstance().getRequestParamByKey(AjaxController.REQPARAM_SYSTEM);
 		int maxstage = AjaxController.getInstance().getIntRequestParamByKey(AjaxController.REQPARAM_MAXSTAGE, -1);
 
 		PatientIllnessScript patillscript = new DBClinReason().selectExpertPatIllScriptByVPId(vpId+"_"+systemId);

@@ -36,6 +36,11 @@ public class GraphController implements Serializable{
 	public static final String PREFIX_MNG2 = "mng_";
 	public static final String PREFIX_TEST2 = "tst_";
 	public static final String PREFIX_PATHO2 = "pat_";
+	public static final String PREFIX_NDDX = "nddx_"; //nursing diagnoses
+	public static final String PREFIX_NURSINGAIM = "naim_"; //nursing aims
+	public static final String PREFIX_NMNG = "nmng_"; //nursing management
+	public static final String PREFIX_INFO = "info_";
+	
 	private Graph graph;
 	
 	public GraphController(Graph g){
@@ -96,6 +101,10 @@ public class GraphController implements Serializable{
 		 addVertices( patIllScript.getMngs(), illnessScriptType);
 		 addVertices( patIllScript.getTests(), illnessScriptType);
 		 addVertices( patIllScript.getPatho(), illnessScriptType);
+		 addVertices( patIllScript.getInfos(), illnessScriptType);
+		 addVertices( patIllScript.getNursingAims(), illnessScriptType);
+		 addVertices( patIllScript.getNursingDiagnoses(), illnessScriptType);
+		 addVertices( patIllScript.getNursingManagement(), illnessScriptType);
 
 	}
 	
@@ -155,36 +164,6 @@ public class GraphController implements Serializable{
 		}
 	}
 	
-	/**
-	 * 1 = no feedback
-	 * 2 = exp feedback
-	 * 3 = illscript fb
-	 * 4 = peer feedback
-	 * @param vertex
-	 * @return
-	 */
-/*	private boolean[] getDisplayModusOfVertex(VertexInterface vertex, boolean[] feedbackModus){
-		feedbackModus = new boolean[]{true, true, false, false}; //show learner and expert, TODO get from user settings and/or store in FacesContext
-		boolean[] displayModus = new boolean[]{false, false, false, false}; //learner, expert, illscript, peer 
-		int currentStage = new NavigationController().getCRTFacesContext().getPatillscript().getCurrentStage();	
-		
-		//if(vertex instanceof MultiVertex){
-			MultiVertex mvertex = (MultiVertex) vertex;
-			Relation expRel = mvertex.getExpertVertex();
-		
-			if(mvertex.isLearnerVertex() && feedbackModus[0]){
-				displayModus[0] = true; //we always show what the learner has entered
-				if(feedbackModus[1] && mvertex.isExpertVertex()) //if learner has added this and expert as well display expert node:
-					displayModus[1] = true;
-				if(feedbackModus[3]) displayModus[3] = true; //show peers
-			}
-			else if(!mvertex.isLearnerVertex()){ //now learner has not added node:
-				if(feedbackModus[1] && mvertex.isExpertVertex() && expRel.getStage()<=currentStage) //but exp has added node
-					displayModus[1] = true;
-			}	
-			return displayModus;
-		
-	}*/
 	
 	/**
 	 * We look whether this vertex has any lower or higher hierarchy vertices within the 
@@ -220,6 +199,12 @@ public class GraphController implements Serializable{
 		if(prefix.equals(PREFIX_DDX) || prefix.equals(PREFIX_DDX2)) return Relation.TYPE_DDX;
 		if(prefix.equals(PREFIX_TEST) || prefix.equals(PREFIX_TEST2)) return Relation.TYPE_TEST;
 		if(prefix.equals(PREFIX_MNG) || prefix.equals(PREFIX_MNG2)) return Relation.TYPE_MNG;
+		if(prefix.equals(PREFIX_NMNG) /*|| prefix.equals(PREFIX_MNG2)*/) return Relation.TYPE_NMNG;
+		if(prefix.equals(PREFIX_INFO) /*|| prefix.equals(PREFIX_MNG2)*/) return Relation.TYPE_INFO;
+		if(prefix.equals(PREFIX_NDDX) /*|| prefix.equals(PREFIX_MNG2)*/) return Relation.TYPE_NDDX;
+		if(prefix.equals(PREFIX_NURSINGAIM) /*|| prefix.equals(PREFIX_MNG2)*/) return Relation.TYPE_NURSAIM;
+		if(prefix.equals(PREFIX_PATHO) || prefix.equals(PREFIX_PATHO2)) return Relation.TYPE_PATHO;
+
 
 		return 0;
 	}
@@ -229,7 +214,11 @@ public class GraphController implements Serializable{
 		if(type==Relation.TYPE_DDX) return PREFIX_DDX2;
 		if(type==Relation.TYPE_TEST) return PREFIX_TEST2;
 		if(type==Relation.TYPE_MNG) return PREFIX_MNG2;
-
+		if(type==Relation.TYPE_NMNG) return PREFIX_NMNG;
+		if(type==Relation.TYPE_NDDX) return PREFIX_NDDX;
+		if(type==Relation.TYPE_INFO) return PREFIX_INFO;
+		if(type==Relation.TYPE_PATHO) return PREFIX_PATHO;
+		if(type==Relation.TYPE_NURSAIM) return PREFIX_NURSINGAIM;
 		return "";
 	}
 	

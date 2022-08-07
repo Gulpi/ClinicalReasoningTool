@@ -55,7 +55,7 @@ $(function() {
  <h:body class="ctxtbody" style="font-family:arial;">
   	<div class="search" style="width:210px;">
   		<i class="fa fa-search ininput actsearch"></i>
-  		<input class="f_text actsearch" id="act_search" placeholder="#{prop['cntxt.actor.add']} ..." mytooltip="#{prop['cntxt.actor.search']}"></input>
+  		<input class="f_text actsearch" id="act_search" placeholder="#{prop['cntxt.actor.add']} ..." mytooltip="#{prop['cntxt.actor.search']}" listUrl="../jsonp_c_#{adminContext.patillscript.locale}.json"></input>
   	</div>
   	<h:form id="actorsform">
 	  	<h:panelGroup>
@@ -70,7 +70,7 @@ $(function() {
 	
 	  	<div class="search" style="width:210px;">
   		<i class="fa fa-search ininput ctxtsearch"></i>
-  		<input class="f_text actsearch" id="ctxt_search" placeholder="#{prop['cntxt.context.add']} ..." mytooltip="#{prop['cntxt.context.search']}"></input>
+  		<input class="f_text actsearch" id="ctxt_search" placeholder="#{prop['cntxt.context.add']} ..." mytooltip="#{prop['cntxt.context.search']}" listUrl="../jsonp_c_#{adminContext.patillscript.locale}.json"></input>
   	</div>
   	<h:form id="contextform">
 	  	<h:panelGroup>

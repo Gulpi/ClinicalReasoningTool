@@ -739,21 +739,26 @@ public class PatientIllnessScript extends Beans implements Comparable, IllnessSc
 	 * @param stage
 	 */
 	public void updateStage(String stage){
-		if(StringUtils.isNumeric(stage)){
-			int stageNum = Integer.valueOf(stage);
-			//at the next stage we disable the display of the help dialog:
-			if(stageNum==2 && !this.isExpScript()){
-				if(NavigationController.getInstance().getMyFacesContext().getUser()!=null)
-					NavigationController.getInstance().getMyFacesContext().getUser().getUserSetting().setOpenHelpOnLoad(false);
+		try{
+			if(StringUtils.isNumeric(stage)){
+				int stageNum = Integer.valueOf(stage);
+				//at the next stage we disable the display of the help dialog:
+				if(stageNum==2 && !this.isExpScript()){
+					if(NavigationController.getInstance().getMyFacesContext().getUser()!=null)
+						NavigationController.getInstance().getMyFacesContext().getUser().getUserSetting().setOpenHelpOnLoad(false);
+				}
+				this.stage = stageNum; //we always update the stage
+				//we cannot save if the user is an admin and views a learners script
+				if(stageNum > this.currentStage && !NavigationController.getInstance().getMyFacesContext().isView()){
+					//if user is on first card, do NOT calculate list scores:
+					if(stageNum>=2 && !this.isExpScript()) new ScoringListAction(this).checkListScoresAtStage();
+					this.setCurrentStage(stageNum);	
+					save();
+				}
 			}
-			this.stage = stageNum; //we always update the stage
-			//we cannot save if the user is an admin and views a learners script
-			if(stageNum > this.currentStage && !NavigationController.getInstance().getMyFacesContext().isView()){
-				//if user is on first card, do NOT calculate list scores:
-				if(stageNum>=2 && !this.isExpScript()) new ScoringListAction(this).checkListScoresAtStage();
-				this.setCurrentStage(stageNum);	
-				save();
-			}
+		}
+		catch(Exception e) {
+			CRTLogger.out(StringUtilities.stackTraceToString(e), CRTLogger.LEVEL_ERROR);
 		}
 	}
 	

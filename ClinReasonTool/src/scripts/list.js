@@ -4,7 +4,7 @@
 	new init method
 	
 	collect all possible urls -> either default listUrl or attr "listUrl" in search inpout text field
-	 to make a new list possible -> add listUrl attribute to search input text field!
+	 to make a new list possible -> add listUrl attribute to search input text field in boxes page!
 	 default listUrl in template can also be "", then we scan for search input text filed with set url, otherwise we initialize
 	 the text fields with genericCreateAutocompleteWithoutList!
  */

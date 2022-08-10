@@ -1,17 +1,9 @@
 package api.impl;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.TreeMap;
 
 import javax.faces.context.FacesContext;
-import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -19,27 +11,17 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import actions.scoringActions.ScoringSummStAction;
 import api.AbstractAPIImpl;
-import api.ApiInterface;
-import application.AppBean;
-import beans.list.ListItem;
-import beans.relation.summary.SummaryStElem;
 import beans.relation.summary.SummaryStatement;
-import beans.relation.summary.SummaryStatementSQ;
 import beans.scoring.ScoreBean;
 import beans.scripts.PatientIllnessScript;
 import beans.user.User;
 import controller.AjaxController;
 import controller.IllnessScriptController;
-import controller.JsonCreator;
 import controller.SummaryStatementController;
 import controller.UserController;
 import database.DBClinReason;
-import database.DBList;
 import net.casus.util.CasusConfiguration;
 import net.casus.util.StringUtilities;
-import net.casus.util.Utility;
-import net.casus.util.io.IOUtilities;
-import net.casus.util.nlp.spacy.SpacyStructureStats;
 import util.CRTLogger;
 
 /**

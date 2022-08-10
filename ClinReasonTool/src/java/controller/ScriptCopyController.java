@@ -11,6 +11,7 @@ import beans.relation.summary.*;
 import beans.scripts.PatientIllnessScript;
 import beans.scripts.VPScriptRef;
 import database.*;
+import properties.IntlConfiguration;
 import beans.list.*;
 import util.CRTLogger;
 import util.StringUtilities;
@@ -44,6 +45,7 @@ public class ScriptCopyController {
 		copyScript(newVPId);
 	}
 	
+	
 	/**
 	 * Triggering of map copying via an API (edit/copyscript.xhtml is called)
 	 */
@@ -71,6 +73,54 @@ public class ScriptCopyController {
 	}
 	public void copyExpScript() {
 		getCopyExpScript();
+	}
+	
+	/**
+	 * We check whether all items are there and the case is ready for translation, if items are missing in the target language we return 
+	 * a message.
+	 * @return
+	 */
+	public String checkExpMap(){
+		String orgVpId = AjaxController.getInstance().getRequestParamByKey("org_vp_id");
+		if(orgVpId.indexOf("_")<=0) orgVpId = orgVpId+"_2";
+
+		orgScript = new DBClinReason().selectExpertPatIllScriptByVPId(orgVpId);
+		if(orgScript == null|| orgScript.getType()!=PatientIllnessScript.TYPE_EXPERT_CREATED) return "Map is null";
+		
+		String langNew = AjaxController.getInstance().getRequestParamByKey(AjaxController.REQPARAM_SCRIPTLOC);
+		StringBuffer sb = new StringBuffer();
+		
+		if(orgScript.getProblems()!=null){
+			for(int i=0;i<orgScript.getProblems().size();i++){
+				sb.append(checkItemsTranslation(orgScript.getProblems().get(i).getListItem().getFirstCode(), langNew));
+			}
+		}
+		if(orgScript.getDiagnoses()!=null){
+			for(int i=0;i<orgScript.getDiagnoses().size();i++){
+				sb.append(checkItemsTranslation(orgScript.getDiagnoses().get(i).getListItem().getFirstCode(), langNew));			
+			}
+		}
+		if(orgScript.getTests()!=null){
+			for(int i=0;i<orgScript.getTests().size();i++){
+				sb.append(checkItemsTranslation(orgScript.getTests().get(i).getListItem().getFirstCode(), langNew));			
+			}
+		}
+		if(orgScript.getMngs()!=null){
+			for(int i=0;i<orgScript.getMngs().size();i++){
+				sb.append(checkItemsTranslation(orgScript.getMngs().get(i).getListItem().getFirstCode(), langNew));			
+			}
+		}
+		if(sb.toString().trim().equals("")) return "check ok"; 
+		return sb.toString();
+		
+	}
+	
+	private String checkItemsTranslation(String code, String lang){
+		Locale loc = new Locale(lang);
+		ListItem li = new DBList().selectListItemByCode(code, loc);//getListItem(rel.getProblem().getFirstCode());
+		if(li==null) return "Item with code " + code + " missing; ";
+		return "";
+		
 	}
 
 	
@@ -150,7 +200,7 @@ public class ScriptCopyController {
 		createVPScriptRef(newScript);
 		if(orgScript.getProblems()!=null){
 			for(int i=0;i<orgScript.getProblems().size();i++){
-				copyAndTranslateProblem(orgScript.getProblems().get(i));
+				copyAndTranslateProblem(orgScript.getProblems().get(i), newLang);
 			}
 		if(orgScript.getDiagnoses()!=null){
 			for(int i=0;i<orgScript.getDiagnoses().size();i++){
@@ -166,7 +216,8 @@ public class ScriptCopyController {
 			for(int i=0;i<orgScript.getMngs().size();i++){
 				copyAndTranslateManagements(orgScript.getMngs().get(i));
 			}
-		}						
+		}		
+		//TODO new items for nursing etc...
 			copyConnections();	
 			copySummStatement();
 		}
@@ -226,8 +277,8 @@ public class ScriptCopyController {
 		
 	}
 	
-	private static Relation copyAndTranslateProblem(RelationProblem rel){
-		RelationProblem newRel = (RelationProblem) copyBasicData(new RelationProblem(), rel);
+	private static Relation copyAndTranslateProblem(RelationProblem rel, String newLang){
+		RelationProblem newRel = (RelationProblem) copyBasicData(new RelationProblem(), rel, newLang);
 		
 		ListItem li = getListItem(rel.getProblem().getFirstCode());
 		
@@ -361,15 +412,23 @@ public class ScriptCopyController {
 		
 	}
 	
-	private static Relation copyBasicData(Relation newRel, Relation orgRel){
+	private static Relation copyBasicData(Relation newRel, Relation orgRel) {
+		return copyBasicData(newRel, orgRel, null);
+	}
+	private static Relation copyBasicData(Relation newRel, Relation orgRel, String newLang){
 		newRel.setDestId(newScript.getId());
 		newRel.setX(orgRel.getX());
 		newRel.setY(orgRel.getY());
 		newRel.setStage(orgRel.getStage());
 		newRel.setOrder(orgRel.getOrder());
-		//CAVE prefixes need to be translated, too
+		if(newLang == null) newRel.setPrefix(orgRel.getPrefix()); //just copy prefix, no translation needed here  
+		else if(newLang!=null && orgRel.getPrefix()!=null && !orgRel.getPrefix().trim().equals("")) { //translate & copy prefix
+			newRel.setPrefix(IntlConfiguration.getValue("prefix.negation", new Locale(newLang)));
+		}
 		return newRel;
 	}
+	
+	
 	
 	/**
 	 * select the ListItem with the given code in the language of the new map

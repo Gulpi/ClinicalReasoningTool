@@ -255,5 +255,5 @@ public abstract class Relation extends Beans implements Rectangle{
 		return getIsSyndromePart();
 		
 	}
-
+	
 }

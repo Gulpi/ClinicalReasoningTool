@@ -24,6 +24,8 @@ public class AjaxController {
 	public static final String REQPARAM_CHARTTYPE = "chart_type";	//see LearningAnalyticsContainer
 	public static final String REQPARAM_CHARTSIZE = "chart_size"; //sm or lg
 	public static final String REQPARAM_SEARCHTERM = "search";	//searchterm
+	public static final String REQPARAM_TERM = "term";	//term to be addedv
+	public static final String REQPARAM_CODE = "code";
 	public static final String REQPARAM_SECRET = "secret";	//a shared secret is included in the query
 	//public static final String REQPARAM_ENCODED = "encoded"; //are the query params encoded (true | false)
 	public static final String REQPARAM_SYSTEM = "system_id"; //are the query params encoded (true | false)

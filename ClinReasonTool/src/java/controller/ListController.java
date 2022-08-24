@@ -47,8 +47,7 @@ public class ListController {
 		}
 		if(results!=null) resultCount = results.size();
 		if(results==null || results.size()>MAX_RESULTS) return null;
-		
-		
+				
 		return results;
 	}
 	
@@ -84,5 +83,32 @@ public class ListController {
 		}
 		
 		return joinedList;
+	}
+	
+	/**
+	 * If terms are added in one language to the database we can use this method to add this term also in all other languages via an interface.
+	 * @param lang
+	 * @param code
+	 * @param term
+	 */
+	public void createItemForCode(String lang, String code, String term) {
+		DBList dbl = new DBList();
+		List<ListItem> termsForCode =  dbl.selectListItemsByCode(code);
+		if(termsForCode==null || termsForCode.isEmpty() || term==null || term.trim().equals("")) return;  //code has not yet been entered into system, so we cannot copy needed data. 
+		for(int i=0;i<termsForCode.size();i++) {
+			ListItem l = termsForCode.get(i);
+			if(l.getFirstCode().equals(code) && l.getLanguage().getLanguage().equals(lang)) 
+				return; //for given language and code a term has already been entered, so we do nothing!
+		}
+		String source = ((ListItem) termsForCode.get(0)).getSource(); //it does not matter which of the existing items we take, so just take the first one in the list. 
+		ListItem li = new ListItem(lang, source, term); 
+		li.setLevel(((ListItem) termsForCode.get(0)).getLevel());
+		li.setItemType(((ListItem) termsForCode.get(0)).getItemType());
+		li.setCategory(((ListItem) termsForCode.get(0)).getCategory());
+		li.setMesh_id(((ListItem) termsForCode.get(0)).getMesh_id());
+		li.setNursing(((ListItem) termsForCode.get(0)).getNursing());
+		li.setFirstCode(code);
+		dbl.saveAndCommit(li);
+		
 	}
 }

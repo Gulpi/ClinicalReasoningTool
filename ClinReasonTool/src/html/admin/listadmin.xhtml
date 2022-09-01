@@ -62,7 +62,7 @@ Results:<br/>
 <h:form id="add_form">
 Add item:<br/>
 Code: <input type="text" id="code" name="code"></input>, Language: <select name="locale" id="locale"><option value="de">de</option><option value="en">en</option><option value="es">es</option><option value="pl">pl</option><option value="fr">fr</option><option value="pt">pt</option><option value="uk">uk</option></select>
-Term: <input type="text" id="term" name= "term"></input><br/>
+Term: <input type="text" id="term" name= "term"></input> Syonym: <input type="checkbox" name="issyn" id="issyn" value="true"></input><br/>
 <h:commandButton id="addButton" value="#{prop['submit']}" action="#{adminContext.getAddTermForCode}" />
 
 <!-- <h:commandButton id="addButton" value="Add" >

@@ -2,6 +2,8 @@ package controller;
 
 import java.util.*;
 
+import org.hibernate.Session;
+
 import beans.list.*;
 import database.DBList;
 
@@ -109,6 +111,23 @@ public class ListController {
 		li.setNursing(((ListItem) termsForCode.get(0)).getNursing());
 		li.setFirstCode(code);
 		dbl.saveAndCommit(li);
+		
+	}
+	
+	/**
+	 * If terms are added in one language to the database we can use this method to add this term also in all other languages via an interface.
+	 * @param lang
+	 * @param code
+	 * @param term
+	 */
+	public void createSynonymForCode(String lang, String code, String term) {
+		DBList dbl = new DBList();
+		ListItem termForCode =  dbl.selectListItemByCode( code, new Locale(lang)); //this is the main term, if null, we return. 
+		if(termForCode==null) return; //main term not found, so we cannot add a synonym! 
+		Synonym s = new Synonym(new Locale(lang), term);
+		s.setListItemId(termForCode.getItem_id());
+				
+		dbl.saveAndCommit(s);
 		
 	}
 }

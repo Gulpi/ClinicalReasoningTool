@@ -287,7 +287,11 @@ public class AdminFacesContext extends FacesContextWrapper implements MyFacesCon
 		String term =  AjaxController.getInstance().getRequestParamByKeyNoDecrypt(AjaxController.REQPARAM_TERM);
 		String code =  AjaxController.getInstance().getRequestParamByKeyNoDecrypt(AjaxController.REQPARAM_CODE);
 		String secret = AjaxController.getInstance().getRequestParamByKeyNoDecrypt(AjaxController.REQPARAM_SECRET);
+		String isSyn = AjaxController.getInstance().getRequestParamByKeyNoDecrypt(AjaxController.REQPARAM_ISSYN);
 		//if(AjaxController.getInstance().isValidSharedSecret(secret))
+		if(isSyn!=null && isSyn.trim().equalsIgnoreCase("true"))
+			new ListController().createSynonymForCode(lang, code, term);
+		else
 			new ListController().createItemForCode(lang, code, term);
 		//return "";
 	}

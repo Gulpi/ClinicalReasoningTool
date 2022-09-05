@@ -330,7 +330,7 @@ public class AdminFacesContext extends FacesContextWrapper implements MyFacesCon
 	public void setContxts(ContextContainer contxts) {this.contxts = contxts;}
 	
 	/**
-	 * call e.g. with #{adminContext.getMyListUrl("standard","",adminContext.locale)}
+	 * call e.g. with #{adminContext.getMyListUrl("standard",adminContext.patillscript.locale)}
 	 * 
 	 * @param type
 	 * @param subtpye

@@ -567,7 +567,7 @@ public class CRTFacesContext extends FacesContextWrapper implements MyFacesConte
 	public void setContxts(ContextContainer contxts) {this.contxts = contxts;}
 	
 	/**
-	 * call e.g. with #{crtContext.getMyListUrl("standard","",adminContext.locale)}
+	 * call e.g. with #{crtContext.getMyListUrl("standard",crtContext.patillscript.locale)}
 	 * 
 	 * @param type
 	 * @param subtpye

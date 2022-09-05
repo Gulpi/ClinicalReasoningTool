@@ -12,6 +12,7 @@ import application.AppBean;
 import application.Monitor;
 import beans.graph.Graph;
 import beans.list.ListInterface;
+import beans.list.ListItem;
 import beans.scoring.*;
 import beans.scripts.*;
 import beans.user.Auth;
@@ -19,6 +20,7 @@ import beans.user.SessionSetting;
 import beans.user.User;
 import controller.*;
 import database.DBContext;
+import database.DBList;
 import net.casus.util.Utility;
 import util.CRTLogger;
 import util.StringUtilities;
@@ -255,19 +257,43 @@ public class AdminFacesContext extends FacesContextWrapper implements MyFacesCon
 	 */
 	public List<ListInterface> getRecreateList(){
 		ServletContext context = (ServletContext) FacesContext.getCurrentInstance().getExternalContext().getContext();
-		new JsonCreator().initJsonExport(context);
+		String secret = AjaxController.getInstance().getRequestParamByKeyNoDecrypt(AjaxController.REQPARAM_SECRET);
+		//if(AjaxController.getInstance().isValidSharedSecret(secret))
+			new JsonCreator().initJsonExport(context);
 		
 		return null;
 	}
 	
-	public List<ListInterface> getSearchedListItems(){
-		ListController lc = new ListController();
-		String mode =  AjaxController.getInstance().getRequestParamByKeyNoDecrypt(AjaxController.REQPARAM_SEARCH_MODE);
-		String lang =  AjaxController.getInstance().getRequestParamByKeyNoDecrypt(AjaxController.REQPARAM_LOC);
+	/**
+	 * We search for a code and return terms which are in the database
+	 * @return
+	 */
+	public List<ListItem> getSearchedListItems(){
+		//ListController lc = new ListController();
+		//String mode =  AjaxController.getInstance().getRequestParamByKeyNoDecrypt(AjaxController.REQPARAM_SEARCH_MODE);
+		//String lang =  AjaxController.getInstance().getRequestParamByKeyNoDecrypt(AjaxController.REQPARAM_LOC);
 		String searchterm =  AjaxController.getInstance().getRequestParamByKeyNoDecrypt(AjaxController.REQPARAM_SEARCHTERM);
-		
-		List<ListInterface> items = lc.getListItems(lang, searchterm, mode);
-		return items;		 
+		String secret = AjaxController.getInstance().getRequestParamByKeyNoDecrypt(AjaxController.REQPARAM_SECRET);
+		//if(AjaxController.getInstance().isValidSharedSecret(secret))
+			return new DBList().selectListItemsByCode(searchterm);
+		//return items;		 
+	}
+	
+	/**
+	 * We add a term in a new language for a given code to the database 
+	 */
+	public void getAddTermForCode() {
+		String lang =  AjaxController.getInstance().getRequestParamByKeyNoDecrypt(AjaxController.REQPARAM_LOC);
+		String term =  AjaxController.getInstance().getRequestParamByKeyNoDecrypt(AjaxController.REQPARAM_TERM);
+		String code =  AjaxController.getInstance().getRequestParamByKeyNoDecrypt(AjaxController.REQPARAM_CODE);
+		String secret = AjaxController.getInstance().getRequestParamByKeyNoDecrypt(AjaxController.REQPARAM_SECRET);
+		String isSyn = AjaxController.getInstance().getRequestParamByKeyNoDecrypt(AjaxController.REQPARAM_ISSYN);
+		//if(AjaxController.getInstance().isValidSharedSecret(secret))
+		if(isSyn!=null && isSyn.trim().equalsIgnoreCase("true"))
+			new ListController().createSynonymForCode(lang, code, term);
+		else
+			new ListController().createItemForCode(lang, code, term);
+		//return "";
 	}
 	
 	public SessionSetting getSessSetting(){ 

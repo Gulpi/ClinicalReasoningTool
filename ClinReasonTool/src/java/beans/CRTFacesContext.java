@@ -428,6 +428,10 @@ public class CRTFacesContext extends FacesContextWrapper implements MyFacesConte
 		return true;
 	}
 	
+	/**
+	 * Loads the expert script and also sets the types of boxes and the language from it. 
+	 * @param setMaxStage
+	 */
 	private void loadExpScripts(boolean setMaxStage){
 		if(patillscript==null) return;
 		AppBean app = getAppBean();
@@ -436,6 +440,12 @@ public class CRTFacesContext extends FacesContextWrapper implements MyFacesConte
 		if(setMaxStage && patillscript.getMaxSubmittedStage()<=0 && expScript!=null){
 			patillscript.setMaxSubmittedStage(expScript.getMaxSubmittedStage());
 			patillscript.save();
+			//we do this here now instead of getting it from the session url as this should not be different from the expert map:
+			patillscript.setBox1Type(expScript.getBox1Type());
+			patillscript.setBox2Type(expScript.getBox2Type());
+			patillscript.setBox3Type(expScript.getBox3Type());
+			patillscript.setBox4Type(expScript.getBox4Type());
+			patillscript.setLocale(expScript.getLocale());
 		}
 	    
 		// app.addIllnessScriptForDiagnoses(patillscript.getDiagnoses(), patillscript.getVpId());

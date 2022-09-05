@@ -137,7 +137,7 @@ function genericCreateAutocompleteWithoutList(in_id, in_listUrl) {
 		in_id = "" + in_id;
 	}
 	var in_bind = "enter" + ((in_id && in_id.length>0) ? in_id.charAt(0).toUpperCase() + in_id.slice(1) : in_id);
-	if (in_id=="problems") 	{ in_bind = "enterProb"; }
+	 /*if (in_id=="problems") 	{ in_bind = "enterProb"; }
 	else if (in_id=="ddx") 	{ in_bind = "enterDDX"; }
 	else if (in_id=="tests") {in_bind = "enterTest"; }
 	else if (in_id=="patho") {in_bind = "enterPatho"; }
@@ -147,12 +147,14 @@ function genericCreateAutocompleteWithoutList(in_id, in_listUrl) {
 	else if (in_id=="info") {}
 	else if (in_id=="naim") {}
 	else if (in_id=="act_search") { in_bind = "enterActor";}
-	else if (in_id=="ctxt_search") { in_bind = "enterContext"; }
+	else if (in_id=="ctxt_search") { in_bind = "enterContext"; }*/
 	
+	// define new event, that's why name (in_bind) is not as crocial'
 	$("#" + in_id).bind(in_bind, function(e) {
 		addContext(-999, "-999", $("#" + in_id).val());	 
     });
     
+    // now trigge the event!
     $("#" + in_id).keyup(function(e){
 		if(e.keyCode == 13 && in_listUrl=="") {
 			$(this).trigger(in_bind);

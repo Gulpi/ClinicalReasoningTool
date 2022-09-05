@@ -145,13 +145,16 @@ public class DBList extends DBClinReason {
      * Loads ListItems for the given types. CAVE: This returns lots of items, only call during init of application 
      * or for testing!
      * professionType: 0 = Medicine, 1 = Nursing
+     * professionVariant added for future use with special lists, not yet used but already prepared
      * @param types
      * @return
      */
-    public List<ListItem> selectListItemsByTypesAndLang(Locale loc, String[] types, int professionType){
+    public List<ListItem> selectListItemsByTypesAndLang(Locale loc, String[] types, int professionType, int professionVariant){
     	Session s = instance.getInternalSession(Thread.currentThread(), false);
     	Criteria criteria = s.createCriteria(ListItem.class,"ListItem");
-    	criteria.add(Restrictions.in("itemType", types));
+    	if (types != null && types.length>0 ) {
+    		criteria.add(Restrictions.in("itemType", types));
+    	}
     	criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
     	criteria.add(Restrictions.eq("language", loc));
     	//do NOT include items that have been added by learners:
@@ -171,6 +174,7 @@ public class DBList extends DBClinReason {
      * professionType: 0 = Medicine, 1 = Nursing
      * @param types
      * @return
+     * @deprecated please us selectListItemsByTypesAndLang above with types == null!
      */
     public List<ListItem> selectListItemsByProfessionAndLang(Locale loc, int professionType){
     	Session s = instance.getInternalSession(Thread.currentThread(), false);

@@ -81,7 +81,7 @@ var exact_item_value = "";
 	go thru and init autocomplete
  */
 function loadListAndAssign(key, list) {
-	if (key && key != "") {
+	if (key && key != "" && key != "#") {
 		$.ajax({ //list for problems (list view)
 			url: key, // url: listNursingUrl,
 			dataType: "json",
@@ -90,6 +90,13 @@ function loadListAndAssign(key, list) {
 					loop = list[i];
 					console.log("list.js: " + key + " -> " + loop);
 					genericCreateAutocomplete(loop, data);
+				}
+			},
+			error: function (jqXHR) {
+    			for (let i = 0; i < list.length; i++) {
+					loop = list[i];
+					console.log("list.js: " + key + " -> " + loop);
+					genericCreateAutocompleteWithoutList(loop, key);
 				}
 			}
 		});
@@ -126,7 +133,10 @@ function genericAddItem(ui, id) {
  */
 function genericCreateAutocompleteWithoutList(in_id, in_listUrl) {
 	// lookup parameters by id!
-	var in_bind = "";
+	if (typeof in_id !== 'string') {
+		in_id = "" + in_id;
+	}
+	var in_bind = "enter" + ((in_id && in_id.length>0) ? in_id.charAt(0).toUpperCase() + in_id.slice(1) : in_id);
 	if (in_id=="problems") 	{ in_bind = "enterProb"; }
 	else if (in_id=="ddx") 	{ in_bind = "enterDDX"; }
 	else if (in_id=="tests") {in_bind = "enterTest"; }

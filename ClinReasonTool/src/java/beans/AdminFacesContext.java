@@ -330,14 +330,14 @@ public class AdminFacesContext extends FacesContextWrapper implements MyFacesCon
 	public void setContxts(ContextContainer contxts) {this.contxts = contxts;}
 	
 	/**
-	 * call e.g. with #{adminContext.getMyList("standard","",adminContext.locale)}
+	 * call e.g. with #{adminContext.getMyListUrl("standard","",adminContext.locale)}
 	 * 
 	 * @param type
 	 * @param subtpye
 	 * @param loc
 	 * @return
 	 */
-	public String getMyList(String type, String lang) {
+	public String getMyListUrl(String type, String lang) {
 		return JsonCreator.getDisplayListName("edit", type, lang);
 	}
 	

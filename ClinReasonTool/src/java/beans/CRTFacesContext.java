@@ -567,14 +567,14 @@ public class CRTFacesContext extends FacesContextWrapper implements MyFacesConte
 	public void setContxts(ContextContainer contxts) {this.contxts = contxts;}
 	
 	/**
-	 * call e.g. with #{crtContext.getMyList("standard","",adminContext.locale)}
+	 * call e.g. with #{crtContext.getMyListUrl("standard","",adminContext.locale)}
 	 * 
 	 * @param type
 	 * @param subtpye
 	 * @param loc
 	 * @return
 	 */
-	public String getMyList(String type, String lang) {
+	public String getMyListUrl(String type, String lang) {
 		return JsonCreator.getDisplayListName("view", type, lang);
 	}
 }

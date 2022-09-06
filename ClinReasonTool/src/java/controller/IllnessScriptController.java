@@ -67,7 +67,9 @@ public class IllnessScriptController implements Serializable{
 		if(vpId==null || userId<=0) return null;
 
 		checkAndSetDeleteFlagOfOldSCriptsAndScore(userId, vpId, systemId);
-		Locale loc = LocaleController.getInstance().getScriptLocale();//FacesContext.getCurrentInstance().getApplication().getViewHandler().calculateLocale(FacesContext.getCurrentInstance());
+		//better would be to get the language from the expert script in case the case language has been changed for any reason -> 
+		//so we reset the locale when we have loaded the expert script!
+		Locale loc = LocaleController.getInstance().getScriptLocale();
 		PatientIllnessScript patillscript = new PatientIllnessScript( userId, vpId, loc, systemId);
 		patillscript.setExtUId(extUId);
 		patillscript.setSessionId(extUId);

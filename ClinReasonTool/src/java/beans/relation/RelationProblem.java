@@ -78,7 +78,8 @@ public class RelationProblem extends Relation implements Serializable{
 			String postStr = "";
 			if(this.getIsSyndrome()==1) postStr = " (Syndrome)";
 			if(getSynId()<=0) return problem.getName() + postStr;
-			else return getSynonym().getName() + postStr;
+			else  return getSynonym().getName() + postStr;
+			//else return "";
 		}
 		catch(Exception e) {
 			CRTLogger.out(Utility.stackTraceToString(e), CRTLogger.LEVEL_ERROR);

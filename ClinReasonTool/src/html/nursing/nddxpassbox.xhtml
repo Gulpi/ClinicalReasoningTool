@@ -4,10 +4,10 @@
     xmlns:ui="http://java.sun.com/jsf/facelets"
     xmlns:f="http://java.sun.com/jsf/core">
 
- 	<div id="mng_#{passmng.id}"  class="passmngs passbox passboxinvis row2" mytooltip="#{passmng.labelOrSynLabel}" style="left:#{passmng.x}px; top:#{passmng.boxY}px;"> 
- 		#{passmng.shortLabelOrSynShortLabel}
+ 	<div id="nddx_#{passnddx.id}"  class="passnddxs passbox passboxinvis row1 nddxclass_#{passnddx.expCssClass}" mytooltip="#{passnddx.labelOrSynLabel}" style="left:#{passnddx.x}px; top:#{passnddx.boxY}px;"> 
+ 		#{passnddx.shortLabelOrSynShortLabel}
   	 	 <script language="Javascript">
-  	 		if(mngBoxMode==2) pass_arr.push("mng_#{passmng.id}");
+  	 		if(nddxBoxMode==2) pass_arr.push("nddx_#{passnddx.id}");
  		</script>
  		<div class="icons_exp"><i class="fa fa-user-md"></i></div>
  	</div>

@@ -891,15 +891,15 @@ function turnOverallExpFeedbackOn(iconId, itemClass){
 	$(".expbox").addClass("expboxstatus_show");
 	$(".expbox").removeClass("expboxstatus");
 	$(".expbox").removeClass("expboxinvis");
-	if(probBoxUsed==1)turnExpBoxFeedbackOn("expFeedbackFdg", "fdgs");
-	if(ddxBoxUsed==1) turnExpBoxFeedbackOn("expFeedbackDDX", "ddxs");
-	if(testBoxUsed==1)turnExpBoxFeedbackOn("expFeedbackTest", "tests");
-	if(pathoBoxUsed==1)turnExpBoxFeedbackOn("expFeedbackPatho", "patho");
-	if(mngBoxUsed==1)turnExpBoxFeedbackOn("expFeedbackMng", "mngs");
-	if(nmngBoxUsed==1)turnExpBoxFeedbackOn("expFeedbackNmng", "nmng");
-	if(ddxBoxUsed==1)turnExpBoxFeedbackOn("expFeedbackNddx", "nddx");
-	if(infoBoxUsed==1)turnExpBoxFeedbackOn("expFeedbackInfo", "info");
-	if(naimBoxUsed==1)turnExpBoxFeedbackOn("expFeedbackNaim", "naim");
+	if(probBoxMode==1)turnExpBoxFeedbackOn("expFeedbackFdg", "fdgs");
+	if(ddxBoxMode==1) turnExpBoxFeedbackOn("expFeedbackDDX", "ddxs");
+	if(testBoxMode==1)turnExpBoxFeedbackOn("expFeedbackTest", "tests");
+	if(pathoBoxMode==1)turnExpBoxFeedbackOn("expFeedbackPatho", "patho");
+	if(mngBoxMode==1)turnExpBoxFeedbackOn("expFeedbackMng", "mngs");
+	if(nmngBoxMode==1)turnExpBoxFeedbackOn("expFeedbackNmng", "nmng");
+	if(ddxBoxMode==1)turnExpBoxFeedbackOn("expFeedbackNddx", "nddx");
+	if(infoBoxMode==1)turnExpBoxFeedbackOn("expFeedbackInfo", "info");
+	if(naimBoxMode==1)turnExpBoxFeedbackOn("expFeedbackNaim", "naim");
 	if(isOverallCnxOn()){
 		$(".jtk-exp-connector").addClass("jtk-exp-connector-show");
 		$(".jtk-exp-connector").removeClass("jtk-exp-connector-hide");
@@ -938,29 +938,29 @@ function turnViewModeBoxOff(box, prefix, prefix2){
  * if boxes are displayed in view mode we show the expert items and hide the search box.
  */
 function turnViewModeOn(){
-	turnViewModeBoxOn(probBoxUsed, "fdg", "prob");
-	turnViewModeBoxOn(ddxBoxUsed, "ddx", "ddx");
-	turnViewModeBoxOn(testBoxUsed, "test", "test");
-	turnViewModeBoxOn(pathoBoxUsed, "patho", "pat");
-	turnViewModeBoxOn(mngBoxUsed, "mng", "mng");
-	turnViewModeBoxOn(nmngBoxUsed, "nmng", "nmng");
-	turnViewModeBoxOn(nddxBoxUsed, "nddx", "nddx");
-	turnViewModeBoxOn(naimBoxUsed, "naim", "naim");
-	turnViewModeBoxOn(infoBoxUsed, "info", "info");
+	turnViewModeBoxOn(probBoxMode, "fdg", "prob");
+	turnViewModeBoxOn(ddxBoxMode, "ddx", "ddx");
+	turnViewModeBoxOn(testBoxMode, "test", "test");
+	turnViewModeBoxOn(pathoBoxMode, "patho", "pat");
+	turnViewModeBoxOn(mngBoxMode, "mng", "mng");
+	turnViewModeBoxOn(nmngBoxMode, "nmng", "nmng");
+	turnViewModeBoxOn(nddxBoxMode, "nddx", "nddx");
+	turnViewModeBoxOn(naimBoxMode, "naim", "naim");
+	turnViewModeBoxOn(infoBoxMode, "info", "info");
 
 
 }
 
 function turnViewModeOff(){
-	turnViewModeBoxOff(probBoxUsed, "fdg", "prob");
-	turnViewModeBoxOff(ddxBoxUsed, "ddx", "ddx");
-	turnViewModeBoxOff(testBoxUsed, "test", "tst");
-	turnViewModeBoxOff(pathoBoxUsed, "patho", "pat");
-	turnViewModeBoxOff(mngBoxUsed, "mng", "mng");
-	turnViewModeBoxOff(nmngBoxUsed, "nmng", "nmng");
-	turnViewModeBoxOff(nddxBoxUsed, "nddx", "nddx");
-	turnViewModeBoxOff(infoBoxUsed, "info", "info");
-	turnViewModeBoxOff(naimBoxUsed, "naim", "naim");
+	turnViewModeBoxOff(probBoxMode, "fdg", "prob");
+	turnViewModeBoxOff(ddxBoxMode, "ddx", "ddx");
+	turnViewModeBoxOff(testBoxMode, "test", "tst");
+	turnViewModeBoxOff(pathoBoxMode, "patho", "pat");
+	turnViewModeBoxOff(mngBoxMode, "mng", "mng");
+	turnViewModeBoxOff(nmngBoxMode, "nmng", "nmng");
+	turnViewModeBoxOff(nddxBoxMode, "nddx", "nddx");
+	turnViewModeBoxOff(infoBoxMode, "info", "info");
+	turnViewModeBoxOff(naimBoxMode, "naim", "naim");
 }
 
 function turnOverallExpFeedbackOff(iconId, itemClass){

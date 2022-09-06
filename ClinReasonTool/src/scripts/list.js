@@ -13,6 +13,14 @@ var map_autocomplete_instance = null;
 var minLengthTypeAhead = 3;
 
 var isSuccess = false;
+var list_js_cosole_log_master = true;
+
+function list_js_console_log(msg) {
+	if (list_js_cosole_log_master) {
+		try { console.log("list.js: " + msg); } catch(x) {};
+	}
+	
+}
 
 /** init the lists for selecting problems, diagnoses etc.*/
 $(function() {
@@ -28,7 +36,8 @@ $(function() {
 	$(".search input.f_text").each(function(index, value) {
   		var my_id = $(this).attr("id");
     	var my_url = $(this).attr("listUrl");
-    	if (my_url) {
+    	list_js_console_log("my_id:<" + my_id + ">; my_url:<" + my_url + ">");
+    	if (my_url || my_url=="") {
 			if (!inputUrls[my_url]) {
 				inputUrls[my_url] = new Array();
 			}
@@ -88,14 +97,14 @@ function loadListAndAssign(key, list) {
 			success: function( data ) {
 				for (let i = 0; i < list.length; i++) {
 					loop = list[i];
-					console.log("list.js: " + key + " -> " + loop);
+					list_js_console_log(key + " -> " + loop);
 					genericCreateAutocomplete(loop, data);
 				}
 			},
 			error: function (jqXHR) {
     			for (let i = 0; i < list.length; i++) {
 					loop = list[i];
-					console.log("list.js: " + key + " -> " + loop);
+					list_js_console_log(key + " -> " + loop);
 					genericCreateAutocompleteWithoutList(loop, key);
 				}
 			}
@@ -104,7 +113,7 @@ function loadListAndAssign(key, list) {
 	else {
 		for (let i = 0; i < list.length; i++) {
 			loop = list[i];
-			console.log("list.js: " + key + " -> " + loop);
+			list_js_console_log(key + " -> " + loop);
 			genericCreateAutocompleteWithoutList(loop, key);
 		}
 	}
@@ -115,17 +124,25 @@ function loadListAndAssign(key, list) {
  */
 function genericAddItem(ui, id) {
 	// choose correct add??? function by id!
-	if (id=="problems") { 	addProblem(ui.item.value, ui.item.label, $("#" + id).val());}
-	else if (id=="ddx") { 	addDiagnosis(ui.item.value, ui.item.label, $("#" + id).val()); }
-	else if (id=="tests") { addTest(ui.item.value, ui.item.label, $("#" + id).val()); }
-	else if (id=="patho") { addPatho(ui.item.value, ui.item.label, $("#" + id).val()); }
-	else if (id=="mng") { 	addManagement(ui.item.value, ui.item.label, $("#" + id).val()); }
-	else if (id=="nddx") { 	addItem(ui.item.value, ui.item.label,  $("#" + id).val(), "Nddx"); }
-	else if (id=="nmng") { 	addItem(ui.item.value, ui.item.label,  $("#" + id).val(), "Mmng"); }
-	else if (id=="info") { 	addItem(ui.item.value, ui.item.label,  $("#" + id).val(), "Info"); }
-	else if (id=="naim") { 	addItem(ui.item.value, ui.item.label,  $("#" + id).val(), "Naim"); }
-	else if (id=="act_search") { addActor(ui.item.value, ui.item.label,  $("#" + id).val()); }
-	else if (id=="ctxt_search") { addContext(ui.item.value, ui.item.label,  $("#" + id).val()); }
+	genericAddItemByValueAndLabel(ui.item.value, ui.item.label, id);
+}
+
+/**
+	add item by id -> uses either specific add<> method or generic addItem
+ */
+function genericAddItemByValueAndLabel(item_value,item_label, id) {
+	// choose correct add??? function by id!
+	if (id=="problems") { 	addProblem(item_value, item_label, $("#" + id).val());}
+	else if (id=="ddx") { 	addDiagnosis(item_value,item_label, $("#" + id).val()); }
+	else if (id=="tests") { addTest(item_value, item_label, $("#" + id).val()); }
+	else if (id=="patho") { addPatho(item_value, item_label, $("#" + id).val()); }
+	else if (id=="mng") { 	addManagement(item_value, item_label, $("#" + id).val()); }
+	else if (id=="nddx") { 	addItem(item_value, item_label,  $("#" + id).val(), "Nddx"); }
+	else if (id=="nmng") { 	addItem(item_value, item_label,  $("#" + id).val(), "Mmng"); }
+	else if (id=="info") { 	addItem(item_value, item_label,  $("#" + id).val(), "Info"); }
+	else if (id=="naim") { 	addItem(item_value, item_label,  $("#" + id).val(), "Naim"); }
+	else if (id=="act_search") { addActor(item_value, item_label,  $("#" + id).val()); }
+	else if (id=="ctxt_search") { addContext(item_value, item_label,  $("#" + id).val()); }
 }
 
 /**
@@ -137,21 +154,9 @@ function genericCreateAutocompleteWithoutList(in_id, in_listUrl) {
 		in_id = "" + in_id;
 	}
 	var in_bind = "enter" + ((in_id && in_id.length>0) ? in_id.charAt(0).toUpperCase() + in_id.slice(1) : in_id);
-	 /*if (in_id=="problems") 	{ in_bind = "enterProb"; }
-	else if (in_id=="ddx") 	{ in_bind = "enterDDX"; }
-	else if (in_id=="tests") {in_bind = "enterTest"; }
-	else if (in_id=="patho") {in_bind = "enterPatho"; }
-	else if (in_id=="mng") { in_bind = "enterMng"; }
-	else if (in_id=="nddx") {}
-	else if (in_id=="nmng") {}
-	else if (in_id=="info") {}
-	else if (in_id=="naim") {}
-	else if (in_id=="act_search") { in_bind = "enterActor";}
-	else if (in_id=="ctxt_search") { in_bind = "enterContext"; }*/
-	
 	// define new event, that's why name (in_bind) is not as crocial'
 	$("#" + in_id).bind(in_bind, function(e) {
-		addContext(-999, "-999", $("#" + in_id).val());	 
+		genericAddItemByValueAndLabel(-999, "-999", in_id);	 
     });
     
     // now trigge the event!

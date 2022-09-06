@@ -402,7 +402,7 @@ Stage: <span id="stageSpan">#{adminContext.patillscript.stage}(#{adminContext.pa
 		  		<div id="nddx_title" mytooltip="#{prop['nddx.search']}" class="title">#{prop['nddx']}
 		  		<div class="search  boxchild">
 		  			<i class="fa fa-search ininput nddxsearch"></i>
-		  			<input class="f_text nddxsearch" onkeyup="javascript:storeHistory('nddx');" onFocus="javascript:hideTooltips();"  placeholder="#{prop['nddx.add']} ..." id="nddx" mytooltip="#{prop['nddx.search']}" listUrl="../jsonp_n_#{adminContext.patillscript.locale}.json"></input>
+		  			<input class="f_text nddxsearch" onkeyup="javascript:storeHistory('nddx');" onFocus="javascript:hideTooltips();"  placeholder="#{prop['nddx.add']} ..." id="nddx" mytooltip="#{prop['nddx.search']}" listUrl="#{adminContext.getMyListUrl(&quot;nursing&quot;,adminContext.patillscript.locale)}" ></input>
 		  		</div>
 		  			<h:form id="nddxform">
 		  			<h:panelGroup>
@@ -424,7 +424,7 @@ Stage: <span id="stageSpan">#{adminContext.patillscript.stage}(#{adminContext.pa
 		  		<div id="naim_title" mytooltip="#{prop['naim.search']}" class="title">#{prop['naims']}
 		  		<div class="search  boxchild">
 		  			<i class="fa fa-search ininput naimgsearch"></i>
-		  			<input class="f_text naimsearch" onkeyup="javascript:storeHistory('naim');" onFocus="javascript:hideTooltips();"  placeholder="#{prop['naim.add']} ..." id="naim" mytooltip="#{prop['naim.search']}"></input>
+		  			<input class="f_text naimsearch" onkeyup="javascript:storeHistory('naim');" onFocus="javascript:hideTooltips();"  placeholder="#{prop['naim.add']} ..." id="naim" mytooltip="#{prop['naim.search']}" listUrl=""></input>
 		  		</div>
 		  			<h:form id="naimform">
 		  			<h:panelGroup>
@@ -445,7 +445,7 @@ Stage: <span id="stageSpan">#{adminContext.patillscript.stage}(#{adminContext.pa
 		  		<div id="nmng_title" mytooltip="#{prop['nmng.search']}" class="title">#{prop['nmng']}
 		  		<div class="search  boxchild">
 		  			<i class="fa fa-search ininput nmngsearch"></i>
-		  			<input class="f_text nmngsearch" onkeyup="javascript:storeHistory('nmng');" onFocus="javascript:hideTooltips();"  placeholder="#{prop['nmng.add']} ..." id="nmng" mytooltip="#{prop['nmg.search']}"></input>
+		  			<input class="f_text nmngsearch" onkeyup="javascript:storeHistory('nmng');" onFocus="javascript:hideTooltips();"  placeholder="#{prop['nmng.add']} ..." id="nmng" mytooltip="#{prop['nmg.search']}" listUrl=""></input>
 		  		</div>
 		  			<h:form id="nmngform">
 		  			<h:panelGroup>
@@ -466,7 +466,7 @@ Stage: <span id="stageSpan">#{adminContext.patillscript.stage}(#{adminContext.pa
 		  		<div id="naim_title" mytooltip="#{prop['info.search']}" class="title">#{prop['ninfo']}
 		  		<div class="search  boxchild">
 		  			<i class="fa fa-search ininput infosearch"></i>
-		  			<input class="f_text infosearch" onkeyup="javascript:storeHistory('info');" onFocus="javascript:hideTooltips();"  placeholder="#{prop['info.add']} ..." id="info" mytooltip="#{prop['info.search']}"></input>
+		  			<input class="f_text infosearch" onkeyup="javascript:storeHistory('info');" onFocus="javascript:hideTooltips();"  placeholder="#{prop['info.add']} ..." id="info" mytooltip="#{prop['info.search']}" listUrl=""></input>
 		  		</div>
 		  			<h:form id="infoform">
 		  			<h:panelGroup>

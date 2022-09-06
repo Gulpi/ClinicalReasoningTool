@@ -29,9 +29,11 @@ import javax.servlet.http.HttpSessionListener;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import api.impl.ExportAPI;
 import api.impl.Hello;
 import api.impl.LearningAnalytics1;
 import api.impl.PeerSyncAPI;
+import api.impl.PreCheckAPI;
 import api.impl.SpacyStructureStatsAPI;
 import api.impl.SummaryStatementAPI;
 import net.casus.util.String2HashKey;
@@ -52,6 +54,8 @@ public  class API  extends Observable implements Serializable {
 		implementations.put("peerSync", new PeerSyncAPI());
 		implementations.put("stmt", new SummaryStatementAPI());
 		implementations.put("spacy", new SpacyStructureStatsAPI());
+		implementations.put("precheck", new PreCheckAPI());
+		implementations.put("export", new ExportAPI());
 	}
 	
 	public String getResult() {

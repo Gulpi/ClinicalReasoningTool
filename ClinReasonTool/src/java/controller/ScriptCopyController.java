@@ -82,32 +82,57 @@ public class ScriptCopyController {
 	 */
 	public String checkExpMap(){
 		String orgVpId = AjaxController.getInstance().getRequestParamByKey("org_vp_id");
+		String langNew = AjaxController.getInstance().getRequestParamByKey(AjaxController.REQPARAM_SCRIPTLOC);
+		return this.checkExpMap(orgVpId, langNew);
+	}
+	
+	/**
+	 * We check whether all items are there and the case is ready for translation, if items are missing in the target language we return 
+	 * a message.
+	 * @return
+	 */
+	public String checkExpMap(String orgVpId, String langNew){
 		if(orgVpId.indexOf("_")<=0) orgVpId = orgVpId+"_2";
 
 		orgScript = new DBClinReason().selectExpertPatIllScriptByVPId(orgVpId);
 		if(orgScript == null|| orgScript.getType()!=PatientIllnessScript.TYPE_EXPERT_CREATED) return "Map is null";
 		
-		String langNew = AjaxController.getInstance().getRequestParamByKey(AjaxController.REQPARAM_SCRIPTLOC);
 		StringBuffer sb = new StringBuffer();
-		
+		String tmp = null;
 		if(orgScript.getProblems()!=null){
 			for(int i=0;i<orgScript.getProblems().size();i++){
-				sb.append(checkItemsTranslation(orgScript.getProblems().get(i).getListItem().getFirstCode(), langNew));
+				tmp = checkItemsTranslation(orgScript.getProblems().get(i).getListItem().getFirstCode(), langNew);
+				if (StringUtilities.isValidString(tmp)) {
+					sb.append(tmp);
+					sb.append("\n");
+				}
 			}
 		}
 		if(orgScript.getDiagnoses()!=null){
 			for(int i=0;i<orgScript.getDiagnoses().size();i++){
-				sb.append(checkItemsTranslation(orgScript.getDiagnoses().get(i).getListItem().getFirstCode(), langNew));			
+				tmp = checkItemsTranslation(orgScript.getDiagnoses().get(i).getListItem().getFirstCode(), langNew);	
+				if (StringUtilities.isValidString(tmp)) {
+					sb.append(tmp);
+					sb.append("\n");
+				}
 			}
 		}
 		if(orgScript.getTests()!=null){
 			for(int i=0;i<orgScript.getTests().size();i++){
-				sb.append(checkItemsTranslation(orgScript.getTests().get(i).getListItem().getFirstCode(), langNew));			
+				tmp = checkItemsTranslation(orgScript.getTests().get(i).getListItem().getFirstCode(), langNew);
+				if (StringUtilities.isValidString(tmp)) {
+					sb.append(tmp);
+					sb.append("\n");
+				}		
 			}
 		}
 		if(orgScript.getMngs()!=null){
 			for(int i=0;i<orgScript.getMngs().size();i++){
-				sb.append(checkItemsTranslation(orgScript.getMngs().get(i).getListItem().getFirstCode(), langNew));			
+				tmp = checkItemsTranslation(orgScript.getMngs().get(i).getListItem().getFirstCode(), langNew);		
+				if (StringUtilities.isValidString(tmp)) {
+					sb.append(tmp);
+					sb.append("\n");
+				}
 			}
 		}
 		if(sb.toString().trim().equals("")) return "check ok"; 

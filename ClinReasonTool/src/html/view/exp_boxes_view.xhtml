@@ -64,11 +64,16 @@ var exp_arr = new Array();
 var pass_arr = new Array();
 var displayMode = 1;
 //which boxes are displayed in active mode (0), hidden (1) or displayed in view mode (2)
-var probBoxUsed = "#{adminContext.sessSetting.boxUsedFdg}"; 
-var ddxBoxUsed = "#{adminContext.sessSetting.boxUsedDDX}";
-var testBoxUsed = "#{adminContext.sessSetting.boxUsedTst}";
-var mngBoxUsed = "#{adminContext.sessSetting.boxUsedMng}"; 
-var pathoBoxUsed = "#{adminContext.sessSetting.boxUsedPat}";
+var probBoxMode = "#{adminContext.sessSetting.boxModeFdg}"; 
+var ddxBoxMode = "#{adminContext.sessSetting.boxModeDDX}";
+var testBoxMode = "#{adminContext.sessSetting.boxModeTst}";
+var mngBoxMode = "#{adminContext.sessSetting.boModeMng}"; 
+var pathoBoxMode = "0";
+var nddxBoxMode = "0";
+var naimBoxMode = "0";
+var nmngBoxMode = "0";
+var infoBoxMode = "0";
+
 //indicates at which position with box (fdg, patho, ddx, tests, mnsg) is
 var box1Type = "#{adminContext.patillscript.box1Type}";
 var box2Type = "#{adminContext.patillscript.box2Type}";
@@ -160,7 +165,7 @@ Stage: <span id="stageSpan">#{adminContext.patillscript.stage} / <a href="javasc
 <div class="boxes_container" style="float:left;width:60%;position:absolute;">
 	<div id="canvas" class="canvas jtk-surface drag-drop jtk-surface-nopan" style="width:550px;height:750px; max-height:750px;">
 		  
-		  <div id="pat_box" class="container viewcontainer pat_cont pos_#{adminContext.patillscript.patBoxNo} hide_#{adminContext.sessSetting.boxUsedPat}" group="pat_group">
+		  <div id="pat_box" class="container viewcontainer pat_cont pos_#{adminContext.patillscript.patBoxNo} hide_#{adminContext.sessSetting.boxModePat}" group="pat_group">
 		  		<div id="pat_title">#{prop['patho']} </div>
 		  		
 		  			<h:form id="pathoform">
@@ -181,7 +186,7 @@ Stage: <span id="stageSpan">#{adminContext.patillscript.stage} / <a href="javasc
 				</div>
 		</div>
 		  <!-- problems -->
-		  <div id="fdg_box"  class="container viewcontainer pos_#{adminContext.patillscript.fdgBoxNo} fdg_cont hide_#{adminContext.sessSetting.boxUsedFdg}" group="fdg_group">
+		  <div id="fdg_box"  class="container viewcontainer pos_#{adminContext.patillscript.fdgBoxNo} fdg_cont hide_#{adminContext.sessSetting.boxModeFdg}" group="fdg_group">
 		   		<div class="title">#{prop['findings']} </div>
 		   		<div class="node-collapse"></div>
 						<h:form id="probform">
@@ -198,7 +203,7 @@ Stage: <span id="stageSpan">#{adminContext.patillscript.stage} / <a href="javasc
 		  </div>
 
 		  <!--  diagnoses -->
-		  <div id="ddx_box" class="container viewcontainer ddx_cont pos_#{adminContext.patillscript.ddxBoxNo} hide_#{adminContext.sessSetting.boxUsedDDX}" group="ddx_group">	
+		  <div id="ddx_box" class="container viewcontainer ddx_cont pos_#{adminContext.patillscript.ddxBoxNo} hide_#{adminContext.sessSetting.boxModeDDX}" group="ddx_group">	
 		  		<div class="title">#{prop['ddx']}</div>	
 		  		<div class="node-collapse"></div>	  		
 			  			<h:form id="ddxform">
@@ -213,7 +218,7 @@ Stage: <span id="stageSpan">#{adminContext.patillscript.stage} / <a href="javasc
 					<span class="errormsg" id="msg_ddxform"></span>							
 		  </div>
 		  <!-- tests -->
-		  <div id="tst_box" class="container viewcontainer tst_cont pos_#{adminContext.patillscript.tstBoxNo} hide_#{adminContext.sessSetting.boxUsedTst}" group="tst_group">
+		  <div id="tst_box" class="container viewcontainer tst_cont pos_#{adminContext.patillscript.tstBoxNo} hide_#{adminContext.sessSetting.boxModeTst}" group="tst_group">
 		  		<div class="title">#{prop['tests']}</div>
 		 	 	<div class="node-collapse"></div>
 		  			<h:form id="testform">
@@ -230,7 +235,7 @@ Stage: <span id="stageSpan">#{adminContext.patillscript.stage} / <a href="javasc
 					<span class="errormsg" id="msg_testform"></span>
 		</div>
 		  <!-- managements -->
-		  <div id="mng_box" class="container viewcontainer mng_cont pos_#{adminContext.patillscript.mngBoxNo} hide_#{adminContext.sessSetting.boxUsedMng}" group="mng_group">
+		  <div id="mng_box" class="container viewcontainer mng_cont pos_#{adminContext.patillscript.mngBoxNo} hide_#{adminContext.sessSetting.boxModeMng}" group="mng_group">
 		  	<div class="title">#{prop['mng']}</div>
 		 	 <div class="node-collapse"></div>
 	  			<h:form id="mngform">

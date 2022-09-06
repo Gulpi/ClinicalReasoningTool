@@ -67,7 +67,12 @@ public class ExpViewPatientIllnessScript {
 	 * get all management items of the expert that have NOT been selected by the learner
 	 * @return list of Relations or null
 	 */
-	public List<Relation> getMngs(){ return getList(Relation.TYPE_MNG);}
+	public List<Relation> getMngs() {return getList(Relation.TYPE_MNG);}
+	
+	public List<Relation> getNursingDiagnoses() {return getList(Relation.TYPE_NDDX);}
+	public List<Relation> getNursingAims() {return getList(Relation.TYPE_NURSAIM);}
+	public List<Relation> getNursingManagement() {return getList(Relation.TYPE_NMNG);}
+	public List<Relation> getInfos() {return getList(Relation.TYPE_INFO);}
 	
 	/**
 	 * get all items of given type that have not been selected by the learner, but the expert

@@ -5,7 +5,7 @@
 
 	<class name="RelationNursingManagement" table="crt.relation_management">
 		<cache usage="nonstrict-read-write" />
-		<comment>Management Relation</comment>	
+		<comment>Nursing Management Relation</comment>	
 		<id name="id" type="long" column="id">
 			<generator class="sequence">
 				<param name ="sequence">CRT.CR_SEQ</param>

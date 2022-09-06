@@ -300,7 +300,7 @@ item_arr = new Array();
 		  		<div id="pat_title" mytooltip="#{prop['patho.search']}" class="title  contcol_#{crtContext.patillscript.pathoDiff}">#{prop['patho']} <i class="fa fa-info-circle"></i></div>
 		  		<div class="search  boxchild">
 		  			<i class="fa fa-search ininput pathosearch"></i>
-		  			<input class="f_text pathosearch" onkeyup="javascript:storeHistory('patho');" onFocus="javascript:hideTooltips();"  placeholder="#{prop['patho.add']} ..." id="patho" mytooltip="#{prop['patho.search']}"></input>
+		  			<input class="f_text pathosearch" onkeyup="javascript:storeHistory('patho');" onFocus="javascript:hideTooltips();"  placeholder="#{prop['patho.add']} ..." id="patho" mytooltip="#{prop['patho.search']}" listUrl=""></input>
 		  		</div>
 		  			<h:form id="pathoform">
 		  			<h:panelGroup>
@@ -338,7 +338,7 @@ item_arr = new Array();
 		  			<div class="search boxchild ">
 		  				<input type="text" id="fdg_prefix" style="display:none;" />
 						<i class="fa fa-search ininput probsearch"></i>
-		  				<input class="f_text probsearch" onkeyup="javascript:storeHistory('problems');" onFocus="javascript:hideTooltips();" id="problems" placeholder="#{prop['findings.add']} ..." mytooltip="#{prop['findings.search']}"></input>
+		  				<input class="f_text probsearch" onkeyup="javascript:storeHistory('problems');" onFocus="javascript:hideTooltips();" id="problems" placeholder="#{prop['findings.add']} ..." mytooltip="#{prop['findings.search']}" listUrl="#{crtContext.getMyListUrl(&quot;standard&quot;,crtContext.patillscript.locale)}"></input>
 					</div>
 						<h:form id="probform">
 						<h:panelGroup>
@@ -378,7 +378,7 @@ item_arr = new Array();
 		  		<!-- <div class="node-collapse"></div>	  -->		
 		  			<div class="search boxchild">
 		  				<i class="fa fa-search ininput ddxsearch"></i>
-		  				<input class="f_text ddxsearch" onkeyup="javascript:storeHistory('ddx');" onFocus="javascript:hideTooltips();"  placeholder="#{prop['ddx.add']} ..." id="ddx" mytooltip="#{prop['ddx.search']}"></input>
+		  				<input class="f_text ddxsearch" onkeyup="javascript:storeHistory('ddx');" onFocus="javascript:hideTooltips();"  placeholder="#{prop['ddx.add']} ..." id="ddx" mytooltip="#{prop['ddx.search']}" listUrl="#{crtContext.getMyListUrl(&quot;standard&quot;,crtContext.patillscript.locale)}"></input>
 		  				<!--  <span class="ddxpassive passive">#{prop['ddx.passive']}</span>-->
 		  			</div>
 			  			<h:form id="ddxform">
@@ -429,7 +429,7 @@ item_arr = new Array();
 		 	 	<!-- <div class="node-collapse"></div>-->
 		  		<div class="search boxchild">
 		  			<i class="fa fa-search ininput testsearch"></i>
-		  			<input class="f_text testsearch" onkeyup="javascript:storeHistory('tests');" onFocus="javascript:hideTooltips();"  placeholder="#{prop['tests.add']} ..." id="tests" mytooltip="#{prop['tests.search']}"></input>
+		  			<input class="f_text testsearch" onkeyup="javascript:storeHistory('tests');" onFocus="javascript:hideTooltips();"  placeholder="#{prop['tests.add']} ..." id="tests" mytooltip="#{prop['tests.search']}" listUrl="#{crtContext.getMyListUrl(&quot;standard&quot;,crtContext.patillscript.locale)}"></input>
 		  		</div>
 		  			<h:form id="testform">
 		  			<h:panelGroup>
@@ -468,7 +468,7 @@ item_arr = new Array();
 		 	
 		  	<div class="search boxchild ">
 		  		<i class="fa fa-search ininput mngsearch"></i>
-		  		<input class="f_text mngsearch" id="mng" onkeyup="javascript:storeHistory('mng');" onFocus="javascript:hideTooltips();"  placeholder="#{prop['mng.add']} ..." mytooltip="#{prop['mng.search']}"></input>
+		  		<input class="f_text mngsearch" id="mng" onkeyup="javascript:storeHistory('mng');" onFocus="javascript:hideTooltips();"  placeholder="#{prop['mng.add']} ..." mytooltip="#{prop['mng.search']}" listUrl="#{crtContext.getMyListUrl(&quot;standard&quot;,crtContext.patillscript.locale)}"></input>
 		  	</div>
 	  			<h:form id="mngform">
 	  			<h:panelGroup>
@@ -500,7 +500,7 @@ item_arr = new Array();
 		  		<div id="nddx_title" mytooltip="#{prop['nddx.search']}" class="title">#{prop['nddx']}
 		  		<div class="search  boxchild">
 		  			<i class="fa fa-search ininput nddxsearch"></i>
-		  			<input class="f_text nddxsearch" onkeyup="javascript:storeHistory('nddx');" onFocus="javascript:hideTooltips();"  placeholder="#{prop['nddx.add']} ..." id="nddx" mytooltip="#{prop['nddx.search']}" listUrl="jsonp_n_#{crtContext.patillscript.locale}.json"></input>
+		  			<input class="f_text nddxsearch" onkeyup="javascript:storeHistory('nddx');" onFocus="javascript:hideTooltips();"  placeholder="#{prop['nddx.add']} ..." id="nddx" mytooltip="#{prop['nddx.search']}" listUrl="#{crtContext.getMyListUrl(&quot;nursing&quot;,crtContext.patillscript.locale)}"></input>
 		  		</div>
 		  			<h:form id="nddxform">
 		  			<h:panelGroup>
@@ -528,7 +528,7 @@ item_arr = new Array();
 		  		<div id="naim_title" mytooltip="#{prop['naim.search']}" class="title">#{prop['naims']}
 		  		<div class="search  boxchild">
 		  			<i class="fa fa-search ininput naimgsearch"></i>
-		  			<input class="f_text naimsearch" onkeyup="javascript:storeHistory('naim');" onFocus="javascript:hideTooltips();"  placeholder="#{prop['naim.add']} ..." id="naim" mytooltip="#{prop['naim.search']}"></input>
+		  			<input class="f_text naimsearch" onkeyup="javascript:storeHistory('naim');" onFocus="javascript:hideTooltips();"  placeholder="#{prop['naim.add']} ..." id="naim" mytooltip="#{prop['naim.search']}" listUrl=""></input>
 		  		</div>
 		  			<h:form id="naimform">
 		  			<h:panelGroup>
@@ -556,7 +556,7 @@ item_arr = new Array();
 		  		<div id="nmng_title" mytooltip="#{prop['nmng.search']}" class="title">#{prop['nmng']}
 		  		<div class="search  boxchild">
 		  			<i class="fa fa-search ininput nmngsearch"></i>
-		  			<input class="f_text nmngsearch" onkeyup="javascript:storeHistory('nmng');" onFocus="javascript:hideTooltips();"  placeholder="#{prop['nmng.add']} ..." id="nmng" mytooltip="#{prop['nmg.search']}"></input>
+		  			<input class="f_text nmngsearch" onkeyup="javascript:storeHistory('nmng');" onFocus="javascript:hideTooltips();"  placeholder="#{prop['nmng.add']}..." id="nmng" mytooltip="#{prop['nmng.search']}" listUrl=""></input>
 		  		</div>
 		  			<h:form id="nmngform">
 		  			<h:panelGroup>
@@ -582,7 +582,7 @@ item_arr = new Array();
 		  		<div id="naim_title" mytooltip="#{prop['info.search']}" class="title">#{prop['ninfo']}
 		  		<div class="search  boxchild">
 		  			<i class="fa fa-search ininput infosearch"></i>
-		  			<input class="f_text infosearch" onkeyup="javascript:storeHistory('info');" onFocus="javascript:hideTooltips();"  placeholder="#{prop['info.add']} ..." id="info" mytooltip="#{prop['info.search']}"></input>
+		  			<input class="f_text infosearch" onkeyup="javascript:storeHistory('info');" onFocus="javascript:hideTooltips();"  placeholder="#{prop['info.add']} ..." id="info" mytooltip="#{prop['info.search']}" listUrl=""></input>
 		  		</div>
 		  			<h:form id="infoform">
 		  			<h:panelGroup>

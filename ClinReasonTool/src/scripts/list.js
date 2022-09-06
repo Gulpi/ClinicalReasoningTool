@@ -138,7 +138,7 @@ function genericAddItemByValueAndLabel(item_value,item_label, id) {
 	else if (id=="patho") { addPatho(item_value, item_label, $("#" + id).val()); }
 	else if (id=="mng") { 	addManagement(item_value, item_label, $("#" + id).val()); }
 	else if (id=="nddx") { 	addItem(item_value, item_label,  $("#" + id).val(), "Nddx"); }
-	else if (id=="nmng") { 	addItem(item_value, item_label,  $("#" + id).val(), "Mmng"); }
+	else if (id=="nmng") { 	addItem(item_value, item_label,  $("#" + id).val(), "Nmng"); }
 	else if (id=="info") { 	addItem(item_value, item_label,  $("#" + id).val(), "Info"); }
 	else if (id=="naim") { 	addItem(item_value, item_label,  $("#" + id).val(), "Naim"); }
 	else if (id=="act_search") { addActor(item_value, item_label,  $("#" + id).val()); }

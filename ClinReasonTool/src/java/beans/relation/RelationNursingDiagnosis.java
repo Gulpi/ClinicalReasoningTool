@@ -281,7 +281,7 @@ public class RelationNursingDiagnosis extends Relation implements Serializable {
 	 */
 	public String getExp(){ 
 		Graph g = NavigationController.getInstance().getMyFacesContext().getGraph();
-		MultiVertex mvertex = g.getVertexByIdAndType(this.getListItemId(), Relation.TYPE_DDX);
+		MultiVertex mvertex = g.getVertexByIdAndType(this.getListItemId(), Relation.TYPE_NDDX);
 		if(mvertex==null || mvertex.getLearnerVertex()==null) return ""; //should not happen
 		//only return something if learner has chosen it as a final ddx:
 		/*boolean isLearnerFinal = ((RelationNursingDiagnosis)mvertex.getLearnerVertex()).getTier() == RelationNursingDiagnosis.TIER_FINAL;

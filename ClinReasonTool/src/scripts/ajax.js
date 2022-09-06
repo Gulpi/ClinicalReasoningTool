@@ -523,7 +523,7 @@ function postEnforceFinalDDXSubmission(isSubmitted/*, currentStage, maxStageForS
 		message = "p1,s0";
 	}
 	//we are in view mode, so no need to scaffold or display message:
-	if(ddxBoxUsed=="2") message = "p1,s0";
+	if(ddxBoxMode=="2") message = "p1,s0";
 	
 	top.postMessage(message, "*");
 }

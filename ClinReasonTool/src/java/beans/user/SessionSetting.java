@@ -61,17 +61,17 @@ public class SessionSetting {
 	 * Is stores as a String in the database! 
 	 */
 	//private int[] boxesUsed = {1,1,1,1,1,0}; 
-	
-	private int boxUsedFdg = 1; //findings used (active=1, passive=2)
-	private int boxUsedDDX = 1; //ddx used (active=1, passive=2)
-	private int boxUsedTst = 1; //tests used (active=1, passive=2)
-	private int boxUsedMng = 1; //management used (active=1, passive=2)
-	private int boxUsedPat = 0; //pathophys used (active=1, passive=2)
-	private int boxUsedSum = 1; //summary statement used (active=1, passive=2)
-	private int boxUsedNDDX = 0; 
-	private int boxUsedNMng = 0; 
-	private int boxUsedNAim = 0;
-	private int boxUsedNInfo = 0; 
+	//we currently only support active / passive for the four standard boxes (can be configured in coursemanager)
+	private int boxModeFdg = 1; //box 1 used as active=1, passive=2 or hidden
+	private int boxModeDDX = 1; //box 2 used as active=1, passive=2 or hidden
+	private int boxModeTst = 1; //box 3 used as active=1, passive=2 or hidden
+	private int boxModeMng = 1; //box 4 used as active=1, passive=2 or hidden
+	private int boxModePat = 0; //pathophys used (active=1, passive=2)
+	private int boxModeSum = 1; //summary statement used (active=1, passive=2)
+	//private int boxUsedNDDX = 0; 
+	//private int boxUsedNMng = 0; 
+	//private int boxUsedNAim = 0;
+	//private int boxUsedNInfo = 0; 
 
 
 
@@ -80,7 +80,7 @@ public class SessionSetting {
 	 * at which position is a box, default is problems (0) at pos[0] upper left corner etc 
 	 * pos[1]=upper right corner, pos[2] = lower left corner, pos[3] = lower right corner
 	 */
-	private int[] boxesPositions = {0,1,2,3}; //default
+	//>private int[] boxesPositions = {0,1,2,3}; //default
 	
 	
 	public SessionSetting(){}
@@ -218,29 +218,26 @@ public class SessionSetting {
 		catch (Exception e){};
 	}*/
 	
-	public int getBoxUsedFdg() {
-		return boxUsedFdg;}
-	public void setBoxUsedFdg(int boxUsedFdg) 
-	{	
-		this.boxUsedFdg = boxUsedFdg;}
-	public int getBoxUsedDDX() {return boxUsedDDX;}
-	public void setBoxUsedDDX(int boxUsedDDX) {this.boxUsedDDX = boxUsedDDX;}
-	public int getBoxUsedTst() {return boxUsedTst;}
-	public void setBoxUsedTst(int boxUsedTst) {this.boxUsedTst = boxUsedTst;}
-	public int getBoxUsedMng() {return boxUsedMng;}
-	public void setBoxUsedMng(int boxUsedMng) {this.boxUsedMng = boxUsedMng;}
-	public int getBoxUsedPat() {return boxUsedPat;}
-	public void setBoxUsedPat(int boxUsedPat) {this.boxUsedPat = boxUsedPat;}
-	public int getBoxUsedSum() {return boxUsedSum;}
-	public void setBoxUsedSum(int boxUsedSum) {this.boxUsedSum = boxUsedSum;}
-	public int getBoxUsedNDDX() {return boxUsedNDDX;}
+	public int getBoxModeFdg() {return boxModeFdg;}
+	public void setBoxModeFdg(int boxModeFdg) {	this.boxModeFdg = boxModeFdg;}
+	public int getBoxModeDDX() {return boxModeDDX;}
+	public void setBoxModeDDX(int boxModeDDX) {this.boxModeDDX = boxModeDDX;}
+	public int getBoxModeTst() {return boxModeTst;}
+	public void setBoxModeTst(int boxUsedTst) {this.boxModeTst = boxUsedTst;}
+	public int getBoxModeMng() {return boxModeMng;}
+	public void setBoxModeMng(int boxModeMng) {this.boxModeMng = boxModeMng;}
+	public int getBoxModePat() {return boxModePat;}
+	public void setBoxModePat(int boxModePat) {this.boxModePat = boxModePat;}
+	public int getBoxModeSum() {return boxModeSum;}
+	public void setBoxModeSum(int boxModeSum) {this.boxModeSum = boxModeSum;}
+	/*public int getBoxUsedNDDX() {return boxUsedNDDX;}
 	public void setBoxUsedNDDX(int boxUsedNDDX) {this.boxUsedNDDX = boxUsedNDDX;}	
 	public int getBoxUsedNMng() {return boxUsedNMng;}
 	public void setBoxUsedNMng(int boxUsedNMng) {this.boxUsedNMng = boxUsedNMng;}
 	public int getBoxUsedNInfo() {return boxUsedNInfo;}
 	public void setBoxUsedNInfo(int boxUsedNInfo) {this.boxUsedNInfo = boxUsedNInfo;}
 	public int getBoxUsedNAim() {return boxUsedNAim;}
-	public void setBoxUsedNAim(int boxUsedNAim) {this.boxUsedNAim = boxUsedNAim;}	
+	public void setBoxUsedNAim(int boxUsedNAim) {this.boxUsedNAim = boxUsedNAim;}	*/
 	/*public int getProbBoxUsed(){ return boxesUsed[0];}
 	public int getDdxBoxUsed(){ return boxesUsed[1];}	
 	public int getTestBoxUsed(){ return boxesUsed[2];}

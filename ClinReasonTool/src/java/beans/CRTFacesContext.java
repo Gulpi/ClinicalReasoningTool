@@ -566,4 +566,15 @@ public class CRTFacesContext extends FacesContextWrapper implements MyFacesConte
 	public ContextContainer getContxts() {return contxts;}
 	public void setContxts(ContextContainer contxts) {this.contxts = contxts;}
 	
+	/**
+	 * call e.g. with #{crtContext.getMyListUrl("standard",crtContext.patillscript.locale)}
+	 * 
+	 * @param type
+	 * @param subtpye
+	 * @param loc
+	 * @return
+	 */
+	public String getMyListUrl(String type, String lang) {
+		return JsonCreator.getDisplayListName("view", type, lang);
+	}
 }

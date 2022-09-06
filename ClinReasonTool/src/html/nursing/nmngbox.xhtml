@@ -1,0 +1,27 @@
+ <ui:composition 
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core">
+   	<div id="nmng_#{nmng.id}" class="itembox nmng row2" style="left:#{nmng.x}px; top:#{nmng.boxY}px;">
+  	 	
+  	 	<span mytooltip="#{nmng.labelOrSynLabel}" >#{nmng.shortLabelOrSynShortLabel}</span>
+  	 	 <script language="Javascript">
+ 			item_arr.push("nmng_#{nmng.id}");
+ 		</script>
+   		<span class="dropdown" onClick="javascript:showDropDown('ddmng_#{nmng.id}','nmng_#{nmng.id}');"><i class="fa fa-chevron-circle-down"></i></span>
+  	  		<span class="peer_score_nmng" title="#{prop['nmng.peer.hint']}" id="peerscore#{nmng.id}"> (#{nmng.peerPercentage})</span>
+ 		<div class="icons_score nmng_score boxscore_#{nmng.score}"><i class="fa fa-check"></i></div>
+  	</div>
+	<div id="dnmng_#{nmng.id}" class="dropdown-content" style="opacity:1;z-index:99;" ><!-- onmouseleave="javascript:hideDropDown('ddddx_#{ddx.id}');"-->
+	 <span style="float:left;">#{prop['change']}:</span>
+		<span class="dropdownX"><a href="javascript:hideDropDown('dnmng_#{nmng.id}');"><i class="fa fa fa-times"></i></a></span> 
+	
+	<br/>
+		<div class="links">
+			<span class="dropd_#{nmng.isExpertHierarchyItem}"><a class="dropd_#{nmng.isExpertHierarchyItem}" href="javascript:chgItem(#{nmng.id}, 2, 'Nmng');"><i class="fa fa-long-arrow-right"></i> #{nmng.expItemLabel}</a><br/></span>  <!-- Hierarchy -->
+		</div>
+		<a class="del" href="javascript:delItem(#{nmng.id},'Nmng');"><i class="fa fa-trash"></i> #{prop['delete']}</a>
+		
+	 </div>
+</ui:composition>

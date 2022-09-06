@@ -381,7 +381,9 @@ public class AppBean extends ApplicationWrapper implements HttpSessionListener{
 	public static String getProperty(String key, String defaultVal){
 		if(properties==null) return defaultVal; 
 		try{
-			return properties.getProperty(key);
+			String result = properties.getProperty(key);
+			if (result == null) return defaultVal;
+			return result;
 		}
 		catch(Exception e){return defaultVal;}
 	}

@@ -328,5 +328,29 @@ public class AdminFacesContext extends FacesContextWrapper implements MyFacesCon
 		if(contxts==null) this.contxts = ContextController.getInstance().initContextContainer(contxts, user, locale, ContextContainer.TYPE_AUTHOR);
 		return contxts;}
 	public void setContxts(ContextContainer contxts) {this.contxts = contxts;}
-
+	
+	/**
+	 * call e.g. with #{adminContext.getMyListUrl("standard",adminContext.patillscript.locale)}
+	 * 
+	 * @param type
+	 * @param subtpye
+	 * @param loc
+	 * @return
+	 */
+	public String getMyListUrl(String type, String lang) {
+		return JsonCreator.getDisplayListName("edit", type, lang);
+	}
+	
+	/**
+	 * call e.g. with #{adminContext.getMyListUrlByMode("view","standard",adminContext.patillscript.locale)}
+	 * 
+	 * @param type
+	 * @param subtpye
+	 * @param loc
+	 * @return
+	 */
+	public String getMyListUrlByMode(String mode, String type, String lang) {
+		return JsonCreator.getDisplayListName(mode, type, lang);
+	}
+	
 }

@@ -14,15 +14,28 @@
 <body>
 	<h1>Tests of List Configurtion by Properties Player/Viewer</h1>
 	<p>tests of how lists can be included in xhtmls, these are now configured by properties</p>
-	<div>standard(de): <b>#{adminContext.getMyListUrlByMode("view","standard","de")}</b> should be jsonp_de.json (lists.languages.standard=en,de,pl,sv,es,pt,fr,uk)</div>
-	<div>standard(en): <b>#{adminContext.getMyListUrlByMode("view","standard","en")}</b> should be jsonp_en.json (lists.languages.standard=en,de,pl,sv,es,pt,fr,uk)</div>
-	<div>standard(sv): <b>#{adminContext.getMyListUrlByMode("view","standard","sv")}</b> should be - (lists.languages.standard=en,de,pl,sv,es,pt,fr,uk) but lists.view.standard.sv=-</div>
-	<div>standard(uk): <b>#{adminContext.getMyListUrlByMode("view","standard","uk")}</b> should be - (lists.languages.standard=en,de,pl,sv,es,pt,fr,uk) but lists.view.standard.ok=-</div>
-	<div>nursing(de): <b>#{adminContext.getMyListUrlByMode("view","nursing","de")}</b> should be jsonp_n_de.json </div>
-	<div>nursing(en): <b>#{adminContext.getMyListUrlByMode("view","nursing","en")}</b> should be jsonp_n_de.json when en is not configured (lists.languages.nursing=de) and default is de for nursing (lists.default_languages.nursing=de)</div>
-	<div>context(de): <b>#{adminContext.getMyListUrlByMode("view","context","de")}</b> should be jsonp_c_de.json </div>
-	<div>context(en): <b>#{adminContext.getMyListUrlByMode("view","context","en")}</b> should be jsonp_c_en.json </div>
-	<div>context(pl): <b>#{adminContext.getMyListUrlByMode("view","context","pl")}</b> should be jsonp_c_en.json when lists.languages.context=en,de and lists.default_languages.context=en</div>
+	<div>standard(de): <b>&quot;#{adminContext.getMyListUrlByMode("view","standard","de")}&quot;</b> and should be &quot;jsonp_de.json&quot; (lists.languages.standard=en,de,pl,sv,es,pt,fr,uk)</div>
+	<div>standard(en): <b>&quot;#{adminContext.getMyListUrlByMode("view","standard","en")}&quot;</b> and should be &quot;jsonp_en.json&quot; (lists.languages.standard=en,de,pl,sv,es,pt,fr,uk)</div>
+	<div>standard(sv): <b>&quot;#{adminContext.getMyListUrlByMode("view","standard","sv")}&quot;</b> and should be &quot;&quot; (lists.languages.standard=en,de,pl,sv,es,pt,fr,uk) but lists.view.standard.sv=-</div>
+	<div>standard(uk): <b>&quot;#{adminContext.getMyListUrlByMode("view","standard","uk")}&quot;</b> and should be &quot;&quot; (lists.languages.standard=en,de,pl,sv,es,pt,fr,uk) but lists.view.standard.uk=-</div>
+	<div>standard(pl): <b>&quot;#{adminContext.getMyListUrlByMode("view","standard","pl")}&quot;</b> and should be &quot;jsonp_pl.json&quot; (lists.languages.standard=en,de,pl,sv,es,pt,fr,uk)</div>
+	<div>nursing(de): <b>&quot;#{adminContext.getMyListUrlByMode("view","nursing","de")}&quot;</b> and should be &quot;jsonp_n_de.json&quot; </div>
+	<div>nursing(en): <b>&quot;#{adminContext.getMyListUrlByMode("view","nursing","en")}&quot;</b> and should be &quot;&quot;</div>
+	<div>context(de): <b>&quot;#{adminContext.getMyListUrlByMode("view","context","de")}&quot;</b> and should be &quot;jsonp_c_de.json&quot;</div>
+	<div>context(en): <b>&quot;#{adminContext.getMyListUrlByMode("view","context","en")}&quot;</b> and should be &quot;jsonp_c_en.json&quot;</div>
+	<div>context(pl): <b>&quot;#{adminContext.getMyListUrlByMode("view","context","pl")}&quot;</b> and should be &quot;&quot;</div>
+
+	<h2>Same used in input attribut (placeholder, but works for other attr same way:</h2>	
+	<input class="f_text" placeholder="standard(de) #{adminContext.getMyListUrlByMode(&quot;view&quot;,&quot;standard&quot;,&quot;de&quot;)}"></input><br></br>
+	<input class="f_text" placeholder="standard(en) #{adminContext.getMyListUrlByMode(&quot;view&quot;,&quot;standard&quot;,&quot;en&quot;)}"></input><br></br>
+	<input class="f_text" placeholder="standard(sv) #{adminContext.getMyListUrlByMode(&quot;view&quot;,&quot;standard&quot;,&quot;sv&quot;)}"></input><br></br>
+	<input class="f_text" placeholder="standard(uk) #{adminContext.getMyListUrlByMode(&quot;view&quot;,&quot;standard&quot;,&quot;uk&quot;)}"></input><br></br>
+	<input class="f_text" placeholder="standard(pl) #{adminContext.getMyListUrlByMode(&quot;view&quot;,&quot;standard&quot;,&quot;pl&quot;)}"></input><br></br>
+	<input class="f_text" placeholder="nursing(de) #{adminContext.getMyListUrlByMode(&quot;view&quot;,&quot;nursing&quot;,&quot;de&quot;)}"></input><br></br>
+	<input class="f_text" placeholder="nursing(en) #{adminContext.getMyListUrlByMode(&quot;view&quot;,&quot;nursing&quot;,&quot;en&quot;)}"></input><br></br>
+	<input class="f_text" placeholder="context(de) #{adminContext.getMyListUrlByMode(&quot;view&quot;,&quot;context&quot;,&quot;de&quot;)}"></input><br></br>
+	<input class="f_text" placeholder="context(en) #{adminContext.getMyListUrlByMode(&quot;view&quot;,&quot;context&quot;,&quot;en&quot;)}"></input><br></br>	
+	<input class="f_text" placeholder="context(pl) #{adminContext.getMyListUrlByMode(&quot;view&quot;,&quot;context&quot;,&quot;pl&quot;)}"></input><br></br>	
 	
 	<hr></hr>
 	<h1>Usage in JSF templates</h1>

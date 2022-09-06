@@ -27,8 +27,11 @@ import util.StringUtilities;
  * Format: {"label": "Calcimycin", "value": "3"},
  * Nursing items are either marked with "1" in the nursing column or added as additional item with "U" as type.
  * (U1.xxx are nursing diagnoses)
+ * 
+ * Sep 2022: refactoring by gvuli (=Martin Adler):
+ * <li>made it more generic and configurable by properties to make it more flexible for extension of lists</li>
+ * 
  * @author ingahege
- *
  */
 public class JsonCreator {
 	

@@ -102,18 +102,22 @@ public class JsonCreator {
 			file = net.casus.util.StringUtilities.replace(file, "#{locale}", lang != null ? lang : "en");
 		}
 		else {
-			file = net.casus.util.StringUtilities.replace(file, "#{locale}", lang != null ? lang : AppBean.getProperty("lists.default_languages." + type,"en"));
+			return null;
 		}
 		
-		if (context != null) {
-			return new File(context.getRealPath(AppBean.getProperty("lists.base","src/html/") + file));
+		if (file != null) {
+			if (context != null) {
+				return new File(context.getRealPath(AppBean.getProperty("lists.base","src/html/") + file));
+			}
+			else {
+				String name = file;
+				int idx = name.lastIndexOf('/');
+				name = name.substring(idx+1);
+				return new File(name);
+			}
 		}
-		else {
-			String name = file;
-			int idx = name.lastIndexOf('/');
-			name = name.substring(idx+1);
-			return new File(name);
-		}
+		
+		return null;
 	}
 	
 	/**
@@ -176,11 +180,16 @@ public class JsonCreator {
 	private void exportGenericList_write2File(String type, Locale loc, int json_lines, StringBuffer sb)
 			throws IOException {
 		File f = getGenericJsonFileByLoc(type,loc != null ? loc.getLanguage() : "en");
-		PrintWriter pw = new PrintWriter(new FileWriter(f));
-		pw.print(sb.toString());
-		pw.flush();
-		pw.close();
-		CRTLogger.out("lines exported: " + json_lines + " to <" + (f!=null?f.getAbsolutePath():"-") + ">", CRTLogger.LEVEL_PROD);
+		if (f != null) {
+			PrintWriter pw = new PrintWriter(new FileWriter(f));
+			pw.print(sb.toString());
+			pw.flush();
+			pw.close();
+			CRTLogger.out("lines exported: " + json_lines + " to <" + (f!=null?f.getAbsolutePath():"-") + ">", CRTLogger.LEVEL_PROD);
+		}
+		else {
+			CRTLogger.out("lines not exported: type:" + type + "and loc:" + loc + " ar not enabled!", CRTLogger.LEVEL_PROD);
+		}
 	}
 
 	private void exportGenericList_ownEntries(String type, Locale loc, StringBuffer sb) {
@@ -317,7 +326,7 @@ public class JsonCreator {
 			result = net.casus.util.StringUtilities.replace(result, "#{locale}", lang != null ? lang : "en");
 		}
 		else {
-			result = net.casus.util.StringUtilities.replace(result, "#{locale}", AppBean.getProperty("lists.default_languages." + type,"en"));
+			result = "";
 		}
 		
 		return result;

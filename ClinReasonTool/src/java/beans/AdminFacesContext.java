@@ -341,4 +341,16 @@ public class AdminFacesContext extends FacesContextWrapper implements MyFacesCon
 		return JsonCreator.getDisplayListName("edit", type, lang);
 	}
 	
+	/**
+	 * call e.g. with #{adminContext.getMyListUrlByMode("view","standard",adminContext.patillscript.locale)}
+	 * 
+	 * @param type
+	 * @param subtpye
+	 * @param loc
+	 * @return
+	 */
+	public String getMyListUrlByMode(String mode, String type, String lang) {
+		return JsonCreator.getDisplayListName(mode, type, lang);
+	}
+	
 }

@@ -1,17 +1,24 @@
 package controller;
 
-import java.io.*;
-import java.util.*;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Locale;
 
 import javax.servlet.ServletContext;
 
-import org.jfree.util.Log;
-
 import application.AppBean;
+import beans.list.ListInterface;
+import beans.list.ListItem;
+import beans.list.Synonym;
 import database.DBList;
-import beans.CRTFacesContext;
-import beans.list.*;
 import properties.IntlConfiguration;
+import util.AppBeanPropertyHelper;
 import util.CRTLogger;
 import util.StringUtilities;
 
@@ -24,6 +31,20 @@ import util.StringUtilities;
  *
  */
 public class JsonCreator {
+	
+	// following constants are not longer used in db querying, however we keep them here
+	public static final String TYPE_PROBLEM = "C";
+	public static final String TYPE_TEST = "E";
+	public static final String TYPE_EPI = "F";
+	public static final String TYPE_DRUGS = "D";
+	public static final String TYPE_PERSONS = "M";
+	public static final String TYPE_MANUALLY_ADDED = "MA";
+	public static final String TYPE_HEALTHCARE = "N";
+	public static final String TYPE_CONTEXT = "I";
+	public static final String TYPE_B = "B";
+	public static final String TYPE_G = "G";
+	public static final String TYPE_ANATOMY = "A";
+	public static final String TYPE_NURSING = "U";
 	
 	//private boolean createOneList = true; //if false, we create multiple lists for problems, ddx, etc.
 	private static ServletContext context;	
@@ -38,8 +59,9 @@ public class JsonCreator {
 		catch(Exception e){}
 		
 		if(lang!=null){
-			exportList("standard",new Locale(lang));
-			exportList("nursing",new Locale(lang));
+			exportGenericList("standard",new Locale(lang));
+			exportGenericList("nursing",new Locale(lang));
+			exportGenericList("context",new Locale(lang));
 		}
 		else{
 			// loop thru all types
@@ -55,87 +77,14 @@ public class JsonCreator {
 				List<String> languages_list = net.casus.util.StringUtilities.getStringListFromString(languages, ",");
 				Iterator<String> languages_list_it = languages_list.iterator();
 				while(languages_list_it.hasNext()) {
-					exportList(loop,new Locale(languages_list_it.next()));
+					exportGenericList(loop,new Locale(languages_list_it.next()));
 				}
 			}
 		}
 	}
-	
-	@SuppressWarnings("rawtypes")
-	protected List exportList(String type,Locale loc) {
-		return exportGenericList(type,loc);
-	}
-	
+		
 	public void setContext(ServletContext context){
-		this.context = context;
-	}
-	
-	/**
-	 * helper could be outsourced to utilities...
-	 * 
-	 * @param prefix
-	 * @param type
-	 * @param default_value
-	 * @return
-	 */
-	static public String[] getArray(String prefix, String type, String[] default_value) {
-		String dbTypes = AppBean.getProperty(prefix + type,null);
-		if (dbTypes == null || dbTypes.length()==0) {
-			return default_value;
-		}
-
-		return net.casus.util.StringUtilities.getStringArrayFromString(dbTypes, ",");
-	}
-	
-	/**
-	 * helper could be outsourced to utilities...
-	 * 
-	 * @param prefix
-	 * @param type
-	 * @param default_value
-	 * @return
-	 */
-	static protected List<String> getStringList(String prefix, String type, List<String> default_value) {
-		String list_string = AppBean.getProperty(prefix + type,null);
-		if (list_string == null || list_string.length()==0) {
-			return default_value;
-		}
-
-		return net.casus.util.StringUtilities.getStringListFromString(list_string, ",");
-	}
-	
-	/**
-	 * helper could be outsourced to utilities...
-	 * 
-	 * @param prefix
-	 * @param type
-	 * @param default_value
-	 * @return
-	 */
-	static protected int getInt(String prefix, String type, int default_value) {
-		String professionType = AppBean.getProperty(prefix + type,null);
-		if (professionType == null || professionType.length()==0) {
-			return 0;
-		}
-
-		return net.casus.util.StringUtilities.getIntegerFromString(professionType, default_value);
-	}
-	
-	/**
-	 * helper could be outsourced to utilities...
-	 * 
-	 * @param prefix
-	 * @param type
-	 * @param default_value
-	 * @return
-	 */
-	static protected boolean getBoolean(String prefix, String type, boolean default_value) {
-		String preprocess = AppBean.getProperty(prefix + type,null);
-		if (preprocess == null || preprocess.length()==0) {
-			return false;
-		}
-
-		return net.casus.util.StringUtilities.getBooleanFromString(preprocess, default_value);
+		JsonCreator.context = context;
 	}
 	
 	/**
@@ -145,7 +94,7 @@ public class JsonCreator {
 	 */
 	public File getGenericJsonFileByLoc(String type, String lang ){
 		String file = AppBean.getProperty("lists." + type,"jsonp_#{locale}.json");
-		List<String> getStringList = getStringList("lists.languages.", type, null);
+		List<String> getStringList = AppBeanPropertyHelper.getStringList("lists.languages.", type, null);
 		if (getStringList != null && getStringList.contains(lang)) {
 			file = net.casus.util.StringUtilities.replace(file, "#{locale}", lang != null ? lang : "en");
 		}
@@ -169,66 +118,97 @@ public class JsonCreator {
 	 * We also store the list items in the SummaryController for using it for the statement analysis and assessment.
 	 * @param loc
 	 */
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public List exportGenericList(String type, Locale loc){
-		List<ListItem> items = new DBList().selectListItemsByTypesAndLang(loc, getArray("lists.dbtypes.", type, null), getInt("lists.professionType.", type, 0), getInt("lists.professionVariant.", type, -1));
+		// dababase call configurable by lists.dbtypes.<type>=<STring delimioted by , (comma) with categories; lists.professionType.<type>=0 | 1; listvaliant for future extension
+		List<ListItem> items = new DBList().selectListItemsByTypesAndLang(loc, AppBeanPropertyHelper.getArray("lists.dbtypes.", type, null), AppBeanPropertyHelper.getInt("lists.professionType.", type, 0), AppBeanPropertyHelper.getInt("lists.professionVariant.", type, -1));
+		if(items==null || items.isEmpty()) {
+			CRTLogger.out("JsonCreator.exportGenericList(\"" + type + "\"," + loc + ") => items null | empty: " + items, CRTLogger.LEVEL_ERROR);
+			return null; //then something went really wrong!
+		}
+		
 		//we collect all items here, to sort it alphabetically
 		List itemsAndSyns = new ArrayList();
-		
-		if(items==null || items.isEmpty()) return null; //then something went really wrong!
 		try{
-			File f = getGenericJsonFileByLoc(type,loc != null ? loc.getLanguage() : "en");
-			PrintWriter pw = new PrintWriter(new FileWriter(f));
-			int lines = 0;
-			StringBuffer sb = new StringBuffer("[");
+			int lines = 0; int json_lines = 0;
 
-			if (this.getBoolean("lists.preprocess.", type, false)) {
-				for(int i=0; i<items.size(); i++){
-					ListItem item = items.get(i);
-					//add items for SummaryStatement Rating
-					if(doAddItem(item)){
-						lines += addItemAndSynonymaNew(item, sb, itemsAndSyns);
-						SummaryStatementController.addListItem(item, loc.getLanguage());
-					}
-					
-					else if(item.getFirstCode().startsWith("A")){
-						SummaryStatementController.addListItemsA(item, loc.getLanguage());
-					}
-					
-					else if(item.getFirstCode().startsWith("Z")){ //we add countries...
-						SummaryStatementController.addListItem(item, loc.getLanguage());
-					}				
-				}
-				Collections.sort(itemsAndSyns);
+			// preprocess for standard list onlky (until now -> configure by lists.preprocess.<type>=true | false
+			if (AppBeanPropertyHelper.getBoolean("lists.preprocess.", type, false)) {
+				lines = exportGenericList_preprocess(loc, items, itemsAndSyns, lines);
 			}
 			else {
-				Collections.sort(items);
 				itemsAndSyns = items;
 			}
 			//SummaryStatementController.addListItems(itemsAndSyns, loc.getLanguage());
 			
+			// should NOT happen!!!!
+			if (itemsAndSyns != null) {
+				Collections.sort(itemsAndSyns);
+				json_lines = itemsAndSyns.size();
+			}
+			
+			// generate json entries
+			StringBuffer sb = new StringBuffer("[");
 			for(int i=0; i<itemsAndSyns.size();i++){
 				ListInterface li = (ListInterface) itemsAndSyns.get(i);				
 				sb.append("{\"label\": \""+li.getName()+"\", \"value\": \""+li.getIdForJsonList()+"\"},\n");
 			}
-			boolean allowOwnEntries = AppBean.getProperty("AllowOwnEntries", false);
-			if (allowOwnEntries) {
-				allowOwnEntries = this.getBoolean("lists.allowOwnEntries.", type, false);
-			}
-			if(allowOwnEntries) {
-				sb.append(getOwnEntry(loc));
-			}
 			
+			// own entries global and configurable per type lists.allowOwnEntries.<type>=true | false
+			exportGenericList_ownEntries(type, loc, sb);
+			
+			// clean up -> remove last comma!!
 			sb.replace(sb.length()-2, sb.length(), "]");
-			pw.print(sb.toString());
-			pw.flush();
-		    pw.close();
-		    CRTLogger.out("lines exported: " + lines, CRTLogger.LEVEL_PROD);
+			
+			// write to file finally
+			exportGenericList_write2File(type, loc, json_lines, sb);
 		    return itemsAndSyns;
 		}
 		catch( Exception e){
 			CRTLogger.out(StringUtilities.stackTraceToString(e), CRTLogger.LEVEL_PROD);
 			return null;
 		}
+	}
+
+	private void exportGenericList_write2File(String type, Locale loc, int json_lines, StringBuffer sb)
+			throws IOException {
+		File f = getGenericJsonFileByLoc(type,loc != null ? loc.getLanguage() : "en");
+		PrintWriter pw = new PrintWriter(new FileWriter(f));
+		pw.print(sb.toString());
+		pw.flush();
+		pw.close();
+		CRTLogger.out("lines exported: " + json_lines + " to <" + (f!=null?f.getAbsolutePath():"-") + ">", CRTLogger.LEVEL_PROD);
+	}
+
+	private void exportGenericList_ownEntries(String type, Locale loc, StringBuffer sb) {
+		boolean allowOwnEntries = AppBean.getProperty("AllowOwnEntries", false);
+		if (allowOwnEntries) {
+			allowOwnEntries = AppBeanPropertyHelper.getBoolean("lists.allowOwnEntries.", type, false);
+		}
+		if(allowOwnEntries) {
+			sb.append(getOwnEntry(loc));
+		}
+	}
+
+	private int exportGenericList_preprocess(Locale loc, List<ListItem> items, @SuppressWarnings("rawtypes") List itemsAndSyns, int lines) {
+		for(int i=0; i<items.size(); i++){
+			ListItem item = items.get(i);
+			//add items for SummaryStatement Rating
+			if(doAddItem(item)){
+				lines += addItemAndSynonymaNew(item, itemsAndSyns);
+				SummaryStatementController.addListItem(item, loc.getLanguage());
+			}
+			
+			else if(item.getFirstCode().startsWith("A")){
+				SummaryStatementController.addListItemsA(item, loc.getLanguage());
+			}
+			
+			else if(item.getFirstCode().startsWith("Z")){ //we add countries...
+				SummaryStatementController.addListItem(item, loc.getLanguage());
+			}				
+		}
+		
+		return lines;
 	}
 	
 	private String getOwnEntry(Locale loc){
@@ -263,7 +243,8 @@ public class JsonCreator {
 	}
 	
 	
-	private int addItemAndSynonymaNew(ListItem item, StringBuffer sb, List itemsAndSyns/*PrintWriter pw, boolean lastEntry*/){
+	@SuppressWarnings("unchecked")
+	private int addItemAndSynonymaNew(ListItem item, @SuppressWarnings("rawtypes") List itemsAndSyns/*PrintWriter pw, boolean lastEntry*/){
 		List<ListInterface> toAddItems = new ArrayList<ListInterface>();
 		if(item.getSynonyma()==null || item.getSynonyma().isEmpty()){ //no synonyma, only one main item:
 			toAddItems.add(item);
@@ -308,6 +289,12 @@ public class JsonCreator {
 	/**
 	 * called from context bean:
 	 * configurable in properties:
+	 * this shouldbe used for defining lists in templates:
+	 * 
+	 * <li>#{crtContext.getMyListUrl("<type>",crtContext.patillscript.locale)}</li>
+	 * <li>#{adminContext.getMyListUrl("standard",adminContext.patillscript.locale)}</li>
+	 * 
+	 * <type> := (at this moment) standard | context | nursing (as defined for creation in lists.types property)
 	 * 
 	 * lists.<mode>.<type> and overridable by:
 	 * lists.<mode>.<type>.<lang>
@@ -322,12 +309,12 @@ public class JsonCreator {
 		String result = AppBean.getProperty("lists." + mode + "." + type,"");
 		result = AppBean.getProperty("lists." + mode + "." + type + (lang!=null&&lang.length()>0 ? "." + lang : ""),result);
 		
-		List<String> getStringList = getStringList("lists.languages.", type, null);
+		List<String> getStringList = AppBeanPropertyHelper.getStringList("lists.languages.", type, null);
 		if (getStringList != null && getStringList.contains(lang)) {
 			result = net.casus.util.StringUtilities.replace(result, "#{locale}", lang != null ? lang : "en");
 		}
 		else {
-			result = net.casus.util.StringUtilities.replace(result, "#{locale}", lang != null ? lang : AppBean.getProperty("lists.default_languages." + type,"en"));
+			result = net.casus.util.StringUtilities.replace(result, "#{locale}", AppBean.getProperty("lists.default_languages." + type,"en"));
 		}
 		
 		return result;

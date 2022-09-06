@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"   
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+	 xmlns:v="urn:schemas-microsoft-com:vml"     
+	  >
+<head>
+	<title>Tests of List Configurtion by Properties</title>
+	<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+</head>
+<body>
+	<h1>Tests of List Configurtion by Properties Player/Viewer</h1>
+	<p>tests of how lists can be included in xhtmls, these are now configured by properties</p>
+	<div>standard(de): <b>#{adminContext.getMyListUrlByMode("view","standard","de")}</b> should be jsonp_de.json (lists.languages.standard=en,de,pl,sv,es,pt,fr,uk)</div>
+	<div>standard(en): <b>#{adminContext.getMyListUrlByMode("view","standard","en")}</b> should be jsonp_en.json (lists.languages.standard=en,de,pl,sv,es,pt,fr,uk)</div>
+	<div>standard(sv): <b>#{adminContext.getMyListUrlByMode("view","standard","sv")}</b> should be - (lists.languages.standard=en,de,pl,sv,es,pt,fr,uk) but lists.view.standard.sv=-</div>
+	<div>standard(uk): <b>#{adminContext.getMyListUrlByMode("view","standard","uk")}</b> should be - (lists.languages.standard=en,de,pl,sv,es,pt,fr,uk) but lists.view.standard.ok=-</div>
+	<div>nursing(de): <b>#{adminContext.getMyListUrlByMode("view","nursing","de")}</b> should be jsonp_n_de.json </div>
+	<div>nursing(en): <b>#{adminContext.getMyListUrlByMode("view","nursing","en")}</b> should be jsonp_n_de.json when en is not configured (lists.languages.nursing=de) and default is de for nursing (lists.default_languages.nursing=de)</div>
+	<div>context(de): <b>#{adminContext.getMyListUrlByMode("view","context","de")}</b> should be jsonp_c_de.json </div>
+	<div>context(en): <b>#{adminContext.getMyListUrlByMode("view","context","en")}</b> should be jsonp_c_en.json </div>
+	<div>context(pl): <b>#{adminContext.getMyListUrlByMode("view","context","pl")}</b> should be jsonp_c_en.json when lists.languages.context=en,de and lists.default_languages.context=en</div>
+	
+	<hr></hr>
+	<h1>Usage in JSF templates</h1>
+	<h2>authoring exp_boxes.xhtml</h2>
+	<p><h:outputText value="#"/>{adminContext.getMyListUrl(&lt;type&gt;,adminContext.patillscript.locale)} or <br />
+	<h:outputText value="#"/>{adminContext.getMyListUrlByMode(&lt;mode&gt;,"standard",adminContext.patillscript.locale)}
+	</p>
+	<ul>
+	<li>where &lt;type&gt; := standard | context | nursing at this moment (is configurable)</li>
+	<li>where &lt;mode&gt; := edit | view at this moment</li>
+	</ul>
+	<h2>viewing boxes.xhtml</h2>
+	<p><h:outputText value="#"/>{crtContext.getMyListUrl(&lt;type&gt;,crtContext..patillscript.local)}
+	</p>
+	<ul>
+	<li>where &lt;type&gt; := standard | context | nursing at this moment (is configurable)</li>
+	</ul></body>
+</html>

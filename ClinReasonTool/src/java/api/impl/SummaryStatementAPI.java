@@ -36,6 +36,7 @@ import net.casus.util.StringUtilities;
 import net.casus.util.Utility;
 import net.casus.util.io.IOUtilities;
 import net.casus.util.nlp.spacy.SpacyStructureStats;
+import util.AppBeanPropertyHelper;
 import util.CRTLogger;
 
 /**
@@ -505,7 +506,7 @@ public class SummaryStatementAPI extends AbstractAPIImpl {
 	protected void cacheListItems2Json(String lang) {
 		ObjectMapper mapper = new ObjectMapper();
 		try {
-			List<ListItem> items = new DBList().selectListItemsByTypesAndLang(new Locale(lang), JsonCreator.getArray("lists.dbtypes.", "standard", null),0,-1);
+			List<ListItem> items = new DBList().selectListItemsByTypesAndLang(new Locale(lang), AppBeanPropertyHelper.getArray("lists.dbtypes.", "standard", null),0,-1);
 			String result = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(items);
 			
 			File file = new File("list_items_" + lang);

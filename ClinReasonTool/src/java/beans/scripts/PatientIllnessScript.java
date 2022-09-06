@@ -486,7 +486,7 @@ public class PatientIllnessScript extends Beans implements Comparable, IllnessSc
 	public void addInfo(String idStr, String name, String x, String y){ new AddInfoAction(this).add(idStr, name, x,y);}
 	public void addNaim(String idStr, String name){ new AddNursingAimAction(this).add(idStr, name);}
 	public void addNaim(String idStr, String name, String x, String y){ new AddNursingAimAction(this).add(idStr, name, x,y);}
-	public void addNmng(String idStr, String name){ new AddNursingMngAction(this).add(idStr, name);}
+	public void addNmng(String idStr, String name){new AddNursingMngAction(this).add(idStr, name);}
 	public void addNmng(String idStr, String name, String x, String y){ new AddNursingMngAction(this).add(idStr, name, x,y);}
 	
 	public void delProblem(String idStr){ new DelProblemAction(this).delete(idStr);}

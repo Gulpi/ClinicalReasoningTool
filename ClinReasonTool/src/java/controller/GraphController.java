@@ -40,6 +40,12 @@ public class GraphController implements Serializable{
 	public static final String PREFIX_NURSINGAIM = "naim_"; //nursing aims
 	public static final String PREFIX_NMNG = "nmng_"; //nursing management
 	public static final String PREFIX_INFO = "info_";
+	public static final String PREFIX_MHYP = "mhyp_"; //midwife hypotheses
+	public static final String PREFIX_MREC = "mrec_"; //midwife recommendations
+	public static final String PREFIX_MMNG = "mmng_"; //midwife management
+	public static final String PREFIX_MFDG = "mfdg_"; //midwife findings
+	
+	//public static final long PREFIX_MMNG = 0;
 	
 	private Graph graph;
 	

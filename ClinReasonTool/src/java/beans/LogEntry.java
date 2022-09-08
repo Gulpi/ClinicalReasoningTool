@@ -89,6 +89,14 @@ public class LogEntry extends Beans implements Serializable{
 	public static final int DELINFO_ACTION = 58;
 	public static final int DELNDDX_ACTION = 59;
 	public static final int DELNAIM_ACTION = 60;	
+	public static final int ADDMFDG_ACTION = 61;
+	public static final int ADDMHYP_ACTION = 62;
+	public static final int ADDMREC_ACTION = 63;
+	public static final int ADDMMNG_ACTION = 64;
+	public static final int DELMFDG_ACTION = 65;
+	public static final int DELMHYP_ACTION = 66;
+	public static final int DELMREC_ACTION = 67;
+	public static final int DELMMNG_ACTION = 68;	
 
 	/**
 	 * action triggered by user, e.g. add a problem,... (see static definitions above)

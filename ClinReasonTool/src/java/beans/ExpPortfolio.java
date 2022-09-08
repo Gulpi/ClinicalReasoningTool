@@ -91,7 +91,7 @@ public class ExpPortfolio implements Serializable{
 	public PatientIllnessScript createNewExpScript(){
 		CRTLogger.out("Create new script", CRTLogger.LEVEL_PROD);
 		String vpId = AjaxController.getInstance().getRequestParamByKey(AjaxController.REQPARAM_VP);
-		String systemId = AjaxController.getInstance().getRequestParamByKey(AjaxController.REQPARAM_SYSTEM);
+		String systemId = "2"; //AjaxController.getInstance().getRequestParamByKey(AjaxController.REQPARAM_SYSTEM);
 		if(!vpId.contains("_")) vpId = vpId + "_" +systemId;
 		String lang = AjaxController.getInstance().getRequestParamByKey(AjaxController.REQPARAM_SCRIPTLOC);
 		if(lang==null || lang.isEmpty()) lang = "en";

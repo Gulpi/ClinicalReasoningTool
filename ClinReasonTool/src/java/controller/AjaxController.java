@@ -29,7 +29,7 @@ public class AjaxController {
 	public static final String REQPARAM_SECRET = "secret";	//a shared secret is included in the query
 	public static final String REQPARAM_ISSYN = "issyn";
 	//public static final String REQPARAM_ENCODED = "encoded"; //are the query params encoded (true | false)
-	public static final String REQPARAM_SYSTEM = "system_id"; //are the query params encoded (true | false)
+	//public static final String REQPARAM_SYSTEM = "system_id"; //are the query params encoded (true | false)
 	public static final String REQPARAM_CHARTPEER = "chart_peer"; //are the query params encoded (true | false)
 	public static final String REQPARAM_EXTUID = "uid"; //e.g. session_id or similar
 	public static final String REQPARAM_REPORTS_VP = "r_vp_id"; //are the query params encoded (true | false)

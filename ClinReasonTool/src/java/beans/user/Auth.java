@@ -85,7 +85,7 @@ public class Auth implements Serializable{
         ExternalContext externalContext = context.getExternalContext();
        // HttpServletRequest request = (HttpServletRequest) externalContext.getRequest();
         String extUserId = AjaxController.getInstance().getRequestParamByKeyNoDecrypt("userid_ext");
-        int systemId = AjaxController.getInstance().getIntRequestParamByKey("system_id", 2);
+        int systemId = 2; //AjaxController.getInstance().getIntRequestParamByKey("system_id", 2);
         if(extUserId==null || extUserId.trim().isEmpty()) return;
         try {
         	User user = new DBUser().selectUserByExternalId(extUserId, systemId);

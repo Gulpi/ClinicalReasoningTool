@@ -36,6 +36,10 @@ public abstract class Relation extends Beans implements Rectangle{
 	public static final int TYPE_NURSAIM = 8; //nursing diagnoses
 	public static final int TYPE_NMNG = 9; // nursing managements
 	public static final int TYPE_INFO = 10; // infos
+	public static final int TYPE_MHYP = 11; //midwife hypotheses
+	public static final int TYPE_MREC = 12; //midwife recommendations 
+	public static final int TYPE_MMNG = 13; // midwife managements
+	public static final int TYPE_MFDG = 14; // midwife findings	
 	
 	public static final int IS_SYNDROME = 1;
 	public static final int IS_SYNDROME_PART = 2;

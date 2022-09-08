@@ -187,6 +187,7 @@ public class JsonCreator {
 		tmpName = net.casus.util.StringUtilities.replace(tmpName, "\n\r", " ");
 		tmpName = net.casus.util.StringUtilities.replace(tmpName, "\r", " ");
 		tmpName = net.casus.util.StringUtilities.replace(tmpName, "\n", " ");
+		tmpName = net.casus.util.StringUtilities.replace(tmpName, "\"", " ");
 		return tmpName;
 	}
 

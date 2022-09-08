@@ -158,7 +158,10 @@ public class JsonCreator {
 			StringBuffer sb = new StringBuffer("[");
 			for(int i=0; i<itemsAndSyns.size();i++){
 				ListInterface li = (ListInterface) itemsAndSyns.get(i);		
+				// returns destroy the JSONP file, so clean that up, to be more fault tolerant, even though this should also be checked AND cleaned on insert into database
 				String tmpName = li.getName();
+				// huh should not happen!!
+				if (tmpName == null) tmpName = "";
 				tmpName = cleanJsonString(tmpName);
 				sb.append("{\"label\": \"" + tmpName + "\", \"value\": \"" + li.getIdForJsonList() + "\"},\n");
 			}

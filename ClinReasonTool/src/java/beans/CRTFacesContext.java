@@ -117,7 +117,7 @@ public class CRTFacesContext extends FacesContextWrapper implements MyFacesConte
 	private void setUser(){
 		String setUserIdStr = AjaxController.getInstance().getRequestParamByKey(AjaxController.REQPARAM_USER);
 		String extUserId = AjaxController.getInstance().getRequestParamByKeyNoDecrypt(AjaxController.REQPARAM_USER_EXT);
-		int systemId = AjaxController.getInstance().getIntRequestParamByKey(AjaxController.REQPARAM_SYSTEM, -1);
+		int systemId = 2; //AjaxController.getInstance().getIntRequestParamByKey(AjaxController.REQPARAM_SYSTEM, -1);
 		if(setUserIdStr==null && extUserId==null){
 			return;
 		}

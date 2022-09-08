@@ -45,7 +45,7 @@ public class ExportAPI extends AbstractAPIImpl {
 		IllnessScriptController isc = new IllnessScriptController();
 		try {
 			String extUserId = AjaxController.getInstance().getRequestParamByKeyNoDecrypt(AjaxController.REQPARAM_EXTUID);
-			int systemId = AjaxController.getInstance().getIntRequestParamByKey(AjaxController.REQPARAM_SYSTEM, 2);
+			int systemId = 2; //AjaxController.getInstance().getIntRequestParamByKey(AjaxController.REQPARAM_SYSTEM, 2);
 			User user = user =  new UserController().getUser(systemId, extUserId);
 			long vpId = StringUtilities.getLongFromString((String) ((HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest()).getParameter("vp_id"), -1);
 			if (vpId > 0) {

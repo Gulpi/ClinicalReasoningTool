@@ -23,6 +23,7 @@ import database.DBContext;
 import database.DBList;
 import net.casus.util.Utility;
 import util.CRTLogger;
+import util.Encoder;
 import util.StringUtilities;
 
 /**
@@ -234,7 +235,20 @@ public class AdminFacesContext extends FacesContextWrapper implements MyFacesCon
 	public boolean isOpenedViaAPI(){
 		boolean isViaAPI =  AjaxController.getInstance().getBooleanRequestParamByKey(AjaxController.REQPARAM_API, false);
 		String vpId = AjaxController.getInstance().getRequestParamByKey("vp_id");
-
+		
+		try {
+			String checksum =  AjaxController.getInstance().getRequestParamByKeyNoDecrypt(AjaxController.REQPARAM_CHECKSUM);
+			String checksum_uid =  AjaxController.getInstance().getRequestParamByKeyNoDecrypt(AjaxController.REQPARAM_CHECKSUM_UID);
+			String ts = AjaxController.getInstance().getRequestParamByKeyNoDecrypt(AjaxController.REQPARAM_TS);
+			String vp = AjaxController.getInstance().getRequestParamByKeyNoDecrypt(AjaxController.REQPARAM_VP);
+			String cmp_checksum_src = "" + checksum_uid + "_" + vp +  "_" + ts;
+			String cmp_checksum =  Encoder.getInstance().encodeQueryParam(cmp_checksum_src);
+			CRTLogger.out("checksum == cmp_checksum?" + checksum.equals(cmp_checksum), CRTLogger.LEVEL_PROD);
+		} catch (Throwable e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		
 		if(isViaAPI){
 			try{
 				if(this.user==null){ //load user:

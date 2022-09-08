@@ -157,8 +157,13 @@ public class JsonCreator {
 			// generate json entries
 			StringBuffer sb = new StringBuffer("[");
 			for(int i=0; i<itemsAndSyns.size();i++){
-				ListInterface li = (ListInterface) itemsAndSyns.get(i);				
-				sb.append("{\"label\": \""+li.getName()+"\", \"value\": \""+li.getIdForJsonList()+"\"},\n");
+				ListInterface li = (ListInterface) itemsAndSyns.get(i);		
+				// returns destroy the JSONP file, so clean that up, to be more fault tolerant, even though this should also be checked AND cleaned on insert into database
+				String tmpName = li.getName();
+				// huh should not happen!!
+				if (tmpName == null) tmpName = "";
+				tmpName = cleanJsonString(tmpName);
+				sb.append("{\"label\": \"" + tmpName + "\", \"value\": \"" + li.getIdForJsonList() + "\"},\n");
 			}
 			
 			// own entries global and configurable per type lists.allowOwnEntries.<type>=true | false
@@ -175,6 +180,15 @@ public class JsonCreator {
 			CRTLogger.out(StringUtilities.stackTraceToString(e), CRTLogger.LEVEL_PROD);
 			return null;
 		}
+	}
+
+	private String cleanJsonString(String tmpName) {
+		tmpName = net.casus.util.StringUtilities.replace(tmpName, "\r\n", " ");
+		tmpName = net.casus.util.StringUtilities.replace(tmpName, "\n\r", " ");
+		tmpName = net.casus.util.StringUtilities.replace(tmpName, "\r", " ");
+		tmpName = net.casus.util.StringUtilities.replace(tmpName, "\n", " ");
+		tmpName = net.casus.util.StringUtilities.replace(tmpName, "\"", " ");
+		return tmpName;
 	}
 
 	private void exportGenericList_write2File(String type, Locale loc, int json_lines, StringBuffer sb)

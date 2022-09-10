@@ -1,10 +1,56 @@
+/* rubik-regular - latin */
+@font-face {
+  font-family: 'Rubik';
+  font-style: normal;
+  font-weight: 400;
+  src: local(''),
+       url('./font/rubik-v21-latin-regular.woff2') format('woff2'), /* Chrome 26+, Opera 23+, Firefox 39+ */
+       url('./font/rubik-v21-latin-regular.woff') format('woff'); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
+}
+
+/* rubik-700 - latin */
+@font-face {
+  font-family: 'Rubik';
+  font-style: normal;
+  font-weight: 600;
+  src: local(''),
+       url('./font/rubik-v21-latin-600.woff2') format('woff2'), /* Chrome 26+, Opera 23+, Firefox 39+ */
+       url('./font/rubik-v21-latin-600.woff') format('woff'); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
+}
+
+/* rubik-italic - latin */
+@font-face {
+  font-family: 'Rubik';
+  font-style: italic;
+  font-weight: 400;
+  src: local(''),
+       url('./font/rubik-v21-latin-italic.woff2') format('woff2'), /* Chrome 26+, Opera 23+, Firefox 39+ */
+       url('./font/rubik-v21-latin-italic.woff') format('woff'); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
+}
+
+/* rubik-700italic - latin */
+@font-face {
+  font-family: 'Rubik';
+  font-style: italic;
+  font-weight: 600;
+  src: local(''),
+       url('./font/rubik-v21-latin-600italic.woff2') format('woff2'), /* Chrome 26+, Opera 23+, Firefox 39+ */
+       url('./font/rubik-v21-latin-600italic.woff') format('woff'); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
+}
+
+
+body {
+	font-family: Rubik,Arial;
+	letter-spacing: -0.03em;
+}
+
 .labeltst{
 	 /* background-color:#ffffff !important; */
 	  font-size: 0.8em !important;
 }
 
 .crtbody{
-	font-family:Arial;
+	font-family:Rubik,Arial;
 	margin-left:0px;
 	margin-right:0px;
 	margin-bottom:0px;
@@ -28,14 +74,14 @@ select.f_select {
 	border: 1px solid #CCCCCC;
     padding: 5px;
     background: none repeat scroll 0 0 #FFFFFF;
-    font-family:Arial;
+    font-family:Rubik,Arial;
 }
 
 input.f_text, textarea.f_textarea {
     border: 1px solid #888888;
     padding: 5px;
     background: none repeat scroll 0 0 #FFFFFF;
-    font-family:arial;
+    font-family:Rubik,Arial;
     font-size:1.0em;    
     border-bottom-right-radius: 0px;
 	border-bottom-left-radius: 0px;
@@ -310,7 +356,7 @@ a#ddx_submit_btn, errorsymbol.a{
 
 .boxes_container {
     background-color: transparent;
-    font-family: Arial,sans-serif;
+    font-family: Rubik,Arial,sans-serif;
     margin-left: 0px;
     margin-right: 0px;
     width: 470px;
@@ -805,9 +851,9 @@ ul#errors{
 
 
 .ui-widget {
-    font-family: arial;
+    font-family: "Rubik",Arial;
     font-size: 0.8em;
-    decoration:none;
+    decoration: none;
 }
 
 .ui-state-active a, .ui-state-active a:link, .ui-state-active a:visited {
@@ -869,8 +915,9 @@ ul#errors{
 .ui-state-default, .ui-widget-content .ui-state-default, .ui-widget-header .ui-state-default {
     font-weight: normal;
     color: #000000;
-    font-family:arial;
+    font-family: Rubik,Arial;
 }
+
   .ui-autocomplete {
     max-height: 200px;
     /*overflow-y: auto;*/
@@ -1114,7 +1161,7 @@ input.cmn-toggle-round:checked + label:after {
 	padding: 5px 10px;
 	border-width: 5px;
 	border-color:#006699;
-	font-family:arial;
+	font-family: Rubik,Arial;
 	font-size:0.7em;
 	max-width: 250px;
 }

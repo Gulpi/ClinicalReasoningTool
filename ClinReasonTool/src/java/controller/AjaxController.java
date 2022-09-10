@@ -56,7 +56,11 @@ public class AjaxController {
 	public static final String REQPARAM_REPORT_LEANER_ID = "learnerId"; //user_id is ALWAYS the person accessing the system, if an educator wants to access a learner script, we have the learner id here...
 	public static final String REQPARAM_SEARCH_MODE = "mode";
 	public static final String REQPARAM_REPORTS_DISPLAYMODE="repdm"	;
-	
+
+	public static final String REQPARAM_CHECKSUM = "checksum";
+	public static final String REQPARAM_CHECKSUM_UID = "checksum_uid";
+	public static final String REQPARAM_TS = "ts";
+
 	static private AjaxController instance = new AjaxController();
 	static public AjaxController getInstance() { return instance; }
 	

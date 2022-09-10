@@ -25,6 +25,7 @@ import database.DBUser;
 import database.HibernateSession;
 import net.casus.util.Utility;
 import util.*;
+import util.Encoder;
 
 /**
  * The facesContext for a session....
@@ -309,6 +310,18 @@ public class CRTFacesContext extends FacesContextWrapper implements MyFacesConte
 		long startms = System.currentTimeMillis();
 		int reportsAccess = AjaxController.getInstance().getIntRequestParamByKey(AjaxController.REQPARAM_REPORT_ACCESS, 0);
 
+		try {
+			String checksum =  AjaxController.getInstance().getRequestParamByKeyNoDecrypt(AjaxController.REQPARAM_CHECKSUM);
+			String checksum_uid =  AjaxController.getInstance().getRequestParamByKeyNoDecrypt(AjaxController.REQPARAM_CHECKSUM_UID);
+			String ts = AjaxController.getInstance().getRequestParamByKeyNoDecrypt(AjaxController.REQPARAM_TS);
+			String vp = AjaxController.getInstance().getRequestParamByKeyNoDecrypt(AjaxController.REQPARAM_VP);
+			String cmp_checksum_src = "" + checksum_uid + "_" + vp +  "_" + ts;
+			String cmp_checksum =  Encoder.getInstance().encodeQueryParam(cmp_checksum_src);
+			CRTLogger.out("checksum == cmp_checksum?" + checksum.equals(cmp_checksum), CRTLogger.LEVEL_PROD);
+		} catch (Exception e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 		
 		/*if(user==null)*/ setUser();
 		if(reportsAccess==1){ //then an educator tries to access a learner script e.g. from a reporting or dashboard area - we load the map in a view mode

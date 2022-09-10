@@ -15,13 +15,13 @@
   			<h:panelGroup>
 			
 				<ui:repeat value="#{crtContext.patillscript.nursingDiagnoses}" var="nddx" varStatus="status">
-					<ui:include src="nursing/nddxbox.xhtml" />
+					<ui:include src="nddxbox.xhtml" />
    					</ui:repeat>	
    					<ui:repeat value="#{crtContext.expPatIllScript.nursingDiagnoses}" var="expnddx" varStatus="status">
-					<ui:include src="nursing/nddxexpbox.xhtml" />
+					<ui:include src="nddxexpbox.xhtml" />
    					</ui:repeat>	
    				<ui:repeat value="#{crtContext.expPatIllScript.nursingDiagnoses}" var="passnddx" varStatus="status">
-					<ui:include src="nursing/nddxpassbox.xhtml" />
+					<ui:include src="nddxpassbox.xhtml" />
    				</ui:repeat>		
 
   				</h:panelGroup>
@@ -43,14 +43,14 @@
   			<h:panelGroup>
 			
 				<ui:repeat value="#{crtContext.patillscript.nursingAims}" var="naim" varStatus="status">
-					<ui:include src="nursing/naimbox.xhtml" />
+					<ui:include src="naimbox.xhtml" />
 					
    					</ui:repeat>	
    					<ui:repeat value="#{crtContext.expPatIllScript.nursingAims}" var="expnaim" varStatus="status">
-					<ui:include src="nursing/naimexpbox.xhtml" />
+					<ui:include src="naimexpbox.xhtml" />
    					</ui:repeat>	
    				<ui:repeat value="#{crtContext.expPatIllScript.nursingAims}" var="passnaim" varStatus="status">
-					<ui:include src="nursing/naimpassbox.xhtml" />
+					<ui:include src="naimpassbox.xhtml" />
    				</ui:repeat>	
 
   				</h:panelGroup>
@@ -71,13 +71,13 @@
   			<h:panelGroup>
 			
 				<ui:repeat value="#{crtContext.patillscript.nursingManagement}" var="nmng" varStatus="status">
-					<ui:include src="nursing/nmngbox.xhtml" />
+					<ui:include src="nmngbox.xhtml" />
    					</ui:repeat>	
      				<ui:repeat value="#{crtContext.expPatIllScript.nursingManagement}" var="expnmng" varStatus="status">
-					<ui:include src="nursing/nmngexpbox.xhtml" />
+					<ui:include src="nmngexpbox.xhtml" />
    					</ui:repeat>	
    				<ui:repeat value="#{crtContext.expPatIllScript.nursingManagement}" var="passnmng" varStatus="status">
-					<ui:include src="nursing/nmngpassbox.xhtml" />
+					<ui:include src="nmngpassbox.xhtml" />
    				</ui:repeat>	
   				</h:panelGroup>
   				     <h:commandButton id="hiddenNmngButton" value="RenderSomething" style="visibility:hidden">
@@ -97,13 +97,13 @@
   			<h:panelGroup>
 			
 				<ui:repeat value="#{crtContext.patillscript.infos}" var="info" varStatus="status">
-					<ui:include src="nursing/infobox.xhtml" />
+					<ui:include src="infobox.xhtml" />
    					</ui:repeat>	
      				<ui:repeat value="#{crtContext.expPatIllScript.infos}" var="expinfo" varStatus="status">
-					<ui:include src="nursing/infoexpbox.xhtml" />
+					<ui:include src="infoexpbox.xhtml" />
    					</ui:repeat>	
    				<ui:repeat value="#{crtContext.expPatIllScript.infos}" var="passinfo" varStatus="status">
-					<ui:include src="nursing/infopassbox.xhtml" />
+					<ui:include src="infopassbox.xhtml" />
    				</ui:repeat>	 	
   				</h:panelGroup>
   				     <h:commandButton id="hiddenInfoButton" value="RenderSomething" style="visibility:hidden">

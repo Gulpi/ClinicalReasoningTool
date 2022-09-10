@@ -15,13 +15,13 @@
   			<h:panelGroup>
 			
 				<ui:repeat value="#{crtContext.patillscript.midwifeFindings}" var="mfdg" varStatus="status">
-					<ui:include src="midwife/mfdgbox.xhtml" />
+					<ui:include src="mfdgbox.xhtml" />
    					</ui:repeat>	
    					<ui:repeat value="#{crtContext.expPatIllScript.midwifeFindings}" var="expmfdg" varStatus="status">
-					<ui:include src="midwife/mfdgexpbox.xhtml" />
+					<ui:include src="mfdgexpbox.xhtml" />
    					</ui:repeat>	
    				<ui:repeat value="#{crtContext.expPatIllScript.midwifeFindings}" var="passmfdg" varStatus="status">
-					<ui:include src="midwife/mfdgpassbox.xhtml" />
+					<ui:include src="mfdgpassbox.xhtml" />
    				</ui:repeat>		
 
   				</h:panelGroup>
@@ -43,14 +43,14 @@
   			<h:panelGroup>
 			
 				<ui:repeat value="#{crtContext.patillscript.midwifeHypotheses}" var="mhyp" varStatus="status">
-					<ui:include src="midwife/mhypbox.xhtml" />
+					<ui:include src="mhypbox.xhtml" />
 					
    					</ui:repeat>	
    					<ui:repeat value="#{crtContext.expPatIllScript.midwifeHypotheses}" var="expmhyp" varStatus="status">
-					<ui:include src="midwife/mhypexpbox.xhtml" />
+					<ui:include src="mhypexpbox.xhtml" />
    					</ui:repeat>	
    				<ui:repeat value="#{crtContext.expPatIllScript.midwifeHypotheses}" var="passmhyp" varStatus="status">
-					<ui:include src="midwife/mhyppassbox.xhtml" />
+					<ui:include src="mhyppassbox.xhtml" />
    				</ui:repeat>	
 
   				</h:panelGroup>
@@ -71,13 +71,13 @@
   			<h:panelGroup>
 			
 				<ui:repeat value="#{crtContext.patillscript.midwifeManagement}" var="mmng" varStatus="status">
-					<ui:include src="midwife/nmngbox.xhtml" />
+					<ui:include src="mmngbox.xhtml" />
    					</ui:repeat>	
      				<ui:repeat value="#{crtContext.expPatIllScript.midwifeManagement}" var="expmmng" varStatus="status">
-					<ui:include src="midwife/nmngexpbox.xhtml" />
+					<ui:include src="mmngexpbox.xhtml" />
    					</ui:repeat>	
    				<ui:repeat value="#{crtContext.expPatIllScript.midwifeManagement}" var="passmmng" varStatus="status">
-					<ui:include src="midwife/mmngpassbox.xhtml" />
+					<ui:include src="mmngpassbox.xhtml" />
    				</ui:repeat>	
   				</h:panelGroup>
   				     <h:commandButton id="hiddenMmngButton" value="RenderSomething" style="visibility:hidden">
@@ -97,13 +97,13 @@
   			<h:panelGroup>
 			
 				<ui:repeat value="#{crtContext.patillscript.midwifeRecommendations}" var="mrec" varStatus="status">
-					<ui:include src="midwife/mrecbox.xhtml" />
+					<ui:include src="recbox.xhtml" />
    					</ui:repeat>	
      				<ui:repeat value="#{crtContext.expPatIllScript.midwifeRecommendations}" var="expmrec" varStatus="status">
-					<ui:include src="midwife/mrecexpbox.xhtml" />
+					<ui:include src="recexpbox.xhtml" />
    					</ui:repeat>	
    				<ui:repeat value="#{crtContext.expPatIllScript.midwifeRecommendations}" var="passmrec" varStatus="status">
-					<ui:include src="midwife/mrecpassbox.xhtml" />
+					<ui:include src="recpassbox.xhtml" />
    				</ui:repeat>	 	
   				</h:panelGroup>
   				     <h:commandButton id="hiddenMrecButton" value="RenderSomething" style="visibility:hidden">

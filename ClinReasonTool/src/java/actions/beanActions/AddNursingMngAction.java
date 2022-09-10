@@ -73,7 +73,7 @@ public class AddNursingMngAction implements AddAction, Scoreable{
 		addRelation(/*id, prefix*/li, x, y, synId, false);
 	}
 	public void addRelation(/*long id, String name*/ ListItem li, int x, int y, long synId, boolean isJoker){
-		if(patIllScript.getMngs()==null) patIllScript.setNursingManagement(new ArrayList<RelationNursingManagement>());
+		if(patIllScript.getNursingManagement()==null) patIllScript.setNursingManagement(new ArrayList<RelationNursingManagement>());
 		RelationNursingManagement rel = new RelationNursingManagement(li.getItem_id(), patIllScript.getId(), synId);		
 		if(patIllScript.getNursingManagement().contains(rel)){
 			createErrorMessage(IntlConfiguration.getValue("nmng.duplicate"),"optional details", FacesMessage.SEVERITY_WARN);

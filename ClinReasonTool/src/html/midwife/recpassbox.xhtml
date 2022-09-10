@@ -1,0 +1,17 @@
+ <ui:composition 
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core">
+
+ 	<div id="mrec_#{passmrec.id}"  class="passmrec passbox passboxinvis row2" mytooltip="#{passmrec.labelOrSynLabel}" style="left:#{passmrec.x}px; top:#{passmrec.boxY}px;"> 
+ 		#{passmrec.shortLabelOrSynShortLabel}
+  	 	 <script language="Javascript">
+  	 		if(mrecBoxMode==2) pass_arr.push("mrec_#{passmrec.id}");
+ 		</script>
+ 		<div class="icons_exp"><i class="fa fa-user-md"></i></div>
+ 	</div>
+ 	 
+ 	 
+ 
+</ui:composition>

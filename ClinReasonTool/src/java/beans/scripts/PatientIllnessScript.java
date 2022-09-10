@@ -118,6 +118,11 @@ public class PatientIllnessScript extends Beans implements Comparable, IllnessSc
 	private List<RelationNursingAim> nursingAims;	
 	private List<RelationInformation> infos;
 	private List<RelationNursingManagement> nursingManagement;	
+	private List<RelationMidwifeManagement> midwifeManagement;	
+	private List<RelationMidwifeHypothesis> midwifeHypotheses;
+	private List<RelationMidwifeRecommendation> midwifeRecommendations;
+	private List<RelationMidwifeFinding> midwifeFindings;
+	
 
 	/**
 	 * key = cnxId (Long), value = Connection object
@@ -245,8 +250,7 @@ public class PatientIllnessScript extends Beans implements Comparable, IllnessSc
 	public void setProblems(List<RelationProblem> problems) {this.problems = problems;}
 	public Timestamp getCreationDate(){ return this.creationDate;} //setting is done in DB	
 	public void setCreationDate(Timestamp creationDate) {this.creationDate = creationDate;}	
-	public Timestamp getLastAccessDate() {
-		return lastAccessDate;}
+	public Timestamp getLastAccessDate() {return lastAccessDate;}
 	public void setLastAccessDate(Timestamp lastAccessDate) {this.lastAccessDate = lastAccessDate;}
 
 	public int getType() {return type;}
@@ -263,9 +267,7 @@ public class PatientIllnessScript extends Beans implements Comparable, IllnessSc
 	public List<RelationDiagnosis> getDiagnosesStage() { return getRelationsByStage(diagnoses);}
 	public void setDiagnoses(List<RelationDiagnosis> diagnoses) {this.diagnoses = diagnoses;}
 	
-	public List<RelationNursingDiagnosis> getNursingDiagnoses() 
-	{return nursingDiagnoses;
-	}
+	public List<RelationNursingDiagnosis> getNursingDiagnoses() {return nursingDiagnoses;}
 	public List<RelationNursingDiagnosis> getNursingDiagnosesStage() { return getRelationsByStage(nursingDiagnoses);}
 	public void setNursingDiagnoses(List<RelationNursingDiagnosis> nursingDiagnoses) {this.nursingDiagnoses = nursingDiagnoses;}
 
@@ -280,20 +282,36 @@ public class PatientIllnessScript extends Beans implements Comparable, IllnessSc
 	public List<RelationInformation> getInfos() {return infos;}
 	public List<RelationInformation> getInformationStage() { return getRelationsByStage(infos);}
 	public void setInformation(List<RelationInformation> infos) {this.infos = infos;}
-
 	
 	public List<RelationManagement> getMngs() {return mngs;}
 	public List<RelationManagement> getMngsStage() { return getRelationsByStage(mngs);}
 	public void setMngs(List<RelationManagement> mngs) {this.mngs = mngs;}	
+	
 	public List<RelationTest> getTests() {return tests;}
-	public List<RelationPatho> getPatho() {return patho;}
-
-	public List<RelationPatho> getPathoStage() { return getRelationsByStage(patho);}
 	public List<RelationTest> getTestsStage() { return getRelationsByStage(tests);}
-
 	public void setTests(List<RelationTest> tests) {this.tests = tests;}	
-	public void setPatho(List<RelationPatho> patho) {this.patho = patho;}	
 
+	public List<RelationPatho> getPatho() {return patho;}
+	public List<RelationPatho> getPathoStage() { return getRelationsByStage(patho);}
+	public void setPatho(List<RelationPatho> patho) {this.patho = patho;}	
+	
+	public List<RelationMidwifeManagement> getMidwifeManagement() {return midwifeManagement;}
+	public List<RelationMidwifeManagement> getMidwifeManagementStage() { return getRelationsByStage(midwifeManagement);}
+	public void setMidwifeManagement(List<RelationMidwifeManagement> mngs) {this.midwifeManagement = mngs;}	
+
+	public List<RelationMidwifeRecommendation> getMidwifeRecommendations() {return midwifeRecommendations;}
+	public List<RelationManagement> getMidwifeRecommendationsStage() { return getRelationsByStage(midwifeRecommendations);}
+	public void setMidwifeRecommendations(List<RelationMidwifeRecommendation> midwifeRecommendations) {this.midwifeRecommendations = midwifeRecommendations;}	
+
+	public List<RelationMidwifeHypothesis> getMidwifeHypotheses() {return midwifeHypotheses;}
+	public List<RelationMidwifeHypothesis> getMidwifeHypothesesStage() { return getRelationsByStage(midwifeHypotheses);}
+	public void setMidwifeHypotheses(List<RelationMidwifeHypothesis> mh) {this.midwifeHypotheses = mh;}	
+	
+	public List<RelationMidwifeFinding> getMidwifeFindings() {return midwifeFindings;}
+	public List<RelationMidwifeFinding> getMidwifeFindingsStage() { return getRelationsByStage(midwifeFindings);}
+	public void setMidwifeFindings(List<RelationMidwifeFinding> mf) {this.midwifeFindings = mf;}	
+	
+	
 	public Map<Long,Connection> getConns() {return conns;}
 	public void setConns(Map<Long,Connection> conns) {this.conns = conns;}
 	public long getUserId() {return userId;}
@@ -488,6 +506,17 @@ public class PatientIllnessScript extends Beans implements Comparable, IllnessSc
 	public void addNaim(String idStr, String name, String x, String y){ new AddNursingAimAction(this).add(idStr, name, x,y);}
 	public void addNmng(String idStr, String name){new AddNursingMngAction(this).add(idStr, name);}
 	public void addNmng(String idStr, String name, String x, String y){ new AddNursingMngAction(this).add(idStr, name, x,y);}
+
+	//midwife stuff
+	public void addMmng(String idStr, String name){new AddMidwifeMngAction(this).add(idStr, name);}
+	public void addMmng(String idStr, String name, String x, String y){ new AddMidwifeMngAction(this).add(idStr, name, x,y);}
+	public void addMfdg(String idStr, String name){new AddMidwifeFdgAction(this).add(idStr, name);}
+	public void addMfdg(String idStr, String name, String x, String y){ new AddMidwifeFdgAction(this).add(idStr, name, x,y);}
+	public void addMrec(String idStr, String name){new AddMidwifeRecAction(this).add(idStr, name);}
+	public void addMrec(String idStr, String name, String x, String y){ new AddMidwifeRecAction(this).add(idStr, name, x,y);}
+	public void addMhyp(String idStr, String name){new AddMidwifeHypAction(this).add(idStr, name);}
+	public void addMhyp(String idStr, String name, String x, String y){ new AddMidwifeHypAction(this).add(idStr, name, x,y);}
+
 	
 	public void delProblem(String idStr){ new DelProblemAction(this).delete(idStr);}
 	public void delDiagnosis(String idStr){ new DelDiagnosisAction(this).delete(idStr);}
@@ -496,8 +525,12 @@ public class PatientIllnessScript extends Beans implements Comparable, IllnessSc
 	public void delPatho(String idStr){ new DelPathoAction(this).delete(idStr);}
 	public void delInfo(String idStr){ new DelInfoAction(this).delete(idStr);}
 	public void delNaim(String idStr){ new DelNursingAimAction(this).delete(idStr);}
-	public void delMmng(String idStr){ new DelNursingMngAction(this).delete(idStr);}
+	public void delNmng(String idStr){ new DelNursingMngAction(this).delete(idStr);}
 	public void delNddx(String idStr){ new DelNursingDiagnosisAction(this).delete(idStr);}
+	public void delMfdg(String idStr){ new DelMidwifeFdgAction(this).delete(idStr);}
+	public void delMmng(String idStr){ new DelMidwifeMngAction(this).delete(idStr);}
+	public void delMrec(String idStr){ new DelMidwifeRecAction(this).delete(idStr);}
+	public void delMhyp(String idStr){ new DelMidwifeHypAction(this).delete(idStr);}
 
 	//public void reorderProblems(String idStr, String newOrderStr){ new MoveProblemAction(this).reorder(idStr, newOrderStr);}
 	//public void reorderDiagnoses(String idStr, String newOrderStr){ new MoveDiagnosisAction(this).reorder(idStr, newOrderStr);}
@@ -544,11 +577,12 @@ public class PatientIllnessScript extends Beans implements Comparable, IllnessSc
 	public void changeLangOfScript(String newLang){
 		if(newLang==null) return;
 		if(this.getType() == IllnessScriptInterface.TYPE_LEARNER_CREATED) return; //no language change for learner maps!
-		
-		
+				
 		if(!this.getIsEmptyScript()){ //we try to translate the complete script and entered items:
 			new ScriptTranslationController(this).translateScript(new Locale(newLang));
 		}	
+		this.setLocale(new Locale(newLang));
+		this.save();
 	}
 	
 	/** change of box types in authoring system
@@ -623,6 +657,11 @@ public class PatientIllnessScript extends Beans implements Comparable, IllnessSc
 	public RelationNursingDiagnosis getNursingDiagnosisById(long id){return (RelationNursingDiagnosis) getRelationById(nursingDiagnoses, id);}	
 	public RelationNursingAim getNursingAimById(long id){return (RelationNursingAim) getRelationById(nursingAims, id);}	
 	public RelationNursingManagement getNursingMngById(long id){return (RelationNursingManagement) getRelationById(nursingManagement, id);}	
+	public RelationMidwifeManagement getMidwifeMngById(long id){return (RelationMidwifeManagement) getRelationById(midwifeManagement, id);}	
+	public RelationMidwifeFinding getMidwifeFdgById(long id){return (RelationMidwifeFinding) getRelationById(midwifeFindings, id);}	
+	public RelationMidwifeRecommendation getMidwifeRecById(long id){return (RelationMidwifeRecommendation) getRelationById(midwifeRecommendations, id);}	
+	public RelationMidwifeHypothesis getMidwifeHypById(long id){return (RelationMidwifeHypothesis) getRelationById(midwifeHypotheses, id);}	
+
 
 	public Relation getRelationByListItemIdAndType(long id, int type){
 		if(type==Relation.TYPE_PROBLEM) return getRelationByListItemId(this.problems, id);
@@ -634,6 +673,10 @@ public class PatientIllnessScript extends Beans implements Comparable, IllnessSc
 		if(type==Relation.TYPE_NDDX) return getRelationByListItemId(this.nursingDiagnoses, id);	
 		if(type==Relation.TYPE_NMNG) return getRelationByListItemId(this.nursingManagement, id);	
 		if(type==Relation.TYPE_NURSAIM) return getRelationByListItemId(this.nursingAims, id);	
+		if(type==Relation.TYPE_MMNG) return getRelationByListItemId(this.midwifeManagement, id);	
+		if(type==Relation.TYPE_MFDG) return getRelationByListItemId(this.midwifeFindings, id);	
+		if(type==Relation.TYPE_MREC) return getRelationByListItemId(this.midwifeRecommendations, id);	
+		if(type==Relation.TYPE_MHYP) return getRelationByListItemId(this.midwifeHypotheses, id);	
 
 		return null;
 	}
@@ -724,7 +767,11 @@ public class PatientIllnessScript extends Beans implements Comparable, IllnessSc
 		if(type==Relation.TYPE_NMNG) return getRelationById(this.nursingManagement, id);
 		if(type==Relation.TYPE_INFO) return getRelationById(this.infos, id);
 		if(type==Relation.TYPE_NURSAIM) return getRelationById(this.nursingAims, id);
-		
+		if(type==Relation.TYPE_MMNG) return getRelationById(this.midwifeManagement, id);
+		if(type==Relation.TYPE_MFDG) return getRelationById(this.midwifeFindings, id);
+		if(type==Relation.TYPE_MHYP) return getRelationById(this.midwifeHypotheses, id);
+		if(type==Relation.TYPE_MREC) return getRelationById(this.midwifeRecommendations, id);
+	
 		return null;
 	}
 
@@ -843,17 +890,15 @@ public class PatientIllnessScript extends Beans implements Comparable, IllnessSc
 	 * For displaying expert scripts in admin area we display name of VP to make selection easier
 	 * @return
 	 */
-	public String getVPName(){
-		return AppBean.getVPNameByVPId(this.vpId);
-	}
+	public String getVPName(){return AppBean.getVPNameByVPId(this.vpId);}
 	
 	/**
 	 * For displaying expert scripts in admin area we display the VP system to make selection easier
+	 * @deprecated
 	 * @return
 	 */
-	public String getVPSystem(){
-		return AppBean.getVPSystemByVPId(this.vpId);
-	}
+	public String getVPSystem(){return AppBean.getVPSystemByVPId(this.vpId);
+}
 	
 	public String getVpIdCrop() {		
 		if(this.vpId==null || this.vpId.trim().equals("")) return "";
@@ -935,16 +980,12 @@ public class PatientIllnessScript extends Beans implements Comparable, IllnessSc
 		return FeedbackController.getInstance().getSumStDiffForStage(currentStage, vpId);
 	}
 	
-	public int getNumFinalDiagnosisAttempts() {
-		return new DBLog().getNumOfFinalDiagnosisAttempts(this.getId());
-	}
+	public int getNumFinalDiagnosisAttempts() {return new DBLog().getNumOfFinalDiagnosisAttempts(this.getId());}
 	
 	/**
 	 * Exports all map related data into Excel sheets (called from reports area)
 	 */
-	public void getMapAsExcel() {
-		new ExportController().createAndWriteBasicTable(this);	
-	}
+	public void getMapAsExcel() {new ExportController().createAndWriteBasicTable(this);	}
 	
 	/**
 	 * 
@@ -960,22 +1001,17 @@ public class PatientIllnessScript extends Beans implements Comparable, IllnessSc
 		if(this.getInfos()!=null && !this.getInfos().isEmpty()) return false; 
 		if(this.getNursingManagement()!=null && !this.getNursingManagement().isEmpty()) return false; 
 		if(this.getPatho()!=null && !this.getPatho().isEmpty()) return false;
-
+		if(this.getMidwifeFindings()!=null && !this.getMidwifeFindings().isEmpty()) return false;
+		if(this.getMidwifeHypotheses()!=null && !this.getMidwifeHypotheses().isEmpty()) return false;
+		if(this.getMidwifeRecommendations()!=null && !this.getMidwifeRecommendations().isEmpty()) return false;
+		if(this.getMidwifeManagement()!=null && !this.getMidwifeManagement().isEmpty()) return false;
 
 		return true;
 	}
 	//used for admin purposes only (display in admin area for individual maps)
 	public List<LogEntry> getLogEntries(){return logentries;}
 	public void setLogEntries(List<LogEntry> le ){this.logentries = le;}
-	
-	/*public int getBox1Type() {return box1Type;}
-	public void setBox1Type(int box1Type) {this.box1Type = box1Type;}
-	public int getBox2Type() {return box2Type;}
-	public void setBox2Type(int box2Type) {this.box2Type = box2Type;}
-	public int getBox3Type() {return box3Type;}
-	public void setBox3Type(int box3Type) {this.box3Type = box3Type;}
-	public int getBox4Type() {return box4Type;}
-	public void setBox4Type(int box4Type) {this.box4Type = box4Type;}*/
+
 	public int getBox1Type() {
 		return this.tsttypes[0];}
 	public void setBox1Type(int box1Type) {
@@ -1005,6 +1041,10 @@ public class PatientIllnessScript extends Beans implements Comparable, IllnessSc
 	public int getNDdxBoxNo() { return getBoxByType(Relation.TYPE_NDDX);}
 	public int getNAimBoxNo() { return getBoxByType(Relation.TYPE_NURSAIM);}
 	public int getInfoBoxNo() { return getBoxByType(Relation.TYPE_INFO);}
+	public int getMMngBoxNo() { return getBoxByType(Relation.TYPE_MMNG);}
+	public int getMFdgBoxNo() { return getBoxByType(Relation.TYPE_MFDG);}
+	public int getMRecBoxNo() { return getBoxByType(Relation.TYPE_MREC);}
+	public int getMHypBoxNo() { return getBoxByType(Relation.TYPE_MHYP);}
 	/**
 	 * we return the box that contains the given type (fgd, ddx,...) or 
 	 * 0 if should not be displayed. 
@@ -1015,10 +1055,6 @@ public class PatientIllnessScript extends Beans implements Comparable, IllnessSc
 		for(int i=0;i< tsttypes.length;i++) {
 			if(tsttypes[i] == type ) return i+1;
 		}
-		/*if(box1Type==type) return 1;
-		if(box2Type==type) return 2;
-		if(box3Type==type) return 3;
-		if(box4Type==type) return 4;*/
 		return 0;
 	}
 }

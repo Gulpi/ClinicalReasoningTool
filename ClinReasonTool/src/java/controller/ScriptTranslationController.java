@@ -52,7 +52,7 @@ public class ScriptTranslationController {
 					translatePatho(patIllScript.getPatho().get(i), newLang);
 				}
 			}
-			patIllScript.setLocale(newLang);
+			//patIllScript.setLocale(newLang);
 			new DBClinReason().saveAndCommit(patIllScript);
 		}
 		catch(Exception e){

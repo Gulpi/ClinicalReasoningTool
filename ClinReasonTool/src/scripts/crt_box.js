@@ -899,7 +899,11 @@ function turnOverallExpFeedbackOn(iconId, itemClass){
 	if(nmngBoxMode==1)turnExpBoxFeedbackOn("expFeedbackNmng", "nmng");
 	if(ddxBoxMode==1)turnExpBoxFeedbackOn("expFeedbackNddx", "nddx");
 	if(infoBoxMode==1)turnExpBoxFeedbackOn("expFeedbackInfo", "info");
-	if(naimBoxMode==1)turnExpBoxFeedbackOn("expFeedbackNaim", "naim");
+	if(naimBoxMode==1)turnExpBoxFeedbackOn("expFeedbackNaim", "naim");	
+	if(mmngBoxMode==1)turnExpBoxFeedbackOn("expFeedbackMmng", "mmng");
+	if(mrecBoxMode==1)turnExpBoxFeedbackOn("expFeedbackMrec", "mrec");
+	if(mfdgBoxMode==1)turnExpBoxFeedbackOn("expFeedbackMfdg", "mfdg");
+	if(mhypBoxMode==1)turnExpBoxFeedbackOn("expFeedbackMhyp", "mhyp");
 	if(isOverallCnxOn()){
 		$(".jtk-exp-connector").addClass("jtk-exp-connector-show");
 		$(".jtk-exp-connector").removeClass("jtk-exp-connector-hide");
@@ -946,8 +950,11 @@ function turnViewModeOn(){
 	turnViewModeBoxOn(nmngBoxMode, "nmng", "nmng");
 	turnViewModeBoxOn(nddxBoxMode, "nddx", "nddx");
 	turnViewModeBoxOn(naimBoxMode, "naim", "naim");
-	turnViewModeBoxOn(infoBoxMode, "info", "info");
-
+	turnViewModeBoxOn(infoBoxMode, "info", "info");	
+	turnViewModeBoxOn(mmngBoxMode, "mmng", "mmng");
+	turnViewModeBoxOn(mhypBoxMode, "mhyp", "mhyp");
+	turnViewModeBoxOn(mfdgBoxMode, "mfd", "mfd");
+	turnViewModeBoxOn(mrecBoxMode, "mrec", "mrec");
 
 }
 
@@ -961,6 +968,10 @@ function turnViewModeOff(){
 	turnViewModeBoxOff(nddxBoxMode, "nddx", "nddx");
 	turnViewModeBoxOff(infoBoxMode, "info", "info");
 	turnViewModeBoxOff(naimBoxMode, "naim", "naim");
+	turnViewModeBoxOff(mmngBoxMode, "mmng", "mmng");
+	turnViewModeBoxOff(mhypBoxMode, "mhyp", "mhyp");
+	turnViewModeBoxOff(mfdgBoxMode, "mfd", "mfd");
+	turnViewModeBoxOff(mrecBoxMode, "mrec", "mrec");
 }
 
 function turnOverallExpFeedbackOff(iconId, itemClass){
@@ -980,6 +991,10 @@ function turnOverallExpFeedbackOff(iconId, itemClass){
 	turnExpBoxFeedbackOff("expFeedbackInfo", "info");
 	turnExpBoxFeedbackOff("expFeedbackNaim", "naim");
 	turnExpBoxFeedbackOff("expFeedbackNddx", "nddx");
+	turnExpBoxFeedbackOff("expFeedbackMmng", "mmng");
+	turnExpBoxFeedbackOff("expFeedbackMrec", "mrec");
+	turnExpBoxFeedbackOff("expFeedbackMhyp", "mhyp");
+	turnExpBoxFeedbackOff("expFeedbackMfdg", "mfdg");
 	$(".jtk-exp-connector").addClass("jtk-exp-connector-hide");
 	$(".jtk-exp-connector").removeClass("jtk-exp-connector-show");
 	turnViewModeOn();

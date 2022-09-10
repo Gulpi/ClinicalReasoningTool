@@ -1,0 +1,92 @@
+ <ui:composition 
+    xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:v="urn:schemas-microsoft-com:vml">
+<!-- midwife fdg -->
+  		<div id="mfdg_box" class="container expcontainer pos_#{adminContext.patillscript.MFdgBoxNo}"  group="mfdg_group">
+	  		<div id="mfdg_title" mytooltip="#{prop['mfdg.search']}" class="title">#{prop['mfdg']}
+	  		<div class="search  boxchild">
+	  			<i class="fa fa-search ininput mfdgsearch"></i>
+	  			<input class="f_text mfdgsearch" onkeyup="javascript:storeHistory('mfdg');" onFocus="javascript:hideTooltips();"  placeholder="#{prop['mfdg.add']} ..." id="mfdg" mytooltip="#{prop['mfdg.search']}" listUrl=""></input>
+	  		</div>
+	  			<h:form id="mfdgform">
+	  			<h:panelGroup>
+				
+					<ui:repeat value="#{adminContext.patillscript.midwifeFindings}" var="mfdg" varStatus="status">
+						<ui:include src="mfdgbox.xhtml" />
+    					</ui:repeat>	
+	
+   				</h:panelGroup>
+   				     <h:commandButton id="hiddenInfoButton" value="RenderSomething" style="visibility:hidden">
+   						<f:ajax render="@form" onevent="updateItemCallback"></f:ajax>
+					</h:commandButton>
+				</h:form>
+				<span class="errormsg" id="msg_mfdgform" onClick="javascript:clearErrorMsgs();"></span>
+	</div></div>	
+	
+<!-- midwife hyp -->
+ 		<div id="mhyp_box" class="container expcontainer pos_#{adminContext.patillscript.MHypBoxNo}"  group="mhyp_group">
+  		<div id="mhyp_title" mytooltip="#{prop['mhyp.search']}" class="title">#{prop['mhyp']}
+  		<div class="search  boxchild">
+  			<i class="fa fa-search ininput mhypsearch"></i>
+  			<input class="f_text mhypsearch" onkeyup="javascript:storeHistory('mhyp');" onFocus="javascript:hideTooltips();"  placeholder="#{prop['mhyp.add']} ..." id="mhyp" mytooltip="#{prop['mhyp.search']}" listUrl=""></input>
+  		</div>
+  			<h:form id="mhypform">
+  			<h:panelGroup>
+			
+				<ui:repeat value="#{adminContext.patillscript.midwifeHypotheses}" var="mfdg" varStatus="status">
+					<ui:include src="mhypbox.xhtml" />
+   					</ui:repeat>	
+
+  				</h:panelGroup>
+  				     <h:commandButton id="hiddenInfoButton" value="RenderSomething" style="visibility:hidden">
+  						<f:ajax render="@form" onevent="updateItemCallback"></f:ajax>
+				</h:commandButton>
+			</h:form>
+			<span class="errormsg" id="msg_mhypform" onClick="javascript:clearErrorMsgs();"></span>
+</div></div>
+<!-- midwife mng -->
+ 		<div id="mmng_box" class="container expcontainer pos_#{adminContext.patillscript.MMngBoxNo}"  group="mmng_group">
+  		<div id="mmng_title" mytooltip="#{prop['mmng.search']}" class="title">#{prop['mmng']}
+  		<div class="search  boxchild">
+  			<i class="fa fa-search ininput mmngsearch"></i>
+  			<input class="f_text mmngsearch" onkeyup="javascript:storeHistory('mmng');" onFocus="javascript:hideTooltips();"  placeholder="#{prop['mmng.add']} ..." id="mmng" mytooltip="#{prop['mmng.search']}" listUrl=""></input>
+  		</div>
+  			<h:form id="mmngform">
+  			<h:panelGroup>
+			
+				<ui:repeat value="#{adminContext.patillscript.midwifeManagement}" var="mmng" varStatus="status">
+					<ui:include src="mmngbox.xhtml" />
+   					</ui:repeat>	
+
+  				</h:panelGroup>
+  				     <h:commandButton id="hiddenInfoButton" value="RenderSomething" style="visibility:hidden">
+  						<f:ajax render="@form" onevent="updateItemCallback"></f:ajax>
+				</h:commandButton>
+			</h:form>
+			<span class="errormsg" id="msg_mmngform" onClick="javascript:clearErrorMsgs();"></span>
+</div></div>	
+<!-- midwife mrec -->
+ 		<div id="mrec_box" class="container expcontainer pos_#{adminContext.patillscript.MRecBoxNo}"  group="mrec_group">
+  		<div id="mrec_title" mytooltip="#{prop['mrec.search']}" class="title">#{prop['mrec']}
+  		<div class="search  boxchild">
+  			<i class="fa fa-search ininput mrecsearch"></i>
+  			<input class="f_text mrecsearch" onkeyup="javascript:storeHistory('mrec');" onFocus="javascript:hideTooltips();"  placeholder="#{prop['mrec.add']} ..." id="mrec" mytooltip="#{prop['mrec.search']}" listUrl=""></input>
+  		</div>
+  			<h:form id="mrecform">
+  			<h:panelGroup>
+			
+				<ui:repeat value="#{adminContext.patillscript.midwifeRecommendations}" var="mrec" varStatus="status">
+					<ui:include src="recbox.xhtml" />
+   					</ui:repeat>	
+
+  				</h:panelGroup>
+  				     <h:commandButton id="hiddenInfoButton" value="RenderSomething" style="visibility:hidden">
+  						<f:ajax render="@form" onevent="updateItemCallback"></f:ajax>
+				</h:commandButton>
+			</h:form>
+			<span class="errormsg" id="msg_mrecform" onClick="javascript:clearErrorMsgs();"></span>
+</div></div>		
+</ui:composition>

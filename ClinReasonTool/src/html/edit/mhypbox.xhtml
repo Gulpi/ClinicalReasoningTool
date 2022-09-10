@@ -1,0 +1,30 @@
+ <ui:composition 
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core">
+   	<div id="mhyp_#{mhyp.id}" class="itembox row1 mhyp" style="left:#{mhyp.x}px; top:#{mhyp.boxY}px;">
+  	 	<span mytooltip="#{mhyp.labelOrSynLabel}" >#{mhyp.shortLabelOrSynShortLabel}</span>
+  	 	 <script language="Javascript">
+ 			item_arr.push("mhyp_#{mhyp.id}");
+ 		</script>
+   		<span class="dropdown" onClick="javascript:showDropDown('dmhyp_#{mhyp.id}','mhyp_#{mhyp.id}');"><i class="fa fa-chevron-circle-down"></i></span>
+  	</div>
+	<div id="dmhyp_#{mhyp.id}" class="dropdown-content" style="opacity:1;z-index:99;" >
+	 <span style="float:left;">#{prop['change']}:</span>
+		<span class="dropdownX"><a href="javascript:hideDropDown('dmhyp_#{mhyp.id}');"><i class="fa fa fa-times"></i></a></span> 
+	
+	<br/>
+		<div class="links">
+			<span class="dropd_#{mhyp.isExpertHierarchyItem}"><a class="dropd_#{mhyp.isExpertHierarchyItem}" href="javascript:chgItem(#{mhyp.id}, 11, 'Mhyp');"><i class="fa fa-long-arrow-right"></i> #{mhyp.expItemLabel}</a><br/></span>  <!-- Hierarchy -->
+
+		<!--  	<a class="f_on_#{nddx.finalDDX}" href="javascript:expFinalDiagnosis(#{nddx.id});"><i class="fa fa-long-arrow-right"></i>#{prop['ddx.finalddx']}</a>
+			<a class="f_off_#{nddx.finalDDX}" href="javascript:expNoFinalDiagnosis(#{nddx.id});"><i class="fa fa-long-arrow-right"></i>#{prop['ddx.nofinalddx']}</a>
+-->
+		</div>
+		<a class="del" href="javascript:delItem(#{mhyp.id},'Mhyp');"><i class="fa fa-trash"></i> #{prop['delete']}</a>
+		Display on card <input id="chgstage_#{mhyp.listItemId}" value="#{mhyp.stage}" class="chgstage" style="width:20px;" />
+		<!--  <span class="f_off_#{ddx.finalDDX}">Final diagnosis from card <input id="chgfinal_#{ddx.listItemId}" value="#{nddx.finalDiagnosis}" class="chgstage" style="width:20px;" /></span>-->
+		
+	 </div>
+</ui:composition>

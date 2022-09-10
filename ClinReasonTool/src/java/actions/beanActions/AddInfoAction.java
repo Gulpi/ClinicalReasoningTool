@@ -53,11 +53,7 @@ public class AddInfoAction implements AddAction, Scoreable{
 	/* (non-Javadoc)
 	 * @see beanActions.AddAction#add(java.lang.String)
 	 */
-	public void add(String idStr, String name){ 
-		//addProblem(idStr, name);
-		//long id = Long.valueOf(idStr.trim());
-		add(idStr, name, "-1", "-1");
-	}
+	public void add(String idStr, String name){ add(idStr, name, "-1", "-1");}
 	
 	/**
 	 * @param idStr either an id or syn_id (for a synonym)
@@ -65,14 +61,12 @@ public class AddInfoAction implements AddAction, Scoreable{
 	 * @param xStr (e.g. "199.989894") -> we have to convert it into int
 	 * @param yStr
 	 */
-	public void add(String idStr, String name, String xStr, String yStr){ 
-		new RelationController().initAdd(idStr, name, xStr, yStr, this, patIllScript.getLocale() );
-	}
+	public void add(String idStr, String name, String xStr, String yStr){ new RelationController().initAdd(idStr, name, xStr, yStr, this, patIllScript.getLocale() );}
 	
-	public void addRelation(/*long id, String prefix*/ListItem li, int x, int y, long synId){		
-		addRelation(/*id, prefix*/li, x, y, synId, false);
+	public void addRelation(ListItem li, int x, int y, long synId){		
+		addRelation(li, x, y, synId, false);
 	}
-	public void addRelation(/*long id, String name*/ ListItem li, int x, int y, long synId, boolean isJoker){
+	public void addRelation(ListItem li, int x, int y, long synId, boolean isJoker){
 		if(patIllScript.getInfos()==null) patIllScript.setInformation(new ArrayList<RelationInformation>());
 		RelationInformation rel = new RelationInformation(li.getItem_id(), patIllScript.getId(), synId);		
 		if(patIllScript.getInfos().contains(rel)){
@@ -88,7 +82,6 @@ public class AddInfoAction implements AddAction, Scoreable{
 		else rel.setXAndY(new Point(x,y)); //problem has been created from the concept map, therefore we have a position
 
 		patIllScript.getInfos().add(rel);
-		//rel.setManagement(new DBList().selectListItemById(id));
 		rel.setInfo(li);
 		save(rel);
 		updateGraph(rel);
@@ -133,13 +126,7 @@ public class AddInfoAction implements AddAction, Scoreable{
 	public void updateGraph(Relation rel) {
 		Graph graph = NavigationController.getInstance().getMyFacesContext().getGraph();
 		graph.addVertex(rel, IllnessScriptInterface.TYPE_LEARNER_CREATED);
-	
-		// add implicit edges:
-		/*if( patIllScript.getDiagnoses()!=null && patIllScript.getDiagnoses().size()>0){
-			for(int i=0; i < patIllScript.getDiagnoses().size(); i++){
-				graph.addImplicitEdge(patIllScript.getDiagnoses().get(i).getListItemId(), rel.getListItemId(), IllnessScriptInterface.TYPE_LEARNER_CREATED);
-			}
-		*/
+
 		CRTLogger.out(graph.toString(), CRTLogger.LEVEL_TEST);
 	}
 	

@@ -54,6 +54,14 @@ public class ScoreBean extends Beans implements Serializable{
 	public static final int TYPE_NAIM_LIST = 27;
 	public static final int TYPE_NDDX_LIST = 28;
 	public static final int TYPE_INFO_LIST = 29;
+	public static final int TYPE_MFDG_LIST = 30;
+	public static final int TYPE_MREC_LIST = 31;
+	public static final int TYPE_MHYP_LIST = 32;
+	public static final int TYPE_MMNG_LIST = 33;
+	public static final int TYPE_ADD_MFDG = 34;
+	public static final int TYPE_ADD_MHYP = 35;
+	public static final int TYPE_ADD_MREC = 36;
+	public static final int TYPE_ADD_MMNG = 37;	
 	
 	public static final int TIME_OK = 0;
 	public static final int TIME_LATE = 1;

@@ -392,7 +392,12 @@ public class AppBean extends ApplicationWrapper implements HttpSessionListener{
 		if(vpScriptRefs==null || vpScriptRefs.get(id)==null) return "";
 		return vpScriptRefs.get(id).getVpName();
 	}
-	
+
+	/**
+	 * @param id
+	 * @return
+	 * @deprecated
+	 */
 	public static String getVPSystemByVPId(String id){
 		if(vpScriptRefs==null || vpScriptRefs.get(id)==null) return "";
 		int systemId = vpScriptRefs.get(id).getSystemId();

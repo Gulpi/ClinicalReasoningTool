@@ -5,7 +5,7 @@ var ep_left_prefix = "2_";
 var ep_top_prefix = "3_";
 var ep_bottom_prefix = "4_";
 
-var groups = new Array("fdg_group", "ddx_group","tst_group", "mng_group", "sum_group", "pat_group", "nddx_group", "naim_group", "nmng_group", "info_group" );
+var groups = new Array("fdg_group", "ddx_group","tst_group", "mng_group", "sum_group", "pat_group", "nddx_group", "naim_group", "nmng_group", "info_group", "mhyp_group", "mrec_group", "mmng_group", "mfdg_group" );
 var boxes;
 /*
  * TODO not very elegant, but the "" vs non "" is important and seems to be difficult to do when getting the items/ids from 
@@ -166,11 +166,32 @@ function addToGroup(itemId, item){
 			instance.addToGroup("pat_group", item);
 			return;
 		}
-
-		if(itemId.indexOf("info")>=0)
+		if(itemId.indexOf("info")>=0){
 			instance.addToGroup("info_group", item);
-		if(itemId.indexOf("naim")>=0)
+			return;
+		}
+		if(itemId.indexOf("naim")>=0){
 			instance.addToGroup("naim_group", item);
+			return;
+		}
+				
+		if(itemId.indexOf("mmng")>=0){
+			instance.addToGroup("mmng_group", item);
+			return;
+		}
+		
+		if(itemId.indexOf("myhp")>=0){
+			instance.addToGroup("myhp_group", item);
+			return;
+		}
+		if(itemId.indexOf("mfdg")>=0){
+			instance.addToGroup("mfdg_group", item);
+			return;
+		}
+		if(itemId.indexOf("mrec")>=0){
+			instance.addToGroup("mrec_group", item);
+			return;
+		}
 	}
 	catch(err){
 		var x = err;

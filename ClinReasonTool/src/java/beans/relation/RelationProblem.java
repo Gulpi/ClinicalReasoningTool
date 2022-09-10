@@ -54,6 +54,9 @@ public class RelationProblem extends Relation implements Serializable{
 		this.setDestId(destId);
 		if(synId>0) setSynId(synId);
 	}
+	
+	public int getDiscriminator() {return Relation.TYPE_PROBLEM;}
+	public void setDiscriminator(int i){}
 	public ListItem getProblem() {return problem;}
 	public ListItem getListItem() {return getProblem();}
 	public void setProblem(ListItem problem) {this.problem = problem;}		

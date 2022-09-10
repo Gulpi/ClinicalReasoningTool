@@ -1,0 +1,92 @@
+ <ui:composition 
+    xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:v="urn:schemas-microsoft-com:vml">
+    <!-- nursing diagnoses -->
+  		<div id="nddx_box" class="container expcontainer pos_#{adminContext.patillscript.NDdxBoxNo}"  group="nddx_group">
+	  		<div id="nddx_title" mytooltip="#{prop['nddx.search']}" class="title">#{prop['nddx']}
+	  		<div class="search  boxchild">
+	  			<i class="fa fa-search ininput nddxsearch"></i>
+	  			<input class="f_text nddxsearch" onkeyup="javascript:storeHistory('nddx');" onFocus="javascript:hideTooltips();"  placeholder="#{prop['nddx.add']} ..." id="nddx" mytooltip="#{prop['nddx.search']}" listUrl="../#{adminContext.getMyListUrl(&quot;nursing&quot;,adminContext.patillscript.locale)}" ></input>
+	  		</div>
+	  			<h:form id="nddxform">
+	  			<h:panelGroup>
+				
+					<ui:repeat value="#{adminContext.patillscript.nursingDiagnoses}" var="nddx" varStatus="status">
+						<ui:include src="nddxbox.xhtml" />
+    					</ui:repeat>	
+	
+   				</h:panelGroup>
+   				     <h:commandButton id="hiddenNddxButton" value="RenderSomething" style="visibility:hidden">
+   						<f:ajax render="@form" onevent="updateItemCallback"></f:ajax>
+					</h:commandButton>
+				</h:form>
+				<span class="errormsg" id="msg_nddxform" onClick="javascript:clearErrorMsgs();"></span>
+	</div></div>
+
+  		<!-- nursing aims -->
+  		<div id="naim_box" class="container expcontainer  pos_#{adminContext.patillscript.NAimBoxNo}"  group="naim_group">
+	  		<div id="naim_title" mytooltip="#{prop['naim.search']}" class="title">#{prop['naims']}
+	  		<div class="search  boxchild">
+	  			<i class="fa fa-search ininput naimgsearch"></i>
+	  			<input class="f_text naimsearch" onkeyup="javascript:storeHistory('naim');" onFocus="javascript:hideTooltips();"  placeholder="#{prop['naim.add']} ..." id="naim" mytooltip="#{prop['naim.search']}" listUrl=""></input>
+	  		</div>
+	  			<h:form id="naimform">
+	  			<h:panelGroup>
+				
+					<ui:repeat value="#{adminContext.patillscript.nursingAims}" var="naim" varStatus="status">
+						<ui:include src="naimbox.xhtml" />
+    					</ui:repeat>	
+	
+   				</h:panelGroup>
+   				     <h:commandButton id="hiddenNaimButton" value="RenderSomething" style="visibility:hidden">
+   						<f:ajax render="@form" onevent="updateItemCallback"></f:ajax>
+					</h:commandButton>
+				</h:form>
+				<span class="errormsg" id="msg_naimform" onClick="javascript:clearErrorMsgs();"></span>
+	</div></div>
+		  		<!-- nursing management -->
+  		<div id="nmng_box" class="container expcontainer pos_#{adminContext.patillscript.NMngBoxNo}"  group="nmng_group">
+	  		<div id="nmng_title" mytooltip="#{prop['nmng.search']}" class="title">#{prop['nmng']}
+	  		<div class="search  boxchild">
+	  			<i class="fa fa-search ininput nmngsearch"></i>
+	  			<input class="f_text nmngsearch" onkeyup="javascript:storeHistory('nmng');" onFocus="javascript:hideTooltips();"  placeholder="#{prop['nmng.add']} ..." id="nmng" mytooltip="#{prop['nmg.search']}" listUrl=""></input>
+	  		</div>
+	  			<h:form id="nmngform">
+	  			<h:panelGroup>
+				
+					<ui:repeat value="#{adminContext.patillscript.nursingManagement}" var="nmng" varStatus="status">
+						<ui:include src="nmngbox.xhtml" />
+    					</ui:repeat>	
+	
+   				</h:panelGroup>
+   				     <h:commandButton id="hiddenNmngButton" value="RenderSomething" style="visibility:hidden">
+   						<f:ajax render="@form" onevent="updateItemCallback"></f:ajax>
+					</h:commandButton>
+				</h:form>
+				<span class="errormsg" id="msg_nmngform" onClick="javascript:clearErrorMsgs();"></span>
+	</div></div>					
+<!-- nursing info -->
+  		<div id="info_box" class="container expcontainer pos_#{adminContext.patillscript.infoBoxNo}"  group="info_group">
+	  		<div id="info_title" mytooltip="#{prop['info.search']}" class="title">#{prop['info']}
+	  		<div class="search  boxchild">
+	  			<i class="fa fa-search ininput infosearch"></i>
+	  			<input class="f_text infosearch" onkeyup="javascript:storeHistory('info');" onFocus="javascript:hideTooltips();"  placeholder="#{prop['info.add']} ..." id="info" mytooltip="#{prop['info.search']}" listUrl=""></input>
+	  		</div>
+	  			<h:form id="infoform">
+	  			<h:panelGroup>
+				
+					<ui:repeat value="#{adminContext.patillscript.infos}" var="info" varStatus="status">
+						<ui:include src="infobox.xhtml" />
+    					</ui:repeat>	
+	
+   				</h:panelGroup>
+   				     <h:commandButton id="hiddenInfoButton" value="RenderSomething" style="visibility:hidden">
+   						<f:ajax render="@form" onevent="updateItemCallback"></f:ajax>
+					</h:commandButton>
+				</h:form>
+				<span class="errormsg" id="msg_infoform" onClick="javascript:clearErrorMsgs();"></span>
+	</div></div>
+</ui:composition>

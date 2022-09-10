@@ -1,0 +1,26 @@
+ <ui:composition 
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core">
+   	<div id="mmng_#{mmng.id}" class="itembox mmng row2" style="left:#{mmng.x}px; top:#{mmng.boxY}px;">
+  	 	
+  	 	<span mytooltip="#{mmng.labelOrSynLabel}" >#{nmng.shortLabelOrSynShortLabel}</span>
+  	 	 <script language="Javascript">
+ 			item_arr.push("mmng_#{mmng.id}");
+ 		</script>
+   		<span class="dropdown" onClick="javascript:showDropDown('ddmmng_#{mmng.id}','mmng_#{mmng.id}');"><i class="fa fa-chevron-circle-down"></i></span>
+  	</div>
+	<div id="dmmng_#{mmng.id}" class="dropdown-content" style="opacity:1;z-index:99;" ><!-- onmouseleave="javascript:hideDropDown('ddddx_#{ddx.id}');"-->
+	 <span style="float:left;">#{prop['change']}:</span>
+		<span class="dropdownX"><a href="javascript:hideDropDown('dmmng_#{mmng.id}');"><i class="fa fa fa-times"></i></a></span> 
+	
+	<br/>
+		<div class="links">
+			<span class="dropd_#{mmng.isExpertHierarchyItem}"><a class="dropd_#{mmng.isExpertHierarchyItem}" href="javascript:chgItem(#{mmng.id}, 13, 'Mmng');"><i class="fa fa-long-arrow-right"></i> #{mmng.expItemLabel}</a><br/></span>  <!-- Hierarchy -->
+		</div>
+		<a class="del" href="javascript:delItem(#{mmng.id},'Nmng');"><i class="fa fa-trash"></i> #{prop['delete']}</a>
+		Display on card <input id="chgstage_#{mmng.listItemId}" value="#{mmng.stage}" class="chgstage" style="width:20px;" />
+		
+	 </div>
+</ui:composition>

@@ -33,7 +33,7 @@ public class DelNursingMngAction implements DelAction{
 	 * @see beanActions.DelAction#notifyLog(beans.relation.Relation)
 	 */
 	public void notifyLog(Object o) {
-		LogEntry le = new LogEntry(LogEntry.DELNAIM_ACTION, patIllScript.getId(), ((Relation)o).getListItemId());
+		LogEntry le = new LogEntry(LogEntry.DELNMNG_ACTION, patIllScript.getId(), ((Relation)o).getListItemId());
 		le.save();		
 	}
 

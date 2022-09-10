@@ -190,10 +190,11 @@ function toggleStageDisplay(){
     }
 }
 
-function openSelBoxes(){
-	$("#boxesSel").dialog( "option", "width", ['200'] );
-	$("#boxesSel").dialog( "option", "height", ['200'] );
-	$("#boxesSel").dialog( "option", "title", "");
+function openSelBoxes(title){
+	$("#boxesSel").dialog( "option", "width", ['250'] );
+	$("#boxesSel").dialog( "option", "height", 'auto' );
+	$("#boxesSel").dialog( "option", "maxHeight", '400' );
+	$("#boxesSel").dialog( "option", "title", title?title:"");
 	$("#boxesSel").dialog( "option", "buttons", [ ] );
 	$("#boxesSel" ).dialog( "open" );
 	$("#boxesSel").show();

@@ -73,9 +73,9 @@ public class AddNursingAimAction implements AddAction, Scoreable{
 		addRelation(/*id, prefix*/li, x, y, synId, false);
 	}
 	public void addRelation(/*long id, String name*/ ListItem li, int x, int y, long synId, boolean isJoker){
-		if(patIllScript.getMngs()==null) patIllScript.setNursingAims(new ArrayList<RelationNursingAim>());
+		if(patIllScript.getNursingAims()==null) patIllScript.setNursingAims(new ArrayList<RelationNursingAim>());
 		RelationNursingAim rel = new RelationNursingAim(li.getItem_id(), patIllScript.getId(), synId);		
-		if(patIllScript.getMngs().contains(rel)){
+		if(patIllScript.getNursingAims().contains(rel)){
 			createErrorMessage(IntlConfiguration.getValue("naim.duplicate"),"optional details", FacesMessage.SEVERITY_WARN);
 			return;
 		}

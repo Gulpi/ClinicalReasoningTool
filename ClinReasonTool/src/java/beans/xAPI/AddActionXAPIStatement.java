@@ -27,7 +27,7 @@ public class AddActionXAPIStatement extends XAPIStatement implements AddActionSt
 	private static final long serialVersionUID = 1L;
 	//public static final String VERB = "added";
 
-	public static final String[] VERBS = {"", "identified", "identified", "investigated", "treated"};
+	public static final String[] VERBS = {"", "identified", "identified", "investigated", "treated" ,"","","","","","","",""};
 
 	public static final String INTERACT_TYPE = "fill-in";
 	

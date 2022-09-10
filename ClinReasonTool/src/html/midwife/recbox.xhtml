@@ -3,7 +3,7 @@
     xmlns:h="http://java.sun.com/jsf/html"
     xmlns:ui="http://java.sun.com/jsf/facelets"
     xmlns:f="http://java.sun.com/jsf/core">
-   	<div id="mrec_#{mrec.id}" class="itembox row2 mrec" style="left:#{mrec.x}px; top:#{mrec.boxY}px;">
+   	<div id="mrec_#{mrec.id}" score="#{mrec.score}" class="itembox row2 mrec" style="left:#{mrec.x}px; top:#{mrec.boxY}px;">
   	 	<span mytooltip="#{mrec.labelOrSynLabel}" >#{mrec.shortLabelOrSynShortLabel}</span>
   	 	 <script language="Javascript">
  			item_arr.push("mrec_#{mrec.id}");

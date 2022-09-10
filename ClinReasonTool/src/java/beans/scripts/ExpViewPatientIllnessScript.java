@@ -74,6 +74,11 @@ public class ExpViewPatientIllnessScript {
 	public List<Relation> getNursingManagement() {return getList(Relation.TYPE_NMNG);}
 	public List<Relation> getInfos() {return getList(Relation.TYPE_INFO);}
 	
+	public List<Relation> getMidwifeManagement() {return getList(Relation.TYPE_MMNG);}
+	public List<Relation> getMidwifeRecommendations() {return getList(Relation.TYPE_MREC);}
+	public List<Relation> getMidwifeHypotheses() {return getList(Relation.TYPE_MHYP);}
+	public List<Relation> getMidwifeFindings() {return getList(Relation.TYPE_MFDG);}
+	
 	/**
 	 * get all items of given type that have not been selected by the learner, but the expert
 	 * @param type

@@ -523,7 +523,11 @@ public class DBClinReason /*extends HibernateUtil*/{
 		patIllScript.setNursingManagement(selectNursingMngsForScript(s, patIllScript.getId()));
 		patIllScript.setNursingAims(selectNursingAimsForScript(s, patIllScript.getId()));
 		patIllScript.setInformation(selectInfosForScript(s, patIllScript.getId()));
-		patIllScript.setNursingDiagnoses(selectNursingDDXForScript(s, patIllScript.getId()));		
+		patIllScript.setNursingDiagnoses(selectNursingDDXForScript(s, patIllScript.getId()));	
+		patIllScript.setMidwifeManagement(selectMMngForScript(s, patIllScript.getId()));
+		patIllScript.setMidwifeFindings(selectMFdgForScript(s, patIllScript.getId()));
+		patIllScript.setMidwifeHypotheses(selectMHypForScript(s, patIllScript.getId()));
+		patIllScript.setMidwifeRecommendations(selectMRecForScript(s, patIllScript.getId()));	
 	}
 	
 	private List<RelationProblem> selectProblemsForScript(Session s, long patIllscriptId){
@@ -587,6 +591,34 @@ public class DBClinReason /*extends HibernateUtil*/{
 	
 	private List<RelationInformation> selectInfosForScript(Session s, long patIllscriptId){
 		Criteria criteria = s.createCriteria(RelationInformation.class,"RelationInformation");
+		criteria.add(Restrictions.eq("destId", new Long(patIllscriptId)));
+		criteria.addOrder(Order.asc("order"));
+		return criteria.list();	
+	}
+	
+	private List<RelationMidwifeManagement> selectMMngForScript(Session s, long patIllscriptId){
+		Criteria criteria = s.createCriteria(RelationMidwifeManagement.class,"RelationMidwifeManagement");
+		criteria.add(Restrictions.eq("destId", new Long(patIllscriptId)));
+		criteria.addOrder(Order.asc("order"));
+		return criteria.list();	
+	}
+	
+	private List<RelationMidwifeFinding> selectMFdgForScript(Session s, long patIllscriptId){
+		Criteria criteria = s.createCriteria(RelationMidwifeFinding.class,"RelationMidwifeFinding");
+		criteria.add(Restrictions.eq("destId", new Long(patIllscriptId)));
+		criteria.addOrder(Order.asc("order"));
+		return criteria.list();	
+	}
+	
+	private List<RelationMidwifeHypothesis> selectMHypForScript(Session s, long patIllscriptId){
+		Criteria criteria = s.createCriteria(RelationMidwifeHypothesis.class,"RelationMidwifeHypothesis");
+		criteria.add(Restrictions.eq("destId", new Long(patIllscriptId)));
+		criteria.addOrder(Order.asc("order"));
+		return criteria.list();	
+	}
+	
+	private List<RelationMidwifeRecommendation> selectMRecForScript(Session s, long patIllscriptId){
+		Criteria criteria = s.createCriteria(RelationMidwifeRecommendation.class,"RelationMidwifeRecommendation");
 		criteria.add(Restrictions.eq("destId", new Long(patIllscriptId)));
 		criteria.addOrder(Order.asc("order"));
 		return criteria.list();	

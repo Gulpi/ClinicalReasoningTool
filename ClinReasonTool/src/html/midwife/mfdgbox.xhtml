@@ -3,21 +3,18 @@
     xmlns:h="http://java.sun.com/jsf/html"
     xmlns:ui="http://java.sun.com/jsf/facelets"
     xmlns:f="http://java.sun.com/jsf/core">
-   	<div id="mfdg_#{mfdg.id}" score="#{mfdg.score}" class="jtk-node jtk-endpoint-anchor jtk-droppable itembox row1 mfdg" style="left:#{mfdg.x}px; top:#{mfdg.boxY}px;">
-  	 	
+   	<div id="mfdg_#{mfdg.id}" score="#{mfdg.score}" class="itembox row1 mfdg" style="left:#{mfdg.x}px; top:#{mfdg.boxY}px;"> 	 	
   	 	<span mytooltip="#{mfdg.labelOrSynLabel}" >#{mfdg.shortLabelOrSynShortLabel}</span>
   	 	 <script language="Javascript">
  			item_arr.push("mfdg_#{mfdg.id}");
  		</script>
    		<span class="dropdown" onClick="javascript:showDropDown('dmfdg_#{mfdg.id}','mfdg_#{mfdg.id}');"><i class="fa fa-chevron-circle-down"></i></span>
   	  	<span class="peer_score_mfdg" title="#{prop['mfdg.peer.hint']}" id="peerscore#{mfdg.id}"> (#{mfdg.peerPercentage})</span>
- 		<div class="mfdgs_score mfdg_score boxscore_#{mfdg.score}"><i class="fa fa-check"></i></div>
+ 		<div class="icons_score mfdg_score boxscore_#{mfdg.score}"><i class="fa fa-check"></i></div>
   	</div>
 	<div id="dmfdg_#{mfdg.id}" class="dropdown-content" style="opacity:1;z-index:99;" >
 	 <span style="float:left;">#{prop['change']}:</span>
-		<span class="dropdownX"><a href="javascript:hideDropDown('dmfdg_#{mfdg.id}');"><i class="fa fa fa-times"></i></a></span> 
-	
-	<br/>
+		<span class="dropdownX"><a href="javascript:hideDropDown('dmfdg_#{mfdg.id}');"><i class="fa fa fa-times"></i></a></span> <br/>
 		<div class="links">
 			<span class="dropd_#{mfdg.isExpertHierarchyItem}"><a class="dropd_#{mfdg.isExpertHierarchyItem}" href="javascript:chgItem(#{mfdg.id}, 14, 'Mfdg');"><i class="fa fa-long-arrow-right"></i> #{mfdg.expItemLabel}</a><br/></span>  <!-- Hierarchy -->
 

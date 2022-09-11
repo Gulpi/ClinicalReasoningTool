@@ -88,6 +88,10 @@ var nmngBoxMode = "0";
 var naimBoxMode = "0";
 var infoBoxMode = "0";
 var nddxBoxMode = "0";
+var mmngBoxMode = "0"; 
+var mfdgBoxMode = "0";
+var mrecBoxMode = "0";
+var mhypBoxMode = "0";
 
 var box1Type = #{adminContext.patillscript.box1Type}; 
 var box2Type = #{adminContext.patillscript.box2Type};
@@ -274,7 +278,7 @@ Stage: <span id="stageSpan">#{adminContext.patillscript.stage}(#{adminContext.pa
         <option value="en">en</option><option value="de">de</option><option value="es">es</option><option value="pl">pl</option><option value="pl">pt</option><option value="fr">fr</option><option value="uk">uk</option></select>
        	 <i class="fa fa-info-circle" mytooltip="Language of lists to display"></i>
         </div>
-        <div style="position:absolute;left:210px;top:5px;" class="showadaptBox_#{adminContext.adaptableBoxesEnabled}"> <a href="javascript:openSelBoxes();">#{prop['authoring.slctboxes']}</a>
+        <div style="position:absolute;left:210px;top:5px;" class="showadaptBox_#{adminContext.adaptableBoxesEnabled}"> <a href="javascript:openSelBoxes('#{prop['authoring.slctboxes']}');">#{prop['authoring.slctboxes']}</a>
         <span style="width:30px;visibility:hidden;">hal</span><a href="javascript:toggleDisplayMode();">
         <script language="JavaScript">
         if(sessionStorage.displayMode==1) document.write ("Show full map"); else document.write("Show map at current stage")</script></a></div>
@@ -397,91 +401,8 @@ Stage: <span id="stageSpan">#{adminContext.patillscript.stage}(#{adminContext.pa
 				<span class="errormsg" id="msg_mngform" onClick="javascript:clearErrorMsgs();"></span>
 				
 	  		</div>
-	  		<!-- nursing diagnoses -->
-	  		<div id="nddx_box" class="container expcontainer pos_#{adminContext.patillscript.NDdxBoxNo}"  group="nddx_group">
-		  		<div id="nddx_title" mytooltip="#{prop['nddx.search']}" class="title">#{prop['nddx']}
-		  		<div class="search  boxchild">
-		  			<i class="fa fa-search ininput nddxsearch"></i>
-		  			<input class="f_text nddxsearch" onkeyup="javascript:storeHistory('nddx');" onFocus="javascript:hideTooltips();"  placeholder="#{prop['nddx.add']} ..." id="nddx" mytooltip="#{prop['nddx.search']}" listUrl="#{adminContext.getMyListUrl(&quot;nursing&quot;,adminContext.patillscript.locale)}" ></input>
-		  		</div>
-		  			<h:form id="nddxform">
-		  			<h:panelGroup>
-					
-						<ui:repeat value="#{adminContext.patillscript.nursingDiagnoses}" var="nddx" varStatus="status">
-							<ui:include src="nddxbox.xhtml" />
-     					</ui:repeat>	
- 	
-    				</h:panelGroup>
-    				     <h:commandButton id="hiddenNddxButton" value="RenderSomething" style="visibility:hidden">
-    						<f:ajax render="@form" onevent="updateItemCallback"></f:ajax>
-						</h:commandButton>
-					</h:form>
-					<span class="errormsg" id="msg_nddxform" onClick="javascript:clearErrorMsgs();"></span>
-		</div></div>
-
-	  		<!-- nursing aims -->
-	  		<div id="naim_box" class="container expcontainer  pos_#{adminContext.patillscript.NAimBoxNo}"  group="naim_group">
-		  		<div id="naim_title" mytooltip="#{prop['naim.search']}" class="title">#{prop['naims']}
-		  		<div class="search  boxchild">
-		  			<i class="fa fa-search ininput naimgsearch"></i>
-		  			<input class="f_text naimsearch" onkeyup="javascript:storeHistory('naim');" onFocus="javascript:hideTooltips();"  placeholder="#{prop['naim.add']} ..." id="naim" mytooltip="#{prop['naim.search']}" listUrl=""></input>
-		  		</div>
-		  			<h:form id="naimform">
-		  			<h:panelGroup>
-					
-						<ui:repeat value="#{adminContext.patillscript.nursingAims}" var="naim" varStatus="status">
-							<ui:include src="naimbox.xhtml" />
-     					</ui:repeat>	
- 	
-    				</h:panelGroup>
-    				     <h:commandButton id="hiddenNaimButton" value="RenderSomething" style="visibility:hidden">
-    						<f:ajax render="@form" onevent="updateItemCallback"></f:ajax>
-						</h:commandButton>
-					</h:form>
-					<span class="errormsg" id="msg_naimform" onClick="javascript:clearErrorMsgs();"></span>
-		</div></div>
-			  		<!-- nursing management -->
-	  		<div id="nmng_box" class="container expcontainer pos_#{adminContext.patillscript.NMngBoxNo}"  group="nmng_group">
-		  		<div id="nmng_title" mytooltip="#{prop['nmng.search']}" class="title">#{prop['nmng']}
-		  		<div class="search  boxchild">
-		  			<i class="fa fa-search ininput nmngsearch"></i>
-		  			<input class="f_text nmngsearch" onkeyup="javascript:storeHistory('nmng');" onFocus="javascript:hideTooltips();"  placeholder="#{prop['nmng.add']} ..." id="nmng" mytooltip="#{prop['nmg.search']}" listUrl=""></input>
-		  		</div>
-		  			<h:form id="nmngform">
-		  			<h:panelGroup>
-					
-						<ui:repeat value="#{adminContext.patillscript.nursingManagement}" var="nmng" varStatus="status">
-							<ui:include src="nmngbox.xhtml" />
-     					</ui:repeat>	
- 	
-    				</h:panelGroup>
-    				     <h:commandButton id="hiddenNmngButton" value="RenderSomething" style="visibility:hidden">
-    						<f:ajax render="@form" onevent="updateItemCallback"></f:ajax>
-						</h:commandButton>
-					</h:form>
-					<span class="errormsg" id="msg_nmngform" onClick="javascript:clearErrorMsgs();"></span>
-		</div></div>					
-	<!-- nursing info -->
-	  		<div id="info_box" class="container expcontainer pos_#{adminContext.patillscript.infoBoxNo}"  group="info_group">
-		  		<div id="naim_title" mytooltip="#{prop['info.search']}" class="title">#{prop['ninfo']}
-		  		<div class="search  boxchild">
-		  			<i class="fa fa-search ininput infosearch"></i>
-		  			<input class="f_text infosearch" onkeyup="javascript:storeHistory('info');" onFocus="javascript:hideTooltips();"  placeholder="#{prop['info.add']} ..." id="info" mytooltip="#{prop['info.search']}" listUrl=""></input>
-		  		</div>
-		  			<h:form id="infoform">
-		  			<h:panelGroup>
-					
-						<ui:repeat value="#{adminContext.patillscript.infos}" var="info" varStatus="status">
-							<ui:include src="infobox.xhtml" />
-     					</ui:repeat>	
- 	
-    				</h:panelGroup>
-    				     <h:commandButton id="hiddenInfoButton" value="RenderSomething" style="visibility:hidden">
-    						<f:ajax render="@form" onevent="updateItemCallback"></f:ajax>
-						</h:commandButton>
-					</h:form>
-					<span class="errormsg" id="msg_infoform" onClick="javascript:clearErrorMsgs();"></span>
-		</div></div>	
+		<ui:include src="nursing_boxes.xhtml" />
+		<ui:include src="midwife_boxes.xhtml" />
 	  		<div id="sum_box" class="container sum_container" group="sum_group">
 	  		<div id="chgSums">Show summary statement from card <input type="text" id="chgsummstCrd" size="2" value="#{adminContext.patillscript.summSt.stage}"></input></div>
 		 	<div class="title" id="sumsttxt">#{prop['summst']}
@@ -500,42 +421,9 @@ Stage: <span id="stageSpan">#{adminContext.patillscript.stage}(#{adminContext.pa
 <br clear="all"/>
 
 <div id="allitems">
-<!-- <table>
-<tr><td><b>#{prop['authoring.node.name']}</b></td><td><b>#{prop['authoring.node.stage']}</b></td><td></td></tr>
-
-	<ui:repeat value="#{adminContext.patillscript.problems}" var="nodes" varStatus="status">
-		<tr><td>#{nodes.label}</td>
-		<td><input id="chgstage_#{nodes.listItemId}" class="chgstage" value="#{nodes.stage}" style="width:20px;"/></td>
-		<td></td></tr>
-	</ui:repeat>	
-		<ui:repeat value="#{adminContext.patillscript.diagnoses}" var="nodes" varStatus="status">
-		<tr><td>#{nodes.label}</td>
-		<td><input id="chgstage_#{nodes.listItemId}" class="chgstage" value="#{nodes.stage}" style="width:20px;"/></td>
-		<td><span class="finalchg_#{nodes.finalDiagnosis}">final diagnosis on card <input id="chgfinalstage_#{nodes.listItemId}" class="chgfinal" value="#{nodes.finalDiagnosis}" style="width:20px;"/></span></td></tr>
-	</ui:repeat>	
-	<ui:repeat value="#{adminContext.patillscript.tests}" var="nodes" varStatus="status">
-		<tr><td>#{nodes.label}</td>
-		<td><input id="chgstage_#{nodes.listItemId}" class="chgstage" value="#{nodes.stage}" style="width:20px;"/></td>
-		<td></td></tr>
-	</ui:repeat>	
-	<ui:repeat value="#{adminContext.patillscript.mngs}" var="nodes" varStatus="status">
-		<tr><td>#{nodes.label}</td>
-		<td><input id="chgstage_#{nodes.listItemId}" class="chgstage" value="#{nodes.stage}" style="width:20px;"/></td>
-		<td></td></tr>
-	</ui:repeat>	
-		<ui:repeat value="#{adminContext.patillscript.patho}" var="nodes" varStatus="status">
-		<tr><td>#{nodes.label}</td>
-		<td><input id="chgstage_#{nodes.listItemId}" class="chgstage" value="#{nodes.stage}" style="width:20px;"/></td>
-		<td></td></tr>
-	</ui:repeat>	
-	</table>-->
-	<!--<table>
-	<tr><td><b>#{prop['authoring.node.cnx']}</b></td><td><b>#{prop['authoring.node.stage']}</b></td>
-	<td><b>#{prop['authoring.node.weight']}</b></td></tr>	-->
-	<span style="display:none;">	<ui:repeat value="#{adminContext.graph.allEdges}" var="edges" varStatus="status">
+	<span style="display:none;"><ui:repeat value="#{adminContext.graph.allEdges}" var="edges" varStatus="status">
 		<ui:include src="edges_exp.xhtml" />
 	</ui:repeat>	</span>
-	<!--  </table> -->		
 </div>
 </body>
 </f:view>

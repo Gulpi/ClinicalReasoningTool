@@ -5,7 +5,7 @@ var ep_left_prefix = "2_";
 var ep_top_prefix = "3_";
 var ep_bottom_prefix = "4_";
 
-var groups = new Array("fdg_group", "ddx_group","tst_group", "mng_group", "sum_group", "pat_group", "nddx_group", "naim_group", "nmng_group", "info_group" );
+var groups = new Array("fdg_group", "ddx_group","tst_group", "mng_group", "sum_group", "pat_group", "nddx_group", "naim_group", "nmng_group", "info_group", "mhyp_group", "mrec_group", "mmng_group", "mfdg_group" );
 var boxes;
 /*
  * TODO not very elegant, but the "" vs non "" is important and seems to be difficult to do when getting the items/ids from 
@@ -13,7 +13,6 @@ var boxes;
  * all groups are created and all items attached to a group
  */
 function initGroups(){
-	//var boxes = new Array("fdg_box", "ddx_box", "tst_box", "mng_box", "sum_box" /*, pat_box*/ );
 	boxes = createBoxesArr();
 	for(var i=0; i<boxes.length;i++){
 		instance.addGroup({
@@ -98,7 +97,7 @@ function createEndpointsForItems(itemId){
 	    ep2.maxConnections = 10;
 }
 
-var lookup = new Array("", "fdg_box", "ddx_box", "tst_box", "mng_box", "sum_box", "pat_box", "nddx_box", "naim_box", "nmng_box", "info_box");
+var lookup = new Array("", "fdg_box", "ddx_box", "tst_box", "mng_box", "sum_box", "pat_box", "nddx_box", "naim_box", "nmng_box", "info_box", "mfdg_box", "mhyp_box", "mmng_box", "mrec_box");
 
 /**
  * we have to create the boxes array dynamically now
@@ -137,6 +136,7 @@ function updateItemCallback(data, items, boxId){
  */
 function addToGroup(itemId, item){ 
 	try{
+		//!!!CAVE: this is with indexOf, so we need to make sure that the more specific ones are checked first - this is ugls and needs to be changed in the future!!!!
 		if(itemId.indexOf("nddx")>=0){
 			instance.addToGroup("nddx_group", item);
 			return;
@@ -145,6 +145,14 @@ function addToGroup(itemId, item){
 			instance.addToGroup("nmng_group", item);
 			return;
 			}
+		if(itemId.indexOf("mfdg")>=0){
+			instance.addToGroup("mfdg_group", item);
+			return;
+		}
+		if(itemId.indexOf("mmng")>=0){
+			instance.addToGroup("mmng_group", item);
+			return;
+		}
 		if(itemId.indexOf("fdg")>=0){
 			instance.addToGroup("fdg_group", item);
 			return;
@@ -166,11 +174,24 @@ function addToGroup(itemId, item){
 			instance.addToGroup("pat_group", item);
 			return;
 		}
-
-		if(itemId.indexOf("info")>=0)
+		if(itemId.indexOf("info")>=0){
 			instance.addToGroup("info_group", item);
-		if(itemId.indexOf("naim")>=0)
+			return;
+		}
+		if(itemId.indexOf("naim")>=0){
 			instance.addToGroup("naim_group", item);
+			return;
+		}
+						
+		if(itemId.indexOf("mhyp")>=0){
+			instance.addToGroup("mhyp_group", item);
+			return;
+		}
+
+		if(itemId.indexOf("mrec")>=0){
+			instance.addToGroup("mrec_group", item);
+			return;
+		}
 	}
 	catch(err){
 		var x = err;

@@ -1,0 +1,17 @@
+ <ui:composition 
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core">
+
+ 	<div id="mfdg_#{passmfdg.id}"  class="passmfdg passbox passboxinvis row1" mytooltip="#{passmfdg.labelOrSynLabel}" style="left:#{passmfdg.x}px; top:#{passmfdg.boxY}px;"> 
+ 		#{passmfdg.shortLabelOrSynShortLabel}
+  	 	 <script language="Javascript">
+  	 		if(mfdgBoxMode==2) pass_arr.push("mfdg_#{passmfdg.id}");
+ 		</script>
+ 		<div class="icons_exp"><i class="fa fa-user-md"></i></div>
+ 	</div>
+ 	 
+ 	 
+ 
+</ui:composition>

@@ -111,7 +111,10 @@ public class GraphController implements Serializable{
 		 addVertices( patIllScript.getNursingAims(), illnessScriptType);
 		 addVertices( patIllScript.getNursingDiagnoses(), illnessScriptType);
 		 addVertices( patIllScript.getNursingManagement(), illnessScriptType);
-
+		 addVertices( patIllScript.getMidwifeFindings(), illnessScriptType);
+		 addVertices( patIllScript.getMidwifeHypotheses(), illnessScriptType);
+		 addVertices( patIllScript.getMidwifeManagement(), illnessScriptType);
+		 addVertices( patIllScript.getMidwifeRecommendations(), illnessScriptType);
 	}
 	
 	/**
@@ -210,7 +213,10 @@ public class GraphController implements Serializable{
 		if(prefix.equals(PREFIX_NDDX) /*|| prefix.equals(PREFIX_MNG2)*/) return Relation.TYPE_NDDX;
 		if(prefix.equals(PREFIX_NURSINGAIM) /*|| prefix.equals(PREFIX_MNG2)*/) return Relation.TYPE_NURSAIM;
 		if(prefix.equals(PREFIX_PATHO) || prefix.equals(PREFIX_PATHO2)) return Relation.TYPE_PATHO;
-
+		if(prefix.equals(PREFIX_MFDG)) return Relation.TYPE_MFDG;
+		if(prefix.equals(PREFIX_MHYP)) return Relation.TYPE_MHYP;
+		if(prefix.equals(PREFIX_MREC)) return Relation.TYPE_MREC;
+		if(prefix.equals(PREFIX_MMNG)) return Relation.TYPE_MMNG;
 
 		return 0;
 	}
@@ -225,6 +231,10 @@ public class GraphController implements Serializable{
 		if(type==Relation.TYPE_INFO) return PREFIX_INFO;
 		if(type==Relation.TYPE_PATHO) return PREFIX_PATHO;
 		if(type==Relation.TYPE_NURSAIM) return PREFIX_NURSINGAIM;
+		if(type==Relation.TYPE_MFDG) return PREFIX_MFDG;
+		if(type==Relation.TYPE_MHYP) return PREFIX_MHYP;
+		if(type==Relation.TYPE_MREC) return PREFIX_MREC;
+		if(type==Relation.TYPE_MMNG) return PREFIX_MMNG;
 		return "";
 	}
 	

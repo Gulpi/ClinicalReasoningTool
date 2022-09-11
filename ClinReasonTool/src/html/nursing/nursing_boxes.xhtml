@@ -1,0 +1,117 @@
+ <ui:composition 
+    xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:v="urn:schemas-microsoft-com:vml">
+      
+ 	<!-- nursing diagnoses --> <!--  hide_#{crtContext.sessSetting.boxModeNDDX} -->
+	<div id="nddx_box" class="container expcontainer pos_#{crtContext.patillscript.NDdxBoxNo}"  group="nddx_group">
+		<div id="nddx_title" mytooltip="#{prop['nddx.search']}" class="title">#{prop['nddx']}</div>
+		<div class="search  boxchild">
+			<i class="fa fa-search ininput nddxsearch"></i>
+			<input class="f_text nddxsearch" onkeyup="javascript:storeHistory('nddx');" onFocus="javascript:hideTooltips();"  placeholder="#{prop['nddx.add']} ..." id="nddx" mytooltip="#{prop['nddx.search']}" listUrl="#{crtContext.getMyListUrl(&quot;nursing&quot;,crtContext.patillscript.locale)}"></input>
+		</div>
+		<h:form id="nddxform">
+			<h:panelGroup>
+				<ui:repeat value="#{crtContext.patillscript.nursingDiagnoses}" var="nddx" varStatus="status">
+					<ui:include src="nddxbox.xhtml" />
+				</ui:repeat>	
+				<ui:repeat value="#{crtContext.expPatIllScript.nursingDiagnoses}" var="expnddx" varStatus="status">
+					<ui:include src="nddxexpbox.xhtml" />
+				</ui:repeat>	
+				<ui:repeat value="#{crtContext.expPatIllScript.nursingDiagnoses}" var="passnddx" varStatus="status">
+					<ui:include src="nddxpassbox.xhtml" />
+				</ui:repeat>		
+		
+			</h:panelGroup>
+			<h:commandButton id="hiddenNddxButton" value="RenderSomething" style="visibility:hidden">
+				<f:ajax render="@form" onevent="updateItemCallback"></f:ajax>
+			</h:commandButton>
+		</h:form>
+		<span class="errormsg" id="msg_nddxform" onClick="javascript:clearErrorMsgs();"></span>
+	</div>
+
+	<!-- nursing aims --> <!-- hide_#{crtContext.sessSetting.boxModeNAim}" -->
+	<div id="naim_box" class="container expcontainer pos_#{crtContext.patillscript.NAimBoxNo}" group="naim_group">
+ 		<div id="naim_title" mytooltip="#{prop['naim.search']}" class="title">#{prop['naims']}</div>
+ 		<div class="search  boxchild">
+ 			<i class="fa fa-search ininput naimsearch"></i>
+ 			<input class="f_text naimsearch" onkeyup="javascript:storeHistory('naim');" onFocus="javascript:hideTooltips();"  placeholder="#{prop['naim.add']} ..." id="naim" mytooltip="#{prop['naim.search']}" listUrl=""></input>
+ 		</div>
+ 		<h:form id="naimform">
+ 			<h:panelGroup>
+		
+				<ui:repeat value="#{crtContext.patillscript.nursingAims}" var="naim" varStatus="status">
+					<ui:include src="naimbox.xhtml" />
+	  			</ui:repeat>	
+	  			<ui:repeat value="#{crtContext.expPatIllScript.nursingAims}" var="expnaim" varStatus="status">
+					<ui:include src="naimexpbox.xhtml" />
+	  			</ui:repeat>	
+	  			<ui:repeat value="#{crtContext.expPatIllScript.nursingAims}" var="passnaim" varStatus="status">
+					<ui:include src="naimpassbox.xhtml" />
+	  			</ui:repeat>	
+
+ 			</h:panelGroup>
+ 			<h:commandButton id="hiddenNaimButton" value="RenderSomething" style="visibility:hidden">
+				<f:ajax render="@form" onevent="updateItemCallback"></f:ajax>
+			</h:commandButton>
+		</h:form>
+		<span class="errormsg" id="msg_naimform" onClick="javascript:clearErrorMsgs();"></span>
+	</div>
+		
+	<!-- nursing management -->
+	<div id="nmng_box" class="container expcontainer pos_#{crtContext.patillscript.NMngBoxNo}"  group="nmng_group">
+		<div id="nmng_title" mytooltip="#{prop['nmng.search']}" class="title">#{prop['nmng']}</div>
+		<div class="search  boxchild">
+			<i class="fa fa-search ininput nmngsearch"></i>
+			<input class="f_text nmngsearch" onkeyup="javascript:storeHistory('nmng');" onFocus="javascript:hideTooltips();"  placeholder="#{prop['nmng.add']}..." id="nmng" mytooltip="#{prop['nmng.search']}" listUrl=""></input>
+		</div>
+		<h:form id="nmngform">
+  			<h:panelGroup>
+			
+				<ui:repeat value="#{crtContext.patillscript.nursingManagement}" var="nmng" varStatus="status">
+					<ui:include src="nmngbox.xhtml" />
+   				</ui:repeat>	
+     			<ui:repeat value="#{crtContext.expPatIllScript.nursingManagement}" var="expnmng" varStatus="status">
+					<ui:include src="nmngexpbox.xhtml" />
+   				</ui:repeat>	
+   				<ui:repeat value="#{crtContext.expPatIllScript.nursingManagement}" var="passnmng" varStatus="status">
+					<ui:include src="nmngpassbox.xhtml" />
+   				</ui:repeat>	
+  			</h:panelGroup>
+  		 	<h:commandButton id="hiddenNmngButton" value="RenderSomething" style="visibility:hidden">
+				<f:ajax render="@form" onevent="updateItemCallback"></f:ajax>
+			</h:commandButton>
+		</h:form>
+		<span class="errormsg" id="msg_nmngform" onClick="javascript:clearErrorMsgs();"></span>
+	</div>
+						
+	<!-- nursing info -->
+	<div id="info_box" class="container expcontainer pos_#{crtContext.patillscript.infoBoxNo}"  group="info_group">
+		<div id="info_title" mytooltip="#{prop['info.search']}" class="title">#{prop['info']}</div>
+		<div class="search  boxchild">
+			<i class="fa fa-search ininput infosearch"></i>
+			<input class="f_text infosearch" onkeyup="javascript:storeHistory('info');" onFocus="javascript:hideTooltips();"  placeholder="#{prop['info.add']} ..." id="info" mytooltip="#{prop['info.search']}" listUrl=""></input>
+		</div>
+		<h:form id="infoform">
+  			<h:panelGroup>
+			
+				<ui:repeat value="#{crtContext.patillscript.infos}" var="info" varStatus="status">
+					<ui:include src="infobox.xhtml" />
+   				</ui:repeat>	
+     			<ui:repeat value="#{crtContext.expPatIllScript.infos}" var="expinfo" varStatus="status">
+					<ui:include src="infoexpbox.xhtml" />
+   				</ui:repeat>	
+   				<ui:repeat value="#{crtContext.expPatIllScript.infos}" var="passinfo" varStatus="status">
+					<ui:include src="infopassbox.xhtml" />
+   				</ui:repeat>	 	
+  			</h:panelGroup>
+  			<h:commandButton id="hiddenInfoButton" value="RenderSomething" style="visibility:hidden">
+				<f:ajax render="@form" onevent="updateItemCallback"></f:ajax>
+				</h:commandButton>
+		</h:form>
+		<span class="errormsg" id="msg_infoform" onClick="javascript:clearErrorMsgs();"></span>
+	</div>
+		
+</ui:composition>

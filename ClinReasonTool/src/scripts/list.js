@@ -137,10 +137,17 @@ function genericAddItemByValueAndLabel(item_value,item_label, id) {
 	else if (id=="tests") { addTest(item_value, item_label, $("#" + id).val()); }
 	else if (id=="patho") { addPatho(item_value, item_label, $("#" + id).val()); }
 	else if (id=="mng") { 	addManagement(item_value, item_label, $("#" + id).val()); }
+	//nursing:
 	else if (id=="nddx") { 	addItem(item_value, item_label,  $("#" + id).val(), "Nddx"); }
 	else if (id=="nmng") { 	addItem(item_value, item_label,  $("#" + id).val(), "Nmng"); }
 	else if (id=="info") { 	addItem(item_value, item_label,  $("#" + id).val(), "Info"); }
 	else if (id=="naim") { 	addItem(item_value, item_label,  $("#" + id).val(), "Naim"); }
+	//midwife
+	else if (id=="mhyp") { 	addItem(item_value, item_label,  $("#" + id).val(), "Mhyp"); }
+	else if (id=="mmng") { 	addItem(item_value, item_label,  $("#" + id).val(), "Mmng"); }
+	else if (id=="mrec") { 	addItem(item_value, item_label,  $("#" + id).val(), "Mrec"); }
+	else if (id=="mfdg") { 	addItem(item_value, item_label,  $("#" + id).val(), "Mfdg"); }
+	//context:
 	else if (id=="act_search") { addActor(item_value, item_label,  $("#" + id).val()); }
 	else if (id=="ctxt_search") { addContext(item_value, item_label,  $("#" + id).val()); }
 }
@@ -185,7 +192,12 @@ function genericCreateAutocomplete(in_id, in_data) {
 	else if (in_id=="nddx") 	{ in_num = 7; }
 	else if (in_id=="nmng") 	{ in_num = 9; }
 	else if (in_id=="info") 	{ in_num = 10; }
-	else if (in_id=="naim") 	{ in_num = 8; }
+	else if (in_id=="naim") 	{ in_num = 8; }	
+	else if (in_id=="mhyp") 	{ in_num = 11; }	
+	else if (in_id=="mmng") 	{ in_num = 13; }
+	else if (in_id=="mrec") 	{ in_num = 12; }
+	else if (in_id=="mfdg") 	{ in_num = 14; }
+	
 	else if (in_id=="act_search") { in_num = 4; }
 	else if (in_id=="ctxt_search") { in_num = 4; }
 	

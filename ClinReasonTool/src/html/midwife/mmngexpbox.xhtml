@@ -1,0 +1,16 @@
+ <ui:composition 
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core">
+
+   	<div id="mmng_#{expmmng.id}"  class="expmmng expbox row2 expboxinvis" mytooltip="#{expmmng.labelOrSynLabel}" style="left:#{expmmng.x}px; top:#{expmmng.boxY}px;">  
+  	 	#{expmmng.shortLabelOrSynShortLabel}
+  	 	 <script language="Javascript">
+ 			exp_arr.push("mmng_#{expmmng.id}");
+ 		</script>
+ 	<div class="icons_exp"><i class="fa fa-user-md"></i></div>
+	</div>
+	 
+	
+</ui:composition>

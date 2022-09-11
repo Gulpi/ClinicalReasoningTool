@@ -1,0 +1,119 @@
+ <ui:composition 
+    xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:v="urn:schemas-microsoft-com:vml">
+      
+ 		<!-- midwife findings --> 
+ 		<div id="mfdg_box" class="container expcontainer pos_#{crtContext.patillscript.MFdgBoxNo}"  group="mfdg_group">
+  			<div id="mfdg_title" mytooltip="#{prop['mfdg.search']}" class="title">#{prop['mfdg']}</div>
+  			<div class="search  boxchild">
+  				<i class="fa fa-search ininput mfdgsearch"></i>
+  				<input class="f_text mfdgsearch" onkeyup="javascript:storeHistory('mfdg');" onFocus="javascript:hideTooltips();"  placeholder="#{prop['mfdg.add']} ..." id="mfdg" mytooltip="#{prop['mfdg.search']}" listUrl=""></input>
+  			</div>
+  			<h:form id="mfdgform">
+  			<h:panelGroup>
+			
+				<ui:repeat value="#{crtContext.patillscript.midwifeFindings}" var="mfdg" varStatus="status">
+					<ui:include src="mfdgbox.xhtml" />
+   					</ui:repeat>	
+   					<ui:repeat value="#{crtContext.expPatIllScript.midwifeFindings}" var="expmfdg" varStatus="status">
+					<ui:include src="mfdgexpbox.xhtml" />
+   					</ui:repeat>	
+   				<ui:repeat value="#{crtContext.expPatIllScript.midwifeFindings}" var="passmfdg" varStatus="status">
+					<ui:include src="mfdgpassbox.xhtml" />
+   				</ui:repeat>		
+
+  				</h:panelGroup>
+  				     <h:commandButton id="hiddenMfdgButton" value="RenderSomething" style="visibility:hidden">
+  						<f:ajax render="@form" onevent="updateItemCallback"></f:ajax>
+				</h:commandButton>
+			</h:form>
+			<span class="errormsg" id="msg_mfdgform" onClick="javascript:clearErrorMsgs();"></span>
+		</div>
+
+ 		<!-- midwife hypotheses --> 
+ 		<div id="mhyp_box" class="container expcontainer pos_#{crtContext.patillscript.MHypBoxNo}" group="mhyp_group">
+  			<div id="mhyp_title" mytooltip="#{prop['mhyp.search']}" class="title">#{prop['mhyp']}</div>
+  			<div class="search  boxchild">
+  				<i class="fa fa-search ininput mhypsearch"></i>
+  				<input class="f_text naimsearch" onkeyup="javascript:storeHistory('mhyp');" onFocus="javascript:hideTooltips();"  placeholder="#{prop['mhyp.add']} ..." id="mhyp" mytooltip="#{prop['mhyp.search']}" listUrl=""></input>
+  			</div>
+  			<h:form id="mhypform">
+  			<h:panelGroup>
+			
+				<ui:repeat value="#{crtContext.patillscript.midwifeHypotheses}" var="mhyp" varStatus="status">
+					<ui:include src="mhypbox.xhtml" />
+					
+   					</ui:repeat>	
+   					<ui:repeat value="#{crtContext.expPatIllScript.midwifeHypotheses}" var="expmhyp" varStatus="status">
+					<ui:include src="mhypexpbox.xhtml" />
+   					</ui:repeat>	
+   				<ui:repeat value="#{crtContext.expPatIllScript.midwifeHypotheses}" var="passmhyp" varStatus="status">
+					<ui:include src="mhyppassbox.xhtml" />
+   				</ui:repeat>	
+
+  				</h:panelGroup>
+  				     <h:commandButton id="hiddenMhypButton" value="RenderSomething" style="visibility:hidden">
+  						<f:ajax render="@form" onevent="updateItemCallback"></f:ajax>
+				</h:commandButton>
+			</h:form>
+			<span class="errormsg" id="msg_mhypform" onClick="javascript:clearErrorMsgs();"></span>
+		</div>
+		
+	  	<!-- midwife management -->
+ 		<div id="mmng_box" class="container expcontainer pos_#{crtContext.patillscript.MMngBoxNo}"  group="mmng_group">
+  			<div id="mmng_title" mytooltip="#{prop['mmng.search']}" class="title">#{prop['mmng']}</div>
+  			<div class="search  boxchild">
+  				<i class="fa fa-search ininput mmngsearch"></i>
+  				<input class="f_text mmngsearch" onkeyup="javascript:storeHistory('mmng');" onFocus="javascript:hideTooltips();"  placeholder="#{prop['mmng.add']}..." id="mmng" mytooltip="#{prop['mmng.search']}" listUrl=""></input>
+  			</div>
+  			<h:form id="mmngform">
+  			<h:panelGroup>
+			
+				<ui:repeat value="#{crtContext.patillscript.midwifeManagement}" var="mmng" varStatus="status">
+					<ui:include src="mmngbox.xhtml" />
+   					</ui:repeat>	
+     				<ui:repeat value="#{crtContext.expPatIllScript.midwifeManagement}" var="expmmng" varStatus="status">
+					<ui:include src="mmngexpbox.xhtml" />
+   					</ui:repeat>	
+   				<ui:repeat value="#{crtContext.expPatIllScript.midwifeManagement}" var="passmmng" varStatus="status">
+					<ui:include src="mmngpassbox.xhtml" />
+   				</ui:repeat>	
+  				</h:panelGroup>
+  				     <h:commandButton id="hiddenMmngButton" value="RenderSomething" style="visibility:hidden">
+  						<f:ajax render="@form" onevent="updateItemCallback"></f:ajax>
+				</h:commandButton>
+			</h:form>
+			<span class="errormsg" id="msg_mmngform" onClick="javascript:clearErrorMsgs();"></span>
+		</div>
+						
+		<!-- midwife recommendations -->
+ 		<div id="mrec_box" class="container expcontainer pos_#{crtContext.patillscript.MRecBoxNo}"  group="mrec_group">
+  			<div id="mrec_title" mytooltip="#{prop['mrec.search']}" class="title">#{prop['mrec']}</div>
+  			<div class="search  boxchild">
+  				<i class="fa fa-search ininput mrecsearch"></i>
+  				<input class="f_text mrecsearch" onkeyup="javascript:storeHistory('mrec');" onFocus="javascript:hideTooltips();"  placeholder="#{prop['mrec.add']} ..." id="mrec" mytooltip="#{prop['mrec.search']}" listUrl=""></input>
+  			</div>
+  			<h:form id="mrecform">
+  			<h:panelGroup>
+			
+				<ui:repeat value="#{crtContext.patillscript.midwifeRecommendations}" var="mrec" varStatus="status">
+					<ui:include src="recbox.xhtml" />
+   					</ui:repeat>	
+     				<ui:repeat value="#{crtContext.expPatIllScript.midwifeRecommendations}" var="expmrec" varStatus="status">
+					<ui:include src="recexpbox.xhtml" />
+   					</ui:repeat>	
+   				<ui:repeat value="#{crtContext.expPatIllScript.midwifeRecommendations}" var="passmrec" varStatus="status">
+					<ui:include src="recpassbox.xhtml" />
+   				</ui:repeat>	 	
+  				</h:panelGroup>
+  				     <h:commandButton id="hiddenMrecButton" value="RenderSomething" style="visibility:hidden">
+  						<f:ajax render="@form" onevent="updateItemCallback"></f:ajax>
+				</h:commandButton>
+			</h:form>
+			<span class="errormsg" id="msg_mrecform" onClick="javascript:clearErrorMsgs();"></span>
+		</div>
+		
+	</ui:composition>

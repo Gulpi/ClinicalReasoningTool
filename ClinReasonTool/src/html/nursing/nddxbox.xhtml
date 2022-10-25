@@ -8,11 +8,11 @@
   	 	 <script language="Javascript">
  			item_arr.push("nddx_#{nddx.id}");
  		</script>
-   		<span class="dropdown" onClick="javascript:showDropDown('dnddx_#{nddx.id}','nddx_#{nddx.id}');"><i class="fa fa-chevron-circle-down"></i></span>
+   		<span class="dropdown" onClick="javascript:showDropDown('ddnddx_#{nddx.id}','nddx_#{nddx.id}');"><i class="fa fa-chevron-circle-down"></i></span>
   		<span class="peer_score_nddx" title="#{prop['nddx.peer.hint']}" id="peerscore#{nddx.id}"> (#{nddx.peerPercentage})</span>
  		<div class="icons_score nddx_score boxscore_#{nddx.score}"><i class="fa fa-check"></i></div>
   	</div>
-	<div id="dnddx_#{nddx.id}" class="dropdown-content" style="opacity:1;z-index:99;" ><!-- onmouseleave="javascript:hideDropDown('ddddx_#{ddx.id}');"-->
+	<div id="ddnddx_#{nddx.id}" class="dropdown-content" style="opacity:1;z-index:99;" ><!-- onmouseleave="javascript:hideDropDown('ddddx_#{ddx.id}');"-->
 	 <span style="float:left;">#{prop['change']}:</span>
 		<span class="dropdownX"><a href="javascript:hideDropDown('dnddx_#{nddx.id}');"><i class="fa fa fa-times"></i></a></span> 
 	

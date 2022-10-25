@@ -8,11 +8,11 @@
   	 	 <script language="Javascript">
  			item_arr.push("mfdg_#{mfdg.id}");
  		</script>
-   		<span class="dropdown" onClick="javascript:showDropDown('dmfdg_#{mfdg.id}','mfdg_#{mfdg.id}');"><i class="fa fa-chevron-circle-down"></i></span>
+   		<span class="dropdown" onClick="javascript:showDropDown('ddmfdg_#{mfdg.id}','mfdg_#{mfdg.id}');"><i class="fa fa-chevron-circle-down"></i></span>
   	  	<span class="peer_score_mfdg" title="#{prop['mfdg.peer.hint']}" id="peerscore#{mfdg.id}"> (#{mfdg.peerPercentage})</span>
  		<div class="icons_score mfdg_score boxscore_#{mfdg.score}"><i class="fa fa-check"></i></div>
   	</div>
-	<div id="dmfdg_#{mfdg.id}" class="dropdown-content" style="opacity:1;z-index:99;" >
+	<div id="ddmfdg_#{mfdg.id}" class="dropdown-content" style="opacity:1;z-index:99;" >
 	 <span style="float:left;">#{prop['change']}:</span>
 		<span class="dropdownX"><a href="javascript:hideDropDown('dmfdg_#{mfdg.id}');"><i class="fa fa fa-times"></i></a></span> <br/>
 		<div class="links">

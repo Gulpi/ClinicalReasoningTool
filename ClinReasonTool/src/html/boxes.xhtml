@@ -242,7 +242,7 @@ jsPlumb.ready(function () {
     	toggleContainerCollapse(this.parentNode);
     });
     $(".itembox").contextmenu(function(event) {
-    	  showDropDown("dd"+this.id);
+    	  showDropDown("d"+this.id,this.id);
     	  event.preventDefault();
    	 });
     

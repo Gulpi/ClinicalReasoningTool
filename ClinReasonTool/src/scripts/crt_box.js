@@ -673,7 +673,7 @@ function delItem(itemId, itemType){
 function itemCallBack(itemId, action, itemTypeUpper){
 	$("#"+itemTypeUpper.toLowerCase()).val("");	
 	//$(".tests").remove();
-	hideDropDown("d"+itemTypeUpper.toLowerCase()+"_"+itemId);
+	hideDropDown("dd"+itemTypeUpper.toLowerCase()+"_"+itemId);
 	removeElems(itemTypeUpper.toLowerCase());
 	removeElems("exp"+itemTypeUpper.toLowerCase());
 	//we update the problems list and the json string

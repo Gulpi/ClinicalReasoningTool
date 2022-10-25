@@ -9,13 +9,13 @@
   	 	 <script language="Javascript">
  			item_arr.push("nmng_#{nmng.id}");
  		</script>
-   		<span class="dropdown" onClick="javascript:showDropDown('dnmng_#{nmng.id}','nmng_#{nmng.id}');"><i class="fa fa-chevron-circle-down"></i></span>
+   		<span class="dropdown" onClick="javascript:showDropDown('ddnmng_#{nmng.id}','nmng_#{nmng.id}');"><i class="fa fa-chevron-circle-down"></i></span>
   	  		<span class="peer_score_nmng" title="#{prop['nmng.peer.hint']}" id="peerscore#{nmng.id}"> (#{nmng.peerPercentage})</span>
  		<div class="icons_score nmng_score boxscore_#{nmng.score}"><i class="fa fa-check"></i></div>
   	</div>
-	<div id="dnmng_#{nmng.id}" class="dropdown-content" style="opacity:1;z-index:99;" ><!-- onmouseleave="javascript:hideDropDown('ddddx_#{ddx.id}');"-->
+	<div id="ddnmng_#{nmng.id}" class="dropdown-content" style="opacity:1;z-index:99;" ><!-- onmouseleave="javascript:hideDropDown('ddddx_#{ddx.id}');"-->
 	 <span style="float:left;">#{prop['change']}:</span>
-		<span class="dropdownX"><a href="javascript:hideDropDown('dnmng_#{nmng.id}');"><i class="fa fa fa-times"></i></a></span> 
+		<span class="dropdownX"><a href="javascript:hideDropDown('ddnmng_#{nmng.id}');"><i class="fa fa fa-times"></i></a></span> 
 	
 	<br/>
 		<div class="links">

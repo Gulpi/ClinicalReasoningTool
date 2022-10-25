@@ -9,13 +9,13 @@
   	 	 <script language="Javascript">
  			item_arr.push("info_#{info.id}");
  		</script>
-   		<span class="dropdown" onClick="javascript:showDropDown('dinfo_#{info.id}','info_#{info.id}');"><i class="fa fa-chevron-circle-down"></i></span>
+   		<span class="dropdown" onClick="javascript:showDropDown('ddinfo_#{info.id}','info_#{info.id}');"><i class="fa fa-chevron-circle-down"></i></span>
   	  	<span class="peer_score_info" title="#{prop['info.peer.hint']}" id="peerscore#{info.id}"> (#{info.peerPercentage})</span>
  		<div class="icons_score info_score boxscore_#{info.score}"><i class="fa fa-check"></i></div>
   	</div>
-	<div id="dinfo_#{info.id}" class="dropdown-content" style="opacity:1;z-index:99;" >
+	<div id="ddinfo_#{info.id}" class="dropdown-content" style="opacity:1;z-index:99;" >
 	 <span style="float:left;">#{prop['change']}:</span>
-		<span class="dropdownX"><a href="javascript:hideDropDown('dinfo_#{info.id}');"><i class="fa fa fa-times"></i></a></span> 
+		<span class="dropdownX"><a href="javascript:hideDropDown('ddinfo_#{info.id}');"><i class="fa fa fa-times"></i></a></span> 
 	
 	<br/>
 		<div class="links">

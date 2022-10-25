@@ -9,13 +9,13 @@
   	 	 <script language="Javascript">
  			item_arr.push("naim_#{naim.id}");
  		</script>
-   		<span class="dropdown" onClick="javascript:showDropDown('dnaim_#{naim.id}','naim_#{naim.id}');"><i class="fa fa-chevron-circle-down"></i></span>
+   		<span class="dropdown" onClick="javascript:showDropDown('ddnaim_#{naim.id}','naim_#{naim.id}');"><i class="fa fa-chevron-circle-down"></i></span>
   		<span class="peer_score_naim" title="#{prop['naim.peer.hint']}" id="peerscore#{naim.id}"> (#{naim.peerPercentage})</span>
  		<div class="icons_score naim_score boxscore_#{naim.score}"><i class="fa fa-check"></i></div>
   	</div>
-	<div id="dnaim_#{naim.id}" class="dropdown-content" style="opacity:1;z-index:99;" ><!-- onmouseleave="javascript:hideDropDown('ddddx_#{ddx.id}');"-->
+	<div id="ddnaim_#{naim.id}" class="dropdown-content" style="opacity:1;z-index:99;" ><!-- onmouseleave="javascript:hideDropDown('ddddx_#{ddx.id}');"-->
 	 <span style="float:left;">#{prop['change']}:</span>
-		<span class="dropdownX"><a href="javascript:hideDropDown('dnaim_#{naim.id}');"><i class="fa fa fa-times"></i></a></span> 
+		<span class="dropdownX"><a href="javascript:hideDropDown('ddnaim_#{naim.id}');"><i class="fa fa fa-times"></i></a></span> 
 	
 	<br/>
 		<div class="links">

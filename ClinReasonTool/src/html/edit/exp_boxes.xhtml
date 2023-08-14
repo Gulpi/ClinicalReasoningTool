@@ -191,10 +191,13 @@ jsPlumb.ready(function () {
        		ReattachConnections : true
     });
      	
+     	
+     	
 
     // suspend drawing and initialise.
     instance.batch(function () {
         instance.bind("click", function (component, originalEvent) {
+        	console.log("instance.click",component,originalEvent)
         	//todo: ignore expert cnxs....
         	var id = component.id;
         //alert(component.stage);
@@ -223,10 +226,30 @@ jsPlumb.ready(function () {
     /*instance.on(canvas, "click", ".node-collapse", function() {
     	toggleContainerCollapse(this.parentNode);
     });*/
+    
+    
+    // this does not work, we have to use jsplaumb binds, see below!!!
     $(".itembox").contextmenu(function(event) {
-    	  showDropDown("dd"+this.id);
-    	  event.preventDefault();
+    	 console.log( ".itembox each tap " +  _this.id );
+    	 //showDropDown("dd"+this.id);
+    	 event.preventDefault();
    	 });
+    
+    
+    $( ".itembox" ).each(function( index ) {
+    	 console.log( ".itembox each" + index + ": " + this.id );
+    	 var _this = this;
+    	 instance.on(this, "tap", function( index ) {
+    		 console.log( ".itembox each tap " +  _this.id );
+    	 });
+    	 instance.on(this, "dbltap", function( index ) {
+    		 console.log( ".itembox each dbltap " +  _this.id );
+    	 });
+    	 instance.on(this, "contextmenu", function( index ) {
+    		 console.log( ".itembox each contextmenu " +  _this.id );
+    	 });
+ 
+    });
     
     initConnections();
     initCnxDisplay();
@@ -247,7 +270,6 @@ jsPlumb.ready(function () {
     if($("#sumsttxt").is(':empty')) $("#chgSums").hide();
     else $("#chgSums").show();
 
-	
 	
 });
 

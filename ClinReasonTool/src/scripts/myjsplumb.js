@@ -40,9 +40,28 @@ function getGroupIdByElem(elemName){
 	
 }
 
+function registerItemEvents(itemId, item) {
+	console.log( "regTabEvents itemId: " +  itemId );
+	instance.on(item, "dbltap", function( index ) {
+		// show toolbar?
+	    console.log( "initElems .itembox each tap " +  itemId );
+	});
+	instance.on(item, "dbltap", function( index ) {
+		console.log( "initElems .itembox each dbltap " +  itemId );
+		showDropDown("dd" + itemId,itemId);
+	});
+	instance.on(item, "contextmenu", function( index ) {
+		// did not receive this kind of event ever?
+		console.log( "initElems .itembox each contextmenu " +  itemId );
+	});
+	
+}
+
 function initElems(selector){
+	console.log( "initElems selector: " +  selector );
 	for(var i=0; i<item_arr.length;i++){
 		var itemId = item_arr[i];
+		console.log( "initElems loop itemId: " +  itemId );
 		if(selector==""|| itemId.startsWith(selector)){
 			var item = $("#"+itemId)[0];
 			if (!isView) addToGroup(itemId, item);
@@ -53,7 +72,10 @@ function initElems(selector){
 				anchor: ["Perimeter", { shape:"Rectangle" }]
 			});
 			createEndpointsForItems(itemId);
+			registerItemEvents(itemId, item);
+	    	 
 		}
+		 
 	}
 	for(var i=0; i<exp_arr.length;i++){
 		var itemId = exp_arr[i];

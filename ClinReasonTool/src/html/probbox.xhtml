@@ -13,12 +13,16 @@
  	<div class="icons_score fdgs_score boxscore_#{prob.score}"><i class="fa fa-check"></i></div>
  </div> 
 	 <div class="dropdown-content" id="ddfdg_#{prob.id}" onmouseleave="javascript:hideDropDown('ddfdg_#{prob.id}');">
-	 <span style="float:left;" class="dropd_#{prob.isExpertHierarchyItem}">#{prop['change']}:</span>
-	<span class="dropdownX"><a href="javascript:hideDropDown('ddfdg_#{prob.id}');"><i class="fa fa fa-times"></i></a></span> <br/>
+	 	<div class="title" style="display:none;">#{prob.labelOrSynLabel}</div>
+	 	<span style="float:left;" class="dropd_#{prob.isExpertHierarchyItem}">#{prop['change']}:</span>
+		<span class="dropdownX"><a href="javascript:hideDropDown('ddfdg_#{prob.id}');"><i class="fa fa fa-times"></i></a></span> <br/>
 		<div class="links">
 			<span class="dropd_#{prob.isExpertHierarchyItem}"><a class="dropd_#{prob.isExpertHierarchyItem}" href="javascript:chgProblem(#{prob.id}, 2);"><i class="fa fa-long-arrow-right"></i> #{prob.expItemLabel}</a><br/></span> <!-- Hierarchy -->
 		</div>
-		<a class="del" href="javascript:delProblem(#{prob.id});"><i class="fa fa-trash"></i> #{prop['delete']}</a>
+		<br clear="all" />
+		<div class="del_container">
+			<a class="del" href="javascript:delProblem(#{prob.id});"><i class="fa fa-trash"></i> #{prop['delete']}</a>
+		</div>
 	</div>	
 
 </ui:composition>

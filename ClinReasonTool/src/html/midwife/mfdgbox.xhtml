@@ -13,13 +13,17 @@
  		<div class="icons_score mfdg_score boxscore_#{mfdg.score}"><i class="fa fa-check"></i></div>
   	</div>
 	<div id="ddmfdg_#{mfdg.id}" class="dropdown-content" style="opacity:1;z-index:99;" >
-	 <span style="float:left;">#{prop['change']}:</span>
-		<span class="dropdownX"><a href="javascript:hideDropDown('ddmfdg_#{mfdg.id}');"><i class="fa fa fa-times"></i></a></span> <br/>
+	 	<div class="title" style="display:none;">#{mfdg.labelOrSynLabel}</div>
+	 	<span style="float:left;">#{prop['change']}:</span>
+		<span class="dropdownX"><a href="javascript:hideDropDown('ddmfdg_#{mfdg.id}');"><i class="fa fa fa-times"></i></a></span>
+
+		<br/>
 		<div class="links">
 			<span class="dropd_#{mfdg.isExpertHierarchyItem}"><a class="dropd_#{mfdg.isExpertHierarchyItem}" href="javascript:chgItem(#{mfdg.id}, 14, 'Mfdg');"><i class="fa fa-long-arrow-right"></i> #{mfdg.expItemLabel}</a><br/></span>  <!-- Hierarchy -->
-
 		</div>
-		<a class="del" href="javascript:delItem(#{mfdg.id},'Mfdg');"><i class="fa fa-trash"></i> #{prop['delete']}</a>
-		
+		<br clear="all" />
+		<div class="del_container">
+			<a class="del" href="javascript:delItem(#{mfdg.id},'Mfdg');"><i class="fa fa-trash"></i> #{prop['delete']}</a>
+		</div>
 	 </div>
 </ui:composition>

@@ -1067,6 +1067,8 @@ function hideAllDropDowns(){
 	$(".dropdown-content").hide();
 }
 
+// ********************************************************
+
 function clearErrorMsgs(){
 	$(".errormsg").html("");
 }

@@ -253,7 +253,7 @@ a#ddx_submit_btn, errorsymbol.a{
 	font-color:#ffffff;
 	cursor:pointer;
 	text-decoration:none;
-	padding:2px;
+	/* padding:2px; */
 	display:inline-block;
 }
 

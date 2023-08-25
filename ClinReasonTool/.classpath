@@ -137,10 +137,12 @@
 	<classpathentry kind="lib" path="/CASUS_SupportLib/lib/poi.jar"/>
 	<classpathentry kind="lib" path="/CASUS_SupportLib/lib/servlet-api.jar"/>
 	<classpathentry kind="lib" path="/CASUS_SupportLib/lib/tidy.jar"/>
-	<classpathentry kind="lib" path="/CASUS_SupportLib/lib/owasp-java-html-sanitizer.jar"/>
-	<classpathentry kind="lib" path="/CASUS_SupportLib/lib/guava.jar"/>
-	<classpathentry kind="lib" path="/CASUS_SupportLib/lib/aws-java-sdk-osgi.jar"/>
 	<classpathentry kind="lib" path="WEB-INF/lib/osxkeychain.jar"/>
+	<classpathentry kind="lib" path="/CASUS_SupportLib/lib/aws-java-sdk-osgi.jar"/>
+	<classpathentry kind="lib" path="/CASUS_SupportLib/lib/guava.jar"/>
+	<classpathentry kind="lib" path="/CASUS_SupportLib/lib/joda-time.jar"/>
+	<classpathentry kind="lib" path="/CASUS_SupportLib/lib/osxkeychain.jar"/>
+	<classpathentry kind="lib" path="/CASUS_SupportLib/lib/owasp-java-html-sanitizer.jar"/>
 	<classpathentry kind="lib" path="/CASUS_SupportLib/lib/pdfbox-app.jar"/>
 	<classpathentry kind="output" path="WEB-INF/classes"/>
 </classpath>

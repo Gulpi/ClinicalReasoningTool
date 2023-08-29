@@ -1017,27 +1017,57 @@ function openErrorDialog(){
 function showExpStages(){
 	
 }
+
+/**
+ * global switch using jq dlg api fir drop downs
+ */
+var dropDownJQueryDlg = true;
+
 /*
+ * update experimental using jq dlg!
  * We get the position of the pos element (the itembox) and position the dropdown menu close to it
  */
 function showDropDown(id, pos){	
 	hideAllDropDowns(); //we first hide all in case any are still open...
 	clearErrorMsgs();
-	$("#"+id).show();
-	var x =  $("#"+pos).position().left-10; //changed to -10 from +10 because otherwise cut-off on right side
-	var y = $("#"+pos).position().top+5;
-	$("#"+id).css( { left: x + "px", top: y + "px" } ) 
+	
+	if (dropDownJQueryDlg) {
+		var title = $("#"+id + " .title").html();
+		$("#jdialogToolbox").dialog( "option", "title", title);
+		$("#jdialogToolbox").dialog( "option", "buttons", [ ] );
+		$("#jdialogToolbox").dialog( "option", "minWidth", 150 );
+		
+		$("#jdialogToolbox").html($("#"+id).html());
+		//$("#jdialogError").load("errors.xhtml");
+		$('#jdialogToolbox .dropdownX').hide();
+		$("#jdialogToolbox" ).dialog( "open" );
+		$("#jdialogToolbox").show();
+	}
+	else {
+		$("#"+id).show();
+		var x =  $("#"+pos).position().left-10; //changed to -10 from +10 because otherwise cut-off on right side
+		var y = $("#"+pos).position().top+5;
+		$("#"+id).css( { left: x + "px", top: y + "px" } ) 
+	}
+	
 }
-/*
+
+/**
  * Onmouseleave (! not onmouseout) we hide the dropdown again
+ * when jq dlg by dlg api!
  */
 function hideDropDown(id){
 	$("#"+id).hide();
 }
 
+/**
+ * not needed when using jq dlg, as this is modal!
+ */
 function hideAllDropDowns(){
 	$(".dropdown-content").hide();
 }
+
+// ********************************************************
 
 function clearErrorMsgs(){
 	$(".errormsg").html("");

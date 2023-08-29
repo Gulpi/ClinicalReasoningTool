@@ -451,14 +451,16 @@ var start_de_arr=["kein ", "keine "];
 var start_en_arr=["no "];
 var start_es_arr=["ningun"];
 var start_pl_arr=["brak ", "bez ", "nie "];
+var start_pt_arr=["n\u00e3o ", "nao ", "não "];
+var start_fr_arr=["pas "];
 
 function checkStartUserInput(user_input){
 	var my_arr = start_en_arr;
 	if(scriptlang=="de") my_arr = start_de_arr;
 	else if(scriptlang=="es") my_arr = start_es_arr;
 	else if(scriptlang=="pl") my_arr = start_pl_arr;
-	//else if(scriptlang=="fr") my_arr = start_fr_arr;
-	//else if(scriptlang=="pt") my_arr = start_pt_arr;
+	else if(scriptlang=="fr") my_arr = start_fr_arr;
+		else if(scriptlang=="pt") my_arr = start_pt_arr;
 	
 	for(var i=0; i<my_arr.length; i++){
 	if(user_input.toLowerCase().startsWith(my_arr[i]))

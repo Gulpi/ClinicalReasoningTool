@@ -416,6 +416,9 @@ function checkDisplayCnxHint(){
 	$(".cnxhint_true").toggle("drop", {direction: "right"},1000);
 }
 
+/*
+ * changed 20230829 -> moved to internal jsplumb draggable stop event handling
+ */
 function initDraggables(){
 	if(isView) return;
     instance.draggable(jsPlumb.getSelector(".drag-drop .itembox"),{

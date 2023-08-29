@@ -14,6 +14,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import api.AbstractAPIImpl;
 import controller.ScriptCopyController;
 import net.casus.util.CasusConfiguration;
+import net.casus.util.Utility;
+import util.CRTLogger;
 
 /**
  * simple JSON Webservice for simple API JSON framework
@@ -51,7 +53,10 @@ public class PreCheckAPI extends AbstractAPIImpl {
 			} catch (JsonProcessingException e) {
 				result = e.getMessage();
 			}
+			
+			CRTLogger.out("PreCheckAPI.handle in_case:" + in_case + "; dst_lang:" + dst_lang + " -> result:" + result, CRTLogger.LEVEL_PROD);
 		} catch (Exception e) {
+			CRTLogger.out("PreCheckAPI.handle x:" + Utility.stackTraceToString(e), CRTLogger.LEVEL_PROD);
 		}
 		return result;
 	}

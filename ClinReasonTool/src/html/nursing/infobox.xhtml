@@ -4,7 +4,6 @@
     xmlns:ui="http://java.sun.com/jsf/facelets"
     xmlns:f="http://java.sun.com/jsf/core">
    	<div id="info_#{info.id}" score="#{info.score}" class="jtk-node jtk-endpoint-anchor jtk-droppable itembox row2 info" style="left:#{info.x}px; top:#{info.boxY}px;">
-  	 	
   	 	<span mytooltip="#{info.labelOrSynLabel}" >#{info.shortLabelOrSynShortLabel}</span>
   	 	 <script language="Javascript">
  			item_arr.push("info_#{info.id}");
@@ -14,15 +13,18 @@
  		<div class="icons_score info_score boxscore_#{info.score}"><i class="fa fa-check"></i></div>
   	</div>
 	<div id="ddinfo_#{info.id}" class="dropdown-content" style="opacity:1;z-index:99;" >
-	 <span style="float:left;">#{prop['change']}:</span>
+	 	<div class="title" style="display:none;">#{info.labelOrSynLabel}</div>
+	 	<span style="float:left;">#{prop['change']}:</span>
 		<span class="dropdownX"><a href="javascript:hideDropDown('ddinfo_#{info.id}');"><i class="fa fa fa-times"></i></a></span> 
 	
-	<br/>
+		<br/>
 		<div class="links">
 			<span class="dropd_#{info.isExpertHierarchyItem}"><a class="dropd_#{info.isExpertHierarchyItem}" href="javascript:chgItem(#{info.id}, 10, 'Info');"><i class="fa fa-long-arrow-right"></i> #{info.expItemLabel}</a><br/></span>  <!-- Hierarchy -->
 
 		</div>
-		<a class="del" href="javascript:delItem(#{info.id},'Info');"><i class="fa fa-trash"></i> #{prop['delete']}</a>
-		
+		<br clear="all" />
+		<div class="del_container">
+			<a class="del" href="javascript:delItem(#{info.id},'Info');"><i class="fa fa-trash"></i> #{prop['delete']}</a>
+		</div>
 	 </div>
 </ui:composition>

@@ -14,14 +14,17 @@
  		<div class="icons_score nmng_score boxscore_#{nmng.score}"><i class="fa fa-check"></i></div>
   	</div>
 	<div id="ddnmng_#{nmng.id}" class="dropdown-content" style="opacity:1;z-index:99;" ><!-- onmouseleave="javascript:hideDropDown('ddddx_#{ddx.id}');"-->
-	 <span style="float:left;">#{prop['change']}:</span>
+	 	<div class="title" style="display:none;">#{nmng.labelOrSynLabel}</div>
+	 	<span style="float:left;">#{prop['change']}:</span>
 		<span class="dropdownX"><a href="javascript:hideDropDown('ddnmng_#{nmng.id}');"><i class="fa fa fa-times"></i></a></span> 
 	
-	<br/>
+		<br/>
 		<div class="links">
 			<span class="dropd_#{nmng.isExpertHierarchyItem}"><a class="dropd_#{nmng.isExpertHierarchyItem}" href="javascript:chgItem(#{nmng.id}, 9, 'Nmng');"><i class="fa fa-long-arrow-right"></i> #{nmng.expItemLabel}</a><br/></span>  <!-- Hierarchy -->
 		</div>
-		<a class="del" href="javascript:delItem(#{nmng.id},'Nmng');"><i class="fa fa-trash"></i> #{prop['delete']}</a>
-		
+		<br clear="all" />
+		<div class="del_container">
+			<a class="del" href="javascript:delItem(#{nmng.id},'Nmng');"><i class="fa fa-trash"></i> #{prop['delete']}</a>
+		</div>
 	 </div>
 </ui:composition>

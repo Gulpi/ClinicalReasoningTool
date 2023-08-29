@@ -51,7 +51,7 @@ else if(scriptlang=="pt") listUrl = "jsonp_pt.json";
 else if(scriptlang=="pl") listUrl = "jsonp_pl.json"; 
 else if(scriptlang=="fr") listUrl = "jsonp_fr.json"; 
 else if (scriptlang=="sv") listUrl = ""; //do not use lists for Swedish and Ukrainian
-else if (scriptlang=="uk") listUrl = "";
+else if (scriptlang=="uk") listUrl = "jsonp_uk.json";
 
 var lang="#{crtContext.locale}";
 var currentStage = $.getUrlVar('stage');
@@ -185,6 +185,18 @@ $(function() {
 	            to: $("#helpicon"),
 	            className: "ui-effects-transfer"
 	        }, 500);
+	    }
+	});
+	
+	$("#jdialogToolbox").dialog({
+		autoOpen: false,
+		modal: true,
+		width: 175,
+		height: "auto",
+		minWidth: 200,
+		maxWidth: 220,
+		close: function (event) { //closing effect to show where help button is
+	        $("#jdialogToolbox").html("");
 	    }
 	});
 	
@@ -531,6 +543,7 @@ item_arr = new Array();
 	<div id="jdialogError">	<ui:include src="errors.xhtml" /></div>
 	<div id="connContext"><ui:include src="cnxchange.xhtml" /></div>	
 	<div id="jdialogHelp"></div>
+	<div id="jdialogToolbox"></div>
 	<!-- <div id="jdialogFbHint"><i class="fa fa-arrow-left2"></i> #{prop['feedback.exp.hint']}</div>-->
 </h:body>
 </f:view>

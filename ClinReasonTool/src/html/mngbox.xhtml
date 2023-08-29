@@ -14,13 +14,17 @@
 
 	</div>
 	<div class="dropdown-content" id="ddmng_#{mng.id}" onmouseleave="javascript:hideDropDown('ddmng_#{mng.id}');">
-	<span style="float:left;" class="dropd_#{mng.isExpertHierarchyItem}">#{prop['change']}:</span>	
-	<span class="dropdownX"><a href="javascript:hideDropDown('ddmng_#{mng.id}');"><i class="fa fa fa-times"></i></a></span>
+		<div class="title" style="display:none;">#{mng.labelOrSynLabel}</div>
+		<span style="float:left;" class="dropd_#{mng.isExpertHierarchyItem}">#{prop['change']}:</span>	
+		<span class="dropdownX"><a href="javascript:hideDropDown('ddmng_#{mng.id}');"><i class="fa fa fa-times"></i></a></span>
 	
-	<br/>
+		<br/>
  		<div class="links">
  			<span class="dropd_#{mng.isExpertHierarchyItem}"><a  class="dropd_#{mng.isExpertHierarchyItem}" href="javascript:chgManagement(#{mng.id}, 2);"><i class="fa fa-long-arrow-right"></i> #{mng.expItemLabel}</a><br/></span> <!-- Hierarchy -->
  		</div>
- 		<a class="del" href="javascript:delManagement(#{mng.id});"><i class="fa fa-trash"></i> #{prop['delete']}</a>
+ 		<br clear="all" />
+		<div class="del_container">
+ 			<a class="del" href="javascript:delManagement(#{mng.id});"><i class="fa fa-trash"></i> #{prop['delete']}</a>
+ 		</div>
  	</div>
 </ui:composition>

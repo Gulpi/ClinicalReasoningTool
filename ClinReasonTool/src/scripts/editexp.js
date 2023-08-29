@@ -191,7 +191,7 @@ function toggleStageDisplay(){
 }
 
 function openSelBoxes(title){
-	$("#boxesSel").dialog( "option", "width", ['250'] );
+	$("#boxesSel").dialog( "option", "width", ['300'] );
 	$("#boxesSel").dialog( "option", "height", 'auto' );
 	$("#boxesSel").dialog( "option", "maxHeight", '400' );
 	$("#boxesSel").dialog( "option", "title", title?title:"");

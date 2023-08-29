@@ -5,22 +5,26 @@
     xmlns:f="http://java.sun.com/jsf/core">
    	<div id="naim_#{naim.id}"  class="itembox naim row1" style="left:#{naim.x}px; top:#{naim.boxY}px;">
   	 	
-  	 	<span mytooltip="#{nmng.labelOrSynLabel}" >#{naim.shortLabelOrSynShortLabel}</span>
+  	 	<span mytooltip="#{naim.labelOrSynLabel}" >#{naim.shortLabelOrSynShortLabel}</span>
   	 	 <script language="Javascript">
  			item_arr.push("naim_#{naim.id}");
  		</script>
-   		<span class="dropdown" onClick="javascript:showDropDown('dnaim_#{naim.id}','naim_#{naim.id}');"><i class="fa fa-chevron-circle-down"></i></span>
+   		<span class="dropdown" onClick="javascript:showDropDown('ddnaim_#{naim.id}','naim_#{naim.id}');"><i class="fa fa-chevron-circle-down"></i></span>
   		<span class="peer_score_naim" title="#{prop['naim.peer.hint']}" id="peerscore#{naim.id}"> (#{naim.peerPercentage})</span>
  		<div class="icons_score naim_score boxscore_#{naim.score}"><i class="fa fa-check"></i></div>
   	</div>
-	<div id="dnaim_#{naim.id}" class="dropdown-content" style="opacity:1;z-index:99;" ><!-- onmouseleave="javascript:hideDropDown('ddddx_#{ddx.id}');"-->
-	 <span style="float:left;">#{prop['change']}:</span>
-		<span class="dropdownX"><a href="javascript:hideDropDown('dnaim_#{naim.id}');"><i class="fa fa fa-times"></i></a></span> 
+	<div id="ddnaim_#{naim.id}" class="dropdown-content" style="opacity:1;z-index:99;" ><!-- onmouseleave="javascript:hideDropDown('ddddx_#{ddx.id}');"-->
+		<div class="title" style="display:none;">#{naim.labelOrSynLabel}</div>
+		<span style="float:left;">#{prop['change']}:</span>
+		<span class="dropdownX"><a href="javascript:hideDropDown('ddnaim_#{naim.id}');"><i class="fa fa fa-times"></i></a></span> 
 	
-	<br/>
+		<br/>
 		<div class="links">
 			<span class="dropd_#{naim.isExpertHierarchyItem}"><a class="dropd_#{naim.isExpertHierarchyItem}" href="javascript:chgItem(#{naim.id}, 8, 'Naim');"><i class="fa fa-long-arrow-right"></i> #{naim.expItemLabel}</a><br/></span>  <!-- Hierarchy -->
 		</div>
-		<a class="del" href="javascript:delItem(#{naim.id},'Naim');"><i class="fa fa-trash"></i> #{prop['delete']}</a>		
+		<br clear="all" />
+		<div class="del_container">
+			<a class="del" href="javascript:delItem(#{naim.id},'Naim');"><i class="fa fa-trash"></i> #{prop['delete']}</a>	
+		</div>	
 	 </div>
 </ui:composition>

@@ -8,19 +8,22 @@
   	 	 <script language="Javascript">
  			item_arr.push("mhyp_#{mhyp.id}");
  		</script>
-   		<span class="dropdown" onClick="javascript:showDropDown('dmhyp_#{mhyp.id}','mhyp_#{mhyp.id}');"><i class="fa fa-chevron-circle-down"></i></span>
+   		<span class="dropdown" onClick="javascript:showDropDown('ddmhyp_#{mhyp.id}','mhyp_#{mhyp.id}');"><i class="fa fa-chevron-circle-down"></i></span>
   		<span class="peer_score_mhyp" title="#{prop['mhyp.peer.hint']}" id="peerscore#{mhyp.id}"> (#{mhyp.peerPercentage})</span>
  		<div class="icons_score mhyp_score boxscore_#{mhyp.score}"><i class="fa fa-check"></i></div>
   	</div>
-	<div id="dmhyp_#{mhyp.id}" class="dropdown-content" style="opacity:1;z-index:99;" ><!-- onmouseleave="javascript:hideDropDown('ddddx_#{ddx.id}');"-->
-	 <span style="float:left;">#{prop['change']}:</span>
-		<span class="dropdownX"><a href="javascript:hideDropDown('dmhyp_#{mhyp.id}');"><i class="fa fa fa-times"></i></a></span> 
+	<div id="ddmhyp_#{mhyp.id}" class="dropdown-content" style="opacity:1;z-index:99;" ><!-- onmouseleave="javascript:hideDropDown('ddddx_#{ddx.id}');"-->
+	 	<div class="title" style="display:none;">#{mhyp.labelOrSynLabel}</div>
+	 	<span style="float:left;">#{prop['change']}:</span>
+		<span class="dropdownX"><a href="javascript:hideDropDown('ddmhyp_#{mhyp.id}');"><i class="fa fa fa-times"></i></a></span> 
 	
-	<br/>
+		<br/>
 		<div class="links">
 			<span class="dropd_#{mhyp.isExpertHierarchyItem}"><a class="dropd_#{mhyp.isExpertHierarchyItem}" href="javascript:chgItem(#{mhyp.id}, 11,'Mhyp');"><i class="fa fa-long-arrow-right"></i> #{mhyp.expItemLabel}</a><br/></span>  <!-- Hierarchy -->
-
 		</div>
-		<a class="del" href="javascript:delItem(#{mhyp.id},'Mhyp');"><i class="fa fa-trash"></i> #{prop['delete']}</a>
+		<br clear="all" />
+		<div class="del_container">
+			<a class="del" href="javascript:delItem(#{mhyp.id},'Mhyp');"><i class="fa fa-trash"></i> #{prop['delete']}</a>
+		</div>
 	 </div>
 </ui:composition>

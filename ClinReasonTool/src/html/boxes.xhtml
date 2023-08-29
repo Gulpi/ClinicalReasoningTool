@@ -188,6 +188,18 @@ $(function() {
 	    }
 	});
 	
+	$("#jdialogToolbox").dialog({
+		autoOpen: false,
+		modal: true,
+		width: 175,
+		height: "auto",
+		minWidth: 200,
+		maxWidth: 220,
+		close: function (event) { //closing effect to show where help button is
+	        $("#jdialogToolbox").html("");
+	    }
+	});
+	
 	if(openHelpOnLoad=="true"){
 		 if(currentStageScript=="1")openHelp();
 		 openHelpOnLoad=="false";
@@ -242,7 +254,7 @@ jsPlumb.ready(function () {
     	toggleContainerCollapse(this.parentNode);
     });
     $(".itembox").contextmenu(function(event) {
-    	  showDropDown("dd"+this.id);
+    	  showDropDown("dd"+this.id,this.id);
     	  event.preventDefault();
    	 });
     
@@ -531,6 +543,7 @@ item_arr = new Array();
 	<div id="jdialogError">	<ui:include src="errors.xhtml" /></div>
 	<div id="connContext"><ui:include src="cnxchange.xhtml" /></div>	
 	<div id="jdialogHelp"></div>
+	<div id="jdialogToolbox"></div>
 	<!-- <div id="jdialogFbHint"><i class="fa fa-arrow-left2"></i> #{prop['feedback.exp.hint']}</div>-->
 </h:body>
 </f:view>

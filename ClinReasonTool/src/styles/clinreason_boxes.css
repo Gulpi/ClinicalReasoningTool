@@ -253,7 +253,7 @@ a#ddx_submit_btn, errorsymbol.a{
 	font-color:#ffffff;
 	cursor:pointer;
 	text-decoration:none;
-	padding:2px;
+	/* padding:2px; */
 	display:inline-block;
 }
 
@@ -1026,6 +1026,10 @@ ul#errors{
 	 border: 1px solid #c2c2c2;
 }
 
+.display_block {
+	display:block !important;
+}
+
 .ro_true{
 	display:none !important;
 }
@@ -1268,5 +1272,19 @@ input.cmn-toggle-round:checked + label:after {
 .showadaptBox_false{
 	display:none;
 }
+
+#jdialogToolbox a {
+	margin-bottom: 1em;
+}
+
+#jdialogToolbox .links {
+	margin-top: 1em;
+}
+
+#jdialogToolbox .del {
+	padding-top: 1.5em;
+	display:block !important;
+}
+
 
 

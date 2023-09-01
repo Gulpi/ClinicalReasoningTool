@@ -128,7 +128,7 @@ public class JsonCreator {
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public List exportGenericList(String type, Locale loc){
 		// dababase call configurable by lists.dbtypes.<type>=<STring delimioted by , (comma) with categories; lists.professionType.<type>=0 | 1; listvaliant for future extension
-		List<ListItem> items = new DBList().selectListItemsByTypesAndLang(loc, AppBeanPropertyHelper.getArray("lists.dbtypes.", type, null), AppBeanPropertyHelper.getInt("lists.professionType.", type, 0), AppBeanPropertyHelper.getInt("lists.professionVariant.", type, -1));
+		List<ListItem> items = new DBList().selectListItemsByTypesAndLang(loc, AppBeanPropertyHelper.getArray("lists.dbtypes.", type, null), AppBeanPropertyHelper.getInt("lists.professionType.", type, -1), AppBeanPropertyHelper.getInt("lists.professionVariant.", type, -1));
 		if(items==null || items.isEmpty()) {
 			CRTLogger.out("JsonCreator.exportGenericList(\"" + type + "\"," + loc + ") => items null | empty: " + items, CRTLogger.LEVEL_ERROR);
 			return null; //then something went really wrong!

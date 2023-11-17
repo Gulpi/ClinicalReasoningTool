@@ -125,20 +125,21 @@ function expFinalDiagnosisCallback(){
 function chgStageItem(obj){
 	var id = obj.id;
 	var realId = id.substring(9);
-	var newStage = $("#"+id).val();
+	var newStage = $(obj).val();
 	if(newStage<=0 || newStage>maxStage){ //check that the new card idx is within the case length!
 		alert("Invalid card number");
 		return;
 	} 
-	else
+	else {
 		sendAjax(realId, chgStageCallback, "chgStateOfItem", newStage);
+	}
 }
 
 /* changes the stage when the final diagnosis is made */
 function chgStageFinal(obj){
 	var id = obj.id;
 	var realId = id.substring(14);
-	var newStage = $("#"+id).val();
+	var newStage = $(obj).val();
 	sendAjax(realId, chgStageCallback, "chgFinalState", newStage);
 }
 

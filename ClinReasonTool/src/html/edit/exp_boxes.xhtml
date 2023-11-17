@@ -110,22 +110,23 @@ $(function() {
 	$("#boxesSel").hide();
 	$("#summStText").on('change',function(){
 		saveSummSt('#{adminContext.patillscript.summStId}');
-	 });
+	});
+	
 	$(".chgstage").on('change',function(){
 		chgStageItem(this);
-	 });
+	});
 	
 	$(".chgfinal").on('change',function(){
 		chgStageFinal(this);
-	 });
+	});
 	
 	$(".chgstage2").on('change',function(){
 		chgStageEdge(this);
-	 });
+	});
 	
 	$("#chgsummstCrd").on('change',function(){
 		chgSummStCrd(this);
-	 });
+	});
 	
     $( ".itembox" ).draggable({
    	 start: function(event, ui) {             
@@ -150,11 +151,25 @@ $(function() {
 		width: "auto",
 		height: "auto"
 	});
+	
 	$("#boxesSel").dialog({
 		autoOpen: false,
 		modal: true,
 		width: "auto",
 		height: "auto"
+	});
+	
+
+	$("#jdialogToolbox").dialog({
+		autoOpen: false,
+		modal: true,
+		width: 175,
+		height: "auto",
+		minWidth: 200,
+		maxWidth: 220,
+		close: function (event) { //closing effect to show where help button is
+	        $("#jdialogToolbox").html("");
+	    }
 	});
 	
 	
@@ -447,6 +462,9 @@ Stage: <span id="stageSpan">#{adminContext.patillscript.stage}(#{adminContext.pa
 		<ui:include src="edges_exp.xhtml" />
 	</ui:repeat>	</span>
 </div>
+
+<div id="jdialogToolbox"></div>
+
 </body>
 </f:view>
 </html>

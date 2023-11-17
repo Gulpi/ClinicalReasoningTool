@@ -1061,6 +1061,7 @@ function showDropDown(id, pos){
  */
 function hideDropDown(id){
 	$("#"+id).hide();
+	try { $("#jdialogToolbox" ).dialog( "close" );} catch (x) {};
 }
 
 /**

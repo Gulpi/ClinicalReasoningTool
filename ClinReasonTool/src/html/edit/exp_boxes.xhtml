@@ -124,6 +124,8 @@ $(function() {
 		chgStageEdge(this);
 	});
 	
+	
+	
 	$("#chgsummstCrd").on('change',function(){
 		chgSummStCrd(this);
 	});
@@ -188,6 +190,17 @@ $(function() {
 	$("#langchgsel").hide();
 	if(userId=="7900") $("#langchgsel").show(); //extremly ugly hack to display the changing of map language only for one super-user. 
 });
+
+function showDropDown_afterInit() {
+	$("#jdialogToolbox .chgstage").on('change',function(){
+		try { console.log("showDropDown_afterInit chgStageItem",$(this).val(),this); } catch (x) {};
+		chgStageItem(this);
+	});
+	
+	$("#jdialogToolbox .chgfinal").on('change',function(){
+		chgStageFinal(this);
+	});
+}
 
 
 jsPlumb.ready(function () {

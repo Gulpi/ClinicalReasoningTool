@@ -1040,6 +1040,9 @@ function showDropDown(id, pos){
 		$("#jdialogToolbox").html($("#"+id).html());
 		//$("#jdialogError").load("errors.xhtml");
 		$('#jdialogToolbox .dropdownX').hide();
+		
+		try { showDropDown_afterInit(); } catch (x) {};
+		
 		$("#jdialogToolbox" ).dialog( "open" );
 		$("#jdialogToolbox").show();
 	}
@@ -1058,6 +1061,7 @@ function showDropDown(id, pos){
  */
 function hideDropDown(id){
 	$("#"+id).hide();
+	try { $("#jdialogToolbox" ).dialog( "close" );} catch (x) {};
 }
 
 /**

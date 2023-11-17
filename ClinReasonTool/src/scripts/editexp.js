@@ -138,7 +138,7 @@ function chgStageItem(obj){
 /* changes the stage when the final diagnosis is made */
 function chgStageFinal(obj){
 	var id = obj.id;
-	var realId = id.substring(14);
+	var realId = id.substring(9);
 	var newStage = $(obj).val();
 	sendAjax(realId, chgStageCallback, "chgFinalState", newStage);
 }
